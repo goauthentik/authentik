@@ -75,6 +75,9 @@ class TestProviderSecret(APITestCase):
             name=generate_id(), authorization_flow=create_test_flow()
         )
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.RADIUS)
+        outpost.providers.add(provider)
+        self.client.force_login(outpost.user)
         response = self.client.get(reverse("authentik_api:radiusprovideroutpost-list"))
         self.assertEqual(response.status_code, 200)
         results = response.json()["results"]

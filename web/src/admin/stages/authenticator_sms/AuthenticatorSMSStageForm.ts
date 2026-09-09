@@ -15,6 +15,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorSMSStage,
+    AuthenticatorSMSStageRequest,
     AuthTypeEnum,
     Flow,
     FlowDesignationEnum,
@@ -53,13 +54,13 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorSmsUpdate({
+            return aki(StagesApi).stagesAuthenticatorSmsPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorSMSStageRequest: data,
+                patchedAuthenticatorSMSStageRequest: data,
             });
         }
         return aki(StagesApi).stagesAuthenticatorSmsCreate({
-            authenticatorSMSStageRequest: data,
+            authenticatorSMSStageRequest: data as unknown as AuthenticatorSMSStageRequest,
         });
     }
 

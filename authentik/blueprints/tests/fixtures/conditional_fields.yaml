@@ -37,7 +37,7 @@ entries:
         slug: "%(uid)s-source"
       attrs:
         name: "%(uid)s-source"
-        provider_type: entraid
+        provider_type: discord
         consumer_key: "%(uid)s"
         secret: !KeyOf source-secret
         icon: https://goauthentik.io/img/icon.png

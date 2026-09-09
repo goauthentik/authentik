@@ -92,11 +92,10 @@ pub(super) fn auth_start(
         .client_id
         .as_deref()
         .ok_or_else(|| eyre!("provider has no client id"))?;
-    let cookie_secret = app
-        .provider
-        .cookie_secret
-        .as_deref()
-        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
+    if app.provider.cookie_secret.is_empty() {
+        return Err(eyre!("provider has no cookie secret").into());
+    }
+    let cookie_secret = app.provider.cookie_secret.as_str();
 
     let jar = app.session_cookie.jar(headers);
     let sid = app
@@ -214,11 +213,10 @@ pub(super) async fn handle_auth_callback(
         return Err(eyre!("provider has no client secret").into());
     }
     let client_secret = app.provider.client_secret.as_str();
-    let cookie_secret = app
-        .provider
-        .cookie_secret
-        .as_deref()
-        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
+    if app.provider.cookie_secret.is_empty() {
+        return Err(eyre!("provider has no cookie secret").into());
+    }
+    let cookie_secret = app.provider.cookie_secret.as_str();
 
     let jar = app.session_cookie.jar(request.headers());
     let Some(sid) = app.session_cookie.read(&jar) else {

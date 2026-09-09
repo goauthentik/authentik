@@ -31,7 +31,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.run_container(
-            image="docker.io/library/docker:28.5.2-dind-alpine3.22",
+            image=self.pinned_image("dind", "integration/compose.yml"),
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(

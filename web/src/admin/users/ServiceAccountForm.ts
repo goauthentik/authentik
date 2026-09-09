@@ -163,11 +163,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     }
 
     protected renderResponseForm(): SlottedTemplateResult {
-        return html`<p>
-                ${msg(
-                    "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
-                )}
-            </p>
+        return html`<p>${msg("Use the username and password below to authenticate.")}</p>
             <form class="pf-c-form pf-m-horizontal">
                 <ak-text-input
                     name="name"
@@ -184,7 +180,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     input-hint="code"
                     readonly
                     .help=${msg(
-                        "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                        "You can retrieve the password from the user's Credentials/Tokens tab or from Directory > Tokens and App Passwords.",
                     )}
                 >
                 </ak-hidden-text-input>

@@ -117,7 +117,6 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         related_name="scim_providers",
     )
-    _token = models.TextField(help_text=_("Authentication token"), blank=True, db_column="token")
 
     auth_oauth = models.ForeignKey(
         "authentik_sources_oauth.OAuthSource",

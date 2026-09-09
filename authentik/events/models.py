@@ -39,12 +39,11 @@ from authentik.events.utils import (
     sanitize_item,
 )
 from authentik.lib.models import (
-    DomainlessURLValidator,
     ExpiringModel,
     SerializerModel,
     SimpleThroughModel,
 )
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -83,7 +82,7 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
 
@@ -378,9 +377,6 @@ class NotificationTransport(TasksModel, SerializerModel):
         blank=True,
         default=None,
         related_name="notification_transports",
-    )
-    _webhook_url = models.TextField(
-        blank=True, validators=[DomainlessURLValidator()], db_column="webhook_url"
     )
 
     webhook_ca = models.ForeignKey(

@@ -8668,10 +8668,10 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 }
             },
             "required": []
@@ -9073,10 +9073,10 @@
                     "minLength": 1,
                     "title": "Delegated subject"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 },
                 "scopes": {
                     "type": "string",
@@ -9991,10 +9991,10 @@
                     "type": "string",
                     "title": "Friendly name"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 }
             },
             "required": []
@@ -10870,11 +10870,10 @@
                     "title": "Local",
                     "description": "If enabled, use the local connection. Required Docker socket/Kubernetes Integration"
                 },
-                "kubeconfig": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Kubeconfig",
-                    "description": "Paste your kubeconfig here. authentik will automatically use the currently selected context."
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 },
                 "verify_ssl": {
                     "type": "boolean",
@@ -14765,30 +14764,30 @@
                     "title": "Sync password",
                     "description": "Password to authenticate to kadmin for sync"
                 },
-                "sync_keytab": {
+                "sync_keytab_secret": {
                     "type": "string",
-                    "title": "Sync keytab",
-                    "description": "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual"
+                    "format": "uuid",
+                    "title": "Sync keytab"
                 },
-                "sync_ccache": {
+                "sync_ccache_secret": {
                     "type": "string",
-                    "title": "Sync ccache",
-                    "description": "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual"
+                    "format": "uuid",
+                    "title": "Sync ccache"
                 },
                 "spnego_server_name": {
                     "type": "string",
                     "title": "Spnego server name",
                     "description": "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"
                 },
-                "spnego_keytab": {
+                "spnego_keytab_secret": {
                     "type": "string",
-                    "title": "Spnego keytab",
-                    "description": "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+                    "format": "uuid",
+                    "title": "Spnego keytab"
                 },
-                "spnego_ccache": {
+                "spnego_ccache_secret": {
                     "type": "string",
-                    "title": "Spnego ccache",
-                    "description": "Credential cache to use for SPNEGO in form type:residual"
+                    "format": "uuid",
+                    "title": "Spnego ccache"
                 },
                 "password_login_update_internal_password": {
                     "type": "boolean",

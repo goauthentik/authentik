@@ -37,19 +37,15 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_users_password",
             "sync_principal",
             "secret",
-            "sync_keytab",
-            "sync_ccache",
+            "sync_keytab_secret",
+            "sync_ccache_secret",
             "connectivity",
             "spnego_server_name",
-            "spnego_keytab",
-            "spnego_ccache",
+            "spnego_keytab_secret",
+            "spnego_ccache_secret",
             "password_login_update_internal_password",
             "sync_outgoing_trigger_mode",
         ]
-        extra_kwargs = {
-            "sync_keytab": {"write_only": True},
-            "spnego_keytab": {"write_only": True},
-        }
 
 
 class KerberosSourceViewSet(UsedByMixin, ModelViewSet):

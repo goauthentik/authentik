@@ -30,7 +30,7 @@ type ProxyOutpostConfig struct {
 	ClientId                  *string                    `json:"client_id,omitempty"`
 	ClientSecret              string                     `json:"client_secret"`
 	OidcConfiguration         OpenIDConnectConfiguration `json:"oidc_configuration"`
-	CookieSecret              *string                    `json:"cookie_secret,omitempty"`
+	CookieSecret              string                     `json:"cookie_secret"`
 	Certificate               NullableString             `json:"certificate,omitempty"`
 	// Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
 	SkipPathRegex *string `json:"skip_path_regex,omitempty"`
@@ -62,13 +62,14 @@ type _ProxyOutpostConfig ProxyOutpostConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProxyOutpostConfig(pk int32, name string, externalHost string, clientSecret string, oidcConfiguration OpenIDConnectConfiguration, accessTokenValidity NullableFloat64, scopesToRequest []string, assignedApplicationSlug string, assignedApplicationName string) *ProxyOutpostConfig {
+func NewProxyOutpostConfig(pk int32, name string, externalHost string, clientSecret string, oidcConfiguration OpenIDConnectConfiguration, cookieSecret string, accessTokenValidity NullableFloat64, scopesToRequest []string, assignedApplicationSlug string, assignedApplicationName string) *ProxyOutpostConfig {
 	this := ProxyOutpostConfig{}
 	this.Pk = pk
 	this.Name = name
 	this.ExternalHost = externalHost
 	this.ClientSecret = clientSecret
 	this.OidcConfiguration = oidcConfiguration
+	this.CookieSecret = cookieSecret
 	this.AccessTokenValidity = accessTokenValidity
 	this.ScopesToRequest = scopesToRequest
 	this.AssignedApplicationSlug = assignedApplicationSlug
@@ -300,36 +301,28 @@ func (o *ProxyOutpostConfig) SetOidcConfiguration(v OpenIDConnectConfiguration) 
 	o.OidcConfiguration = v
 }
 
-// GetCookieSecret returns the CookieSecret field value if set, zero value otherwise.
+// GetCookieSecret returns the CookieSecret field value
 func (o *ProxyOutpostConfig) GetCookieSecret() string {
-	if o == nil || IsNil(o.CookieSecret) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CookieSecret
+
+	return o.CookieSecret
 }
 
-// GetCookieSecretOk returns a tuple with the CookieSecret field value if set, nil otherwise
+// GetCookieSecretOk returns a tuple with the CookieSecret field value
 // and a boolean to check if the value has been set.
 func (o *ProxyOutpostConfig) GetCookieSecretOk() (*string, bool) {
-	if o == nil || IsNil(o.CookieSecret) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CookieSecret, true
+	return &o.CookieSecret, true
 }
 
-// HasCookieSecret returns a boolean if a field has been set.
-func (o *ProxyOutpostConfig) HasCookieSecret() bool {
-	if o != nil && !IsNil(o.CookieSecret) {
-		return true
-	}
-
-	return false
-}
-
-// SetCookieSecret gets a reference to the given string and assigns it to the CookieSecret field.
+// SetCookieSecret sets field value
 func (o *ProxyOutpostConfig) SetCookieSecret(v string) {
-	o.CookieSecret = &v
+	o.CookieSecret = v
 }
 
 // GetCertificate returns the Certificate field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -721,9 +714,7 @@ func (o ProxyOutpostConfig) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["client_secret"] = o.ClientSecret
 	toSerialize["oidc_configuration"] = o.OidcConfiguration
-	if !IsNil(o.CookieSecret) {
-		toSerialize["cookie_secret"] = o.CookieSecret
-	}
+	toSerialize["cookie_secret"] = o.CookieSecret
 	if o.Certificate.IsSet() {
 		toSerialize["certificate"] = o.Certificate.Get()
 	}
@@ -770,6 +761,7 @@ func (o *ProxyOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 		"external_host",
 		"client_secret",
 		"oidc_configuration",
+		"cookie_secret",
 		"access_token_validity",
 		"scopes_to_request",
 		"assigned_application_slug",

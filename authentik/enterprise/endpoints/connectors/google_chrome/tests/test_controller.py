@@ -15,13 +15,14 @@ from authentik.enterprise.endpoints.connectors.google_chrome.models import Googl
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.secrets.tests.utils import create_test_secret
 
 
 class TestGoogleChromeConnector(APITestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()

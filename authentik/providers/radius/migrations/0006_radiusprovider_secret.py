@@ -12,7 +12,7 @@ def migrate_shared_secret(apps, schema_editor):
     RadiusProvider = apps.get_model("authentik_providers_radius", "RadiusProvider")
     Secret = apps.get_model("authentik_secrets", "Secret")
     names = set(Secret.objects.using(db_alias).values_list("name", flat=True))
-    for provider in RadiusProvider.objects.using(db_alias).exclude(_shared_secret=""):
+    for provider in RadiusProvider.objects.using(db_alias).all():
         base = f"{provider.name} shared secret"
         name, idx = base, 2
         while name in names:

@@ -1,6 +1,6 @@
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.3.2@sha256:7382d0f7459549c4cb497c3ed3b6b884f30535ded9d630578840382703049758 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
 
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.8.1-trixie@sha256:f5d1cc40abc10c2843339a2134d07817cf33c405cb16bfd052b0ed790254c3a3 AS docs-builder
 
@@ -16,7 +16,7 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
-    node ./scripts/node/lint-runtime.mjs ./website
+    node ./scripts/node/lint-runtime.ts ./website
 
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
 # (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source

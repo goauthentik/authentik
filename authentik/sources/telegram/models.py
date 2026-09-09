@@ -35,7 +35,6 @@ class TelegramSource(Source):
         default=None,
         related_name="telegram_sources",
     )
-    _bot_token = models.TextField(help_text=_("Telegram bot token"), db_column="bot_token")
     request_message_access = models.BooleanField(
         default=False, help_text=_("Request access to send messages from your bot.")
     )

@@ -42,9 +42,6 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         related_name="duo_stages_admin",
     )
 
-    _client_secret = models.TextField(db_column="client_secret")
-    _admin_secret_key = models.TextField(blank=True, default="", db_column="admin_secret_key")
-
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_duo.api import AuthenticatorDuoStageSerializer

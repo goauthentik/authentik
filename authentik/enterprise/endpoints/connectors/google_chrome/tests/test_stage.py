@@ -7,13 +7,14 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 
 
 class TestGoogleChromeStage(FlowTestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
 
     def _setup_flow(self, mode: StageMode) -> str:

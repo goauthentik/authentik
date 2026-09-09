@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, SkipField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -23,8 +24,44 @@ from authentik.rbac.permissions import ObjectPermissions
 from authentik.secrets.models import Secret, SecretType
 
 
+class SecretReferenceField(PrimaryKeyRelatedField):
+    """Attaching a credential can disclose it through the consumer."""
+
+    def to_internal_value(self, data):
+        secret = super().to_internal_value(data)
+        request = self.context.get("request")
+        instance = self.parent.instance
+        if not request or (instance and getattr(instance, f"{self.source}_id") == secret.pk):
+            return secret
+        if not (
+            request.user.has_perm("authentik_secrets.view_secret_value")
+            or request.user.has_perm("authentik_secrets.view_secret_value", secret)
+        ):
+            raise PermissionDenied(_("You do not have permission to use this secret."))
+        return secret
+
+
+class JSONSecretReferenceField(SecretReferenceField):
+    """A reference to a structured credential."""
+
+    def to_internal_value(self, data):
+        secret = super().to_internal_value(data)
+        try:
+            secret.get_json()
+        except ValueError:
+            raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
+        return secret
+
+
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
+
+    structured_consumers = (
+        "google_chrome_connectors",
+        "google_workspace_providers",
+        "gdtc_stages",
+        "kubernetes_connections",
+    )
 
     def validate_value(self, value: str) -> str:
         if value == "":
@@ -45,6 +82,11 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
                 raise ValidationError(
                     _("OAuth client secrets must consist of only ASCII characters.")
                 )
+        if any(getattr(instance, relation).exists() for relation in self.structured_consumers):
+            try:
+                Secret(type=instance.type, value=value).get_json()
+            except BinasciiError, ValueError:
+                raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
         return value
 
     def validate(self, attrs: dict) -> dict:

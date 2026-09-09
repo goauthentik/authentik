@@ -1,11 +1,14 @@
 """Managed secret models."""
 
+from base64 import b64decode
+from binascii import Error as BinasciiError
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import IntegrityError, models, transaction
 from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
+from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
 from authentik.lib.generators import generate_id
@@ -51,6 +54,19 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     name = models.TextField(unique=True)
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
     value = models.TextField(default=generate_secret_value)
+
+    def get_json(self) -> dict:
+        """Read a JSON or YAML credential, including an uploaded file."""
+        try:
+            value = (
+                b64decode(self.value, validate=True) if self.type == SecretType.FILE else self.value
+            )
+            data = safe_load(value)
+        except (BinasciiError, YAMLError, UnicodeError) as exc:
+            raise ValueError("Invalid JSON or YAML credential") from exc
+        if not isinstance(data, dict):
+            raise ValueError("Credential must be a JSON or YAML object")
+        return data
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

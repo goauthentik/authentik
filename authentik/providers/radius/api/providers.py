@@ -25,6 +25,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.outposts.permissions import IsOutpostDelegatedRequest, IsOutpostServiceAccount
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -94,6 +95,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     queryset = RadiusProvider.objects.filter(application__isnull=False).select_related("secret")
     serializer_class = RadiusOutpostConfigSerializer
+    permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
@@ -163,7 +165,9 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         },
         operation_id="outposts_radius_access_check",
     )
-    @action(detail=True)
+    # Access checks are run by the outpost on behalf of the user that is authenticating,
+    # using that user's session, and are authenticated by the outpost's own token
+    @action(detail=True, permission_classes=[IsOutpostDelegatedRequest])
     def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
         provider = get_object_or_404(RadiusProvider, pk=pk)

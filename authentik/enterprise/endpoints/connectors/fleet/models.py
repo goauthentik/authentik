@@ -24,7 +24,6 @@ class FleetConnector(Connector):
         default=None,
         related_name="fleet_connectors",
     )
-    _token = models.TextField(db_column="token")
 
     headers_mapping = models.ForeignKey(
         "authentik_events.NotificationWebhookMapping",

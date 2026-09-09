@@ -42,7 +42,6 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         default=None,
         related_name="authenticator_email_stages",
     )
-    _password = models.TextField(default="", blank=True, db_column="password")
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)

@@ -54,7 +54,6 @@ class SCIMProviderSerializer(
             "group_filters",
             "dry_run",
         ]
-        extra_kwargs = {}
 
 
 class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

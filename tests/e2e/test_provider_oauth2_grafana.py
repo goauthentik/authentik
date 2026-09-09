@@ -41,7 +41,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.app_slug = generate_id(20)
         super().setUp()
         self.run_container(
-            image="grafana/grafana:7.1.0",
+            image=self.pinned_image("grafana", "e2e/compose.yml"),
             ports={
                 "3000": "3000",
             },

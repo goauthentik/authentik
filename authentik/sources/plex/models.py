@@ -69,9 +69,6 @@ class PlexSource(ScheduledModel, Source):
         default=None,
         related_name="plex_sources",
     )
-    _plex_token = models.TextField(
-        help_text=_("Plex token used to check friends"), db_column="plex_token"
-    )
 
     @property
     def component(self) -> str:

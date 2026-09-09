@@ -43,7 +43,7 @@ export interface PatchedGoogleWorkspaceProviderRequest {
     /**
      *
      */
-    credentials?: { [key: string]: any };
+    secret?: string;
     /**
      *
      */
@@ -114,7 +114,7 @@ export function PatchedGoogleWorkspaceProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         delegatedSubject: json["delegated_subject"] == null ? undefined : json["delegated_subject"],
-        credentials: json["credentials"] == null ? undefined : json["credentials"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         scopes: json["scopes"] == null ? undefined : json["scopes"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -164,7 +164,7 @@ export function PatchedGoogleWorkspaceProviderRequestToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         delegated_subject: value["delegatedSubject"],
-        credentials: value["credentials"],
+        secret: value["secret"],
         scopes: value["scopes"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],

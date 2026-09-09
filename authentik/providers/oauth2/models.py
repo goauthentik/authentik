@@ -246,13 +246,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=None,
         related_name="oauth2_providers",
     )
-    _client_secret = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Client Secret"),
-        default=generate_client_secret,
-        db_column="client_secret",
-    )
     _redirect_uris = models.JSONField(
         default=list,
         verbose_name=_("Redirect URIs"),

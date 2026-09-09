@@ -10,6 +10,7 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.dtc import (
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 
@@ -18,7 +19,7 @@ class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
         self.flow = create_test_flow()
         self.stage = AuthenticatorEndpointGDTCStage.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

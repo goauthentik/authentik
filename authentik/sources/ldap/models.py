@@ -100,7 +100,6 @@ class LDAPSource(IncomingSyncSource):
         default=None,
         related_name="ldap_sources",
     )
-    _bind_password = models.TextField(blank=True, db_column="bind_password")
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
     sni = models.BooleanField(default=False, verbose_name=_("Use Server URI for SNI verification"))
 

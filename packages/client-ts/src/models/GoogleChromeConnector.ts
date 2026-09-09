@@ -49,7 +49,7 @@ export interface GoogleChromeConnector {
     /**
      *
      */
-    credentials: { [key: string]: any };
+    secret: string;
     /**
      * Full URL to be used in Google Workspace configuration
      */
@@ -83,7 +83,7 @@ export function instanceOfGoogleChromeConnector(value: object): value is GoogleC
             (value as Record<string, any>)["meta_model_name"] === undefined)
     )
         return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("chromeUrl" in (value as Record<string, any>)) &&
             !("chrome_url" in (value as Record<string, any>))) ||
@@ -113,7 +113,7 @@ export function GoogleChromeConnectorFromJSONTyped(
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        credentials: json["credentials"],
+        secret: json["secret"],
         chromeUrl: json["chrome_url"],
     };
 }
@@ -137,6 +137,6 @@ export function GoogleChromeConnectorToJSONTyped(
         connector_uuid: value["connectorUuid"],
         name: value["name"],
         enabled: value["enabled"],
-        credentials: value["credentials"],
+        secret: value["secret"],
     };
 }

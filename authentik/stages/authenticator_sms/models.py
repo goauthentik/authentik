@@ -65,8 +65,6 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         default=None,
         related_name="sms_stages_auth_password",
     )
-    _auth = models.TextField(db_column="auth")
-    _auth_password = models.TextField(default="", blank=True, db_column="auth_password")
     auth_type = models.TextField(choices=SMSAuthTypes.choices, default=SMSAuthTypes.BASIC)
 
     verify_only = models.BooleanField(

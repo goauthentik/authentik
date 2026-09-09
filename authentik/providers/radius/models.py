@@ -9,7 +9,6 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 from authentik.secrets.models import create_named_secret
 
@@ -26,11 +25,6 @@ class RadiusProvider(OutpostModel, Provider):
         blank=True,
         default=None,
         related_name="radius_providers",
-    )
-    _shared_secret = models.TextField(
-        default=generate_id,
-        help_text=_("Shared secret between clients and server to hash packets."),
-        db_column="shared_secret",
     )
 
     client_networks = models.TextField(

@@ -58,7 +58,7 @@ export interface ProxyOutpostConfig {
     /**
      *
      */
-    cookieSecret?: string;
+    readonly cookieSecret: string;
     /**
      *
      */
@@ -138,6 +138,13 @@ export function instanceOfProxyOutpostConfig(value: object): value is ProxyOutpo
     )
         return false;
     if (
+        (!("cookieSecret" in (value as Record<string, any>)) &&
+            !("cookie_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cookieSecret"] === undefined &&
+            (value as Record<string, any>)["cookie_secret"] === undefined)
+    )
+        return false;
+    if (
         (!("accessTokenValidity" in (value as Record<string, any>)) &&
             !("access_token_validity" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["accessTokenValidity"] === undefined &&
@@ -191,7 +198,7 @@ export function ProxyOutpostConfigFromJSONTyped(
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         clientSecret: json["client_secret"],
         oidcConfiguration: OpenIDConnectConfigurationFromJSON(json["oidc_configuration"]),
-        cookieSecret: json["cookie_secret"] == null ? undefined : json["cookie_secret"],
+        cookieSecret: json["cookie_secret"],
         certificate:
             json["certificate"] === undefined
                 ? undefined
@@ -230,6 +237,7 @@ export function ProxyOutpostConfigToJSONTyped(
         | "pk"
         | "clientSecret"
         | "oidcConfiguration"
+        | "cookieSecret"
         | "accessTokenValidity"
         | "scopesToRequest"
         | "assignedApplicationSlug"
@@ -247,7 +255,6 @@ export function ProxyOutpostConfigToJSONTyped(
         external_host: value["externalHost"],
         internal_host_ssl_validation: value["internalHostSslValidation"],
         client_id: value["clientId"],
-        cookie_secret: value["cookieSecret"],
         certificate: value["certificate"],
         skip_path_regex: value["skipPathRegex"],
         basic_auth_enabled: value["basicAuthEnabled"],

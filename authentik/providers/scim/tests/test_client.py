@@ -40,6 +40,17 @@ class SCIMClientTests(TestCase):
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
         )
 
+    def test_empty_token(self):
+        """A provider without a token still sends its request."""
+        self.provider.secret = None
+        self.provider.save()
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json={})
+            mock.get("https://localhost/Users", json={})
+            client = SCIMClient(self.provider)
+            self.assertEqual(client._request("GET", "/Users"), {})
+            self.assertEqual(mock.last_request.headers["Authorization"], "Bearer ")
+
     def test_config(self):
         """Test valid config:
         https://docs.aws.amazon.com/singlesignon/latest/developerguide/serviceproviderconfig.html"""

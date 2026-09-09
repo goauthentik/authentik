@@ -59,7 +59,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.source_slug = generate_id()
         super().setUp()
         self.run_container(
-            image="ghcr.io/beryju/oauth1-test-server:v1.1",
+            image=self.pinned_image("oauth1-test-server", "e2e/compose.yml"),
             ports={"5000": "5001"},
             environment={
                 "OAUTH1_CLIENT_ID": self.client_id,

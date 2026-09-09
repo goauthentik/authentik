@@ -88,7 +88,6 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         related_name="microsoft_entra_providers",
     )
-    _client_secret = models.TextField(db_column="client_secret")
     tenant_id = models.TextField()
 
     exclude_users_service_account = models.BooleanField(default=False)

@@ -88,7 +88,6 @@ class EmailStage(Stage):
         default=None,
         related_name="email_stages",
     )
-    _password = models.TextField(default="", blank=True, db_column="password")
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)

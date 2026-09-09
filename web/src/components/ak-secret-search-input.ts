@@ -56,7 +56,9 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
         const secretForm = new SecretForm();
 
         secretForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
-            this.value = (event as AKFormSubmittedEvent<Secret>).response.pk;
+            const secret = (event as AKFormSubmittedEvent<Secret>).response;
+            this.value = secret.pk;
+            this.selectedSecret = secret;
             const secretSearch = this.secretSearchRef.value;
             if (secretSearch) {
                 secretSearch.query = undefined;
@@ -91,11 +93,14 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
 
         // The selected secret may sort beyond the first page; make sure it is present so
         // the control can display and keep it instead of silently clearing on save.
-        if (!query && this.value && !secrets.results.some((secret) => secret.pk === this.value)) {
-            const selected = await aki(SecretsApi).secretsSecretsRetrieve({
-                secretUuid: this.value,
-            });
-            return [selected, ...secrets.results];
+        if (!query && this.value) {
+            const selected =
+                secrets.results.find((secret) => secret.pk === this.value) ??
+                (await aki(SecretsApi).secretsSecretsRetrieve({ secretUuid: this.value }));
+            this.selectedSecret = selected;
+            if (!secrets.results.includes(selected)) {
+                return [selected, ...secrets.results];
+            }
         }
 
         return secrets.results;

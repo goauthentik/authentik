@@ -12,7 +12,7 @@ def migrate_client_secret(apps, schema_editor):
     OAuth2Provider = apps.get_model("authentik_providers_oauth2", "OAuth2Provider")
     Secret = apps.get_model("authentik_secrets", "Secret")
     names = set(Secret.objects.using(db_alias).values_list("name", flat=True))
-    for provider in OAuth2Provider.objects.using(db_alias).exclude(_client_secret=""):
+    for provider in OAuth2Provider.objects.using(db_alias).all():
         base = f"{provider.name} client secret"
         name, idx = base, 2
         while name in names:

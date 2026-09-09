@@ -12,6 +12,7 @@ from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.secrets.tests.utils import create_test_secret
 
 
 class TestChromeDTCView(FlowTestCase):
@@ -19,7 +20,7 @@ class TestChromeDTCView(FlowTestCase):
         self.flow = create_test_flow()
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()

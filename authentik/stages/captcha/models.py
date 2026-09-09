@@ -29,9 +29,6 @@ class CaptchaStage(Stage):
         default=None,
         related_name="captcha_stages",
     )
-    _private_key = models.TextField(
-        help_text=_("Private key, acquired your captcha Provider."), db_column="private_key"
-    )
 
     interactive = models.BooleanField(default=False)
 
