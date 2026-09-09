@@ -1,0 +1,79 @@
+---
+name: "authentik detect changes"
+description: "Detect which parts of the repository a pull request affects"
+
+outputs:
+  code:
+    description: >-
+      "true" when files outside of prose were changed, or when the event is not
+      a pull request. Jobs that only validate code should be gated on this.
+    value: ${{ steps.aggregate.outputs.code }}
+  bundled-docs:
+    description: >-
+      "true" when documentation compiled into the web bundle was changed. The
+      esbuild MDX plugin resolves `~docs/...` imports to website/docs and
+      compiles them at build time, so a malformed file there fails the web
+      build, not just the docs site.
+    value: ${{ steps.aggregate.outputs.bundled-docs }}
+
+runs:
+  using: composite
+  steps:
+    - name: Collect non-prose changes
+      id: code-files
+      if: "${{ github.event_name == 'pull_request' }}"
+      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+      with:
+        # Deliberately conservative: only prose and the assets it embeds are
+        # ignored. Anything else under website/ (Docusaurus config, lockfiles,
+        # scripts) still runs the full suite, because the server container
+        # copies the whole directory.
+        files_ignore: |
+          **/*.md
+          **/*.mdx
+          website/**/*.gif
+          website/**/*.jpeg
+          website/**/*.jpg
+          website/**/*.png
+          website/**/*.svg
+          website/**/*.webp
+          .github/ISSUE_TEMPLATE/**
+    - name: Collect changes to documentation compiled into the web bundle
+      id: docs-files
+      if: "${{ github.event_name == 'pull_request' }}"
+      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+      with:
+        # web/bundler/mdx-plugin/node.js resolves `~docs/<path>` to
+        # website/docs/<path>, so anything in that tree can reach the bundle,
+        # including partials pulled in by an imported page.
+        files: |
+          website/docs/**
+    - name: Aggregate
+      id: aggregate
+      shell: bash
+      env:
+        EVENT_NAME: "${{ github.event_name }}"
+        # `any_modified` rather than `any_changed`: the latter is ACMR and
+        # ignores deletions, so a pull request that only deletes code would
+        # look like a documentation change.
+        CODE_MODIFIED: "${{ steps.code-files.outputs.any_modified }}"
+        DOCS_MODIFIED: "${{ steps.docs-files.outputs.any_modified }}"
+      run: |
+        # Outside of pull requests (pushes to main/next/version-*) always run
+        # everything, so that container images and artifacts stay in sync with
+        # the branch.
+        if [ "${EVENT_NAME}" != "pull_request" ]; then
+          code=true
+          bundled_docs=true
+        else
+          code="${CODE_MODIFIED}"
+          bundled_docs="${DOCS_MODIFIED}"
+        fi
+        echo "code=${code}" >> "${GITHUB_OUTPUT}"
+        echo "bundled-docs=${bundled_docs}" >> "${GITHUB_OUTPUT}"
+        {
+          echo "| Change | Detected |"
+          echo "| --- | --- |"
+          echo "| Outside of prose | \`${code}\` |"
+          echo "| Docs in the web bundle | \`${bundled_docs}\` |"
+        } >> "${GITHUB_STEP_SUMMARY}"
