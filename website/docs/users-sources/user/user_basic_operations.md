@@ -91,6 +91,8 @@ On the flipside, to grant permissions on a user object to a role, review ["Manag
 2. Click the name of the user to display the full user details page.
 3. Click the **Groups** tab, and then click either **Add to existing group** (or **Add new group** first).
 
+Starting with authentik 2026.2.7, 2026.5.7 and 2026.8.2, adding a user to a group that grants super-user permission requires the `Enable superuser status` permission.
+
 ## Add a user to a role
 
 1. To add a user to a role, navigate to **Directory > Users** to display all users.

@@ -16,6 +16,7 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -32,6 +33,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.models import Role
 
 PARTIAL_USER_SERIALIZER_MODEL_FIELDS = [
     "pk",
@@ -171,23 +173,62 @@ class GroupSerializer(ModelSerializer):
         return superuser
 
     def validate_users(self, users: list) -> list:
-        """Require add_user_to_group permission when adding new members via group PATCH."""
+        """Require add_user_to_group permission when adding new members via group PATCH, and
+        enable_group_superuser when the group grants superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return users
         if not self.instance:
             return users
         # BulkManyRelatedField returns raw PKs, not model instances
-        current_user_pks = set(self.instance.users.values_list("pk", flat=True))
-        new_users = [u.pk for u in users if u.pk not in current_user_pks]
-        if not new_users:
+        new_users = User.objects.filter(pk__in=[u.pk for u in users]).exclude(
+            pk__in=self.instance.users.all()
+        )
+        if not new_users.exists():
             return users
         has_perm = request.user.has_perm(
             "authentik_core.add_user_to_group"
         ) or request.user.has_perm("authentik_core.add_user_to_group", self.instance)
         if not has_perm:
             raise ValidationError(_("User does not have permission to add members to this group."))
+        ancestry = Group.objects.filter(pk=self.instance.pk).with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser", self.instance
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return users
+
+    def validate_parents(self, parents: list) -> list:
+        """Require enable_group_superuser permission when adding a parent group which grants
+        superuser status."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return parents
+        new_parents = Group.objects.filter(pk__in=[group.pk for group in parents])
+        if self.instance:
+            new_parents = new_parents.exclude(pk__in=self.instance.parents.all())
+        ancestry = new_parents.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser", self.instance
+        ):
+            raise ValidationError(
+                _("User does not have permission to add a superuser parent group.")
+            )
+        return parents
+
+    def validate_roles(self, roles: list) -> list:
+        """Require change_role permission when assigning new roles to a group."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return roles
+        new_roles = Role.objects.filter(pk__in=[role.pk for role in roles])
+        if self.instance:
+            new_roles = new_roles.exclude(pk__in=self.instance.roles.all())
+        if new_roles.exists() and not request.user.has_perm("authentik_rbac.change_role"):
+            raise ValidationError(_("User does not have permission to assign roles."))
+        return roles
 
     class Meta:
         model = Group
@@ -371,6 +412,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         )
         if not user:
             raise Http404
+        if not group.users.filter(pk=user.pk).exists():
+            ancestry = Group.objects.filter(pk=group.pk).with_ancestors()
+            if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+                "authentik_core.enable_group_superuser", group
+            ):
+                raise PermissionDenied(
+                    _("User does not have permission to add members to a superuser group.")
+                )
         group.users.add(user)
         return Response(status=204)
 

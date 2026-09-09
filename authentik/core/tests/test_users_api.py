@@ -883,7 +883,7 @@ class TestUsersAPI(APITestCase):
 
 
 class TestUsersAPIGroupRoleValidation(APITestCase):
-    """Test that PATCH /api/v3/core/users/{pk}/ enforces group and role permission checks."""
+    """Test that the users API enforces group and role permission checks."""
 
     def setUp(self) -> None:
         self.actor = create_test_user()
@@ -956,3 +956,72 @@ class TestUsersAPIGroupRoleValidation(APITestCase):
         self.target.roles.add(role)
         res = self._patch({"roles": [str(role.pk)]})
         self.assertEqual(res.status_code, 200)
+
+    def test_patch_inherited_superuser_group_no_perm(self):
+        """Assigning a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(self.target.groups.all()), [])
+
+    def test_patch_inherited_superuser_group_with_perm(self):
+        """Assigning a group which takes superuser status from its parent with
+        enable_group_superuser must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertTrue(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_inherited_non_superuser_group_no_perm(self):
+        """Assigning a group whose parent is not a superuser group without special
+        permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        parent = Group.objects.create(name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(parent)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertFalse(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_existing_inherited_superuser_group_no_perm(self):
+        """Keeping an existing membership in a group which takes superuser status from its
+        parent without the permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.target.groups.add(group)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+
+    def test_create_inherited_superuser_group_no_perm(self):
+        """Creating a user in a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.add_user")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.client.force_login(self.actor)
+        res = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"username": generate_id(), "name": generate_id(), "groups": [str(group.pk)]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(group.users.all()), [])
