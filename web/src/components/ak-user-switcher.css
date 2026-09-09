@@ -1,4 +1,6 @@
 :host {
+    --ak-c-avatar--BoxShadowColor: transparent;
+
     display: inline-flex;
     align-items: center;
     min-height: 2rem;
@@ -13,10 +15,21 @@
 
 [part="menu"] {
     min-width: 18rem;
+    --pf-c-dropdown__menu--Top: calc(100% + var(--pf-global--spacer--sm));
 }
 
-[part="menu-item"] {
+[part~="menu-item"] {
     gap: var(--pf-global--spacer--sm);
+
+    &:not([part~="user"]) {
+        display: flex;
+        align-items: center;
+        padding-inline: var(--pf-global--spacer--lg);
+
+        i {
+            width: 2rem;
+        }
+    }
 }
 
 .pf-c-dropdown__toggle.pf-m-plain[part="toggle"] {
@@ -29,6 +42,14 @@
     font-size: var(--pf-global--FontSize--md);
     line-height: 1;
     vertical-align: middle;
+
+    &:hover {
+        --ak-c-avatar--BoxShadowColor: var(--pf-global--Color--100);
+    }
+}
+
+[part="toggle-tooltip"] {
+    display: contents;
 }
 
 [part="toggle-icon"] {
@@ -52,6 +73,17 @@
     font-size: var(--pf-global--FontSize--md);
     line-height: 1;
     overflow: hidden;
+    transition: box-shadow 100ms linear;
+    position: relative;
+
+    box-shadow:
+        0px 0px 0px 1px var(--ak-c-avatar--BoxShadowColor),
+        0px 0px 4px 0px var(--ak-c-avatar--BoxShadowColor);
+}
+
+[part="avatar-overlay"] {
+    position: absolute;
+    inset: 15% 25% 15% 0;
 }
 
 [part="avatar-image"] {
@@ -61,18 +93,25 @@
     object-fit: cover;
 }
 
-[part="item"] {
+[part~="item"] {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    grid-template-columns: auto 1fr minmax(2rem, max-content);
     align-items: center;
-    gap: var(--pf-global--spacer--sm);
+    gap: var(--pf-global--spacer--md);
     width: 100%;
+    max-width: 80dvw;
+
+    &[part~="user"] {
+        justify-content: space-between;
+    }
 }
 
 [part="labels"] {
     display: flex;
-    min-width: 0;
     flex-direction: column;
+    min-width: 0;
+    width: max-content;
+    max-width: 20ch;
 }
 
 [part="name"],
@@ -85,6 +124,10 @@
 [part="description"] {
     color: var(--pf-global--Color--200);
     font-size: var(--pf-global--FontSize--sm);
+}
+
+[part="current-indicator"] {
+    justify-self: center;
 }
 
 .pf-c-dropdown__menu-item:disabled {

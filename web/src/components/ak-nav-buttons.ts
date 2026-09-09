@@ -47,7 +47,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 return nothing;
             }
 
-            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+            return html`<div
+                class="pf-c-page__header-tools-item pf-u-display-none pf-u-display-block-on-md"
+            >
                 <button
                     id="api-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
@@ -88,7 +90,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 return nothing;
             }
 
-            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+            return html`<div
+                class="pf-c-page__header-tools-item pf-u-display-none pf-u-display-block-on-md"
+            >
                 <button
                     id="notification-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
@@ -162,6 +166,8 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
     render(): SlottedTemplateResult {
         return html`<div role="presentation" class="pf-c-page__header-tools">
+            <slot></slot>
+
             <div class="pf-c-page__header-tools-group">
                 ${this.renderAPIDrawerTrigger()}
                 <!-- -->
@@ -172,7 +178,6 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 <ak-user-switcher class="pf-c-page__header-tools-item"></ak-user-switcher>
             </div>
             ${this.renderImpersonation()}
-            <slot></slot>
         </div>`;
     }
 }
