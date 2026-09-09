@@ -22,16 +22,13 @@ export class RelatedApplicationButton extends AKElement {
     @property({ attribute: false })
     public provider?: Provider | null = null;
 
-    @property({ type: String })
-    public mode: "primary" | "backchannel" = "primary";
-
     protected override render(): SlottedTemplateResult {
-        if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
+        if (this.provider?.assignedApplicationSlug) {
             return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
-        if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
+        if (this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
                 href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
             >

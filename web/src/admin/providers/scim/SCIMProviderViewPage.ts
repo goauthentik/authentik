@@ -210,10 +210,11 @@ export class SCIMProviderViewPage extends AKElement {
             return nothing;
         }
 
-        return html` ${!this.provider?.assignedBackchannelApplicationName
+        return html` ${!this.provider.assignedApplicationName &&
+            !this.provider.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
+                          "Warning: Provider is not assigned to an application.",
                       )}
                   </div>`
                 : nothing}
@@ -228,7 +229,6 @@ export class SCIMProviderViewPage extends AKElement {
                             [
                                 msg("Assigned to application"),
                                 html`<ak-provider-related-application
-                                    mode="backchannel"
                                     .provider=${this.provider}
                                 ></ak-provider-related-application>`,
                             ],
