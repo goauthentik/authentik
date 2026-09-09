@@ -279,7 +279,12 @@ class TestSecretPermissionMigration(TestCase):
         editor.assign_perms_to_managed_role(
             "authentik_stages_authenticator_sms.change_authenticatorsmsstage", sms
         )
+        existing_secret_role = Role.objects.create(name="existing secret role")
+        existing_secret_role.assign_perms("authentik_secrets.view_secret")
         apps = MigrationLoader(connection).project_state().apps
+        model_permission_count = RoleModelPermission.objects.filter(
+            content_type__app_label="authentik_secrets"
+        ).count()
         migration.preserve_role_permissions(apps, connection.schema_editor())
         count = RoleObjectPermission.objects.count()
         migration.preserve_role_permissions(apps, connection.schema_editor())
@@ -300,8 +305,9 @@ class TestSecretPermissionMigration(TestCase):
             self.assertTrue(editor.has_perm("authentik_secrets.change_secret", secret))
             self.assertTrue(editor.has_perm("authentik_secrets.rotate_secret", secret))
             self.assertFalse(editor.has_perm("authentik_secrets.view_secret_value", secret))
-        self.assertFalse(
-            RoleModelPermission.objects.filter(content_type__app_label="authentik_secrets").exists()
+        self.assertEqual(
+            RoleModelPermission.objects.filter(content_type__app_label="authentik_secrets").count(),
+            model_permission_count,
         )
 
     def test_every_consumer_migrates_grants(self):
