@@ -1,76 +1,107 @@
 ---
 title: RADIUS Provider
-sidebar_position: 9
+toc_max_heading_level: 4
 sidebar_label: "RADIUS Provider"
 ---
 
 import { HashSupport } from "./HashSupport";
 
-You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
+The RADIUS provider allows applications and network devices to authenticate users through authentik using RADIUS. It supports password-based authentication with PAP and certificate-based authentication with EAP-TLS in authentik Enterprise. Only authentication requests are supported; accounting requests are not supported.
 
-:::info
-This provider requires the deployment of a [RADIUS outpost](../../outposts/index.mdx).
-:::
+Refer to [Create a RADIUS provider](./create-radius-provider.mdx) for instructions on creating, deploying, and testing the provider.
 
-Currently, only authentication requests are supported.
+## Authentication flow
 
-### Authentication flow
-
-Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
+Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins. 
 
 The following stages are supported:
 
-    - [Identification](../../flows-stages/stages/identification/index.mdx)
-    - [Password](../../flows-stages/stages/password/index.mdx)
-    - [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
+- [Identification stage](../../flows-stages/stages/identification/index.mdx)
+- [Password stage](../../flows-stages/stages/password/index.mdx)
+- [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx)
+- [User logout stage](../../flows-stages/stages/user_logout/index.mdx)
+- [User login stage](../../flows-stages/stages/user_login/index.mdx)
+- [Deny stage](../../flows-stages/stages/deny/index.mdx)
+- [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx) (authentik Enterprise, for EAP-TLS)
 
-    :::info
-    Authenticator validation currently only supports DUO, TOTP, and static authenticator.
-    :::
+Include a user login stage to complete authentication. After authentication, authentik checks whether the user can access the associated application. Application [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access) can restrict which users are allowed access.
 
-    For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the MFA token `123456`, the input must be `example-password;123456`.
+### Code-based MFA support
 
-    SMS-based authenticators are not supported because they require a code to be sent from authentik, which is not possible during the bind.
+For PAP authentication, the provider supports appending a TOTP or static code to the password when **Code-based MFA Support** is enabled and the authentication flow includes an authenticator validation stage.
 
-- [User Logout](../../flows-stages/stages/user_logout/index.mdx)
-- [User Login](../../flows-stages/stages/user_login/index.mdx)
-- [Deny](../../flows-stages/stages/deny/index.mdx)
-- [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx)
+Separate the password and code with a semicolon. For example, for the password `example-password` and the MFA code `123456`, enter `example-password;123456`.
 
-### Protocol support
+:::warning Passwords containing semicolons
+When **Code-based MFA Support** is enabled, the outpost splits the password at the last semicolon if it is followed by a value. This can cause a password containing a semicolon to be rejected when the user does not append an MFA code. Disable this setting if you do not use the appended-code format.
+:::
 
-The RADIUS provider supports EAP-TLS and [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol. For password-based authentication, only PAP protocol is supported due to other password hashing methods requiring reversible password hashes, which we don’t support for security reasons.
+:::info Authenticator support
+The authenticator validation stage supports Duo, TOTP, and static authenticators in RADIUS flows. WebAuthn and SMS-based authenticators are not supported by the RADIUS outpost's flow executor.
+:::
+
+## Protocol support
+
+The RADIUS provider supports PAP (Password Authentication Protocol) for password-based authentication. authentik Enterprise adds support for [EAP-TLS](#eap) for certificate-based authentication.
+
+The compatibility matrix below describes password-hash compatibility with RADIUS authentication protocols. It does not mean that authentik implements every protocol listed: hash compatibility alone does not establish protocol support in the RADIUS provider.
 
 <details>
-  <summary>RADIUS compatibility matrix for password-based authentication:</summary>
-
-This table represents the password-hash compatibility with various RADIUS protocols.
+  <summary>RADIUS password-hash compatibility matrix</summary>
 
 <HashSupport />
 </details>
 
-### EAP :ak-enterprise {#eap}
+### EAP-TLS :ak-enterprise {#eap}
 
-authentik supports EAP with TLS as the inner protocol, between the application and transport layers to encrypt and secure communications. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
+EAP-TLS uses certificates to authenticate the server and client. Before configuring the provider, obtain a server certificate and private key, a certificate authority (CA) certificate for validating clients, and client certificates and private keys for the end-user devices. Certificate issuance and deployment are outside the scope of this document.
 
-#### EAP-TLS
+1. Create an authentication flow with a [mutual TLS stage](../../flows-stages/stages/mtls/index.mdx) as its first stage.
+    - Set **Mode** to **Required**.
+    - Under **Certificate authorities**, select the CA certificates that should be trusted to issue client certificates.
+    - Configure **Certificate attribute** and **User attribute** so that the certificate identifies an existing authentik user.
+2. Add a user login stage after the mutual TLS stage to complete authentication.
+3. In the RADIUS provider, set **Authentication Flow** to this flow and select the server certificate under **Protocol settings** > **Certificate**. The certificate must have its private key available to the outpost.
+4. Configure the end-user devices to use their client certificates and validate the RADIUS server certificate, including the expected server name and trusted issuing CA.
 
-Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx) as its first stage. This stage should be configured to use your CA's certificate. Afterwards a server certificate needs to be selected in the RADIUS provider (which serves as an outpost). Then, configure your RADIUS provider to use this authentication flow to enable EAP-TLS authentication. After the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+:::warning Limit trust for client certificates
+Use a private CA whose client-certificate issuance you control. The mutual TLS stage validates the certificate against its configured CAs and matches a certificate attribute to an existing user; trusting a CA alone does not authorize every certificate holder. Ensure that certificate holders cannot obtain certificates identifying other users, and use application bindings or additional policies to restrict access as needed.
 
-For certificates, ensure that you use a client certificate and a server certificate that are created by a certificate authority, not a self-generated certificate.
-
-:::warning Use of trusted Certificate Authority
-
-For EAP-TLS, note that you should NOT use a globally known CA.
-
-Using private PKI certificates that are trusted by the end-device is best practice. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via EAP-TLS, and in addition you should implement [custom validation](../../flows-stages/flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+The CAs trusted by the mutual TLS stage for client authentication are separate from the CA that end-user devices trust for the RADIUS server certificate.
 :::
 
-### RADIUS attributes
+## RADIUS property mappings {#radius-attributes}
 
-Starting with authentik 2024.8, you can create RADIUS provider property mappings, which make it possible to add custom attributes to the RADIUS response packets.
+RADIUS provider property mappings add attributes to successful authentication responses. After creating a mapping, select it under **Protocol settings** > **Property mappings** on the RADIUS provider.
 
-For example, to add the Cisco AV-Pair attribute, this snippet can be used:
+### Mapping context
+
+Mappings run after authentication and application authorization succeed. They supply attributes for the `Access-Accept` response and cannot customize an `Access-Reject`, including its `Reply-Message`.
+
+The mapping receives:
+
+- `user`: the authenticated user, through which you can access user attributes and group memberships.
+- `packet`: a mutable packet used to build additional response attributes. It is not the incoming `Access-Request` or the final `Access-Accept`; the outpost copies its attributes into the successful response.
+
+Incoming RADIUS attributes are not forwarded into the mapping context. The HTTP request available to the expression is the outpost's access-check request to authentik, not the incoming RADIUS packet.
+
+Mappings run in name order and modify the same `packet` in place. Their return values are ignored; returning a dictionary or a replacement packet does not add attributes to the response.
+
+### Standard attributes
+
+Use the attribute's exact name from authentik's bundled RADIUS dictionary. For example, `Session-Timeout` is defined as an integer:
+
+```python
+packet["Session-Timeout"] = 3600
+```
+
+Assigning the value modifies the supplied packet, so no return statement is required.
+
+An attribute appearing in a vendor dictionary does not guarantee that it is present in authentik's bundled dictionary. The Python value must also match the attribute's dictionary type.
+
+### Vendor-specific attributes
+
+For a vendor-specific attribute, use its bundled dictionary name or register it with `define_attribute()` before assigning a value. This example registers the name `Cisco-AV-Pair` for Cisco's vendor code `9`, attribute code `1`, and assigns a privilege level:
 
 ```python
 define_attribute(
@@ -80,8 +111,58 @@ define_attribute(
     attribute_code=1,
     attribute_type="string",
 )
+
 packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
-return packet
 ```
 
-After creation, make sure to select the RADIUS property mapping in the RADIUS provider.
+The bundled Cisco dictionary also defines this attribute under the name `AVPair`. The example registers an alternative name for the same vendor-specific attribute.
+
+| Argument         | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| `vendor_code`    | The vendor's IANA Private Enterprise Number                  |
+| `vendor_name`    | The vendor name used to qualify the attribute in the mapping |
+| `attribute_name` | The attribute name to register                               |
+| `attribute_code` | The attribute number from the vendor's RADIUS dictionary     |
+| `attribute_type` | The dictionary value type, such as `string` or `integer`     |
+
+Use codes and types from authoritative vendor documentation. The registered lookup name is `<vendor_name>-<attribute_name>`. Definitions are shared by mappings for the current access check but do not permanently change the bundled dictionary. If that lookup name already exists, the helper leaves its definition unchanged.
+
+Do not assign a vendor name to a standard RFC attribute: a nonempty `vendor_name` produces a Vendor-Specific attribute, even if `vendor_code` is `0`.
+
+### Attribute value types
+
+Common dictionary types accept the following values. Encoding is handled by [pyrad](https://github.com/wichert/pyrad/blob/2.5.4/pyrad/tools.py), the RADIUS library used by authentik.
+
+| Dictionary type | Example Python value | Notes                                                                                            |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
+| `string`        | `"example"`          | Strings are UTF-8 encoded.                                                                       |
+| `integer`       | `3600`               | Use an unsigned 32-bit integer, or a symbolic value defined for the attribute in the dictionary. |
+| `ipaddr`        | `"192.0.2.10"`       | Use an IPv4 address string for an IPv4 attribute.                                                |
+| `octets`        | `b"session-id"`      | Use bytes for an opaque value; see the encoding caveat below.                                    |
+
+For `octets`, pyrad treats strings containing only decimal digits as integers to encode, rather than literal text. For example, `"65"` becomes `b"A"`, while `b"65"` preserves the two ASCII digits. Values beginning with `0x`, including bytes beginning with `b"0x"`, are interpreted as hexadecimal. Inspect the decoded response when the exact byte representation matters.
+
+`Class` is included in the bundled dictionary as an `octets` attribute. It can be assigned like other dictionary attributes, but a generated value that depends on incoming RADIUS attributes cannot be reproduced from context that the mapping does not receive.
+
+### Dynamic VLAN assignment
+
+The bundled dictionaries do not define `Tunnel-Type`, `Tunnel-Medium-Type`, or `Tunnel-Private-Group-Id`, so these names cannot be assigned directly using the standard-attribute example above. This dictionary limitation does not by itself establish whether the underlying encoder can represent those attributes.
+
+Dynamic VLAN configuration also requires the correct attribute types and tunnel-tag encoding. Do not substitute similarly named vendor-specific attributes for standard tunnel attributes unless the client explicitly expects them. See [#16879](https://github.com/goauthentik/authentik/issues/16879) and [#25324](https://github.com/goauthentik/authentik/issues/25324) for related discussion.
+
+### Troubleshoot a failed mapping
+
+:::warning Mapping errors do not necessarily deny access
+A mapping evaluation error stops mapping processing and omits all mapping-generated response attributes, including those added by earlier mappings. It does not itself change a successful authorization result. Do not rely on a mapping failure to deny access; use application bindings or authentication policies for access control.
+:::
+
+If the expected attributes are missing:
+
+1. Confirm that authentication and application authorization succeeded.
+2. Confirm that the mapping is selected on the provider.
+3. Check the attribute name and capitalization against the bundled dictionary or the name registered with `define_attribute()`.
+4. Confirm that each value matches the attribute's dictionary type.
+5. In the Admin interface, check **Events** > **Logs** for a configuration-error event. Also check the server and outpost logs for packet serialization or decoding failures.
+6. Inspect the decoded `Access-Accept` to verify the attribute codes, vendor codes, values, and any required tags.
+
+For an end-to-end check, follow [Configuration verification](./create-radius-provider.mdx#configuration-verification).
