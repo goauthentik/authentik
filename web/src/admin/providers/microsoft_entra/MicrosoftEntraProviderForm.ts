@@ -24,6 +24,7 @@ import {
     CoreGroupsListRequest,
     Group,
     MicrosoftEntraProvider,
+    MicrosoftEntraProviderRequest,
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
@@ -49,7 +50,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             });
         }
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
-            microsoftEntraProviderRequest: data,
+            microsoftEntraProviderRequest: data as unknown as MicrosoftEntraProviderRequest,
         });
     }
 
