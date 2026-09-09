@@ -1,13 +1,13 @@
 import "#elements/EmptyState";
 
-import { diagramToolbar } from "./FlowDiagramToolbar";
-import { buildFlowGraph, isEditableNode, resolveNodeID } from "./FlowGraph";
-
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Diagram } from "#elements/Diagram/ak-diagram";
+
+import { diagramToolbar } from "#admin/flows/FlowDiagramToolbar";
+import { buildFlowGraph, isEditableNode, resolveNodeID } from "#admin/flows/FlowGraph";
 
 import { DiagramNode, FlowDiagram as FlowDiagramGraph, FlowsApi } from "@goauthentik/api";
 
@@ -33,7 +33,12 @@ const EditIconStyles = css`
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {
-    static styles = [...Diagram.styles, PFButton, EditIconStyles];
+    public static override styles = [
+        // ---
+        ...Diagram.styles,
+        PFButton,
+        EditIconStyles,
+    ];
 
     @property({ type: String, useDefault: true })
     public flowSlug: string | null = null;
@@ -44,12 +49,12 @@ export class FlowDiagram extends Diagram {
     protected nodes: ReadonlyMap<string, DiagramNode> = new Map();
 
     @observes("flowSlug")
-    protected refresh() {
+    protected refresh(): Promise<void> {
         if (!this.flowSlug) {
-            return;
+            return Promise.resolve();
         }
 
-        aki(FlowsApi)
+        return aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })
@@ -83,17 +88,20 @@ export class FlowDiagram extends Diagram {
         for (const group of this.svgGroups) {
             const id = resolveNodeID(group.id);
             const node = id ? this.nodes.get(id) : null;
+
             if (!(node && isEditableNode(node))) {
                 continue;
             }
 
             const toolbars = group.querySelectorAll<HTMLElement>(".ak-diagram-toolbar");
             const toolbar = toolbars.item(toolbars.length - 1);
+
             if (!toolbar) {
                 continue;
             }
 
             group.setAttribute("data-ak-node", node.identifier);
+
             render(diagramToolbar(node), toolbar);
         }
     }

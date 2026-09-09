@@ -1,13 +1,3 @@
-/* svg[id^="mermaid-svg-"] { */
-/* &.flowchart {
-        .edgeLabel .label {
-            padding: 4px 10px;
-            border-radius: 4px;
-            background: rgba(0, 0, 0, 0.55);
-            color: var(--ak-foreground, #fff);
-        }
-    } */
-
 .flowchart {
     foreignObject:has(.edgeLabel) {
         display: flex;

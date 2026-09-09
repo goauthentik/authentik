@@ -77,24 +77,28 @@ export class Diagram extends AKElement {
 
     protected generation = 0;
 
-    protected mermaidRenderFrameId = -1;
+    protected mermaidRenderFrameID = -1;
 
     constructor() {
         super();
+
         this.loadingPlaceholder = new EmptyState();
         this.loadingPlaceholder.loading = true;
     }
 
     protected firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
+
         this.syncDiagramContent();
     }
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
+
         if (changedProperties.has("diagram") || changedProperties.has("activeTheme")) {
-            cancelAnimationFrame(this.mermaidRenderFrameId);
-            this.mermaidRenderFrameId = requestAnimationFrame(() =>
+            cancelAnimationFrame(this.mermaidRenderFrameID);
+
+            this.mermaidRenderFrameID = requestAnimationFrame(() =>
                 this.#renderMermaid().catch((error: unknown) => {
                     console.warn("Could not render diagram:", error);
                 }),
@@ -107,6 +111,7 @@ export class Diagram extends AKElement {
 
         if (!this.diagram) {
             this.renderedSVG = null;
+
             return;
         }
 
@@ -114,6 +119,7 @@ export class Diagram extends AKElement {
         const overridden = () => generation !== this.generation;
 
         const mermaid = await loadMermaid(this.activeTheme);
+
         // Something else updated the render while we were waiting
         if (overridden()) return;
 
@@ -121,6 +127,7 @@ export class Diagram extends AKElement {
             `mermaid-svg-${this.localName}`,
             this.diagram,
         );
+
         if (overridden()) return;
 
         this.renderedSVG = unsafeHTML(svg);
@@ -128,6 +135,7 @@ export class Diagram extends AKElement {
         // Hand control back to Lit's scheduling thread. We do this here so that when
         // `bindFunctions()` and `diagramUpdated()` are called, the diagram is already present.
         await this.updateComplete;
+
         if (overridden()) return;
 
         bindFunctions?.(this.renderRoot as HTMLElement);
@@ -144,7 +152,7 @@ export class Diagram extends AKElement {
      * never assume anything from a previous pass is still present.
      */
     protected diagramUpdated(): void {
-        this.diagramUpdatedCallback?.call(this.diagramUpdatedCallback, this);
+        this.diagramUpdatedCallback?.(this);
     }
 
     protected override render(): SlottedTemplateResult {
@@ -152,11 +160,16 @@ export class Diagram extends AKElement {
             return this.loadingPlaceholder;
         }
 
-        return isSafari()
-            ? html`<style>
-                      ${safariCSS}</style
-                  >${this.renderedSVG}`
-            : this.renderedSVG;
+        if (isSafari()) {
+            return [
+                html`<style>
+                    ${safariCSS}
+                </style>`,
+                this.renderedSVG,
+            ];
+        }
+
+        return this.renderedSVG;
     }
 }
 

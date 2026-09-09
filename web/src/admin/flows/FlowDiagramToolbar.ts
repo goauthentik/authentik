@@ -7,21 +7,32 @@ import {
     IconEditButtonByTagName,
     type NamedEntityElementConstructor,
 } from "#elements/dialogs";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
 
 import { DiagramNode, ModelEnum } from "@goauthentik/api";
 
-import { html, nothing } from "lit";
+type FlowBindingModelEnum =
+    | typeof ModelEnum.AuthentikFlowsFlowstagebinding
+    | typeof ModelEnum.AuthentikPoliciesPolicybinding;
 
-const bindingForms: Partial<Record<ModelEnum, NamedEntityElementConstructor>> = {
+const BindingForms: Record<FlowBindingModelEnum, NamedEntityElementConstructor> = {
     [ModelEnum.AuthentikFlowsFlowstagebinding]: StageBindingForm,
     [ModelEnum.AuthentikPoliciesPolicybinding]: PolicyBindingForm,
 };
 
-export function diagramToolbar(node: DiagramNode) {
-    const bindingForm = bindingForms[node.bindingModel as ModelEnum];
+function isFlowBindingModelEnum(model: string): model is FlowBindingModelEnum {
+    return Object.hasOwn(BindingForms, model);
+}
+
+export function diagramToolbar(node: DiagramNode): SlottedTemplateResult {
+    if (!isFlowBindingModelEnum(node.bindingModel)) {
+        return null;
+    }
+
+    const BindingFormConstructor = BindingForms[node.bindingModel];
 
     const itemName = {
         name: null,
@@ -29,11 +40,11 @@ export function diagramToolbar(node: DiagramNode) {
     };
 
     const entityButton = IconEditButtonByTagName(node.component, node.pk, itemName);
-    const bindingButton =
-        bindingForm && node.bindingPk
-            ? IconEditButton(bindingForm, node.bindingPk, itemName, { iconName: "fa-link" })
-            : nothing;
+
+    const bindingButton = node.bindingPk
+        ? IconEditButton(BindingFormConstructor, node.bindingPk, itemName, { iconName: "fa-link" })
+        : null;
 
     // Export both the "Edit Stage/Policy" and "Edit Binding" all in one.
-    return html`${entityButton}${bindingButton}`;
+    return [entityButton, bindingButton];
 }
