@@ -29,8 +29,8 @@ const EditIconStyles = css`
         padding: 0;
         line-height: 1;
 
-        --pf-global--Color--200: var(--pf-global--palette--purple-600);
-        --pf-global--Color--100: var(--pf-global--palette--purple-700);
+        --pf-global--Color--200: var(--pf-global--palette--purple-500);
+        --pf-global--Color--100: var(--pf-global--palette--purple-600);
     }
 `;
 
