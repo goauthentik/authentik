@@ -3,7 +3,8 @@
  */
 
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/sources/kerberos/KerberosSourceConnectivity";
+import "#admin/sources/kerberos/KerberosSourceStatus";
+import "#admin/sources/kerberos/KerberosSourceSyncList";
 import "#admin/sources/kerberos/KerberosSourceForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -12,7 +13,6 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncStatusCard";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -82,7 +82,7 @@ export class KerberosSourceViewPage extends AKElement {
         }
         return html`<main>
             <ak-tabs>
-                <div
+                <section
                     role="tabpanel"
                     tabindex="0"
                     slot="page-overview"
@@ -146,22 +146,14 @@ export class KerberosSourceViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
                         >
-                            <ak-sync-status-card
-                                .fetch=${() => {
-                                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
-                                        slug: this.source?.slug,
-                                    });
-                                }}
-                            ></ak-sync-status-card>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__title">
-                                <p>${msg("Connectivity")}</p>
+                                <p>${msg("Status")}</p>
                             </div>
                             <div class="pf-c-card__body">
-                                <ak-source-kerberos-connectivity
-                                    .connectivity=${this.source.connectivity}
-                                ></ak-source-kerberos-connectivity>
+                                <ak-source-kerberos-status
+                                    .connectivity=${this.source?.connectivity}
+                                    .lastSync=${this.source?.lastSync}
+                                ></ak-source-kerberos-status>
                             </div>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col">
@@ -173,8 +165,22 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-syncs"
+                    id="page-syncs"
+                    aria-label="${msg("Previous synchronisations")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-kerberos-sync-list
+                            .source=${this.source}
+                        ></ak-source-kerberos-sync-list>
+                    </div>
+                </section>
+                <section
                     role="tabpanel"
                     tabindex="0"
                     slot="page-changelog"
@@ -191,7 +197,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </ak-object-changelog>
                         </div>
                     </div>
-                </div>
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"

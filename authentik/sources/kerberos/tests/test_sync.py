@@ -4,7 +4,11 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Session, User
 from authentik.core.tests.utils import create_test_session
 from authentik.lib.generators import generate_id
-from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
+from authentik.sources.kerberos.models import (
+    KerberosSource,
+    KerberosSourcePropertyMapping,
+    KerberosSourceSync,
+)
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.sources.kerberos.tasks import kerberos_sync
 from authentik.sources.kerberos.tests.utils import KerberosTestCase
@@ -90,3 +94,5 @@ class TestKerberosSync(KerberosTestCase):
         self.assertTrue(
             User.objects.filter(username=self.realm.user_princ.rsplit("@", 1)[0]).exists()
         )
+        sync = KerberosSourceSync.objects.filter(source=self.source).first()
+        self.assertIsNotNone(sync)

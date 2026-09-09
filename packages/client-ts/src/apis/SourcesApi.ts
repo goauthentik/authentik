@@ -115,6 +115,10 @@ import {
     PaginatedKerberosSourceListFromJSON,
 } from "../models/PaginatedKerberosSourceList";
 import {
+    type PaginatedKerberosSourceSyncList,
+    PaginatedKerberosSourceSyncListFromJSON,
+} from "../models/PaginatedKerberosSourceSyncList";
+import {
     type PaginatedLDAPSourceList,
     PaginatedLDAPSourceListFromJSON,
 } from "../models/PaginatedLDAPSourceList";
@@ -301,7 +305,6 @@ import {
 import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
 import { type Source, SourceFromJSON } from "../models/Source";
 import { type SourceType, SourceTypeFromJSON } from "../models/SourceType";
-import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
 import { type TelegramAuthRequest, TelegramAuthRequestToJSON } from "../models/TelegramAuthRequest";
 import { type TelegramSource, TelegramSourceFromJSON } from "../models/TelegramSource";
 import {
@@ -1053,11 +1056,19 @@ export interface SourcesKerberosRetrieveRequest {
     slug: string;
 }
 
-export interface SourcesKerberosSyncStatusRetrieveRequest {
+export interface SourcesKerberosSyncsListRequest {
     /**
      *
      */
     slug: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
 }
 
 export interface SourcesKerberosUpdateRequest {
@@ -6798,19 +6809,27 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesKerberosSyncStatusRetrieve without sending the request
+     * Creates request options for sourcesKerberosSyncsList without sending the request
      */
-    async sourcesKerberosSyncStatusRetrieveRequestOpts(
-        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+    async sourcesKerberosSyncsListRequestOpts(
+        requestParameters: SourcesKerberosSyncsListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
                 "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosSyncStatusRetrieve().',
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosSyncsList().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -6823,7 +6842,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/kerberos/{slug}/sync/status/`;
+        let urlPath = `/sources/kerberos/{slug}/syncs/`;
         urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
@@ -6835,30 +6854,28 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider\'s sync statuses
      */
-    async sourcesKerberosSyncStatusRetrieveRaw(
-        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+    async sourcesKerberosSyncsListRaw(
+        requestParameters: SourcesKerberosSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions =
-            await this.sourcesKerberosSyncStatusRetrieveRequestOpts(requestParameters);
+    ): Promise<runtime.ApiResponse<PaginatedKerberosSourceSyncList>> {
+        const requestOptions = await this.sourcesKerberosSyncsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedKerberosSourceSyncListFromJSON(jsonValue),
+        );
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider\'s sync statuses
      */
-    async sourcesKerberosSyncStatusRetrieve(
-        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+    async sourcesKerberosSyncsList(
+        requestParameters: SourcesKerberosSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SyncStatus> {
-        const response = await this.sourcesKerberosSyncStatusRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    ): Promise<PaginatedKerberosSourceSyncList> {
+        const response = await this.sourcesKerberosSyncsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

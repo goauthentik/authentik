@@ -6,13 +6,7 @@ import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
 import { PaginatedResponse } from "#elements/table/Table";
 
-import {
-    EventActions,
-    ProvidersApi,
-    SourcesApi,
-    SyncStatus,
-    TaskAggregatedStatusEnum,
-} from "@goauthentik/api";
+import { EventActions, ProvidersApi, SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
 import { ChartData, ChartOptions } from "chart.js";
 
@@ -143,17 +137,6 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                     });
                 },
                 msg("Microsoft Entra Provider"),
-            ),
-            await this.fetchStatus(
-                () => {
-                    return aki(SourcesApi).sourcesKerberosList();
-                },
-                (element) => {
-                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
-                        slug: element.slug,
-                    });
-                },
-                msg("Kerberos Source"),
             ),
         ];
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
