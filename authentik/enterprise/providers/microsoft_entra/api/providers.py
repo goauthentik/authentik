@@ -40,7 +40,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "sync_page_timeout",
             "dry_run",
         ]
-        extra_kwargs = {}
+        extra_kwargs = {"client_secret": {"write_only": True}}
 
 
 class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
