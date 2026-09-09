@@ -169,10 +169,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["get"])
     def diagram(self, request: Request, slug: str) -> Response:
-        """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
-        diagram = FlowDiagram(self.get_object(), request.user)
-        output = diagram.build()
-        return Response({"diagram": output})
+        """Return the graph of flow with slug `slug`, for the client to render"""
+        graph = FlowDiagram(self.get_object(), request.user).build()
+        return Response(FlowDiagramSerializer(instance=graph).data)
 
     @extend_schema(
         responses={

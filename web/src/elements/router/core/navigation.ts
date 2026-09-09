@@ -39,6 +39,24 @@ declare global {
 }
 
 /**
+ * Resolve the effective navigation mode for a destination.
+ *
+ * A cross-origin destination cannot use the history API — `pushState` /
+ * `replaceState` throw `SecurityError` — so it is forced to a full-page
+ * `assign`. An explicit `assign` is always preserved.
+ */
+export function resolveNavigationMode(
+    mode: NavigationMode,
+    targetOrigin: string,
+    currentOrigin: string,
+): NavigationMode {
+    if (mode === "assign") return "assign";
+    if (targetOrigin !== currentOrigin) return "assign";
+
+    return mode;
+}
+
+/**
  * Navigate to a destination.
  *
  * @param to An absolute or relative URL. Relative URLs resolve against the
@@ -48,15 +66,16 @@ declare global {
  */
 export function navigate(to: string | URL, { mode = "push" }: NavigateOptions = {}): void {
     const url = to instanceof URL ? to : new URL(to, window.location.origin);
+    const effectiveMode = resolveNavigationMode(mode, url.origin, window.location.origin);
 
-    if (mode === "assign") {
+    if (effectiveMode === "assign") {
         window.location.assign(url.href);
         return;
     }
 
     if (url.href === window.location.href) return;
 
-    if (mode === "replace") {
+    if (effectiveMode === "replace") {
         history.replaceState(null, "", url.href);
     } else {
         history.pushState(null, "", url.href);

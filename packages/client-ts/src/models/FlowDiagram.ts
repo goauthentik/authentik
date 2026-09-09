@@ -12,8 +12,13 @@
  * Do not edit the class manually.
  */
 
+import type { DiagramEdge } from "./DiagramEdge";
+import { DiagramEdgeFromJSON } from "./DiagramEdge";
+import type { DiagramNode } from "./DiagramNode";
+import { DiagramNodeFromJSON } from "./DiagramNode";
+
 /**
- * response of the flow's diagram action
+ * Base serializer class which doesn't implement create/update methods
  * @export
  * @interface FlowDiagram
  */
@@ -21,14 +26,19 @@ export interface FlowDiagram {
     /**
      *
      */
-    readonly diagram: string;
+    readonly nodes: Array<DiagramNode>;
+    /**
+     *
+     */
+    readonly edges: Array<DiagramEdge>;
 }
 
 /**
  * Check if a given object implements the FlowDiagram interface.
  */
 export function instanceOfFlowDiagram(value: object): value is FlowDiagram {
-    if (!("diagram" in value) || value["diagram"] === undefined) return false;
+    if (!("nodes" in value) || value["nodes"] === undefined) return false;
+    if (!("edges" in value) || value["edges"] === undefined) return false;
     return true;
 }
 
@@ -41,7 +51,8 @@ export function FlowDiagramFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        diagram: json["diagram"],
+        nodes: (json["nodes"] as Array<any>).map(DiagramNodeFromJSON),
+        edges: (json["edges"] as Array<any>).map(DiagramEdgeFromJSON),
     };
 }
 
@@ -50,7 +61,7 @@ export function FlowDiagramToJSON(json: any): FlowDiagram {
 }
 
 export function FlowDiagramToJSONTyped(
-    value?: Omit<FlowDiagram, "diagram"> | null,
+    value?: Omit<FlowDiagram, "nodes" | "edges"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

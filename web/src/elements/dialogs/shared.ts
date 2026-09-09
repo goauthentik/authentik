@@ -50,21 +50,38 @@ export interface DialogInit {
     onDispose?: (event?: Event) => void;
 }
 
-export interface EntityDescriptor {
+/* An "entity" is any Object (in the authentik sense) that we get from the server that has a primary
+ * key and a REST Endpoint: an Application, a Group, a Policy Binding, a Certificate-Key Pair. We
+ * use "Entity" because "Object" is a reserved word and a specific concept in Javascript/TypeScript,
+ * so using it would imply the wrong thing to casual reviewers.
+ */
+
+/**
+ * An Object (in the authentik sense) in the client API that has these traits: they have names that
+ * we intend to display to the customer.
+ */
+export interface NamedEntity {
     /**
-     * Singular label for the type of entity this form creates/edits.
+     * Singular label for the type of object this form creates/edits.
      */
     verboseName?: string | null;
     /**
-     * Plural label for the type of entity this form creates/edits.
+     * Plural label for the type of object this form creates/edits.
      */
     verboseNamePlural?: string | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export interface EntityDescriptorElement extends Function, EntityDescriptor {}
+/**
+ * In several cases, we have constructors that carry information about the verboseName with them to
+ * enhance the displays of generic classes like Form and Table. This interface can be declared on
+ * these generic classes so that TypeScript accept that the object's constructor carries these
+ * fields.
+ */
 
-export interface TransclusionElementConstructor extends EntityDescriptor, CustomElementConstructor {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export interface NamedEntityElement extends Function, NamedEntity {}
+
+export interface NamedEntityElementConstructor extends NamedEntity, CustomElementConstructor {
     createLabel?: string | null;
 }
 

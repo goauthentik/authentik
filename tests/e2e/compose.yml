@@ -40,7 +40,7 @@ services:
     image: ghcr.io/beryju/saml-test-sp:1.1
     profiles: [pin-only]
   dex:
-    image: ghcr.io/dexidp/dex:v2.44.0
+    image: ghcr.io/dexidp/dex:v2.45.1
     profiles: [pin-only]
   oauth1-test-server:
     image: ghcr.io/beryju/oauth1-test-server:v1.1
@@ -61,14 +61,14 @@ services:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]
   traefik:
-    image: docker.io/library/traefik:3.1
+    image: docker.io/library/traefik:v3.7
     profiles: [pin-only]
   nginx:
-    image: docker.io/library/nginx:1.27
+    image: docker.io/library/nginx:1.31
     profiles: [pin-only]
   envoy:
-    image: docker.io/envoyproxy/envoy:v1.25-latest
+    image: docker.io/envoyproxy/envoy:v1.39-latest
     profiles: [pin-only]
   caddy:
-    image: docker.io/library/caddy:2.8
+    image: docker.io/library/caddy:2.11
     profiles: [pin-only]
