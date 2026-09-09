@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "2.0.2",
+    "version": "3.0.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -44,24 +44,23 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/logger-js": "link:../logger-js",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^26.1.0",
+        "@types/node": "catalog:",
         "esbuild": "catalog:",
         "eslint": "catalog:",
-        "pino": "^10.3.1",
-        "prettier": "3.8.3",
+        "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
-        "typedoc": "^0.28.18",
+        "typedoc": "^0.28.20",
         "typedoc-plugin-markdown": "^4.11.0",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.59.3"
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "@goauthentik/logger-js": "^1.0.1",
+        "@goauthentik/logger-js": "^3.0.0",
         "esbuild": "^0.28.1"
     },
     "files": [
@@ -72,20 +71,17 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "pnpm",
-            "version": ">=11.5.1",
-            "onFail": "warn"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "prettier": "@goauthentik/prettier-config",
     "keywords": [
         "esbuild",

@@ -1,3 +1,5 @@
+import "#elements/Divider";
+
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -312,7 +314,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         if (Object.keys(errors).length === 0) return nothing;
 
-        return html` <hr class="pf-c-divider" />
+        return html` <ak-divider></ak-divider>
             ${match(errors)
                 .with(
                     { app: P.nonNullable },

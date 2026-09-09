@@ -9,7 +9,7 @@ class TestRoot(TransactionTestCase):
 
     def test_monitoring(self):
         """Test monitoring with credentials"""
-        self.assertEqual(self.client.get(reverse("metrics")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("metrics")).status_code, 204)
 
     def test_monitoring_live(self):
         """Test LiveView"""

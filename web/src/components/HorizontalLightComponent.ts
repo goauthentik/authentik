@@ -132,7 +132,7 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ attribute: false })
-    value?: T;
+    public value?: T;
 
     /**
      * Input hint.
@@ -181,6 +181,10 @@ export abstract class HorizontalLightComponent<T>
                 this.autofocusTarget.focus();
             });
         }
+    }
+
+    public toJSON(): T | undefined {
+        return this.value;
     }
 
     //#endregion

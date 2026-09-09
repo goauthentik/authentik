@@ -42,6 +42,8 @@ class AuthNRequest:
 
     name_id_policy: str = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
+    force_authn: bool = False
+
 
 class AuthNRequestParser:
     """AuthNRequest Parser"""
@@ -64,14 +66,24 @@ class AuthNRequestParser:
             request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
-            msg = (
+            self.logger.warning(
+                "ACS URL of request doesn't match provider ACS URL",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
+            raise CannotHandleAssertion(
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
-            raise CannotHandleAssertion(msg)
 
-        auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)
+        # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
+        # actively re-authenticate the user instead of relying on an existing session
+        # (SAML 2.0 core §3.4.1).
+        force_authn = root.attrib.get("ForceAuthn", "false").lower() == "true"
+
+        auth_n_request = AuthNRequest(
+            id=root.attrib["ID"], relay_state=relay_state, force_authn=force_authn
+        )
 
         # Check if AuthnRequest has a NameID Policy object
         name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")

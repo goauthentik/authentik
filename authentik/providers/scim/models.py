@@ -14,11 +14,11 @@ from structlog.stdlib import get_logger
 
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 LOGGER = get_logger()
@@ -98,6 +98,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Group filters used to define sync-scope for groups."),
+        through="SCIMProviderGroupFilter",
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
@@ -128,6 +129,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+        through="SCIMProviderGroupPropertyMapping",
     )
 
     compatibility_mode = models.CharField(
@@ -199,22 +201,20 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
                 )
 
             # Filter users by their access to the backchannel application if an application is set
-            # This handles both policy bindings and group_filters
             if self.backchannel_application:
-                pks = []
-                for user in base:
-                    engine = PolicyEngine(self.backchannel_application, user, None)
-                    engine.empty_result = AppAccessWithoutBindings.get()
-                    engine.build()
-                    if engine.passing:
-                        pks.append(user.pk)
-                base = base.filter(pk__in=pks)
+                engine = FilterPolicyEngine(self.backchannel_application, base)
+                engine.empty_result = AppAccessWithoutBindings.get()
+                base = engine.build().result
             return base.order_by("pk")
 
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            # according to the provider's settings
-            base = Group.objects.prefetch_related("scimprovidergroup_set").all().filter(**kwargs)
+            # according to the provider's settings.
+            # Note: a previous prefetch_related on scimprovidergroup_set was removed
+            # because the data was never accessed during sync iteration; .write() does
+            # its own per-object connection lookup, and .values_list() (used by cleanup)
+            # bypasses prefetches entirely.
+            base = Group.objects.all().filter(**kwargs)
 
             # Filter groups by group_filters if set
             if self.group_filters.exists():
@@ -254,6 +254,46 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("SCIM Provider")
         verbose_name_plural = _("SCIM Providers")
+
+
+class SCIMProviderGroupFilter(SimpleThroughModel):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    scim_provider = models.ForeignKey(
+        SCIMProvider, on_delete=models.CASCADE, db_column="scimprovider_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_scim_scimprovider_group_filters"
+        unique_together = (("group", "scim_provider"),)
+        verbose_name = _("SCIM Provider Group Filter")
+        verbose_name_plural = _("SCIM Provider Group Filters")
+
+    def __str__(self):
+        return (
+            f"SCIMProviderGroupFilter for SCIMProvider {self.scim_provider_id} "
+            f"and Group {self.group_id}."
+        )
+
+
+class SCIMProviderGroupPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    scim_provider = models.ForeignKey(
+        SCIMProvider, on_delete=models.CASCADE, db_column="scimprovider_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_scim_scimprovider_property_mappings_group"
+        unique_together = (("property_mapping", "scim_provider"),)
+        verbose_name = _("SCIMProvider Group Property Mapping")
+        verbose_name_plural = _("SCIMProvider Group Property Mappings")
+
+    def __str__(self):
+        return (
+            f"SCIMProviderGroupPropertyMapping for SCIMProvider {self.scim_provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class SCIMMapping(PropertyMapping):

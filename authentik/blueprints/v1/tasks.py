@@ -126,7 +126,7 @@ def blueprints_find() -> list[BlueprintFile]:
     for path in root.rglob("**/*.yaml"):
         rel_path = path.relative_to(root)
         # Check if any part in the path starts with a dot and assume a hidden file
-        if any(part for part in path.parts if part.startswith(".")):
+        if any(part for part in rel_path.parts if part.startswith(".")):
             continue
         with open(path, encoding="utf-8") as blueprint_file:
             try:

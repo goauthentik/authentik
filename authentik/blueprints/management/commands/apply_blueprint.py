@@ -17,11 +17,11 @@ class Command(BaseCommand):
     """Apply blueprint from commandline"""
 
     @no_translations
-    def handle(self, *args, **options):
+    def handle(self, *args, blueprints: list[str], dry_run: bool, **options):
         """Apply all blueprints in order, abort when one fails to import"""
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                for blueprint_path in options.get("blueprints", []):
+                for blueprint_path in blueprints:
                     content = BlueprintInstance(path=blueprint_path).retrieve()
                     importer = Importer.from_string(content)
                     valid, logs = importer.validate()
@@ -30,7 +30,11 @@ class Command(BaseCommand):
                         for log in logs:
                             self.stderr.write(f"\t{log.logger}: {log.event}: {log.attributes}")
                         sys_exit(1)
-                    importer.apply()
+                    if not dry_run:
+                        importer.apply()
+                    else:
+                        LOGGER.info("Dry-run enabled, not applying blueprint")
 
     def add_arguments(self, parser: ArgumentParser):
+        parser.add_argument("--dry-run", action="store_true", default=False)
         parser.add_argument("blueprints", nargs="+", type=str)

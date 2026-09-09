@@ -25,4 +25,4 @@ entries:
       is_superuser: false
       attributes:
         notes: |
-          An group with an auto-generated role that allows read-only permissions on all objects.
+          A group with an auto-generated role that allows read-only permissions on all objects.

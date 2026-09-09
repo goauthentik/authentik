@@ -12,9 +12,9 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    ExpiringModel,
     User,
 )
+from authentik.lib.models import ExpiringModel
 from authentik.lib.sync.models import Sync
 from authentik.lib.utils.db import chunked_queryset
 from authentik.tasks.middleware import CurrentTask

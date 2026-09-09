@@ -16,6 +16,7 @@ import { instanceOfValidationError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
@@ -205,19 +206,26 @@ export class MessageContainer extends AKElement {
             class="pf-c-alert-group pf-m-toast"
             data-alignment=${this.alignment}
         >
-            ${this.messages.toReversed().map((message, idx) => {
-                const { message: title, description, level, icon } = message;
+            ${repeat(
+                this.messages.toReversed(),
+                // Key on the message itself so each toast keeps its own <ak-message>.
+                // Without a stable key, Lit reuses elements across messages and their
+                // per-element state (resolved icon, one-shot dismiss timer) bleeds over.
+                (message) => message,
+                (message, idx) => {
+                    const { message: title, description, level, icon } = message;
 
-                return html`<ak-message
-                    ?live=${idx === 0}
-                    icon=${ifPresent(icon)}
-                    level=${level}
-                    .description=${description}
-                    .onDismiss=${() => this.#removeMessage(message)}
-                >
-                    ${title}
-                </ak-message>`;
-            })}
+                    return html`<ak-message
+                        ?live=${idx === 0}
+                        icon=${ifPresent(icon)}
+                        level=${level}
+                        .description=${description}
+                        .onDismiss=${() => this.#removeMessage(message)}
+                    >
+                        ${title}
+                    </ak-message>`;
+                },
+            )}
         </ul>`;
     }
 }

@@ -6,12 +6,12 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from authentik.events.models import Event, EventAction
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantType, RedirectURI, ResponseMode
 
 
-class OAuth2Error(SentryIgnoredException):
+class OAuth2Error(TracingIgnoredException):
     """Base class for all OAuth2 Errors"""
 
     error: str
@@ -310,6 +310,15 @@ class DeviceCodeError(TokenError):
             'A variant of "authorization_pending", the authorization request is'
             "still pending and polling should continue, but the interval MUST"
             "be increased by 5 seconds for this and all subsequent requests."
+        ),
+        "invalid_dpop_jkt": (
+            'The "dpop_jkt" parameter is not a valid base64url-encoded SHA-256 JWK thumbprint'
+        ),
+        "dpop_jkt_required": (
+            'The "dpop_jkt" parameter is required when the "bound_key" scope is requested'
+        ),
+        "dpop_jkt_not_allowed": (
+            'The "dpop_jkt" parameter must not be set unless the "bound_key" scope is requested'
         ),
     }
 

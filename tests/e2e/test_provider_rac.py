@@ -47,7 +47,7 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
     def test_rac_ssh(self):
         """Test SSH RAC"""
         test_ssh = self.run_container(
-            image="lscr.io/linuxserver/openssh-server:latest",
+            image=self.pinned_image("openssh-server", "e2e/compose.yml"),
             ports={
                 "2222": "2222",
             },

@@ -12,9 +12,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
-from authentik.core.models import BackchannelProvider, ExpiringModel, Token
+from authentik.core.models import BackchannelProvider, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, InternallyManagedMixin
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 from authentik.tasks.models import TasksModel
@@ -90,7 +95,9 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     push_verify_certificates = models.BooleanField(default=True)
 
-    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
+    oidc_auth_providers = models.ManyToManyField(
+        OAuth2Provider, blank=True, default=None, through="SSFProviderOIDCAuthProvider"
+    )
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -136,6 +143,29 @@ class SSFProvider(TasksModel, BackchannelProvider):
             # as the user requesting to add a stream must have the permission on the provider
             ("add_stream", _("Add stream to SSF provider")),
         ]
+
+
+class SSFProviderOIDCAuthProvider(SimpleThroughModel):
+    ssf_provider = models.ForeignKey(
+        SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
+        unique_together = (("ssf_provider", "oauth2_provider"),)
+        verbose_name = _("SSF Provider OIDC Auth Provider")
+        verbose_name_plural = _("SSF Provider OIDC Auth Providers")
+
+    def __str__(self):
+        return (
+            f"SSFProviderOIDCAuthProvider for SSFProvider {self.ssf_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class Stream(models.Model):

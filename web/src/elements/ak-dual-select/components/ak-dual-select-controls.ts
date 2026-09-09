@@ -37,7 +37,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
             }
 
             .pf-c-button {
-                --pf-c-button--m-plain--Color: var(--pf-global--Color-300) !important;
+                --pf-c-button--m-plain--Color: var(--pf-global--Color--300) !important;
 
                 &.pf-m-plain {
                     --pf-c-button--m-plain--disabled--Color: var(

@@ -1,7 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { modalInvoker, ModelFormLikeConstructor } from "#elements/dialogs/directives";
-import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
@@ -16,16 +16,18 @@ import { html } from "lit-html";
  * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
  * @param options Initialization options for the modal dialog.
  */
-export function IconEditButton<T extends TransclusionElementConstructor>(
+// eslint-disable-next-line max-params
+export function IconEditButton<T extends NamedEntityElementConstructor>(
     factory: T,
     instancePk?: string | number | null,
     itemName?: string | null,
-    modalProps?: T extends TransclusionElementConstructor
+    modalProps?: T extends NamedEntityElementConstructor
         ? LitPropertyRecord<InstanceType<T>>
         : null,
     options?: DialogInit,
+    iconName: string = "fa-edit",
 ): SlottedTemplateResult {
-    const noun = (factory as TransclusionElementConstructor).verboseName ?? msg("Entity");
+    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Object");
     const label = itemName
         ? msg(str`Edit "${itemName}" ${noun}`, {
               id: "entity.edit.named",
@@ -42,8 +44,8 @@ export function IconEditButton<T extends TransclusionElementConstructor>(
         class="pf-c-button pf-m-plain"
         ${modalInvoker(factory, props as unknown as undefined, options)}
     >
-        <pf-tooltip position="top" content=${msg("Edit")}>
-            <i aria-hidden="true" class="fas fa-edit"></i>
+        <pf-tooltip position="top" content=${label}>
+            <i aria-hidden="true" class="fas ${iconName}"></i>
         </pf-tooltip>
     </button>`;
 }

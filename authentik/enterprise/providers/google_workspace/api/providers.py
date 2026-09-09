@@ -40,6 +40,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "sync_page_size",
             "sync_page_timeout",
             "dry_run",
+            "discovery_enabled",
         ]
         extra_kwargs = {}
 

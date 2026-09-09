@@ -1,5 +1,6 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
+import "#elements/Divider";
 
 import { aki } from "#common/api/client";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
@@ -19,7 +20,6 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -33,7 +33,7 @@ export class PlexLoginInit extends BaseStage<
     @state()
     authUrl?: string;
 
-    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
@@ -68,7 +68,7 @@ export class PlexLoginInit extends BaseStage<
                 <ak-empty-state loading
                     ><span>${msg("Waiting for authentication...")}></span>
                 </ak-empty-state>
-                <hr class="pf-c-divider" />
+                <ak-divider></ak-divider>
                 <p>${msg("If no Plex popup opens, click the button below.")}</p>
                 <button
                     class="pf-c-button pf-m-block pf-m-primary"

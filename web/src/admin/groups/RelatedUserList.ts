@@ -12,6 +12,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
@@ -21,6 +22,7 @@ import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -489,30 +491,22 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label class="pf-c-switch" id="hide-service-accounts-label">
-                        <input
-                            id="hide-service-accounts"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.hideServiceAccounts}
-                            @change=${() => {
-                                this.hideServiceAccounts = !this.hideServiceAccounts;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideServiceAccounts: this.hideServiceAccounts,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Hide service-accounts")}</span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Hide service-accounts"), value: true },
+                        { label: msg("All"), value: false },
+                    ]}
+                    group=${msg("User type")}
+                    .value=${this.hideServiceAccounts}
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                        this.hideServiceAccounts = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({
+                            hideServiceAccounts: this.hideServiceAccounts,
+                        });
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }

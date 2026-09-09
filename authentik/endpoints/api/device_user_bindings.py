@@ -14,7 +14,10 @@ class DeviceUserBindingSerializer(PolicyBindingSerializer):
             "connector",
             "connector_obj",
         ]
-        extra_kwargs = {"connector": {"read_only": True}}
+        extra_kwargs = {
+            **PolicyBindingSerializer.Meta.extra_kwargs,
+            "connector": {"read_only": True},
+        }
 
 
 class DeviceUserBindingViewSet(PolicyBindingViewSet):

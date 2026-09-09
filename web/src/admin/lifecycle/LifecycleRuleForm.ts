@@ -234,6 +234,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
                 label=${msg("Minimum reviewers")}
                 min=${1}
                 name="minReviewers"
+                required
                 value="${this.instance?.minReviewers ?? 1}"
                 help=${msg(
                     "Number of users from the selected reviewer groups that must approve the review.",

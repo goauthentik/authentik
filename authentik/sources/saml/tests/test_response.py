@@ -5,12 +5,23 @@ from base64 import b64encode
 from django.test import TestCase
 from freezegun import freeze_time
 
-from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
+from authentik.core.models import SourceUserMatchingModes
+from authentik.core.sources.matcher import Action, SourceMatcher
+from authentik.core.tests.utils import (
+    RequestFactory,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import (
+    GroupSAMLSourceConnection,
+    SAMLSource,
+    UserSAMLSourceConnection,
+)
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 
@@ -22,7 +33,7 @@ class TestResponseProcessor(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer="authentik",
+            issuer_override="authentik",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -332,6 +343,83 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         self.assertEqual(parser._get_name_id()[1], "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7")
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_name_id_comment_username_truncation(self):
+        """Test that a comment in the NameID does not truncate the matching username.
+
+        The connection identifier reads the full text content with
+        ``"".join(name_id.itertext())``, so the username used for matching must read
+        the same value and not ``name_id.text``, which returns only the text before
+        the first child node."""
+        full_name_id = "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7"
+        # The text before the comment, which is what ``name_id.text`` returns.
+        truncated_name_id = "_ce3d2948b4cf20146dee0a0b3dd6f"
+        commented_name_id = f"{truncated_name_id}<!--x-->{full_name_id[len(truncated_name_id):]}"
+        fixture = load_fixture("fixtures/response_signed_assertion.xml").replace(
+            full_name_id, commented_name_id
+        )
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(name=generate_id(), certificate_data=key)
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
+        request = self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(fixture.encode()).decode()},
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        # The comment is dropped by the signature canonicalization, so the signature
+        # still verifies.
+        parser.parse()
+
+        name_id_el, identifier = parser._get_name_id()
+        self.assertEqual(identifier, full_name_id)
+
+        properties = self.source.get_base_user_properties(
+            root=parser._root, assertion=parser.get_assertion(), name_id=name_id_el
+        )
+        # The username must match the full identifier, not the truncated text.
+        self.assertEqual(properties["username"], identifier)
+
+        # An existing user matching only the truncated text must not be linked.
+        other_user = create_test_user(name=truncated_name_id)
+        matcher = SourceMatcher(self.source, UserSAMLSourceConnection, GroupSAMLSourceConnection)
+        action, connection = matcher.get_user_action(identifier, properties)
+        self.assertEqual(action, Action.ENROLL)
+        self.assertNotEqual(connection.user_id, other_user.pk)
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_attribute_value_comment_truncation(self):
+        """Test that a comment in an attribute value does not truncate it.
+
+        Attribute values feed user matching and property mappings, so a value must
+        be read with ``"".join(value.itertext())`` and not ``value.text``, which
+        returns only the text before the first child node."""
+        fixture = load_fixture("fixtures/response_signed_assertion.xml").replace(
+            "test@example.com", "test@<!--x-->example.com"
+        )
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(name=generate_id(), certificate_data=key)
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(fixture.encode()).decode()},
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
+        name_id_el, _ = parser._get_name_id()
+        properties = self.source.get_base_user_properties(
+            root=parser._root, assertion=parser.get_assertion(), name_id=name_id_el
+        )
+        # The attribute value must not be truncated at the comment.
+        self.assertEqual(properties["mail"], "test@example.com")
 
     @freeze_time("2014-07-17T01:02:18Z")
     def test_verification_response(self):

@@ -1,0 +1,20 @@
+{
+    "extends": "@goauthentik/tsconfig/tsconfig.json",
+    "compilerOptions": {
+        // Nothing imports this package — the generator runs straight from
+        // source under Node's type stripping, so there is nothing to emit.
+        "noEmit": true,
+        "emitDeclarationOnly": false,
+        "declaration": false,
+        "declarationMap": false,
+        "composite": false,
+        "incremental": false,
+        "allowImportingTsExtensions": true,
+        // src/labels.ts reads the archive's label contract from web, so the
+        // program spans both packages.
+        "rootDir": "../..",
+        "erasableSyntaxOnly": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["out", "node_modules", "scripts", "test"]
+}

@@ -215,16 +215,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.issuer)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Binding Type")}
                         required
@@ -299,6 +289,19 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
                         )}
                     ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer override")}
+                        name="issuerOverride"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.issuerOverride)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Also known as Entity ID. Defaults to the Metadata URL.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required

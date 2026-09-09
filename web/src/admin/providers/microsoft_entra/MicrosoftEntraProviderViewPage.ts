@@ -13,7 +13,6 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
 import "#components/sync/SyncStatusCard";
-import "#components/tasks/ScheduleList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -21,6 +20,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { MicrosoftEntraProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
@@ -41,7 +41,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 const PROVIDER_TYPE = ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider;
-const [PROVIDER_TYPE_LABEL, PROVIDER_MODEL_NAME] = PROVIDER_TYPE.split(".");
 
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
@@ -231,16 +230,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                 </div>
 
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Schedules")}</div>
-                        </div>
-                        <ak-schedule-list
-                            .relObjAppLabel=${PROVIDER_TYPE_LABEL}
-                            .relObjModel=${PROVIDER_MODEL_NAME}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     ${taskCard(PROVIDER_TYPE, this.provider.pk)}

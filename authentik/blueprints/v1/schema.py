@@ -75,19 +75,19 @@ class SchemaBuilder:
                     "anyOf": [
                         {
                             "type": "array",
-                            "items": {"$ref": "#/$defs/blueprint_entry"},
+                            "items": {"$ref": "#/definitions/blueprint_entry"},
                         },
                         {
                             "type": "object",
                             "additionalProperties": {
                                 "type": "array",
-                                "items": {"$ref": "#/$defs/blueprint_entry"},
+                                "items": {"$ref": "#/definitions/blueprint_entry"},
                             },
                         },
                     ],
                 },
             },
-            "$defs": {"blueprint_entry": {"oneOf": []}},
+            "definitions": {"blueprint_entry": {"oneOf": []}},
         }
 
     @staticmethod
@@ -118,7 +118,7 @@ class SchemaBuilder:
                 }
             )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
-            self.schema["$defs"]["blueprint_entry"]["oneOf"].append(
+            self.schema["definitions"]["blueprint_entry"]["oneOf"].append(
                 self.template_entry(model_path, model, serializer)
             )
 
@@ -127,11 +127,11 @@ class SchemaBuilder:
         model_schema = self.to_jsonschema(serializer)
         model_schema["required"] = []
         def_name = f"model_{model_path}"
-        def_path = f"#/$defs/{def_name}"
-        self.schema["$defs"][def_name] = model_schema
+        def_path = f"#/definitions/{def_name}"
+        self.schema["definitions"][def_name] = model_schema
         def_name_perm = f"model_{model_path}_permissions"
-        def_path_perm = f"#/$defs/{def_name_perm}"
-        self.schema["$defs"][def_name_perm] = self.model_permissions(model)
+        def_path_perm = f"#/definitions/{def_name_perm}"
+        self.schema["definitions"][def_name_perm] = self.model_permissions(model)
         template = {
             "type": "object",
             "required": ["model", "identifiers"],

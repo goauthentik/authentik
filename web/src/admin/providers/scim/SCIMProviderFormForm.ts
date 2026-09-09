@@ -333,6 +333,12 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
+                <ak-switch-input
+                    name="discoveryEnabled"
+                    label=${msg("Enable automatic discovery of remote resources.")}
+                    ?checked=${provider.discoveryEnabled ?? true}
+                >
+                </ak-switch-input>
             </div>
         </ak-form-group>
     `;

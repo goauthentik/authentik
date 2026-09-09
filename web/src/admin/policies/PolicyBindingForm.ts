@@ -1,5 +1,5 @@
 import "#components/ak-switch-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
@@ -13,6 +13,7 @@ import {
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import {
     CoreApi,
@@ -159,8 +160,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     renderModeSelector(): TemplateResult {
         return html` <ak-toggle-group
             value=${this.policyGroupUser}
-            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                this.policyGroupUser = ev.detail.value;
+            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                this.policyGroupUser = ev.value;
             }}
         >
             ${Object.values(PolicyBindingCheckTarget).map((ct) => {
@@ -192,6 +193,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const policies = await aki(PoliciesApi).policiesAllList(args);
+                        const selectedPolicy = this.instance?.policyObj;
+                        if (
+                            selectedPolicy &&
+                            !policies.results.some((policy) => policy.pk === selectedPolicy.pk)
+                        ) {
+                            return [selectedPolicy, ...policies.results];
+                        }
                         return policies.results;
                     }}
                     .renderElement=${(policy: Policy) => policy.name}
@@ -221,6 +229,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const groups = await aki(CoreApi).coreGroupsList(args);
+                        const selectedGroup = this.instance?.groupObj;
+                        if (
+                            selectedGroup &&
+                            !groups.results.some((group) => group.pk === selectedGroup.pk)
+                        ) {
+                            return [selectedGroup as Group, ...groups.results];
+                        }
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
@@ -251,6 +266,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
+                        const selectedUser = this.instance?.userObj;
+                        if (
+                            selectedUser &&
+                            !users.results.some((user) => user.pk === selectedUser.pk)
+                        ) {
+                            return [selectedUser as User, ...users.results];
+                        }
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}

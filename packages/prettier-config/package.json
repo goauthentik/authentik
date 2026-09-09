@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "repository": {
@@ -36,17 +36,17 @@
         "format-imports": "^4.0.8"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "catalog:",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^26.1.0",
+        "@types/node": "catalog:",
         "eslint": "catalog:",
-        "prettier": "3.8.3",
+        "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.62.1"
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "prettier": "3.8.3",
+        "prettier": "catalog:",
         "prettier-plugin-packagejson": "^3.0.2"
     },
     "files": [
@@ -55,20 +55,17 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24",
-            "onFail": "warn"
-        },
-        "packageManager": {
-            "name": "pnpm",
-            "version": ">=11.5.1",
-            "onFail": "warn"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "prettier": "./index.js",
     "publishConfig": {
         "access": "public"
