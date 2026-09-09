@@ -102,12 +102,6 @@ export interface SCIMProvider {
      */
     verifyCertificates?: boolean;
     /**
-     * Authentication token
-     * @type {string}
-     * @memberof SCIMProvider
-     */
-    token?: string;
-    /**
      *
      * @type {SCIMAuthenticationModeEnum}
      * @memberof SCIMProvider
@@ -247,7 +241,6 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         url: json["url"],
         verifyCertificates:
             json["verify_certificates"] == null ? undefined : json["verify_certificates"],
-        token: json["token"] == null ? undefined : json["token"],
         authMode:
             json["auth_mode"] == null
                 ? undefined
@@ -314,7 +307,6 @@ export function SCIMProviderToJSONTyped(
         property_mappings_group: value["propertyMappingsGroup"],
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
-        token: value["token"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
