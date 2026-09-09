@@ -20,6 +20,9 @@ def monitoring_set_enterprise(sender, **kwargs):
     """set enterprise gauges"""
     summary = LicenseKey.cached_summary()
     if summary.status == LicenseUsageStatus.UNLICENSED:
+        GAUGE_LICENSE_USAGE.labels(user_type="internal").set(0)
+        GAUGE_LICENSE_USAGE.labels(user_type="external").set(0)
+        GAUGE_LICENSE_EXPIRY.set(0)
         return
     percentage_internal = (
         0
