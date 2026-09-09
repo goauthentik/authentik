@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.2.6",
+    "version": "2026.2.7",
     "private": true,
     "type": "module",
     "dependencies": {
