@@ -3,6 +3,7 @@ asgi
 assertIn
 authentik
 authn
+caf
 crate
 docstrings
 entra
