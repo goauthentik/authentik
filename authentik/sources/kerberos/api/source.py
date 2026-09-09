@@ -49,7 +49,9 @@ class KerberosSourceSerializer(SourceSerializer):
         extra_kwargs = {
             "sync_password": {"write_only": True},
             "sync_keytab": {"write_only": True},
+            "sync_ccache": {"write_only": True},
             "spnego_keytab": {"write_only": True},
+            "spnego_ccache": {"write_only": True},
         }
 
 

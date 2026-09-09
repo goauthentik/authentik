@@ -1,3 +1,4 @@
+import "#components/ak-secret-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
@@ -50,9 +51,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorSmsUpdate({
+            return aki(StagesApi).stagesAuthenticatorSmsPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorSMSStageRequest: data,
+                patchedAuthenticatorSMSStageRequest: data,
             });
         }
         return aki(StagesApi).stagesAuthenticatorSmsCreate({
@@ -78,19 +79,14 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Twilio Auth Token")} required name="auth">
-                <input
-                    type="text"
-                    value="${this.instance?.auth ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Get this value from https://console.twilio.com")}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-secret-text-input
+                name="auth"
+                label=${msg("Twilio Auth Token")}
+                input-hint="code"
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
+                help=${msg("Get this value from https://console.twilio.com")}
+            ></ak-secret-text-input>`;
     }
 
     renderProviderGeneric(): TemplateResult {
@@ -133,36 +129,23 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("API Auth Username")} required name="auth">
-                <input
-                    type="text"
-                    value="${this.instance?.auth ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "This is the username to be used with basic auth or the token when used with bearer token",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Auth password")}
-                ?required=${false}
+            <ak-secret-text-input
+                name="auth"
+                label=${msg("API Auth Username")}
+                input-hint="code"
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
+                help=${msg(
+                    "This is the username to be used with basic auth or the token when used with bearer token",
+                )}
+            ></ak-secret-text-input>
+            <ak-secret-text-input
                 name="authPassword"
-            >
-                <input
-                    type="text"
-                    value="${this.instance?.authPassword ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("This is the password to be used with basic auth")}
-                </p>
-            </ak-form-element-horizontal>
+                label=${msg("API Auth password")}
+                input-hint="code"
+                ?revealed=${!this.instance}
+                help=${msg("This is the password to be used with basic auth")}
+            ></ak-secret-text-input>
         `;
     }
 

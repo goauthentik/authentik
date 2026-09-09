@@ -1,5 +1,5 @@
 import "#components/ak-radio-input";
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -39,10 +39,10 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
         load: (id: number) => aki(ProvidersApi).providersMicrosoftEntraRetrieve({ id }),
         create: (microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
             aki(ProvidersApi).providersMicrosoftEntraCreate({ microsoftEntraProviderRequest }),
-        update: (id: number, microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
-            aki(ProvidersApi).providersMicrosoftEntraUpdate({
+        update: (id: number, patchedMicrosoftEntraProviderRequest: MicrosoftEntraProvider) =>
+            aki(ProvidersApi).providersMicrosoftEntraPartialUpdate({
                 id,
-                microsoftEntraProviderRequest,
+                patchedMicrosoftEntraProviderRequest,
             }),
     };
 
@@ -70,16 +70,15 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client ID for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-hidden-text-input
+                    <ak-secret-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
-                        autocomplete="off"
-                        value="${this.instance?.clientSecret ?? ""}"
                         input-hint="code"
-                        required
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                         .help=${msg("Client secret for the app registration.")}
                     >
-                    </ak-hidden-text-input>
+                    </ak-secret-text-input>
                     <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"
