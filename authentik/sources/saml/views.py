@@ -40,6 +40,7 @@ from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    MismatchedAudience,
     MismatchedRequestID,
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
@@ -162,6 +163,7 @@ class ACSView(View):
         except (
             InvalidEncryption,
             InvalidSignature,
+            MismatchedAudience,
             MismatchedRequestID,
             MissingSAMLResponse,
             SuspiciousOperation,
