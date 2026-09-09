@@ -1548,11 +1548,11 @@ wheels = [
 
 [[package]]
 name = "durationpy"
-version = "0.10"
+version = "0.11"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9d/a4/e44218c2b394e31a6dd0d6b095c4e1f32d0be54c2a4b250032d717647bab/durationpy-0.10.tar.gz", hash = "sha256:1fa6893409a6e739c9c72334fc65cca1f355dbdd93405d30f726deb5bde42fba", size = 3335, upload-time = "2025-05-17T13:52:37.26Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/5d/5f8571bd5dedc80863191621ac4be001f3f3dd8315d2ec078705dab7dec1/durationpy-0.11.tar.gz", hash = "sha256:181898e1ae282e288f0a2291829656bf1b6b3aadf30a97993b85db4943642905", size = 3582, upload-time = "2026-08-26T13:56:00.991Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b0/0d/9feae160378a3553fa9a339b0e9c1a048e147a4127210e286ef18b730f03/durationpy-0.10-py3-none-any.whl", hash = "sha256:3b41e1b601234296b4fb368338fdcd3e13e0b4fb5b67345948f4f2bf9868b286", size = 3922, upload-time = "2025-05-17T13:52:36.463Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/c4/ebdf7837bc4ef6fd98cfb013c28855bb358467bf86c1af011bbc21e21df0/durationpy-0.11-py3-none-any.whl", hash = "sha256:a739fe2b8972c250ff72f8e2c488d18cf25f7b852f49ee76048775d5171df30c", size = 4133, upload-time = "2026-08-26T13:55:59.456Z" },
 ]
 
 [[package]]
