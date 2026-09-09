@@ -298,20 +298,21 @@ class UserSerializer(ModelSerializer):
         return user_type
 
     def validate_groups(self, groups: list) -> list:
-        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        """Require enable_group_superuser permission when adding a user to a group which grants
+        superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return groups
-        current_groups = set(self.instance.groups.all()) if self.instance else set()
-        for group in groups:
-            if not group.is_superuser:
-                continue
-            if group in current_groups:
-                continue
-            if not request.user.has_perm("authentik_core.enable_group_superuser"):
-                raise ValidationError(
-                    _("User does not have permission to add members to a superuser group.")
-                )
+        new_groups = Group.objects.filter(pk__in=[group.pk for group in groups])
+        if self.instance:
+            new_groups = new_groups.exclude(pk__in=self.instance.groups.all())
+        ancestry = new_groups.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser"
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return groups
 
     def validate_roles(self, roles: list) -> list:
