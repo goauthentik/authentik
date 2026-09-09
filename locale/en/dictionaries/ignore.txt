@@ -7,6 +7,7 @@ Azuread
 buildx
 goauthentik
 lxml
+mpvq
 pässwörd
 phlebotinum
 qewr
