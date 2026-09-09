@@ -24,6 +24,7 @@ import {
     CoreGroupsListRequest,
     Group,
     MicrosoftEntraProvider,
+    MicrosoftEntraProviderRequest,
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
@@ -38,7 +39,10 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
     protected endpoints = {
         load: (id: number) => aki(ProvidersApi).providersMicrosoftEntraRetrieve({ id }),
         create: (microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
-            aki(ProvidersApi).providersMicrosoftEntraCreate({ microsoftEntraProviderRequest }),
+            aki(ProvidersApi).providersMicrosoftEntraCreate({
+                microsoftEntraProviderRequest:
+                    microsoftEntraProviderRequest as unknown as MicrosoftEntraProviderRequest,
+            }),
         update: (id: number, patchedMicrosoftEntraProviderRequest: MicrosoftEntraProvider) =>
             aki(ProvidersApi).providersMicrosoftEntraPartialUpdate({
                 id,
