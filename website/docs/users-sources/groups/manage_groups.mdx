@@ -27,11 +27,15 @@ To create a super-user, you need to add the user to a group that has super-user 
 Super-user permission is inherited by all descendant groups. Make sure you review every member of every descendant group to prevent accidentally granting super-user permission.
 :::
 
+Starting with authentik 2026.2.7, 2026.5.7 and 2026.8.2, selecting a **Parent** group that grants super-user permission requires the `Enable superuser status` permission, and selecting **Roles** requires the `Can change Role` permission.
+
 ## Modify a group
 
 To edit the group's name, parent groups, whether the group grants superuser permissions, associated roles, and any custom attributes, click the Edit icon beside the role's name. Make the changes and then click **Update**.
 
 Starting with authentik version 2025.2, the permission to change super-user status has been separated from the permission required to change the group. Now, the `Enable superuser status` and `Disable superuser status` permissions are explicitly required to enable and disable the super-user status.
+
+Starting with authentik 2026.2.7, 2026.5.7 and 2026.8.2, the `Enable superuser status` permission is also required to add a **Parent** group that grants super-user permission, either directly or through one of its own parent groups. Changing a group's **Roles** requires the `Can change Role` permission. That requirement applies to the group's own **Roles** field; roles assigned to a parent group continue to be inherited by the groups below it.
 
 To [add or remove users](../user/user_basic_operations.md#add-a-user-to-a-group) from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page and then click on the **Permissions** tab.
 
@@ -49,6 +53,8 @@ You can assign a role to a group, and then all users in the group inherit the pe
 
 :::info
 Roles are inherited through group hierarchy. If a parent group has a role assigned, all child groups (and their users) automatically inherit that role's permissions. You can view both directly assigned and inherited roles on a group's detail page under the **Roles** tab.
+
+Because roles are inherited, the permission to change a group also determines which roles that group's members hold, through the group's **Parent** groups. Only delegate it to accounts that are trusted to grant the roles assigned anywhere above that group in the hierarchy.
 :::
 
 ## Bind a group to an application
@@ -69,3 +75,5 @@ To give a specific role or user the ability to manage group members, the followi
 In addition, the permission "Can view User" needs to be assigned, either globally or on specific users that should be manageable.
 
 These permissions can be assigned to a [Role](../roles/index.md).
+
+Starting with authentik 2026.2.7, 2026.5.7 and 2026.8.2, the `Enable superuser status` permission is also required to add a member to a group that grants super-user permission, either directly or through one of its parent groups. Removing a member is not affected.

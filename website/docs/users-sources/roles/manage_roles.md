@@ -41,6 +41,8 @@ To delete a role, follow these steps:
 4. On the **Update Group** box, in the **Roles** field, select the roles you want to assign to the group from the list of **Available Roles** in the left box (you can select multiple roles at once by holding the Shift key while selecting the roles), and then click the appropriate arrow icon to move them into the **Selected Roles** box.
 5. Click **Update** to add the role(s) and close the box.
 
+Starting with authentik 2026.2.7, 2026.5.7 and 2026.8.2, assigning a role to a group requires the global `Can change Role` permission, in addition to the permission to change the group. The permission assigned on a specific role is not sufficient. This applies to a group's own **Roles** field; a group also inherits the roles of its parent groups, which is governed by the permission to change the group.
+
 ## Assign a role to a user
 
 See [add user to a role](../user/user_basic_operations.md#add-a-user-to-a-role).
