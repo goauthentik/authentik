@@ -85,6 +85,23 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+    @freeze_time("2022-10-14T14:15:00")
+    def test_success_no_name_id_format(self):
+        """Test success with a NameID that has no Format attribute"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success_no_nameid_format.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
+
     @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
         """Test success with StatusMessage and StatusDetail present (should not raise error)"""
