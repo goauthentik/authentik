@@ -72,7 +72,7 @@ The CAs trusted by the mutual TLS stage for client authentication are separate f
 
 ## RADIUS property mappings {#radius-attributes}
 
-RADIUS provider property mappings add attributes to successful authentication responses. Follow the instructions to [create a custom provider property mapping](../property-mappings/index.mdx#create-a-custom-provider-property-mapping), selecting the RADIUS provider property mapping type. Then select the mapping under **Protocol settings** > **Property mappings** on the RADIUS provider.
+RADIUS provider property mappings add attributes to successful authentication responses. A single mapping can assign multiple attributes. Follow the instructions to [create a custom provider property mapping](../property-mappings/index.mdx#create-a-custom-provider-property-mapping), selecting the RADIUS provider property mapping type. Then select the mapping under **Protocol settings** > **Property mappings** on the RADIUS provider.
 
 ### Mapping context
 
@@ -91,13 +91,17 @@ Mappings run in name order and modify the same `packet` in place. Their return v
 
 Use the attribute's exact name from authentik's [bundled RADIUS dictionary](https://github.com/goauthentik/authentik/blob/main/authentik/providers/radius/dictionaries/dictionary).
 
-For example, `Session-Timeout` is defined as an integer:
+The following example adds three standard attributes in a single mapping: an integer `Session-Timeout`, a string `Reply-Message`, and an `octets` value for `Class`. All three are already defined in the bundled dictionary, so no `define_attribute()` calls are needed.
 
 ```python
 packet["Session-Timeout"] = 3600
+packet["Reply-Message"] = "Network access granted"
+packet["Class"] = b"authentik-radius"
 ```
 
-Assigning the value modifies the supplied packet, so no return statement is required.
+These assignments modify the supplied packet, so no return statement is required. The `Reply-Message` is added only to a successful response; it does not configure a rejection message. The `Class` value is a fixed example marker, not a unique session identifier.
+
+After assigning the mapping to the provider, authenticate and inspect the decoded `Access-Accept`. Confirm that all three values appear as standard attribute codes `27` (`Session-Timeout`), `18` (`Reply-Message`), and `25` (`Class`), not as vendor-specific attributes. The `Class` bytes should represent the literal text `authentik-radius`.
 
 An attribute appearing in a vendor dictionary does not guarantee that it is present in authentik's bundled dictionary. The Python value must also match the attribute's dictionary type.
 
@@ -133,6 +137,8 @@ packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
 
 Use codes and types from authoritative vendor documentation. The registered lookup name is `<vendor_name>-<attribute_name>`. Definitions are shared by mappings for the current access check but do not permanently change the bundled dictionary. If that lookup name already exists, the helper leaves its definition unchanged.
 
+You can call `define_attribute()` multiple times in one mapping to register different attributes, then assign their values to `packet`. Each definition and value must still be valid; a mapping evaluation error stops processing and omits all mapping-generated attributes, as described in [Troubleshoot a failed mapping](#troubleshoot-a-failed-mapping).
+
 Do not assign a vendor name to a standard RFC attribute: a nonempty `vendor_name` produces a Vendor-Specific attribute, even if `vendor_code` is `0`.
 
 ### Attribute value types
@@ -147,8 +153,6 @@ Common dictionary types accept the following values. Encoding is handled by [pyr
 | `octets`        | `b"session-id"`      | Use bytes for an opaque value; see the encoding caveat below.                                    |
 
 For `octets`, pyrad treats strings containing only decimal digits as integers to encode, rather than literal text. For example, `"65"` becomes `b"A"`, while `b"65"` preserves the two ASCII digits. Values beginning with `0x`, including bytes beginning with `b"0x"`, are interpreted as hexadecimal. Inspect the decoded response when the exact byte representation matters.
-
-`Class` is included in the bundled dictionary as an `octets` attribute. It can be assigned like other dictionary attributes, but a generated value that depends on incoming RADIUS attributes cannot be reproduced from context that the mapping does not receive.
 
 ### Dynamic VLAN assignment
 
