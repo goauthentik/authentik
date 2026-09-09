@@ -141,7 +141,7 @@ class GroupHierarchyLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
 
     @staticmethod
     def name() -> str:
-        return "group hierarchy"
+        return "group_hierarchy"
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups:
@@ -188,7 +188,7 @@ class GroupHierarchyLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 parents_from_source = Group.objects.filter(
                     **{
                         (
-                            "attributes__" f"{self._source.user_membership_attribute}__in"
+                            f"attributes__{self._source.user_membership_attribute}__in"
                         ): parents_from_source_raw
                     }
                 )
@@ -203,7 +203,7 @@ class GroupHierarchyLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 children_from_source = Group.objects.filter(
                     **{
                         (
-                            "attributes__" f"{self._source.user_membership_attribute}__in"
+                            f"attributes__{self._source.user_membership_attribute}__in"
                         ): children_from_source_raw
                     }
                 )

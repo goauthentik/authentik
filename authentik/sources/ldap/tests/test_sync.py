@@ -19,6 +19,7 @@ from authentik.sources.ldap.models import (
     GroupLDAPSourceConnection,
     LDAPSource,
     LDAPSourcePropertyMapping,
+    LDAPSourceSync,
     UserLDAPSourceConnection,
 )
 from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
@@ -574,6 +575,8 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync.send(self.source.pk)
+        sync = LDAPSourceSync.objects.filter(source=self.source).first()
+        self.assertIsNotNone(sync)
 
     def test_tasks_openldap(self):
         """Test Scheduled tasks"""
@@ -589,6 +592,8 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync.send(self.source.pk)
+        sync = LDAPSourceSync.objects.filter(source=self.source).first()
+        self.assertIsNotNone(sync)
 
     def test_user_deletion(self):
         """Test user deletion"""
@@ -605,6 +610,9 @@ class LDAPSyncTests(TestCase):
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync.send(self.source.pk)
         self.assertFalse(User.objects.filter(username="not-in-the-source").exists())
+        sync = LDAPSourceSync.objects.filter(source=self.source).first()
+        self.assertIsNotNone(sync)
+        self.assertEqual(sync.user_deletions_count, 1)
 
     def test_user_deletion_still_in_source(self):
         """Test that user is not deleted if it's still in the source"""
@@ -623,6 +631,9 @@ class LDAPSyncTests(TestCase):
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync.send(self.source.pk)
         self.assertTrue(User.objects.filter(username=username).exists())
+        sync = LDAPSourceSync.objects.filter(source=self.source).first()
+        self.assertIsNotNone(sync)
+        self.assertEqual(sync.user_deletions_count, 0)
 
     def test_user_deletion_no_sync(self):
         """Test that user is not deleted if sync_users is False"""

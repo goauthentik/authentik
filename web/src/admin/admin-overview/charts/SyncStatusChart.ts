@@ -146,17 +146,6 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return aki(SourcesApi).sourcesLdapList();
-                },
-                (element) => {
-                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
-                        slug: element.slug,
-                    });
-                },
-                msg("LDAP Source"),
-            ),
-            await this.fetchStatus(
-                () => {
                     return aki(SourcesApi).sourcesKerberosList();
                 },
                 (element) => {

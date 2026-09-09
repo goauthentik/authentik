@@ -43,6 +43,12 @@ const config = {
                 // Avoid multiple instances of web components packages.
                 conditions: [],
             },
+            server: {
+                ...config.server,
+                fs: {
+                    allow: [...(config.server.fs.allow ?? []), ".."],
+                },
+            },
         };
         newConfig.server = config.server || {};
         newConfig.server.fs = newConfig.server.fs || {};
