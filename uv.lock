@@ -317,6 +317,7 @@ dependencies = [
     { name = "pyjwt" },
     { name = "pyrad" },
     { name = "pyroscope-io" },
+    { name = "pyroscope-otel" },
     { name = "python-kadmin-rs" },
     { name = "pyyaml" },
     { name = "requests-oauthlib" },
@@ -436,6 +437,7 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.13.0" },
     { name = "pyrad", specifier = "==2.5.4" },
     { name = "pyroscope-io", specifier = "==1.2.1" },
+    { name = "pyroscope-otel", specifier = "==1.1.0" },
     { name = "python-kadmin-rs", specifier = "==0.7.4" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
@@ -3285,6 +3287,20 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/7e/908489444509ec91ba0f2d165ba745a0315dcf8eb9a17f55af3b17bec708/pyroscope_io-1.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:5ec8e2a8954de298000811af743060c2ec85295c452a8b3e0226be11ffaf1c80", size = 5123892, upload-time = "2026-07-27T11:39:40.104Z" },
     { url = "https://files.pythonhosted.org/packages/f9/17/aeaeb24938460348c9aa7903cfc186d6c1130b0d097fbddc5c9db0dc517f/pyroscope_io-1.2.1-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:014c6f222cec75eebb12b85ea8ced49efedd29f027dae915e4257822b2815272", size = 5510572, upload-time = "2026-07-27T11:39:41.575Z" },
     { url = "https://files.pythonhosted.org/packages/e2/07/92941723d8aaca1dbbe0f724da51ff8d02e610353b5e999de97a0547f950/pyroscope_io-1.2.1-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:83867ba5f46f1d0946524407d5627c1bb06f32dfd35fc06c7258f756d9e80c08", size = 5240581, upload-time = "2026-07-27T11:39:43.217Z" },
+]
+
+[[package]]
+name = "pyroscope-otel"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-sdk" },
+    { name = "pyroscope-io" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f3/8b/d76727b27efed19b8893a9be56e3c62ecdbe2259268d69b16dcdb09444e8/pyroscope_otel-1.1.0.tar.gz", hash = "sha256:552e3401446d0406407f4c8c9487d36604949324cd240599af58a69d0d634175", size = 14107, upload-time = "2026-06-30T10:38:44.5Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/ef/d01ea5c880f478d1d91f7b7e4aa77837e7430fa6e3038ea7fbfe04f37e82/pyroscope_otel-1.1.0-py3-none-any.whl", hash = "sha256:a10accd2a60fa00a18445f8e95df91500630f8f6b177133693792785f57637e5", size = 11815, upload-time = "2026-06-30T10:38:43.306Z" },
 ]
 
 [[package]]
