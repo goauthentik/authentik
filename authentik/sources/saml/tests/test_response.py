@@ -602,3 +602,17 @@ class TestResponseProcessor(TestCase):
         with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_TRANSIENT_ACS_URL):
             parser.parse()
         parser.prepare_flow_manager()
+
+    def test_doctype(self):
+        """Test that a Response with a document type declaration is refused"""
+        response = load_fixture("fixtures/response_success.xml").replace(
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE saml2p:Response>',
+        )
+        request = self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(response.encode()).decode()},
+        )
+
+        with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ResponseProcessor(self.source, request).parse()
