@@ -30,6 +30,11 @@ pub struct ContextualFlowInfo {
     pub layout: models::ContextualFlowInfoLayoutEnum,
     #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
     pub messages: Option<Vec<models::FlowMessage>>,
+    #[serde(
+        rename = "continuous_login_hold",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub continuous_login_hold: Option<bool>,
 }
 
 impl ContextualFlowInfo {
@@ -45,6 +50,7 @@ impl ContextualFlowInfo {
             cancel_url,
             layout,
             messages: None,
+            continuous_login_hold: None,
         }
     }
 }

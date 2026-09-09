@@ -23,6 +23,11 @@ pub struct RedirectChallenge {
     pub to: String,
     #[serde(rename = "final_redirect", skip_serializing_if = "Option::is_none")]
     pub final_redirect: Option<bool>,
+    #[serde(
+        rename = "continuous_login_hold",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub continuous_login_hold: Option<bool>,
 }
 
 impl RedirectChallenge {
@@ -34,6 +39,7 @@ impl RedirectChallenge {
             response_errors: None,
             to,
             final_redirect: None,
+            continuous_login_hold: None,
         }
     }
 }
