@@ -9,14 +9,14 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
-from authentik.lib.tracing import otel
+from authentik.lib.tracing import otel_django_middleware
 from authentik.lib.tracing.exceptions import TracingIgnoredException, should_ignore_exception
 from authentik.lib.tracing.otel_django_middleware import _traced_middleware_path
 
 
 def _marker(name: str) -> None:
-    """Emit a span from the tracer otel.py currently uses, so tests can patch it"""
-    otel.tracer.start_span(name).end()
+    """Emit a span from the tracer the middleware wrapper uses, so tests can patch it"""
+    otel_django_middleware.tracer.start_span(name).end()
 
 
 class TestOtel(TestCase):
@@ -67,7 +67,7 @@ class TestOtelMiddleware(TestCase):
         self.exporter = InMemorySpanExporter()
         provider = TracerProvider()
         provider.add_span_processor(SimpleSpanProcessor(self.exporter))
-        patcher = patch.object(otel, "tracer", provider.get_tracer(__name__))
+        patcher = patch.object(otel_django_middleware, "tracer", provider.get_tracer(__name__))
         patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -90,8 +90,13 @@ class TestOtelMiddleware(TestCase):
         self.assertEqual(
             spans["dummy_post"].parent.span_id, spans[f"{path} (post)"].context.span_id
         )
-        # ...and the handler is not nested in either phase
-        self.assertNotEqual(spans["handler"].parent.span_id, spans[f"{path} (pre)"].context.span_id)
+        # ...and the handler is not nested in either phase, since the pre phase is closed
+        # before the middleware chain descends
+        handler_parent = spans["handler"].parent
+        self.assertNotIn(
+            handler_parent.span_id if handler_parent else None,
+            {spans[f"{path} (pre)"].context.span_id, spans[f"{path} (post)"].context.span_id},
+        )
 
     def test_phases_sync(self):
         """Test pre and post processing are timed separately"""

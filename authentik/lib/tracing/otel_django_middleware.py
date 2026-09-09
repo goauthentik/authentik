@@ -7,6 +7,8 @@ from django.utils.module_loading import import_string
 from opentelemetry import context, trace
 from opentelemetry.trace import Span as OtelSpan
 
+tracer = trace.get_tracer("authentik")
+
 
 def trace_middleware_list(middleware_paths: list[str]) -> list[str]:
     """Wrap each MIDDLEWARE entry so its pre- and post-processing are timed as two
@@ -18,7 +20,6 @@ def _traced_middleware_path(path: str) -> str:
     """Build a wrapper class for `path` and register it on this module, so Django's
     import_string() can resolve the dotted path this returns back to it"""
     real_middleware = import_string(path)
-    tracer = trace.get_tracer("authentik")
 
     class _TracedMiddleware:
         # Mirror the real middleware's declared capabilities so Django's load_middleware()
