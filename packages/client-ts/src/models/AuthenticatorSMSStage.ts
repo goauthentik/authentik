@@ -99,18 +99,6 @@ export interface AuthenticatorSMSStage {
     accountSid: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
-     */
-    auth: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
-     */
-    authPassword?: string;
-    /**
-     *
      * @type {AuthTypeEnum}
      * @memberof AuthenticatorSMSStage
      */
@@ -179,7 +167,6 @@ export function instanceOfAuthenticatorSMSStage(value: object): value is Authent
             (value as Record<string, any>)["account_sid"] === undefined)
     )
         return false;
-    if (!("auth" in value) || value["auth"] === undefined) return false;
     return true;
 }
 
@@ -212,8 +199,6 @@ export function AuthenticatorSMSStageFromJSONTyped(
         provider: ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"],
         accountSid: json["account_sid"],
-        auth: json["auth"],
-        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
         mapping:
@@ -247,8 +232,6 @@ export function AuthenticatorSMSStageToJSONTyped(
         provider: ProviderEnumToJSON(value["provider"]),
         from_number: value["fromNumber"],
         account_sid: value["accountSid"],
-        auth: value["auth"],
-        auth_password: value["authPassword"],
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],
