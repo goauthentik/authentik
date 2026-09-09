@@ -37,7 +37,7 @@ services:
     image: ghcr.io/beryju/oidc-test-client:2.7.1
     profiles: [pin-only]
   saml-test-sp:
-    image: ghcr.io/beryju/saml-test-sp:1.1
+    image: ghcr.io/beryju/saml-test-sp:1.4
     profiles: [pin-only]
   dex:
     image: ghcr.io/dexidp/dex:v2.45.1
