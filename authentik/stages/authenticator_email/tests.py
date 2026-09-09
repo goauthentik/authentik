@@ -129,6 +129,9 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             email_required=False,
         )
 
+        # The user already has an email on file, so the address is established by the flow
+        # (email_required=False); an "email" in the request is ignored and the code is
+        # (re)sent to the established address.
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"component": "ak-stage-authenticator-email", "email": "test@example.com"},
@@ -137,7 +140,8 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertEqual(len(mail.outbox), 2)
         sent_mail = mail.outbox[1]
         self.assertEqual(sent_mail.subject, self.stage.subject)
-        self.assertEqual(sent_mail.to, [f"{self.user} <test@example.com>"])
+        self.assertEqual(sent_mail.to, [f"{self.user} <{self.user.email}>"])
+        self.assertNotIn("test@example.com", str(sent_mail.to))
         # Get from_address from global email config to test if global settings are being used
         from_address_global = CONFIG.get("email.from")
         self.assertEqual(sent_mail.from_email, from_address_global)
@@ -150,6 +154,41 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             response_errors={},
             email_required=False,
         )
+
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_email_uses_established_address(self):
+        """A request-supplied email does not replace an address already set by the flow."""
+        # The user has an email on file, so the flow establishes the address
+        # (email_required=False) and the code is sent there on GET.
+        self.device.delete()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [f"{self.user} <{self.user.email}>"])
+
+        # A code-less submission that carries a different email must not change where the
+        # code is sent.
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "email": "other@example.com"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[1].to, [f"{self.user} <{self.user.email}>"])
+
+        device = self.get_flow_plan().context[PLAN_CONTEXT_EMAIL_DEVICE]
+        self.assertEqual(device.email, self.user.email)
 
     def test_email_template(self):
         """Test email template rendering"""
