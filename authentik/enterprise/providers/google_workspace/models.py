@@ -20,7 +20,11 @@ from authentik.core.models import (
 )
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import (
+    OutgoingSyncDeleteAction,
+    OutgoingSyncProvider,
+    ProviderSync,
+)
 
 
 def default_scopes() -> list[str]:
@@ -118,6 +122,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
 
         return google_workspace_sync
 
+    @property
+    def sync_model(self) -> type[ProviderSync]:
+        return GoogleWorkspaceProviderSync
+
     def client_for_model(
         self,
         model: type[User | Group | GoogleWorkspaceProviderUser | GoogleWorkspaceProviderGroup],
@@ -194,6 +202,18 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("Google Workspace Provider")
         verbose_name_plural = _("Google Workspace Providers")
+
+
+class GoogleWorkspaceProviderSync(ProviderSync):
+    provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Google Workspace provider sync")
+        verbose_name_plural = _("Google Workspace provider syncs")
+
+    def __str__(self):
+        return f"Google Workspace Provider ({self.provider_id}) Sync ({self.pk})"
 
 
 class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):

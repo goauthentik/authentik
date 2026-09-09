@@ -16,7 +16,7 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider, ProviderSync
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
@@ -170,6 +170,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
         return scim_sync
 
+    @property
+    def sync_model(self) -> type[ProviderSync]:
+        return SCIMProviderSync
+
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
@@ -273,6 +277,18 @@ class SCIMProviderGroupFilter(SimpleThroughModel):
             f"SCIMProviderGroupFilter for SCIMProvider {self.scim_provider_id} "
             f"and Group {self.group_id}."
         )
+
+
+class SCIMProviderSync(ProviderSync):
+    provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("SCIM provider sync")
+        verbose_name_plural = _("SCIM provider syncs")
+
+    def __str__(self):
+        return f"SCIM Provider ({self.provider_id}) Sync ({self.pk})"
 
 
 class SCIMProviderGroupPropertyMapping(SimpleThroughModel):

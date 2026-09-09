@@ -17567,10 +17567,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/google_workspace/{id}/sync/status/:
+  /providers/google_workspace/{id}/syncs/:
     get:
-      operationId: providers_google_workspace_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: providers_google_workspace_syncs_list
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: path
         name: id
@@ -17578,6 +17578,8 @@ paths:
           type: integer
         description: A unique integer value identifying this Google Workspace Provider.
         required: true
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       tags:
       - providers
       security:
@@ -17587,7 +17589,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderSyncList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -18317,10 +18319,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/microsoft_entra/{id}/sync/status/:
+  /providers/microsoft_entra/{id}/syncs/:
     get:
-      operationId: providers_microsoft_entra_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: providers_microsoft_entra_syncs_list
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: path
         name: id
@@ -18328,6 +18330,8 @@ paths:
           type: integer
         description: A unique integer value identifying this Microsoft Entra Provider.
         required: true
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       tags:
       - providers
       security:
@@ -18337,7 +18341,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderSyncList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20396,10 +20400,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/scim/{id}/sync/status/:
+  /providers/scim/{id}/syncs/:
     get:
-      operationId: providers_scim_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: providers_scim_syncs_list
+      description: SCIMProvider Viewset
       parameters:
       - in: path
         name: id
@@ -20407,6 +20411,8 @@ paths:
           type: integer
         description: A unique integer value identifying this SCIM Provider.
         required: true
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       tags:
       - providers
       security:
@@ -20416,7 +20422,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                $ref: '#/components/schemas/PaginatedSCIMProviderSyncList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -42281,6 +42287,10 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
+        last_sync:
+          allOf:
+          - $ref: '#/components/schemas/GoogleWorkspaceProviderSync'
+          readOnly: true
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -42288,6 +42298,7 @@ components:
       - credentials
       - default_group_email_domain
       - delegated_subject
+      - last_sync
       - meta_model_name
       - name
       - pk
@@ -42470,6 +42481,47 @@ components:
       - default_group_email_domain
       - delegated_subject
       - name
+    GoogleWorkspaceProviderSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/SyncStatusEnum'
+        provider:
+          type: integer
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        groups_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        partial:
+          type: boolean
+      required:
+      - pk
+      - provider
+      - started_at
     GoogleWorkspaceProviderUser:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -45461,12 +45513,17 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        last_sync:
+          allOf:
+          - $ref: '#/components/schemas/MicrosoftEntraProviderSync'
+          readOnly: true
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - client_id
       - client_secret
       - component
+      - last_sync
       - meta_model_name
       - name
       - pk
@@ -45645,6 +45702,47 @@ components:
       - client_secret
       - name
       - tenant_id
+    MicrosoftEntraProviderSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/SyncStatusEnum'
+        provider:
+          type: integer
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        groups_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        partial:
+          type: boolean
+      required:
+      - pk
+      - provider
+      - started_at
     MicrosoftEntraProviderUser:
       type: object
       description: MicrosoftEntraProviderUser Serializer
@@ -48232,6 +48330,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedGoogleWorkspaceProviderSyncList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderSync'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedGoogleWorkspaceProviderUserList:
       type: object
       properties:
@@ -48661,6 +48774,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedMicrosoftEntraProviderSyncList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderSync'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49366,6 +49494,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedSCIMProviderSyncList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderSync'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -58249,6 +58392,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        last_sync:
+          allOf:
+          - $ref: '#/components/schemas/SCIMProviderSync'
+          readOnly: true
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -58257,6 +58404,7 @@ components:
       - auth_oauth_url_callback
       - auth_oauth_url_start
       - component
+      - last_sync
       - meta_model_name
       - name
       - pk
@@ -58385,6 +58533,47 @@ components:
       required:
       - name
       - url
+    SCIMProviderSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/SyncStatusEnum'
+        provider:
+          type: integer
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        groups_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        partial:
+          type: boolean
+      required:
+      - pk
+      - provider
+      - started_at
     SCIMProviderUser:
       type: object
       description: SCIMProviderUser Serializer
@@ -59779,19 +59968,6 @@ components:
       - immediate
       - deferred_end
       type: string
-    SyncStatus:
-      type: object
-      description: Provider/source sync status
-      properties:
-        is_running:
-          type: boolean
-        last_successful_sync:
-          type: string
-          format: date-time
-        last_sync_status:
-          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
-      required:
-      - is_running
     SyncStatusEnum:
       enum:
       - running
