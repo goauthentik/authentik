@@ -5,6 +5,7 @@ asgi
 azuread
 Azuread
 buildx
+cxwx
 goauthentik
 fxxf
 lxml

@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import xmlsec
-from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
@@ -39,6 +38,7 @@ from authentik.core.models import (
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.xml import lxml_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
@@ -90,7 +90,7 @@ class ResponseProcessor:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
         # Check if response is compressed, b64 decode it
         self._root_xml = b64decode(raw_response.encode())
-        self._root = fromstring(self._root_xml)
+        self._root = lxml_from_string(self._root_xml)
 
         # Verify response signature BEFORE decryption (signature covers encrypted content)
         if self._source.verification_kp and self._source.signed_response:
