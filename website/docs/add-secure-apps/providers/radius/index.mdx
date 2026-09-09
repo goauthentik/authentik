@@ -12,7 +12,7 @@ Refer to [Create a RADIUS provider](./create-radius-provider.mdx) for instructio
 
 ## Authentication flow
 
-Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins. 
+Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
 
 The following stages are supported:
 
@@ -72,7 +72,7 @@ The CAs trusted by the mutual TLS stage for client authentication are separate f
 
 ## RADIUS property mappings {#radius-attributes}
 
-RADIUS provider property mappings add attributes to successful authentication responses. After creating a mapping, select it under **Protocol settings** > **Property mappings** on the RADIUS provider.
+RADIUS provider property mappings add attributes to successful authentication responses. Follow the instructions to [create a custom provider property mapping](../property-mappings/index.mdx#create-a-custom-provider-property-mapping), selecting the RADIUS provider property mapping type. Then select the mapping under **Protocol settings** > **Property mappings** on the RADIUS provider.
 
 ### Mapping context
 
@@ -89,7 +89,9 @@ Mappings run in name order and modify the same `packet` in place. Their return v
 
 ### Standard attributes
 
-Use the attribute's exact name from authentik's bundled RADIUS dictionary. For example, `Session-Timeout` is defined as an integer:
+Use the attribute's exact name from authentik's [bundled RADIUS dictionary](https://github.com/goauthentik/authentik/blob/main/authentik/providers/radius/dictionaries/dictionary).
+
+For example, `Session-Timeout` is defined as an integer:
 
 ```python
 packet["Session-Timeout"] = 3600
@@ -101,7 +103,13 @@ An attribute appearing in a vendor dictionary does not guarantee that it is pres
 
 ### Vendor-specific attributes
 
-For a vendor-specific attribute, use its bundled dictionary name or register it with `define_attribute()` before assigning a value. This example registers the name `Cisco-AV-Pair` for Cisco's vendor code `9`, attribute code `1`, and assigns a privilege level:
+For a vendor-specific attribute already defined in a bundled dictionary, use its existing name. For example, the bundled Cisco dictionary defines vendor code `9`, attribute code `1`, under the name `AVPair`:
+
+```python
+packet["AVPair"] = "shell:priv-lvl=15"
+```
+
+To register a new lookup name, use `define_attribute()` before assigning a value. The following alternative registers `Cisco-AV-Pair` for the same vendor-specific attribute and assigns the same privilege level:
 
 ```python
 define_attribute(
@@ -114,8 +122,6 @@ define_attribute(
 
 packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
 ```
-
-The bundled Cisco dictionary also defines this attribute under the name `AVPair`. The example registers an alternative name for the same vendor-specific attribute.
 
 | Argument         | Description                                                  |
 | ---------------- | ------------------------------------------------------------ |

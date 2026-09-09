@@ -14,7 +14,14 @@ Creating an authentik RADIUS provider requires the following steps:
 
 The RADIUS provider runs an authentication flow in the background. Choose a flow that uses the [supported stages](./index.mdx#authentication-flow).
 
-For password-based authentication with PAP, the flow must identify the user, validate their password, and log them in with a user login stage. You can use an existing flow if its stages and MFA requirements are compatible with RADIUS. If you need different requirements for RADIUS, create a separate flow rather than changing the flow used for web logins.
+For password-based authentication with PAP, you can use an existing flow if its stages and MFA requirements are compatible with RADIUS. If you need different requirements for RADIUS, [create a separate flow](../../flows-stages/flow/index.mdx#create-a-flow) with **Designation** set to **Authentication**, rather than changing the flow used for web logins.
+
+A typical PAP authentication flow runs these stages in order:
+
+1. [Identification stage](../../flows-stages/stages/identification/index.mdx): identify the user.
+2. [Password stage](../../flows-stages/stages/password/index.mdx): validate the user's password.
+3. [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx), when MFA is required: validate a supported authenticator.
+4. [User login stage](../../flows-stages/stages/user_login/index.mdx): complete authentication.
 
 If the flow requires MFA, ensure that users have a supported authenticator configured. For passwords with an appended TOTP or static code, enable **Code-based MFA Support** on the provider. See [Code-based MFA support](./index.mdx#code-based-mfa-support).
 
@@ -38,7 +45,7 @@ You can create an application and provider together from the Admin interface:
 6. Click **Next**. Configure any policy, user, or group bindings that should control access to the application, then click **Next** again.
 7. Review the application and provider details and click **Create Application**.
 
-Users must be allowed to access the application before their RADIUS authentication can succeed. If the applications has configured [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), they must allow access according to the application's **Policy engine mode**.
+Users must be allowed to access the application before their RADIUS authentication can succeed. If the application has [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), ensure that  users are included in an applicable binding.
 
 :::info Create a provider separately
 You can also create a provider from **Applications** > **Providers** by clicking **New Provider** and selecting **Radius Provider**. Associate the provider with an application before adding it to an outpost.
@@ -81,7 +88,7 @@ Configure the RADIUS client with:
 - The shared secret configured on the provider
 - The authentication method: PAP for password-based authentication, or EAP-TLS for certificate-based authentication
 
-For EAP-TLS, also configure the client devices with their client certificates and private keys, and configure them to validate the RADIUS server certificate. See [EAP-TLS](./index.mdx#eap).
+For EAP-TLS, also configure the end-user devices with their client certificates and private keys, and configure them to validate the RADIUS server certificate. See [EAP-TLS](./index.mdx#eap).
 
 ## Configuration verification
 
