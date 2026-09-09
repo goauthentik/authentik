@@ -13,7 +13,11 @@ import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
-import { createAlgoliaConfig, FOOTER_COPYRIGHT } from "@goauthentik/docusaurus-theme/config";
+import {
+    createAlgoliaConfig,
+    createMDXOnlyPlugin,
+    FOOTER_COPYRIGHT,
+} from "@goauthentik/docusaurus-theme/config";
 import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
@@ -118,6 +122,8 @@ const config = createDocusaurusConfig({
     //#region Plugins
 
     plugins: [
+        // This site skips `extendConfig`, so the MDX-only check is wired up by hand.
+        createMDXOnlyPlugin(),
         [
             "@goauthentik/docusaurus-theme/releases/plugin",
             /** @type {AKReleasesPluginOptions} */ ({

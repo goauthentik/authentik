@@ -20,20 +20,14 @@
 export interface ExpressionPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicyRequest
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ExpressionPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicyRequest
      */
     expression: string;
 }

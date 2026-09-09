@@ -23,20 +23,14 @@ import { LogEventFromJSON } from "./LogEvent";
 export interface PolicyTestResult {
     /**
      *
-     * @type {boolean}
-     * @memberof PolicyTestResult
      */
     passing: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PolicyTestResult
      */
     readonly messages: Array<string>;
     /**
      *
-     * @type {Array<LogEvent>}
-     * @memberof PolicyTestResult
      */
     readonly logMessages: Array<LogEvent>;
 }

@@ -25,20 +25,14 @@ import { PasswordStageFromJSON, PasswordStageToJSON } from "./PasswordStage";
 export interface PaginatedPasswordStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPasswordStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PasswordStage>}
-     * @memberof PaginatedPasswordStageList
      */
     results: Array<PasswordStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPasswordStageList
      */
     autocomplete: { [key: string]: any };
 }

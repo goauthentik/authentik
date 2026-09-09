@@ -20,8 +20,6 @@
 export interface TokenSetKeyRequest {
     /**
      *
-     * @type {string}
-     * @memberof TokenSetKeyRequest
      */
     key: string;
 }

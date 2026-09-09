@@ -20,8 +20,6 @@
 export interface DummyChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof DummyChallengeResponseRequest
      */
     component?: string;
 }

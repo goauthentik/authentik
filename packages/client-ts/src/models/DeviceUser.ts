@@ -20,26 +20,18 @@
 export interface DeviceUser {
     /**
      *
-     * @type {string}
-     * @memberof DeviceUser
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUser
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUser
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUser
      */
     home?: string;
 }

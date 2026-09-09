@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
+
 /**
  * Tenant recovery key creation response serializer
  * @export
@@ -20,14 +22,10 @@
 export interface TenantRecoveryKeyResponse {
     /**
      *
-     * @type {Date}
-     * @memberof TenantRecoveryKeyResponse
      */
     expiry: Date;
     /**
      *
-     * @type {string}
-     * @memberof TenantRecoveryKeyResponse
      */
     url: string;
 }
@@ -55,7 +53,7 @@ export function TenantRecoveryKeyResponseFromJSONTyped(
         return json;
     }
     return {
-        expiry: new Date(json["expiry"]),
+        expiry: json["expiry"] == null ? json["expiry"] : parseDateTime(json["expiry"]),
         url: json["url"],
     };
 }
@@ -73,7 +71,7 @@ export function TenantRecoveryKeyResponseToJSONTyped(
     }
 
     return {
-        expiry: value["expiry"].toISOString(),
+        expiry: value["expiry"] == null ? value["expiry"] : serializeDateTime(value["expiry"]),
         url: value["url"],
     };
 }

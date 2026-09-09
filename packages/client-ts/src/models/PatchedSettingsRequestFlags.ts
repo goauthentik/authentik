@@ -20,29 +20,16 @@
 export interface PatchedSettingsRequestFlags {
     /**
      * Applications with no policies bound can be accessed by any user.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     coreDefaultAppAccess: boolean;
     /**
      * Include additional information in audit logs, may incur a performance penalty.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     enterpriseAuditIncludeExpandedDiff: boolean;
     /**
      * Upon successful authentication, re-start authentication in other open tabs.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     flowsContinuousLogin: boolean;
-    /**
-     * Refresh other tabs after successful authentication.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
-     * @deprecated
-     */
-    flowsRefreshOthers: boolean;
 }
 
 /**
@@ -72,13 +59,6 @@ export function instanceOfPatchedSettingsRequestFlags(
             (value as Record<string, any>)["flows_continuous_login"] === undefined)
     )
         return false;
-    if (
-        (!("flowsRefreshOthers" in (value as Record<string, any>)) &&
-            !("flows_refresh_others" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsRefreshOthers"] === undefined &&
-            (value as Record<string, any>)["flows_refresh_others"] === undefined)
-    )
-        return false;
     return true;
 }
 
@@ -97,7 +77,6 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         coreDefaultAppAccess: json["core_default_app_access"],
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
-        flowsRefreshOthers: json["flows_refresh_others"],
     };
 }
 
@@ -117,6 +96,5 @@ export function PatchedSettingsRequestFlagsToJSONTyped(
         core_default_app_access: value["coreDefaultAppAccess"],
         enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
         flows_continuous_login: value["flowsContinuousLogin"],
-        flows_refresh_others: value["flowsRefreshOthers"],
     };
 }

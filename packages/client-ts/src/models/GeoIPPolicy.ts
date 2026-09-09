@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { CountryCodeEnum } from "./CountryCodeEnum";
 import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
 import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner";
@@ -25,104 +26,78 @@ import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjI
 export interface GeoIPPolicy {
     /**
      *
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof GeoIPPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof GeoIPPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof GeoIPPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Array<number>}
-     * @memberof GeoIPPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
+    /**
+     *
      */
     asns?: Array<number>;
     /**
      *
-     * @type {Array<CountryCodeEnum>}
-     * @memberof GeoIPPolicy
      */
     countries: Array<CountryCodeEnum>;
     /**
      *
-     * @type {Array<GeoIPPolicyCountriesObjInner>}
-     * @memberof GeoIPPolicy
      */
     readonly countriesObj: Array<GeoIPPolicyCountriesObjInner>;
     /**
      *
-     * @type {boolean}
-     * @memberof GeoIPPolicy
      */
     checkHistoryDistance?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof GeoIPPolicy
      */
     historyMaxDistanceKm?: number;
     /**
      *
-     * @type {number}
-     * @memberof GeoIPPolicy
      */
     distanceToleranceKm?: number;
     /**
      *
-     * @type {number}
-     * @memberof GeoIPPolicy
      */
     historyLoginCount?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof GeoIPPolicy
      */
     checkImpossibleTravel?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof GeoIPPolicy
      */
     impossibleToleranceKm?: number;
 }
@@ -162,6 +137,14 @@ export function instanceOfGeoIPPolicy(value: object): value is GeoIPPolicy {
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("countries" in value) || value["countries"] === undefined) return false;
     if (
         (!("countriesObj" in (value as Record<string, any>)) &&
@@ -190,6 +173,11 @@ export function GeoIPPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         asns: json["asns"] == null ? undefined : json["asns"],
         countries: (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
         countriesObj: (json["countries_obj"] as Array<any>).map(
@@ -223,6 +211,8 @@ export function GeoIPPolicyToJSONTyped(
         | "verboseNamePlural"
         | "metaModelName"
         | "boundTo"
+        | "lastUpdated"
+        | "created"
         | "countriesObj"
     > | null,
     ignoreDiscriminator: boolean = false,

@@ -20,86 +20,58 @@
 export interface AgentConnectorRequest {
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     snapshotExpiry?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     authSessionDuration?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
      */
     authTerminateSessionOnExpiry?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     refreshInterval?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     authorizationFlow?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof AgentConnectorRequest
      */
     nssUidOffset?: number;
     /**
      *
-     * @type {number}
-     * @memberof AgentConnectorRequest
      */
     nssGidOffset?: number;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     challengeKey?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnectorRequest
      */
     challengeIdleTimeout?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
      */
     challengeTriggerCheckIn?: boolean;
     /**
      *
-     * @type {Array<number>}
-     * @memberof AgentConnectorRequest
      */
     jwtFederationProviders?: Array<number>;
 }

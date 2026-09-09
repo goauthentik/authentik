@@ -41,176 +41,118 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface PatchedSAMLSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     name?: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     slug?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedSAMLSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedSAMLSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedSAMLSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Flow used before authentication.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     preAuthenticationFlow?: string;
     /**
      * Also known as Entity ID. Defaults to the Metadata URL.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     issuerOverride?: string;
     /**
      * URL that the initial Login request is sent to.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     ssoUrl?: string;
     /**
      * Optional URL if your IDP supports Single-Logout.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     sloUrl?: string | null;
     /**
      * Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     allowIdpInitiated?: boolean;
     /**
      * When enabled, the IdP will re-authenticate the user even if a session exists.
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     forceAuthn?: boolean;
     /**
      * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
      *
-     * @type {BindingTypeEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     bindingType?: BindingTypeEnum;
     /**
      * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     verificationKp?: string | null;
     /**
      * Keypair used to sign outgoing Responses going to the Identity Provider.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     signingKp?: string | null;
     /**
      *
-     * @type {DigestAlgorithmEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof PatchedSAMLSourceRequest
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     temporaryUserDeleteAfter?: string;
     /**
      * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
      */
     encryptionKp?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     signedAssertion?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedSAMLSourceRequest
      */
     signedResponse?: boolean;
 }

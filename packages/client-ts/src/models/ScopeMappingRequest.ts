@@ -20,32 +20,22 @@
 export interface ScopeMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof ScopeMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof ScopeMappingRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof ScopeMappingRequest
      */
     expression: string;
     /**
      * Scope name requested by the client
-     * @type {string}
-     * @memberof ScopeMappingRequest
      */
     scopeName: string;
     /**
      * Description shown to the user when consenting. If left empty, the user won't be informed.
-     * @type {string}
-     * @memberof ScopeMappingRequest
      */
     description?: string;
 }

@@ -26,26 +26,18 @@ import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt";
 export interface PromptChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof PromptChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof PromptChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof PromptChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {Array<StagePrompt>}
-     * @memberof PromptChallenge
      */
     fields: Array<StagePrompt>;
 }

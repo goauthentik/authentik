@@ -20,32 +20,22 @@
 export interface RelatedGroup {
     /**
      *
-     * @type {string}
-     * @memberof RelatedGroup
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof RelatedGroup
      */
     name: string;
     /**
      * Users added to this group will be superusers.
-     * @type {boolean}
-     * @memberof RelatedGroup
      */
     isSuperuser?: boolean;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof RelatedGroup
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof RelatedGroup
      */
     readonly groupUuid: string;
 }

@@ -20,8 +20,6 @@
 export interface UserPath {
     /**
      *
-     * @type {Array<string>}
-     * @memberof UserPath
      */
     readonly paths: Array<string>;
 }

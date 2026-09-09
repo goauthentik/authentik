@@ -95,7 +95,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
@@ -114,7 +114,9 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
-    queryset = OAuth2Provider.objects.all()
+    queryset = OAuth2Provider.objects.select_related(
+        "application", "backchannel_application"
+    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",

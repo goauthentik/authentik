@@ -20,8 +20,6 @@
 export interface PropertyMappingPreview {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PropertyMappingPreview
      */
     readonly preview: { [key: string]: any };
 }

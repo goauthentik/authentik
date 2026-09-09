@@ -4,6 +4,8 @@
  * @import { Preview } from "@storybook/web-components";
  */
 
+import "@goauthentik/fonts/faces.css";
+import "@goauthentik/fonts/icons.css";
 import "#styles/interface.global.css";
 import "#styles/static.global.css";
 import "./preview.css";

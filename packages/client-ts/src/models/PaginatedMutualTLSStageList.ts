@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedMutualTLSStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedMutualTLSStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<MutualTLSStage>}
-     * @memberof PaginatedMutualTLSStageList
      */
     results: Array<MutualTLSStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedMutualTLSStageList
      */
     autocomplete: { [key: string]: any };
 }

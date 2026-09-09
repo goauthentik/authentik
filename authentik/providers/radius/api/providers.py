@@ -52,7 +52,7 @@ class RadiusProviderSerializer(
             "mfa_support",
             "certificate",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class RadiusProviderViewSet(UsedByMixin, ModelViewSet):

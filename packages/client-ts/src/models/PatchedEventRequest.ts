@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { EventActions } from "./EventActions";
 import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
@@ -23,44 +24,30 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 export interface PatchedEventRequest {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEventRequest
      */
     user?: { [key: string]: any };
     /**
      *
-     * @type {EventActions}
-     * @memberof PatchedEventRequest
      */
     action?: EventActions;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEventRequest
      */
     app?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEventRequest
      */
     context?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof PatchedEventRequest
      */
     clientIp?: string | null;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedEventRequest
      */
     expires?: Date;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEventRequest
      */
     brand?: { [key: string]: any };
 }
@@ -94,7 +81,7 @@ export function PatchedEventRequestFromJSONTyped(
                 : json["client_ip"] === null
                   ? null
                   : json["client_ip"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
         brand: json["brand"] == null ? undefined : json["brand"],
     };
 }
@@ -117,7 +104,7 @@ export function PatchedEventRequestToJSONTyped(
         app: value["app"],
         context: value["context"],
         client_ip: value["clientIp"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         brand: value["brand"],
     };
 }

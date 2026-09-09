@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { AuthenticatedSessionAsn } from "./AuthenticatedSessionAsn";
 import {
     AuthenticatedSessionAsnFromJSON,
@@ -36,62 +37,42 @@ import {
 export interface AuthenticatedSession {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSession
      */
     uuid?: string;
     /**
      * Check if session is currently active session
-     * @type {boolean}
-     * @memberof AuthenticatedSession
      */
     readonly current: boolean;
     /**
      *
-     * @type {AuthenticatedSessionUserAgent}
-     * @memberof AuthenticatedSession
      */
     userAgent: AuthenticatedSessionUserAgent;
     /**
      *
-     * @type {AuthenticatedSessionGeoIp}
-     * @memberof AuthenticatedSession
      */
     geoIp: AuthenticatedSessionGeoIp | null;
     /**
      *
-     * @type {AuthenticatedSessionAsn}
-     * @memberof AuthenticatedSession
      */
     asn: AuthenticatedSessionAsn | null;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatedSession
      */
     user: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSession
      */
     readonly lastIp: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSession
      */
     readonly lastUserAgent: string;
     /**
      *
-     * @type {Date}
-     * @memberof AuthenticatedSession
      */
     readonly lastUsed: Date;
     /**
      *
-     * @type {Date}
-     * @memberof AuthenticatedSession
      */
     readonly expires: Date;
 }
@@ -162,8 +143,8 @@ export function AuthenticatedSessionFromJSONTyped(
         user: json["user"],
         lastIp: json["last_ip"],
         lastUserAgent: json["last_user_agent"],
-        lastUsed: new Date(json["last_used"]),
-        expires: new Date(json["expires"]),
+        lastUsed: json["last_used"] == null ? json["last_used"] : parseDateTime(json["last_used"]),
+        expires: json["expires"] == null ? json["expires"] : parseDateTime(json["expires"]),
     };
 }
 

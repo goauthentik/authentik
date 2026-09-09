@@ -1617,10 +1617,6 @@
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-  <target>用於對權杖進行簽署的金鑰。</target>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
 </trans-unit>
@@ -3181,14 +3177,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
-</trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-  <target>編輯政策</target>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
-  <target>編輯群組</target>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -5961,10 +5949,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>向使用者顯示任意輸入欄位，例如在註冊過程中。資料會保存在流程上下文中的「prompt_data」變數中。</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>欄位</target>
@@ -6403,10 +6387,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
   <target>階段類型</target>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
-  <target>編輯階段</target>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -8082,12 +8062,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
 </trans-unit>
@@ -8448,9 +8422,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4cbbb47ef050cd0e">
   <source>Paste your CAPTCHA secret key...</source>
-</trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
 </trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
@@ -10085,9 +10056,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s5ba577d0cda2bad2">
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
 </trans-unit>
@@ -10171,9 +10139,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
@@ -11408,6 +11373,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="stages.source.match-failure.missing-property.label">
   <source>Missing property</source>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
+</trans-unit>
+<trans-unit id="sdcfef055f5b959f5">
+  <source>The returned assertion was not a PublicKeyCredential</source>
 </trans-unit>
 </body>
 </file>

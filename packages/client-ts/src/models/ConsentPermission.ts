@@ -20,14 +20,10 @@
 export interface ConsentPermission {
     /**
      *
-     * @type {string}
-     * @memberof ConsentPermission
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof ConsentPermission
      */
     id: string;
 }

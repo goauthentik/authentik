@@ -1,7 +1,7 @@
 /**
  * @file Client-side observer for ESBuild events.
  *
- * @import { BaseLogger } from "@goauthentik/logger-js";
+ * @import { ConsoleLike } from "@goauthentik/esbuild-plugin-live-reload/shared";
  * @import { Message as ESBuildMessage } from "esbuild";
  */
 
@@ -44,7 +44,7 @@ const disposeSymbol = Symbol.dispose || Symbol.for("dispose");
  */
 export class ESBuildObserver extends EventSource {
     /**
-     * @type {BaseLogger}
+     * @type {ConsoleLike}
      * @protected
      */
     logger;
@@ -170,7 +170,7 @@ export class ESBuildObserver extends EventSource {
      * Initialize the ESBuild observer. This should only be called once.
      *
      * @param {string | URL} [url]
-     * @param {BaseLogger} [logger]
+     * @param {ConsoleLike} [logger]
      * @returns {ESBuildObserver}
      */
     static initialize = (url, logger) => {
@@ -182,7 +182,7 @@ export class ESBuildObserver extends EventSource {
     /**
      *
      * @param {string | URL} [url]
-     * @param {BaseLogger} [logger]
+     * @param {ConsoleLike} [logger]
      */
     constructor(url, logger = createLogger()) {
         if (!url) {
