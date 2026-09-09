@@ -567,6 +567,28 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web: keep sticky form actions below nav menus (#25336)
 - web: keep the search-select dropdown inside its modal (#24812)
 
+## Fixed in 2026.8.2
+
+- core: explicitly check is_active in auth backends (cherry-pick #25729 to version-2026.8) (#25761)
+- core: fix bulk session revocation (cherry-pick #25816 to version-2026.8) (#25817)
+- lib: avoid DNS resolution in fqdn_rand (cherry-pick #25728 to version-2026.8) (#25758)
+- lib/expression: fix PickleError due to resolver match when using ak_call_policy (cherry-pick #25763 to version-2026.8) (#25768)
+- lifecycle: fix server prometheus metrics getting registered early with pid instead of worker ID (cherry-pick #25883 to version-2026.8) (#25897)
+- packages/django-dramatiq-postgres: prevent crashing consumer thread on schedules with unknown actors (cherry-pick #25656 to version-2026.8) (#25722)
+- rbac: guard for non-existent object in object permission API (cherry-pick #25601 to version-2026.8) (#25674)
+- security: automated internal backport of patch 1751-secrets-read-permission.sec.patch to authentik-2026.8 (#25965)
+- security: automated internal backport of patch 1877-group-hierarchy-roles.sec.patch to authentik-2026.8 (#25966)
+- security: automated internal backport of patch 1914-saml.sec.patch to authentik-2026.8 (#25967)
+- security: automated internal backport of patch 2032-authenticator-email-recipient-override.sec.patch to authentik-2026.8 (#25968)
+- security: automated internal backport of patch 2190-libxml2-doctype.sec.patch to authentik-2026.8 (#25969)
+- tenants/settings: fix `flags` response (cherry-pick #25616 to version-2026.8) (#25828)
+- web/admin: align command palette navigation with sidebar (cherry-pick #25732 to version-2026.8) (#25733)
+- web/admin: fix schedule form (cherry-pick #25778 to version-2026.8) (#25830)
+- web/admin: oauth provider: explain what happens when no signing key is selected (cherry-pick #25756 to version-2026.8) (#25769)
+- web: fix switches in table toolbars (cherry-pick #25730 to version-2026.8) (#25737)
+- web: preserve custom event action labels (cherry-pick #25655 to version-2026.8) (#25833)
+- web: show pre-selected value in paginated search-selects (cherry-pick #25609 to version-2026.8) (#25612)
+
 ## API Changes
 
 ### authentik (v 2026.8.0)
