@@ -1,7 +1,7 @@
-from datetime import datetime
 from uuid import uuid4
 
 from django.db import models
+from django.utils.timezone import now
 from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import get_broker
 from dramatiq.message import Message
@@ -24,16 +24,18 @@ class Sync(InternallyManagedMixin, models.Model):
     # tasks = models.ManyToManyField(Task, related_name="+")
     tasks: models.ManyToManyField
 
+    status = models.TextField(choices=SyncStatus, default=SyncStatus.RUNNING)
+
     started_at = models.DateTimeField(auto_now_add=True)
+
+    finished_at = models.DateTimeField(null=True, default=None)
 
     class Meta:
         abstract = True
 
     @classmethod
     def cleanup(cls) -> int:
-        count = cls.objects.filter(tasks__count=0).delete()[0]
-        count += cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
-        return count
+        return cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
 
     @property
     def done(self) -> bool:
@@ -43,14 +45,7 @@ class Sync(InternallyManagedMixin, models.Model):
         )
 
     @property
-    def finished_at(self) -> datetime | None:
-        last_task = self.tasks.order_by("-mtime").first()
-        if last_task:
-            return last_task.mtime
-        return None
-
-    @property
-    def status(self) -> SyncStatus:
+    def tasks_status(self) -> SyncStatus:
         states = self.tasks.values_list("aggregated_status", flat=True)
         if any(
             state
@@ -77,6 +72,14 @@ class Sync(InternallyManagedMixin, models.Model):
         if any(state == TaskStatus.WARNING for state in states):
             return SyncStatus.WARNING
         return SyncStatus.DONE
+
+    def persist_status(self) -> None:
+        self.status = self.tasks_status
+        update_fields = ["status"]
+        if self.status != SyncStatus.RUNNING:
+            self.finished_at = now()
+            update_fields.append("finished_at")
+        self.save(update_fields=update_fields)
 
     def enqueue(self, messages: list[Message], existing_tasks_as_dependencies: bool = True) -> None:
         broker = get_broker()
