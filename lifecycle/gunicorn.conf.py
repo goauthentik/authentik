@@ -27,13 +27,6 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
-<<<<<<< HEAD
-=======
-# preload_app below means the app (and AuthentikCoreConfig.ready()) loads once in this
-# master process before workers are forked; tell it to defer each tracer's post-fork setup
-# to the post_fork hook below instead (see authentik.lib.tracing.setup_post_fork)
-os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
-
 # Install this *before* preload_app loads Django below, so metrics that get constructed
 # pre-fork (e.g. django-prometheus's Counters) share
 # the same MultiProcessValue class as everything else instead of being permanently bound to
@@ -45,7 +38,6 @@ values.ValueClass = MultiProcessValue(
     lambda: _worker_id["value"] if _worker_id["value"] is not None else 0
 )
 
->>>>>>> 006c0f335 (lifecycle: fix server prometheus metrics getting registered early with pid instead of worker ID (#25883))
 setup()
 
 wait_for_db()
