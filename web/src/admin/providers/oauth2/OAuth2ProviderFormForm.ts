@@ -1,8 +1,8 @@
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -206,15 +206,19 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="clientSecret"
-                    autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${provider.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.clientSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
+                    ?revealed=${!provider.pk}
                     ?hidden=${!showClientSecret}
                 >
-                </ak-hidden-text-input>
+                </ak-secret-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"

@@ -25,9 +25,9 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
 
     async send(data: RadiusProvider): Promise<RadiusProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRadiusUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersRadiusPartialUpdate({
                 id: this.instance.pk,
-                radiusProviderRequest: data,
+                patchedRadiusProviderRequest: data,
             });
         }
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusCreate({
