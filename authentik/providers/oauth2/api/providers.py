@@ -84,6 +84,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
+        secret_fields = ["client_secret"]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 

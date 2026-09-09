@@ -43,6 +43,7 @@ OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
+USER_PREFIX_OUTPOSTS = "ak-outpost-"
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
@@ -312,7 +313,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     @property
     def user_identifier(self):
         """Username for service user"""
-        return f"ak-outpost-{self.uuid.hex}"
+        return f"{USER_PREFIX_OUTPOSTS}{self.uuid.hex}"
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:

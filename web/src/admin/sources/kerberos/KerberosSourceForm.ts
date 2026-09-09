@@ -273,14 +273,14 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
                     ></ak-secret-textarea-input>
-                    <ak-text-input
+                    <ak-secret-text-input
                         name="syncCcache"
                         label=${msg("Sync credentials cache")}
-                        value=${ifDefined(this.instance?.syncCcache)}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.",
                         )}
-                    ></ak-text-input>
+                    ></ak-secret-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("SPNEGO settings")}">
@@ -301,14 +301,14 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
                     ></ak-secret-textarea-input>
-                    <ak-text-input
+                    <ak-secret-text-input
                         name="spnegoCcache"
                         label=${msg("SPNEGO credentials cache")}
-                        value=${ifDefined(this.instance?.spnegoCcache)}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.",
                         )}
-                    ></ak-text-input>
+                    ></ak-secret-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Kerberos Attribute mapping")}">

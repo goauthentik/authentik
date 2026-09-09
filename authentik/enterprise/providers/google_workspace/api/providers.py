@@ -41,6 +41,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "sync_page_timeout",
             "dry_run",
         ]
+        secret_fields = ["credentials"]
         extra_kwargs = {}
 
 

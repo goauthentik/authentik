@@ -1,4 +1,4 @@
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -38,15 +38,15 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
-    return html`<ak-hidden-text-input
+    return html`<ak-secret-text-input
         name="token"
         label=${msg("Token")}
-        value="${provider?.token ?? ""}"
         .errorMessages=${errors?.token}
-        required
+        ?required=${!provider}
+        ?revealed=${!provider}
         help=${msg("Token to authenticate with.")}
         input-hint="code"
-    ></ak-hidden-text-input>`;
+    ></ak-secret-text-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
