@@ -21,6 +21,9 @@ runs:
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: |
+        # The runner image installs Chrome and leaves its apt source behind.
+        # Nothing here installs from it, and a broken index there breaks the
+        # apt-get update below. https://github.com/goauthentik/authentik/pull/25990
         sudo rm -f /etc/apt/sources.list.d/google-chrome.*
         sudo apt-get remove --purge man-db
     - name: Install apt deps
