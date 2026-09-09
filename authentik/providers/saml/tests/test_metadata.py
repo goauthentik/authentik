@@ -170,3 +170,13 @@ class TestServiceProviderMetadataParser(TestCase):
         )
         ctx.key = key
         ctx.verify(signature_node)
+
+    def test_doctype(self):
+        """Test that metadata with a document type declaration is refused"""
+        metadata = load_fixture("fixtures/simple.xml").replace(
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0"?><!DOCTYPE md:EntityDescriptor>',
+        )
+
+        with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ServiceProviderMetadataParser().parse(metadata)
