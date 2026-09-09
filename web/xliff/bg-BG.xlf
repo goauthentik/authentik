@@ -11279,10 +11279,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Copy to clipboard</source>
   <target>Копирай в клипборда</target>
 </trans-unit>
-<trans-unit id="s757a4c2248c0b9da">
-  <source>Entity</source>
-  <target>Обект</target>
-</trans-unit>
 <trans-unit id="entity.edit.named">
   <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
   <target>Редактирай "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></target>
@@ -13038,6 +13034,42 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdcfef055f5b959f5">
   <source>The returned assertion was not a PublicKeyCredential</source>
+</trans-unit>
+<trans-unit id="s6c3d02133d321ac4">
+  <source>End of the flow</source>
+</trans-unit>
+<trans-unit id="sdfea8f885f8806d9">
+  <source>Pre-flow policies</source>
+</trans-unit>
+<trans-unit id="s6aca06ce9d4e3ae0">
+  <source>Stage (<x id="0" equiv-text="${verboseName}"/>)</source>
+</trans-unit>
+<trans-unit id="s62ea8b66e4a87f6e">
+  <source>Policy (<x id="0" equiv-text="${verboseName}"/>)</source>
+</trans-unit>
+<trans-unit id="s2f47ae5526f68b0c">
+  <source>Flow authentication requirement</source>
+</trans-unit>
+<trans-unit id="s518b3c50e3e3d981">
+  <source>Policy passed</source>
+</trans-unit>
+<trans-unit id="se5545f49172651fe">
+  <source>Policy denied</source>
+</trans-unit>
+<trans-unit id="s4997ad214a64187e">
+  <source>Requirement met</source>
+</trans-unit>
+<trans-unit id="s624a3fe29b50b0b2">
+  <source>Binding: <x id="0" equiv-text="${order}"/></source>
+</trans-unit>
+<trans-unit id="s19d7851880801278">
+  <source>Use the username and password below to authenticate.</source>
+</trans-unit>
+<trans-unit id="s4a71427ffe9a1b4a">
+  <source>You can retrieve the password from the user's Credentials/Tokens tab or from Directory &gt; Tokens and App Passwords.</source>
+</trans-unit>
+<trans-unit id="router.view.error.heading">
+  <source>This page failed to load.</source>
 </trans-unit>
 </body>
 </file>
