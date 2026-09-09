@@ -305,7 +305,7 @@ class ResponseProcessor:
             return
         assertion_id = assertion.attrib.get("ID")
         if not assertion_id:
-            LOGGER.warning("Assertion has no ID, cannot check for re-use")
+            LOGGER.warning("Assertion has no ID, cannot check for reuse")
             return
         key = CACHE_SEEN_ASSERTION_ID % (
             self._source.pk,
