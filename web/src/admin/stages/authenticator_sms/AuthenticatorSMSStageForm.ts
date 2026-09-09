@@ -12,6 +12,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorSMSStage,
+    AuthenticatorSMSStageRequest,
     AuthTypeEnum,
     Flow,
     FlowDesignationEnum,
@@ -56,7 +57,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             });
         }
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-            authenticatorSMSStageRequest: data,
+            authenticatorSMSStageRequest: data as unknown as AuthenticatorSMSStageRequest,
         });
     }
 
