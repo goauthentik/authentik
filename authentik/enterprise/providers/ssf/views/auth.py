@@ -8,6 +8,7 @@ from rest_framework.request import Request
 
 from authentik.core.models import Token, TokenIntents, User
 from authentik.enterprise.providers.ssf.models import SSFProvider
+from authentik.lib.tracing import active_tracer
 from authentik.providers.oauth2.models import AccessToken
 
 if TYPE_CHECKING:
@@ -17,15 +18,15 @@ if TYPE_CHECKING:
 class SSFTokenAuth(BaseAuthentication):
     """SSF Token auth"""
 
-    view: "SSFView"
+    view: SSFView
 
-    def __init__(self, view: "SSFView") -> None:
+    def __init__(self, view: SSFView) -> None:
         super().__init__()
         self.view = view
 
     def check_token(self, key: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct provider"""
-        token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
+        token = Token.objects.filter(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
         provider: SSFProvider = token.ssfprovider_set.first()
@@ -39,7 +40,7 @@ class SSFTokenAuth(BaseAuthentication):
         """Check JWT-based authentication, this supports tokens issued either by providers
         configured directly in the provider, and by providers assigned to the application
         that the SSF provider is a backchannel provider of."""
-        token = AccessToken.filter_not_expired(token=jwt, revoked=False).first()
+        token = AccessToken.objects.filter(token=jwt, revoked=False).first()
         if not token:
             return None
         ssf_provider = SSFProvider.objects.filter(
@@ -52,6 +53,7 @@ class SSFTokenAuth(BaseAuthentication):
         self.view.provider = ssf_provider
         return token
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request).decode()
         auth_type, _, key = auth.partition(" ")
@@ -64,3 +66,7 @@ class SSFTokenAuth(BaseAuthentication):
         if jwt_token:
             return (jwt_token.user, token)
         return None
+
+    # Required to correctly propagate a 401 header which the SSF spec requires
+    def authenticate_header(self, request):
+        return "SSF"

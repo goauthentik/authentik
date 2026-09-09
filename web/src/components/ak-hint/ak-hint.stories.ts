@@ -1,3 +1,4 @@
+import "#components/ak-hint/ak-hint-footer";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "../ak-radio-input.js";
 import "./ak-hint-body.js";

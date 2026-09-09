@@ -41,7 +41,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
             LOGGER.warning(
                 "Unable to fetch user profile",
                 exc=exc,
-                response=exc.response.text if exc.response else str(exc),
+                response=exc.response.text if exc.response is not None else str(exc),
             )
             return None
         profile_data["raw_groups"] = group_response.json()

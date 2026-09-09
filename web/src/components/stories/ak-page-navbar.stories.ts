@@ -40,9 +40,9 @@ declare global {
 }
 
 export const SimplePageNavbar = () => {
-    return html` <story-ak-page-navbar open @sidebar-toggle=${() => {}}> </story-ak-page-navbar> `;
+    return html`<story-ak-page-navbar></story-ak-page-navbar>`;
 };
 
 export const PageNavbarWithIcon = () => {
-    return html` <story-ak-page-navbar open @sidebar-toggle=${() => {}}> </story-ak-page-navbar> `;
+    return html`<story-ak-page-navbar></story-ak-page-navbar>`;
 };

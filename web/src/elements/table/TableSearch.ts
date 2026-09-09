@@ -1,7 +1,6 @@
 import "#components/ak-search-ql/index";
 
 import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -14,10 +13,9 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
-export class TableSearchForm extends WithLicenseSummary(AKElement) {
+export class TableSearchForm extends AKElement {
     @property({ type: String, reflect: false })
     public defaultValue?: string;
 
@@ -37,7 +35,6 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
     public onSearch?: (value: string) => void;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFToolbar,
         PFInputGroup,
@@ -97,6 +94,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
 
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
+        event.stopPropagation();
 
         const form = this.#formRef.value;
 
@@ -112,7 +110,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
     };
 
     protected renderInput(): TemplateResult {
-        if (this.supportsQL && this.hasEnterpriseLicense) {
+        if (this.supportsQL) {
             return html`<ak-search-ql
                     label=${ifPresent(this.label)}
                     role="presentation"
@@ -124,22 +122,33 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
                 <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`;
         }
 
-        return html`<input
-            aria-label=${ifPresent(this.label)}
-            name="search"
-            type="search"
-            autocomplete="off"
-            placeholder=${ifPresent(this.placeholder)}
-            value=${ifPresent(this.defaultValue)}
-            class="pf-c-form-control"
-            @search=${this.#searchListener}
-        />`;
+        // The ts-ignore comment is lit-analyzer's solution to "ignore semantic errors in the
+        // following HTML code." NOTE: This code needs to be revised. The three common browsers all
+        // implement `type="search"` in different and incompatible ways. Safari and Firefox issue
+        // `input` events. Firefox treats it as pure `text` field, whereas Safari debounces it
+        // according to the `incremental` attribute. Safari's `input` event carries a custom field,
+        // `results`, to hint at how many values are currently being found. Consistent behavior will
+        // require a custom element that understands the semantics of the delete button and
+        // harmonizes the meaning of the `incremental` attribute.
+        return html` <!-- @ts-ignore -->
+            <input
+                aria-label=${ifPresent(this.label)}
+                part="search-input"
+                name="search"
+                type="search"
+                autocomplete="off"
+                placeholder=${ifPresent(this.placeholder)}
+                value=${ifPresent(this.defaultValue)}
+                class="pf-c-form-control"
+                @search=${this.#searchListener}
+            />`;
     }
 
     render(): TemplateResult {
         return html`<form
             ${ref(this.#formRef)}
             class="pf-c-input-group"
+            part="search-form"
             @submit=${this.#submitListener}
             @reset=${this.reset}
         >

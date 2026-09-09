@@ -14,11 +14,15 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker, get_broker
+from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 
 CHANNEL_PREFIX = f"{Conf().channel_prefix}.tasks"
+
+LOGGER = get_logger()
 
 
 class ChannelIdentifier(StrEnum):
@@ -29,6 +33,7 @@ class ChannelIdentifier(StrEnum):
 class TaskState(models.TextChoices):
     """Task system-state. Reported by the task runners"""
 
+    WAITING_FOR_DEPENDENCIES = "waiting_for_dependencies"
     QUEUED = "queued"
     CONSUMED = "consumed"
     PREPROCESS = "preprocess"
@@ -53,6 +58,12 @@ class TaskBase(models.Model):
     retries = models.PositiveBigIntegerField(default=0, help_text=_("Number of retries"))
     eta = models.DateTimeField(null=True, help_text=_("Planned execution time"))
 
+    dependencies = models.ManyToManyField(
+        "self",
+        verbose_name=_("Tasks that must complete for this task to run."),
+        symmetrical=False,
+    )
+
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
 
@@ -63,6 +74,7 @@ class TaskBase(models.Model):
         indexes = (
             models.Index(fields=("queue_name",)),
             models.Index(fields=("queue_name", "state")),
+            models.Index(fields=("queue_name", "state", "eta")),
             models.Index(fields=("message_id", "queue_name", "state", "eta")),
             models.Index(fields=("message_id", "state", "eta")),
             models.Index(fields=("message_id", "queue_name", "state")),
@@ -156,9 +168,21 @@ class ScheduleBase(models.Model):
         if schedule:
             schedule.send()
 
-    def send(self, broker: Broker | None = None) -> Message[Any]:
+    def send(self, broker: Broker | None = None) -> Message[Any] | None:
         broker = broker or get_broker()
-        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)  # type: ignore[no-untyped-call]
+        try:
+            actor: Actor[Any, Any] = broker.get_actor(self.actor_name)
+        except ActorNotFound:
+            # Schedule references an actor that no longer exists. Pause it instead
+            # of raising; schedule reconciliation on startup will clean it up.
+            LOGGER.warning(
+                "Actor for schedule not found, pausing schedule",
+                schedule=self,
+                actor_name=self.actor_name,
+            )
+            self.paused = True
+            self.save(update_fields=["paused"])
+            return None
         return actor.send_with_options(
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec

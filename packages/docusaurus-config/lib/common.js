@@ -1,12 +1,13 @@
 /**
  * @file Common Docusaurus configuration utilities.
  *
- * @import { Config, DocusaurusConfig } from "@docusaurus/types"
+ * @import { Config } from "@docusaurus/types"
  * @import { UserThemeConfig, UserThemeConfigExtra } from "./theme.js"
  */
-import { deepmerge } from "deepmerge-ts";
 
 import { createThemeConfig } from "./theme.js";
+
+import { deepmerge } from "deepmerge-ts";
 
 //#region Types
 
@@ -24,14 +25,17 @@ import { createThemeConfig } from "./theme.js";
  */
 
 /**
- * @typedef {Partial<DocusaurusConfigBase & DocusaurusConfigBaseTheme>} DocusaurusConfigInit
+ * @typedef {Partial<DocusaurusConfigBaseTheme> & Record<string, unknown>} DocusaurusConfigInit
  *
  * The initial configuration for Docusaurus.
  *
  * @remarks
- * This type is the result of Docusaurs's less than ideal type definitions.
- * Much of the configuration is not strictly typed, however, this type
- * is a good starting point.
+ * This type is intentionally loose: it references the theme config we care about
+ * but keeps the remaining fields as a plain index signature rather than
+ * `Partial<Config>`. Consumers (the website site configs) resolve their own copy
+ * of `@docusaurus/types`, and comparing two peer-resolved `Config` instances
+ * structurally overflows the type checker (TS2321). Keeping this type free of
+ * `Config` avoids that cross-package comparison at the call boundary.
  */
 
 //#endregion
@@ -55,7 +59,7 @@ export function createDefaultDocusaurusConfig() {
                 removeLegacyPostBuildHeadAttribute: true,
                 useCssCascadeLayers: false,
             },
-            experimental_faster: {
+            faster: {
                 swcJsLoader: true,
                 rspackBundler: true,
                 lightningCssMinimizer: production,
@@ -66,19 +70,23 @@ export function createDefaultDocusaurusConfig() {
                 rspackPersistentCache: production,
             },
         },
+
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
         url: "https://docs.goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
         onBrokenAnchors: "throw",
-        onBrokenMarkdownLinks: "throw",
         onDuplicateRoutes: "throw",
         favicon: "img/icon.png",
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         markdown: {
             mermaid: true,
+            hooks: {
+                onBrokenMarkdownLinks: "throw",
+                onBrokenMarkdownImages: "throw",
+            },
         },
     });
 
@@ -88,9 +96,8 @@ export function createDefaultDocusaurusConfig() {
 /**
  * Create a Docusaurus configuration.
  *
- * @template {Partial<Config>} T
- * @param {T} overrides The options to override.
- * @returns {T & ReturnType<typeof createDefaultDocusaurusConfig>}
+ * @param {DocusaurusConfigInit} overrides The options to override.
+ * @returns {Config}
  */
 export function createDocusaurusConfig({ themeConfig, ...overrides }) {
     const config = {
@@ -98,8 +105,27 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
         themeConfig: createThemeConfig(themeConfig),
     };
 
-    // @ts-ignore
-    return deepmerge(config, overrides);
+    const merged = /** @type {Config} */ (deepmerge(config, overrides));
+
+    // Declare the site name for search engines. Without an explicit `WebSite`
+    // structured-data `name`, Google synthesizes the site name from the hostname
+    // and renders it title-cased ("Authentik"); the product name is always
+    // lowercase. https://developers.google.com/search/docs/appearance/site-names
+    merged.headTags = [
+        ...(merged.headTags ?? []),
+        {
+            tagName: "script",
+            attributes: { type: "application/ld+json" },
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "authentik",
+                url: `${merged.url}${merged.baseUrl}`,
+            }),
+        },
+    ];
+
+    return merged;
 }
 
 //#endregion

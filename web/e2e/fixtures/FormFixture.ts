@@ -22,38 +22,19 @@ export class FormFixture extends PageFixture {
         fieldName: string | RegExp,
         context: LocatorContext = this.page,
     ) => {
-        const control = context
-            .getByLabel(fieldName, { exact: true })
-            .filter({
-                hasNot: context.getByRole("presentation"),
-            })
-            .or(
-                context.getByRole("textbox", {
-                    name: fieldName,
-                }),
-            )
-            .or(
-                context.getByRole("spinbutton", {
-                    name: fieldName,
-                }),
-            );
+        const textbox = context.getByRole("textbox", { name: fieldName });
+        const searchbox = context.getByRole("searchbox", { name: fieldName });
+        const spinbutton = context.getByRole("spinbutton", { name: fieldName });
+        // Comboboxes (e.g. the Query Language input) wrap an inner textbox.
+        const comboboxTextbox = context
+            .getByRole("combobox", { name: fieldName })
+            .getByRole("textbox");
 
-        const role = await control.getAttribute("role");
+        const control = textbox.or(searchbox).or(spinbutton).or(comboboxTextbox);
 
-        let textbox: Locator;
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
-        if (role === "combobox") {
-            // Comboboxes, such as our Query Language input need additional handling...
-            const textbox = control.getByRole("textbox");
-
-            return textbox;
-        } else {
-            textbox = control;
-        }
-
-        await expect(textbox, `Field (${fieldName}) should be visible`).toBeVisible();
-
-        return textbox;
+        return control;
     };
 
     /**
@@ -80,12 +61,22 @@ export class FormFixture extends PageFixture {
 
     /**
      * Search for a row containing the given text.
+     *
+     * @returns A locator for the row entry matching the query.
      */
     public search = async (
         query: string,
         context: LocatorContext = this.page,
     ): Promise<Locator> => {
-        const searchInput = await this.findTextualInput(/search/i, context);
+        // Scoped to `ak-table-search` rather than the whole page: tables render either a
+        // plain searchbox or a query-language combobox, so the match has to stay
+        // role-based — but pages that mount a wizard (e.g. providers) also carry the
+        // dual-list-select search boxes for scopes, sources, and providers, which an
+        // unscoped match picks up and then fails strict mode on.
+        const searchInput = await this.findTextualInput(
+            /search/i,
+            context.locator("ak-table-search"),
+        );
         // We have to wait for the user to appear in the table,
         // but several UI elements will be rendered asynchronously.
         // We attempt several times to find the user to avoid flakiness.
@@ -195,17 +186,18 @@ export class FormFixture extends PageFixture {
         // Find the search select input control and activate it.
         await control.click();
 
+        if (typeof pattern === "string") {
+            this.fill(control, pattern, parent);
+        }
+
         const button = this.page
-            // ---
-            .locator(`div[data-managed-for*="${fieldName}"] button`, {
+            .locator("ak-search-select-view")
+            .filter({ has: this.page.locator(`input[name="${fieldName}"]`) })
+            .locator("ak-list-select [part='ak-list-select-button']", {
                 hasText: pattern,
             });
 
-        if (!button) {
-            throw new Error(
-                `Unable to find an ak-search-select entry matching ${fieldLabel}:${pattern.toString()}`,
-            );
-        }
+        await expect(button, `Search select entry (${pattern}) should be visible`).toBeVisible();
 
         await button.click();
         await this.page.keyboard.press("Tab");

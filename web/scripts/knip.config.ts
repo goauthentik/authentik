@@ -2,14 +2,16 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
     entry: [
-        "./src/admin/AdminInterface/AdminInterface.ts",
-        "./src/user/UserInterface.ts",
-        "./src/flow/FlowInterface.ts",
-        "./src/standalone/api-browser/index.ts",
-        "./src/rac/index.ts",
-        "./src/standalone/loading/index.ts",
-        "./src/polyfill/poly.ts",
+        "./src/admin/index.entrypoint.ts",
+        "./src/user/index.entrypoint.ts",
+        "./src/flow/index.entrypoint.ts",
+        "./src/standalone/api-browser/index.entrypoint.ts",
+        "./src/rac/index.entrypoint.ts",
+        "./src/standalone/loading/index.entrypoint.ts",
+        "./src/polyfill/index.entrypoint.ts",
     ],
+    ignore: ["packages/client-ts/**", "out/**/*"],
+
     project: ["src/**/*.ts", "src/**/*.js", "./scripts/*.mjs", ".storybook/*.ts"],
     // "ignore": ["src/**/*.test.ts", "src/**/*.stories.ts"],
     // Prevent Knip from complaining about web components, which export their classes but also

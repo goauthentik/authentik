@@ -42,7 +42,9 @@ Note that the content of an alert _must_ be a valid HTML component; plain text d
         inline: { control: "boolean" },
         level: { control: "text" },
         icon: { control: "text" },
-        // @ts-ignore
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         message: { control: "text" },
     },
 };
@@ -55,7 +57,7 @@ export const DefaultStory: StoryObj = {
         message: "You should be alarmed.",
     },
 
-    // @ts-ignore
+    // @ts-expect-error Storybook cannot infer the type here.
     render: ({ inline, level, icon, message }: IAlertForTesting) => {
         return html`
             <style>

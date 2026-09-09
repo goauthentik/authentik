@@ -97,16 +97,13 @@ export const globalVariables = css`
     :host([theme="dark"]) {
         --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
-        --pf-c-dual-list-selector__list-item-row--BackgroundColor: var(
-            --ak-dark-background-light-ish
-        );
 
         --pf-c-dual-list-selector__list-item-row--focus-within--BackgroundColor: var(
-            --ak-dark-background-darker
+            --pf-global--BackgroundColor--dark-200
         );
 
         --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
-            --pf-global--BackgroundColor--400
+            --pf-global--BackgroundColor--dark-400
         );
     }
 `;
@@ -131,6 +128,12 @@ export const mainStyles = css`
     .pf-c-dual-list-selector__status-text {
         font-size: var(--pf-c-dual-list-selector__status-text--FontSize);
         color: var(--pf-c-dual-list-selector__status-text--Color);
+    }
+
+    .ak-dual-list-selector__status--selected {
+        font-size: var(--pf-c-dual-list-selector__status-text--FontSize);
+        line-height: 1.25;
+        min-height: calc(1.25em + 1.25em); /* reserve space for 2 lines */
     }
 
     .ak-dual-list-selector {
@@ -160,6 +163,8 @@ export const listStyles = css`
     }
 
     .pf-c-dual-list-selector__menu {
+        background-color: var(--pf-c-text-input-group--BackgroundColor);
+        padding: var(--pf-global--spacer--xs);
         max-width: 100%;
         height: 100%;
     }
@@ -190,6 +195,10 @@ export const listStyles = css`
     .pf-c-dual-list-selector__item-text .selection-desc {
         font-size: var(--pf-c-dual-list-selector--selection-desc--FontSize);
         color: var(--pf-c-dual-list-selector--selection-desc--Color);
+    }
+
+    :host([theme="dark"]) {
+        --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
     }
 `;
 

@@ -7,6 +7,8 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.x509.oid import NameOID
 from django.db import models
@@ -21,6 +23,8 @@ class PrivateKeyAlg(models.TextChoices):
 
     RSA = "rsa", _("rsa")
     ECDSA = "ecdsa", _("ecdsa")
+    ED25519 = "ed25519", _("Ed25519")
+    ED448 = "ed448", _("Ed448")
 
 
 class CertificateBuilder:
@@ -56,6 +60,10 @@ class CertificateBuilder:
             return rsa.generate_private_key(
                 public_exponent=65537, key_size=4096, backend=default_backend()
             )
+        if self.alg == PrivateKeyAlg.ED25519:
+            return Ed25519PrivateKey.generate()
+        if self.alg == PrivateKeyAlg.ED448:
+            return Ed448PrivateKey.generate()
         raise ValueError(f"Invalid alg: {self.alg}")
 
     def build(
@@ -98,18 +106,25 @@ class CertificateBuilder:
             self.__builder = self.__builder.add_extension(
                 x509.SubjectAlternativeName(alt_names), critical=True
             )
+        algo = hashes.SHA256()
+        # EdDSA doesn't take a hash algorithm
+        if isinstance(self.__private_key, (Ed25519PrivateKey | Ed448PrivateKey)):
+            algo = None
         self.__certificate = self.__builder.sign(
             private_key=self.__private_key,
-            algorithm=hashes.SHA256(),
+            algorithm=algo,
             backend=default_backend(),
         )
 
     @property
     def private_key(self):
         """Return private key in PEM format"""
+        format = serialization.PrivateFormat.TraditionalOpenSSL
+        if isinstance(self.__private_key, (Ed25519PrivateKey | Ed448PrivateKey)):
+            format = serialization.PrivateFormat.PKCS8
         return self.__private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            format=format,
             encryption_algorithm=serialization.NoEncryption(),
         ).decode("utf-8")
 

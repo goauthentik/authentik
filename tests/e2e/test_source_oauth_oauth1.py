@@ -16,7 +16,8 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class OAuth1Callback(OAuthCallback):
@@ -57,7 +58,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.source_slug = generate_id()
         super().setUp()
         self.run_container(
-            image="ghcr.io/beryju/oauth1-test-server:v1.1",
+            image=self.pinned_image("oauth1-test-server", "e2e/compose.yml"),
             ports={"5000": "5001"},
             environment={
                 "OAUTH1_CLIENT_ID": self.client_id,
@@ -109,11 +110,11 @@ class TestSourceOAuth1(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+                (By.CSS_SELECTOR, "fieldset[name='login-sources'] button")
             )
         )
         identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+            By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field

@@ -137,3 +137,9 @@ export const TableWithSorting: Story = {
 export const MultiselectTableWithSorting: Story = {
     render: () => container(html`<ak-select-table-test-sort multiple></ak-select-table-test-sort>`),
 };
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-select-table-test-sort": SimpleTableSortTest;
+    }
+}

@@ -1,0 +1,8 @@
+ak-alert {
+    display: block;
+    margin-block-start: var(--pf-global--spacer--md);
+
+    &::part(container) {
+        --pf-c-alert--BoxShadow: var(--pf-global--BoxShadow--sm-bottom);
+    }
+}

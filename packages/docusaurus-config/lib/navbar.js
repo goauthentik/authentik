@@ -3,6 +3,7 @@
  *
  * @import { NavbarItem } from "@docusaurus/theme-common";
  */
+
 import { DocusaurusURL, SocialURL } from "./routing.js";
 
 /**
@@ -59,6 +60,12 @@ export const NavbarItemsTemplate = /** @type {const} */ ([
     {
         to: "{{WWW_URL}}/blog",
         label: "Blog",
+        position: "left",
+        target: "_self",
+    },
+    {
+        to: "{{WWW_URL}}/contact/",
+        label: "Contact",
         position: "left",
         target: "_self",
     },

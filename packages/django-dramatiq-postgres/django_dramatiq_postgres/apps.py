@@ -32,16 +32,17 @@ class DjangoDramatiqPostgres(AppConfig):
             middleware=[],
         )
 
-        for middleware_class, middleware_kwargs in Conf().middlewares:
-            middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
-                **middleware_kwargs,
-            )
-            if isinstance(middleware, Results):
-                middleware.backend = import_string(Conf().result_backend)(
+        for middleware_class_path, middleware_kwargs in Conf().middlewares:
+            middleware_class = import_string(middleware_class_path)
+            if issubclass(middleware_class, Results):
+                middleware_kwargs["backend"] = import_string(Conf().result_backend)(
                     *Conf().result_backend_args,
                     **Conf().result_backend_kwargs,
                 )
-            broker.add_middleware(middleware)  # type: ignore[no-untyped-call]
+            middleware: dramatiq.middleware.middleware.Middleware = middleware_class(
+                **middleware_kwargs,
+            )
+            broker.add_middleware(middleware)
 
         dramatiq.set_broker(broker)
 

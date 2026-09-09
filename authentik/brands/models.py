@@ -8,12 +8,33 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.fields import FileField
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.lib.config import CONFIG
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 
 LOGGER = get_logger()
+
+# Session flag marking a "safe mode" session (e.g. one created via a recovery link).
+SESSION_KEY_BRAND_SAFE_MODE = "authentik/brands/safe_mode"
+
+
+# Brand FKs read on the request hot path. select_related pulls them into the
+# same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
+_BRAND_RELATED_FK_FIELDS = (
+    "flow_authentication",
+    "flow_user_switch",
+    "flow_invalidation",
+    "flow_recovery",
+    "flow_unenrollment",
+    "flow_user_settings",
+    "flow_device_code",
+    "flow_lockdown",
+    "flow_request",
+    "default_application",
+)
 
 
 class Brand(SerializerModel):
@@ -31,15 +52,30 @@ class Brand(SerializerModel):
 
     branding_title = models.TextField(default="authentik")
 
-    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
-    branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
+    branding_logo = FileField(default="/static/dist/assets/icons/icon_left_brand.svg")
+    branding_favicon = FileField(default="/static/dist/assets/icons/icon.png")
     branding_custom_css = models.TextField(default="", blank=True)
-    branding_default_flow_background = models.TextField(
-        default="/static/dist/assets/images/flow_background.jpg"
+    branding_default_flow_background = FileField(
+        default="/static/dist/assets/images/flow_background.jpg",
+    )
+    branding_map_tiles = models.TextField(
+        default="",
+        blank=True,
+        help_text=_(
+            "URL template for the vector tile source used by the events map. "
+            "Supports XYZ templates with {z}, {x} and {y} placeholders, or "
+            "pmtiles:// archive URLs. When empty, the frontend uses the "
+            "bundled hexworld basemap. This value is part of the brand "
+            "information served to unauthenticated clients; do not embed API "
+            "keys or other credentials in it."
+        ),
     )
 
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"
+    )
+    flow_user_switch = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_user_switch"
     )
     flow_invalidation = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_invalidation"
@@ -55,6 +91,12 @@ class Brand(SerializerModel):
     )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
+    )
+    flow_lockdown = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_lockdown"
+    )
+    flow_request = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_request"
     )
 
     default_application = models.ForeignKey(
@@ -80,29 +122,46 @@ class Brand(SerializerModel):
         default=None,
         blank=True,
         help_text=_("Certificates used for client authentication."),
+        through="BrandClientCertificate",
     )
     attributes = models.JSONField(default=dict, blank=True)
 
     def branding_logo_url(self) -> str:
-        """Get branding_logo with the correct prefix"""
-        if self.branding_logo.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_logo
-        return self.branding_logo
+        """Get branding_logo URL"""
+        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_logo)
+
+    def branding_logo_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for branding_logo if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_logo)
 
     def branding_favicon_url(self) -> str:
-        """Get branding_favicon with the correct prefix"""
-        if self.branding_favicon.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_favicon
-        return self.branding_favicon
+        """Get branding_favicon URL"""
+        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_favicon)
 
-    def branding_default_flow_background_url(self) -> str:
-        """Get branding_default_flow_background with the correct prefix"""
-        if self.branding_default_flow_background.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_default_flow_background
-        return self.branding_default_flow_background
+    def branding_favicon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for branding_favicon if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_favicon)
+
+    def branding_default_flow_background_url(self, request=None, use_cache: bool = True) -> str:
+        """Get branding_default_flow_background URL"""
+        return get_file_manager(FileUsage.MEDIA).file_url(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
+
+    def branding_default_flow_background_themed_urls(
+        self, request=None, use_cache: bool = True
+    ) -> dict[str, str] | None:
+        """Get themed URLs for branding_default_flow_background if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
 
     @property
-    def serializer(self) -> Serializer:
+    def serializer(self) -> type[Serializer]:
         from authentik.brands.api import BrandSerializer
 
         return BrandSerializer
@@ -129,6 +188,25 @@ class Brand(SerializerModel):
             models.Index(fields=["domain"]),
             models.Index(fields=["default"]),
         ]
+
+
+class BrandClientCertificate(SimpleThroughModel):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    certificate_key_pair = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
+    )
+
+    class Meta:
+        db_table = "authentik_brands_brand_client_certificates"
+        unique_together = (("brand", "certificate_key_pair"),)
+        verbose_name = _("Brand Client Certificate")
+        verbose_name_plural = _("Brand Client Certificates")
+
+    def __str__(self):
+        return (
+            f"BrandClientCertificate for Brand {self.brand_id} "
+            f"and CertificateKeyPair {self.certificate_key_pair_id}."
+        )
 
 
 class WebfingerProvider(models.Model):

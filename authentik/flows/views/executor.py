@@ -18,12 +18,9 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from sentry_sdk import capture_exception, start_span
-from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -55,7 +52,11 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
+from authentik.lib.tracing import (
+    active_tracer,
+    record_exception,
+)
+from authentik.lib.tracing.exceptions import TracingIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -63,8 +64,8 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+
 SESSION_KEY_PLAN = "authentik/flows/plan"
-SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
@@ -92,7 +93,7 @@ def challenge_response_types():
     return mapping
 
 
-class InvalidStageError(SentryIgnoredException):
+class InvalidStageError(TracingIgnoredException):
     """Error raised when a challenge from a stage is not valid"""
 
 
@@ -116,7 +117,7 @@ class FlowExecutorView(APIView):
         if not self.flow:
             self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
-        set_tag("authentik.flow", self.flow.slug)
+        active_tracer().set_tag("authentik.flow", self.flow.slug)
 
     def handle_invalid_flow(self, exc: FlowNonApplicableException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
@@ -136,7 +137,7 @@ class FlowExecutorView(APIView):
 
     def _check_flow_token(self, key: str) -> FlowPlan | None:
         """Check if the user is using a flow token to restore a plan"""
-        token: FlowToken | None = FlowToken.filter_not_expired(key=key).first()
+        token: FlowToken | None = FlowToken.objects.filter(key=key).first()
         if not token:
             return None
         plan = None
@@ -149,12 +150,24 @@ class FlowExecutorView(APIView):
                 token.delete()
         if not isinstance(plan, FlowPlan):
             return None
+        if existing_plan := self.request.session.get(SESSION_KEY_PLAN):
+            plan.context.update(existing_plan.context)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
+    def initialize_request(self, request, *args, **kwargs):
+        # Stubbed out `initialize_request` since we call the correct method early on
+        # in `dispatch`, and super().dispatch would call it again
+        return self.request or request
+
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
+        self.request = super().initialize_request(request)
+        self.initial(self.request)
+
+        with active_tracer().start_span(
+            op="authentik.flow.executor.dispatch", name=self.flow.slug
+        ) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
@@ -195,7 +208,7 @@ class FlowExecutorView(APIView):
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
                     self._logger.warning("f(exec): Flow is empty", exc=exc)
-                    # To match behaviour with loading an empty flow plan from cache,
+                    # To match behavior with loading an empty flow plan from cache,
                     # we don't show an error message here, but rather call _flow_done()
                     return self._flow_done()
             # We don't save the Plan after getting the next stage
@@ -242,7 +255,7 @@ class FlowExecutorView(APIView):
             raise exc
         self._logger.warning(exc)
         if not should_ignore_exception(exc):
-            capture_exception(exc)
+            record_exception(exc)
             Event.new(
                 action=EventAction.SYSTEM_EXCEPTION,
                 message="System exception during flow execution.",
@@ -281,7 +294,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                start_span(
+                active_tracer().start_span(
                     op="authentik.flow.executor.stage",
                     name=class_path,
                 ) as span,
@@ -332,7 +345,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                start_span(
+                active_tracer().start_span(
                     op="authentik.flow.executor.stage",
                     name=class_path,
                 ) as span,
@@ -391,14 +404,18 @@ class FlowExecutorView(APIView):
             # check if its an absolute URL or a relative one
             self.cancel()
             return to_stage_response(
-                self.request, redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+                self.request,
+                redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT)),
+                final_redirect=True,
             )
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
         if next_param and not is_url_absolute(next_param):
-            return to_stage_response(self.request, redirect_with_qs(next_param))
+            return to_stage_response(
+                self.request, redirect_with_qs(next_param), final_redirect=True
+            )
         return to_stage_response(
             self.request, self.stage_invalid(error_message=_("Invalid next URL"))
         )
@@ -458,7 +475,6 @@ class FlowExecutorView(APIView):
     def cancel(self):
         """Cancel current flow execution"""
         keys_to_delete = [
-            SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
             # We might need the initial POST payloads for later requests
@@ -482,6 +498,9 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
+        next_url = self.request.GET.get(NEXT_ARG_NAME)
+        if next_url and not is_url_absolute(next_url):
+            return redirect(next_url)
         return redirect("authentik_flows:default-invalidation")
 
 
@@ -490,7 +509,8 @@ class ToDefaultFlow(View):
 
     designation: FlowDesignation | None = None
 
-    def flow_by_policy(self, request: HttpRequest, **flow_filter) -> Flow | None:
+    @staticmethod
+    def flow_by_policy(request: HttpRequest, **flow_filter) -> Flow | None:
         """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
         flows = Flow.objects.filter(**flow_filter).order_by("slug")
         for flow in flows:
@@ -504,30 +524,27 @@ class ToDefaultFlow(View):
         LOGGER.debug("flow_by_policy: no flow found", filters=flow_filter)
         return None
 
-    def get_flow(self) -> Flow:
+    @staticmethod
+    def get_flow(request: HttpRequest, designation: FlowDesignation) -> Flow:
         """Get a flow for the selected designation"""
-        brand: Brand = self.request.brand
+        brand: Brand = request.brand
         flow = None
         # First, attempt to get default flow from brand
-        if self.designation == FlowDesignation.AUTHENTICATION:
+        if designation == FlowDesignation.AUTHENTICATION:
             flow = brand.flow_authentication
-            # Check if we have a default flow from application
-            application: Application | None = self.request.session.get(SESSION_KEY_APPLICATION_PRE)
-            if application and application.provider and application.provider.authentication_flow:
-                flow = application.provider.authentication_flow
-        elif self.designation == FlowDesignation.INVALIDATION:
+        elif designation == FlowDesignation.INVALIDATION:
             flow = brand.flow_invalidation
         if flow:
             return flow
         # If no flow was set, get the first based on slug and policy
-        flow = self.flow_by_policy(self.request, designation=self.designation)
+        flow = ToDefaultFlow.flow_by_policy(request, designation=designation)
         if flow:
             return flow
         # If we still don't have a flow, 404
         raise Http404
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        flow = self.get_flow()
+        flow = ToDefaultFlow.get_flow(request, self.designation)
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
@@ -540,7 +557,9 @@ class ToDefaultFlow(View):
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+def to_stage_response(
+    request: HttpRequest, source: HttpResponse, final_redirect: bool = False
+) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
         isinstance(source, HttpResponseRedirect)
@@ -559,6 +578,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             RedirectChallenge(
                 {
                     "to": str(redirect_url),
+                    "final_redirect": final_redirect,
                 }
             )
         )

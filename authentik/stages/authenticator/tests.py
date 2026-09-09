@@ -6,7 +6,6 @@ from threading import Thread
 from django.contrib.auth.models import AnonymousUser
 from django.db import connection
 from django.test import TestCase, TransactionTestCase
-from django.test.utils import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -110,8 +109,24 @@ class ThrottlingTestMixin:
             self.assertEqual(verify_is_allowed3, True)
             self.assertEqual(data3, None)
 
+    def test_set_throttle_factor_is_reflected(self):
+        """`set_throttle_factor` must drive `get_throttle_factor`."""
+        self.device.set_throttle_factor(5.5)
+        self.assertEqual(self.device.get_throttle_factor(), 5.5)
+        self.device.set_throttle_factor(0)
+        self.assertEqual(self.device.get_throttle_factor(), 0)
 
-@override_settings(OTP_STATIC_THROTTLE_FACTOR=0)
+    def test_throttling_disabled_by_factor_zero(self):
+        """Setting the throttle factor to 0 must actually disable throttling.
+
+        A failed attempt followed by a successful one must succeed. The lockout
+        path must not kick in when the factor is 0.
+        """
+        self.device.set_throttle_factor(0)
+        self.assertFalse(self.device.verify_token(self.invalid_token()))
+        self.assertTrue(self.device.verify_token(self.valid_token()))
+
+
 class APITestCase(TestCase):
     """Test API"""
 
@@ -119,6 +134,7 @@ class APITestCase(TestCase):
         self.alice = create_test_admin_user("alice")
         self.bob = create_test_admin_user("bob")
         device = self.alice.staticdevice_set.create()
+        device.set_throttle_factor(0)
         self.valid = generate_id(length=16)
         device.token_set.create(token=self.valid)
 
@@ -138,6 +154,8 @@ class APITestCase(TestCase):
         verified = verify_token(self.alice, device.persistent_id, "bogus")
         self.assertIsNone(verified)
 
+        self.alice.staticdevice_set.get().throttle_reset()
+
         verified = verify_token(self.alice, device.persistent_id, self.valid)
         self.assertIsNotNone(verified)
 
@@ -146,11 +164,12 @@ class APITestCase(TestCase):
         verified = match_token(self.alice, "bogus")
         self.assertIsNone(verified)
 
+        self.alice.staticdevice_set.get().throttle_reset()
+
         verified = match_token(self.alice, self.valid)
         self.assertEqual(verified, self.alice.staticdevice_set.first())
 
 
-@override_settings(OTP_STATIC_THROTTLE_FACTOR=0)
 class ConcurrencyTestCase(TransactionTestCase):
     """Test concurrent verifications"""
 

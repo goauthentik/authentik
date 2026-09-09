@@ -1,10 +1,9 @@
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -18,27 +17,26 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
-    loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorEndpointGDTCStage): Promise<AuthenticatorEndpointGDTCStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcPartialUpdate({
-                stageUuid: this.instance.pk || "",
-                patchedAuthenticatorEndpointGDTCStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
-            authenticatorEndpointGDTCStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcRetrieve({ stageUuid }),
+        create: (authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStage) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcCreate({
+                authenticatorEndpointGDTCStageRequest,
+            }),
+        update: (
+            stageUuid: string,
+            patchedAuthenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStage,
+        ) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcPartialUpdate({
+                stageUuid,
+                patchedAuthenticatorEndpointGDTCStageRequest,
+            }),
+    };
 
     static styles = [...super.styles, PFBanner];
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">
                 ${msg("Endpoint Google Chrome Device Trust is in preview.")}
                 <a href="mailto:hello+feature/gdtc@goauthentik.io">${msg("Send us feedback!")}</a>
@@ -48,14 +46,18 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     "Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Google Verified Access API")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -64,7 +66,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
+                            mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">

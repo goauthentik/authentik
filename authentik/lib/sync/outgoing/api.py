@@ -1,12 +1,13 @@
 from django.db.models import Model
 from dramatiq.actor import Actor
-from dramatiq.results.errors import ResultFailure
+from dramatiq.results.errors import ResultError
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from authentik.api.validation import validate
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEventSerializer
@@ -97,20 +98,19 @@ class OutgoingSyncProviderStatusMixin:
         url_path="sync/object",
         filter_backends=[ObjectFilter],
     )
-    def sync_object(self, request: Request, pk: int) -> Response:
+    @validate(SyncObjectSerializer)
+    def sync_object(self, request: Request, body: SyncObjectSerializer, pk: int) -> Response:
         """Sync/Re-sync a single user/group object"""
         provider = self.get_object()
-        params = SyncObjectSerializer(data=request.data)
-        params.is_valid(raise_exception=True)
-        object_type = params.validated_data["sync_object_model"]
+        object_type = body.validated_data["sync_object_model"]
         _object_type: type[Model] = path_to_class(object_type)
-        pk = params.validated_data["sync_object_id"]
+        pk = body.validated_data["sync_object_id"]
         msg = self.sync_objects_task.send_with_options(
             kwargs={
                 "object_type": object_type,
                 "page": 1,
                 "provider_pk": provider.pk,
-                "override_dry_run": params.validated_data["override_dry_run"],
+                "override_dry_run": body.validated_data["override_dry_run"],
                 "pk": pk,
             },
             retries=0,
@@ -119,7 +119,7 @@ class OutgoingSyncProviderStatusMixin:
         )
         try:
             msg.get_result(block=True)
-        except ResultFailure:
+        except ResultError:
             pass
         task: Task = msg.options["task"]
         task.refresh_from_db()

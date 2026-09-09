@@ -3,10 +3,9 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import type { RadioOption } from "#elements/forms/Radio";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
@@ -37,25 +36,21 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
 
 @customElement("ak-property-mapping-provider-rac-form")
 export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACPropertyMapping> {
-    loadInstance(pk: string): Promise<RACPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacRetrieve({
-            pmUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacRetrieve({ pmUuid: pk }),
+        create: (rACPropertyMappingRequest: RACPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacCreate({
+                rACPropertyMappingRequest,
+            }),
+        update: (pk: string, rACPropertyMappingRequest: RACPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacUpdate({
+                pmUuid: pk,
+                rACPropertyMappingRequest,
+            }),
+    };
 
-    async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacUpdate({
-                pmUuid: this.instance.pk,
-                rACPropertyMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
-            rACPropertyMappingRequest: data,
-        });
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -137,7 +132,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>

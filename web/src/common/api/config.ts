@@ -1,22 +1,8 @@
-import {
-    CSRFMiddleware,
-    EventMiddleware,
-    LocaleMiddleware,
-    LoggingMiddleware,
-} from "#common/api/middleware";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
-import { globalAK } from "#common/global";
-import { SentryMiddleware } from "#common/sentry/middleware";
+/**
+ * @file brandSetFavicon() and AndNext(), which is used for redirects and flow steps
+ */
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
-
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
+import type { CurrentBrand } from "@goauthentik/api";
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -35,52 +21,9 @@ export function brandSetFavicon(brand: CurrentBrand) {
     });
 }
 
-export function brandSetLocale(brand: CurrentBrand) {
-    if (brand.defaultLocale === "") {
-        return;
-    }
-    console.debug("authentik/locale: setting locale from brand default");
-    window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail: { locale: brand.defaultLocale },
-        }),
-    );
-}
-
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-        new SentryMiddleware(),
-        new LocaleMiddleware(),
-    ],
-});
-
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or
 // unexpected-character-in-attribute-name
 export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
-
-console.debug(
-    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
-);

@@ -2,36 +2,51 @@
 
 from typing import TypedDict
 
-from rest_framework import mixins
+from drf_spectacular.utils import (
+    extend_schema,
+    inline_serializer,
+)
+from rest_framework import mixins, serializers, status
+from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
-from rest_framework.serializers import CharField, DateTimeField, IPAddressField
+from rest_framework.response import Response
+from rest_framework.serializers import (
+    CharField,
+    DateTimeField,
+    IPAddressField,
+    ListField,
+)
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import AuthenticatedSession
+from authentik.core.signals import admin_authenticated_session_deleted
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
+from authentik.lib.utils.db import chunked_queryset
+from authentik.rbac.decorators import permission_required
 
 
 class UserAgentDeviceDict(TypedDict):
     """User agent device"""
 
-    brand: str
+    brand: str | None = None
     family: str
-    model: str
+    model: str | None = None
 
 
 class UserAgentOSDict(TypedDict):
     """User agent os"""
 
     family: str
-    major: str
-    minor: str
-    patch: str
-    patch_minor: str
+    major: str | None = None
+    minor: str | None = None
+    patch: str | None = None
+    patch_minor: str | None = None
 
 
 class UserAgentBrowserDict(TypedDict):
@@ -50,6 +65,14 @@ class UserAgentDict(TypedDict):
     os: UserAgentOSDict
     user_agent: UserAgentBrowserDict
     string: str
+
+
+class BulkDeleteSessionSerializer(PassiveSerializer):
+    """Serializer for bulk deleting authenticated sessions by user"""
+
+    user_pks = ListField(
+        child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for"
+    )
 
 
 class AuthenticatedSessionSerializer(ModelSerializer):
@@ -115,3 +138,32 @@ class AuthenticatedSessionViewSet(
     filterset_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
     ordering = ["user__username"]
     owner_field = "user"
+
+    @permission_required("authentik_core.delete_authenticatedsession")
+    @extend_schema(
+        parameters=[BulkDeleteSessionSerializer],
+        responses={
+            200: inline_serializer(
+                "BulkDeleteSessionResponse",
+                {"deleted": serializers.IntegerField()},
+            ),
+        },
+    )
+    @validate(BulkDeleteSessionSerializer, location="query")
+    @action(detail=False, methods=["DELETE"], pagination_class=None, filter_backends=[])
+    def bulk_delete(self, request: Request, *, query: BulkDeleteSessionSerializer) -> Response:
+        """Bulk revoke all sessions for multiple users"""
+        user_pks = query.validated_data.get("user_pks", [])
+        count = 0
+        for session in chunked_queryset(AuthenticatedSession.objects.filter(user_id__in=user_pks)):
+            admin_authenticated_session_deleted.send(self, instance=session, request=request)
+            session.delete()
+            count += 1
+
+        return Response({"deleted": count}, status=200)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        admin_authenticated_session_deleted.send(self, instance=instance, request=request)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

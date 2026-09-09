@@ -9,11 +9,9 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
-    static styles = [PFBase, globalVariables, searchStyles];
+    static styles = [globalVariables, searchStyles];
 
     @property({ type: String, reflect: true })
     public value = "";

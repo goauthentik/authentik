@@ -7,22 +7,10 @@ from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from lxml.etree import _Element  # nosec
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import (
-    GroupSourceConnection,
-    PropertyMapping,
-    Source,
-    UserSourceConnection,
-)
-from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.challenge import RedirectChallenge
-from authentik.flows.models import Flow
-from authentik.lib.expression.evaluator import BaseEvaluator
-from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -47,6 +35,20 @@ from authentik.sources.saml.processors.constants import (
     SHA384,
     SHA512,
 )
+from authentik.common.saml.utils import get_element_text
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.models import Flow
+from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class SAMLBindingTypes(models.TextChoices):
@@ -87,11 +89,16 @@ class SAMLSource(Source):
         related_name="source_pre_authentication",
     )
 
-    issuer = models.TextField(
+    issuer_override = models.TextField(
         blank=True,
-        default=None,
-        verbose_name=_("Issuer"),
-        help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
+        default="",
+        help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
+    )
+
+    audience_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Audience value this IdP sends for authentik."),
     )
 
     sso_url = models.TextField(
@@ -113,6 +120,12 @@ class SAMLSource(Source):
         help_text=_(
             "Allows authentication flows initiated by the IdP. This can be a security risk, "
             "as no validation of the request ID is done."
+        ),
+    )
+    force_authn = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, the IdP will re-authenticate the user even if a session exists."
         ),
     )
     name_id_policy = models.TextField(
@@ -217,9 +230,8 @@ class SAMLSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return SAMLSourcePropertyMapping
 
-    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
+    def get_base_user_properties(self, root: _Element, assertion: _Element, name_id: Any, **kwargs):
         attributes = {}
-        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:
             raise ValueError("Assertion element not found")
         attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
@@ -230,7 +242,7 @@ class SAMLSource(Source):
             key = attribute.attrib["Name"]
             attributes.setdefault(key, [])
             for value in attribute.iterchildren():
-                attributes[key].append(value.text)
+                attributes[key].append(get_element_text(value))
         if SAML_ATTRIBUTES_GROUP in attributes:
             attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
             del attributes[SAML_ATTRIBUTES_GROUP]
@@ -239,7 +251,7 @@ class SAMLSource(Source):
             if key == "groups":
                 continue
             attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = name_id.text
+        attributes["username"] = get_element_text(name_id)
 
         return attributes
 
@@ -250,9 +262,9 @@ class SAMLSource(Source):
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
-        if self.issuer is None:
+        if not self.issuer_override:
             return self.build_full_url(request, view="metadata")
-        return self.issuer
+        return self.issuer_override
 
     def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
         """Build Full ACS URL to be used in IDP"""
@@ -278,7 +290,8 @@ class SAMLSource(Source):
                 }
             ),
             name=self.name,
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

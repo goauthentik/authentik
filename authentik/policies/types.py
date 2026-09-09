@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import copy, deepcopy
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -63,6 +64,17 @@ class PolicyRequest:
             text += f" http_request={self.http_request}"
         return text + ">"
 
+    def deepcopy(self) -> PolicyRequest:
+        """Deep copy of this policy request;
+
+        HTTP Request, User and related object are _not_ copied"""
+        new_req = PolicyRequest(self.user)
+        new_req.context = deepcopy(self.context)
+        new_req.http_request = self.http_request
+        new_req.obj = self.obj
+        new_req.debug = copy(self.debug)
+        return new_req
+
 
 @dataclass(slots=True)
 class PolicyResult:
@@ -77,6 +89,8 @@ class PolicyResult:
 
     log_messages: list[LogEvent] | None
 
+    _exec_time: int | None
+
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing
         self.messages = messages
@@ -84,6 +98,7 @@ class PolicyResult:
         self.source_binding = None
         self.source_results = []
         self.log_messages = []
+        self._exec_time = None
 
     def __repr__(self):
         return self.__str__()

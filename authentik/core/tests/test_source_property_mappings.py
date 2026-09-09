@@ -5,9 +5,10 @@ from django.test import TestCase
 from authentik.core.models import Group, PropertyMapping, Source, User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.generators import generate_id
+from authentik.lib.models import InternallyManagedMixin
 
 
-class ProxySource(Source):
+class ProxySource(InternallyManagedMixin, Source):
     @property
     def property_mapping_type(self):
         return PropertyMapping

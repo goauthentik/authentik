@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django_tenants.utils import get_public_schema_name
 
+from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE
 from authentik.core.models import Token, TokenIntents, User
 
 
@@ -54,6 +55,20 @@ class TestRecovery(TestCase):
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": token.key}))
         self.assertEqual(self.client.session["authenticatedsession"].user.pk, token.user.pk)
+
+    def test_recovery_view_safe_mode(self):
+        """Test recovery view enables brand safe mode on the session"""
+        out = StringIO()
+        call_command(
+            "create_recovery_key",
+            "10",
+            self.user.username,
+            schema=get_public_schema_name(),
+            stdout=out,
+        )
+        token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
+        self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": token.key}))
+        self.assertTrue(self.client.session[SESSION_KEY_BRAND_SAFE_MODE])
 
     def test_recovery_view_invalid(self):
         """Test recovery view with invalid token"""

@@ -4,7 +4,11 @@
  * @import { Preview } from "@storybook/web-components";
  */
 
-import "#common/styles/storybook.css";
+import "@goauthentik/fonts/faces.css";
+import "@goauthentik/fonts/icons.css";
+import "#styles/interface.global.css";
+import "#styles/static.global.css";
+import "./preview.css";
 
 import { ThemedDocsContainer } from "./DocsContainer.tsx";
 import { extendStorybookTheme } from "./theme.js";
@@ -17,6 +21,8 @@ import {
 
 const base = resolveUITheme();
 const theme = extendStorybookTheme(base);
+
+applyDocumentTheme(base);
 
 createUIThemeEffect(applyDocumentTheme);
 

@@ -3,8 +3,8 @@ package server
 import (
 	"beryju.io/ldap"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
+	api "goauthentik.io/packages/client-go"
 )
 
 type LDAPServerInstance interface {

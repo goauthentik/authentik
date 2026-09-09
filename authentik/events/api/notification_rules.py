@@ -11,7 +11,9 @@ from authentik.events.models import NotificationRule
 class NotificationRuleSerializer(ModelSerializer):
     """NotificationRule Serializer"""
 
-    destination_group_obj = GroupSerializer(read_only=True, source="destination_group")
+    destination_group_obj = GroupSerializer(
+        read_only=True, source="destination_group", required=False, allow_null=True
+    )
 
     class Meta:
         model = NotificationRule

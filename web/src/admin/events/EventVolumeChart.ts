@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { EventChart } from "#elements/charts/EventChart";
 
@@ -20,7 +20,7 @@ export class EventVolumeChart extends EventChart {
 
     @property({ attribute: false })
     set query(value: EventsEventsListRequest | undefined) {
-        if (JSON.stringify(value) !== JSON.stringify(this._query)) return;
+        if (JSON.stringify(value) === JSON.stringify(this._query)) return;
         this._query = value;
         this.refreshHandler();
     }
@@ -39,7 +39,7 @@ export class EventVolumeChart extends EventChart {
     ];
 
     apiRequest(): Promise<EventVolume[]> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
+        return aki(EventsApi).eventsEventsVolumeList({
             historyDays: 7,
             ...this._query,
         });

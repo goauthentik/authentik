@@ -1,17 +1,25 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.2.2",
+    "version": "3.0.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/esbuild-plugin-live-reload"
+    },
     "scripts": {
         "build": "npm run build:types && npm run build:docs",
         "build:docs": "typedoc",
         "build:types": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u ."
     },
     "main": "index.js",
     "type": "module",
+    "types": "./out/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -26,6 +34,7 @@
             "types": "./out/client/index.d.ts",
             "import": "./client/index.js"
         },
+        "./client/types": "./client/types.d.ts",
         "./plugin": {
             "types": "./out/plugin/index.d.ts",
             "import": "./plugin/index.js"
@@ -35,23 +44,45 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "^3.1.0",
-        "@goauthentik/tsconfig": "^1.0.4",
-        "@types/node": "^24.3.1",
-        "esbuild": "^0.25.9",
-        "pino": "^10.0.0",
-        "prettier": "^3.6.2",
-        "prettier-plugin-packagejson": "^2.5.19",
-        "typedoc": "^0.28.12",
-        "typedoc-plugin-markdown": "^4.8.1",
-        "typescript": "^5.9.2"
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/logger-js": "link:../logger-js",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "catalog:",
+        "esbuild": "catalog:",
+        "eslint": "catalog:",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "typedoc": "^0.28.20",
+        "typedoc-plugin-markdown": "^4.11.0",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "esbuild": "^0.25.9"
+        "@goauthentik/logger-js": "^3.0.0",
+        "esbuild": "^0.28.1"
     },
+    "files": [
+        "./index.js",
+        "client/**/*",
+        "plugin/**/*",
+        "shared/**/*",
+        "out/**/*"
+    ],
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
+    "prettier": "@goauthentik/prettier-config",
     "keywords": [
         "esbuild",
         "live-reload",
@@ -60,20 +91,11 @@
         "reload",
         "authentik"
     ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/goauthentik/authentik.git",
-        "directory": "packages/esbuild-plugin-live-reload"
+    "peerDependenciesMeta": {
+        "@goauthentik/logger-js": {
+            "optional": true
+        }
     },
-    "types": "./out/index.d.ts",
-    "files": [
-        "./index.js",
-        "client/**/*",
-        "plugin/**/*",
-        "shared/**/*",
-        "out/**/*"
-    ],
-    "prettier": "@goauthentik/prettier-config",
     "publishConfig": {
         "access": "public"
     }

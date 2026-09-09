@@ -8,21 +8,19 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
-import "#elements/CodeMirror";
+import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
-import YAML from "yaml";
-
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -30,6 +28,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
+const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_MAX = 100;
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -51,19 +51,41 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     }
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
-        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await aki(AdminApi).adminSettingsUpdate({
             settingsRequest,
         });
-
-        this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
 
         return result;
     }
 
-    renderForm(): TemplateResult {
+    public override submitLabel = msg("Save changes");
+
+    public override renderHeader() {
+        return html`<div class="ak-c-form__header">
+            <h2 class="pf-c-title pf-m-2xl sr-only">${msg("Edit Settings")}</h2>
+            <div part="form-actions">${this.renderSubmitButton()}</div>
+        </div>`;
+    }
+
+    public override renderActions(): SlottedTemplateResult {
+        return null;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
         const { settings } = this;
 
         return html`
+            <ak-text-input
+                name="baseUrl"
+                label=${msg("Base URL", { id: "settings.base-url.label" })}
+                value="${ifDefined(settings.baseUrl)}"
+                input-hint="code"
+                help=${msg(
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
+                    { id: "settings.base-url.description" },
+                )}
+            >
+            </ak-text-input>
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
@@ -249,16 +271,56 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
-            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(settings?.flags ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Modify flags to opt into new authentik behaviours early.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-number-input
+                label=${msg("Pagination: default page size")}
+                required
+                name="paginationDefaultPageSize"
+                value="${settings.paginationDefaultPageSize ?? DEFAULT_PAGE_SIZE}"
+                help=${msg("Default page size for API requests not specifying a page size.")}
+            ></ak-number-input>
+            <ak-number-input
+                label=${msg("Pagination: maximum page size")}
+                required
+                name="paginationMaxPageSize"
+                value="${settings.paginationMaxPageSize ?? DEFAULT_PAGE_MAX}"
+                help=${msg("Maximum page size for API requests.")}
+            ></ak-number-input>
+            <ak-form-group
+                label=${msg("Flags")}
+                description=${msg(
+                    "Flags allow you to enable new functionality and behavior in authentik early.",
+                )}
+            >
+                <div class="pf-c-form">
+                    <ak-switch-input
+                        name="flags.coreDefaultAppAccess"
+                        ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
+                        label=${msg("Allow application access with no policies")}
+                        help=${msg(
+                            "Applications with no policies bound can be accessed by any user..",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.enterpriseAuditIncludeExpandedDiff"
+                        ?checked=${settings?.flags.enterpriseAuditIncludeExpandedDiff ?? false}
+                        label=${msg("Include additional data in Audit logs")}
+                        help=${msg(
+                            "When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.flowsContinuousLogin"
+                        ?checked=${settings?.flags.flowsContinuousLogin ?? false}
+                        label=${msg("Continuous Login")}
+                        help=${msg(
+                            "Upon successful authentication, re-start authentication in other open tabs.",
+                        )}
+                    >
+                    </ak-switch-input>
+                </div>
+            </ak-form-group>
         `;
     }
 }

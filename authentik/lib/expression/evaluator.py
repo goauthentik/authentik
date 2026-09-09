@@ -10,23 +10,27 @@ from typing import TYPE_CHECKING, Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.db.models import Model
 from django.http import HttpRequest
+from django.utils.functional import SimpleLazyObject
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.tracing import Span, active_tracer
+from authentik.lib.utils.dict import get_path_from_dict
+from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.policies.utils import delete_none_values
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
@@ -41,7 +45,7 @@ ARG_SANITIZE = re.compile(r"[:.-]")
 
 
 def sanitize_arg(arg_name: str) -> str:
-    return re.sub(ARG_SANITIZE, "_", arg_name)
+    return re.sub(ARG_SANITIZE, "_", slugify(arg_name))
 
 
 class BaseEvaluator:
@@ -57,26 +61,29 @@ class BaseEvaluator:
 
     def __init__(self, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
-        # update website/docs/expressions/_objects.md
-        # update website/docs/expressions/_functions.md
+        # update website/docs/expressions/reference/_objects.mdx
+        # update website/docs/expressions/reference/_functions.mdx
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
             "ak_create_jwt": self.expr_create_jwt,
+            "ak_create_jwt_raw": self.expr_create_jwt_raw,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_logger": get_logger(self._filename).bind(),
             "ak_send_email": self.expr_send_email,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
+            "ak_obj_attr": BaseEvaluator.expr_obj_attr,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
             "regex_match": BaseEvaluator.expr_regex_match,
             "regex_replace": BaseEvaluator.expr_regex_replace,
-            "requests": get_http_session(),
+            "requests": SimpleLazyObject(get_http_session),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "slugify": slugify,
+            "delete_none_values": delete_none_values,
         }
         self._context = {}
 
@@ -160,6 +167,16 @@ class BaseEvaluator:
             return False
         return len(list(user_devices)) > 0
 
+    @staticmethod
+    def expr_obj_attr(obj: Model, attr_key: str, fallback: str | None = None) -> Any:
+        """Get an attribute of the given object if set by its dotted path, otherwise
+        return fallback value."""
+        attrs = getattr(obj, "attributes", {})
+        value = get_path_from_dict(attrs, attr_key)
+        if value is None and fallback is not None:
+            return getattr(obj, fallback, fallback)
+        return value
+
     def expr_event_create(self, action: str, **kwargs):
         """Create event with supplied data and try to extract as much relevant data
         from the context"""
@@ -189,7 +206,8 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = self._context["request"]
+            current_req: PolicyRequest = self._context["request"]
+            req = current_req.deepcopy()
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
@@ -222,14 +240,26 @@ class BaseEvaluator:
         access_token.save()
         return access_token.token
 
-    def expr_send_email(
+    def expr_create_jwt_raw(
+        self, provider: OAuth2Provider | str, validity: str = "seconds=60", **kwargs
+    ) -> str:
+        """Issue a JWT for a given provider with completely customized data"""
+        if not isinstance(provider, OAuth2Provider):
+            provider = OAuth2Provider.objects.get(name=provider)
+        kwargs["exp"] = int((now() + timedelta_from_string(validity)).timestamp())
+        kwargs["aud"] = provider.client_id
+        return provider.encode(kwargs)
+
+    def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
         address: str | list[str],
         subject: str,
         body: str | None = None,
-        stage: "EmailStage | None" = None,
+        stage: EmailStage | None = None,
         template: str | None = None,
         context: dict | None = None,
+        cc: str | list[str] | None = None,
+        bcc: str | list[str] | None = None,
     ) -> bool:
         """Send an email using authentik's email system
 
@@ -242,6 +272,8 @@ class BaseEvaluator:
             stage: EmailStage instance to use for settings. If None, uses global settings.
             template: Template name to render. Mutually exclusive with body.
             context: Additional context variables for template rendering.
+            cc: Email address(es) to CC. Same format as address.
+            bcc: Email address(es) to BCC. Same format as address.
 
         Returns:
             bool: True if email was queued successfully, False otherwise
@@ -255,17 +287,9 @@ class BaseEvaluator:
         if not body and not template:
             raise ValueError("Either body or template parameter must be provided")
 
-        # Normalize address parameter to list of (name, email) tuples
-        if isinstance(address, str):
-            # Single email address
-            to_addresses = [("", address)]
-        elif isinstance(address, list):
-            if not address:
-                raise ValueError("Address list cannot be empty")
-            # List of email strings
-            to_addresses = [("", email) for email in address]
-        else:
-            raise ValueError("Address must be a string or list of strings")
+        to_addresses = normalize_addresses(address)
+        cc_addresses = normalize_addresses(cc)
+        bcc_addresses = normalize_addresses(bcc)
 
         try:
             if template is not None:
@@ -279,6 +303,8 @@ class BaseEvaluator:
                 message = TemplateEmailMessage(
                     subject=subject,
                     to=to_addresses,
+                    cc=cc_addresses,
+                    bcc=bcc_addresses,
                     template_name=template,
                     template_context=template_context,
                 )
@@ -287,6 +313,8 @@ class BaseEvaluator:
                 message = TemplateEmailMessage(
                     subject=subject,
                     to=to_addresses,
+                    cc=cc_addresses,
+                    bcc=bcc_addresses,
                     body=body,
                 )
 
@@ -299,7 +327,9 @@ class BaseEvaluator:
 
     def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
-        handler_signature = ",".join(sanitize_arg(x) for x in self._context.keys())
+        handler_signature = ",".join(
+            [x for x in [sanitize_arg(x) for x in self._context.keys()] if x]
+        )
         full_expression = ""
         full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
@@ -315,7 +345,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with active_tracer().start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)

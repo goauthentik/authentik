@@ -1,9 +1,21 @@
 """Serializer validators"""
 
+from django.contrib.auth.hashers import identify_hasher
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
+
+
+def validate_password_hash(password_hash: str) -> None:
+    """Validate the format of an encoded Django password."""
+    try:
+        hasher = identify_hasher(password_hash)
+        hasher.decode(password_hash)
+    except (AssertionError, TypeError, ValueError) as exc:
+        raise ValidationError(
+            _("Invalid password hash format. Must be a valid Django password hash.")
+        ) from exc
 
 
 class RequiredTogetherValidator:

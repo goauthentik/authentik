@@ -1,9 +1,12 @@
+import "#components/ak-text-input";
+import "#elements/forms/Radio";
+import "#components/ak-switch-input";
 import "#elements/Alert";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -15,34 +18,28 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
-    loadInstance(pk: string): Promise<UserLoginStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
-            stageUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserLoginRetrieve({ stageUuid }),
+        create: (userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginCreate({ userLoginStageRequest }),
+        update: (stageUuid: string, userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginUpdate({ stageUuid, userLoginStageRequest }),
+    };
 
-    async send(data: UserLoginStage): Promise<UserLoginStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
-                stageUuid: this.instance.pk || "",
-                userLoginStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
-            userLoginStageRequest: data,
-        });
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -184,28 +181,14 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="terminateOtherSessions">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.terminateOtherSessions ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Terminate other sessions")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, all previous sessions of the user will be terminated.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="terminateOtherSessions"
+                        label=${msg("Terminate other sessions")}
+                        ?checked=${this.instance?.terminateOtherSessions ?? false}
+                        help=${msg(
+                            "When enabled, all previous sessions of the user will be terminated.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

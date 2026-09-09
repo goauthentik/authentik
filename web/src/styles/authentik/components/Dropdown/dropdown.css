@@ -1,0 +1,46 @@
+.pf-c-dropdown {
+    --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--first-child--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--m-action--child--PaddingRight: var(
+        --pf-global--spacer--md
+    );
+
+    --pf-c-dropdown__toggle--m-split-button--last-child--PaddingRight: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--m-action--child--PaddingLeft: var(
+        --pf-global--spacer--md
+    );
+}
+
+.pf-c-dropdown__menu-item[role="contentinfo"] {
+    &,
+    &:hover,
+    &:focus {
+        --pf-c-dropdown__menu-item--hover--Color: initial;
+        --pf-c-dropdown__menu-item--hover--BackgroundColor: initial;
+    }
+}
+
+.pf-c-dropdown__menu li {
+    list-style-type: none;
+    user-select: none;
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-dropdown,
+:host([theme="dark"]) .pf-c-dropdown {
+    .pf-c-dropdown__toggle::before {
+        border-color: transparent;
+    }
+
+    .pf-c-dropdown__menu {
+        --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+        --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
+        --pf-c-dropdown__menu-item--hover--BackgroundColor: var(
+            --pf-global--BackgroundColor--dark-300
+        );
+        --pf-c-dropdown__menu-item--hover--Color: var(--pf-global--Color--light-100);
+    }
+}
+
+/* #endregion */

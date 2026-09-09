@@ -1,5 +1,7 @@
 """authentik recovery create_admin_group"""
 
+from argparse import ArgumentParser
+
 from django.utils.translation import gettext as _
 
 from authentik.core.models import User
@@ -12,7 +14,7 @@ class Command(TenantCommand):
 
     help = _("Create admin group if the default group gets deleted.")
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: ArgumentParser):
         parser.add_argument("user", action="store", help="User to add to the admin group.")
 
     def handle_per_tenant(self, *args, **options):

@@ -17,7 +17,11 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
@@ -41,7 +45,7 @@ def _validate_schema_name(name):
         )
 
 
-class Tenant(TenantMixin, SerializerModel):
+class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
     """Tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -57,6 +61,21 @@ class Tenant(TenantMixin, SerializerModel):
     avatars = models.TextField(
         help_text=_("Configure how authentik should show avatars for users."),
         default="gravatar,initials",
+    )
+    base_url = models.CharField(
+        max_length=200,
+        default="",
+        blank=True,
+        validators=[
+            DomainlessURLValidator(
+                schemes=("http", "https"),
+                message=_("Enter a valid URL, for example https://authentik.company"),
+            )
+        ],
+        help_text=_(
+            "Configure the base URL under which this authentik instance is "
+            "reachable, e.g. https://authentik.company"
+        ),
     )
     default_user_change_name = models.BooleanField(
         help_text=_("Enable the ability for users to change their name."), default=True
@@ -113,6 +132,16 @@ class Tenant(TenantMixin, SerializerModel):
         default=DEFAULT_TOKEN_LENGTH,
         validators=[MinValueValidator(1)],
     )
+
+    pagination_default_page_size = models.PositiveIntegerField(
+        help_text=_("Default page size for API responses, if no size was requested."),
+        default=20,
+    )
+    pagination_max_page_size = models.PositiveIntegerField(
+        help_text=_("Maximum page size"),
+        default=100,
+    )
+
     flags = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):

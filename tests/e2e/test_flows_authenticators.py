@@ -18,7 +18,8 @@ from authentik.stages.authenticator_static.models import (
     StaticToken,
 )
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestFlowsAuthenticator(SeleniumTestCase):

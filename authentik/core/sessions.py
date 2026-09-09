@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.core.user_switching import activate_session
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -32,22 +33,26 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
+    @staticmethod
+    def _is_current(session) -> bool:
+        authenticated_session = getattr(session, "authenticatedsession", None)
+        return authenticated_session is None or authenticated_session.is_current
+
     def _get_session_from_db(self):
         try:
-            return (
-                self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                    "authenticatedsession__user__user_permissions",
-                )
-                .get(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            session = self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
+            ).get(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
+            if not self._is_current(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
+                return None
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -55,20 +60,19 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return (
-                await self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                    "authenticatedsession__user__user_permissions",
-                )
-                .aget(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            session = await self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
+            ).aget(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
+            if not self._is_current(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
+                return None
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -80,9 +84,13 @@ class SessionStore(SessionBase):
     def decode(self, session_data):
         try:
             return pickle.loads(session_data)  # nosec
-        except pickle.PickleError:
-            # ValueError, unpickling exceptions. If any of these happen, just return an empty
-            # dictionary (an empty session)
+        except pickle.PickleError, AttributeError, TypeError:
+            # PickleError, ValueError - unpickling exceptions
+            # AttributeError - can happen when Django model fields (e.g., FileField) are unpickled
+            #                  and their descriptors fail to initialize (e.g., missing storage)
+            # TypeError - can happen with incompatible pickled objects
+            # If any of these happen, just return an empty dictionary (an empty session)
+            LOGGER.warning("Failed to decode session data", exc_info=True)
             pass
         return {}
 
@@ -166,3 +174,4 @@ class SessionStore(SessionBase):
         if (authenticated_session := data.get("authenticatedsession")) is not None:
             authenticated_session.session_id = self.session_key
             authenticated_session.save(force_insert=True)
+            activate_session(self.session_key, authenticated_session.user_switching_session_id)

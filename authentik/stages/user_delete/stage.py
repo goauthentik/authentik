@@ -10,7 +10,7 @@ from authentik.flows.stage import StageView
 
 
 class UserDeleteStageView(StageView):
-    """Finalise unenrollment flow by deleting the user object."""
+    """Finalize unenrollment flow by deleting the user object."""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Delete currently pending user"""

@@ -1,22 +1,24 @@
-import { me } from "#common/users";
-
 import { isUserRoute } from "#elements/router/utils";
 
-import { CurrentBrand, UiThemeEnum, UserSelf } from "@goauthentik/api";
+import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 import { deepmerge } from "deepmerge-ts";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
+    brandingLogoThemedUrls: null,
     brandingFavicon: "/static/dist/assets/icons/icon.png",
+    brandingFaviconThemedUrls: null,
     brandingTitle: "authentik",
     brandingCustomCss: "",
+    // Empty string selects the bundled hexworld basemap (no tile server needed).
+    brandingMapTiles: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
     defaultLocale: "",
     flags: {
-        policiesBufferedAccessView: false,
+        flowsContinuousLogin: false,
     },
 } as const satisfies CurrentBrand;
 
@@ -45,6 +47,10 @@ export interface UIConfig {
         applicationEdit: boolean;
         // Search bar
         search: boolean;
+        // Requests
+        requests: boolean;
+        // Agents
+        agents: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
@@ -66,54 +72,44 @@ export interface UIConfig {
     };
 }
 
-export class DefaultUIConfig implements UIConfig {
-    enabledFeatures = {
+export const DefaultUIConfig = {
+    enabledFeatures: {
         apiDrawer: true,
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
         search: true,
-    };
-    layout = {
+        requests: true,
+        agents: true,
+    },
+    layout: {
         type: LayoutType.row,
-    };
-    navbar = {
+    },
+    navbar: {
         userDisplay: UserDisplay.username,
-    };
-    theme = {
+    },
+    theme: {
         base: UiThemeEnum.Automatic,
         background: "",
         cardBackground: "",
-    };
-    pagination = {
+    },
+    pagination: {
         perPage: 20,
-    };
-    locale = "";
-    defaults = {
+    },
+    locale: "",
+    defaults: {
         userPath: "users",
-    };
+    },
+} as const satisfies UIConfig;
 
-    constructor() {
-        this.enabledFeatures.apiDrawer = !isUserRoute();
-    }
-}
-
-let globalUiConfig: Promise<UIConfig>;
-
-export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings as UIConfig;
-    const config = new DefaultUIConfig();
-    if (!settings) {
-        return config;
-    }
-    return deepmerge({ ...config }, settings);
-}
-
-export function uiConfig(): Promise<UIConfig> {
-    if (!globalUiConfig) {
-        globalUiConfig = me().then((user) => {
-            return getConfigForUser(user.user);
-        });
-    }
-    return globalUiConfig;
+export function createUIConfig(overrides: Partial<UIConfig> = {}): UIConfig {
+    return deepmerge(
+        { ...DefaultUIConfig },
+        {
+            enabledFeatures: {
+                apiDrawer: !isUserRoute(),
+            },
+        },
+        overrides,
+    );
 }

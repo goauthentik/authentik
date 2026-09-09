@@ -12,9 +12,9 @@ HEADER = "### Managed by authentik"
 FOOTER = "### End Managed by authentik"
 
 
-def opener(path, flags):
-    """File opener to create files as 700 perms"""
-    return os.open(path, flags, 0o700)
+def opener(path: Path | str, flags: int):
+    """File opener to create files as 600 perms"""
+    return os.open(path, flags, 0o600)
 
 
 class SSHManagedExternallyException(DockerException):

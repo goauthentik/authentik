@@ -11,7 +11,6 @@ import { map } from "lit/directives/map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
@@ -33,16 +32,17 @@ const hostAttributes = [
  * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
  * attribute will be read by the parent when a control is clicked.
  *
+ * @prop {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
+    static styles = [PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
 
     /* The array of key/value pairs that are in the selected list. ALL of them. */
     @property({ type: Array })
-    readonly selected: DualSelectPair[] = [];
+    public selected: DualSelectPair[] = [];
 
     //#endregion
 
@@ -57,7 +57,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
      * moved (removed) if the user so requests.
      */
     @state()
-    public toMove: Set<string> = new Set();
+    public toMove: Set<string | number> = new Set();
 
     //#endregion
 
@@ -88,7 +88,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Event Listeners
 
-    #clickListener = (key: string): void => {
+    #clickListener = (key: string | number): void => {
         if (this.toMove.has(key)) {
             this.toMove.delete(key);
         } else {
@@ -105,7 +105,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
         this.requestUpdate();
     };
 
-    #moveListener = (key: string): void => {
+    #moveListener = (key: string | number): void => {
         this.toMove.delete(key);
 
         this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);

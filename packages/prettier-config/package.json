@@ -1,49 +1,72 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "3.1.0",
+    "version": "4.0.2",
     "description": "authentik's Prettier config",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/prettier-config"
+    },
     "scripts": {
         "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check ."
     },
     "type": "module",
+    "types": "./out/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
-        ".": "./index.js",
-        "./imports-plugin": "./lib/imports.js",
-        "./formatter": "./lib/formatter.js"
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
+        },
+        "./imports-plugin": {
+            "types": "./out/lib/imports.d.ts",
+            "import": "./lib/imports.js"
+        },
+        "./formatter": {
+            "types": "./out/lib/formatter.d.ts",
+            "import": "./lib/formatter.js"
+        }
     },
     "dependencies": {
-        "format-imports": "^4.0.7"
+        "format-imports": "^4.0.8"
     },
     "devDependencies": {
-        "@goauthentik/tsconfig": "^1.0.1",
-        "@types/node": "^24.0.4",
-        "prettier": "^3.6.1",
-        "prettier-plugin-packagejson": "^2.5.16",
-        "typescript": "^5.8.3"
+        "@eslint/js": "catalog:",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "prettier": "^3.6.1",
-        "prettier-plugin-packagejson": "^2.5.16"
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "^3.0.2"
     },
-    "engines": {
-        "node": ">=22"
-    },
-    "types": "./out/index.d.ts",
     "files": [
         "./index.js",
         "lib/**/*",
         "out/**/*"
     ],
-    "prettier": "./index.js",
-    "overrides": {
-        "format-imports": {
-            "eslint": "^9.30.1"
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
+    "prettier": "./index.js",
     "publishConfig": {
         "access": "public"
     }

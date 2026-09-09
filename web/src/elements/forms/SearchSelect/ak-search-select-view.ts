@@ -1,15 +1,17 @@
 import "#elements/ak-list-select/ak-list-select";
-import "#elements/forms/SearchSelect/ak-portal";
 
+import { SearchSelectMenuController } from "./SearchSelectMenuController.js";
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/SearchSelect/ak-search-select-view.css";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -17,18 +19,19 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface ISearchSelectView {
     options: SelectOptions;
     value?: string;
     open: boolean;
     blankable: boolean;
+    readOnly: boolean;
     caseSensitive: boolean;
     name?: string;
     placeholder: string;
     managed: boolean;
-    emptyOption: string;
+    emptyOption: string | null;
+    actionLabel: string | null;
 }
 
 /**
@@ -53,6 +56,7 @@ export interface ISearchSelectView {
  *
  * - @fires change - When a value from the list has been positively chosen, either as a consequence of
  *   the user typing or when selecting from the list.
+ * - @fires ak-search-select-action - When the pinned action item (see `action-label`) is activated.
  *
  * - @part ak-search-select: The main Patternfly div
  * - @part ak-search-select-toggle: The Patternfly inner div
@@ -70,15 +74,11 @@ export interface ISearchSelectView {
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
     static styles: CSSResult[] = [
-        PFBase,
+        // ---
         PFForm,
         PFFormControl,
         PFSelect,
-        css`
-            .pf-c-select {
-                --pf-c-select__toggle-wrapper--MaxWidth: initial;
-            }
-        `,
+        Styles,
     ];
 
     //#region Properties
@@ -93,6 +93,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public set options(options: SelectOptions) {
         this.#options = groupOptions(options);
         this.#flatOptions = optionsToFlat(this.#options);
+
+        // Custom accessors aren't instrumented by Lit, so schedule an update
+        // manually to keep the menu and display value in sync.
+        this.requestUpdate();
     }
 
     public get options() {
@@ -127,6 +131,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public blankable = false;
 
     /**
+     * Prevents user interaction while showing the current value.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
+
+    /**
      * If not managed, make the matcher case-sensitive during interaction.  If managed,
      * the manager must handle this.
      *
@@ -158,7 +170,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    public placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object...");
 
     /**
      * A unique ID to associate with the input and label.
@@ -183,8 +195,18 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *
      * @attr
      */
-    @property()
-    public emptyOption = "---------";
+    @property({ type: String })
+    public emptyOption: string | null = null;
+
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it closes the menu and fires an
+     * `ak-search-select-action` event instead of changing the selection.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel: string | null = null;
 
     //#endregion
 
@@ -192,11 +214,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     @state()
     protected displayValue = "";
-
-    // Tracks when the inputRef is populated, so we can safely reschedule the
-    // render of the dropdown with respect to it.
-    @state()
-    protected inputRefIsAvailable = false;
 
     /**
      * Permanent identity with the portal so focus events can be checked.
@@ -209,6 +226,12 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      */
     #inputRef: Ref<HTMLInputElement> = createRef();
 
+    #menuController = new SearchSelectMenuController(
+        this,
+        () => this.#inputRef.value,
+        () => this.#menuRef.value,
+    );
+
     /**
      * Maps a value from the portal to labels to be put into the <input> field>
      */
@@ -220,13 +243,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     public override updated() {
         this.setAttribute("data-ouia-component-safe", "true");
-    }
-
-    public override firstUpdated() {
-        // Route around Lit's scheduling algorithm complaining about re-renders
-        window.setTimeout(() => {
-            this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        }, 0);
     }
 
     connectedCallback() {
@@ -247,11 +263,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     //#region Event Listeners
 
-    #clickListener = (_ev: Event) => {
-        this.open = !this.open;
-        this.#inputRef.value?.focus();
-    };
-
     setFromMatchList(value?: string) {
         if (!value) return;
 
@@ -263,6 +274,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     #searchKeyupListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (event.key === "Escape") {
             event.stopPropagation();
             event.preventDefault();
@@ -277,6 +290,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #searchKeydownListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (!this.open) return;
 
         switch (event.key) {
@@ -339,6 +354,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     #inputListener = (_ev: InputEvent) => {
+        if (this.readOnly) return;
+
         if (!this.managed) {
             this.findValueForInput();
             this.requestUpdate();
@@ -356,6 +373,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #listKeydownListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (event.key === "Tab" && event.shiftKey) {
             event.preventDefault();
 
@@ -363,15 +382,29 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    #changeListener = (event: InputEvent) => {
-        if (!event.target) {
-            return;
-        }
-        const value = (event.target as HTMLInputElement).value;
+    #actionListener = (event: Event) => {
+        event.stopPropagation();
+
+        this.open = false;
+
+        this.dispatchEvent(
+            new CustomEvent("ak-search-select-action", { bubbles: true, composed: true }),
+        );
+    };
+
+    #changeListener = (event: Event) => {
+        if (this.readOnly) return;
+
+        // Translate the list's change into a single view-level change event. Without stopping the
+        // original event, the managed search receives both events and reconciles the same
+        // selection twice.
+        event.stopPropagation();
+
+        const value = (event.currentTarget as ListSelect).value ?? undefined;
         if (value) {
             const newDisplayValue = this.findDisplayForValue(value);
             if (this.#inputRef.value) {
-                this.#inputRef.value.value = newDisplayValue ?? "";
+                this.#inputRef.value.value = newDisplayValue ?? value;
             }
         } else if (this.#inputRef.value) {
             this.#inputRef.value.value = "";
@@ -393,8 +426,24 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     public override willUpdate(changed: PropertyValues<this>) {
-        if (changed.has("value") && this.value) {
+        if (changed.has("value")) {
+            if (this.value) {
+                const newDisplayValue = this.findDisplayForValue(this.value);
+                if (newDisplayValue) {
+                    this.displayValue = newDisplayValue;
+                } else {
+                    // If no display value found (e.g., custom creatable value), use the value itself
+                    this.displayValue = this.value;
+                }
+            } else {
+                this.displayValue = "";
+            }
+        } else if (this.value && this.displayValue === this.value) {
+            // The display label may not have been available when the value was set,
+            // e.g. when the value was assigned before a fetch settled. Now that
+            // an update is happening, try to resolve the label once more.
             const newDisplayValue = this.findDisplayForValue(this.value);
+
             if (newDisplayValue) {
                 this.displayValue = newDisplayValue;
             }
@@ -414,8 +463,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Render
 
     public override render() {
-        const emptyOption = this.blankable ? this.emptyOption : undefined;
-        const open = this.open;
+        const emptyOption = this.blankable
+            ? this.emptyOption || this.placeholder || msg("Select an option...")
+            : null;
+        const hasMenuContent =
+            this.#flatOptions.length > 0 || Boolean(emptyOption) || Boolean(this.actionLabel);
 
         return html`<div class="pf-c-select" part="ak-search-select">
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
@@ -433,35 +485,33 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             name=${ifDefined(this.name)}
                             spellcheck="false"
                             @input=${this.#inputListener}
-                            @click=${this.#clickListener}
+                            @click=${this.#menuController.handleInputClick}
                             @blur=${this.#blurListener}
                             @keyup=${this.#searchKeyupListener}
                             @keydown=${this.#searchKeydownListener}
-                            value=${this.displayValue}
+                            .value=${this.displayValue}
+                            ?readonly=${this.readOnly}
                         />
                     </div>
                 </div>
             </div>
-            ${this.inputRefIsAvailable
-                ? html`
-                      <ak-portal
-                          name=${ifDefined(this.name)}
-                          .anchor=${this.#inputRef.value}
-                          ?open=${open}
-                      >
-                          <ak-list-select
-                              id="menu-${this.getAttribute("data-ouia-component-id")}"
-                              ${ref(this.#menuRef)}
-                              .options=${this.managedOptions}
-                              value=${ifDefined(this.value)}
-                              @change=${this.#changeListener}
-                              @blur=${this.#blurListener}
-                              emptyOption=${ifDefined(emptyOption)}
-                              @keydown=${this.#listKeydownListener}
-                              @keyup=${this.#listKeyupListener}
-                          ></ak-list-select>
-                      </ak-portal>
-                  `
+            ${hasMenuContent
+                ? html`<ak-list-select
+                      popover="auto"
+                      id="menu-${this.getAttribute("data-ouia-component-id")}"
+                      ${ref(this.#menuRef)}
+                      .options=${this.managedOptions}
+                      value=${ifDefined(this.value)}
+                      @change=${this.#changeListener}
+                      @blur=${this.#blurListener}
+                      @toggle=${this.#menuController.handleMenuToggle}
+                      @wheel=${this.#menuController.handleMenuWheel}
+                      emptyOption=${ifPresent(emptyOption)}
+                      actionLabel=${ifPresent(this.actionLabel)}
+                      @ak-select-action=${this.#actionListener}
+                      @keydown=${this.#listKeydownListener}
+                      @keyup=${this.#listKeyupListener}
+                  ></ak-list-select>`
                 : nothing}`;
     }
 

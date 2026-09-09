@@ -32,8 +32,10 @@ class FlowTestCase(APITestCase):
         self.assertIsNotNone(raw_response["component"])
         if flow:
             self.assertIn("flow_info", raw_response)
-            self.assertEqual(
-                raw_response["flow_info"]["cancel_url"], reverse("authentik_flows:cancel")
+            self.assertTrue(
+                raw_response["flow_info"]["cancel_url"].startswith(
+                    reverse("authentik_flows:cancel")
+                )
             )
             # We don't check the flow title since it will most likely go
             # through ChallengeStageView.format_title() so might not match 1:1
@@ -45,6 +47,14 @@ class FlowTestCase(APITestCase):
         for key, expected in kwargs.items():
             self.assertEqual(raw_response[key], expected)
         return raw_response
+
+    def get_flow_plan(self) -> FlowPlan | None:
+        return self.client.session.get(SESSION_KEY_PLAN)
+
+    def set_flow_plan(self, plan: FlowPlan):
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
 
     def assertStageRedirects(self, response: HttpResponse, to: str) -> dict[str, Any]:
         """Wrapper around assertStageResponse that checks for a redirect"""

@@ -7,7 +7,6 @@ import { customElement } from "lit/decorators.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * @class SearchSelectLoadingIndicator
@@ -25,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-select-loading-indicator")
 export class SearchSelectLoadingIndicator extends AKElement {
-    static styles = [PFBase, PFFormControl, PFSelect];
+    static styles = [PFFormControl, PFSelect];
 
     connectedCallback() {
         super.connectedCallback();

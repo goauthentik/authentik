@@ -1,0 +1,45 @@
+.authentik-doc-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--ifm-spacing-horizontal);
+    margin-bottom: var(--ifm-heading-margin-bottom);
+}
+
+.authentik-doc-title-row h1 {
+    flex: 1 1 min(24rem, 100%);
+    margin-bottom: 0;
+}
+
+.authentik-doc-title-spacer {
+    flex: 1 1 auto;
+}
+
+.authentik-doc-title-row + .badge-group {
+    margin-top: 0;
+}
+
+.docusaurus-mermaid-container {
+    .architecture-service {
+        svg {
+            color: var(--mm-service-icon-color, var(--ifm-color-content));
+        }
+
+        .text-inner-tspan {
+            font-weight: var(--ifm-font-weight-bold);
+        }
+    }
+
+    .architecture-edges {
+        .edge {
+            stroke: var(--mm-edge-color, var(--ifm-color-emphasis-800)) !important;
+        }
+        .arrow {
+            fill: var(--mm-arrow-color, var(--ifm-color-emphasis-800)) !important;
+        }
+    }
+
+    .architecture-groups .node-bkg {
+        stroke: var(--mm-group-border-color, transparent) !important;
+    }
+}

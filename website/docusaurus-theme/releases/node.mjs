@@ -2,19 +2,66 @@
  * @file Docusaurus release utils.
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
+ * @import { AKReleaseFile, AKReleasesPluginEnvironment } from "./common.mjs"
  */
 
-import * as path from "node:path";
+import { readFileSync } from "node:fs";
+import { extname, join } from "node:path";
 
+import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
 import FastGlob from "fast-glob";
 import { coerce } from "semver";
 
 /**
+ * Number of supported releases to show in the sidebar.
+ */
+export const SUPPORTED_RELEASE_COUNT = 3;
+
+/**
+ * @typedef {FastGlob.Entry & AKReleaseFile} AKReleaseFileEntry
+ */
+
+/**
+ * Reads and parses the front matter of recent release files.
  *
  * @param {string} releasesParentDirectory
- * @returns {FastGlob.Entry[]}
+ * @param {AKReleaseFileEntry} release
+ * @param {number} index
+ */
+function parseRelease(releasesParentDirectory, release, index) {
+    if (index > SUPPORTED_RELEASE_COUNT - 1) {
+        return release;
+    }
+
+    const extension = extname(release.dirent.name);
+
+    const fileContent = readFileSync(
+        join(releasesParentDirectory, `${release.path}${extension}`),
+        "utf-8",
+    );
+
+    const { frontMatter } = parseFileContentFrontMatter(fileContent);
+
+    if (frontMatter.beta) {
+        release.name += " (Release Candidate)";
+    }
+
+    return {
+        ...release,
+        frontMatter,
+    };
+}
+
+/**
+ * Collect all Markdown files from the releases directory.
+ *
+ * @param {string} releasesParentDirectory
+ * @returns {AKReleaseFile[]}
  */
 export function collectReleaseFiles(releasesParentDirectory) {
+    /**
+     * @type {AKReleaseFileEntry[]}
+     */
     const releaseFiles = FastGlob.sync("releases/**/v*.{md,mdx}", {
         cwd: releasesParentDirectory,
         onlyFiles: true,
@@ -38,21 +85,28 @@ export function collectReleaseFiles(releasesParentDirectory) {
             return b.name.localeCompare(a.name);
         });
 
-    return releaseFiles;
-}
+    const parsedReleaseFiles = releaseFiles.map((release, index) =>
+        parseRelease(releasesParentDirectory, release, index),
+    );
 
-export const SUPPORTED_RELEASE_COUNT = 3;
+    return parsedReleaseFiles;
+}
 
 /**
  *
- * @param {FastGlob.Entry[]} releaseFiles
+ * @param {AKReleaseFile[]} releaseFiles
  */
 export function createReleaseSidebarEntries(releaseFiles) {
     /**
      * @type {SidebarItemConfig[]}
      */
     let sidebarEntries = releaseFiles.map((fileEntry) => {
-        return path.join(fileEntry.path);
+        return {
+            type: "doc",
+            id: fileEntry.path,
+            label: fileEntry.name,
+            key: `release-${fileEntry.name}`,
+        };
     });
 
     if (releaseFiles.length > SUPPORTED_RELEASE_COUNT) {
@@ -69,15 +123,6 @@ export function createReleaseSidebarEntries(releaseFiles) {
 
     return sidebarEntries;
 }
-
-/**
- * @typedef {object} AKReleasesPluginEnvironment
- * @property {string} [branch] The current branch name, if available.
- * e.g. "main" `version-${year}.${month}`, "feature-branch"
- * @property {string} currentReleaseOrigin The URL to the current release documentation.
- * @property {string} preReleaseOrigin The URL to the pre-release documentation.
- * @property {string} apiReferenceOrigin The URL to the API reference documentation.
- */
 
 /**
  * Prepare the environment variables for the releases plugin.

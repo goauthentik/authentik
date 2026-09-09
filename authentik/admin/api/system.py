@@ -18,12 +18,21 @@ from rest_framework.views import APIView
 
 from authentik import authentik_full_version
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
+from authentik.tenants.utils import get_current_tenant
+
+
+def fips_enabled():
+    try:
+        from authentik.enterprise.license import LicenseKey
+
+        return backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
+    except ModuleNotFoundError:
+        return None
 
 
 class RuntimeDict(TypedDict):
@@ -50,6 +59,7 @@ class SystemInfoSerializer(PassiveSerializer):
     server_time = SerializerMethodField()
     embedded_outpost_disabled = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
+    base_url = SerializerMethodField()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
@@ -80,9 +90,7 @@ class SystemInfoSerializer(PassiveSerializer):
             "architecture": platform.machine(),
             "authentik_version": authentik_full_version(),
             "environment": get_env(),
-            "openssl_fips_enabled": (
-                backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
-            ),
+            "openssl_fips_enabled": fips_enabled(),
             "openssl_version": OPENSSL_VERSION,
             "platform": platform.platform(),
             "python_version": python_version,
@@ -107,6 +115,10 @@ class SystemInfoSerializer(PassiveSerializer):
         if not outposts.exists():  # pragma: no cover
             return ""
         return outposts.first().config.authentik_host
+
+    def get_base_url(self, request: Request) -> str:
+        """Configured external base URL. Can be empty"""
+        return get_current_tenant().base_url
 
 
 class SystemView(APIView):

@@ -1,5 +1,6 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -8,16 +9,19 @@ import "#elements/forms/SearchSelect/index";
 
 import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
+
+import { AKLabel } from "#components/ak-label";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     IdentificationStage,
     Stage,
     StagesApi,
+    StagesAuthenticatorValidateListRequest,
     StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
@@ -26,7 +30,6 @@ import {
 import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -39,24 +42,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         `,
     ];
 
-    loadInstance(pk: string): Promise<IdentificationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: IdentificationStage): Promise<IdentificationStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
-                stageUuid: this.instance.pk || "",
-                identificationStageRequest: data,
-            });
-        }
-
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-            identificationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesIdentificationRetrieve({ stageUuid }),
+        create: (identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationCreate({ identificationStageRequest }),
+        update: (stageUuid: string, identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationUpdate({ stageUuid, identificationStageRequest }),
+    };
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (
@@ -66,7 +58,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const userSelectFields = [
             { name: UserFieldsEnum.Username, label: msg("Username") },
             { name: UserFieldsEnum.Email, label: msg("Email") },
@@ -76,17 +68,36 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
+                    <ak-form-element-horizontal name="userFields">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userFields",
+                            },
+                            msg("User Fields"),
+                        )}
+
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
+                            )}
+                        </p>
+
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${userSelectFields}
@@ -94,11 +105,6 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 .map(({ name }) => name)
                                 .filter((name) => this.isUserFieldSelected(name))}
                         ></ak-checkbox-group>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
-                            )}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
                         <ak-search-select
@@ -109,9 +115,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const stages = await new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesPasswordList(args);
+                                const stages = await aki(StagesApi).stagesPasswordList(args);
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -138,9 +142,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const stages = await new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesCaptchaList(args);
+                                const stages = await aki(StagesApi).stagesCaptchaList(args);
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -192,6 +194,41 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     ></ak-switch-input>
                 </div>
             </ak-form-group>
+            <ak-form-group label="${msg("Passkey settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("WebAuthn Authenticator Validation Stage")}
+                        name="webauthnStage"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesAuthenticatorValidateListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const stages =
+                                    await aki(StagesApi).stagesAuthenticatorValidateList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.webauthnStage}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group label="${msg("Source settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
@@ -207,26 +244,14 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="showSourceLabels">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.showSourceLabels ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Show sources' labels")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "By default, only icons are shown for sources. Enable this to show their full names.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="showSourceLabels"
+                        label=${msg("Show sources' labels")}
+                        ?checked=${this.instance?.showSourceLabels ?? false}
+                        help=${msg(
+                            "By default, only icons are shown for sources. Enable this to show their full names.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
@@ -236,7 +261,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="passwordlessFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.passwordlessFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -250,7 +275,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="enrollmentFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                         ></ak-flow-search>
 
@@ -262,7 +287,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            flowType=${FlowDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.recoveryFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">

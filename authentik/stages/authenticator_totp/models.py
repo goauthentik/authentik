@@ -27,7 +27,7 @@ class TOTPDigits(models.TextChoices):
 
 
 class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Enroll a user's device into Time-based OTP."""
+    """Setup Time-based OTP authentication for the user."""
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
 
@@ -193,9 +193,6 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
             self.throttle_increment(commit=True)
 
         return verified
-
-    def get_throttle_factor(self):
-        return getattr(settings, "OTP_TOTP_THROTTLE_FACTOR", 1)
 
     @property
     def config_url(self):

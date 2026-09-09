@@ -1,6 +1,5 @@
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
-import { isActiveElement } from "#elements/utils/focus";
+import { isActiveElement, isFocusable } from "#elements/utils/focus";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
@@ -15,7 +14,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * A configuration object for the visibility states of the password input.
@@ -41,7 +39,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static styles = [PFBase, PFForm, PFInputGroup, PFFormControl, PFButton];
+    static styles = [PFForm, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 
@@ -68,6 +66,9 @@ export class InputPassword extends AKElement {
      */
     @property({ type: String })
     label = msg("Password");
+
+    @property({ type: Boolean })
+    public required = false;
 
     /**
      * The placeholder text for the input field.
@@ -119,9 +120,10 @@ export class InputPassword extends AKElement {
 
     //#region Refs
 
-    inputRef: Ref<HTMLInputElement> = createRef();
+    @property({ attribute: false, useDefault: true })
+    public inputRef: Ref<HTMLInputElement> = createRef();
 
-    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+    public toggleVisibilityRef = createRef<HTMLButtonElement>();
 
     //#endregion
 
@@ -144,8 +146,7 @@ export class InputPassword extends AKElement {
      *
      * @param event The event that triggered the visibility toggle.
      */
-    @bound
-    togglePasswordVisibility(event?: PointerEvent) {
+    togglePasswordVisibility = (event?: PointerEvent) => {
         event?.stopPropagation();
         event?.preventDefault();
 
@@ -160,15 +161,14 @@ export class InputPassword extends AKElement {
         input.type = input.type === "password" ? "text" : "password";
 
         this.syncVisibilityToggle(input);
-    }
+    };
 
     /**
      * Listen for key events, synchronizing the caps lock indicators.
      */
-    @bound
-    capsLockListener(event: KeyboardEvent) {
+    capsLockListener = (event: KeyboardEvent) => {
         this.capsLock = event.getModifierState("CapsLock");
-    }
+    };
 
     //#region Lifecycle
 
@@ -235,7 +235,7 @@ export class InputPassword extends AKElement {
      * Must support both older browsers and shadyDom; we'll keep using this in-line,
      * but it'll still be in the scope of the parent element, not an independent shadowDOM.
      */
-    createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
@@ -269,7 +269,18 @@ export class InputPassword extends AKElement {
 
         iconElement.classList.remove(Visibility.Mask.icon, Visibility.Reveal.icon);
         iconElement.classList.add(masked ? Visibility.Reveal.icon : Visibility.Mask.icon);
+
+        requestAnimationFrame(this.focus);
     }
+
+    public override focus = (): void => {
+        const inputElement = this.inputRef.value;
+
+        if (isFocusable(inputElement)) {
+            inputElement.focus();
+            inputElement.select();
+        }
+    };
 
     renderVisibilityToggle() {
         if (!this.allowShowPassword) return nothing;
@@ -308,7 +319,7 @@ export class InputPassword extends AKElement {
     }
 
     render() {
-        return html` ${AKLabel({ required: true, htmlFor: this.inputID }, this.label)}
+        return html`${AKLabel({ required: this.required, htmlFor: this.inputID }, this.label)}
             <div class="pf-c-form__group">
                 <div class="pf-c-form__group-control">
                     <div class="pf-c-input-group">
@@ -323,7 +334,7 @@ export class InputPassword extends AKElement {
                                 "pf-m-icon": true,
                                 "pf-m-caps-lock": this.capsLock,
                             })}"
-                            required
+                            ?required=${this.required}
                             aria-invalid=${this.errors?.length ? "true" : "false"}
                             value=${this.initialValue}
                             ${ref(this.inputRef)}

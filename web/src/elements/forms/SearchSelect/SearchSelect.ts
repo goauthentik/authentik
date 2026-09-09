@@ -7,35 +7,40 @@ import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { groupBy } from "#common/utils";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import type {
+    GroupedOptions,
+    SelectGroup,
+    SelectOption,
+    SlottedTemplateResult,
+} from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
     blankable?: boolean;
+    readOnly?: boolean;
     query?: string;
     objects?: T[];
     selectedObject: T | null;
-    name?: string;
+    name?: string | null;
     placeholder: string | null;
     emptyOption?: string;
+    actionLabel?: string;
 }
 
 export abstract class SearchSelectBase<T>
-    extends AkControlElement<string>
+    extends AKControlElement<string>
     implements ISearchSelectBase<T>
 {
-    static styles = [PFBase];
+    static styles = [];
 
     //#region Properties
 
@@ -54,13 +59,13 @@ export abstract class SearchSelectBase<T>
     /**
      * Render a string description representation of items of the collection under search.
      */
-    public abstract renderDescription?: (element: T) => string | TemplateResult;
+    public abstract renderDescription?: (element: T) => SlottedTemplateResult;
 
     /**
      * A function which returns the currently selected object's primary key, used for serialization
      * into forms.
      */
-    public abstract value: (element: T | null) => string;
+    public abstract value: (element: T | null) => string | number | undefined;
 
     /**
      * A function passed to this object that determines an object in the collection under search
@@ -86,6 +91,22 @@ export abstract class SearchSelectBase<T>
     public blankable?: boolean;
 
     /**
+     * Whether or not the component allows creating custom values not in the list
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean })
+    public creatable?: boolean;
+
+    /**
+     * Prevent user interaction while still rendering the current value.
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
+
+    /**
      * An initial string to filter the search contents,
      * and the value of the input which further serves to restrict the search.
      * @property
@@ -108,8 +129,8 @@ export abstract class SearchSelectBase<T>
      * Used to inform the form of the name of the object
      * @property
      */
-    @property()
-    public name?: string;
+    @property({ type: String })
+    public name: string | null = null;
 
     /**
      * A unique ID to associate with the input and label.
@@ -133,7 +154,7 @@ export abstract class SearchSelectBase<T>
      * @attr
      */
     @property({ type: String })
-    public placeholder: string | null = msg("Select an object.");
+    public placeholder: string | null = msg("Select an object...");
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -144,11 +165,23 @@ export abstract class SearchSelectBase<T>
     @property({ type: String })
     public emptyOption?: string = "---------";
 
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it fires an `ak-search-select-action` event
+     * instead of changing the selection.
+     *
+     * @property
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel?: string;
+
     //#endregion
 
     //#region State
 
     #loading = false;
+    #updateRequestID = 0;
 
     @state()
     protected error?: APIError;
@@ -163,10 +196,31 @@ export abstract class SearchSelectBase<T>
 
             throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
-        return this.value(this.selectedObject) || "";
+
+        // When the user types a value and submits the form without explicitly selecting
+        // an option (e.g., typing "fa://fa-shield-alt" and clicking Update without pressing Enter),
+        // the selectedObject may not be synced with the current input value.
+        // So, on form submission, check if the current input value differs from selectedObject
+        // and if so, create a synthetic object with the current value.
+        if (this.creatable) {
+            const view = this.renderRoot.querySelector("ak-search-select-view") as SearchSelectView;
+            const currentValue = view?.rawValue;
+
+            if (currentValue) {
+                // Check if the current input value matches what we have selected
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
+                if (selectedValue !== currentValue) {
+                    // Input has changed but hasn't been committed yet so create synthetic object
+                    this.selectedObject = { name: currentValue } as T;
+                }
+            }
+        }
+
+        return String(this.value(this.selectedObject ?? null) ?? "");
     }
 
-    public json() {
+    public toJSON() {
         return this.toForm();
     }
 
@@ -181,15 +235,16 @@ export abstract class SearchSelectBase<T>
     }
 
     public async updateData() {
-        if (this.#loading) {
-            return Promise.resolve();
-        }
-
+        const requestID = ++this.#updateRequestID;
         this.#loading = true;
         this.dispatchEvent(new Event("loading"));
 
         return this.fetchObjects(this.query)
             .then((nextObjects) => {
+                if (requestID !== this.#updateRequestID) {
+                    return;
+                }
+
                 const selectedObject = nextObjects.find((obj) => this.selected?.(obj, nextObjects));
 
                 if (selectedObject) {
@@ -198,14 +253,18 @@ export abstract class SearchSelectBase<T>
                 }
 
                 this.objects = nextObjects;
+                this.error = undefined;
                 this.#loading = false;
             })
             .catch(async (error: unknown) => {
-                this.#loading = false;
-                this.objects = undefined;
-
                 const parsedError = await parseAPIResponseError(error);
 
+                if (requestID !== this.#updateRequestID) {
+                    return;
+                }
+
+                this.#loading = false;
+                this.objects = undefined;
                 this.error = parsedError;
             });
     }
@@ -224,22 +283,46 @@ export abstract class SearchSelectBase<T>
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    #searchListener = (event: InputEvent) => {
-        const value = (event.target as SearchSelectView).rawValue;
+    #searchListener = async (event: InputEvent) => {
+        if (this.readOnly) return;
+
+        const view = event.target as SearchSelectView;
+        const value = view.rawValue;
+        const requestID = this.#updateRequestID + 1;
 
         if (!value) {
+            view.open = false;
             this.selectedObject = null;
+            this.query = undefined;
+            this.dispatchChangeEvent(null);
+            await this.updateData();
             return;
         }
 
         this.query = value;
-        this.updateData()?.then(() => {
-            this.dispatchChangeEvent(this.selectedObject);
-        });
+        this.objects = [];
+        await this.updateData();
+
+        if (requestID !== this.#updateRequestID) {
+            return;
+        }
+
+        // If creatable, check if selectedObject's value matches the typed value exactly
+        if (this.creatable) {
+            const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+            if (selectedValue !== value) {
+                // No exact match so create a synthetic object with the raw value
+                // "synthetic" isn't an official term or anything, it's just called like that here
+                this.selectedObject = { name: value } as T;
+            }
+        }
+        this.dispatchChangeEvent(this.selectedObject);
     };
 
-    private onSelect(event: InputEvent) {
-        const value = (event.target as SearchSelectView).value;
+    private onSelect(event: Event) {
+        if (this.readOnly) return;
+
+        const value = (event.currentTarget as SearchSelectView).value;
 
         if (!value) {
             this.selectedObject = null;
@@ -256,12 +339,18 @@ export abstract class SearchSelectBase<T>
                 // We fix this by forcing a string cast here.
                 // Remove this after migrating to Lit JSX.
 
-                const serialized = `${this.value(obj)}`;
+                const serialized = String(this.value(obj));
 
                 return serialized && serialized === value;
             }) || null;
 
         if (!selected) {
+            if (this.creatable) {
+                // Create a synthetic object with the user's custom value
+                this.selectedObject = { name: value } as T;
+                this.dispatchChangeEvent(this.selectedObject);
+                return;
+            }
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
 
@@ -276,7 +365,7 @@ export abstract class SearchSelectBase<T>
             items.map((item) => [
                 `${this.value(item)}`,
                 this.renderElement(item),
-                this.renderDescription ? this.renderDescription(item) : undefined,
+                this.renderDescription ? this.renderDescription(item) : null,
             ]);
 
         const makeSearchGroups = (items: Group<T>[]): SelectGroup[] =>
@@ -337,10 +426,12 @@ export abstract class SearchSelectBase<T>
             .options=${options}
             value=${ifPresent(value)}
             ?blankable=${this.blankable}
+            ?readonly=${this.readOnly}
             label=${ifPresent(this.label)}
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}
             emptyOption=${ifPresent(this.blankable ? this.emptyOption : undefined)}
+            action-label=${ifPresent(this.actionLabel)}
             @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;

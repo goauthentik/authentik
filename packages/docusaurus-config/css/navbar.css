@@ -70,6 +70,24 @@
     filter: drop-shadow(0px -1px var(--ifm-color-primary-darker));
 }
 
+/* Between the mobile sidebar (<998px) and the roomy desktop layout (>=1120px) the full
+   item set barely fits; tighten spacing so the brand and links do not collide. */
+@media (min-width: 998px) and (max-width: 1119px) {
+    .navbar__brand {
+        flex-shrink: 0;
+    }
+
+    .navbar__items:not(.navbar__items--right) {
+        .navbar__item.navbar__link + .navbar__item.navbar__link {
+            margin-inline-start: calc(var(--ifm-navbar-padding-horizontal) / 4);
+        }
+    }
+
+    .DocSearch-Button .DocSearch-Button-Placeholder {
+        display: none;
+    }
+}
+
 @media (min-width: 1120px) {
     .navbar--fixed-top .navbar__items:not(.navbar__items--right) {
         --ifm-navbar-item-padding-horizontal: 1rem;
@@ -130,12 +148,19 @@
     }
 }
 
+@media (width < 998px) {
+    .navbar__item.navbar__link {
+        display: none;
+    }
+}
+
 .DocSearch-Button {
     --docsearch-primary-color: var(--ifm-color-primary-darkest);
     --docsearch-text-color: var(--ifm-navbar-link-color);
     --docsearch-searchbox-shadow: unset;
     --docsearch-searchbox-background: transparent;
     --docsearch-searchbox-focus-background: var(--ifm-hover-overlay);
+    --docsearch-subtle-color: transparent;
 
     --docsearch-muted-color: hsl(0 0% 85% / 1);
     --docsearch-key-gradient: linear-gradient(
@@ -152,6 +177,14 @@
 
     padding: var(--ifm-navbar-item-padding-vertical) var(--ifm-navbar-item-padding-horizontal) !important;
     padding-inline-end: calc(var(--ifm-navbar-item-padding-horizontal) * 1.25) !important;
+
+    /* TODO: Remove this after Docusaurus's CSS layers is stable. */
+    height: auto !important;
+    border-radius: 1rem !important;
+
+    &:hover {
+        --docsearch-searchbox-background: var(--ifm-hover-overlay);
+    }
 
     .DocSearch-Button-Placeholder {
         font-family: var(--ifm-heading-font-family);

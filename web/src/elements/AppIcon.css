@@ -14,6 +14,10 @@
     width: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
 }
 
+.icon-wrapper {
+    display: contents;
+}
+
 :host([size="pf-m-lg"]) {
     --icon-height: 4rem;
     --icon-border: 0.25rem;
@@ -36,10 +40,14 @@
 
 .icon {
     font-size: var(--icon-font-size, var(--icon-height));
-    color: var(--ak-global--Color--100);
     padding: var(--icon-border);
     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
     line-height: 1;
     filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));
-    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+}
+
+img.icon {
+    height: var(--icon-height);
+    width: var(--icon-height);
+    object-fit: contain;
 }

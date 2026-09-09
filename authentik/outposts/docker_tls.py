@@ -7,6 +7,7 @@ from tempfile import gettempdir
 from docker.tls import TLSConfig
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.outposts.docker_ssh import opener
 
 
 class DockerInlineTLS:
@@ -26,10 +27,16 @@ class DockerInlineTLS:
         self.authentication_kp = authentication_kp
         self._paths = []
 
+    def __enter__(self):
+        return self.write()
+
+    def __exit__(self, exc_type, exc, tb):
+        self.cleanup()
+
     def write_file(self, name: str, contents: str) -> str:
         """Wrapper for mkstemp that uses fdopen"""
         path = Path(gettempdir(), name)
-        with open(path, "w", encoding="utf8") as _file:
+        with open(path, "w", encoding="utf8", opener=opener) as _file:
             _file.write(contents)
         self._paths.append(str(path))
         return str(path)

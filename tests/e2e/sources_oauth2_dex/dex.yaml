@@ -1,6 +1,6 @@
 ---
 enablePasswordDB: true
-issuer: http://127.0.0.1:5556/dex
+issuer: http://{{ .Env.AK_HOST }}:5556/dex
 logger:
   level: debug
 staticClients:

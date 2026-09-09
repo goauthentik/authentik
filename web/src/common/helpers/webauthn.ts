@@ -2,6 +2,8 @@ import * as base64js from "base64-js";
 
 import { msg } from "@lit/localize";
 
+// #region WebAuthn helpers
+
 export function b64enc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
@@ -16,15 +18,58 @@ export function u8arr(input: string): Uint8Array<ArrayBuffer> {
     );
 }
 
-export function checkWebAuthnSupport() {
-    if ("credentials" in navigator) {
+export function assertWebAuthnSupported(scope = window): void {
+    if ("credentials" in scope.navigator) {
         return;
     }
-    if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+
+    if (scope.location.protocol === "http:" && scope.location.hostname !== "localhost") {
         throw new Error(msg("WebAuthn requires this page to be accessed via HTTPS."));
     }
+
     throw new Error(msg("WebAuthn not supported by browser."));
 }
+
+/**
+ * Ensures that the given assertion is a {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
+ *
+ * @throws TypeError if the assertion is not a PublicKeyCredential
+ */
+export function ensurePublicKeyCredential(assertion?: Credential | null): PublicKeyCredential {
+    if (!assertion) {
+        throw new TypeError(msg("No assertion was returned by the authenticator"));
+    }
+
+    if (!(assertion instanceof PublicKeyCredential)) {
+        throw new TypeError(msg("The returned assertion was not a PublicKeyCredential"));
+    }
+
+    return assertion;
+}
+
+// #endregion
+
+/**
+ * Predicate to determine if a given error originates from a user cancellation or timeout of a WebAuthn authentication ceremony.
+ */
+export function isWebAuthnNotAllowedError(error: unknown): error is DOMException {
+    return error instanceof DOMException && (error.name === "NotAllowedError" || error.code === 0);
+}
+
+/**
+ * Check if the browser supports WebAuthn conditional UI (passkey autofill)
+ */
+export async function isConditionalMediationAvailable(): Promise<boolean> {
+    if (
+        typeof window.PublicKeyCredential !== "undefined" &&
+        typeof window.PublicKeyCredential.isConditionalMediationAvailable === "function"
+    ) {
+        return await window.PublicKeyCredential.isConditionalMediationAvailable();
+    }
+    return false;
+}
+
+// #region Transformations
 
 /**
  * Transforms items in the credentialCreateOptions generated on the server
@@ -143,3 +188,5 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential): 
         },
     };
 }
+
+// #endregion

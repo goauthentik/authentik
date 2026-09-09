@@ -14,7 +14,7 @@ class TestBindingsAPI(APITestCase):
         super().setUp()
         self.pbm = PolicyBindingModel.objects.create()
         self.user = create_test_admin_user()
-        self.group = self.user.ak_groups.first()
+        self.group = self.user.groups.first()
         self.client.force_login(self.user)
 
     def test_valid_binding(self):

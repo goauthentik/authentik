@@ -1,14 +1,14 @@
 """ASN Enricher"""
 
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import ASN
-from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import active_tracer
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ class ASNDict(TypedDict):
 class ASNContextProcessor(MMDBContextProcessor):
     """ASN Database reader wrapper"""
 
-    def capability(self) -> Optional["Capabilities"]:
+    def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
 
         return Capabilities.CAN_ASN
@@ -35,7 +35,7 @@ class ASNContextProcessor(MMDBContextProcessor):
     def path(self) -> str | None:
         return CONFIG.get("events.context_processors.asn")
 
-    def enrich_event(self, event: "Event"):
+    def enrich_event(self, event: Event):
         asn = self.asn_dict(event.client_ip)
         if not asn:
             return
@@ -48,7 +48,7 @@ class ASNContextProcessor(MMDBContextProcessor):
 
     def asn(self, ip_address: str) -> ASN | None:
         """Wrapper for Reader.asn"""
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.events.asn.asn",
             name=ip_address,
         ):
@@ -57,7 +57,7 @@ class ASNContextProcessor(MMDBContextProcessor):
             self.check_expired()
             try:
                 return self.reader.asn(ip_address)
-            except (GeoIP2Error, ValueError):
+            except GeoIP2Error, ValueError:
                 return None
 
     def asn_to_dict(self, asn: ASN | None) -> ASNDict | dict:

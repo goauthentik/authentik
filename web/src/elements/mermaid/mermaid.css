@@ -1,0 +1,59 @@
+/* svg[id^="mermaid-svg-"] { */
+/* &.flowchart {
+        .edgeLabel .label {
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.55);
+            color: var(--ak-foreground, #fff);
+        }
+    } */
+
+.flowchart {
+    foreignObject:has(.edgeLabel) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+    }
+
+    .edgeLabel,
+    .edgeLabel .labelBkg {
+        background-color: transparent;
+        display: flex !important;
+    }
+
+    .edgeLabel > span,
+    .labelBkg > span.edgeLabel {
+        margin-inline: auto;
+        max-width: max-content;
+        padding: 3px 12px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .edgeLabel {
+        background-color: var(--pf-global--palette--gold-200) !important;
+        border: 1px solid var(--pf-global--palette--gold-500) !important;
+    }
+}
+
+svg[id^="mermaid-svg-"] {
+    & > .rect {
+        fill: color-mix(var(--pf-global--palette--gold-100), transparent 95%);
+        stroke: var(--pf-global--palette--gold-100);
+        stroke-width: 1;
+    }
+
+    .messageText {
+        fill: var(--pf-global--Color--100) !important;
+    }
+
+    .messageLine0 {
+        stroke: var(--pf-global--palette--purple-300) !important;
+    }
+
+    [id$="-arrowhead"] path {
+        fill: var(--pf-global--palette--purple-300) !important;
+        stroke: var(--pf-global--palette--purple-300) !important;
+    }
+}

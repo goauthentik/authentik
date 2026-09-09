@@ -18,23 +18,26 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.views import BufferedPolicyAccessView
+from authentik.policies.views import PolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONNECTION_SETTINGS = "connection_settings"
 
 
-class RACStartView(BufferedPolicyAccessView):
+class RACStartView(PolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
     endpoint: Endpoint
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
-        # Endpoint permissions are validated in the RACFinalStage below
-        self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
         self.provider = RACProvider.objects.get(application=self.application)
+        # The endpoint must belong to this application's provider; its own
+        # policies are validated in the RACFinalStage below
+        self.endpoint = get_object_or_404(
+            Endpoint, pk=self.kwargs["endpoint"], provider=self.provider
+        )
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start flow planner for RAC provider"""
@@ -68,7 +71,7 @@ class RACInterface(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Early sanity check to ensure token still exists
-        token = ConnectionToken.filter_not_expired(
+        token = ConnectionToken.objects.filter(
             token=self.kwargs["token"],
             session__session__session_key=request.session.session_key,
         ).first()
@@ -101,7 +104,7 @@ class RACFinalStage(RedirectStage):
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
         # Check if we're already at the maximum connection limit
-        all_tokens = ConnectionToken.filter_not_expired(
+        all_tokens = ConnectionToken.objects.filter(
             endpoint=self.endpoint,
         )
         if self.endpoint.maximum_connections > -1:

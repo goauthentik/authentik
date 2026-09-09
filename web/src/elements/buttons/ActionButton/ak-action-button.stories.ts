@@ -75,11 +75,11 @@ window.addEventListener("ak-button-failure", displayMessage);
 
 export const ButtonWithSuccess = () => {
     const run = () =>
-        new Promise<string>(function (resolve) {
-            setTimeout(function () {
+        new Promise<string>((resolve) =>
+            setTimeout(() => {
                 resolve("Success!");
-            }, 3000);
-        });
+            }, 3000),
+        );
 
     return container(
         html`<ak-action-button class="pf-m-primary" .apiRequest=${run}

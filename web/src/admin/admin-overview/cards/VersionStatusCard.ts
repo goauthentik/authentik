@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
@@ -17,7 +17,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     public override label = msg("Version");
 
     getPrimaryValue(): Promise<Version> {
-        return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        return aki(AdminApi).adminVersionRetrieve();
     }
 
     getStatus(value: Version): Promise<AdminStatus> {

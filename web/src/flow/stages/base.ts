@@ -1,29 +1,19 @@
+import "#flow/FormStatic";
+
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
-import { FocusTarget } from "#elements/utils/focus";
+import { WithLocale } from "#elements/mixins/locale";
+import { findEmptyFocusCandidate, FocusTarget } from "#elements/utils/focus";
 
-import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
+import { FlowUserDetails } from "#flow/FormStatic";
+import { IBaseStage, StageChallengeLike, StageHost } from "#flow/types";
 
-import { msg } from "@lit/localize";
-import { html, LitElement, nothing, PropertyValues } from "lit";
+import { ConsoleLogger } from "#logger/browser";
+
+import { html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-export interface SubmitOptions {
-    invisible: boolean;
-}
-
-export interface StageHost {
-    challenge?: unknown;
-    flowSlug?: string;
-    loading: boolean;
-    reset?: () => void;
-    submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
-
-    readonly brand?: CurrentBrand;
-}
 
 export function readFileAsync(file: Blob) {
     return new Promise((resolve, reject) => {
@@ -36,56 +26,64 @@ export function readFileAsync(file: Blob) {
     });
 }
 
-// Challenge which contains flow info
-export interface FlowInfoChallenge {
-    flowInfo?: ContextualFlowInfo;
-}
-
 // Challenge which has a pending user
-export interface PendingUserChallenge {
-    pendingUser?: string;
-    pendingUserAvatar?: string;
-}
 
-export interface ResponseErrorsChallenge {
-    responseErrors?: {
-        [key: string]: ErrorDetail[];
-    };
-}
-
-export abstract class BaseStage<
-    Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
-    Tout,
-> extends AKElement {
+/**
+ * Base class for all flow stages.
+ *
+ * @template Tin The type of the challenge this stage accepts.
+ * @prop {StageHost} host The host managing this stage.
+ * @prop {Tin} challenge The challenge provided to this stage.
+ */
+export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
+    extends WithLocale(AKElement)
+    implements IBaseStage<Tin, Tout>
+{
     static shadowRootOptions: ShadowRootInit = {
-        ...LitElement.shadowRootOptions,
+        ...AKElement.shadowRootOptions,
         delegatesFocus: true,
     };
 
-    protected host!: StageHost;
+    protected logger = ConsoleLogger.prefix(`flow:${this.localName}`);
+
+    @property({ type: Object, attribute: false })
+    public host!: StageHost;
 
     @property({ attribute: false })
-    public challenge!: Tin;
+    public challenge: Tin | null = null;
 
     @intersectionObserver()
     public visible = false;
 
-    protected autofocusTarget = new FocusTarget();
-    focus = this.autofocusTarget.focus;
+    protected primaryFocusTarget = new FocusTarget<HTMLInputElement>();
+    protected secondaryFocusTarget = new FocusTarget<HTMLInputElement>();
+
+    public override focus = (): void => {
+        const focusTarget = findEmptyFocusCandidate(
+            this.primaryFocusTarget.target,
+            this.secondaryFocusTarget.target,
+        );
+
+        if (!focusTarget) {
+            this.logger.info("Skipping focus. No empty candidate.");
+            return;
+        }
+
+        this.logger.info("Attempting to focus");
+        focusTarget.focus();
+    };
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
         if (!this.visible) return;
 
-        if (!this.autofocusTarget.target) return;
-
-        this.autofocusTarget.focus();
+        this.focus();
     };
 
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+        this.addEventListener("focus", this.focus);
 
         document.addEventListener("visibilitychange", this.#visibilityListener);
     }
@@ -93,7 +91,7 @@ export abstract class BaseStage<
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        this.removeEventListener("focus", this.autofocusTarget.toEventListener());
+        this.removeEventListener("focus", this.focus);
 
         document.removeEventListener("visibilitychange", this.#visibilityListener);
     }
@@ -103,13 +101,10 @@ export abstract class BaseStage<
 
         // We're especially mindful of how often this runs to avoid
         // unnecessary focus and in-fighting between the user's chosen focus target.
-        if (
-            changed.has("visible") &&
-            changed.get("visible") !== this.visible &&
-            this.visible &&
-            this.autofocusTarget.target
-        ) {
-            this.autofocusTarget.focus();
+        if (changed.has("visible") && changed.get("visible") !== this.visible && this.visible) {
+            requestAnimationFrame(() => {
+                this.focus();
+            });
         }
     }
 
@@ -118,7 +113,7 @@ export abstract class BaseStage<
 
         const payload: Record<string, unknown> = defaults || {};
 
-        const form = this.shadowRoot?.querySelector("form");
+        const form = this.shadowRoot?.querySelector("form") ?? this.querySelector("form");
 
         if (form) {
             const data = new FormData(form);
@@ -132,18 +127,18 @@ export abstract class BaseStage<
             }
         }
 
-        return this.host?.submit(payload).then((successful) => {
+        return this.host?.submit(payload).then(async (successful) => {
             if (successful) {
-                this.onSubmitSuccess();
+                await this.onSubmitSuccess?.(payload);
             } else {
-                this.onSubmitFailure();
+                await this.onSubmitFailure?.(payload);
             }
 
             return successful;
         });
     };
 
-    renderNonFieldErrors() {
+    protected renderNonFieldErrors() {
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
@@ -168,22 +163,13 @@ export abstract class BaseStage<
         </div>`;
     }
 
-    renderUserInfo() {
-        if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
+    protected renderUserInfo() {
+        if (!this.challenge?.pendingUser || !this.challenge?.pendingUserAvatar) {
             return nothing;
         }
+
         return html`
-            <ak-form-static
-                class="pf-c-form__group"
-                userAvatar="${this.challenge.pendingUserAvatar}"
-                user=${this.challenge.pendingUser}
-            >
-                <div slot="link">
-                    <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                        >${msg("Not you?")}</a
-                    >
-                </div>
-            </ak-form-static>
+            ${FlowUserDetails({ challenge: this.challenge })}
             <input
                 name="username"
                 autocomplete="username"
@@ -193,12 +179,17 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
-        // Method that can be overridden by stages
-        return;
-    }
-    onSubmitFailure(): void {
-        // Method that can be overridden by stages
-        return;
-    }
+    /**
+     * Callback method for successful form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitSuccess?(payload: Record<string, unknown>): void | Promise<void>;
+
+    /**
+     * Callback method for failed form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitFailure?(payload: Record<string, unknown>): void | Promise<void>;
 }

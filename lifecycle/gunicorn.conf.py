@@ -1,23 +1,26 @@
 """Gunicorn config"""
 
 import os
+import platform
+import signal
 from hashlib import sha512
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from prometheus_client import values
 from prometheus_client.values import MultiProcessValue
 
 from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
+from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
-from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -26,9 +29,23 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
-setup()
+# preload_app below means the app (and AuthentikCoreConfig.ready()) loads once in this
+# master process before workers are forked; tell it to defer each tracer's post-fork setup
+# to the post_fork hook below instead (see authentik.lib.tracing.setup_post_fork)
+os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
 
-wait_for_db()
+# Install this *before* preload_app loads Django below, so metrics that get constructed
+# pre-fork (e.g. django-prometheus's Counters) share
+# the same MultiProcessValue class as everything else instead of being permanently bound to
+# the master's PID.
+_worker_id: dict[str, int | None] = {"value": None}
+
+
+values.ValueClass = MultiProcessValue(
+    lambda: _worker_id["value"] if _worker_id["value"] is not None else 0
+)
+
+setup()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
@@ -36,44 +53,72 @@ worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
 
-bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 preload_app = True
 
-max_requests = 1000
-max_requests_jitter = 50
+max_requests = CONFIG.get_int("web.max_requests", 1000)
+max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
+
+# Match the value in packages/ak-common/src/arbiter.rs for graceful shutdown
+timeout = 30
+graceful_timeout = 30
+dirty_graceful_timeout = 30
 
 logconfig_dict = get_logger_config()
 
-default_workers = 2
-
-workers = CONFIG.get_int("web.workers", default_workers)
+workers = CONFIG.get_int("web.workers", 2)
 threads = CONFIG.get_int("web.threads", 4)
 
+control_socket_disable = True
 
-def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
+
+# libpq can try Kerberos/GSS on macOS, which is not fork-safe in our Gunicorn worker model.
+# Disable GSS negotiation for local/dev PostgreSQL connections on Darwin.
+if platform.system() == "Darwin":
+    os.environ.setdefault("PGGSSENCMODE", "disable")
+    # Avoid macOS SystemConfiguration proxy lookups (_scproxy) in forked workers.
+    # urllib/requests may consult these APIs and can crash in child workers.
+    os.environ.setdefault("NO_PROXY", "*")
+    os.environ.setdefault("no_proxy", "*")
+
+
+def when_ready(server: "Arbiter"):  # noqa: UP037
+    # Notify rust process that we are ready
+    os.kill(os.getppid(), signal.SIGUSR1)
+
+
+def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
-    from prometheus_client import values
+    _worker_id["value"] = worker._worker_id
 
-    values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
+    from authentik.lib.debug import start_pyroscope
+
+    start_pyroscope("server", worker_id=str(worker._worker_id))
+
+    # OTel's real TracerProvider is created here rather than before the fork above, since
+    # BatchSpanProcessor's background export thread and locks do not survive fork() and
+    # can deadlock a forked worker that inherits them (see OpenTelemetryTracer.setup_post_fork)
+    if CONFIG.get_bool("error_reporting.enabled", False):
+        from authentik.lib.tracing import setup_post_fork
+
+        setup_post_fork()
 
 
-def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
+def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess
 
     multiprocess.mark_process_dead(worker._worker_id)
 
 
-def on_starting(server: "Arbiter"):
+def on_starting(server: "Arbiter"):  # noqa: UP037
     """Attach a set of IDs that can be temporarily reused.
     Used on reloads when each worker exists twice."""
     server._worker_id_overload = set()
 
 
-def nworkers_changed(server: "Arbiter", new_value, old_value):
+def nworkers_changed(server: "Arbiter", new_value, old_value):  # noqa: UP037
     """Gets called on startup too.
     Set the current number of workers.  Required if we raise the worker count
     temporarily using TTIN because server.cfg.workers won't be updated and if
@@ -81,7 +126,7 @@ def nworkers_changed(server: "Arbiter", new_value, old_value):
     server._worker_id_current_workers = new_value
 
 
-def _next_worker_id(server: "Arbiter"):
+def _next_worker_id(server: "Arbiter"):  # noqa: UP037
     """If there are IDs open for reuse, take one.  Else look for a free one."""
     if server._worker_id_overload:
         return server._worker_id_overload.pop()
@@ -92,12 +137,12 @@ def _next_worker_id(server: "Arbiter"):
     return free.pop()
 
 
-def on_reload(server: "Arbiter"):
+def on_reload(server: "Arbiter"):  # noqa: UP037
     """Add a full set of ids into overload so it can be reused once."""
     server._worker_id_overload = set(range(1, server.cfg.workers + 1))
 
 
-def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
+def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Attach the next free worker_id before forking off."""
     worker._worker_id = _next_worker_id(server)
 

@@ -7,7 +7,7 @@ from structlog.stdlib import get_logger
 from authentik import authentik_build_hash, authentik_version
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.lib.config import CONFIG
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.outposts.models import (
     Outpost,
     OutpostServiceConnection,
@@ -17,7 +17,7 @@ from authentik.outposts.models import (
 FIELD_MANAGER = "goauthentik.io"
 
 
-class ControllerException(SentryIgnoredException):
+class ControllerException(TracingIgnoredException):
     """Exception raised when anything fails during controller run"""
 
 
@@ -58,6 +58,9 @@ class BaseController:
         self.connection = connection
         self.logger = get_logger()
         self.deployment_ports = []
+        self.metrics_ports = [
+            DeploymentPort(9300, "http-metrics", "tcp"),
+        ]
 
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""

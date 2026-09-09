@@ -3,7 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -18,6 +18,9 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
+    public static override verboseName = msg("Connection Token");
+    public static override verboseNamePlural = msg("Connection Tokens");
+
     checkbox = true;
     clearOnRefresh = true;
 
@@ -35,7 +38,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
-        return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
+        return aki(RacApi).racConnectionTokensList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             sessionUser: this.userId,
@@ -45,7 +48,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Connection Token(s)")}
+            object-label=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ConnectionToken) => {
                 return [
@@ -54,12 +57,12 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
                 ];
             }}
             .usedBy=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
+                return aki(RacApi).racConnectionTokensUsedByList({
                     connectionTokenUuid: item.pk || "",
                 });
             }}
             .delete=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
+                return aki(RacApi).racConnectionTokensDestroy({
                     connectionTokenUuid: item.pk || "",
                 });
             }}

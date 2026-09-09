@@ -8,12 +8,13 @@ from uuid import uuid4
 from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
-from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
+
+from authentik.lib.tracing import active_tracer
 
 SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
 SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"
@@ -47,7 +48,7 @@ async def aget_user(request):
 
 
 class AuthenticationMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> HttpResponseBadRequest | None:
         if not hasattr(request, "session"):
             raise ImproperlyConfigured(
                 "The Django authentication middleware requires session "
@@ -62,7 +63,8 @@ class AuthenticationMiddleware(MiddlewareMixin):
         user = request.user
         if user and user.is_authenticated and not user.is_active:
             logout(request)
-            raise AssertionError()
+            return HttpResponseBadRequest()
+        return None
 
 
 class ImpersonateMiddleware:
@@ -107,7 +109,7 @@ class RequestIDMiddleware:
             request.request_id = request_id
             CTX_REQUEST_ID.set(request_id)
             CTX_HOST.set(request.get_host())
-            set_tag("authentik.request_id", request_id)
+            active_tracer().set_tag("authentik.request_id", request_id)
         if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
             CTX_AUTH_VIA.set("session")
         else:

@@ -71,7 +71,7 @@ class KerberosSync:
                 principal=principal,
                 principal_obj=principal_obj,
             )
-            self._logger.debug("Writing user with attributes", **defaults)
+            self._logger.debug("Writing user with attributes", attributes=defaults)
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
@@ -113,10 +113,8 @@ class KerberosSync:
                     groups.append(group)
 
             with transaction.atomic():
-                user.ak_groups.remove(
-                    *user.ak_groups.filter(groupsourceconnection__source=self._source)
-                )
-                user.ak_groups.add(*groups)
+                user.groups.remove(*user.groups.filter(groupsourceconnection__source=self._source))
+                user.groups.add(*groups)
 
         except PropertyMappingExpressionException as exc:
             raise StopSync(exc, None, exc.mapping) from exc

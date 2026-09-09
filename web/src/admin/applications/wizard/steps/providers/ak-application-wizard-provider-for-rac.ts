@@ -1,18 +1,16 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/rac/RACProviderFormHelpers";
 
-import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
+import { FlowDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -24,8 +22,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
     label = msg("Configure Remote Access Provider");
 
     renderForm(provider: RACProvider) {
-        return html`
-            <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
@@ -37,11 +34,11 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
 
                 <ak-form-element-horizontal
                     name="authorizationFlow"
-                    label=${msg("Authorization flow")}
+                    label=${msg("Authorization Flow")}
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                        flowType=${FlowDesignationEnum.Authorization}
                         .currentFlow=${provider.authorizationFlow}
                         required
                     ></ak-flow-search>
@@ -76,15 +73,14 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
-            </form>
-        `;
+            </form>`;
     }
 
     render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.provider as RACProvider);
+        return this.renderForm(this.wizard.provider);
     }
 }
 

@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -18,6 +19,14 @@ from authentik.sources.saml.processors.metadata import MetadataProcessor
 
 class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
+
+    url_issuer = SerializerMethodField()
+
+    def get_url_issuer(self, instance: SAMLSource) -> str:
+        """Get the resolved Issuer, falling back to the metadata URL when unset"""
+        if "request" not in self._context:
+            return instance.issuer_override or ""
+        return instance.get_issuer(self._context["request"]._request)
 
     def validate(self, attrs: dict):
         if attrs.get("verification_kp"):
@@ -36,10 +45,12 @@ class SAMLSourceSerializer(SourceSerializer):
         fields = SourceSerializer.Meta.fields + [
             "group_matching_mode",
             "pre_authentication_flow",
-            "issuer",
+            "issuer_override",
+            "url_issuer",
             "sso_url",
             "slo_url",
             "allow_idp_initiated",
+            "force_authn",
             "name_id_policy",
             "binding_type",
             "verification_kp",
@@ -70,10 +81,11 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "policy_engine_mode",
         "user_matching_mode",
         "pre_authentication_flow",
-        "issuer",
+        "issuer_override",
         "sso_url",
         "slo_url",
         "allow_idp_initiated",
+        "force_authn",
         "name_id_policy",
         "binding_type",
         "verification_kp",

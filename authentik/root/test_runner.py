@@ -1,10 +1,12 @@
 """Integrate ./manage.py test with pytest"""
 
 import os
+import re
 from argparse import ArgumentParser
 from unittest import TestCase
 from unittest.mock import patch
 
+import freezegun
 import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -14,7 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
-from authentik.lib.sentry import sentry_init
+from authentik.lib.tracing import init as tracing_init
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.test import use_test_broker
 
@@ -29,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
@@ -56,6 +58,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         if kwargs.get("no_capture", False):
             self.args.append("--capture=no")
 
+        if kwargs.get("count", None):
+            self.args.append("--flake-finder")
+            self.args.append(f"--flake-runs={kwargs['count']}")
+
         self._setup_test_environment()
 
     def _setup_test_environment(self):
@@ -65,8 +71,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         # Test-specific configuration
         test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
+            "events.context_processors.geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
+            "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
             "tenants.enabled": False,
@@ -82,10 +88,12 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         ASN_CONTEXT_PROCESSOR.load()
         GEOIP_CONTEXT_PROCESSOR.load()
 
-        sentry_init()
+        tracing_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
+
+        freezegun.configure(extend_ignore_list=["cryptography"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -96,6 +104,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         DiscoverRunner.add_arguments(parser)
+        default_seed = None
+        if seed := os.getenv("CI_TEST_SEED"):
+            default_seed = int(seed)
         parser.add_argument(
             "--randomly-seed",
             type=int,
@@ -103,12 +114,14 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "to reuse the seed from the previous run."
             "Default behaviour: use random.Random().getrandbits(32), so the seed is"
             "different on each run.",
+            default=default_seed,
         )
         parser.add_argument(
             "--no-capture",
             action="store_true",
             help="Disable any capturing of stdout/stderr during tests.",
         )
+        parser.add_argument("--count", type=int, help="Re-run selected tests n times")
 
     def _validate_test_label(self, label: str) -> bool:
         """Validate test label format"""
@@ -166,7 +179,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                                 self.args.append(path)
                             valid_label_found = True
                             break
-                    except (TypeError, IndexError):
+                    except TypeError, IndexError:
                         continue
 
             if not valid_label_found:
@@ -176,7 +189,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                ret = pytest.main(self.args)
+                self.task_broker.close()
+                return ret
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

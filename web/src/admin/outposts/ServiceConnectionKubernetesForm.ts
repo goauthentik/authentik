@@ -1,9 +1,9 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
@@ -20,11 +20,21 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     KubernetesServiceConnection,
     string
 > {
-    loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
+                uuid,
+            }),
+        create: (kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
+                kubernetesServiceConnectionRequest,
+            }),
+        update: (uuid: string, kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
+                uuid,
+                kubernetesServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
@@ -32,19 +42,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             : msg("Successfully created integration.");
     }
 
-    async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
-        if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
-                uuid: this.instance.pk || "",
-                kubernetesServiceConnectionRequest: data,
-            });
-        }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-            kubernetesServiceConnectionRequest: data,
-        });
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -53,29 +51,16 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="local">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.local ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Local")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "If enabled, use the local connection. Required Docker socket/Kubernetes Integration.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="local"
+                label=${msg("Local connection")}
+                ?checked=${this.instance?.local ?? false}
+                help=${msg("Requires Docker socket/Kubernetes Integration.")}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >
                 </ak-codemirror>
@@ -83,23 +68,12 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="verifySsl">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.verifySsl ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Verify Kubernetes API SSL Certificate")}</span
-                    >
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="verifySsl"
+                label=${msg("Verify Kubernetes API SSL Certificate")}
+                ?checked=${this.instance?.verifySsl ?? true}
+            >
+            </ak-switch-input>`;
     }
 }
 

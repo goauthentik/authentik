@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
+from django.utils.translation import gettext as _
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
@@ -23,9 +22,11 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.types import PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
@@ -37,8 +38,13 @@ PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
+PLAN_CONTEXT_DEVICE = "device"
 PLAN_CONTEXT_SOURCE = "source"
 PLAN_CONTEXT_OUTPOST = "outpost"
+PLAN_CONTEXT_USER_SWITCH_FROM_USER = "user_switch_from_user"
+PLAN_CONTEXT_USER_SWITCH_ADD_USER = "user_switch_add_user"
+PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION = "user_switch_target_session"
+PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
@@ -121,7 +127,7 @@ class FlowPlan:
 
     def requires_flow_executor(
         self,
-        allowed_silent_types: list["StageView"] | None = None,
+        allowed_silent_types: list[StageView] | None = None,
     ):
         # Check if we actually need to show the Flow executor, or if we can jump straight to the end
         found_unskippable = True
@@ -142,10 +148,12 @@ class FlowPlan:
         self,
         request: HttpRequest,
         flow: Flow,
-        allowed_silent_types: list["StageView"] | None = None,
+        next: str | None = None,
+        allowed_silent_types: list[StageView] | None = None,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
         from authentik.flows.views.executor import (
+            NEXT_ARG_NAME,
             SESSION_KEY_PLAN,
             FlowExecutorView,
         )
@@ -173,6 +181,8 @@ class FlowPlan:
             or request.user.has_perm("authentik_flows.inspect_flow")
         ):
             get_qs["inspector"] = "available"
+        if next:
+            get_qs[NEXT_ARG_NAME] = next
 
         return redirect_with_qs(
             "authentik_core:if-flow",
@@ -220,6 +230,15 @@ class FlowPlanner:
             and context.get(PLAN_CONTEXT_IS_REDIRECTED) is None
         ):
             raise FlowNonApplicableException()
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_TOKEN
+            and context.get(PLAN_CONTEXT_IS_RESTORED) is None
+        ):
+            raise FlowNonApplicableException(
+                PolicyResult(
+                    False, _("This link is invalid or has expired. Please request a new one.")
+                )
+            )
         outpost_user = ClientIPMiddleware.get_outpost_user(request)
         if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_OUTPOST:
             if not outpost_user:
@@ -241,7 +260,9 @@ class FlowPlanner:
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with start_span(op="authentik.flow.planner.plan", name=self.flow.slug) as span:
+        with active_tracer().start_span(
+            op="authentik.flow.planner.plan", name=self.flow.slug
+        ) as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -267,9 +288,7 @@ class FlowPlanner:
             engine.build()
             result = engine.result
             if not result.passing:
-                exc = FlowNonApplicableException()
-                exc.policy_result = result
-                raise exc
+                raise FlowNonApplicableException(result)
             # User is passing so far, check if we have a cached plan
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)
@@ -301,7 +320,7 @@ class FlowPlanner:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.planner.build_plan",
                 name=self.flow.slug,
             ) as span,

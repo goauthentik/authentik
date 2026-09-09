@@ -1,6 +1,7 @@
 """Test RoleAssignedPermissionViewSet api"""
 
 from django.urls import reverse
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
@@ -15,6 +16,9 @@ class TestRBACRoleAPI(APITestCase):
     """Test RoleAssignedPermissionViewSet api"""
 
     def setUp(self) -> None:
+        # Make sure we have no roles to start with (e.g. Read-only from blueprints)
+        Role.objects.all().delete()
+
         self.superuser = create_test_admin_user()
 
         self.user = create_test_user()
@@ -29,7 +33,7 @@ class TestRBACRoleAPI(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         # self.user doesn't have permissions to see their (object) permissions
         self.client.force_login(self.superuser)
         res = self.client.get(
@@ -107,7 +111,7 @@ class TestRBACRoleAPI(APITestCase):
 
     def test_unassign_global(self):
         """Test permission unassign"""
-        self.role.assign_permission("authentik_stages_invitation.view_invitation")
+        self.role.assign_perms("authentik_stages_invitation.view_invitation")
         self.client.force_login(self.superuser)
         res = self.client.patch(
             reverse(
@@ -123,13 +127,72 @@ class TestRBACRoleAPI(APITestCase):
         self.assertEqual(res.status_code, 204)
         self.assertFalse(self.user.has_perm("authentik_stages_invitation.view_invitation"))
 
+    def test_assign_object_deleted(self):
+        """Test assigning permission to an object that doesn't exist (or no longer exists)"""
+        inv = Invitation.objects.create(
+            name=generate_id(),
+            created_by=self.superuser,
+        )
+        object_pk = str(inv.pk)
+        inv.delete()
+        self.client.force_login(self.superuser)
+        res = self.client.post(
+            reverse(
+                "authentik_api:permissions-assigned-by-roles-assign",
+                kwargs={
+                    "pk": self.role.pk,
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+                "model": "authentik_stages_invitation.invitation",
+                "object_pk": object_pk,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_unassign_object_deleted(self):
+        """Test permission unassign of an object permission whose object was deleted."""
+        inv = Invitation.objects.create(
+            name=generate_id(),
+            created_by=self.superuser,
+        )
+        object_pk = str(inv.pk)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation")
+        inv.delete()
+        self.client.force_login(self.superuser)
+        res = self.client.patch(
+            reverse(
+                "authentik_api:permissions-assigned-by-roles-unassign",
+                kwargs={
+                    "pk": str(self.role.pk),
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+                "model": "authentik_stages_invitation.invitation",
+                "object_pk": object_pk,
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertFalse(
+            RoleObjectPermission.objects.filter(role=self.role, object_pk=object_pk).exists()
+        )
+        self.assertTrue(
+            RoleModelPermission.objects.filter(
+                role=self.role,
+                permission__codename="view_invitation",
+            ).exists()
+        )
+
     def test_unassign_object(self):
         """Test permission unassign (object)"""
         inv = Invitation.objects.create(
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         self.client.force_login(self.superuser)
         res = self.client.patch(
             reverse(

@@ -22,6 +22,7 @@ from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
     OutpostServiceConnectionState,
+    OutpostType,
     ServiceConnectionInvalid,
 )
 
@@ -72,7 +73,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
     def fetch_state(self) -> OutpostServiceConnectionState:
         try:
             return OutpostServiceConnectionState(version=self.info()["ServerVersion"], healthy=True)
-        except (ServiceConnectionInvalid, DockerException):
+        except ServiceConnectionInvalid, DockerException:
             return OutpostServiceConnectionState(version="", healthy=False)
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -195,6 +196,10 @@ class DockerController(BaseController):
         except NotFound:
             self.logger.info("(Re-)creating container...")
             image_name = self.try_pull_image()
+            # Go outposts have a different syntax for this than the rust proxy outpost
+            healthcheck_cmd = [f"/{self.outpost.type}", "healthcheck"]
+            if self.outpost.type == OutpostType.PROXY:
+                healthcheck_cmd = ["/authentik", "healthcheck", self.outpost.type]
             container_args = {
                 "image": image_name,
                 "name": self.name,
@@ -203,6 +208,12 @@ class DockerController(BaseController):
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
                 "network": self.outpost.config.docker_network,
+                "healthcheck": {
+                    "test": ["CMD", *healthcheck_cmd],
+                    "interval": 5 * 1_000 * 1_000_000,
+                    "retries": 20,
+                    "start_period": 3 * 1_000 * 1_000_000,
+                },
             }
             if self.outpost.config.docker_map_ports:
                 container_args["ports"] = {

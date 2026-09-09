@@ -32,6 +32,18 @@ def microsoft_entra_sync_direct_dispatch(*args, **kwargs):
     return sync_tasks.sync_signal_direct_dispatch(microsoft_entra_sync_direct, *args, **kwargs)
 
 
+@actor(description=_("Delete an object (user, group) for Microsoft Entra provider."))
+def microsoft_entra_sync_delete(*args, **kwargs):
+    return sync_tasks.sync_signal_delete(*args, **kwargs)
+
+
+@actor(
+    description=_("Dispatch deletions for an object (user, group) for Microsoft Entra providers.")
+)
+def microsoft_entra_sync_delete_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_delete_dispatch(microsoft_entra_sync_delete, *args, **kwargs)
+
+
 @actor(description=_("Sync a related object (memberships) for Microsoft Entra provider."))
 def microsoft_entra_sync_m2m(*args, **kwargs):
     return sync_tasks.sync_signal_m2m(*args, **kwargs)

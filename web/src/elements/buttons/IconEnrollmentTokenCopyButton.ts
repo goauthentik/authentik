@@ -1,0 +1,32 @@
+import { aki } from "#common/api/client";
+
+import { IconCopyButton } from "#elements/buttons/IconCopyButton";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EndpointsApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { guard } from "lit-html/directives/guard.js";
+
+export function IconEnrollmentTokenCopyButton(tokenUuid?: string | null): SlottedTemplateResult {
+    return guard([], () => {
+        const fetchTokenViewKey = (): Promise<Blob> => {
+            if (!tokenUuid) {
+                console.warn("No tokenUuid provided for IconEnrollmentTokenCopyButton");
+                return Promise.resolve(new Blob([""], { type: "text/plain" }));
+            }
+
+            return aki(EndpointsApi)
+                .endpointsAgentsEnrollmentTokensViewKeyRetrieve({
+                    tokenUuid,
+                })
+                .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
+        };
+
+        return IconCopyButton({
+            source: fetchTokenViewKey,
+            buttonLabel: msg("Copy token"),
+            entityLabel: msg("Token"),
+        });
+    });
+}

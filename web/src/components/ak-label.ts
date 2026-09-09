@@ -12,13 +12,13 @@ export interface FormLabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
 }
 
 export const AKLabel: LitFC<FormLabelProps> = (
-    { required, htmlFor, ...labelAttributes } = {},
+    { required, htmlFor, className, ...labelAttributes } = {},
     children,
 ) => {
     if (!children) return nothing;
 
     return html`<label
-        class="pf-c-form__label"
+        class="pf-c-form__label ${className || ""}"
         for=${ifPresent(htmlFor)}
         aria-required=${required ? "true" : "false"}
         ${spread(labelAttributes)}

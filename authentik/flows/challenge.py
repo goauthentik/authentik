@@ -2,16 +2,17 @@
 
 from dataclasses import asdict, is_dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from uuid import UUID
 
+from django.contrib.messages import DEFAULT_TAGS
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
 from rest_framework.request import Request
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
@@ -31,6 +32,9 @@ class FlowLayout(models.TextChoices):
     SIDEBAR_LEFT = "sidebar_left"
     SIDEBAR_RIGHT = "sidebar_right"
 
+    SIDEBAR_LEFT_FRAME_BACKGROUND = "sidebar_left_frame_background"
+    SIDEBAR_RIGHT_FRAME_BACKGROUND = "sidebar_right_frame_background"
+
 
 class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
@@ -39,13 +43,25 @@ class ErrorDetailSerializer(PassiveSerializer):
     code = CharField()
 
 
+FLOW_MESSAGE_LEVELS = list(DEFAULT_TAGS.values())
+
+
+class FlowMessageSerializer(PassiveSerializer):
+    """Serializer for a django.contrib.messages message"""
+
+    level = ChoiceField(choices=FLOW_MESSAGE_LEVELS, source="level_tag")
+    message = CharField()
+
+
 class ContextualFlowInfo(PassiveSerializer):
     """Contextual flow information for a challenge"""
 
     title = CharField(required=False, allow_blank=True)
     background = CharField(required=False)
+    background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
+    messages = FlowMessageSerializer(many=True, required=False)
 
 
 class Challenge(PassiveSerializer):
@@ -64,6 +80,10 @@ class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
     to = CharField()
+    # True only for the terminal redirect out of a completed flow. Intermediate redirects (e.g.
+    # source-stage hops to an external IdP) stay False so the web client doesn't resume other
+    # continuous-login tabs prematurely. See web/src/flow/tabs/orchestrator.ts.
+    final_redirect = BooleanField(default=False)
     component = CharField(default="xak-flow-redirect")
 
 
@@ -124,6 +144,7 @@ class SessionEndChallenge(WithUserInfoChallenge):
     application_launch_url = CharField(required=False)
 
     invalidation_flow_url = CharField(required=False)
+    overview_url = CharField(required=False)
     brand_name = CharField(required=True)
 
 
@@ -137,7 +158,7 @@ class PermissionDict(TypedDict):
 class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
-    stage: Optional["StageView"]
+    stage: StageView | None
     component = CharField(default="xak-flow-response-default")
 
     def __init__(self, instance=None, data=None, **kwargs):
@@ -170,7 +191,6 @@ class FrameChallenge(Challenge):
 
 
 class FrameChallengeResponse(ChallengeResponse):
-
     component = CharField(default="xak-flow-frame")
 
 

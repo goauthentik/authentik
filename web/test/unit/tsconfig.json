@@ -1,0 +1,35 @@
+// @file TSConfig used by the web package during development.
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "types": ["node"],
+        "checkJs": true,
+        "allowJs": true,
+        "composite": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "emitDeclarationOnly": true,
+        "target": "esnext",
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+
+        "noUncheckedIndexedAccess": true
+    },
+    "include": ["./**/*", "../**/*"],
+    "exclude": [
+        // ---
+        "**/out/**/*",
+        "**/dist/**/*",
+        "storybook-static",
+        // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
+        // Remove when we upgrade past that.
+        "scripts/pseudolocalize.mjs",
+        "scripts/build-locales.mjs"
+    ],
+    "references": [
+        {
+            "path": "../.."
+        }
+    ]
+}

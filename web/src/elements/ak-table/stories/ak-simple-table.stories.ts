@@ -146,3 +146,9 @@ export const GroupedTable: Story = {
     render: () =>
         html`<ak-simple-table .columns=${columns} .content=${groupedContent}></ak-simple-table>`,
 };
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-simple-table-test-sort": SimpleTableSortTest;
+    }
+}

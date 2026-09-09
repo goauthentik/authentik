@@ -36,18 +36,8 @@ export class RouteMatch {
     }
 
     toString(): string {
-        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(
-            this.arguments,
-        )}>`;
+        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(this.arguments)}>`;
     }
-}
-
-export function getURLParam<T>(key: string, fallback: T): T {
-    const params = getURLParams();
-    if (key in params) {
-        return params[key] as T;
-    }
-    return fallback;
 }
 
 export function getURLParams(): RouteParameterRecord {
@@ -62,6 +52,14 @@ export function getURLParams(): RouteParameterRecord {
         }
     }
     return params;
+}
+
+export function getURLParam<T>(key: string, fallback: T): T {
+    const params = getURLParams();
+    if (key in params) {
+        return params[key] as T;
+    }
+    return fallback;
 }
 
 /**

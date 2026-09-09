@@ -3,15 +3,10 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.models import StageMode
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
-
-
-class TLSMode(models.TextChoices):
-    """Modes the TLS Stage can operate in"""
-
-    OPTIONAL = "optional"
-    REQUIRED = "required"
+from authentik.lib.models import SimpleThroughModel
 
 
 class CertAttributes(models.TextChoices):
@@ -32,7 +27,7 @@ class UserAttributes(models.TextChoices):
 class MutualTLSStage(Stage):
     """Authenticate/enroll users using a client-certificate."""
 
-    mode = models.TextField(choices=TLSMode.choices)
+    mode = models.TextField(choices=StageMode.choices)
 
     certificate_authorities = models.ManyToManyField(
         CertificateKeyPair,
@@ -42,6 +37,7 @@ class MutualTLSStage(Stage):
             "Configure certificate authorities to validate the certificate against. "
             "This option has a higher priority than the `client_certificate` option on `Brand`."
         ),
+        through="MutualTLSStageCertificateAuthority",
     )
 
     cert_attribute = models.TextField(choices=CertAttributes.choices)
@@ -69,3 +65,27 @@ class MutualTLSStage(Stage):
         permissions = [
             ("pass_outpost_certificate", _("Permissions to pass Certificates for outposts.")),
         ]
+
+
+class MutualTLSStageCertificateAuthority(SimpleThroughModel):
+    mutual_tls_stage = models.ForeignKey(
+        MutualTLSStage,
+        on_delete=models.CASCADE,
+        db_column="mutualtlsstage_id",
+    )
+    certificate_key_pair = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
+    )
+
+    class Meta:
+        db_table = "authentik_stages_mtls_mutualtlsstage_certificate_authorities"
+        unique_together = (("mutual_tls_stage", "certificate_key_pair"),)
+        verbose_name = _("Mutual TLS Stage Certificate Authority")
+        verbose_name_plural = _("Mutual TLS Stage Certificate Authoritys")
+
+    def __str__(self):
+        return (
+            "MutualTLSStageCertificateAuthority for MutualTLSStage "
+            f"{self.mutual_tls_stage_id} "
+            f"and CertificateKeyPair {self.certificate_key_pair_id}."
+        )

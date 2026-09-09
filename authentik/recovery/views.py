@@ -2,11 +2,13 @@
 
 from django.contrib import messages
 from django.contrib.auth import login
+from django.db import transaction
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views import View
 
+from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE
 from authentik.core.models import Token, TokenIntents
 from authentik.stages.password import BACKEND_INBUILT
 
@@ -16,11 +18,21 @@ class UseTokenView(View):
 
     def get(self, request: HttpRequest, key: str) -> HttpResponse:
         """Check if token exists, log user in and delete token."""
-        tokens = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_RECOVERY)
-        if not tokens.exists():
-            raise Http404
-        token = tokens.first()
-        login(request, token.user, backend=BACKEND_INBUILT)
-        token.delete()
+        with transaction.atomic():
+            tokens = (
+                Token.objects.filter(key=key, intent=TokenIntents.INTENT_RECOVERY)
+                .select_for_update()
+                .select_related("user")
+            )
+            token = tokens.first()
+
+            if token is None:
+                raise Http404
+
+            login(request, token.user, backend=BACKEND_INBUILT)
+            token.delete()
+
+        request.session[SESSION_KEY_BRAND_SAFE_MODE] = True
+
         messages.warning(request, _("Used recovery-link to authenticate."))
         return redirect("authentik_core:if-user")

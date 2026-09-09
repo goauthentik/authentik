@@ -4,7 +4,7 @@ import "../ak-list-select.js";
 import { ListSelect } from "../ak-list-select.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
-import { EVENT_MESSAGE } from "#common/constants";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { Meta, StoryObj } from "@storybook/web-components";
 import { kebabCase } from "change-case";
@@ -40,7 +40,14 @@ type Story = StoryObj;
 
 const sendMessage = (message: string) =>
     document.dispatchEvent(
-        new CustomEvent(EVENT_MESSAGE, { bubbles: true, composed: true, detail: { message } }),
+        new CustomEvent<APIMessage>("ak-message", {
+            bubbles: true,
+            composed: true,
+            detail: {
+                level: MessageLevel.info,
+                message,
+            },
+        }),
     );
 
 const container = (testItem: TemplateResult) => {

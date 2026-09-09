@@ -1,6 +1,6 @@
 """Proxy and Outpost e2e tests"""
 
-from json import loads
+from json import dumps
 from pathlib import Path
 from time import sleep
 from unittest import skip
@@ -13,7 +13,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxyForward(SeleniumTestCase):
@@ -22,7 +23,7 @@ class TestProviderProxyForward(SeleniumTestCase):
     def setUp(self):
         super().setUp()
         self.run_container(
-            image="traefik/whoami:latest",
+            image=self.pinned_image("whoami", "e2e/compose.yml"),
             name="ak-whoami",
         )
 
@@ -84,7 +85,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             Path(__file__).parent / "proxy_forward_auth" / "traefik_single" / "config-static.yaml"
         )
         self.run_container(
-            image="docker.io/library/traefik:3.1",
+            image=self.pinned_image("traefik", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },
@@ -101,10 +102,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -122,7 +127,7 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         # Start nginx last so all hosts are resolvable, otherwise nginx exits
         self.run_container(
-            image="docker.io/library/nginx:1.27",
+            image=self.pinned_image("nginx", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },
@@ -137,10 +142,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -154,7 +163,7 @@ class TestProviderProxyForward(SeleniumTestCase):
     def test_envoy(self):
         """Test envoy"""
         self.run_container(
-            image="docker.io/envoyproxy/envoy:v1.25-latest",
+            image=self.pinned_image("envoy", "e2e/compose.yml"),
             ports={
                 "10000": "80",
             },
@@ -167,14 +176,21 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.prepare()
 
-        self.driver.get("http://localhost/api")
+        self.driver.get("http://localhost")
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        self.driver.get("http://localhost/api")
+        sleep(1)
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
+
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -191,7 +207,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             Path(__file__).parent / "proxy_forward_auth" / "caddy_single" / "Caddyfile"
         )
         self.run_container(
-            image="docker.io/library/caddy:2.8",
+            image=self.pinned_image("caddy", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },
@@ -208,10 +224,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)

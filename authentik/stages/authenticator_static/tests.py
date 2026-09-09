@@ -1,6 +1,5 @@
 """Test Static API"""
 
-from django.test.utils import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -44,9 +43,6 @@ class DeviceTest(TestCase):
         str(device)
 
 
-@override_settings(
-    OTP_STATIC_THROTTLE_FACTOR=1,
-)
 class ThrottlingTestCase(ThrottlingTestMixin, TestCase):
     """Test static device throttling"""
 

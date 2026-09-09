@@ -1,0 +1,24 @@
+.pf-c-notification-drawer {
+    --pf-c-notification-drawer--BackgroundColor: var(--pf-global--BackgroundColor--150);
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-notification-drawer,
+:host([theme="dark"]) .pf-c-notification-drawer {
+    --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background) !important;
+    --pf-c-notification-drawer__header--BackgroundColor: var(
+        --ak-dark-background-lighter
+    ) !important;
+}
+
+:host([theme="dark"]) .pf-c-notification-drawer__header {
+    color: var(--ak-dark-foreground);
+}
+
+:host([theme="dark"]) .pf-c-notification-drawer__list-item {
+    color: var(--ak-dark-foreground);
+    --pf-c-notification-drawer__list-item--BorderBottomColor: var(--pf-global--Color--dark-200);
+}
+
+/* #endregion */

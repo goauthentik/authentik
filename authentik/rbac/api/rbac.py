@@ -6,11 +6,7 @@ from django.db.models import QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
-    CharField,
-    ChoiceField,
-    ListField,
     ReadOnlyField,
     SerializerMethodField,
 )
@@ -18,10 +14,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import User
-from authentik.lib.validators import RequiredTogetherValidator
-from authentik.policies.event_matcher.models import model_choices
+from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.models import Role
 
 
@@ -62,21 +55,14 @@ class PermissionSerializer(ModelSerializer):
         ]
 
 
-class PermissionAssignResultSerializer(PassiveSerializer):
-    """Result from assigning permissions to a user/role"""
-
-    id = CharField()
-
-
 class PermissionFilter(FilterSet):
     """Filter permissions"""
 
     role = ModelChoiceFilter(queryset=Role.objects.all(), method="filter_role")
-    user = ModelChoiceFilter(queryset=User.objects.all())
 
     def filter_role(self, queryset: QuerySet, name, value: Role) -> QuerySet:
         """Filter permissions based on role"""
-        return queryset.filter(group__role=value)
+        return queryset.filter(rolemodelpermission__role=value)
 
     class Meta:
         model = Permission
@@ -85,7 +71,6 @@ class PermissionFilter(FilterSet):
             "content_type__model",
             "content_type__app_label",
             "role",
-            "user",
         ]
 
 
@@ -113,36 +98,3 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
                 content_type__app_label__startswith="authentik",
             )
         )
-
-
-class PermissionAssignSerializer(PassiveSerializer):
-    """Request to assign a new permission"""
-
-    permissions = ListField(child=CharField())
-    model = ChoiceField(choices=model_choices(), required=False)
-    object_pk = CharField(required=False)
-
-    validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]
-
-    def validate(self, attrs: dict) -> dict:
-        model_instance = None
-        # Check if we're setting an object-level perm or global
-        model = attrs.get("model")
-        object_pk = attrs.get("object_pk")
-        if model and object_pk:
-            model = apps.get_model(attrs["model"])
-            model_instance = model.objects.filter(pk=attrs["object_pk"]).first()
-        attrs["model_instance"] = model_instance
-        if attrs.get("model"):
-            return attrs
-        permissions = attrs.get("permissions", [])
-        if not all("." in perm for perm in permissions):
-            raise ValidationError(
-                {
-                    "permissions": (
-                        "When assigning global permissions, codename must be given as "
-                        "app_label.codename"
-                    )
-                }
-            )
-        return attrs

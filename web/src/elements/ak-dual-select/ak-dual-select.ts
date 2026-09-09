@@ -28,7 +28,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     const aSortBy = String(a[2] || a[0]);
@@ -37,7 +36,7 @@ function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     return aSortBy.localeCompare(bSortBy);
 }
 
-function keyfinder(key: string) {
+function keyfinder(key: string | number) {
     return ([k]: DualSelectPair) => k === key;
 }
 
@@ -62,7 +61,7 @@ const DelegatedEvents = [
  */
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
-    static styles = [PFBase, PFButton, globalVariables, mainStyles];
+    static styles = [PFButton, globalVariables, mainStyles];
 
     //#region Properties
 
@@ -91,6 +90,19 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
+    @property({ type: Boolean, attribute: "no-search" })
+    noSearch = false;
+
+    @property({ type: Boolean, attribute: "no-status" })
+    noStatus = false;
+
+    /**
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
+     * Use this when the order of selected items is meaningful (e.g. priority-based lists).
+     */
+    @property({ type: Boolean, attribute: "preserve-order" })
+    preserveOrder = false;
+
     //#endregion
 
     //#region State
@@ -98,7 +110,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @state()
     protected selectedFilter: string = "";
 
-    #selectedKeys: Set<string> = new Set();
+    #selectedKeys: Set<string | number> = new Set();
 
     //#endregion
 
@@ -188,7 +200,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     // updating the list of currently visible options;
     protected addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
-        const selected = new Map<string, DualSelectPair>([
+        const selected = new Map<string | number, DualSelectPair>([
             ...this.options.map((pair) => [pair[0], pair] as const),
             ...this.selected.map((pair) => [pair[0], pair] as const),
         ]);
@@ -293,14 +305,25 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         const selectedTotal = selected.length;
 
         const availableStatus =
-            availableCount > 0 ? msg(str`${availableCount} item(s) marked to add.`) : "&nbsp;";
+            availableCount > 0
+                ? availableCount === 1
+                    ? msg(str`${availableCount} item marked to add.`)
+                    : msg(str`${availableCount} items marked to add.`)
+                : "&nbsp;";
 
-        const selectedTotalStatus = msg(str`${selectedTotal} item(s) selected.`);
+        const selectedTotalStatus =
+            selectedTotal === 1
+                ? msg(str`${selectedTotal} item selected.`)
+                : msg(str`${selectedTotal} items selected.`);
 
         const selectedCountStatus =
-            selectedCount > 0 ? "  " + msg(str`${selectedCount} item(s) marked to remove.`) : "";
-
-        const selectedStatus = `${selectedTotalStatus} ${selectedCountStatus}`;
+            selectedCount === 1
+                ? msg(str`${selectedCount} item marked to remove.`)
+                : msg(str`${selectedCount} items marked to remove.`);
+        const selectedStatus =
+            selectedCount > 0
+                ? `${selectedTotalStatus} ${selectedCountStatus}`
+                : selectedTotalStatus;
 
         return html`
             <div class="ak-dual-list-selector">
@@ -312,17 +335,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar
-                        placeholder=${msg(str`Search ${this.availableLabel}...`)}
-                        name="ak-dual-list-available-search"
-                    ></ak-search-bar>
-                    <div class="pf-c-dual-list-selector__status">
-                        <span
-                            class="pf-c-dual-list-selector__status-text"
-                            id="basic-available-status-text"
-                            >${unsafeHTML(availableStatus)}</span
-                        >
-                    </div>
+                    ${this.noSearch
+                        ? nothing
+                        : html`<ak-search-bar
+                              placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                              name="ak-dual-list-available-search"
+                          ></ak-search-bar>`}
+                    ${this.noStatus
+                        ? nothing
+                        : html`<div class="pf-c-dual-list-selector__status">
+                              <span
+                                  class="pf-c-dual-list-selector__status-text"
+                                  id="basic-available-status-text"
+                                  >${unsafeHTML(availableStatus)}</span
+                              >
+                          </div>`}
                     <ak-dual-select-available-pane
                         ${ref(this.availablePane)}
                         .options=${this.options}
@@ -349,21 +376,27 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar
-                        placeholder=${msg(str`Search ${this.selectedLabel}...`)}
-                        name="ak-dual-list-selected-search"
-                    ></ak-search-bar>
-                    <div class="pf-c-dual-list-selector__status">
-                        <span
-                            class="pf-c-dual-list-selector__status-text"
-                            id="basic-available-status-text"
-                            >${unsafeHTML(selectedStatus)}</span
-                        >
-                    </div>
+                    ${this.noSearch
+                        ? nothing
+                        : html`<ak-search-bar
+                              placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                              name="ak-dual-list-selected-search"
+                          ></ak-search-bar>`}
+                    ${this.noStatus
+                        ? nothing
+                        : html`<div
+                              class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
+                          >
+                              <span class="pf-c-dual-list-selector__status-text"
+                                  >${selectedStatus}</span
+                              >
+                          </div>`}
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
-                        .selected=${selected.toSorted(localeComparator)}
+                        .selected=${this.preserveOrder
+                            ? selected
+                            : selected.toSorted(localeComparator)}
                     ></ak-dual-select-selected-pane>
                 </div>
             </div>

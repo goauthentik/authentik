@@ -1,22 +1,27 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ak-library-application-empty-list.js";
 
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
-import type { PageUIConfig } from "./types.js";
+import { ViewMode } from "./types.js";
 
+import { StorageAccessor } from "#common/storage";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
 import { isInteractiveElement } from "#elements/utils/interactivity";
+import { isFirefox } from "#elements/utils/useragent";
 
 import type { Application } from "@goauthentik/api";
 
@@ -25,8 +30,8 @@ import Fuse from "fuse.js";
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
-import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -37,9 +42,49 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
+function createViewToggleContent(
+    viewMode: ViewMode,
+): [label: string, template: SlottedTemplateResult] {
+    if (viewMode === ViewMode.Grid) {
+        return [
+            msg("Switch to list view", {
+                id: "user.library.view-toggle.to-list",
+                desc: "Tooltip on the library view toggle when grid view is active",
+            }),
+            html`<svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="ak-c-vector-icon"
+                fill="currentColor"
+                aria-hidden="true"
+                viewBox="0 0 32 32"
+            >
+                <path
+                    d="M10 6h18v2H10zM10 24h18v2H10zM10 15h18v2H10zM4 15h2v2H4zM4 6h2v2H4zM4 24h2v2H4z"
+                />
+            </svg>`,
+        ];
+    }
+    return [
+        msg("Switch to grid view", {
+            id: "user.library.view-toggle.to-grid",
+            desc: "Tooltip on the library view toggle when list view is active",
+        }),
+        html`<svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="ak-c-vector-icon"
+            fill="currentColor"
+            aria-hidden="true"
+            viewBox="0 0 32 32"
+        >
+            <path
+                d="M12 4H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 8H6V6h6ZM26 4h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 8h-6V6h6ZM12 18H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2m0 8H6v-6h6ZM26 18h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2m0 8h-6v-6h6Z"
+            />
+        </svg>`,
+    ];
+}
 
 /**
  * List of Applications available
@@ -53,10 +98,24 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  *
  */
 @customElement("ak-library-impl")
-export class LibraryPage extends AKElement {
+export class LibraryPage extends WithSession(AKElement) {
+    static readonly ViewModeStorage = StorageAccessor.local("library-view-mode");
+
+    /**
+     * Maximum number of items to show in the datalist for search suggestions.
+     */
+    static readonly MAX_DATA_LIST_ITEMS = 5;
+    /**
+     * Whether to enable the datalist for search suggestions.
+     *
+     * @remarks
+     * Disabled on Firefox due to performance issues between renders.
+     */
+    static DataListEnabled = !isFirefox();
+
     static styles = [
         // ---
-        PFBase,
+
         PFDisplay,
         PFEmptyState,
         PFPage,
@@ -76,11 +135,10 @@ export class LibraryPage extends AKElement {
 
     /**
      * Controls showing the "Switch to Admin" button.
-     *
-     * @attr
      */
-    @property({ type: Boolean })
-    public admin = false;
+    public get admin() {
+        return canAccessAdmin(this.currentUser);
+    }
 
     #applications: Application[] = [];
 
@@ -100,16 +158,8 @@ export class LibraryPage extends AKElement {
         this.fuse.setCollection(this.searchEnabled ? this.#applications : []);
     }
 
-    /**
-     * The aggregate uiConfig, derived from user, brand, and instance data.
-     *
-     * @attr
-     */
-    @property({ attribute: false })
-    public uiConfig!: PageUIConfig;
-
     public get searchEnabled(): boolean {
-        return this.uiConfig?.searchEnabled ?? true;
+        return this.uiConfig.enabledFeatures.search ?? true;
     }
 
     //#endregion
@@ -130,6 +180,9 @@ export class LibraryPage extends AKElement {
 
     @state()
     protected visibleApplications: Application[] = [];
+
+    @state()
+    protected viewMode: ViewMode = LibraryPage.ViewModeStorage.read(ViewMode.Grid);
 
     /**
      * The active element to select when the user presses Enter outside of a form.
@@ -171,13 +224,20 @@ export class LibraryPage extends AKElement {
         includeScore: true,
         shouldSort: true,
         ignoreFieldNorm: true,
-        useExtendedSearch: true,
         threshold: 0.3,
     });
 
-    public pageTitle = msg("My Applications");
+    public pageTitle = msg("Application Dashboard");
 
     //#region Lifecycle
+
+    constructor() {
+        super();
+        this.#gridModeMatcher = window.matchMedia("(width > 768px)");
+        this.#gridModeMatcher.addEventListener("change", this.#gridModeMediaQueryListener, {
+            passive: true,
+        });
+    }
 
     public override connectedCallback() {
         super.connectedCallback();
@@ -194,6 +254,8 @@ export class LibraryPage extends AKElement {
         document.addEventListener("visibilitychange", this.#visibilityListener);
 
         window.addEventListener("keydown", this.#rootKeyDownListener);
+
+        this.synchronizeViewModeWithMediaQuery();
     }
 
     public override disconnectedCallback() {
@@ -272,13 +334,35 @@ export class LibraryPage extends AKElement {
         this.focus();
     };
 
+    #synchronizeViewModeAnimationFrame = -1;
+
+    #gridModeMatcher: MediaQueryList;
+    #gridModeMediaQueryListener = (event: MediaQueryListEvent) => {
+        cancelAnimationFrame(this.#synchronizeViewModeAnimationFrame);
+
+        this.#synchronizeViewModeAnimationFrame = requestAnimationFrame(() => {
+            this.synchronizeViewModeWithMediaQuery(event.matches);
+        });
+    };
+
+    protected synchronizeViewModeWithMediaQuery(matches = this.#gridModeMatcher.matches) {
+        if (!matches) {
+            this.viewMode = ViewMode.List;
+            return;
+        }
+
+        this.viewMode = LibraryPage.ViewModeStorage.read(ViewMode.Grid);
+    }
+
     //#endregion
 
     //#region Rendering
 
     renderApps() {
-        const { selectedApp } = this;
-        const { layout, background } = this.uiConfig;
+        const { currentUser, selectedApp } = this;
+        const { layout, theme, enabledFeatures } = this.uiConfig;
+
+        const editable = currentUser?.isSuperuser && enabledFeatures.applicationEdit;
 
         const groupedApps = groupBy(this.visibleApplications, (app) => app.group || "").sort(
             ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
@@ -292,15 +376,52 @@ export class LibraryPage extends AKElement {
         );
 
         return AKLibraryApplicationList({
-            layout,
-            background,
+            editable,
+            layout: layout.type,
+            viewMode: this.viewMode,
+            background: theme.cardBackground,
             selectedApp,
             groupedApps,
             targetRef: this.targetRef,
         });
     }
 
+    #viewToggleListener = () => {
+        const next = this.viewMode === ViewMode.Grid ? ViewMode.List : ViewMode.Grid;
+        this.viewMode = next;
+
+        LibraryPage.ViewModeStorage.write(next);
+    };
+
+    protected renderViewToggle(): SlottedTemplateResult {
+        const { viewMode } = this;
+
+        return guard([viewMode], () => {
+            const [tooltipContent, icon] = createViewToggleContent(viewMode);
+
+            return html`<button
+                id="library-view-toggle-button"
+                class="pf-c-button pf-m-plain library-view-toggle"
+                part="view-toggle"
+                type="button"
+                aria-label=${tooltipContent}
+                aria-pressed=${viewMode === ViewMode.List}
+                @click=${this.#viewToggleListener}
+            >
+                <pf-tooltip
+                    position="top"
+                    content=${tooltipContent}
+                    trigger="library-view-toggle-button"
+                >
+                    ${icon}
+                </pf-tooltip>
+            </button>`;
+        });
+    }
+
     protected renderSearch() {
+        const showDataList = LibraryPage.DataListEnabled && this.viewMode === ViewMode.Grid;
+
         return html`<search title=${msg("Applications")}>
             <form @submit=${this.#submitListener} id="application-search-form">
                 <input
@@ -317,19 +438,36 @@ export class LibraryPage extends AKElement {
                     autofocus
                     placeholder=${msg("Search for an application by name...")}
                     value=${ifPresent(this.query)}
-                    list="application-search-options"
+                    list=${ifPresent(showDataList, "application-search-options")}
+                    aria-describedby="search-action-hint"
                 />
-                <datalist id="application-search-options">
-                    ${repeat(
-                        this.visibleApplications,
-                        (application) => application.pk,
-                        (app) => {
-                            return html`<option value=${app.name}></option>`;
-                        },
-                    )}
-                </datalist>
+                ${this.renderDataList(showDataList)}
+
+                <span id="search-action-hint" class="sr-only">
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.search.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : msg("Type to filter applications", {
+                              id: "user.library.search.type-to-filter-hint",
+                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                          })}
+                </span>
             </form>
         </search>`;
+    }
+
+    protected renderDataList(showDataList = LibraryPage.DataListEnabled) {
+        if (!showDataList) {
+            return nothing;
+        }
+
+        return html`<datalist id="application-search-options">
+            ${this.visibleApplications.slice(0, LibraryPage.MAX_DATA_LIST_ITEMS).map((app) => {
+                return html`<option value=${app.name}></option>`;
+            })}
+        </datalist>`;
     }
 
     protected renderNoAppsFound() {
@@ -357,31 +495,63 @@ export class LibraryPage extends AKElement {
         return this.renderNoAppsFound();
     }
 
-    public override render() {
+    protected renderApplicationStatusOutput() {
         const count = this.visibleApplications.length;
         const { query } = this;
 
-        let message: string;
+        return guard([count, query], () => {
+            let message: string;
 
-        if (query) {
-            // We must present the count within the label to ensure that the screen reader
-            // considers the update significant enough to read on each change,
-            // rather than the on just the first render.
-            message =
-                count === 1
-                    ? msg(str`${count} application found for "${query}"`)
-                    : msg(str`${count} applications found for "${query}"`);
-        } else {
-            message =
-                count === 1
-                    ? msg(str`${count} application available`)
-                    : msg(str`${count} applications available`);
-        }
+            if (query) {
+                // We must present the count within the label to ensure that the screen reader
+                // considers the update significant enough to read on each change,
+                // rather than the on just the first render.
+                message =
+                    count === 1
+                        ? msg(str`${count} application found for "${query}"`, {
+                              id: "user.library.application-count-singular-with-query",
+                          })
+                        : msg(str`${count} applications found for "${query}"`, {
+                              id: "user.library.application-count-plural-with-query",
+                          });
+            } else {
+                message =
+                    count === 1
+                        ? msg(str`${count} application available`, {
+                              id: "user.library.application-count-singular",
+                          })
+                        : msg(str`${count} applications available`, {
+                              id: "user.library.application-count-plural",
+                          });
+            }
+
+            return html`<output
+                class="sr-only"
+                for="application-search-input"
+                form="application-search-form"
+                aria-live="polite"
+            >
+                <p>${message}</p>
+                <p>
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.application-count.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : nothing}
+                </p>
+            </output>`;
+        });
+    }
+
+    protected override render() {
+        const hasApps = this.apps.some(appHasLaunchUrl);
 
         return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
-                <h1 class="pf-c-page__title">${msg("My applications")}</h1>
-                ${this.searchEnabled ? this.renderSearch() : nothing}
+                <h1 class="pf-c-page__title">${msg("Application Dashboard")}</h1>
+                ${hasApps ? this.renderViewToggle() : null}
+                ${this.searchEnabled ? this.renderSearch() : null}
             </div>
             <main
                 ${AKSkipToContent.ref}
@@ -389,18 +559,16 @@ export class LibraryPage extends AKElement {
                 class="pf-c-page__main-section"
                 aria-label=${msg("Application list")}
             >
-                <output
-                    class="sr-only"
-                    for="application-search-input"
-                    form="application-search-form"
-                    aria-live="polite"
-                >
-                    <p>${message}</p>
-                </output>
-                ${this.renderState()}
+                ${this.renderApplicationStatusOutput()} ${this.renderState()}
             </main>
         </div>`;
     }
 
     //#endregion
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-impl": LibraryPage;
+    }
 }

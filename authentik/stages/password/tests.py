@@ -135,6 +135,13 @@ class TestPasswordStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
+        res = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.flow.slug},
+            ),
+        )
+        self.assertEqual(res.status_code, 200)
         for _ in range(self.stage.failed_attempts_before_cancel - 1):
             response = self.client.post(
                 reverse(

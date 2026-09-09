@@ -1,5 +1,7 @@
+import "#components/ak-radio-input";
 import "#elements/CodeMirror";
 import "#components/ak-number-input";
+import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -9,9 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -35,30 +35,25 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-google-workspace-form")
 export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
-    loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
-            id: pk,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersGoogleWorkspaceRetrieve({ id }),
+        create: (googleWorkspaceProviderRequest: GoogleWorkspaceProvider) =>
+            aki(ProvidersApi).providersGoogleWorkspaceCreate({ googleWorkspaceProviderRequest }),
+        update: (id: number, googleWorkspaceProviderRequest: GoogleWorkspaceProvider) =>
+            aki(ProvidersApi).providersGoogleWorkspaceUpdate({
+                id,
+                googleWorkspaceProviderRequest,
+            }),
+    };
 
-    async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
-        if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
-                id: this.instance.pk,
-                googleWorkspaceProviderRequest: data,
-            });
-        }
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-            googleWorkspaceProviderRequest: data,
-        });
-    }
-
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+    protected override renderForm(): TemplateResult {
+        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
@@ -70,7 +65,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
+                            mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">
@@ -164,47 +159,23 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         help=${msg("Determines what authentik will do when a Group is deleted.")}
                     >
                     </ak-radio-input>
-                    <ak-form-element-horizontal name="dryRun">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.dryRun ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, mutating requests will be dropped and logged instead.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="dryRun"
+                        label=${msg("Enable dry-run mode")}
+                        ?checked=${this.instance?.dryRun ?? false}
+                        help=${msg(
+                            "When enabled, mutating requests will be dropped and logged instead.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("User filtering")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="excludeUsersServiceAccount">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Exclude service accounts")}</span
-                            >
-                        </label>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="excludeUsersServiceAccount"
+                        label=${msg("Exclude service accounts")}
+                        ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
@@ -215,9 +186,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
@@ -297,6 +266,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+                    <ak-switch-input
+                        name="discoveryEnabled"
+                        label=${msg("Enable automatic discovery of remote resources.")}
+                        ?checked=${this.instance?.discoveryEnabled ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

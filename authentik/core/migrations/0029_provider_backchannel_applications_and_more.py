@@ -16,7 +16,7 @@ def backport_is_backchannel(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
             for obj in model.objects.using(db_alias).only("is_backchannel"):
                 obj.is_backchannel = True
                 obj.save()
-        except (DatabaseError, InternalError, ProgrammingError):
+        except DatabaseError, InternalError, ProgrammingError:
             # The model might not have been migrated yet/doesn't exist yet
             # so we don't need to worry about backporting the data
             pass

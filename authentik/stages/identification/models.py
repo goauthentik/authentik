@@ -8,6 +8,8 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.lib.models import SimpleThroughModel
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
@@ -21,7 +23,7 @@ class UserFields(models.TextChoices):
 
 
 class IdentificationStage(Stage):
-    """Allows the user to identify themselves for authentication."""
+    """Identify the user for authentication."""
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),
@@ -53,6 +55,19 @@ class IdentificationStage(Stage):
             (
                 "When set, adds functionality exactly like a Captcha stage, but baked into the "
                 "Identification stage."
+            ),
+        ),
+    )
+
+    webauthn_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, and conditional WebAuthn is available, allow the user to use their "
+                "passkey as a first factor."
             ),
         ),
     )
@@ -112,7 +127,11 @@ class IdentificationStage(Stage):
     )
 
     sources = models.ManyToManyField(
-        Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
+        Source,
+        default=list,
+        help_text=_("Specify which sources should be shown."),
+        blank=True,
+        through="IdentificationStageSource",
     )
     show_source_labels = models.BooleanField(default=False)
 
@@ -135,3 +154,24 @@ class IdentificationStage(Stage):
     class Meta:
         verbose_name = _("Identification Stage")
         verbose_name_plural = _("Identification Stages")
+
+
+class IdentificationStageSource(SimpleThroughModel):
+    identification_stage = models.ForeignKey(
+        IdentificationStage,
+        on_delete=models.CASCADE,
+        db_column="identificationstage_id",
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_stages_identification_identificationstage_sources"
+        unique_together = (("identification_stage", "source"),)
+        verbose_name = _("Identification Stage Source")
+        verbose_name_plural = _("Identification Stage Sources")
+
+    def __str__(self):
+        return (
+            f"IdentificationStageSource for IdentificationStage {self.identification_stage_id} "
+            f"and Source {self.source_id}."
+        )

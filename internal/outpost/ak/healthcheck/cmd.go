@@ -1,13 +1,16 @@
 package healthcheck
 
 import (
-	"fmt"
+	"context"
+	"net"
 	"net/http"
 	"os"
+	"path"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -21,9 +24,15 @@ var Command = &cobra.Command{
 
 func check() int {
 	h := &http.Client{
-		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
+		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck",
+			&http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", path.Join(os.TempDir(), ak.MetricsSocketName))
+				},
+			},
+		),
 	}
-	url := fmt.Sprintf("http://%s/outpost.goauthentik.io/ping", config.Get().Listen.Metrics)
+	url := "http://localhost/outpost.goauthentik.io/ping"
 	res, err := h.Head(url)
 	if err != nil {
 		log.WithError(err).Warning("failed to send healthcheck request")

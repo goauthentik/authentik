@@ -1,6 +1,9 @@
 """authentik OAuth2 JWKS Views"""
 
 from base64 import b64encode, urlsafe_b64encode
+from collections.abc import Generator
+from functools import lru_cache
+from typing import Literal
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -10,10 +13,13 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePrivateKey,
     EllipticCurvePublicKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey, Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.hazmat.primitives.serialization import Encoding
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from cryptography.x509 import Certificate
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.views import View
 from jwt.utils import base64url_encode
 
@@ -61,18 +67,61 @@ def to_base64url_uint(val: int, min_length: int = 0) -> bytes:
     return base64url_encode(int_bytes)
 
 
+@lru_cache
+def _jwks_from_private_key(private_key: PrivateKeyTypes, cert: Certificate, kid: str, use: str):
+    """Convert given private key and certificate into JWKS data.
+    Cached based on private_key and certificate data"""
+    key_data = {}
+    if isinstance(private_key, RSAPrivateKey):
+        public_key: RSAPublicKey = private_key.public_key()
+        public_numbers = public_key.public_numbers()
+        key_data["kid"] = kid
+        key_data["kty"] = "RSA"
+        key_data["use"] = use
+        key_data["n"] = to_base64url_uint(public_numbers.n).decode()
+        key_data["e"] = to_base64url_uint(public_numbers.e).decode()
+    elif isinstance(private_key, EllipticCurvePrivateKey):
+        public_key: EllipticCurvePublicKey = private_key.public_key()
+        public_numbers = public_key.public_numbers()
+        curve_type = type(public_key.curve)
+        key_data["kid"] = kid
+        key_data["kty"] = "EC"
+        key_data["use"] = use
+        key_data["x"] = to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode()
+        key_data["y"] = to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode()
+        key_data["crv"] = ec_crv_map.get(curve_type, public_key.curve.name)
+    elif isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+        public_key: Ed25519PublicKey | Ed448PublicKey = private_key.public_key()
+        key_data["kid"] = kid
+        key_data["kty"] = "OKP"
+        key_data["use"] = use
+        key_data["crv"] = "Ed25519" if isinstance(private_key, Ed25519PrivateKey) else "Ed448"
+        key_data["x"] = base64url_encode(public_key.public_bytes_raw()).decode()
+    else:
+        return key_data
+    key_data["x5c"] = [b64encode(cert.public_bytes(Encoding.DER)).decode("utf-8")]
+    key_data["x5t"] = (
+        urlsafe_b64encode(cert.fingerprint(hashes.SHA1())).decode("utf-8").rstrip("=")  # nosec
+    )
+    key_data["x5t#S256"] = (
+        urlsafe_b64encode(cert.fingerprint(hashes.SHA256())).decode("utf-8").rstrip("=")
+    )
+    return key_data
+
+
 class JWKSView(View):
     """Show RSA Key data for Provider"""
 
     @staticmethod
-    def get_jwk_for_key(key: CertificateKeyPair, use: str) -> dict | None:
+    def get_jwk_for_key(key: CertificateKeyPair, use: Literal["sig", "enc"]) -> dict | None:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
         key_data = None
         if not private_key:
             return key_data
+        cert = key.certificate
 
-        key_data = {}
+        key_data = _jwks_from_private_key(private_key, cert, key.kid, use)
 
         if use == "sig":
             key_data["alg"] = JWTAlgorithms.from_private_key(private_key)
@@ -80,53 +129,33 @@ class JWKSView(View):
             key_data["alg"] = "RSA-OAEP-256"
             key_data["enc"] = "A256CBC-HS512"
 
-        if isinstance(private_key, RSAPrivateKey):
-            public_key: RSAPublicKey = private_key.public_key()
-            public_numbers = public_key.public_numbers()
-            key_data["kid"] = key.kid
-            key_data["kty"] = "RSA"
-            key_data["use"] = use
-            key_data["n"] = to_base64url_uint(public_numbers.n).decode()
-            key_data["e"] = to_base64url_uint(public_numbers.e).decode()
-        elif isinstance(private_key, EllipticCurvePrivateKey):
-            public_key: EllipticCurvePublicKey = private_key.public_key()
-            public_numbers = public_key.public_numbers()
-            curve_type = type(public_key.curve)
-            key_data["kid"] = key.kid
-            key_data["kty"] = "EC"
-            key_data["use"] = use
-            key_data["x"] = to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode()
-            key_data["y"] = to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode()
-            key_data["crv"] = ec_crv_map.get(curve_type, public_key.curve.name)
-        else:
-            return key_data
-        key_data["x5c"] = [b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")]
-        key_data["x5t"] = (
-            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA1()))  # nosec
-            .decode("utf-8")
-            .rstrip("=")
-        )
-        key_data["x5t#S256"] = (
-            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA256()))
-            .decode("utf-8")
-            .rstrip("=")
-        )
         return key_data
 
-    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        """Show JWK Key data for Provider"""
-        application = get_object_or_404(Application, slug=application_slug)
-        provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
+    def get_keys(self) -> Generator[dict | None]:
+        provider_ids = Application.objects.filter(
+            slug=self.kwargs["application_slug"],
+        ).values_list(
+            "provider_id",
+            flat=True,
+        )
+        provider = (
+            OAuth2Provider.objects.select_related("signing_key", "encryption_key")
+            .filter(pk__in=provider_ids)
+            .first()
+        )
 
-        response_data = {}
+        if provider is None:
+            raise Http404()
 
         if signing_key := provider.signing_key:
-            jwk = JWKSView.get_jwk_for_key(signing_key, "sig")
-            if jwk:
-                response_data.setdefault("keys", [])
-                response_data["keys"].append(jwk)
+            yield JWKSView.get_jwk_for_key(signing_key, "sig")
         if encryption_key := provider.encryption_key:
-            jwk = JWKSView.get_jwk_for_key(encryption_key, "enc")
+            yield JWKSView.get_jwk_for_key(encryption_key, "enc")
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Show JWK Key data for Provider"""
+        response_data = {}
+        for jwk in self.get_keys():
             if jwk:
                 response_data.setdefault("keys", [])
                 response_data["keys"].append(jwk)

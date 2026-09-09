@@ -41,7 +41,7 @@ export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const ascii_letters = ascii_lowercase + ascii_uppercase;
 export const digits = "0123456789";
-export const hexdigits = digits + "abcdef" + "ABCDEF";
+export const hexdigits = digits + "abcdefABCDEF";
 export const octdigits = "01234567";
 export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
@@ -56,4 +56,20 @@ export function randomString(len: number, charset: string): string {
     }
 
     return chars.join("");
+}
+
+export function assertEveryPresent<T>(
+    input: (T | null | undefined)[],
+    errorMessage: string,
+): asserts input is T[] {
+    if (!Array.isArray(input)) {
+        console.debug("Input is not an array", input);
+        throw TypeError(errorMessage);
+    }
+
+    const index = input.findIndex((item) => item === null || typeof item === "undefined");
+    if (index !== -1) {
+        console.debug(`Item at index ${index} is null or undefined`, input);
+        throw new TypeError(errorMessage);
+    }
 }

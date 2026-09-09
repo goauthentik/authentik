@@ -2,18 +2,19 @@
 
 import importlib
 from collections import OrderedDict
-from hashlib import sha512
 from pathlib import Path
 
-import orjson
-from sentry_sdk import set_tag
+from django.utils import http as utils_http
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
-from authentik.lib.config import CONFIG, django_db_config
+from authentik.lib.config import (
+    CONFIG,
+    DIRECT_DB_ALIAS,
+    django_db_config,
+    postgresql_direct_db_enabled,
+)
 from authentik.lib.logging import get_logger_config, structlog_configure
-from authentik.lib.sentry import sentry_init
-from authentik.lib.utils.reflection import get_env
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
@@ -38,6 +39,10 @@ CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
+USER_SWITCHING_COOKIE_NAME = "authentik_user_switching"
+USER_SWITCHING_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.user_switching_age", "days=365")
+).total_seconds()
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
@@ -81,8 +86,10 @@ TENANT_APPS = [
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
-    "authentik.enterprise",
+    "authentik.endpoints",
+    "authentik.endpoints.connectors.agent",
     "authentik.events",
+    "authentik.admin.files",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -144,7 +151,8 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH_USER = False
+GUARDIAN_GROUP_MODEL = "authentik_core.Group"
+GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -161,52 +169,81 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@goauthentik.io",
     },
-    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
+    "AUTHENTICATION_WHITELIST": [
+        "authentik.endpoints.connectors.agent.auth.AgentAuth",
+        "authentik.endpoints.connectors.agent.auth.AgentEnrollmentAuth",
+        "authentik.endpoints.connectors.agent.auth.DeviceAuthFedAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
+    ],
     "LICENSE": {
         "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "AppEnum": "authentik.lib.api.Apps",
+        "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
+        "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
+        "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
+        "FlowMessageLevelEnum": "authentik.flows.challenge.FLOW_MESSAGE_LEVELS",
+        "GrantTypeEnum": "authentik.providers.oauth2.models.GrantType",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
+        "ModelEnum": "authentik.lib.api.Models",
+        "OffboardingActionEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingAction"
+        ),
+        "OffboardingStatusEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingStatus"
+        ),
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
-        "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
-        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
+        "RequestStatus": "authentik.enterprise.requests.models.RequestStatus",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
+        "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
+        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
+        "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
+        "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
+        "TransportModeEnum": "authentik.events.models.TransportMode",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
-        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
-        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
+        "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
+        "WSFedSAMLVersionEnum": (
+            "authentik.enterprise.providers.ws_federation.models.WSFederationSAMLVersion"
+        ),
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
     "PREPROCESSING_HOOKS": [
-        "authentik.api.schema.preprocess_schema_exclude_non_api",
+        "authentik.api.v3.schema.cleanup.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
-        "authentik.api.schema.postprocess_schema_register",
-        "authentik.api.schema.postprocess_schema_responses",
-        "authentik.api.schema.postprocess_schema_query_params",
-        "authentik.api.schema.postprocess_schema_remove_unused",
-        "drf_spectacular.hooks.postprocess_schema_enums",
+        "authentik.api.v3.schema.response.postprocess_schema_register",
+        "authentik.api.v3.schema.response.postprocess_schema_responses",
+        "authentik.api.v3.schema.query.postprocess_schema_query_params",
+        "authentik.api.v3.schema.cleanup.postprocess_schema_remove_unused",
+        "authentik.api.v3.schema.search.postprocess_schema_search_autocomplete",
+        "authentik.api.v3.schema.enum.postprocess_schema_enums",
     ],
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
-    "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
+        "authentik.api.search.ql.QLSearch",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
-        "rest_framework.filters.SearchFilter",
+        "authentik.api.ordering.NullsAwareOrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -214,18 +251,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "drf_orjson_renderer.renderers.ORJSONRenderer",
-    ],
-    "ORJSON_RENDERER_OPTIONS": [
-        orjson.OPT_NON_STR_KEYS,
-        orjson.OPT_UTC_Z,
+        "authentik.api.renderers.MsgspecJSONRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "drf_orjson_renderer.parsers.ORJSONParser",
+        "authentik.api.parsers.MsgspecJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": ["authentik.api.throttle.LocalAnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
         "anon": CONFIG.get("throttle.default"),
     },
@@ -237,7 +270,16 @@ CACHES = {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
-    }
+    },
+    # In-process cache for DRF throttle counters. Per-worker rather than
+    # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
+    "throttle": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "authentik-throttle",
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+        },
+    },
 }
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
@@ -248,13 +290,13 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
@@ -319,9 +361,13 @@ DATABASE_ROUTERS = (
 # We don't use HStore
 POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
 
+# When a direct endpoint is configured (postgresql.direct.*), route the
+# Channels Postgres layer through it — its LISTEN connection can't tolerate
+# a transaction pooler swapping the backend.
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
+        "CONFIG": ({"using": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}),
     },
 }
 
@@ -379,9 +425,11 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
-    "lock_purge_interval": timedelta_from_string(
-        CONFIG.get("worker.lock_purge_interval")
-    ).total_seconds(),
+    # Route the broker's LISTEN connection and advisory-lock connection through
+    # the direct endpoint when configured. ORM queries continue via db_alias=default.
+    "broker_kwargs": (
+        {"direct_db_alias": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}
+    ),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -436,8 +484,6 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
@@ -448,16 +494,6 @@ DRAMATIQ = {
     ),
     "test": TEST,
 }
-
-
-# Sentry integration
-
-env = get_env()
-_ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
-if _ERROR_REPORTING:
-    sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init(spotlight=DEBUG)
-    set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
 # Static files (CSS, JavaScript, Images)
@@ -472,45 +508,11 @@ STORAGES = {
     },
 }
 
-
-# Media files
-if CONFIG.get("storage.media.backend", "file") == "s3":
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.S3Storage",
-        "OPTIONS": {
-            # How to talk to S3
-            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
-            "access_key": CONFIG.get("storage.media.s3.access_key", None),
-            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
-            "security_token": CONFIG.get("storage.media.s3.security_token", None),
-            "region_name": CONFIG.get("storage.media.s3.region", None),
-            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
-            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
-            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
-            "default_acl": "private",
-            "querystring_auth": True,
-            "signature_version": "s3v4",
-            "file_overwrite": False,
-            "location": "media",
-            "url_protocol": (
-                "https:" if CONFIG.get("storage.media.s3.secure_urls", True) else "http:"
-            ),
-            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
-        },
-    }
-# Fallback on file storage backend
-else:
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.FileStorage",
-        "OPTIONS": {
-            "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": CONFIG.get("web.path", "/") + "media/",
-        },
-    }
-    # Compatibility for apps not supporting top-level STORAGES
-    # such as django-tenants
-    MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
-    MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
+# Django 5.2.8 and CVE-2025-64458 added a strong enforcement of 2048 characters
+# as the maximum for a URL to redirect to, mostly for running on Windows.
+# However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
+# 8192 should cover most cases.
+utils_http.MAX_URL_LENGTH = utils_http.MAX_URL_LENGTH * 4
 
 structlog_configure()
 LOGGING = get_logger_config()
@@ -576,10 +578,16 @@ def _update_settings(app_path: str) -> None:
         pass
 
 
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+except ImportError:
+    pass
+
+
 if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
-        "rest_framework.renderers.BrowsableAPIRenderer"
-    )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 
@@ -593,3 +601,7 @@ _update_settings("data.user_settings")
 MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+
+# Error-reporting tracers (OpenTelemetry, Sentry) are initialized from
+# AuthentikCoreConfig.ready(), since it needs to run after Django settings have fully
+# loaded (see authentik/core/apps.py)

@@ -3,11 +3,11 @@
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_TRANSIENT
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_TRANSIENT
 
 GET_LOGOUT_REQUEST = (
     "lJLNauMwEMdfRejuSJbtEIvYsBAWDNlltyk99DaxJ41AllzNGNq3L3Z7CD0EehJo5vf/ENoTjH6yx/gSZ37A1xmJxdvo"
@@ -44,7 +44,7 @@ class TestLogoutRequest(TestCase):
         self.provider.save()
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=cert,
         )

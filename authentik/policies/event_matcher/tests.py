@@ -101,3 +101,14 @@ class TestEventMatcherPolicy(TestCase):
         policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(client_ip="1.2.3.4")
         response = policy.passes(request)
         self.assertFalse(response.passing)
+
+    def test_match_query(self):
+        """Test match query"""
+        event = Event.new(EventAction.LOGIN)
+        event.save()
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(query='action = "login"')
+        response = policy.passes(request)
+        self.assertTrue(response.passing)
+        self.assertTupleEqual(response.messages, ("Query matched.",))

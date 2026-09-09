@@ -5,10 +5,11 @@ on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config/**
+      - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
-      - packages/tsconfig/**
+      - packages/docusaurus-config/**
+      - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
@@ -24,22 +25,33 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` packages should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
+          - packages/docusaurus-config
+          - packages/logger-js
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
-          node-version-file: ${{ matrix.package }}/package.json
-          registry-url: "https://registry.npmjs.org"
+          node-version-file: package.json
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
@@ -47,6 +59,5 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
         run: |
-          npm ci
-          npm run build
-          npm publish
+          pnpm run build
+          pnpm publish --no-git-checks

@@ -1,6 +1,43 @@
+import { SlottedTemplateResult } from "#elements/types";
+
 export enum MessageLevel {
     error = "error",
     warning = "warning",
     success = "success",
     info = "info",
+}
+
+/**
+ * An error message returned from an API endpoint.
+ *
+ * @remarks
+ * This interface must align with the server-side event dispatcher.
+ *
+ * @see {@link ../authentik/core/templates/base/skeleton.html}
+ */
+export interface APIMessage {
+    level: MessageLevel;
+    message: string;
+    description?: SlottedTemplateResult;
+    icon?: string;
+    /**
+     * An optional key to determine uniqueness of the message.
+     *
+     * Defaults to the message text.
+     */
+    key?: PropertyKey;
+}
+
+export class AKMessageEvent extends Event {
+    static readonly eventName = "ak-message";
+
+    constructor(public readonly message: APIMessage) {
+        super(AKMessageEvent.eventName, { bubbles: true, composed: true });
+    }
+}
+
+declare global {
+    interface WindowEventMap {
+        [AKMessageEvent.eventName]: AKMessageEvent;
+    }
 }
