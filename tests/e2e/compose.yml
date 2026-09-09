@@ -34,7 +34,7 @@ services:
     image: docker.io/grafana/grafana:7.1.0
     profiles: [pin-only]
   oidc-test-client:
-    image: ghcr.io/beryju/oidc-test-client:2.1
+    image: ghcr.io/beryju/oidc-test-client:2.7.1
     profiles: [pin-only]
   saml-test-sp:
     image: ghcr.io/beryju/saml-test-sp:1.1
