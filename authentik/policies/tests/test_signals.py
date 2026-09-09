@@ -105,6 +105,7 @@ class TestInvalidatePolicyCache(TestCase):
     def test_policy_binding_save_invalidates_binding_cache(self):
         """Binding updates invalidate every cached result for that binding."""
         binding = _FakeBinding()
+        binding.policy_binding_uuid = str(binding.policy_binding_uuid)
         with mock.patch.object(signals, "cache") as mock_cache:
             mock_cache.keys.side_effect = [["policy-cache-key"], []]
 
@@ -113,5 +114,5 @@ class TestInvalidatePolicyCache(TestCase):
                 instance=binding,
             )
 
-        mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*")
+        mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{UUID(binding.policy_binding_uuid).hex}_*")
         mock_cache.delete_many.assert_any_call(["policy-cache-key"])
