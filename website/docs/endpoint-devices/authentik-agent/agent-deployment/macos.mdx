@@ -46,9 +46,9 @@ The Agent requires a serial number be presented by macOS. Some hypervisors don't
 5. After the download completes, attempt to install the package. Default Apple security settings should block the installation.
     - This can be avoided by Option + Right Clicking the package and clicking **Open**.
     - Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"`
-6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`
+6. Confirm that the authentik Agent is installed by opening a Terminal window and running: `ak version`
 
-    You should see a response that starts with: `authentik CLI v<version_number>`
+    You should see output that starts with: `authentik Agent CLI: <version_number>`
 
 ## Join the device to an authentik domain
 
@@ -101,6 +101,17 @@ For the user agent:
 ```sh
 log show --predicate 'process == "ak-agent-desktop"'
 ```
+
+## Troubleshooting
+
+### The Agent shows "disconnected" or lists no profiles
+
+Joining the device to a domain enrolls the _device_, but the desktop Agent stays disconnected until a _user profile_ exists. If the Agent app shows **disconnected** with no profiles, or `ak whoami` returns `profile not found`, you haven't yet completed [SSH client authentication and CLI application authentication](#enable-ssh-client-authentication-and-cli-application-authentication):
+
+1. Run `ak config setup --authentik-url https://authentik.company` and complete the browser sign-in.
+2. Confirm that a profile now exists with `ak config list-profiles`, then verify with `ak whoami`.
+
+If `ak config setup` doesn't open a login page, or reports an unknown client or a missing device code flow, your deployment is missing the OAuth prerequisites. Return to [configuring your authentik deployment](../configuration.mdx) and confirm that a **Device code flow** is set on the brand, that the `authentik-cli` OAuth application and provider exist, and that the Agent connector federates the `authentik-cli` provider under **Federated OIDC Providers**.
 
 ## Report issues
 
