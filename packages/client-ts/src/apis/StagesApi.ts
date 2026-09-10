@@ -724,19 +724,11 @@ export interface StagesAuthenticatorEmailListRequest {
     /**
      *
      */
-    password?: string;
-    /**
-     *
-     */
     port?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
-    stageUuid?: string;
     /**
      *
      */
@@ -906,14 +898,6 @@ export interface StagesAuthenticatorSmsListRequest {
     /**
      *
      */
-    auth?: string;
-    /**
-     *
-     */
-    authPassword?: string;
-    /**
-     *
-     */
     authType?: AuthTypeEnum;
     /**
      *
@@ -955,10 +939,6 @@ export interface StagesAuthenticatorSmsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
-    stageUuid?: string;
     /**
      *
      */
@@ -4880,20 +4860,12 @@ export class StagesApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters["password"] != null) {
-            queryParameters["password"] = requestParameters["password"];
-        }
-
         if (requestParameters["port"] != null) {
             queryParameters["port"] = requestParameters["port"];
         }
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
-        }
-
-        if (requestParameters["stageUuid"] != null) {
-            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         if (requestParameters["subject"] != null) {
@@ -5934,14 +5906,6 @@ export class StagesApi extends runtime.BaseAPI {
             queryParameters["account_sid"] = requestParameters["accountSid"];
         }
 
-        if (requestParameters["auth"] != null) {
-            queryParameters["auth"] = requestParameters["auth"];
-        }
-
-        if (requestParameters["authPassword"] != null) {
-            queryParameters["auth_password"] = requestParameters["authPassword"];
-        }
-
         if (requestParameters["authType"] != null) {
             queryParameters["auth_type"] = requestParameters["authType"];
         }
@@ -5984,10 +5948,6 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
-        }
-
-        if (requestParameters["stageUuid"] != null) {
-            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         if (requestParameters["verifyOnly"] != null) {

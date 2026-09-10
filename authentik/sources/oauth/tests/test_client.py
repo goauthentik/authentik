@@ -2,6 +2,7 @@ from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectClient
@@ -18,6 +19,7 @@ class TestOAuthClient(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
+            secret=create_test_secret(generate_id()),
         )
         self.factory = RequestFactory()
 

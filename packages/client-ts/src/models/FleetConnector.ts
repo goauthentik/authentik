@@ -51,6 +51,10 @@ export interface FleetConnector {
      */
     url: string;
     /**
+     *
+     */
+    secret: string;
+    /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
      */
     headersMapping?: string | null;
@@ -92,6 +96,7 @@ export function instanceOfFleetConnector(value: object): value is FleetConnector
     )
         return false;
     if (!("url" in value) || value["url"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -115,6 +120,7 @@ export function FleetConnectorFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         url: json["url"],
+        secret: json["secret"],
         headersMapping:
             json["headers_mapping"] === undefined
                 ? undefined
@@ -147,6 +153,7 @@ export function FleetConnectorToJSONTyped(
         name: value["name"],
         enabled: value["enabled"],
         url: value["url"],
+        secret: value["secret"],
         headers_mapping: value["headersMapping"],
         map_users: value["mapUsers"],
         map_teams_access_group: value["mapTeamsAccessGroup"],

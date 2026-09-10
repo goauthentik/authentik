@@ -106,6 +106,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("System"), null, [
         ["/core/brands", msg("Brands")],
         ["/crypto/certificates", msg("Certificates")],
+        ["/secrets", msg("Secrets", { id: "secret.verbose-name-plural" })],
         ["/outpost/integrations", msg("Outpost Integrations")],
         ["/admin/settings", msg("Settings")]]
     ],

@@ -18,12 +18,20 @@ from authentik.stages.authenticator.models import Device
 class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, FriendlyNamedStage, Stage):
     """Verify Google Chrome Device Trust connection for the user's browser."""
 
-    credentials = models.JSONField()
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Google credentials"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="gdtc_stages",
+    )
 
     def google_credentials(self):
         return {
             "credentials": Credentials.from_service_account_info(
-                self.credentials, scopes=["https://www.googleapis.com/auth/verifiedaccess"]
+                self.secret.get_json(), scopes=["https://www.googleapis.com/auth/verifiedaccess"]
             ),
         }
 

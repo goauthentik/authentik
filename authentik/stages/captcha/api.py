@@ -14,7 +14,7 @@ class CaptchaStageSerializer(StageSerializer):
         model = CaptchaStage
         fields = StageSerializer.Meta.fields + [
             "public_key",
-            "private_key",
+            "secret",
             "js_url",
             "api_url",
             "request_content_type",
@@ -23,7 +23,9 @@ class CaptchaStageSerializer(StageSerializer):
             "score_max_threshold",
             "error_on_invalid_score",
         ]
-        extra_kwargs = {"private_key": {"write_only": True}}
+        extra_kwargs = {
+            "secret": {"required": True, "allow_null": False},
+        }
 
 
 class CaptchaStageViewSet(UsedByMixin, ModelViewSet):

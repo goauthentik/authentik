@@ -35,7 +35,7 @@ export interface PatchedCaptchaStageRequest {
     /**
      * Private key, acquired your captcha Provider.
      */
-    privateKey?: string;
+    secret?: string;
     /**
      *
      */
@@ -89,7 +89,7 @@ export function PatchedCaptchaStageRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         publicKey: json["public_key"] == null ? undefined : json["public_key"],
-        privateKey: json["private_key"] == null ? undefined : json["private_key"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
         requestContentType:
@@ -121,7 +121,7 @@ export function PatchedCaptchaStageRequestToJSONTyped(
     return {
         name: value["name"],
         public_key: value["publicKey"],
-        private_key: value["privateKey"],
+        secret: value["secret"],
         js_url: value["jsUrl"],
         api_url: value["apiUrl"],
         request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),

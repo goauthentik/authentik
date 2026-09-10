@@ -25,8 +25,16 @@ class TelegramSource(Source):
     """Log in with Telegram."""
 
     bot_username = models.TextField(help_text=_("Telegram bot username"))
-    bot_token = models.TextField(help_text=_("Telegram bot token"))
-
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Bot token"),
+        help_text=_("Telegram bot token"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="telegram_sources",
+    )
     request_message_access = models.BooleanField(
         default=False, help_text=_("Request access to send messages from your bot.")
     )

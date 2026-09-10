@@ -11,10 +11,16 @@ from authentik.enterprise.providers.google_workspace.tasks import (
     google_workspace_sync_objects,
 )
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
+from authentik.secrets.api import JSONSecretReferenceField
+from authentik.secrets.models import Secret
 
 
 class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     """GoogleWorkspaceProvider Serializer"""
+
+    secret = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=True, allow_null=False
+    )
 
     class Meta:
         model = GoogleWorkspaceProvider
@@ -30,7 +36,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "verbose_name_plural",
             "meta_model_name",
             "delegated_subject",
-            "credentials",
+            "secret",
             "scopes",
             "exclude_users_service_account",
             "filter_group",
@@ -42,8 +48,6 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "dry_run",
             "discovery_enabled",
         ]
-        secret_fields = ["credentials"]
-        extra_kwargs = {}
 
 
 class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

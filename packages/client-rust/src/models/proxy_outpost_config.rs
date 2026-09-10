@@ -29,12 +29,12 @@ pub struct ProxyOutpostConfig {
     pub internal_host_ssl_validation: Option<bool>,
     #[serde(rename = "client_id", skip_serializing_if = "Option::is_none")]
     pub client_id: Option<String>,
-    #[serde(rename = "client_secret", skip_serializing_if = "Option::is_none")]
-    pub client_secret: Option<String>,
+    #[serde(rename = "client_secret")]
+    pub client_secret: String,
     #[serde(rename = "oidc_configuration")]
     pub oidc_configuration: models::OpenIdConnectConfiguration,
-    #[serde(rename = "cookie_secret", skip_serializing_if = "Option::is_none")]
-    pub cookie_secret: Option<String>,
+    #[serde(rename = "cookie_secret")]
+    pub cookie_secret: String,
     #[serde(
         rename = "certificate",
         default,
@@ -98,7 +98,9 @@ impl ProxyOutpostConfig {
         pk: i32,
         name: String,
         external_host: String,
+        client_secret: String,
         oidc_configuration: models::OpenIdConnectConfiguration,
+        cookie_secret: String,
         access_token_validity: Option<f64>,
         scopes_to_request: Vec<String>,
         assigned_application_slug: String,
@@ -111,9 +113,9 @@ impl ProxyOutpostConfig {
             external_host,
             internal_host_ssl_validation: None,
             client_id: None,
-            client_secret: None,
+            client_secret,
             oidc_configuration,
-            cookie_secret: None,
+            cookie_secret,
             certificate: None,
             skip_path_regex: None,
             basic_auth_enabled: None,

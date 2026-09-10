@@ -232,12 +232,14 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
 class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
     """Service Connection to a Kubernetes cluster"""
 
-    kubeconfig = models.JSONField(
-        help_text=_(
-            "Paste your kubeconfig here. authentik will automatically use "
-            "the currently selected context."
-        ),
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Kubeconfig"),
+        on_delete=models.PROTECT,
+        null=True,
         blank=True,
+        default=None,
+        related_name="kubernetes_connections",
     )
     verify_ssl = models.BooleanField(
         default=True, help_text=_("Verify SSL Certificates of the Kubernetes API endpoint")

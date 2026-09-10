@@ -46,14 +46,11 @@ class RadiusProviderSerializer(
         model = RadiusProvider
         fields = ProviderSerializer.Meta.fields + [
             "client_networks",
-            # Shared secret is not a write-only field, as
-            # an admin might have to view it
-            "shared_secret",
+            "secret",
             "outpost_set",
             "mfa_support",
             "certificate",
         ]
-        secret_fields = ["shared_secret"]
         extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
@@ -77,6 +74,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
 
     application_slug = CharField(source="application.slug")
     auth_flow_slug = CharField(source="authorization_flow.slug")
+    shared_secret = CharField(source="secret.value", read_only=True)
 
     class Meta:
         model = RadiusProvider
@@ -95,7 +93,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
 class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     """RadiusProvider Viewset"""
 
-    queryset = RadiusProvider.objects.filter(application__isnull=False)
+    queryset = RadiusProvider.objects.filter(application__isnull=False).select_related("secret")
     serializer_class = RadiusOutpostConfigSerializer
     permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
@@ -124,7 +122,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         )
 
         packet = AuthPacket()
-        packet.secret = provider.shared_secret
+        packet.secret = provider.secret.value
         packet.dict = dict
 
         def define_attribute(

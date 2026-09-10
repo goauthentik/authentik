@@ -27,6 +27,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.secrets.tests.utils import create_test_secret
 from tests.decorators import retry
 from tests.selenium import SeleniumTestCase
 
@@ -88,7 +89,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/")],
             authorization_flow=authorization_flow,
@@ -138,7 +139,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -212,7 +213,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -293,7 +294,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -378,7 +379,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(

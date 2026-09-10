@@ -21,7 +21,7 @@ Typical use cases included remote-work, contractor, and BYOD environments where 
 
 ## Configuration options
 
-- **Credentials**: Google service-account JSON used to access the Chrome Verified Access API.
+- **Credentials**: a secret containing the Google service-account JSON used to access the Chrome Verified Access API.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.
 - **Configuration flow**: optional authenticated flow that exposes the stage in user settings.
 
@@ -58,7 +58,7 @@ More concretely:
 3. In **IAM** > **Service Accounts**, create a service account.
 4. Generate a JSON key from the service account's **Keys** tab.
 5. In the Google admin side, configure a new provider under **Chrome browser > Connectors** and point it at your authentik URL, for example `https://authentik.company/endpoint/gdtc/chrome/`.
-6. Paste the exported JSON key into the stage's **Credentials** field in authentik.
+6. In the stage's **Credentials** field, create or select a secret containing the exported JSON key. Use the **File** type to upload it, or **Multi-line text** to paste its contents.
 
 ### Why this stage is different
 

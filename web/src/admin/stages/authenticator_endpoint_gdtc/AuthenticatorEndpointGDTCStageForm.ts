@@ -1,9 +1,11 @@
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -60,19 +62,16 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
             ></ak-text-input>
             <ak-form-group open label="${msg("Google Verified Access API")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Credentials")}
+                    <ak-secret-search-input
+                        name="secret"
+                        label=${msg("Credentials", { id: "google.credentials.label" })}
+                        value=${ifPresent(this.instance?.secret)}
                         required
-                        name="credentials"
-                    >
-                        <ak-codemirror
-                            mode="javascript"
-                            .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Google Cloud credentials file.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                        help=${msg(
+                            "Select a secret containing the Google Cloud credentials JSON file.",
+                            { id: "google.credentials.description" },
+                        )}
+                    ></ak-secret-search-input>
                 </div>
             </ak-form-group>`;
     }

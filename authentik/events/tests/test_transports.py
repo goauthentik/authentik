@@ -21,6 +21,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.stages.email.models import get_template_choices
 
 
@@ -43,7 +44,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="http://localhost:1234/test",
+            secret=create_test_secret("http://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("http://localhost:1234/test")
@@ -67,7 +68,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="https://localhost:1234/test",
+            secret=create_test_secret("https://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("https://localhost:1234/test")
@@ -84,7 +85,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="https://localhost:1234/test",
+            secret=create_test_secret("https://localhost:1234/test"),
             webhook_ca=kp,
         )
         with Mocker() as mocker:
@@ -104,7 +105,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="http://localhost:1234/test",
+            secret=create_test_secret("http://localhost:1234/test"),
             webhook_mapping_body=mapping_body,
             webhook_mapping_headers=mapping_headers,
         )
@@ -130,7 +131,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK_SLACK,
-            webhook_url="http://localhost:1234/test",
+            secret=create_test_secret("http://localhost:1234/test"),
             webhook_mapping_body=mapping_body,
             webhook_mapping_headers=mapping_headers,
         )
@@ -150,7 +151,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK_SLACK,
-            webhook_url="http://localhost:1234/test",
+            secret=create_test_secret("http://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("http://localhost:1234/test")

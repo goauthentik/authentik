@@ -2,7 +2,7 @@ import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-radio-input";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -233,20 +233,21 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-secret-text-input
-                    name="clientSecret"
+                <ak-secret-search-input
+                    name="secret"
                     label=${msg("Client Secret")}
-                    value=${ifDefined(
-                        provider.pk
-                            ? provider.clientSecret
-                            : randomString(128, ascii_letters + digits),
-                    )}
-                    input-hint="code"
-                    plaintext
-                    ?revealed=${!provider.pk}
+                    value=${ifPresent(provider.secret)}
+                    blankable
+                    help=${provider.pk
+                        ? msg("Secret the client authenticates with.", {
+                              id: "provider.oauth2.form.secret.description.edit",
+                          })
+                        : msg(
+                              "Secret the client authenticates with. Leave empty to create one for this provider.",
+                              { id: "provider.oauth2.form.secret.description.create" },
+                          )}
                     ?hidden=${!showClientSecret}
-                >
-                </ak-secret-text-input>
+                ></ak-secret-search-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
                     <ak-checkbox-group
                         name="users"

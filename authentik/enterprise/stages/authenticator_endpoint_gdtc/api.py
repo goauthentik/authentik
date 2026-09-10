@@ -13,6 +13,8 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDevice,
 )
 from authentik.flows.api.stages import StageSerializer
+from authentik.secrets.api import JSONSecretReferenceField
+from authentik.secrets.models import Secret
 
 LOGGER = get_logger()
 
@@ -20,14 +22,17 @@ LOGGER = get_logger()
 class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     """AuthenticatorEndpointGDTCStage Serializer"""
 
+    secret = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=True, allow_null=False
+    )
+
     class Meta:
         model = AuthenticatorEndpointGDTCStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "friendly_name",
-            "credentials",
+            "secret",
         ]
-        secret_fields = ["credentials"]
 
 
 class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):

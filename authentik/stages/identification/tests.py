@@ -9,6 +9,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -271,7 +272,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -296,7 +297,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=configured_site_key,
-            private_key=generate_id(),
+            secret=create_test_secret(generate_id()),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -343,7 +344,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage
@@ -395,7 +396,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage

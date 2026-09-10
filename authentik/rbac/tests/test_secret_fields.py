@@ -1,6 +1,6 @@
 """Test secret field exposure in API responses"""
 
-from json import loads
+from json import dumps, loads
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -8,12 +8,13 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.outposts.models import KubernetesServiceConnection
 from authentik.rbac.models import Role
-from authentik.sources.plex.models import PlexSource
+from authentik.secrets.tests.utils import create_test_secret
 
 
 class TestSecretFields(APITestCase):
-    """Test that secret fields are only rendered for users that can change the object"""
+    """Consumer APIs expose references, even to administrators."""
 
     def setUp(self) -> None:
         self.user = create_test_user()
@@ -22,97 +23,124 @@ class TestSecretFields(APITestCase):
         self.group.roles.add(self.role)
         self.group.users.add(self.user)
 
-        PlexSource.objects.all().delete()
-        self.plex_token = generate_id()
-        self.source = PlexSource.objects.create(
-            name=generate_id(),
-            slug=generate_id(),
-            plex_token=self.plex_token,
+        KubernetesServiceConnection.objects.all().delete()
+        self.kubeconfig = {
+            "apiVersion": "v1",
+            "kind": "Config",
+            "current-context": "test",
+            "clusters": [{"name": "test", "cluster": {"server": "https://localhost"}}],
+            "contexts": [{"name": "test", "context": {"cluster": "test", "user": "test"}}],
+            "users": [{"name": "test", "user": {"token": generate_id()}}],
+        }
+        self.secret = create_test_secret(dumps(self.kubeconfig))
+        self.connection = KubernetesServiceConnection.objects.create(
+            name=generate_id(), secret=self.secret
         )
 
-    def test_source_detail_view(self):
-        """Test source detail (role has global view permission)"""
-        self.role.assign_perms("authentik_sources_plex.view_plexsource")
+    def test_connection_detail_view(self):
+        """Test connection detail (role has global view permission)"""
+        self.role.assign_perms("authentik_outposts.view_kubernetesserviceconnection")
         self.client.force_login(self.user)
 
         res = self.client.get(
-            reverse("authentik_api:plexsource-detail", kwargs={"slug": self.source.slug})
+            reverse(
+                "authentik_api:kubernetesserviceconnection-detail",
+                kwargs={"pk": self.connection.pk},
+            )
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertNotIn("plex_token", body)
-        self.assertEqual(body["client_id"], self.source.client_id)
+        self.assertNotIn("kubeconfig", body)
+        self.assertEqual(body["name"], self.connection.name)
 
-    def test_source_list_view(self):
-        """Test source list (role has global view permission)"""
-        self.role.assign_perms("authentik_sources_plex.view_plexsource")
+    def test_connection_list_view(self):
+        """Test connection list (role has global view permission)"""
+        self.role.assign_perms("authentik_outposts.view_kubernetesserviceconnection")
         self.client.force_login(self.user)
 
-        res = self.client.get(reverse("authentik_api:plexsource-list"))
+        res = self.client.get(reverse("authentik_api:kubernetesserviceconnection-list"))
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["pagination"]["count"], 1)
-        self.assertNotIn("plex_token", body["results"][0])
-        self.assertEqual(body["results"][0]["client_id"], self.source.client_id)
+        self.assertNotIn("kubeconfig", body["results"][0])
+        self.assertEqual(body["results"][0]["name"], self.connection.name)
 
-    def test_source_detail_change_global(self):
-        """Test source detail (role has global change permission)"""
+    def test_connection_detail_change_global(self):
+        """Test connection detail (role has global change permission)"""
         self.role.assign_perms(
             [
-                "authentik_sources_plex.view_plexsource",
-                "authentik_sources_plex.change_plexsource",
+                "authentik_outposts.view_kubernetesserviceconnection",
+                "authentik_outposts.change_kubernetesserviceconnection",
             ]
         )
         self.client.force_login(self.user)
 
         res = self.client.get(
-            reverse("authentik_api:plexsource-detail", kwargs={"slug": self.source.slug})
+            reverse(
+                "authentik_api:kubernetesserviceconnection-detail",
+                kwargs={"pk": self.connection.pk},
+            )
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertNotIn(self.secret.value, res.content.decode())
 
-    def test_source_detail_change_object(self):
-        """Test source detail (role has change permission on the object)"""
-        self.role.assign_perms("authentik_sources_plex.view_plexsource", obj=self.source)
-        self.role.assign_perms("authentik_sources_plex.change_plexsource", obj=self.source)
+    def test_connection_detail_change_object(self):
+        """Test connection detail (role has change permission on the object)"""
+        self.role.assign_perms(
+            "authentik_outposts.view_kubernetesserviceconnection", obj=self.connection
+        )
+        self.role.assign_perms(
+            "authentik_outposts.change_kubernetesserviceconnection", obj=self.connection
+        )
         self.client.force_login(self.user)
 
         res = self.client.get(
-            reverse("authentik_api:plexsource-detail", kwargs={"slug": self.source.slug})
+            reverse(
+                "authentik_api:kubernetesserviceconnection-detail",
+                kwargs={"pk": self.connection.pk},
+            )
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertNotIn(self.secret.value, res.content.decode())
 
-    def test_source_detail_superuser(self):
-        """Test source detail (superuser)"""
+    def test_connection_detail_superuser(self):
+        """Test connection detail (superuser)"""
         self.client.force_login(create_test_admin_user())
 
         res = self.client.get(
-            reverse("authentik_api:plexsource-detail", kwargs={"slug": self.source.slug})
+            reverse(
+                "authentik_api:kubernetesserviceconnection-detail",
+                kwargs={"pk": self.connection.pk},
+            )
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertNotIn(self.secret.value, res.content.decode())
 
-    def test_source_create(self):
-        """Test source create (role has global add permission, but no change permission)"""
-        self.role.assign_perms("authentik_sources_plex.add_plexsource")
+    def test_connection_create(self):
+        """Test connection create (role has global add permission, but no change permission)"""
+        self.role.assign_perms("authentik_outposts.add_kubernetesserviceconnection")
         self.client.force_login(self.user)
 
         name = generate_id()
-        plex_token = generate_id()
+        secret = create_test_secret(dumps(self.kubeconfig))
+        self.role.assign_perms("authentik_secrets.view_secret_value", secret)
         res = self.client.post(
-            reverse("authentik_api:plexsource-list"),
+            reverse("authentik_api:kubernetesserviceconnection-list"),
             {
                 "name": name,
-                "slug": generate_id(),
-                "plex_token": plex_token,
+                "secret": str(secret.pk),
+                "local": False,
             },
+            format="json",
         )
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 201, res.content)
         body = loads(res.content)
-        self.assertNotIn("plex_token", body)
-        source = PlexSource.objects.get(name=name)
-        self.assertEqual(source.plex_token, plex_token)
+        self.assertNotIn("kubeconfig", body)
+        connection = KubernetesServiceConnection.objects.get(name=name)
+        self.assertEqual(connection.secret, secret)

@@ -9,6 +9,7 @@ from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnecto
 from authentik.events.models import NotificationWebhookMapping
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.secrets.tests.utils import create_test_secret
 
 TEST_HOST_UBUNTU = loads(load_fixture("fixtures/host_ubuntu.json"))
 TEST_HOST_FEDORA = loads(load_fixture("fixtures/host_fedora.json"))
@@ -23,7 +24,7 @@ class TestFleetConnector(APITestCase):
         self.connector = FleetConnector.objects.create(
             name=generate_id(),
             url="http://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             map_teams_access_group=True,
         )
 

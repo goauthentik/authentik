@@ -6,7 +6,7 @@ from random import SystemRandom
 from urllib.parse import urljoin
 from uuid import uuid4
 
-from django.db import models
+from django.db import models, transaction
 from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
@@ -22,6 +22,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.secrets.models import create_named_secret
 
 SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
@@ -137,8 +138,24 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         blank=True,
     )
 
-    cookie_secret = models.TextField(default=get_cookie_secret)
+    cookie_secret_ref = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Cookie secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="proxy_providers",
+    )
     cookie_domain = models.TextField(default="", blank=True)
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            if not self.cookie_secret_ref_id:
+                self.cookie_secret_ref = create_named_secret(f"{self.name} cookie secret")
+                if (update_fields := kwargs.get("update_fields")) is not None:
+                    kwargs["update_fields"] = set(update_fields) | {"cookie_secret_ref"}
+            return super().save(*args, **kwargs)
 
     @property
     def component(self) -> str:

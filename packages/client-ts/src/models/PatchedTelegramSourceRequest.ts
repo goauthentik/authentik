@@ -78,7 +78,7 @@ export interface PatchedTelegramSourceRequest {
     /**
      * Telegram bot token
      */
-    botToken?: string;
+    secret?: string;
     /**
      * Request access to send messages from your bot.
      */
@@ -142,7 +142,7 @@ export function PatchedTelegramSourceRequestFromJSONTyped(
             json["user_path_template"] == null ? undefined : json["user_path_template"],
         icon: json["icon"] == null ? undefined : json["icon"],
         botUsername: json["bot_username"] == null ? undefined : json["bot_username"],
-        botToken: json["bot_token"] == null ? undefined : json["bot_token"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         requestMessageAccess:
             json["request_message_access"] == null ? undefined : json["request_message_access"],
         preAuthenticationFlow:
@@ -176,7 +176,7 @@ export function PatchedTelegramSourceRequestToJSONTyped(
         user_path_template: value["userPathTemplate"],
         icon: value["icon"],
         bot_username: value["botUsername"],
-        bot_token: value["botToken"],
+        secret: value["secret"],
         request_message_access: value["requestMessageAccess"],
         pre_authentication_flow: value["preAuthenticationFlow"],
     };

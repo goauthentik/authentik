@@ -27,6 +27,8 @@ from authentik.outposts.models import (
     OutpostServiceConnection,
 )
 from authentik.rbac.filters import ObjectFilter
+from authentik.secrets.api import JSONSecretReferenceField
+from authentik.secrets.models import Secret
 
 
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
@@ -108,26 +110,27 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
 
-    def validate_kubeconfig(self, kubeconfig):
-        """Validate kubeconfig by attempting to load it"""
-        if kubeconfig == {}:
-            if not self.initial_data["local"]:
+    secret = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=False, allow_null=True
+    )
+
+    def validate(self, attrs):
+        local = attrs.get("local", getattr(self.instance, "local", False))
+        secret = attrs.get("secret", getattr(self.instance, "secret", None))
+        if not local:
+            if not secret:
                 raise serializers.ValidationError(
-                    _("You can only use an empty kubeconfig when connecting to a local cluster.")
+                    {"secret": _("A kubeconfig secret is required for a remote cluster.")}
                 )
-            # Empty kubeconfig is valid
-            return kubeconfig
-        config = Configuration()
-        try:
-            load_kube_config_from_dict(kubeconfig, client_configuration=config)
-        except ConfigException:
-            raise serializers.ValidationError(_("Invalid kubeconfig")) from None
-        return kubeconfig
+            try:
+                load_kube_config_from_dict(secret.get_json(), client_configuration=Configuration())
+            except ConfigException, ValueError:
+                raise serializers.ValidationError({"secret": _("Invalid kubeconfig")}) from None
+        return attrs
 
     class Meta:
         model = KubernetesServiceConnection
-        fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig", "verify_ssl"]
-        secret_fields = ["kubeconfig"]
+        fields = ServiceConnectionSerializer.Meta.fields + ["secret", "verify_ssl"]
 
 
 class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):

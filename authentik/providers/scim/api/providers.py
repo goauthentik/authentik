@@ -37,7 +37,7 @@ class SCIMProviderSerializer(
             "meta_model_name",
             "url",
             "verify_certificates",
-            "token",
+            "secret",
             "auth_mode",
             "auth_oauth",
             "auth_oauth_params",
@@ -54,7 +54,6 @@ class SCIMProviderSerializer(
             "group_filters",
             "dry_run",
         ]
-        extra_kwargs = {"token": {"write_only": True}}
 
 
 class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

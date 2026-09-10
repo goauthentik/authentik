@@ -15,13 +15,14 @@ from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.secrets.tests.utils import create_test_secret
 
 
 class FleetConnectorStageTests(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", token=generate_id()
+            name=generate_id(), url="http://localhost", secret=create_test_secret(generate_id())
         )
 
         controller = self.connector.controller(self.connector)

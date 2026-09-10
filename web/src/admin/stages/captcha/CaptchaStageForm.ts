@@ -1,6 +1,6 @@
 import "#components/ak-text-input";
 import "#components/ak-number-input";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -10,6 +10,7 @@ import { aki } from "#common/api/client";
 
 import { Level } from "#elements/Alert";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
@@ -217,22 +218,19 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             >
             </ak-text-input>
 
-            <ak-secret-text-input
-                name="privateKey"
+            <ak-secret-search-input
+                name="secret"
                 label=${msg("Secret Key")}
-                input-hint="code"
-                plaintext
-                ?required=${!this.instance}
-                ?revealed=${!this.instance}
-                placeholder=${msg("Paste your CAPTCHA secret key...")}
+                value=${ifPresent(this.instance?.secret ?? undefined)}
+                required
                 help=${msg(
                     "The secret key allows communication between authentik and the CAPTCHA provider to validate user responses.",
                     {
-                        id: "captcha.secret-key.description",
+                        id: "captcha.form.secret.description",
                         desc: "Description for CAPTCHA secret key field.",
                     },
                 )}
-            ></ak-secret-text-input>
+            ></ak-secret-search-input>
         `;
     }
 

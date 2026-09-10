@@ -69,7 +69,7 @@ export interface OAuth2ProviderRequest {
     /**
      *
      */
-    clientSecret?: string;
+    secret?: string | null;
     /**
      * Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
      */
@@ -186,7 +186,12 @@ export function OAuth2ProviderRequestFromJSONTyped(
                 ? undefined
                 : (json["grant_types"] as Array<any>).map(GrantTypeEnumFromJSON),
         clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         accessCodeValidity:
             json["access_code_validity"] == null ? undefined : json["access_code_validity"],
         accessTokenValidity:
@@ -251,7 +256,7 @@ export function OAuth2ProviderRequestToJSONTyped(
                 ? undefined
                 : (value["grantTypes"] as Array<any>).map(GrantTypeEnumToJSON),
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        secret: value["secret"],
         access_code_validity: value["accessCodeValidity"],
         access_token_validity: value["accessTokenValidity"],
         refresh_token_validity: value["refreshTokenValidity"],

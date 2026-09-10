@@ -13,6 +13,7 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.utils import pkce_s256_challenge
+from authentik.secrets.models import Secret
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
 from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
@@ -53,7 +54,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "google",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": "",
                     "oidc_jwks_url": "",
                 }
@@ -66,7 +67,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                 }
             ).is_valid()
         )
@@ -93,7 +94,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": url,
                     "oidc_jwks_url": "",
                 },
@@ -125,7 +126,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "authorization_url": "http://foo",
                     "access_token_url": "http://foo",
                     "profile_url": "http://foo",

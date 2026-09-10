@@ -30,6 +30,10 @@ export interface DialogInit {
      */
     closedBy?: ClosedBy;
     /**
+     * The headline of the modal, when rendered through {@linkcode renderModal}.
+     */
+    headline?: string;
+    /**
      * The inline-size to use for the dialog when rendered.
      * This can be used to control the width of the dialog.
      */

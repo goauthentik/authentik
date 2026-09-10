@@ -13,6 +13,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMMapping, SCIMProvider
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.tenants.models import Tenant
 from tests.live import create_test_admin_user
@@ -33,7 +34,7 @@ class TestSCIMOAuthToken(APITestCase):
             slug=generate_id(),
             access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            secret=create_test_secret(generate_id()),
             provider_type="openidconnect",
         )
         self.provider = SCIMProvider.objects.create(
@@ -73,7 +74,7 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join((self.source.consumer_key.encode(), self.source.consumer_secret.encode()))
+                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
             )
             .strip()
             .decode()
@@ -109,7 +110,7 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join((self.source.consumer_key.encode(), self.source.consumer_secret.encode()))
+                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
             )
             .strip()
             .decode()

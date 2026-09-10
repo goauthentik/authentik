@@ -11,6 +11,7 @@ from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.tenants.models import Tenant
 
 
@@ -27,7 +28,7 @@ class SCIMApplicationPoliciesTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         self.provider.property_mappings.add(

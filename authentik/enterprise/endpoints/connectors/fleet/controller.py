@@ -35,7 +35,7 @@ class FleetController(BaseController[DBC]):
             base_url = base_url[:-1]
         self._base_url = base_url
         self._session = get_http_session()
-        self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
+        self._session.headers["Authorization"] = f"Bearer {self.connector.secret.value}"
         if self.connector.headers_mapping:
             self._session.headers.update(
                 sanitize_item(

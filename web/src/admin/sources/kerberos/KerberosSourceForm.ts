@@ -1,6 +1,5 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
-import "#components/ak-secret-text-input";
-import "#components/ak-secret-textarea-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
@@ -17,6 +16,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSo
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -248,30 +248,34 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         value=${ifDefined(this.instance?.syncPrincipal)}
                         help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
-                    <ak-secret-text-input
-                        name="syncPassword"
+                    <ak-secret-search-input
+                        name="secret"
                         label=${msg("Sync password")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.secret)}
+                        blankable
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
+                            { id: "source.kerberos.form.secret.description" },
                         )}
-                    ></ak-secret-text-input>
-                    <ak-secret-textarea-input
-                        name="syncKeytab"
+                    ></ak-secret-search-input>
+                    <ak-secret-search-input
+                        name="syncKeytabSecret"
                         label=${msg("Sync keytab")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.syncKeytabSecret)}
+                        blankable
                         help=${msg(
-                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
+                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret, or a text secret containing base64 or TYPE:residual.",
                         )}
-                    ></ak-secret-textarea-input>
-                    <ak-secret-text-input
-                        name="syncCcache"
+                    ></ak-secret-search-input>
+                    <ak-secret-search-input
+                        name="syncCcacheSecret"
                         label=${msg("Sync credentials cache")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.syncCcacheSecret)}
+                        blankable
                         help=${msg(
-                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.",
+                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a file secret, or a text secret containing TYPE:residual.",
                         )}
-                    ></ak-secret-text-input>
+                    ></ak-secret-search-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("SPNEGO settings")}">
@@ -284,22 +288,24 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain",
                         )}
                     ></ak-text-input>
-                    <ak-secret-textarea-input
-                        name="spnegoKeytab"
+                    <ak-secret-search-input
+                        name="spnegoKeytabSecret"
                         label=${msg("SPNEGO keytab")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.spnegoKeytabSecret)}
+                        blankable
                         help=${msg(
-                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
+                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret, or a text secret containing base64 or TYPE:residual.",
                         )}
-                    ></ak-secret-textarea-input>
-                    <ak-secret-text-input
-                        name="spnegoCcache"
+                    ></ak-secret-search-input>
+                    <ak-secret-search-input
+                        name="spnegoCcacheSecret"
                         label=${msg("SPNEGO credentials cache")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.spnegoCcacheSecret)}
+                        blankable
                         help=${msg(
-                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.",
+                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a file secret, or a text secret containing TYPE:residual.",
                         )}
-                    ></ak-secret-text-input>
+                    ></ak-secret-search-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Kerberos Attribute mapping")}">

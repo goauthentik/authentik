@@ -129,6 +129,10 @@ export interface LDAPSource {
     /**
      *
      */
+    secret?: string | null;
+    /**
+     *
+     */
     startTls?: boolean;
     /**
      *
@@ -332,6 +336,12 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                   ? null
                   : json["client_certificate"],
         bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
         baseDn: json["base_dn"],
@@ -419,6 +429,7 @@ export function LDAPSourceToJSONTyped(
         peer_certificate: value["peerCertificate"],
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
+        secret: value["secret"],
         start_tls: value["startTls"],
         sni: value["sni"],
         base_dn: value["baseDn"],

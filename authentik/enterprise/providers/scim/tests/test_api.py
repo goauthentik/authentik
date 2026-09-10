@@ -9,6 +9,7 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.models import License
 from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource
 
 
@@ -21,7 +22,7 @@ class TestSCIMOAuthAPI(APITestCase):
             slug=generate_id(),
             access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            secret=create_test_secret(generate_id()),
             provider_type="openidconnect",
         )
 

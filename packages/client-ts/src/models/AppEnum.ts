@@ -24,6 +24,7 @@ export const AppEnum = {
     AuthentikApi: "authentik.api",
     AuthentikCore: "authentik.core",
     AuthentikCrypto: "authentik.crypto",
+    AuthentikSecrets: "authentik.secrets",
     AuthentikEndpoints: "authentik.endpoints",
     AuthentikEndpointsConnectorsAgent: "authentik.endpoints.connectors.agent",
     AuthentikEnterprise: "authentik.enterprise",

@@ -18,6 +18,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
@@ -35,7 +36,7 @@ class GoogleWorkspaceUserTests(TestCase):
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
             delegated_subject="",
             exclude_users_service_account=True,
             default_group_email_domain="goauthentik.io",

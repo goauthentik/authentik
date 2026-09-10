@@ -14,6 +14,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.stages.authenticator.tests import ThrottlingTestMixin
 from authentik.stages.authenticator_sms.models import (
     AuthenticatorSMSStage,
@@ -104,7 +105,7 @@ class AuthenticatorSMSStageTests(FlowTestCase):
     def test_stage_submit_twilio(self):
         """test stage (submit) (twilio)"""
         self.stage.account_sid = generate_id()
-        self.stage.auth = generate_id()
+        self.stage.auth_secret = create_test_secret(generate_id())
         self.stage.from_number = generate_id()
         self.stage.save()
         self.client.get(

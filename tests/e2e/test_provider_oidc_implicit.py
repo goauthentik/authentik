@@ -27,6 +27,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.secrets.tests.utils import create_test_secret
 from tests.decorators import retry
 from tests.selenium import SeleniumTestCase
 
@@ -74,7 +75,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             name=self.application_slug,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
@@ -124,7 +125,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             name=self.application_slug,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
@@ -197,7 +198,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
@@ -288,7 +289,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")

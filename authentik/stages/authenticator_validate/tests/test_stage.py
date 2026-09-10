@@ -12,6 +12,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDigits
@@ -226,7 +227,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         duo_stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            secret=create_test_secret(generate_key()),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(

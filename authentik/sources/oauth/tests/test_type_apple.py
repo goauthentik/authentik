@@ -7,6 +7,7 @@ from jwt import decode
 from authentik.core.tests.utils import RequestFactory, create_test_cert
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.apple import AppleOAuthClient
 from authentik.sources.oauth.types.registry import registry
@@ -27,7 +28,7 @@ class TestTypeApple(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=f"{self.service_identifier};{self.team_id};{self.key_id}",
-            consumer_secret=self.kp.key_data,
+            secret=create_test_secret(self.kp.key_data),
         )
         self.factory = RequestFactory()
 

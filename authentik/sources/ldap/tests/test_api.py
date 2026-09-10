@@ -11,6 +11,8 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.secrets.models import Secret
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
@@ -27,7 +29,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": generate_id(),
+                "secret": Secret.objects.create(name=generate_id()).pk,
                 "base_dn": "dc=foo",
                 "sync_users_password": True,
             }
@@ -42,7 +44,7 @@ class LDAPAPITests(APITestCase):
             slug=generate_id(),
             server_uri="ldaps://1.2.3.4",
             bind_cn="",
-            bind_password=generate_id(),
+            secret=create_test_secret(generate_id()),
             base_dn="dc=foo",
             sync_users_password=True,
         )
@@ -52,7 +54,7 @@ class LDAPAPITests(APITestCase):
                 "slug": generate_id(),
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": generate_id(),
+                "secret": Secret.objects.create(name=generate_id()).pk,
                 "base_dn": "dc=foo",
                 "sync_users_password": True,
             }
@@ -78,7 +80,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": generate_id(),
+                "secret": Secret.objects.create(name=generate_id()).pk,
                 "base_dn": "dc=foo",
                 "sync_users": True,
                 "user_property_mappings": [],
@@ -94,7 +96,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": generate_id(),
+                "secret": Secret.objects.create(name=generate_id()).pk,
                 "base_dn": "dc=foo",
                 "sync_groups": True,
                 "group_property_mappings": [],

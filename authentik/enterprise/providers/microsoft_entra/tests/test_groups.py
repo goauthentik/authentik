@@ -25,6 +25,7 @@ from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.tenants.models import Tenant
 
 
@@ -41,7 +42,7 @@ class MicrosoftEntraGroupTests(TestCase):
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            secret=create_test_secret(generate_id()),
             tenant_id=generate_id(),
             exclude_users_service_account=True,
         )
