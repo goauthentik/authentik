@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="turnstile-types"/>
+import { globalAK } from "#common/global";
+
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { TurnstileObject } from "turnstile-types";
 
@@ -10,6 +14,24 @@ declare global {
     interface Window {
         turnstile: TurnstileObject;
     }
+}
+
+/**
+ * Resolve the theme value to pass to the Turnstile widget.
+ *
+ * Turnstile supports three theme values: `"light"`, `"dark"`, and `"auto"`.
+ * When the brand's `uiTheme` is set to `Automatic`, return `"auto"` so the
+ * widget tracks the user's OS color-scheme preference natively (including
+ * after the page has loaded). Otherwise fall back to the host's resolved
+ * `activeTheme` so explicit light/dark preferences propagate to the widget.
+ *
+ * @see {@link https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/widget-configurations/ Turnstile widget configurations}
+ */
+function resolveTurnstileTheme(host: { activeTheme: "light" | "dark" }): "light" | "dark" | "auto" {
+    if (globalAK().brand.uiTheme === UiThemeEnum.Automatic) {
+        return "auto";
+    }
+    return host.activeTheme;
 }
 
 export class TurnstileController extends CaptchaController {
@@ -52,7 +74,7 @@ export class TurnstileController extends CaptchaController {
      */
     public interactive = () => {
         const siteKey = this.host.challenge?.siteKey ?? "";
-        const theme = this.host.activeTheme;
+        const theme = resolveTurnstileTheme(this.host);
         const language = this.host.activeLanguageTag.toLowerCase();
 
         return html`<div id="ak-container"></div>
@@ -79,7 +101,7 @@ export class TurnstileController extends CaptchaController {
             "sitekey": this.host.challenge?.siteKey ?? "",
             "callback": this.host.onTokenChange,
             "error-callback": this.#delegateError,
-            "theme": this.host.activeTheme,
+            "theme": resolveTurnstileTheme(this.host),
         });
     };
 
