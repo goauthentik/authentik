@@ -7,6 +7,7 @@ import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network"
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import { BaseUserSettings } from "#elements/user/sources/BaseUserSettings";
 
@@ -56,9 +57,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
 
         return html`<a
             class="pf-c-button pf-m-primary"
-            href="${this.configureURL}${AndNext(
-                `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-            )}"
+            href="${this.configureURL}${AndNext(toUserInterface("settings/sources"))}"
         >
             ${msg("Connect")}
         </a>`;

@@ -40,7 +40,7 @@ export class SystemTasksPage extends AKElement {
 
     render(): TemplateResult {
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
