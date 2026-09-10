@@ -62,10 +62,12 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
             raise ValidationError({"intent": f"Invalid intent {attrs.get('intent')}"})
 
-        if attrs.get("intent") == TokenIntents.INTENT_APP_PASSWORD:
-            # user IS in attrs
-            user: User = attrs.get("user")
-            max_token_lifetime = user.group_attributes(request).get(
+        actor: User = request.user if request else attrs.get("user")
+        token_expiring = actor.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True)
+        expires = attrs.get("expires")
+
+        if not actor.is_superuser and token_expiring:
+            max_token_lifetime = actor.attributes.get(
                 USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
             )
             max_token_lifetime_dt = default_token_duration()
@@ -75,7 +77,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 except ValueError:
                     pass
 
-            expires = attrs.get("expires")
+            # if expires is provided, ensure it does not exceed the maximum resolved token lifetime
             if expires is not None and expires > max_token_lifetime_dt:
                 raise ValidationError(
                     {
@@ -84,9 +86,10 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                         )
                     }
                 )
-        elif attrs.get("intent") == TokenIntents.INTENT_API:
-            # For API tokens, expires cannot be overridden
-            attrs["expires"] = default_token_duration()
+
+            # if expires is None, set it to the allowed token lifetime
+            if expires is None:
+                attrs["expires"] = max_token_lifetime_dt
 
         return attrs
 
