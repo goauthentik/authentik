@@ -16,6 +16,7 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import FilterPolicyEngine, PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.tests.test_process import clear_policy_cache
+from authentik.policies.types import CACHE_PREFIX
 
 
 class TestFilterPolicyEngine(TestCase):
@@ -112,6 +113,35 @@ class TestFilterPolicyEngine(TestCase):
         self.assertEqual(
             set(engine.build().result.values_list("pk", flat=True)),
             {self.user_a.pk, self.user_b.pk, self.user_c.pk},
+        )
+
+    def test_multi_engine_dry_run(self):
+        """Dry-run bindings do not affect filtered users."""
+        policy_false = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+        dry_run = PolicyBinding.objects.create(
+            target=pbm, policy=policy_false, order=1, dry_run=True
+        )
+
+        result = FilterPolicyEngine(pbm, self.users).build().result
+
+        self.assertEqual(
+            set(result.values_list("pk", flat=True)),
+            {self.user_a.pk, self.user_b.pk},
+        )
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{dry_run.policy_binding_uuid.hex}*")), 3)
+
+        with patch(
+            "authentik.policies.dummy.models.DummyPolicy.passes",
+            side_effect=AssertionError("cached dry-run policy should not be evaluated"),
+        ):
+            cached_result = FilterPolicyEngine(pbm, self.users).build().result
+        self.assertEqual(
+            set(cached_result.values_list("pk", flat=True)),
+            {self.user_a.pk, self.user_b.pk},
         )
 
     def test_multi_engine_mixed_static_and_policy_mode_all_prefilters(self):

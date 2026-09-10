@@ -280,6 +280,66 @@ class TestFlowPlanner(TestCase):
             },
         )
 
+    def test_dry_run_policy_results_context(self):
+        """A failing dry-run policy is stored without blocking the flow."""
+        flow = create_test_flow()
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+        )
+        dry_run_policy = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("dry run")\nreturn False'
+        )
+        dry_run_binding = PolicyBinding.objects.create(
+            target=flow,
+            policy=dry_run_policy,
+            order=0,
+            dry_run=True,
+        )
+        stage_policy = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            expression=(
+                f'return context["{PLAN_CONTEXT_POLICY_RESULTS}"]'
+                f'["{dry_run_binding.pk}"]["raw_result"] is False'
+            ),
+        )
+        stage_policy_binding = PolicyBinding.objects.create(
+            target=stage_binding, policy=stage_policy, order=0
+        )
+        user = create_test_admin_user()
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = user
+
+        plan = FlowPlanner(flow).plan(request)
+
+        self.assertEqual(plan.bindings, [stage_binding])
+        results = plan.context[PLAN_CONTEXT_POLICY_RESULTS]
+        self.assertEqual(
+            results[str(dry_run_binding.pk)],
+            {
+                "policy": dry_run_policy.name,
+                "passing": False,
+                "messages": ["dry run"],
+                "raw_result": False,
+            },
+        )
+        self.assertTrue(results[str(stage_policy_binding.pk)]["passing"])
+
+        with patch(
+            "authentik.policies.expression.models.ExpressionPolicy.passes",
+            side_effect=AssertionError("cached policies should not be evaluated"),
+        ):
+            cached_plan = FlowPlanner(flow).plan(request)
+        self.assertEqual(cached_plan.bindings, [stage_binding])
+        self.assertEqual(
+            cached_plan.context[PLAN_CONTEXT_POLICY_RESULTS][str(dry_run_binding.pk)]["raw_result"],
+            False,
+        )
+
     def test_policy_results_snapshot_raw_result(self):
         """Raw results are snapshots and cannot create a recursive flow context."""
         flow = create_test_flow()
