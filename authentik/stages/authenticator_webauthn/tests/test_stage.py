@@ -132,8 +132,8 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             credential_id=bytes_to_base64url(b"existing-credential"),
             rp_id="testserver",
         )
-        # Devices of other users, and devices registered for a different RP, must not leak into
-        # the exclusion list
+        # Devices of other users, devices registered for a different RP, and unconfirmed devices
+        # must not leak into the exclusion list
         WebAuthnDevice.objects.create(
             user=create_test_user(),
             name=generate_id(),
@@ -145,6 +145,13 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             name=generate_id(),
             credential_id=bytes_to_base64url(b"other-rp-credential"),
             rp_id="other.rp.example.com",
+        )
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            name=generate_id(),
+            credential_id=bytes_to_base64url(b"unconfirmed-credential"),
+            rp_id="testserver",
+            confirmed=False,
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])

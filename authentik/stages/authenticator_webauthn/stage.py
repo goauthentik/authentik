@@ -173,10 +173,13 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         rp_id = get_rp_id(self.request)
 
         # Let the authenticator itself refuse to register a credential it already holds for this
-        # user.
+        # user. Only confirmed devices count; an unconfirmed one is not usable and must not block
+        # re-enrolling the same authenticator.
         exclude_credentials = [
             device.descriptor
-            for device in WebAuthnDevice.objects.filter(user=user, rp_id=rp_id).order_by("pk")
+            for device in WebAuthnDevice.objects.filter(
+                user=user, rp_id=rp_id, confirmed=True
+            ).order_by("pk")
         ]
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
