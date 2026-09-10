@@ -1,19 +1,28 @@
 """Basic outgoing sync Client"""
 
+from collections.abc import Iterator
+from contextlib import contextmanager
+from datetime import timedelta
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+import pglock
 from deepmerge import always_merger
-from django.db import DatabaseError
+from django.db import DatabaseError, connection
 from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
 )
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectLockTimeout,
+    StopSync,
+)
 
 if TYPE_CHECKING:
     from django.db.models import Model
@@ -32,6 +41,8 @@ SAFE_METHODS = [
     "OPTIONS",
     "TRACE",
 ]
+
+OBJECT_LOCK_TIMEOUT = timedelta(seconds=30)
 
 
 class BaseOutgoingSyncClient[
@@ -61,9 +72,31 @@ class BaseOutgoingSyncClient[
         """Update object in remote destination"""
         raise NotImplementedError()
 
+    @contextmanager
+    def object_lock(self, obj: TModel) -> Iterator[None]:
+        """Serialize remote operations for one object and provider."""
+        lock_id = (
+            f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/"
+            f"{self.provider._meta.label_lower}/{self.provider.pk}/"
+            f"{obj._meta.label_lower}/{obj.pk}"
+        )
+        with pglock.advisory(
+            lock_id=lock_id,
+            timeout=OBJECT_LOCK_TIMEOUT,
+            side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
+        ) as lock_acquired:
+            if not lock_acquired:
+                raise ObjectLockTimeout(lock_id)
+            yield
+
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
-        """Write object to destination. Uses self.create and self.update, but
-        can be overwritten for further logic"""
+        """Write an object to the destination while holding its object lock."""
+        with self.object_lock(obj):
+            return self._write(obj)
+
+    def _write(self, obj: TModel) -> tuple[TConnection, bool]:
+        """Write an object while the caller holds its object lock."""
         connection = self.connection_type.objects.filter(
             provider=self.provider, **{self.connection_type_query: obj}
         ).first()
@@ -83,6 +116,15 @@ class BaseOutgoingSyncClient[
             if connection:
                 connection.delete()
         return None, False
+
+    def sync_group_membership(self, obj: TModel, action: Direction, users_set: set[int]) -> None:
+        """Update group membership while holding the same lock used by writes."""
+        with self.object_lock(obj):
+            self.update_group(obj, action, users_set)
+
+    def update_group(self, obj: TModel, action: Direction, users_set: set[int]) -> None:
+        """Update group membership in the remote destination."""
+        raise NotImplementedError()
 
     def delete(self, identifier: str):
         """Delete object from destination"""
