@@ -42,7 +42,7 @@ export class ObjectPermissionPage extends AKElement {
 
     render() {
         return this.model === ModelEnum.AuthentikRbacRole
-            ? html`<ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
+            ? html`<ak-tabs routed ?vertical=${!this.embedded}>
                   ${this.renderPermissionsAssignedToRole()}
               </ak-tabs>`
             : html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">

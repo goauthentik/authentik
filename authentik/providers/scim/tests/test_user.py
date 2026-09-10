@@ -94,6 +94,48 @@ class SCIMUserTests(TestCase):
             },
         )
 
+    def _test_user_create_conflict(self, mock: Mocker, resources_key: str):
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={
+                "authenticationSchemes": [],
+                "patch": {"supported": False},
+                "bulk": {"supported": False},
+                "filter": {"supported": True},
+                "changePassword": {"supported": False},
+                "sort": {"supported": False},
+                "etag": {"supported": False},
+            },
+        )
+        mock.post("https://localhost/Users", status_code=409)
+        scim_id = generate_id()
+        uid = generate_id()
+        remote_user = {
+            "id": scim_id,
+            "userName": uid,
+            "displayName": "Remote display name",
+        }
+        mock.get("https://localhost/Users", json={resources_key: [remote_user]})
+
+        user = User.objects.create(username=uid, name=uid, email=f"{uid}@goauthentik.io")
+
+        connection = SCIMProviderUser.objects.get(provider=self.provider, user=user)
+        self.assertEqual(connection.scim_id, scim_id)
+        self.assertEqual(connection.attributes, remote_user)
+        self.assertEqual(
+            [request.method for request in mock.request_history], ["GET", "POST", "GET"]
+        )
+
+    @Mocker()
+    def test_user_create_conflict_standard_resources_key(self, mock: Mocker):
+        """An existing user is adopted from a standard-cased list response"""
+        self._test_user_create_conflict(mock, "Resources")
+
+    @Mocker()
+    def test_user_create_conflict_lowercase_resources_key(self, mock: Mocker):
+        """An existing user is adopted from a lowercase list response"""
+        self._test_user_create_conflict(mock, "resources")
+
     @Mocker()
     def test_user_create_custom_schema(self, mock: Mocker):
         """Test user creation with custom schema"""
