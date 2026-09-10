@@ -98,6 +98,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         pnpm install --frozen-lockfile
+        # `out/` is gitignored, and the oxlint/oxfmt configs import it at load time.
+        pnpm run build:lint-config
         pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
