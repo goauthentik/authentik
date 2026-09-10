@@ -65,7 +65,7 @@ authentik displays warnings and eventually restricts changes when licensing requ
 | The combined license has expired                                                                                               | Administrators see an expired-license warning, unless a capacity threshold below takes precedence. |
 | User capacity is exceeded and the last valid usage record is over two weeks old                                                | Administrators see a user-capacity warning.                                                        |
 | User capacity is exceeded and the last valid usage record is over four weeks old                                               | The Admin and User interfaces display the user-capacity warning.                                   |
-| The combined license expired over six weeks ago, or capacity is exceeded and the last valid usage record is over six weeks old | The deployment enters read-only mode.                                                            |
+| The combined license expired over six weeks ago, or capacity is exceeded and the last valid usage record is over six weeks old | The deployment enters read-only mode.                                                              |
 
 Capacity thresholds use the last recorded valid status, not the date a key was installed. If the deployment has no valid usage record and its users exceed the licensed capacity, it can enter read-only mode immediately. Purchase enough capacity for both user types before installing the first key.
 
