@@ -4,19 +4,19 @@ description: Obtain and install an Enterprise license, including in air-gapped e
 sidebar_position: 1
 ---
 
-Enable authentik Enterprise by installing a license key in the Admin interface. Enterprise uses the same installation and container images as the open source version; you do not need to reinstall authentik or deploy a separate Enterprise service.
+Enable authentik Enterprise by installing a license key in the Admin interface. authentik Enterprise uses the same installation process and container images as the open source version; you do not need to reinstall authentik or deploy a separate Enterprise service.
 
-authentik validates licenses locally. Installing and using a license does not require internet access from your authentik installation. For an offline deployment, see [air-gapped licensing](#air-gapped-environments).
+authentik validates licenses locally. Installing and using a license does not require internet access. For an offline deployment, see [air-gapped licensing](#air-gapped-environments).
 
 ## Before you begin
 
 You need a running, [supported version of authentik](../security/policy.mdx#supported-versions) and administrator access to its Admin interface. For a new deployment, [install authentik](../install-config/index.mdx) first.
 
-If you already have a license key for this installation, skip to [install the license key](#3-install-the-license-key).
+If you already have a license key for this deployment, skip to [install the license key](#3-install-the-license-key).
 
 ## 1. Copy the Install ID
 
-A license is bound to an authentik installation by its Install ID.
+A license is bound to an authentik deployment by its Install ID.
 
 1. Log in to the authentik Admin interface.
 2. Navigate to **Enterprise** > **Licenses**.
@@ -37,21 +37,21 @@ To request a trial or discuss an Enterprise Plus agreement, contact [hello@goaut
 1. In the Admin interface, navigate to **Enterprise** > **Licenses**.
 2. Click **Install**.
 3. Paste the complete license key into **License key** and submit the form.
-4. Check the installed license's user capacity and expiry date. **Current license status** shows the combined status and capacity of all active licenses for the installation.
+4. Check the installed license's user capacity and expiry date. **Current license status** shows the combined status and capacity of all active licenses for the deployment.
 
 Enterprise features are available once the license is valid. Follow the [feature documentation](./enterprise-features.mdx) to configure them.
 
 ### If the key is rejected
 
-Check that you copied the complete key, that it has not expired, and that it was issued for the Install ID shown on this installation. A key issued for another installation or tenant will not work. Check the server's clock if an unexpired key is rejected.
+Check that you copied the complete key, that it has not expired, and that it was issued for the Install ID shown on this deployment. A key issued for another deployment will not work. Check the server's clock if an unexpired key is rejected.
 
 If the license installs but its status shows a capacity problem, compare the active internal and external user counts with the licensed capacity for each type. See [license status and enforcement](./manage-enterprise.mdx#license-expiry-and-capacity-enforcement), or contact [Enterprise support](./enterprise-support.mdx).
 
 ## Air-gapped environments
 
-Use the same license installation steps in an air-gapped environment. Copy the Install ID from the disconnected installation, obtain the key on a connected system, and transfer it into the environment. Paste the key into the local Admin interface.
+Use the same license installation steps in an air-gapped environment. Copy the Install ID from the deployment, obtain the license key on a connected system, and install it via the Enterprise > Licenses section of the admin interface.
 
-The Customer Portal needs internet access to purchase or retrieve keys. Your authentik installation does not contact it to install or validate a license, and there is no periodic online license check. Renewals follow the same transfer process; [update the installed key](./manage-enterprise.mdx#update-a-license-key) before it expires.
+The Customer Portal needs internet access to purchase or retrieve keys. Your authentik deployment does not contact it to install or validate a license, and there is no periodic online license check. Renewals follow the same transfer process; [update the installed key](./manage-enterprise.mdx#update-a-license-key) before it expires.
 
 For image preparation, outbound-connection settings, and the complete offline license procedure, see [Air-gapped environments](../install-config/air-gapped.mdx#enterprise-licenses).
 

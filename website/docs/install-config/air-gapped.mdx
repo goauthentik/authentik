@@ -7,7 +7,9 @@ sidebar_position: 9
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-authentik can run without internet access, including with an Enterprise license. License installation and validation happen locally and do not require a connection to the Customer Portal or a licensing server.
+authentik can operate without internet access, including with an air-gapped Enterprise license. License installation and validation are performed locally and do not require an internet connection.
+
+If you require an air-gapped authentik license, please let us know during the purchasing process.
 
 Use this guide alongside the [Docker Compose](./install/docker-compose.mdx) or [Kubernetes](./install/kubernetes.mdx) installation instructions. Prepare the resources on a connected system, transfer them into your environment, and configure authentik before starting it.
 
@@ -148,13 +150,13 @@ authentik always validates Enterprise licenses locally, including in connected d
 4. On **Enterprise** > **Licenses**, click **Install**, paste the key into **License key**, and submit the form.
 5. Check **Current license status**, the user capacity, and the expiry date on the **Licenses** page.
 
-Only the system accessing the Customer Portal needs internet access. The authentik installation can remain disconnected throughout the process.
+Only the system accessing the Customer Portal needs internet access. The authentik deployment can remain disconnected throughout the process.
 
 For renewals or capacity changes, retrieve and transfer the replacement key, then [update the installed license](../enterprise/manage-enterprise.mdx#update-a-license-key). License expiry and user capacity rules also apply offline; see [license enforcement](../enterprise/manage-enterprise.mdx#license-expiry-and-capacity-enforcement).
 
 ## Upgrades
 
-Review the target version's [release notes](/releases/) and [back up your installation](../sys-mgmt/ops/backup-restore.mdx) before upgrading. Download the updated Compose file or Helm chart on a connected system and mirror all required images for the target release, including any changed supporting-service images.
+Review the target version's [release notes](/releases/) and [back up your deployment](../sys-mgmt/ops/backup-restore.mdx) before upgrading. Download the updated Compose file or Helm chart on a connected system and mirror all required images for the target release, including any changed supporting-service images.
 
 Transfer the resources, update your image references and version tags, and run the commands in [Start authentik](#start-authentik). Follow the [required upgrade sequence](./upgrade.mdx#important-considerations) and any additional migration instructions in the release notes. Keep the outbound-connection settings and internal registry configuration when merging a new Compose file or chart values.
 

@@ -14,12 +14,12 @@ An authentik Enterprise license is bound to one Install ID and defines an expiry
 
 In the Admin interface, navigate to **Enterprise** > **Licenses** to view:
 
-- The Install ID for the current installation or tenant.
+- The Install ID for the current deployment.
 - Forecasts for internal and external user counts.
 - The latest expiry date, combined status, and total user capacity of installed licenses.
 - The name, capacity, and expiry date of each license.
 
-License validation and user counting happen locally. The installation does not need access to the Customer Portal or a licensing server. See [air-gapped licensing](./get-started.mdx#air-gapped-environments) for transferring keys into a disconnected installation.
+License validation and user counting happen locally. The deployment does not need internet access. See [air-gapped licensing](./get-started.mdx#air-gapped-environments) for transferring keys into a disconnected deployment.
 
 ### Update a license key
 
@@ -30,7 +30,7 @@ When a renewal or capacity change provides a replacement key, retrieve it from t
 3. Paste the replacement into **License key**.
 4. Click **Save Changes**.
 
-Verify the new expiry date and capacity on the **Licenses** page. Renewing the subscription in the Customer Portal does not update the key stored in your installation; install the replacement key before the old one expires.
+Verify the new expiry date and capacity on the **Licenses** page. Renewing the subscription in the Customer Portal does not update the key stored in your deployment; install the replacement key before the old one expires.
 
 ### Remove a license
 
@@ -65,9 +65,9 @@ authentik displays warnings and eventually restricts changes when licensing requ
 | The combined license has expired                                                                                               | Administrators see an expired-license warning, unless a capacity threshold below takes precedence. |
 | User capacity is exceeded and the last valid usage record is over two weeks old                                                | Administrators see a user-capacity warning.                                                        |
 | User capacity is exceeded and the last valid usage record is over four weeks old                                               | The Admin and User interfaces display the user-capacity warning.                                   |
-| The combined license expired over six weeks ago, or capacity is exceeded and the last valid usage record is over six weeks old | The installation enters read-only mode.                                                            |
+| The combined license expired over six weeks ago, or capacity is exceeded and the last valid usage record is over six weeks old | The deployment enters read-only mode.                                                            |
 
-Capacity thresholds use the last recorded valid status, not the date a key was installed. If the installation has no valid usage record and its users exceed the licensed capacity, it can enter read-only mode immediately. Purchase enough capacity for both user types before installing the first key.
+Capacity thresholds use the last recorded valid status, not the date a key was installed. If the deployment has no valid usage record and its users exceed the licensed capacity, it can enter read-only mode immediately. Purchase enough capacity for both user types before installing the first key.
 
 In read-only mode:
 
@@ -112,7 +112,7 @@ To remove a member, open the organization, find the person under **Membership**,
 
 ## Purchase a license
 
-Before purchasing a license, copy the authentik installation's [Install ID](./get-started.mdx#1-copy-the-install-id).
+Before purchasing a license, copy the authentik deployment's [Install ID](./get-started.mdx#1-copy-the-install-id).
 
 1. Log in to the [Customer Portal](https://customers.goauthentik.io/) and select the organization that will own the license.
 2. Click **Purchase license**.
