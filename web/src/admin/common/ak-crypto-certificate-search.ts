@@ -156,11 +156,26 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
 
         // The API only returns one page of results, so ask it for the usable keypairs directly.
         // Otherwise, a page full of unusable ones could push the usable ones out of the list.
-        const [{ results: usable }, { results: all }] = await Promise.all([
+        const [usableResult, allResult] = await Promise.allSettled([
             api.cryptoCertificatekeypairsList({ ...args, ...restrictions }),
             api.cryptoCertificatekeypairsList(args),
         ]);
 
+        // Neither request came back: surface the failure the same way a single request would.
+        if (usableResult.status === "rejected" && allResult.status === "rejected") {
+            throw usableResult.reason;
+        }
+
+        // If only one of the two came back, degrade to what it can tell us rather than failing
+        // the whole menu. Without the unrestricted page, the usable keypairs are listed alone, as
+        // they were before this component started showing unusable ones. Without the restricted
+        // page, the unrestricted one may be truncated, but sorting it by usability still gives a
+        // sensible menu.
+        const all = allResult.status === "fulfilled" ? allResult.value.results : [];
+        const usable =
+            usableResult.status === "fulfilled"
+                ? usableResult.value.results
+                : all.filter((item) => this.#unusableReason(item) === null);
         const unusable = all.filter((item) => this.#unusableReason(item) !== null);
 
         return [...usable, ...unusable];

@@ -44,7 +44,8 @@ export interface IListSelect {
  *   to target if you want to change the max height.
  * - @part ak-list-select-option: The `<li>` items of the list
  * - @part ak-list-select-button: The `<button>` element of an item.
- * - @part ak-list-select-desc: The description element of the list
+ * - @part ak-list-select-desc: The description of an item. It sits below the item's button,
+ *   outside of it, and the button references it via `aria-describedby`.
  * - @part ak-list-select-group: A section of a grouped list.
  * - @part ak-list-select-title: The title of a group
  */
@@ -68,6 +69,14 @@ export class ListSelect extends AKElement implements IListSelect {
                 max-height: 50vh;
                 overflow-y: auto;
                 width: 100%;
+            }
+
+            /* The description lives beside the button rather than inside it, so it needs the
+               button's horizontal padding to line up with the label above it. */
+            .ak-select-item > .pf-c-dropdown__menu-item-description {
+                padding: 0 var(--pf-c-dropdown__menu-item--PaddingRight)
+                    var(--pf-c-dropdown__menu-item--PaddingBottom)
+                    var(--pf-c-dropdown__menu-item--PaddingLeft);
             }
 
             .ak-select-item[data-action] {
@@ -230,6 +239,11 @@ export class ListSelect extends AKElement implements IListSelect {
             return;
         }
         currentElement.classList.add("ak-highlight-item");
+        // A disabled row can be focused so its description is reachable, but it cannot be
+        // chosen, so it must not be announced as selected.
+        if (currentElement.getAttribute("aria-disabled") === "true") {
+            return;
+        }
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
@@ -352,6 +366,13 @@ export class ListSelect extends AKElement implements IListSelect {
     private renderMenuItems(options: SelectOption[]) {
         return options.map(([value, label, desc]: SelectOption) => {
             const disabled = this.#disabledOptions.has(value);
+            // IDs only need to be unique within this component's shadow root, so the option key
+            // suffices. Whitespace is stripped because `aria-describedby` is a space-separated
+            // list of IDs.
+            const descId = desc ? `desc-${value.replace(/\s+/g, "_")}` : undefined;
+            // `aria-disabled` goes on both the `<li>`, which the keyboard handler inspects, and
+            // the `<button>`, which is what actually takes focus and so is what assistive
+            // technology announces.
 
             return html`
                 <li
@@ -364,7 +385,6 @@ export class ListSelect extends AKElement implements IListSelect {
                     <button
                         class=${classMap({
                             "pf-c-dropdown__menu-item": true,
-                            "pf-m-description": true,
                             // `pf-m-aria-disabled` grays the item out without the
                             // `pointer-events: none` that `pf-m-disabled` carries, so the row can
                             // still be hovered and focused.
@@ -372,21 +392,24 @@ export class ListSelect extends AKElement implements IListSelect {
                         })}
                         value="${value}"
                         tabindex="0"
+                        aria-disabled=${ifDefined(disabled || undefined)}
+                        aria-describedby=${ifDefined(descId)}
                         @click=${() => this.#clickListener(value)}
                         part="ak-list-select-button"
                     >
                         <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">
                             ${label}
                         </div>
-                        ${desc
-                            ? html`<div
-                                  class="pf-c-dropdown__menu-item-description"
-                                  part="ak-list-select-desc"
-                              >
-                                  ${desc}
-                              </div>`
-                            : nothing}
                     </button>
+                    ${desc
+                        ? html`<div
+                              id=${ifDefined(descId)}
+                              class="pf-c-dropdown__menu-item-description"
+                              part="ak-list-select-desc"
+                          >
+                              ${desc}
+                          </div>`
+                        : nothing}
                 </li>
             `;
         });
