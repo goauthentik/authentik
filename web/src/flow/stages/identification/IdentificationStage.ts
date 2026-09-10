@@ -17,8 +17,8 @@ import WebauthnController from "#flow/stages/identification/controllers/Webauthn
 import Styles from "#flow/stages/identification/styles.css";
 import {
     compareLoginSource,
+    createOrListFormatter,
     formatUIFieldLabel,
-    OR_LIST_FORMATTERS,
 } from "#flow/stages/identification/utils";
 
 import AKFieldset from "#styles/authentik/components/Fieldset/fieldset.css";
@@ -350,7 +350,9 @@ export class IdentificationStage extends BaseStage<
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
 
-        const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
+        const label = createOrListFormatter(this.activeLanguageTag).format(
+            fields.map((field) => formatUIFieldLabel(field)),
+        );
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
