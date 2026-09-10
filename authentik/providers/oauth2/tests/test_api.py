@@ -5,6 +5,7 @@ from sys import version_info
 from unittest import skipUnless
 
 from django.urls import reverse
+from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
@@ -22,7 +23,8 @@ from authentik.providers.oauth2.models import (
 
 # A self-signed DSA keypair. authentik cannot generate DSA keys -- DSA is not offered by
 # CertificateBuilder -- but one can still be imported, and DSA has no JWA signature algorithm, so
-# this is the fixture for "a key type that must be rejected for JOSE". Valid until 2120.
+# this is the fixture for "a key type that must be rejected for JOSE". Tests that use it freeze
+# time inside its validity window rather than relying on its expiry date.
 TEST_DSA_CERT = """-----BEGIN CERTIFICATE-----
 MIIERDCCA+qgAwIBAgIUBeM+I5XERv55UePOnWr7IfRPPpMwCwYJYIZIAWUDBAMC
 MCkxJzAlBgNVBAMMHmRzYS5zZWxmLXNpZ25lZC5nb2F1dGhlbnRpay5pbzAgFw0y
@@ -86,6 +88,7 @@ class TestAPI(APITestCase):
             data={"signing_key": str(cert.pk)},
         )
 
+    @freeze_time("2022-10-14T14:15:00Z")
     def test_validate_signing_key_unsupported_type(self):
         """Test that a key type JWTAlgorithms cannot map is rejected rather than 500ing later.
 
