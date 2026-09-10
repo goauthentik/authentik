@@ -16,8 +16,7 @@
         {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred color-scheme #}
         <meta name="darkreader-lock">
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
-        <link rel="icon" href="{{ brand.branding_favicon_url }}">
-        <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
+        {% include "base/branding_favicon.html" %}
 
         {% block head_before %}
         {% endblock %}
