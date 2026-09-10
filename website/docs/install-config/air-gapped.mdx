@@ -99,12 +99,12 @@ The `container_image_base` setting controls images for managed outposts. An outp
 
 The settings above disable update checks, startup analytics, and error reporting. Avatars require a separate change in the Admin interface after installation.
 
-| Destination                              | Purpose                            | How to disable                                                                                |
-| ---------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------- |
-| https://version.goauthentik.io           | Periodic update checks             | Set `disable_update_check` to `true`                                                          |
-| https://goauthentik.io                   | Anonymous startup analytics        | Set `disable_startup_analytics` to `true`                                                     |
-| https://authentik.error-reporting.a7k.io | Error reporting, when enabled      | Set `error_reporting.enabled` to `false`; it is opt-in, but the installation guides enable it |
-| https://secure.gravatar.com              | User avatars loaded by the browser | Set **Avatars** to `initials` in [System settings](../sys-mgmt/settings.mdx)                  |
+| Destination                              | Purpose                                                   | How to disable                                                                                |
+| ---------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| https://version.goauthentik.io           | Periodic update checks                                    | Set `disable_update_check` to `true`                                                          |
+| https://goauthentik.io                   | Anonymous startup analytics                               | Set `disable_startup_analytics` to `true`                                                     |
+| https://authentik.error-reporting.a7k.io | Error reporting, when enabled                             | Set `error_reporting.enabled` to `false`; it is opt-in, but the installation guides enable it |
+| https://www.gravatar.com                 | Avatar checks by authentik and image loads by the browser | Set **Avatars** to `initials` in [System settings](../sys-mgmt/settings.mdx)                  |
 
 The [events map](../sys-mgmt/events/index.mdx#event-map) includes a bundled basemap and needs no external tile server. If you set **Map tiles** under **System** > **Brands**, use an internally reachable tile source or clear the setting to restore the bundled map.
 
@@ -136,7 +136,7 @@ helm upgrade --install authentik ./authentik-<chart-version>.tgz -f values.yaml
   </TabItem>
 </Tabs>
 
-Complete the initial setup from your installation guide. In the Admin interface, open [System settings](../sys-mgmt/settings.mdx) and set **Avatars** to `initials` to stop browsers from requesting Gravatar images.
+Complete the initial setup from your installation guide. In the Admin interface, open [System settings](../sys-mgmt/settings.mdx) and set **Avatars** to `initials` to stop authentik and browsers from requesting Gravatar images.
 
 ## Install an Enterprise license {#enterprise-licenses}
 

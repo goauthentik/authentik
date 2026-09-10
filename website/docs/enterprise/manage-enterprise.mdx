@@ -16,7 +16,7 @@ In the Admin interface, navigate to **Enterprise** > **Licenses** to view:
 
 - The Install ID for the current installation or tenant.
 - Forecasts for internal and external user counts.
-- The combined expiry, status, and user capacity of installed licenses.
+- The latest expiry date, combined status, and total user capacity of installed licenses.
 - The name, capacity, and expiry date of each license.
 
 License validation and user counting happen locally. The installation does not need access to the Customer Portal or a licensing server. See [air-gapped licensing](./get-started.mdx#air-gapped-environments) for transferring keys into a disconnected installation.
@@ -38,7 +38,7 @@ Select a license on the **Licenses** page and click **Delete**. Removing an acti
 
 ## About users and licenses {#about-users-and-licenses}
 
-authentik counts active internal and external users separately. Disabled users, the anonymous user, and service accounts do not consume licensed capacity.
+authentik counts active internal and external users separately. Disabled users, the anonymous user, and service accounts, including [agent accounts](../users-sources/user/account-types/agent-accounts.mdx), do not consume licensed capacity.
 
 - An **internal user** can access the authentik application dashboard and user settings. Employees and other members of your organization are typically internal users.
 - An **external user** cannot access the application dashboard or user settings. Customers, partners, volunteers, and contractors who use authentik only to access another application can be external users.
@@ -55,7 +55,7 @@ Use the forecasts on **Enterprise** > **Licenses** as planning estimates. Before
 
 ## License expiry and capacity enforcement
 
-authentik checks expiry dates and active user counts locally, including in air-gapped environments. Only unexpired licenses contribute user capacity. When one of several licenses expires, the remaining licenses must still cover both user types.
+authentik checks expiry dates and active user counts locally, including in air-gapped environments. The combined expiry is the latest expiry date among installed licenses. Only unexpired licenses contribute user capacity. When one of several licenses expires, the remaining licenses must still cover both user types.
 
 authentik displays warnings and eventually restricts changes when licensing requirements are not met:
 
@@ -64,7 +64,7 @@ authentik displays warnings and eventually restricts changes when licensing requ
 | The combined license expiry is within two weeks                                                                                | Administrators see an expiry warning.                                                              |
 | The combined license has expired                                                                                               | Administrators see an expired-license warning, unless a capacity threshold below takes precedence. |
 | User capacity is exceeded and the last valid usage record is over two weeks old                                                | Administrators see a user-capacity warning.                                                        |
-| User capacity is exceeded and the last valid usage record is over four weeks old                                               | All users see the user-capacity warning.                                                           |
+| User capacity is exceeded and the last valid usage record is over four weeks old                                               | The Admin and User interfaces display the user-capacity warning.                                   |
 | The combined license expired over six weeks ago, or capacity is exceeded and the last valid usage record is over six weeks old | The installation enters read-only mode.                                                            |
 
 Capacity thresholds use the last recorded valid status, not the date a key was installed. If the installation has no valid usage record and its users exceed the licensed capacity, it can enter read-only mode immediately. Purchase enough capacity for both user types before installing the first key.
