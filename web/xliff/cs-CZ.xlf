@@ -9548,6 +9548,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+  <target>Zadejte emailovou adresu nebo uživatelské jméno spojené s vaším účtem.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
