@@ -60,7 +60,7 @@ hyper-util = { version = "= 0.1.20", features = [
   "http2",
   "tokio",
 ] }
-ipnet = { version = "= 2.12.1", features = ["serde"] }
+ipnet = { version = "= 2.12.2", features = ["serde"] }
 json-subscriber = "= 0.3.0"
 jsonwebtoken = { version = "= 11.0.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
