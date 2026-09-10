@@ -21,14 +21,10 @@ export interface ValidationError {
     [key: string]: any | any;
     /**
      *
-     * @type {Array<string>}
-     * @memberof ValidationError
      */
     nonFieldErrors?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof ValidationError
      */
     code?: string;
 }

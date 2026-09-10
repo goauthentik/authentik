@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+from django.db.models import Q
 from django.http import HttpRequest
 from django.utils import timezone
 from jwt import PyJWK, PyJWT, PyJWTError, decode
@@ -111,9 +112,12 @@ class FederatedTokenRequest(TokenRequest):
 
     def validate_jwt_from_provider(self, assertion: str) -> FederatedParty | None:
         token = provider = resolved_user = _key = None
-        federated_token = AccessToken.objects.filter(
-            token=assertion, provider__in=self.provider.jwt_federation_providers.all()
-        ).first()
+        providers = Q(provider__in=self.provider.jwt_federation_providers.all())
+        if self.audience_provider:
+            # For token exchange with actor, the given token may likely be a token
+            # of the provider this request is for
+            providers |= Q(provider=self.provider)
+        federated_token = AccessToken.objects.filter(providers, token=assertion).first()
         if federated_token:
             _key, _alg = federated_token.provider.jwt_key
             try:

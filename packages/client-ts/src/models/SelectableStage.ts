@@ -20,26 +20,18 @@
 export interface SelectableStage {
     /**
      *
-     * @type {string}
-     * @memberof SelectableStage
      */
     pk: string;
     /**
      *
-     * @type {string}
-     * @memberof SelectableStage
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof SelectableStage
      */
     verboseName: string;
     /**
      *
-     * @type {string}
-     * @memberof SelectableStage
      */
     metaModelName: string;
 }

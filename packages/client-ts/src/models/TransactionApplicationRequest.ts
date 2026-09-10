@@ -32,26 +32,18 @@ import {
 export interface TransactionApplicationRequest {
     /**
      *
-     * @type {ApplicationRequest}
-     * @memberof TransactionApplicationRequest
      */
     app: ApplicationRequest;
     /**
      *
-     * @type {ProviderModelEnum}
-     * @memberof TransactionApplicationRequest
      */
     providerModel: ProviderModelEnum;
     /**
      *
-     * @type {ModelRequest}
-     * @memberof TransactionApplicationRequest
      */
     provider: ModelRequest;
     /**
      *
-     * @type {Array<TransactionPolicyBindingRequest>}
-     * @memberof TransactionApplicationRequest
      */
     policyBindings?: Array<TransactionPolicyBindingRequest>;
 }

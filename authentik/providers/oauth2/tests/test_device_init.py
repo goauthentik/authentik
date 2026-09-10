@@ -93,6 +93,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                     "cancel_url": "/flows/-/cancel/",
                     "layout": "stacked",
                     "title": self.device_flow.title,
+                    "messages": [],
                 },
             },
         )

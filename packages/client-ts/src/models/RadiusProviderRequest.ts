@@ -20,56 +20,38 @@
 export interface RadiusProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RadiusProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     clientNetworks?: string;
     /**
      * Shared secret between clients and server to hash packets.
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     sharedSecret?: string;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof RadiusProviderRequest
      */
     mfaSupport?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof RadiusProviderRequest
      */
     certificate?: string | null;
 }

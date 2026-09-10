@@ -20,14 +20,10 @@
 export interface ErrorDetail {
     /**
      *
-     * @type {string}
-     * @memberof ErrorDetail
      */
     string: string;
     /**
      *
-     * @type {string}
-     * @memberof ErrorDetail
      */
     code: string;
 }

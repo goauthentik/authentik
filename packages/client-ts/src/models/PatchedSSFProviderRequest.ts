@@ -20,32 +20,22 @@
 export interface PatchedSSFProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedSSFProviderRequest
      */
     name?: string;
     /**
      * Key used to sign the SSF Events.
-     * @type {string}
-     * @memberof PatchedSSFProviderRequest
      */
     signingKey?: string;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedSSFProviderRequest
      */
     oidcAuthProviders?: Array<number>;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSSFProviderRequest
      */
     eventRetention?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedSSFProviderRequest
      */
     pushVerifyCertificates?: boolean;
 }

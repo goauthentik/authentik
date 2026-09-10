@@ -3998,8 +3998,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
-  <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
+  <source><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></source>
+  <target><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -9104,14 +9104,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Add new role</source>
   <target>নতুন রোল যোগ করুন</target>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>প্রমাণীকরণের পর অন্যান্য ফ্লো ট্যাব রিফ্রেশ করুন</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>সক্রিয় করা থাকলে, একটি সেশনের অন্যান্য ফ্লো ট্যাব সফল প্রমাণীকরণের পর রিফ্রেশ হবে।</target>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
   <target>ডেটা এক্সপোর্ট প্রস্তুত</target>
@@ -11889,10 +11881,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Fields</source>
   <target>ইউজার ফিল্ড</target>
 </trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>এই ফ্ল্যাগটি ডেপ্রিকেটেড।</target>
-</trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
   <target>কোনো পছন্দ নেই: ব্রাউজার যেকোনো উপলব্ধ অথেন্টিকেটর প্রস্তাব করতে পারে</target>
@@ -13521,6 +13509,22 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>বৈধ ফাইলের নামে অক্ষর, সংখ্যা, ডট, হাইফেন, আন্ডারস্কোর, স্ল্যাশ এবং
         প্রতিস্থাপক যেমন <x id="0" equiv-text="${replacements}"/> ব্যবহার করা যাবে।</target>
   <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
+</trans-unit>
+<trans-unit id="sdcded316146a0b76">
+  <source>Object Attributes are in preview.</source>
+  <target>অবজেক্ট অ্যাট্রিবিউটগুলো প্রিভিউতে আছে।</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.label">
+  <source>Resume on matching failures</source>
+  <target>মিলকরণে ব্যর্থ হলে চালিয়ে যান</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.description">
+  <source>Resume this flow for the selected source matching failures. No source connection is created.</source>
+  <target>নির্বাচিত সোর্স মিলকরণে ব্যর্থ হলে এই ফ্লো চালিয়ে যান। কোনো সোর্স কানেকশন তৈরি করা হবে না।</target>
+</trans-unit>
+<trans-unit id="stages.source.match-failure.missing-property.label">
+  <source>Missing property</source>
+  <target>প্রপার্টি অনুপস্থিত</target>
 </trans-unit>
 </body>
 </file>

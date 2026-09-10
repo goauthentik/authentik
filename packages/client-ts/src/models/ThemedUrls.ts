@@ -20,14 +20,10 @@
 export interface ThemedUrls {
     /**
      *
-     * @type {string}
-     * @memberof ThemedUrls
      */
     light?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof ThemedUrls
      */
     dark?: string | null;
 }

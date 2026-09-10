@@ -21,16 +21,16 @@
     },
     "engines": {
         "node": ">=24",
-        "pnpm": ">=11.20.0"
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
-    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "prettier": "@goauthentik/prettier-config",
     "sideEffects": false,
     "module": "./src/index.ts"

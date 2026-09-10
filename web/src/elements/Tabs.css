@@ -55,10 +55,6 @@ ak-tabs[vertical] {
     [role="tabpanel"] {
         padding-inline-start: 0 !important;
     }
-
-    .pf-c-card__body > *::part(table-container) {
-        overflow-x: auto;
-    }
 }
 
 .pf-c-tabs__link {

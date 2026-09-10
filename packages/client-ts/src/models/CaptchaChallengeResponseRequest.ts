@@ -20,14 +20,10 @@
 export interface CaptchaChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallengeResponseRequest
      */
     token: string;
 }

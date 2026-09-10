@@ -266,36 +266,50 @@
     }
 
     .pf-c-login[data-layout^="content"] {
-        grid-template-rows: [header] auto [content] 1fr;
+        grid-template-rows:
+            [header] auto
+            [content] auto
+            [footer] minmax(2em, 1fr);
 
         .pf-c-login__main,
         .pf-c-login__footer {
             align-self: center;
         }
+
+        .pf-c-login__header {
+            /* Fix to unify PF's header adjustment at 1200px with our breakpoint. */
+            margin-top: var(--pf-c-login__header--xl--MarginTop);
+        }
+
+        .pf-c-login__footer {
+            grid-area: aside;
+        }
     }
 
     .pf-c-login[data-layout="content_left"] {
         grid-template-columns:
-            1fr [main] var(--ak-c-login__main-ColumnWidth) [footer] var(
-                --ak-c-login__main-ColumnWidth
-            )
+            1fr
+            [main] var(--ak-c-login__main-ColumnWidth)
+            [aside] var(--ak-c-login__main-ColumnWidth)
             1fr;
 
         grid-template-areas:
             "header header header header"
-            ". main footer .";
+            ". main aside ."
+            "footer footer footer footer";
     }
 
     .pf-c-login[data-layout="content_right"] {
         grid-template-columns:
-            1fr [footer] var(--ak-c-login__main-ColumnWidth) [main] var(
-                --ak-c-login__main-ColumnWidth
-            )
+            1fr
+            [aside] var(--ak-c-login__main-ColumnWidth)
+            [main] var(--ak-c-login__main-ColumnWidth)
             1fr;
 
         grid-template-areas:
             "header header header header"
-            ". footer main .";
+            ". aside main ."
+            "footer footer footer footer";
     }
 
     .pf-c-login[data-layout="sidebar_left"],

@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAuthenticatorEmailStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAuthenticatorEmailStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<AuthenticatorEmailStage>}
-     * @memberof PaginatedAuthenticatorEmailStageList
      */
     results: Array<AuthenticatorEmailStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAuthenticatorEmailStageList
      */
     autocomplete: { [key: string]: any };
 }

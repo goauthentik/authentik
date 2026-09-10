@@ -25,20 +25,14 @@ import { SMSDeviceFromJSON, SMSDeviceToJSON } from "./SMSDevice";
 export interface PaginatedSMSDeviceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSMSDeviceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SMSDevice>}
-     * @memberof PaginatedSMSDeviceList
      */
     results: Array<SMSDevice>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSMSDeviceList
      */
     autocomplete: { [key: string]: any };
 }

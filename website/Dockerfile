@@ -1,8 +1,8 @@
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.20.0@sha256:d77573aba1649491010d3d252214be47197c0706417793cf393ac47cc324f315 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.7.0-trixie@sha256:bde0dae02f2b12d2bce5ee72b2432f0e511767b7b2dc4dd3b064df11ae422fee AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.8.2-trixie@sha256:fb192b8ad31841aadc4bb79c44ae0f59d193a798ffbc9fdce37ba6ecb20c2236 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -16,7 +16,7 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
-    node ./scripts/node/lint-runtime.mjs ./website
+    node ./scripts/node/lint-runtime.ts ./website
 
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
 # (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source
@@ -60,7 +60,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     pnpm run build
 
-FROM docker.io/library/nginx:1.31.3-trixie@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
+FROM docker.io/library/nginx:1.31.5-trixie@sha256:05b8cb60c354a44ab824ea6e7dc69b46d50762cdbe728a347a5b656e6fb3d7c4
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

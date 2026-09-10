@@ -17,13 +17,12 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
@@ -62,8 +61,8 @@ class BaseEvaluator:
 
     def __init__(self, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
-        # update website/docs/expressions/_objects.md
-        # update website/docs/expressions/_functions.md
+        # update website/docs/expressions/reference/_objects.mdx
+        # update website/docs/expressions/reference/_functions.mdx
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
@@ -174,8 +173,8 @@ class BaseEvaluator:
         return fallback value."""
         attrs = getattr(obj, "attributes", {})
         value = get_path_from_dict(attrs, attr_key)
-        if value is None and fallback:
-            return getattr(obj, fallback)
+        if value is None and fallback is not None:
+            return getattr(obj, fallback, fallback)
         return value
 
     def expr_event_create(self, action: str, **kwargs):
@@ -207,7 +206,8 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = self._context["request"]
+            current_req: PolicyRequest = self._context["request"]
+            req = current_req.deepcopy()
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
@@ -345,7 +345,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with active_tracer().start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)

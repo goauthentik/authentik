@@ -84,7 +84,6 @@ from authentik.core.models import (
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
     Group,
-    Session,
     Token,
     TokenIntents,
     User,
@@ -290,20 +289,21 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return user_type
 
     def validate_groups(self, groups: list) -> list:
-        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        """Require enable_group_superuser permission when adding a user to a group which grants
+        superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return groups
-        current_groups = set(self.instance.groups.all()) if self.instance else set()
-        for group in groups:
-            if not group.is_superuser:
-                continue
-            if group in current_groups:
-                continue
-            if not request.user.has_perm("authentik_core.enable_group_superuser"):
-                raise ValidationError(
-                    _("User does not have permission to add members to a superuser group.")
-                )
+        new_groups = Group.objects.filter(pk__in=[group.pk for group in groups])
+        if self.instance:
+            new_groups = new_groups.exclude(pk__in=self.instance.groups.all())
+        ancestry = new_groups.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser"
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return groups
 
     def validate_roles(self, roles: list) -> list:
@@ -556,7 +556,7 @@ class UsersFilter(FilterSet):
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
-    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+    path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
@@ -584,6 +584,15 @@ class UsersFilter(FilterSet):
         if value:
             return queryset.filter(groups__is_superuser=True).distinct()
         return queryset.exclude(groups__is_superuser=True).distinct()
+
+    def filter_path_startswith(self, queryset, name, value):
+        """Filter users by the given path and any of its sub-paths. A plain `startswith`
+        lookup would also match sibling paths sharing the same prefix, so that `foo/bar`
+        would incorrectly match users in `foo/bar2`."""
+        value = value.rstrip("/")
+        if not value:
+            return queryset
+        return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -1117,11 +1126,3 @@ class UserViewSet(
                 )
             }
         )
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        response = super().partial_update(request, *args, **kwargs)
-        instance: User = self.get_object()
-        if not instance.is_active:
-            Session.objects.filter(authenticatedsession__user=instance).delete()
-            LOGGER.debug("Deleted user's sessions", user=instance.username)
-        return response

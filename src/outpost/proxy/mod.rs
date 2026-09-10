@@ -66,7 +66,7 @@ impl Outpost for ProxyOutpost {
     async fn new(controller: Arc<OutpostController>) -> Result<Self> {
         Ok(Self {
             controller,
-            apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
+            apps: ArcSwap::from_pointee(HashMap::new()),
             certificate_store: CertificateStore::new(),
             default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
         })

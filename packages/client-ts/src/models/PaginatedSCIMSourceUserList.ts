@@ -25,20 +25,14 @@ import { SCIMSourceUserFromJSON, SCIMSourceUserToJSON } from "./SCIMSourceUser";
 export interface PaginatedSCIMSourceUserList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMSourceUserList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SCIMSourceUser>}
-     * @memberof PaginatedSCIMSourceUserList
      */
     results: Array<SCIMSourceUser>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMSourceUserList
      */
     autocomplete: { [key: string]: any };
 }

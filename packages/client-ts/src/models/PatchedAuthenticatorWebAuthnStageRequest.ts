@@ -30,56 +30,38 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface PatchedAuthenticatorWebAuthnStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     name?: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     userVerification?: UserVerificationEnum;
     /**
      *
-     * @type {AuthenticatorAttachmentEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     residentKeyRequirement?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     hints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     deviceTypeRestrictions?: Array<string>;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
      */
     maxAttempts?: number;
 }

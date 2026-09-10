@@ -20,26 +20,18 @@
 export interface PatchedRACPropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedRACPropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRACPropertyMappingRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRACPropertyMappingRequest
      */
     expression?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedRACPropertyMappingRequest
      */
     staticSettings?: { [key: string]: any };
 }

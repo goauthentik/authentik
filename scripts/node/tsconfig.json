@@ -1,0 +1,23 @@
+// TypeScript Project Configuration
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        // These scripts are run directly by Node's type stripping, never compiled,
+        // so relative imports name the `.ts` file that actually exists on disk.
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
+
+        // `noEmit` and `composite` are mutually exclusive. Nothing references this
+        // project's types, so there's nothing to build incrementally.
+        "composite": false,
+        "declaration": false,
+        "declarationMap": false,
+
+        "verbatimModuleSyntax": true
+    },
+    // Builds the logger's declarations, which the root package.json's `#logger`
+    // import points `types` at. Its `default` stays a relative path so the scripts
+    // still resolve before `pnpm install` has run.
+    "references": [{ "path": "../../packages/logger-js" }],
+    "include": ["**/*.ts"]
+}

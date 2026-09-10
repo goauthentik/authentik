@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedApplicationList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedApplicationList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Application>}
-     * @memberof PaginatedApplicationList
      */
     results: Array<Application>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedApplicationList
      */
     autocomplete: { [key: string]: any };
 }

@@ -3,7 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
