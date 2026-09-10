@@ -15,13 +15,24 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
 
     #[cfg(feature = "core")]
     if Mode::is_core() {
-        if Mode::get() == Mode::Worker
-            && let Some(workers) = state.workers.load_full()
-        {
-            workers.notify_metrics().await?;
+        match Mode::get() {
+            Mode::Server if let Some(server) = state.server.load_full() => {
+                server.notify_metrics().await?;
+                metrics.extend(spawn_blocking(python::get_python_metrics).await??);
+            }
+            Mode::Worker if let Some(workers) = state.workers.load_full() => {
+                workers.notify_metrics().await?;
+                metrics.extend(spawn_blocking(python::get_python_metrics).await??);
+            }
+            Mode::AllInOne
+                if let Some(server) = state.server.load_full()
+                    && let Some(workers) = state.workers.load_full() =>
+            {
+                tokio::try_join!(server.notify_metrics(), workers.notify_metrics())?;
+                metrics.extend(spawn_blocking(python::get_python_metrics).await??);
+            }
+            _ => {}
         }
-
-        metrics.extend(spawn_blocking(python::get_python_metrics).await??);
     }
 
     Ok(Response::builder()

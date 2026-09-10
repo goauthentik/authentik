@@ -42,8 +42,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-text-input
+        return html`<ak-text-input
                 name="crontab"
                 value=${ifDefined(this.instance?.crontab)}
                 label=${msg("Crontab")}
@@ -56,8 +55,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
                 ?checked=${this.instance?.paused ?? false}
                 help=${msg("Pause this schedule")}
             >
-            </ak-switch-input>
-        </form>`;
+            </ak-switch-input>`;
     }
 }
 

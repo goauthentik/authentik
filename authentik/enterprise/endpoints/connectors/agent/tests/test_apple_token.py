@@ -116,6 +116,77 @@ class TestAppleToken(TestCase):
         self.assertEqual(event.context["device"]["name"], self.device.name)
 
     @reconcile_app("authentik_crypto")
+    def test_token_unknown_kid(self):
+        """An assertion signed by a key ID we don't know must be rejected with a 400"""
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": generate_id(),
+            },
+            self.apple_sign_key.private_key,
+            headers={
+                "kid": generate_id(),
+            },
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    @reconcile_app("authentik_crypto")
+    def test_token_unregistered_enclave(self):
+        """A device with no Secure Enclave key registered must be rejected with a 400"""
+        AgentDeviceUserBinding.objects.all().update(apple_enclave_key_id="")
+        nonce = generate_id()
+        AppleNonce.objects.create(
+            device_token=self.device_token,
+            nonce=nonce,
+        )
+        embedded = encode(
+            {"iss": str(self.connector.pk), "aud": str(self.device.pk), "request_nonce": nonce},
+            self.apple_sign_key.private_key,
+            headers={
+                "kid": self.apple_sign_key.kid,
+            },
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "assertion": embedded,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={
+                "kid": self.apple_sign_key.kid,
+            },
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    @reconcile_app("authentik_crypto")
     def test_token_independent(self):
         nonce = generate_id()
 

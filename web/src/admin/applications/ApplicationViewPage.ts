@@ -3,6 +3,7 @@ import "#admin/applications/ApplicationCheckAccessForm";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
+import "#admin/requests/BoundRequestRulesTable";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
@@ -18,6 +19,7 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
@@ -161,7 +163,9 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             msg("Provider"),
                             this.application.providerObj
                                 ? html` <a
-                                      href="#/core/providers/${this.application.providerObj?.pk}"
+                                      href=${toAdminInterface(
+                                          `core/providers/${this.application.providerObj?.pk}`,
+                                      )}
                                   >
                                       ${this.application.providerObj?.name}
                                       (${this.application.providerObj?.verboseName})
@@ -175,7 +179,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                       ${this.application.backchannelProvidersObj.map((provider) => {
                                           return html`
                                               <li>
-                                                  <a href="#/core/providers/${provider.pk}">
+                                                  <a
+                                                      href=${toAdminInterface(
+                                                          `core/providers/${provider.pk}`,
+                                                      )}
+                                                  >
                                                       ${provider.name} (${provider.verboseName})
                                                   </a>
                                               </li>
@@ -288,7 +296,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 ${this.missingOutpost
                     ? html`
                           <div
@@ -386,15 +394,33 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html`<ak-object-lifecycle-page
-                          role="tabpanel"
-                          tabindex="0"
-                          slot="page-lifecycle"
-                          id="page-lifecycle"
-                          aria-label=${msg("Lifecycle")}
-                          model=${ContentTypeEnum.AuthentikCoreApplication}
-                          object-pk=${this.application.pk}
-                      ></ak-object-lifecycle-page>`
+                    ? html` <section
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-rule-bindings"
+                              id="page-rule-bindings"
+                              aria-label="${msg("Request rules")}"
+                              class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          >
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__title">
+                                      ${msg(
+                                          "Configure rules which grant users the ability to request access to this app.",
+                                      )}
+                                  </div>
+                                  <ak-bound-request-rules-table .target=${this.application.pk}>
+                                  </ak-bound-request-rules-table>
+                              </div>
+                          </section>
+                          <ak-object-lifecycle-page
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-lifecycle"
+                              id="page-lifecycle"
+                              aria-label=${msg("Lifecycle")}
+                              model=${ContentTypeEnum.AuthentikCoreApplication}
+                              object-pk=${this.application.pk}
+                          ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;
@@ -406,6 +432,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
             header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,
             icon: this.application?.metaIconUrl,
+            iconThemedUrls: this.application?.metaIconThemedUrls,
             iconImage: true,
         });
     }

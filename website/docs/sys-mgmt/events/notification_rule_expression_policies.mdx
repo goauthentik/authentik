@@ -3,15 +3,15 @@ title: Notification Rule Expression Policies
 sidebar_label: Expression Policies
 ---
 
-[Notification rules](./notifications.md) with [bound expression policies](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) can match event context, update related objects, and send custom messages. The following examples show common event-driven automation patterns.
+[Notification rules](./notifications.mdx) with [bound expression policies](./notifications.mdx#3-create-a-notification-rule-and-bind-it-to-the-policy) can match event context, update related objects, and send custom messages. The following examples show common event-driven automation patterns.
 
 ## Send a welcome email to newly created users
 
-This expression policy sends a welcome email to a user when their account is created through an enrollment flow, the Admin interface, the API, or a source sync. Instead of creating an administrator notification, it uses [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) to email the new user directly.
+This expression policy sends a welcome email to a user when their account is created through an enrollment flow, the Admin interface, the API, or a source sync (except LDAP). Instead of creating an administrator notification, it uses [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) to email the new user directly.
 
 ### Prerequisites
 
-authentik must be able to send email before you can use `ak_send_email`. Either configure the [global email settings](../../install-config/email.mdx), or set up an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) and pass it to `ak_send_email` with the `stage` argument to use that stage's connection settings.
+authentik must be able to send email before you can use `ak_send_email`. Either configure the [global email settings](../../install-config/email.mdx), or set up an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) and pass it to `ak_send_email` with the `stage` argument to use that stage's connection settings.
 
 ### Create the expression policy
 
@@ -78,16 +78,16 @@ The policy only runs when it is bound to a notification rule that triggers on th
 7. Click **Create or bind...**. Under **Bind Existing...**, select **Bind an existing policy**.
 8. In the **Create Binding** modal, select the `send-welcome-email` policy, and then click **Create**.
 
-This pattern does not require a destination group or transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected. Because this policy returns `False`, authentik does not create a notification object. The email is sent entirely by the `ak_send_email` call inside the policy.
+This pattern does not require a destination group or transport on the rule. As noted in [Notification Rules](./notifications.mdx#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected. Because this policy returns `False`, authentik does not create a notification object. The email is sent entirely by the `ak_send_email` call inside the policy.
 
 Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and do not trigger this policy.
 
-To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
+To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 
 :::info
 To let the new user set their own password, point `login_url` at your recovery flow, for example `https://authentik.company/if/flow/default-recovery-flow/`. Replace `default-recovery-flow` with the slug of the flow you want to use. The user can then enter their email address and receive a password setup link. The flow must exist for the URL to work.
 
-For the built-in ways to send a set-password link, see [User credentials recovery](../../users-sources/user/user_basic_operations.md#user-credentials-recovery).
+For the built-in ways to send a set-password link, see [User credentials recovery](../../users-sources/user/user_basic_operations.mdx#user-credentials-recovery).
 :::
 
 ## Trigger alert when user logs in from unknown device

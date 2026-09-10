@@ -44,10 +44,9 @@ for _authentik_app in get_apps():
             namespace=namespace,
         )
 
-_urlpatterns += [
+urlpatterns = [
+    path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns)),
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
-
-urlpatterns = [path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns))]

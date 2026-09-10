@@ -9,6 +9,7 @@ import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -25,6 +26,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     public static override verboseName = msg("Group");
     public static override submitVerb = msg("Add");
+    public static override submittingVerb = msg("Adding");
     public static override createLabel = msg("Add");
 
     @property({ attribute: false })
@@ -156,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`identity/groups/${item.pk}`)}>${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<button
                 class="pf-c-button pf-m-plain"

@@ -13,6 +13,7 @@ from authentik.core.models import (
     Application,
     ApplicationEntitlement,
 )
+from authentik.lib.utils.reflection import ConditionalInheritance
 
 
 class ApplicationEntitlementSerializer(AttributesMixinSerializer, ModelSerializer):
@@ -40,7 +41,13 @@ class ApplicationEntitlementSerializer(AttributesMixinSerializer, ModelSerialize
         ]
 
 
-class ApplicationEntitlementViewSet(UsedByMixin, ModelViewSet):
+class ApplicationEntitlementViewSet(
+    ConditionalInheritance(
+        "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
+    ),
+    UsedByMixin,
+    ModelViewSet,
+):
     """ApplicationEntitlement Viewset"""
 
     queryset = ApplicationEntitlement.objects.all()

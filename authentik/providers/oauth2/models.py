@@ -63,6 +63,7 @@ from authentik.lib.models import (
     SimpleThroughModel,
 )
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -563,6 +564,18 @@ class BaseGrantModel(models.Model):
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
     )
+    # RFC 8693 §4.1 delegation: set when this grant was obtained via a token-exchange
+    # request presenting an `actor_token` (e.g. an Actor's own API token) alongside the
+    # `subject_token` -- `user` above stays the subject (unchanged), `actor` records who
+    # is actually exercising the token, and is mirrored into the issued token's `act` claim.
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="actor_for_%(class)ss",
+        null=True,
+        blank=True,
+        default=None,
+    )
 
     class Meta:
         abstract = True
@@ -739,3 +752,107 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"
+
+
+class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
+    """Configuration for Dynamic Client Registration (RFC 7591) on an OAuth2Provider."""
+
+    provider = models.OneToOneField(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="dcr_configuration",
+        verbose_name=_("Provider"),
+    )
+
+    default_application_group = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("Default application group"),
+        help_text=_("Group to assign to automatically created applications."),
+    )
+
+    override_authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override authorization flow"),
+        help_text=_("Authorization flow applied to dynamically registered clients."),
+        related_name="dcr_override_authorization_flow",
+    )
+    override_invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override invalidation flow"),
+        related_name="dcr_override_invalidation_flow",
+    )
+    override_property_mappings = models.ManyToManyField(
+        ScopeMapping,
+        blank=True,
+        verbose_name=_("Override property mappings"),
+        help_text=_("Scope mappings applied to dynamically registered clients."),
+        through="DynamicClientRegistrationPropertyMapping",
+    )
+
+    access_token_validity = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Access token validity"),
+        help_text=_(
+            "Maximum access token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_validity = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Refresh token validity"),
+        help_text=_(
+            "Maximum refresh token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+
+    allowed_grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices),
+        default=list,
+        blank=True,
+        verbose_name=_("Allowed grant types"),
+        help_text=_("If empty, all grant types are allowed."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.oauth2.api.dcr import (
+            OAuth2DynamicClientRegistrationSerializer,
+        )
+
+        return OAuth2DynamicClientRegistrationSerializer
+
+    def __str__(self):
+        return f"DCR Configuration for {self.provider_id}"
+
+    class Meta:
+        verbose_name = _("OAuth2 Dynamic Client Registration")
+        verbose_name_plural = _("OAuth2 Dynamic Client Registrations")
+
+
+class DynamicClientRegistrationPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(ScopeMapping, on_delete=models.CASCADE)
+    dynamic_client_registration = models.ForeignKey(
+        OAuth2DynamicClientRegistration, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("property_mapping", "dynamic_client_registration"),)
+        verbose_name = _("Dynamic Client Registration Property Mapping")
+        verbose_name_plural = _("Dynamic Client Registration Property Mappings")
+
+    def __str__(self):
+        return (
+            "DynamicClientRegistrationPropertyMapping for DCR "
+            f"{self.dynamic_client_registration_id} and PropertyMapping "
+            f"{self.property_mapping_id}."
+        )

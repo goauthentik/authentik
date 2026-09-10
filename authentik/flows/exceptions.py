@@ -2,11 +2,11 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.types import PolicyResult
 
 
-class FlowNonApplicableException(SentryIgnoredException):
+class FlowNonApplicableException(TracingIgnoredException):
     """Flow does not apply to current user (denied by policy, or otherwise)."""
 
     policy_result: PolicyResult | None = None
@@ -23,14 +23,14 @@ class FlowNonApplicableException(SentryIgnoredException):
         return "\n".join(self.policy_result.messages)
 
 
-class EmptyFlowException(SentryIgnoredException):
+class EmptyFlowException(TracingIgnoredException):
     """Flow has no stages."""
 
 
-class FlowSkipStageException(SentryIgnoredException):
+class FlowSkipStageException(TracingIgnoredException):
     """Exception to skip a stage"""
 
 
-class StageInvalidException(SentryIgnoredException):
+class StageInvalidException(TracingIgnoredException):
     """Exception can be thrown in a `Challenge` or `ChallengeResponse` serializer's
     validation to trigger a `executor.stage_invalid()` response"""

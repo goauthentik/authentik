@@ -81,7 +81,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${ifDefined(settings.baseUrl)}"
                 input-hint="code"
                 help=${msg(
-                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company",
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
                     { id: "settings.base-url.description" },
                 )}
             >
@@ -292,18 +292,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 )}
             >
                 <div class="pf-c-form">
-                    <ak-switch-input
-                        name="flags.flowsRefreshOthers"
-                        ?checked=${settings?.flags.flowsRefreshOthers ?? false}
-                        label=${msg("Refresh other flow tabs upon authentication")}
-                        help=${msg(
-                            "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
-                        )}
-                        .bighelp=${html`<ak-alert class="pf-c-radio__description" inline plain>
-                            ${msg("This flag is deprecated.")}
-                        </ak-alert>`}
-                    >
-                    </ak-switch-input>
                     <ak-switch-input
                         name="flags.coreDefaultAppAccess"
                         ?checked=${settings?.flags.coreDefaultAppAccess ?? true}

@@ -34,7 +34,7 @@ import {
     SCIMProvider,
 } from "@goauthentik/api";
 
-import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
+import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.mdx";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -102,7 +102,7 @@ export class SCIMProviderViewPage extends AKElement {
         }
 
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"

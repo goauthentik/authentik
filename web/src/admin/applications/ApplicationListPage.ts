@@ -12,7 +12,8 @@ import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam } from "#elements/router/RouteMatch";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam } from "#elements/router/core/search-params";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -24,7 +25,7 @@ import { AKApplicationWizard } from "#admin/applications/wizard/ak-application-w
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
-import MDApplication from "~docs/add-secure-apps/applications/index.md";
+import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -71,9 +72,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public override firstUpdated(changed: PropertyValues<this>): void {
         super.firstUpdated(changed);
 
-        if (getURLParam("createWizard", false)) {
+        if (getSearchParam<string>("create-wizard", "") === "application") {
             AKApplicationWizard.showModal();
-        } else if (getURLParam("createForm", false)) {
+        } else if (getSearchParam<string>("create-form", "") === "application") {
             ApplicationForm.showModal();
         }
     }
@@ -131,13 +132,13 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}
             ></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             item.group ? html`${item.group}` : html`<span aria-label="None">${msg("-")}</span>`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,

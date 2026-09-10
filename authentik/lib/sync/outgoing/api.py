@@ -1,6 +1,6 @@
 from django.db.models import Model
 from dramatiq.actor import Actor
-from dramatiq.results.errors import ResultFailure
+from dramatiq.results.errors import ResultError
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
@@ -119,7 +119,7 @@ class OutgoingSyncProviderStatusMixin:
         )
         try:
             msg.get_result(block=True)
-        except ResultFailure:
+        except ResultError:
             pass
         task: Task = msg.options["task"]
         task.refresh_from_db()
