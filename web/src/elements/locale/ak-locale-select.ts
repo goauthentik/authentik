@@ -1,6 +1,6 @@
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
 import { formatLocaleDisplayNames } from "#common/ui/locale/format";
-import { setSessionLocale } from "#common/ui/locale/utils";
+import { applyLocaleChange } from "#common/ui/locale/persist";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
@@ -33,7 +33,8 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     /**
      * An event listener for when the user selects a different locale from the dropdown.
      *
-     * Note that their choice may not be immediately reflected in the UI.
+     * Locale is fixed per page load: persist the choice and reload so the whole UI —
+     * including server-rendered strings — comes back in the new locale.
      */
     protected localeChangeListener = (event: Event) => {
         const select = event.target as HTMLSelectElement;
@@ -41,12 +42,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
 
         this.blur();
 
-        requestAnimationFrame(() => {
-            this.#previousActiveLanguageTag = this.activeLanguageTag;
-            this.activeLanguageTag = nextActiveLanguageTag;
+        if (nextActiveLanguageTag === this.activeLanguageTag) return;
 
-            setSessionLocale(nextActiveLanguageTag);
-        });
+        applyLocaleChange(nextActiveLanguageTag);
     };
 
     @listen(LOCALE_STATUS_EVENT, { target: window })
