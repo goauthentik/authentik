@@ -38,7 +38,7 @@ Additionally, any users or groups present in authentik but absent in Entra ID wi
 
 ## Error handling
 
-When a property mapping has an invalid expression, it will cause a sync to stop to prevent excessive error messages.
+Property mappings are evaluated in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings.
 
 To handle network interruptions, authentik detects transient request failures and retries sync tasks.
 
