@@ -21,6 +21,7 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
@@ -54,7 +55,10 @@ class RadiusProviderSerializer(
             "certificate",
         ]
         secret_fields = ["shared_secret"]
-        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class RadiusProviderViewSet(UsedByMixin, ModelViewSet):

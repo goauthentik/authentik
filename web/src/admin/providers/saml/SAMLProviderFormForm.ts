@@ -17,12 +17,13 @@ import {
     digestAlgorithmOptions,
     logoutMethodOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
 
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
+
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     FlowDesignationEnum,
@@ -254,7 +255,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -271,7 +272,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.verificationKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -286,7 +287,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
