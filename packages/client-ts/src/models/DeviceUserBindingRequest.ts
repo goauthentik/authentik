@@ -43,6 +43,10 @@ export interface DeviceUserBindingRequest {
      */
     enabled?: boolean;
     /**
+     * Execute the policy but ignore its result.
+     */
+    dryRun?: boolean;
+    /**
      *
      */
     order: number;
@@ -95,6 +99,7 @@ export function DeviceUserBindingRequestFromJSONTyped(
         target: json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -121,6 +126,7 @@ export function DeviceUserBindingRequestToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],
