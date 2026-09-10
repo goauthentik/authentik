@@ -32,6 +32,7 @@ import {
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
+import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -302,6 +303,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
+                if (challenge.component === "ak-stage-autosubmit") {
+                    submitAutosubmitChallenge(challenge);
+                    this.inert = true;
+                    return true;
+                }
                 this.challenge = challenge;
                 return !this.challenge.responseErrors;
             })
