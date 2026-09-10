@@ -12,6 +12,7 @@ const (
 )
 
 const (
-	HeaderAuthentikRemoteIP     = "X-authentik-remote-ip"
-	HeaderAuthentikOutpostToken = "X-authentik-outpost-token"
+	HeaderAuthentikRemoteIP           = "X-authentik-remote-ip"
+	HeaderAuthentikOutpostToken       = "X-authentik-outpost-token"
+	HeaderAuthentikOutpostCertificate = "X-authentik-outpost-certificate"
 )

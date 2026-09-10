@@ -39,7 +39,6 @@ func NewRequest(req ldap.BindRequest, conn net.Conn) (*Request, *sentry.Span) {
 		IPAddress: utils.GetIP(conn.RemoteAddr()),
 	})
 
-	bindDN = strings.ToLower(bindDN)
 	return &Request{
 		BindRequest: req,
 		conn:        conn,
