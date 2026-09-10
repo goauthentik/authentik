@@ -40,27 +40,27 @@
         "@rspack/binding-darwin-arm64": "2.2.2",
         "@rspack/binding-linux-arm64-gnu": "2.2.2",
         "@rspack/binding-linux-x64-gnu": "2.2.2",
-        "@swc/core-darwin-arm64": "1.16.1",
-        "@swc/core-linux-arm64-gnu": "1.16.1",
-        "@swc/core-linux-x64-gnu": "1.16.1",
-        "@swc/html-darwin-arm64": "1.16.1",
-        "@swc/html-linux-arm64-gnu": "1.16.1",
-        "@swc/html-linux-x64-gnu": "1.16.1",
+        "@swc/core-darwin-arm64": "1.16.2",
+        "@swc/core-linux-arm64-gnu": "1.16.2",
+        "@swc/core-linux-x64-gnu": "1.16.2",
+        "@swc/html-darwin-arm64": "1.16.2",
+        "@swc/html-linux-arm64-gnu": "1.16.2",
+        "@swc/html-linux-x64-gnu": "1.16.2",
         "lightningcss-darwin-arm64": "1.33.0",
         "lightningcss-linux-arm64-gnu": "1.33.0",
         "lightningcss-linux-x64-gnu": "1.33.0"
     },
     "engines": {
         "node": ">=24",
-        "pnpm": ">=11.20.0"
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "error",
-            "version": ">=24"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
-    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "prettier": "@goauthentik/prettier-config"
 }

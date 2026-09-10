@@ -20,7 +20,12 @@ runs:
     - name: Cleanup apt
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
-      run: sudo apt-get remove --purge man-db
+      run: |
+        # The runner image installs Chrome and leaves its apt source behind.
+        # Nothing here installs from it, and a broken index there breaks the
+        # apt-get update below. https://github.com/goauthentik/authentik/pull/25990
+        sudo rm -f /etc/apt/sources.list.d/google-chrome.*
+        sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
@@ -64,12 +69,12 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@5bf6ce016fd2e72eefc647cbca1e4213f65955b8 # v2
+      uses: taiki-e/install-action@84f5ac3124727fb3d284d4d22ee9ab3654fd09a6 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       with:
         package_json_file: ${{ inputs.working-directory }}package.json
     - name: Pin pnpm store directory

@@ -14,6 +14,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.outposts.permissions import IsOutpostServiceAccount
 from authentik.providers.oauth2.api.providers import RedirectURISerializer
 from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView
@@ -192,6 +193,7 @@ class ProxyOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
+    permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
