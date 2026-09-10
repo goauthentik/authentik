@@ -1,8 +1,15 @@
 """WebAuthn stage"""
 
+from ipaddress import ip_address
+from re import fullmatch
+from urllib.parse import urlparse
+from uuid import uuid4
+
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields.array import ArrayField
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_domain_name
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -17,6 +24,99 @@ from authentik.lib.models import InternallyManagedMixin, SerializerModel, Simple
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
+
+ANDROID_ORIGIN_PREFIX = "android:apk-key-hash:"
+HTTPS_DEFAULT_PORT = 443
+
+
+def validate_webauthn_origin(origin: str):
+    """Validate a single WebAuthn origin: either an exact `https://` web origin
+    (no path, no wildcards) or an Android APK key hash origin."""
+    if origin.startswith(ANDROID_ORIGIN_PREFIX):
+        key_hash = origin.removeprefix(ANDROID_ORIGIN_PREFIX)
+        if not fullmatch(r"[A-Za-z0-9_-]+={0,2}", key_hash):
+            raise ValidationError(
+                _("Invalid Android origin, expected android:apk-key-hash:<base64url>.")
+            )
+        return
+    parsed = urlparse(origin)
+    if parsed.scheme != "https":
+        raise ValidationError(
+            _("Origin must be an https:// origin or an android:apk-key-hash: origin.")
+        )
+    if not parsed.netloc or parsed.path or parsed.params or parsed.query or parsed.fragment:
+        raise ValidationError(
+            _("Origin must not contain a path, query or fragment (e.g. https://sso.example.com).")
+        )
+    if "*" in parsed.netloc:
+        raise ValidationError(_("Wildcards are not allowed in origins."))
+    if parsed.username is not None or parsed.password is not None:
+        raise ValidationError(_("Origins must not contain credentials."))
+    try:
+        port = parsed.port
+    except ValueError:
+        raise ValidationError(_("Origin contains an invalid port.")) from None
+    if not parsed.hostname:
+        raise ValidationError(_("Origin must contain a host."))
+    # Browsers serialize origins without the default port; an explicit :443 never matches
+    if port == HTTPS_DEFAULT_PORT:
+        raise ValidationError(_("Origins must not contain the default port (443)."))
+    try:
+        ip_address(parsed.hostname)
+    except ValueError:
+        pass
+    else:
+        raise ValidationError(
+            _("IP addresses are not allowed in origins, as RP IDs must be domain names.")
+        )
+    if origin != origin.lower():
+        raise ValidationError(_("Origin must be lowercase."))
+
+
+class WebAuthnRPConfig(SerializerModel):
+    """WebAuthn Relying Party configuration. When assigned to one or more brands, WebAuthn
+    ceremonies on those brands use a fixed RP ID and an explicit list of allowed origins
+    instead of deriving both from the request, enabling one passkey to be shared across
+    several domains via Related Origin Requests (WebAuthn Level 3)."""
+
+    rp_config_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    name = models.TextField(unique=True)
+    rp_id = models.TextField(
+        unique=True,
+        validators=[validate_domain_name],
+        help_text=_(
+            "WebAuthn Relying Party ID that credentials are bound to. "
+            "Cannot be changed after creation, as doing so invalidates all "
+            "credentials registered for it."
+        ),
+    )
+    origins = ArrayField(
+        models.TextField(),
+        default=list,
+        help_text=_(
+            "Origins allowed to perform WebAuthn ceremonies for this RP ID. "
+            "Web origins are listed in the Related Origin Requests document served at "
+            "https://<RP ID>/.well-known/webauthn. Entries must be exact https:// origins "
+            "or android:apk-key-hash: origins; browsers only honor origins whose count of "
+            "distinct registrable-domain labels is at most 5."
+        ),
+    )
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.authenticator_webauthn.api.rp_configs import (
+            WebAuthnRPConfigSerializer,
+        )
+
+        return WebAuthnRPConfigSerializer
+
+    def __str__(self) -> str:
+        return f"WebAuthn RP Config {self.name} ({self.rp_id})"
+
+    class Meta:
+        verbose_name = _("WebAuthn RP Config")
+        verbose_name_plural = _("WebAuthn RP Configs")
 
 
 class UserVerification(models.TextChoices):

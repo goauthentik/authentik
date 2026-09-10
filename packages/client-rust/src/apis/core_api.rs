@@ -82,6 +82,7 @@ pub async fn core_brands_list(
     page_size: Option<i32>,
     search: Option<&str>,
     web_certificate: Option<&str>,
+    webauthn_rp_config: Option<&str>,
 ) -> Result<models::PaginatedBrandList, Error<CoreBrandsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_brand_uuid = brand_uuid;
@@ -106,6 +107,7 @@ pub async fn core_brands_list(
     let p_query_page_size = page_size;
     let p_query_search = search;
     let p_query_web_certificate = web_certificate;
+    let p_query_webauthn_rp_config = webauthn_rp_config;
 
     let uri_str = format!("{}/core/brands/", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -192,6 +194,9 @@ pub async fn core_brands_list(
     }
     if let Some(ref param_value) = p_query_web_certificate {
         req_builder = req_builder.query(&[("web_certificate", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_webauthn_rp_config {
+        req_builder = req_builder.query(&[("webauthn_rp_config", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());

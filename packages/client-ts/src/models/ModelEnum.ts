@@ -134,6 +134,8 @@ export const ModelEnum = {
     AuthentikStagesAuthenticatorTotpTotpdevice: "authentik_stages_authenticator_totp.totpdevice",
     AuthentikStagesAuthenticatorValidateAuthenticatorvalidatestage:
         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
+    AuthentikStagesAuthenticatorWebauthnWebauthnrpconfig:
+        "authentik_stages_authenticator_webauthn.webauthnrpconfig",
     AuthentikStagesAuthenticatorWebauthnAuthenticatorwebauthnstage:
         "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
     AuthentikStagesAuthenticatorWebauthnWebauthndevice:

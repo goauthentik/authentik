@@ -34,6 +34,7 @@ _BRAND_RELATED_FK_FIELDS = (
     "flow_lockdown",
     "flow_request",
     "default_application",
+    "webauthn_rp_config",
 )
 
 
@@ -116,6 +117,18 @@ class Brand(SerializerModel):
         on_delete=models.SET_DEFAULT,
         help_text=_("Web Certificate used by the authentik Core webserver."),
         related_name="+",
+    )
+    webauthn_rp_config = models.ForeignKey(
+        "authentik_stages_authenticator_webauthn.WebAuthnRPConfig",
+        null=True,
+        default=None,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="brands",
+        help_text=_(
+            "WebAuthn RP config used for all WebAuthn ceremonies on this brand. "
+            "When unset, the RP ID and origin are derived from the request."
+        ),
     )
     client_certificates = models.ManyToManyField(
         CertificateKeyPair,
