@@ -416,7 +416,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==36.0.3" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.1.3" },
-    { name = "msgraph-sdk", specifier = "==1.61.0" },
+    { name = "msgraph-sdk", specifier = "==1.62.0" },
     { name = "msgspec", specifier = "==0.21.1" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "opentelemetry-api", specifier = "==1.44.0" },
@@ -2480,7 +2480,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.61.0"
+version = "1.62.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2490,9 +2490,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/59/31/121dd2fef52c544fe767f1e2d0e2badec507528ed03496e71965f2249889/msgraph_sdk-1.61.0.tar.gz", hash = "sha256:fe3b2e21715d9523e3b15082421011a0067873f3b48c431208be988f17b34ed9", size = 6913038, upload-time = "2026-08-05T20:07:55.24Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/7a/ff7274935ec862c5a1f399e6d5b54c657540d779c9033c8da6a6614ffe80/msgraph_sdk-1.62.0.tar.gz", hash = "sha256:2392b656f9132e7f7aa7b6be5e733b2f34cbdfd279725b71fa13f8757d37c1d3", size = 7043706, upload-time = "2026-09-02T18:52:57.911Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/d3/f19ece768b61ec1e9a9bf207b23ef2ee7b65184224722540c0448fcea8fc/msgraph_sdk-1.61.0-py3-none-any.whl", hash = "sha256:42529f1ec34664c3009cb19fcda401fc9e825b757b5411ef9b30c3bae5536131", size = 28401314, upload-time = "2026-08-05T20:07:59.676Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/f0/ba735427419645582313c0ec3dd87d240815750b55698291be55829caa86/msgraph_sdk-1.62.0-py3-none-any.whl", hash = "sha256:de6dfd78a33cc8f7cc398497937af8b7746f3f36304977d786713d5ce603c461", size = 28933842, upload-time = "2026-09-02T18:53:01.992Z" },
 ]
 
 [[package]]
