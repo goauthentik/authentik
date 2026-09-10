@@ -13,7 +13,6 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
@@ -157,7 +156,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
         super();
         this.#api = new FlowsApi(DEFAULT_CONFIG);
         this.addController(this.#flowIframeMessageController);
