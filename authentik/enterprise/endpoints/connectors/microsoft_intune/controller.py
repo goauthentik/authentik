@@ -76,7 +76,15 @@ class MicrosoftIntuneController(BaseController):
                     "family": os_family,
                 }
             ),
-            "disks": [],
+            "disks": [
+                # 'virtual' disk, intune doesn't give us per disk info, just a general
+                # `is_encrypted` field
+                {
+                    "name": f"virtual@{self.vendor_identifier()}",
+                    "mountpoint": "/",
+                    "encryption_enabled": device.is_encrypted,
+                },
+            ],
             "network": delete_none_values({"hostname": device.device_name, "interfaces": []}),
             "hardware": delete_none_values(
                 {
