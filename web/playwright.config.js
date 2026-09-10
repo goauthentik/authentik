@@ -21,6 +21,7 @@ const baseURL = process.env.AK_TEST_RUNNER_PAGE_URL ?? "http://localhost:9000";
 
 export default defineConfig({
     testDir: "./test/browser",
+    globalTeardown: "./e2e/coverage.teardown.ts",
     fullyParallel: true,
     forbidOnly: CI,
     retries: CI ? 1 : 0,

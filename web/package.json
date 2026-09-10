@@ -201,6 +201,9 @@
         "wireit": "^0.14.13",
         "yaml": "^2.9.0"
     },
+    "devDependencies": {
+        "monocart-coverage-reports": "^2.13.0"
+    },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.28.1",
         "@esbuild/linux-arm64": "^0.28.1",
