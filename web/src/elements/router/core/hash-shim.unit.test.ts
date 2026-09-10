@@ -22,6 +22,17 @@ describe("translateHashRoute", () => {
         expect(translateHashRoute(hash, scope)).toBe("/if/admin/core/applications?page=2");
     });
 
+    // The exact shape `admin_link_for_model` emits for lifecycle-review rows:
+    // a path plus a percent-encoded JSON tab selector.
+    it("translates a lifecycle-review object admin URL", () => {
+        const hash =
+            "#/core/applications/my-app;" + encodeURIComponent('{"page":"page-lifecycle"}');
+
+        expect(translateHashRoute(hash, scope)).toBe(
+            "/if/admin/core/applications/my-app?page=page-lifecycle",
+        );
+    });
+
     it("translates a raw JSON blob", () => {
         expect(translateHashRoute('#/core/applications;{"page":2}', scope)).toBe(
             "/if/admin/core/applications?page=2",

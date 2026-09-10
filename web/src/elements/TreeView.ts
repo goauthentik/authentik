@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { setURLParams } from "#elements/router/RouteMatch";
+import { updateSearchParams } from "#elements/router/core/search-params";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -77,7 +77,7 @@ export class TreeViewNode extends AKElement {
         if (this.host) {
             this.host.activeNode = this;
         }
-        setURLParams({ path: this.fullPath });
+        updateSearchParams({ path: this.fullPath });
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,

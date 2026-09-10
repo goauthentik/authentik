@@ -85,7 +85,7 @@ export class MFADevicesPage extends Table<Device> {
                             <a
                                 role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    toUserInterface("settings", { page: "page-credentials" }),
+                                    toUserInterface("settings/credentials"),
                                 )}"
                                 class="pf-c-dropdown__menu-item"
                             >

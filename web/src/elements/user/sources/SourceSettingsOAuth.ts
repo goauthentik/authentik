@@ -57,9 +57,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
 
         return html`<a
             class="pf-c-button pf-m-primary"
-            href="${this.configureURL}${AndNext(
-                toUserInterface("settings", { page: "page-sources" }),
-            )}"
+            href="${this.configureURL}${AndNext(toUserInterface("settings/sources"))}"
         >
             ${msg("Connect")}
         </a>`;

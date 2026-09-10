@@ -19,7 +19,7 @@ test.describe("Provider Wizard", () => {
 
         await test.step("Authenticate", async () =>
             session.login({
-                to: "/if/admin/#/core/providers",
+                to: "/if/admin/core/providers",
             }));
 
         await test.step("Navigate to provider wizard", async () => {
