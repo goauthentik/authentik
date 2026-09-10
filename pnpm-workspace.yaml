@@ -1,4 +1,6 @@
 packages:
+  - "packages/oxlint-config"
+  - "packages/oxfmt-config"
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/eslint-config"
@@ -24,6 +26,8 @@ catalog:
   "@vitest/browser-playwright": "^4.1.10"
   esbuild: "^0.28.1"
   eslint: "^9.39.5"
+  oxfmt: "0.67.0"
+  oxlint: "^1.82.0"
   playwright: "^1.62.1"
   prettier: "3.8.3"
   prettier-plugin-packagejson: "^3.0.2"

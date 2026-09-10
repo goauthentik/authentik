@@ -244,6 +244,7 @@ node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in
 
 node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
 	pnpm install --frozen-lockfile
+	pnpm run build:lint-config
 
 #########################
 ## Web

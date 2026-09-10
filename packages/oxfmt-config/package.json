@@ -1,0 +1,45 @@
+{
+    "name": "@goauthentik/oxfmt-config",
+    "version": "9.1.0",
+    "description": "authentik's Oxfmt config",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/oxfmt-config"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "prepare": "tsc -p ."
+    },
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./out/index.js",
+            "types": "./out/index.d.ts"
+        }
+    },
+    "devDependencies": {
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "typescript": "catalog:"
+    },
+    "peerDependencies": {
+        "oxfmt": ">=0.67.0 <1",
+        "typescript": "^6.0.3 || ^7.0.0"
+    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
+    "engines": {
+        "node": ">=24.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
