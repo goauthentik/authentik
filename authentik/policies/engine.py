@@ -191,16 +191,19 @@ class _PolicyEngineBase:
         mode: PolicyEngineMode, empty_result: bool, all_results: list[PolicyResult]
     ) -> PolicyResult:
         """Combine per-binding PolicyResults into one overall PolicyResult."""
-        if not all_results:
-            return PolicyResult(empty_result)
-        passing = False
-        if mode == PolicyEngineMode.MODE_ALL:
-            passing = all(x.passing for x in all_results)
-        if mode == PolicyEngineMode.MODE_ANY:
-            passing = any(x.passing for x in all_results)
+        effective_results = [
+            result
+            for result in all_results
+            if not result.source_binding or not result.source_binding.dry_run
+        ]
+        passing = empty_result if not effective_results else False
+        if mode == PolicyEngineMode.MODE_ALL and effective_results:
+            passing = all(x.passing for x in effective_results)
+        if mode == PolicyEngineMode.MODE_ANY and effective_results:
+            passing = any(x.passing for x in effective_results)
         result = PolicyResult(passing)
         result.source_results = all_results
-        result.messages = tuple(y for x in all_results for y in x.messages)
+        result.messages = tuple(y for x in effective_results for y in x.messages)
         return result
 
 
@@ -232,7 +235,12 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         """Check static bindings if possible"""
         aggrs = {
             "total": Count(
-                "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
+                "pk",
+                filter=Q(
+                    Q(group__isnull=False) | Q(user__isnull=False),
+                    policy=None,
+                    dry_run=False,
+                ),
             ),
         }
         if self.request.user.pk:
@@ -251,6 +259,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                     ),
                     Q(expiring=False) | Q(expiring=True, expires__gte=now()),
                     enabled=True,
+                    dry_run=False,
                 ),
             )
         matched_bindings = bindings.aggregate(**aggrs)
@@ -366,10 +375,13 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 return self._finalize()
 
             dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
+            dry_run_bindings = [binding for binding in dynamic_bindings if binding.dry_run]
             static_bindings = [
                 binding
                 for binding in bindings
-                if binding.policy_id is None and (binding.group_id or binding.user_id)
+                if not binding.dry_run
+                and binding.policy_id is None
+                and (binding.group_id or binding.user_id)
             ]
 
             if not dynamic_bindings:
@@ -394,11 +406,16 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 )
 
             candidates = self.__users
+            dry_run_only_users = []
             if self.mode == PolicyEngineMode.MODE_ALL and static_bindings:
                 candidates = candidates.filter(pk__in=static_passing_pks)
+                if dry_run_bindings:
+                    dry_run_only_users = list(self.__users.exclude(pk__in=static_passing_pks))
             candidates = list(candidates)
 
-            prefetched_cache = self._prefetch_cache(candidates, dynamic_bindings)
+            prefetched_cache = self._prefetch_cache(
+                candidates + dry_run_only_users, dynamic_bindings
+            )
 
             passing_pks = []
             for user in candidates:
@@ -413,6 +430,12 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                     all_results.append(PolicyResult(user.pk in static_passing_pks))
                 if self._combine_results(self.mode, self.empty_result, all_results).passing:
                     passing_pks.append(user.pk)
+            for user in dry_run_only_users:
+                request = PolicyRequest(user)
+                request.obj = self.__pbm
+                if self.__http_request:
+                    request.set_http_request(self.__http_request)
+                self._evaluate_dynamic_bindings(dry_run_bindings, request, prefetched_cache)
             self.__result = self.__users.filter(pk__in=passing_pks)
             return self._finalize()
 
@@ -587,7 +610,9 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 static_bindings = [
                     binding
                     for binding in obj_bindings
-                    if binding.policy_id is None and (binding.group_id or binding.user_id)
+                    if not binding.dry_run
+                    and binding.policy_id is None
+                    and (binding.group_id or binding.user_id)
                 ]
                 dynamic_bindings = [
                     binding for binding in obj_bindings if binding.policy_id is not None
@@ -601,14 +626,15 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                             for binding in static_bindings
                         ],
                     )
-                # MODE_ALL: an object whose static verdict already failed can never
-                # pass overall -- skip its (expensive, process-forking) dynamic
-                # bindings entirely.
-                if dynamic_bindings and not (
+                # MODE_ALL: effective dynamic bindings cannot change a failed static
+                # verdict, but dry-run bindings still need to execute.
+                if (
                     mode == PolicyEngineMode.MODE_ALL
                     and pk in static_results
                     and not static_results[pk].passing
                 ):
+                    dynamic_bindings = [binding for binding in dynamic_bindings if binding.dry_run]
+                if dynamic_bindings:
                     dynamic_by_target[pk] = dynamic_bindings
 
             all_dynamic_bindings = [
