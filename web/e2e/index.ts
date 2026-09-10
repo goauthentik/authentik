@@ -2,7 +2,6 @@
  * @file Playwright e2e test helpers.
  */
 
-import { collectPageCoverage, COVERAGE_ENABLED } from "#e2e/coverage";
 import { FormFixture } from "#e2e/fixtures/FormFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { PasskeyFixture } from "#e2e/fixtures/PasskeyFixture";
@@ -16,7 +15,6 @@ export { expect } from "@playwright/test";
 /* eslint-disable react-hooks/rules-of-hooks */
 
 interface E2EFixturesTestScope {
-    coverage: void;
     navigator: NavigatorFixture;
     session: SessionFixture;
     pointer: PointerFixture;
@@ -29,24 +27,6 @@ interface E2EWorkerScope {
 }
 
 export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
-    coverage: [
-        async ({ page }, use) => {
-            if (!COVERAGE_ENABLED) {
-                await use();
-                return;
-            }
-
-            // Tests navigate between the flow, user, and admin bundles, so
-            // coverage has to survive navigation rather than reset with it.
-            await page.coverage.startJSCoverage({ resetOnNavigation: false });
-
-            await use();
-
-            await collectPageCoverage(page);
-        },
-        { auto: true },
-    ],
-
     navigator: async ({ page }, use, { title }) => {
         await use(new NavigatorFixture(page, title));
     },

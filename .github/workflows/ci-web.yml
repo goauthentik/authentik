@@ -202,8 +202,6 @@ jobs:
         working-directory: web
         env:
           AK_TEST_RUNNER_PAGE_URL: http://localhost:9000
-          # Opt the browser suite into V8 coverage collection; see web/e2e/coverage.ts.
-          AK_TEST_COVERAGE: "1"
         run: pnpm run test:e2e
       # Reporting / upload steps below intentionally use `!cancelled()` rather
       # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
@@ -233,13 +231,7 @@ jobs:
           path: /tmp/ak-logs/
           retention-days: 14
           if-no-files-found: ignore
-      - name: Upload coverage to codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
-        with:
-          files: web/coverage/lcov.info
-          flags: e2e-web
-          use_oidc: true
+      # Test analytics only — no coverage is collected for the browser suite.
       - name: Upload Playwright results to codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
