@@ -10,7 +10,7 @@ import { PaginatedResponse } from "#common/api/responses";
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AccessRequestFulfillForm } from "#user/requests/AccessRequestFulfillForm";
@@ -66,10 +66,7 @@ export class AccessRequestsPage extends AKElement {
                 ${(this.toReview?.pagination.count || 0) > 0
                     ? html`<div class="pf-c-banner pf-m-info">
                           ${msg("Requests to review: ")}
-                          <a
-                              href=${paramURL("/requests", {
-                                  page: "page-for-review",
-                              })}
+                          <a href=${toUserInterface("requests", { page: "page-for-review" })}
                               >${msg("Review")}</a
                           >
                       </div>`
