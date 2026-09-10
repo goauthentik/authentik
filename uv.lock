@@ -3777,11 +3777,11 @@ wheels = [
 
 [[package]]
 name = "stevedore"
-version = "5.8.0"
+version = "5.9.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e9/88/35e4d27d9177d7df76d060e0a18f69c6c5794c96960c94042e20a12c8ba2/stevedore-5.8.0.tar.gz", hash = "sha256:b49867b32ca3016e94100e68dbf26e72aa7b8708d0a3f73c08aeb220370ac715", size = 514710, upload-time = "2026-05-18T09:15:27.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/a1/3b8ed9c1fc3aa6eebb57732d924ddaa0500ecc3b638d0454816320994383/stevedore-5.9.1.tar.gz", hash = "sha256:e97a2667923efda926e8713fde6a73616df68210a3cbc6f02b48967b676fd8bf", size = 518111, upload-time = "2026-08-20T15:25:14.754Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/ac/19f9941c74add59d17694930ec8105d5eddeee4ce56dd8632b765ca16d6c/stevedore-5.8.0-py3-none-any.whl", hash = "sha256:88eede9e66ca80e34085b9174e2327da2c61ac91f24f70e41c3ad76e4bb4872b", size = 54553, upload-time = "2026-05-18T09:15:25.82Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/97/bba6e7ec2f5498b9dcb7b1b6400086b80ae5a8ebaff4b25e8c8add75f439/stevedore-5.9.1-py3-none-any.whl", hash = "sha256:5c8ff3a9f336cc1a06ac0f597bc79d11a2f950bfd32e290ca56b5a301fafafbf", size = 54931, upload-time = "2026-08-20T15:25:13.602Z" },
 ]
 
 [[package]]
