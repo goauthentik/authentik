@@ -47,7 +47,6 @@ class TestEmailStageSending(FlowTestCase):
             PropertyMock(return_value=EmailBackend),
         ):
             response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
             self.assertStageResponse(
                 response,
                 self.flow,
@@ -85,7 +84,6 @@ class TestEmailStageSending(FlowTestCase):
             PropertyMock(return_value=EmailBackend),
         ):
             response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
             self.assertStageResponse(
                 response,
                 self.flow,
@@ -116,10 +114,10 @@ class TestEmailStageSending(FlowTestCase):
             PropertyMock(return_value=EmailBackend),
         ):
             response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
             self.assertStageResponse(
                 response,
                 self.flow,
+                component="ak-stage-email",
                 response_errors={
                     "non_field_errors": [{"string": "email-sent", "code": "email-sent"}]
                 },
@@ -144,10 +142,10 @@ class TestEmailStageSending(FlowTestCase):
             PropertyMock(return_value=EmailBackend),
         ):
             response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
             self.assertStageResponse(
                 response,
                 self.flow,
+                component="ak-stage-email",
                 response_errors={
                     "non_field_errors": [{"string": "email-sent", "code": "email-sent"}]
                 },
@@ -173,6 +171,13 @@ class TestEmailStageSending(FlowTestCase):
             ):
                 response = self.client.post(url)
             response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                component="ak-stage-email",
+                response_errors={
+                    "non_field_errors": [{"string": "email-sent", "code": "email-sent"}]
+                },
+            )
             self.assertGreaterEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
