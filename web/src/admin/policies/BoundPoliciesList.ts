@@ -198,18 +198,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
-                ${IconEditButtonByTagName(
-                    this.bindingEditForm,
-                    item.pk,
-                    null,
-                    {
+                ${IconEditButtonByTagName(this.bindingEditForm, item.pk, null, {
+                    modalProps: {
+                        // @ts-expect-error Attribute passthrough does not handle generics well
                         allowedTypes: this.allowedTypes,
                         typeNotices: this.typeNotices,
                         targetPk: this.target || "",
                     },
-                    undefined,
-                    "fa-link",
-                )}
+                    iconName: "fa-link",
+                })}
                 ${IconPermissionButton(this.getPolicyUserGroupRowLabel(item), {
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,

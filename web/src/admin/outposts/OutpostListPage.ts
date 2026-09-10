@@ -108,7 +108,9 @@ export class OutpostListPage extends TablePage<Outpost> {
             ></ak-outpost-health-simple>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(OutpostForm, item.pk, item.name, {
-                    embedded: item.managed === embeddedOutpostManaged,
+                    modalProps: {
+                        embedded: item.managed === embeddedOutpostManaged,
+                    },
                 })}
             </div>`,
         ];

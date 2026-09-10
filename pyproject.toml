@@ -39,11 +39,11 @@ dependencies = [
   "gssapi==1.12.0",
   "gunicorn==26.2.0",
   "jsonpatch==1.33",
-  "jwcrypto==1.5.9",
+  "jwcrypto==1.6.0",
   "kubernetes==36.0.3",
   "ldap3==2.9.1",
   "lxml==6.1.3",
-  "msgraph-sdk==1.61.0",
+  "msgraph-sdk==1.62.0",
   "msgspec==0.21.1",
   "opencontainers==0.0.15",
   "opentelemetry-api==1.44.0",
@@ -64,6 +64,7 @@ dependencies = [
   "pyjwt==2.13.0",
   "pyrad==2.5.4",
   "pyroscope-io==1.2.1",
+  "pyroscope-otel==1.1.0",
   "python-kadmin-rs==0.7.4",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
@@ -87,7 +88,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.267.0",
+  "aws-cdk-lib==2.268.0",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",

@@ -28,6 +28,18 @@ describe("translateHashRoute", () => {
         );
     });
 
+    // The bare form `flow_manager.py` emits when linking a source. The legacy
+    // router read the token as a tab selector, so it must survive translation.
+    it("translates a bare tab token into the page parameter", () => {
+        expect(translateHashRoute("#/settings;page-sources", scope)).toBe(
+            "/if/admin/settings?page=page-sources",
+        );
+    });
+
+    it("keeps the URLSearchParams encoding distinct from a bare token", () => {
+        expect(translateHashRoute("#/x;a=1&b=true", scope)).toBe("/if/admin/x?a=1&b=true");
+    });
+
     it("translates JSON booleans", () => {
         const hash = "#/x;" + encodeURIComponent(JSON.stringify({ enabled: true }));
 

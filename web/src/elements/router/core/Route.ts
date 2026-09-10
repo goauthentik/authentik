@@ -17,7 +17,28 @@ export type RouteRenderCallback<P> = (
     params: P,
 ) => SlottedTemplateResult | Promise<SlottedTemplateResult>;
 
-export class Route<P extends RouteParameterRecord = RouteParameterRecord> {
+/**
+ * The erased, callable surface of a route.
+ *
+ * Route tables are heterogeneous: one route declares `{ uuid: string }` path
+ * parameters, its neighbor declares none. `Route`'s parameter type sits in a
+ * contravariant position (the render callback), so `Route<{ uuid: string }>` is
+ * *not* assignable to `Route<RouteParameterRecord>` and a mixed table cannot be
+ * typed as `Route[]`.
+ *
+ * Declaring a table as `RouteLike[]` erases the parameter type through method
+ * bivariance: each route keeps its own typed render callback, while the outlet
+ * and matcher drive them all uniformly with the untyped groups a `URLPattern`
+ * match actually yields.
+ */
+export interface RouteLike {
+    readonly pattern: URLPattern;
+    readonly name: string;
+    render(params: RouteParameterRecord): TemplateResult;
+    resolve(params: RouteParameterRecord): Promise<SlottedTemplateResult>;
+}
+
+export class Route<P extends RouteParameterRecord = RouteParameterRecord> implements RouteLike {
     /**
      * The compiled pattern, built once at construction.
      */
@@ -50,5 +71,17 @@ export class Route<P extends RouteParameterRecord = RouteParameterRecord> {
      */
     render(params: P): TemplateResult {
         return html`${until(this.#render(params), nothing)}`;
+    }
+
+    /**
+     * Resolve the route's template for the given path parameters as a promise.
+     *
+     * Unlike {@linkcode render}, this exposes the render callback's result —
+     * synchronous or asynchronous — as a promise and lets rejections
+     * propagate, so the outlet can own the loading and error states. A
+     * synchronous throw in the callback becomes a rejected promise.
+     */
+    async resolve(params: P): Promise<SlottedTemplateResult> {
+        return this.#render(params);
     }
 }

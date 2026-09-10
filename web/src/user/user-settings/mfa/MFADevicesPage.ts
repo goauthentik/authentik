@@ -9,10 +9,10 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
-import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/error";
 
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -85,9 +85,7 @@ export class MFADevicesPage extends Table<Device> {
                             <a
                                 role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-credentials",
-                                    })}`,
+                                    toUserInterface("settings", { page: "page-credentials" }),
                                 )}"
                                 class="pf-c-dropdown__menu-item"
                             >

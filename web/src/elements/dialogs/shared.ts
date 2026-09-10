@@ -1,6 +1,6 @@
 import { PFSize } from "#common/enums";
 
-import { SlottedTemplateResult } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { LitElement } from "lit";
 
@@ -193,3 +193,16 @@ export function isTransclusionParentElement(
 }
 
 //#endregion
+
+export interface SplitIconName {
+    name: string | null;
+    ariaName: string | null;
+}
+
+export interface IconEditButtonOptions<T> {
+    modalProps?: T extends NamedEntityElementConstructor
+        ? LitPropertyRecord<InstanceType<T>>
+        : null;
+    dialogOptions?: DialogInit;
+    iconName?: string;
+}

@@ -76,7 +76,7 @@ test.describe("Session Lifecycle", () => {
             await session.login(
                 {
                     rememberMe: true,
-                    to: "if/user/#/library",
+                    to: "/if/user/library",
                 },
                 page,
             );
