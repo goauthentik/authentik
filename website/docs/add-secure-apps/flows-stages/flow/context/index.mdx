@@ -50,6 +50,31 @@ Policies can change this data. Stages such as [User Write](../../stages/user_wri
 
 For more information, see [Collect custom user attributes during enrollment](../collect-user-attributes.mdx).
 
+#### `policy_results` (dictionary):ak-version[2026.11]
+
+Contains the latest result from each policy binding evaluated during the flow. Results are keyed by policy binding UUID. Each result contains the policy name, whether the policy passed, its messages, and its raw return value.
+
+```json
+{
+    "policy_results": {
+        "3f86c2ce-48f9-4d4a-b8ef-4985b64c9c25": {
+            "policy": "risk-score",
+            "passing": true,
+            "messages": [],
+            "raw_result": {
+                "score": 25
+            }
+        }
+    }
+}
+```
+
+Policy bindings in the same policy-engine execution are evaluated concurrently. Their results become available only after that execution finishes, so a policy can consume results from an earlier flow or stage evaluation but not from a sibling binding in the same evaluation.
+
+The `raw_result` value is stored as a detached snapshot. Recursive references are replaced with `null`, non-JSON dictionary keys are converted to strings, and values that cannot be copied are represented as strings.
+
+When a stage binding has **Re-evaluate policies** enabled, the new result replaces the previous result for the same policy binding UUID.
+
 #### `redirect` (string)
 
 Stores the final redirect URL that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.

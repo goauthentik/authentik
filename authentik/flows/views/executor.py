@@ -161,6 +161,23 @@ class FlowExecutorView(APIView):
         # in `dispatch`, and super().dispatch would call it again
         return self.request or request
 
+    def _next_binding(self) -> FlowStageBinding | None:
+        """Get the next binding and retain results when policies skip all remaining stages."""
+        bindings_before_next = self.plan.bindings.copy()
+        markers_before_next = self.plan.markers.copy()
+        next_binding = self.plan.next(self.request)
+        if not next_binding and bindings_before_next and not self.plan.bindings:
+            completed_plan = FlowPlan(
+                flow_pk=self.plan.flow_pk,
+                bindings=bindings_before_next,
+                context=self.plan.context,
+                markers=markers_before_next,
+            )
+            history = self.request.session.get(SESSION_KEY_HISTORY, [])
+            history.append(completed_plan)
+            self.request.session[SESSION_KEY_HISTORY] = history
+        return next_binding
+
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         self.request = super().initialize_request(request)
         self.initial(self.request)
@@ -217,7 +234,7 @@ class FlowExecutorView(APIView):
                 # This is the first time we actually access any attribute on the selected plan
                 # if the cached plan is from an older version, it might have different attributes
                 # in which case we just delete the plan and invalidate everything
-                next_binding = self.plan.next(self.request)
+                next_binding = self._next_binding()
             except Exception as exc:  # noqa
                 self._logger.warning(
                     "f(exec): found incompatible flow plan, invalidating run", exc=exc

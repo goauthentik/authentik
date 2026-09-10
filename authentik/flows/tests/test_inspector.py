@@ -8,7 +8,11 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, InvalidResponseAction
+from authentik.flows.planner import PLAN_CONTEXT_POLICY_RESULTS
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -38,6 +42,10 @@ class TestFlowInspector(APITestCase):
         )
         dummy_stage = DummyStage.objects.create(name=generate_id())
         FlowStageBinding.objects.create(target=flow, stage=dummy_stage, order=1)
+        policy = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='return {"risk": 7}'
+        )
+        policy_binding = PolicyBinding.objects.create(target=flow, policy=policy, order=0)
 
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -79,6 +87,17 @@ class TestFlowInspector(APITestCase):
         self.assertEqual(
             content["current_plan"]["next_planned_stage"]["stage_obj"]["name"], dummy_stage.name
         )
+        self.assertEqual(
+            content["current_plan"]["plan_context"][PLAN_CONTEXT_POLICY_RESULTS][
+                str(policy_binding.pk)
+            ],
+            {
+                "policy": policy.name,
+                "passing": True,
+                "messages": [],
+                "raw_result": {"risk": 7},
+            },
+        )
 
         self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -99,4 +118,41 @@ class TestFlowInspector(APITestCase):
         )
         self.assertEqual(
             content["current_plan"]["plan_context"]["pending_user"]["username"], self.admin.username
+        )
+
+    def test_completed_runtime_policy_result(self):
+        """Inspector retains a runtime policy result that skips the final stage."""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=False,
+            re_evaluate_policies=True,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        policy_binding = PolicyBinding.objects.create(target=stage_binding, policy=policy, order=0)
+
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-inspector", kwargs={"flow_slug": flow.slug}),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertEqual(content["is_completed"], True)
+        self.assertEqual(
+            content["current_plan"]["plan_context"][PLAN_CONTEXT_POLICY_RESULTS][
+                str(policy_binding.pk)
+            ],
+            {
+                "policy": policy.name,
+                "passing": False,
+                "messages": ["dummy"],
+                "raw_result": None,
+            },
         )
