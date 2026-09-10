@@ -2320,16 +2320,16 @@ wheels = [
 
 [[package]]
 name = "microsoft-kiota-abstractions"
-version = "1.11.6"
+version = "1.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
     { name = "std-uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c3/f0/15dee1ea5480802e2002f77758337ec92472cf472e6d08223e22fa11d376/microsoft_kiota_abstractions-1.11.6.tar.gz", hash = "sha256:45a8932973e981e22d8547cc2f11eefc2e6cc22029f3f1ae037247954b921a6b", size = 25361, upload-time = "2026-06-23T21:11:32.624Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/90/387b442587501d8912570def5988e2ae752a04a7282eb500b38e063eeb2c/microsoft_kiota_abstractions-1.12.0.tar.gz", hash = "sha256:1e459414432b367ccb693ed45be94c2f4bad202280cde3a903acc44744b4abbe", size = 25477, upload-time = "2026-08-27T13:26:19.786Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/45/ef8a3dc123bf22eda20a88bfc100912ad3b1678d5fe89001eacf2e873657/microsoft_kiota_abstractions-1.11.6-py3-none-any.whl", hash = "sha256:9ca952adfd4abc3688db4082b98a971c26759368e63a6a3077dbb881b392fd7b", size = 44463, upload-time = "2026-06-23T21:11:40.274Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/b5/e2a91a7c83f3c56389d9e600f068b8bcda1b77547568eddbac505b2dee62/microsoft_kiota_abstractions-1.12.0-py3-none-any.whl", hash = "sha256:a69b03cb0a062c51ac2ae3969a2691db134cd0ae260a3096242e4f0140b6674c", size = 44578, upload-time = "2026-08-27T13:26:27.812Z" },
 ]
 
 [[package]]
