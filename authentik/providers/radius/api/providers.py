@@ -23,7 +23,6 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.outposts.permissions import IsOutpostDelegatedRequest, IsOutpostServiceAccount
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -107,11 +106,6 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         access = PolicyTestResultSerializer()
 
     def get_attributes(self, provider: RadiusProvider):
-        mapper = PropertyMappingManager(
-            provider.property_mappings.all().order_by("name").select_subclasses(),
-            RadiusProviderPropertyMapping,
-            ["packet"],
-        )
         dict = Dictionary(
             str(
                 settings.BASE_DIR
@@ -144,19 +138,28 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
                     attribute_name, attribute_code, attribute_type, vendor=vendor_name
                 )
 
-        mapper.globals["define_attribute"] = define_attribute
-
-        try:
-            for _ in mapper.iter_eval(self.request.user, self.request, packet=packet):
-                pass
-        except (PropertyMappingExpressionException, ControlFlowException) as exc:
-            # Value error can be raised when assigning invalid data to an attribute
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message="Failed to evaluate property-mapping",
-                mapping=exc.mapping,
-            ).with_exception(exc).save()
-            return None
+        for mapping in provider.property_mappings.all().order_by("name").select_subclasses():
+            mapping: RadiusProviderPropertyMapping
+            try:
+                res = mapping.evaluate(
+                    self.request.user,
+                    self.request,
+                    globals={"define_attribute": define_attribute},
+                    packet=packet,
+                )
+                # Normally we warn if a mapping returns None, however this was intended for this
+                # before 2026.11. We explicitly allow this here as a result, and only update
+                # the packet if we have data.
+                if res is not None:
+                    packet.update(res)
+            except (PropertyMappingExpressionException, ControlFlowException) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Failed to evaluate property-mapping",
+                    mapping=exc.mapping,
+                ).with_exception(exc).save()
+                continue
         return b64encode(packet.RequestPacket()).decode()
 
     @extend_schema(
