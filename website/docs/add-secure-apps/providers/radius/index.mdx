@@ -84,21 +84,28 @@ The mapping receives:
 
 Incoming RADIUS attributes are not forwarded into the mapping context. The HTTP request available to the expression is the outpost's access-check request to authentik, not the incoming RADIUS packet.
 
-Mappings run in name order and modify the same `packet` in place. Their return values are ignored; returning a dictionary or a replacement packet does not add attributes to the response.
+Mappings run in name order and share the same `packet`. Each mapping can add attributes in either of the following ways:
+
+- Return a dictionary of attribute names and values. authentik adds the returned entries to `packet` after the mapping finishes.
+- Assign values to `packet` directly. A mapping that modifies `packet` in place does not need to return a value.
+
+If a mapping fails, authentik logs a configuration-error event and continues with the next mapping.
 
 ### Standard attributes
 
 Use the attribute's exact name from authentik's [bundled RADIUS dictionary](https://github.com/goauthentik/authentik/blob/main/authentik/providers/radius/dictionaries/dictionary).
 
-The following example adds three standard attributes in a single mapping: an integer `Session-Timeout`, a string `Reply-Message`, and an `octets` value for `Class`. All three are already defined in the bundled dictionary, so no `define_attribute()` calls are needed.
+The following example returns three standard attributes from a single mapping: an integer `Session-Timeout`, a string `Reply-Message`, and an `octets` value for `Class`. All three are already defined in the bundled dictionary, so no attribute registration is needed.
 
 ```python
-packet["Session-Timeout"] = 3600
-packet["Reply-Message"] = "Network access granted"
-packet["Class"] = b"authentik-radius"
+return {
+    "Session-Timeout": 3600,
+    "Reply-Message": "Network access granted",
+    "Class": b"authentik-radius",
+}
 ```
 
-These assignments modify the supplied packet, so no return statement is required. The `Reply-Message` is added only to a successful response; it does not configure a rejection message. The `Class` value is a fixed example marker, not a unique session identifier.
+You can instead assign these values to `packet` directly and omit the return statement. The `Reply-Message` is added only to a successful response; it does not configure a rejection message. The `Class` value is a fixed example marker, not a unique session identifier.
 
 After assigning the mapping to the provider, authenticate and inspect the decoded `Access-Accept`. Confirm that all three values appear as standard attribute codes `27` (`Session-Timeout`), `18` (`Reply-Message`), and `25` (`Class`), not as vendor-specific attributes. The `Class` bytes should represent the literal text `authentik-radius`.
 
@@ -106,24 +113,24 @@ An attribute appearing in a vendor dictionary does not guarantee that it is pres
 
 ### Vendor-specific attributes
 
-For a vendor-specific attribute already defined in a bundled dictionary, use its existing name. For example, the bundled Cisco dictionary defines vendor code `9`, attribute code `1`, under the name `AVPair`:
+For a vendor-specific attribute already defined in a bundled dictionary, return its existing name and value. For example, the bundled Cisco dictionary defines vendor code `9`, attribute code `1`, under the name `AVPair`:
 
 ```python
-packet["AVPair"] = "shell:priv-lvl=15"
+return {"AVPair": "shell:priv-lvl=15"}
 ```
 
-To register a new lookup name, use `define_attribute()` before assigning a value. The following alternative registers `Cisco-AV-Pair` for the same vendor-specific attribute and assigns the same privilege level:
+To register a new lookup name for a vendor-specific attribute, use `vendor_attribute()` as the key in the returned dictionary. The helper registers and returns the lookup name. The following example registers `Cisco-AV-Pair` and assigns a privilege level:
 
 ```python
-define_attribute(
-    vendor_code=9,
-    vendor_name="Cisco",
-    attribute_name="AV-Pair",
-    attribute_code=1,
-    attribute_type="string",
-)
-
-packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
+return {
+    vendor_attribute(
+        vendor_code=9,
+        vendor_name="Cisco",
+        attribute_name="AV-Pair",
+        attribute_code=1,
+        attribute_type="string",
+    ): "shell:priv-lvl=15"
+}
 ```
 
 | Argument         | Description                                                  |
@@ -136,7 +143,20 @@ packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
 
 Use codes and types from authoritative vendor documentation. The registered lookup name is `<vendor_name>-<attribute_name>`. Definitions are shared by mappings for the current access check but do not permanently change the bundled dictionary. If that lookup name already exists, the helper leaves its definition unchanged.
 
-You can call `define_attribute()` multiple times in one mapping to register different attributes, then assign their values to `packet`. Each definition and value must still be valid; a mapping evaluation error stops processing and omits all mapping-generated attributes, as described in [Troubleshoot a failed mapping](#troubleshoot-a-failed-mapping).
+For an in-place mapping, call `define_attribute()` before assigning the value to `packet`. `define_attribute()` accepts the same arguments as `vendor_attribute()` and also returns the registered lookup name:
+
+```python
+attribute = define_attribute(
+    vendor_code=9,
+    vendor_name="Cisco",
+    attribute_name="AV-Pair",
+    attribute_code=1,
+    attribute_type="string",
+)
+packet[attribute] = "shell:priv-lvl=15"
+```
+
+You can register multiple attributes in one mapping. Each definition and value must be valid. If a mapping fails, authentik continues to evaluate later mappings, as described in [Troubleshoot a failed mapping](#troubleshoot-a-failed-mapping).
 
 Do not assign a vendor name to a standard RFC attribute: a nonempty `vendor_name` produces a Vendor-Specific attribute, even if `vendor_code` is `0`.
 
@@ -162,14 +182,14 @@ Dynamic VLAN configuration also requires the correct attribute types and tunnel-
 ### Troubleshoot a failed mapping
 
 :::warning Mapping errors do not deny access
-A mapping evaluation error stops mapping processing and omits all mapping-generated response attributes, including those added by earlier mappings. It does not itself change a successful authorization result. Do not rely on a mapping failure to deny access; use application bindings or authentication policies for access control.
+A mapping evaluation error creates a configuration-error event, but authentik continues to process the remaining mappings. The error does not discard attributes added by earlier successful mappings or change a successful authorization result. Do not rely on a mapping failure to deny access; use application bindings or authentication policies for access control.
 :::
 
 If the expected attributes are missing:
 
 1. Confirm that authentication and application authorization succeeded.
 2. Confirm that the mapping is selected on the provider.
-3. Check the attribute name and capitalization against the bundled dictionary or the name registered with `define_attribute()`.
+3. Check the attribute name and capitalization against the bundled dictionary or the name returned by `vendor_attribute()` or `define_attribute()`.
 4. Confirm that each value matches the attribute's dictionary type.
 5. In the Admin interface, check **Events** > **Logs** for a configuration-error event. Also check the server and outpost logs for packet serialization or decoding failures.
 6. Inspect the decoded `Access-Accept` to verify the attribute codes, vendor codes, values, and any required tags.
