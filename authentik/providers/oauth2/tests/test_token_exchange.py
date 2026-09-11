@@ -63,6 +63,7 @@ class TestTokenExchange(OAuthTestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
             signing_key=self.other_cert,
+            grant_types=[],
         )
         self.other_provider.property_mappings.set(ScopeMapping.objects.all())
         self.other_app = Application.objects.create(
@@ -70,7 +71,7 @@ class TestTokenExchange(OAuthTestCase):
         )
 
         # The provider performing the exchange
-        self.provider: OAuth2Provider = OAuth2Provider.objects.create(
+        self.provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
@@ -89,6 +90,7 @@ class TestTokenExchange(OAuthTestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
             signing_key=self.target_cert,
+            grant_types=[],
         )
         self.target_provider.jwt_federation_providers.add(self.provider)
         self.target_provider.property_mappings.set(ScopeMapping.objects.all())
@@ -495,6 +497,7 @@ class TestTokenExchange(OAuthTestCase):
         hs256_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[],
         )
         self.provider.jwt_federation_providers.add(hs256_provider)
         subject_token = self.create_subject_token(self.user, provider=hs256_provider)
