@@ -6,7 +6,13 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### Password hash import settings
+
+Bootstrap and API password hash imports now enforce the [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Existing stored hashes and blueprint imports are unchanged.
+
+Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
 
 ## New features and improvements
 
