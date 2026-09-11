@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 00:16+0000\n"
+"POT-Creation-Date: 2026-09-11 00:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,6 +253,18 @@ msgstr ""
 msgid "User does not have permission to add members to this group."
 msgstr ""
 
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr ""
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add a superuser parent group."
+msgstr ""
+
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr ""
+
 #: authentik/core/api/object_attributes.py
 msgid "Unique cannot be enabled for arrays."
 msgstr ""
@@ -277,14 +289,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Can't change internal service account to other user type."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to add members to a superuser group."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to assign roles."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -845,6 +849,19 @@ msgstr ""
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Key type {key_type} is not supported. Supported key types are: {allowed}."
+msgstr ""
+
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Unable to determine the key type of this certificate. Supported key types "
+"are: {allowed}."
 msgstr ""
 
 #: authentik/endpoints/api/stages.py
@@ -3097,10 +3114,6 @@ msgstr ""
 msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
-msgstr ""
-
-#: authentik/providers/saml/api/providers.py
-msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py

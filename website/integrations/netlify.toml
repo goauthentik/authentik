@@ -12,6 +12,7 @@
   package = "integrations"
   command = "pnpm --dir .. install --frozen-lockfile && pnpm install --frozen-lockfile && pnpm run build:integrations"
   publish = "integrations/build"
+  ignore  = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- website/integrations website/docusaurus-theme website/package.json website/pnpm-lock.yaml pnpm-lock.yaml"
 
 [dev]
   command    = "pnpm start"
