@@ -81,10 +81,8 @@ export const SuccessLabel = {
     ...DefaultStory,
     args: {
         ...DefaultStory,
-        ...{
-            color: PFColor.Green,
-            message: html`I'll show them! I'll show them <i>all</i>&nbsp;! Mwahahahahaha!`,
-        },
+        color: PFColor.Green,
+        message: html`I'll show them! I'll show them <i>all</i>&nbsp;! Mwahahahahaha!`,
     },
 };
 
@@ -92,12 +90,10 @@ export const CompactWarningLabel = {
     ...DefaultStory,
     args: {
         ...DefaultStory,
-        ...{
-            compact: true,
-            color: "warning",
-            icon: "fa-coffee",
-            message: "It is time for coffee.",
-        },
+        compact: true,
+        color: "warning",
+        icon: "fa-coffee",
+        message: "It is time for coffee.",
     },
 };
 
@@ -105,6 +101,7 @@ export const DangerLabel = {
     ...DefaultStory,
     args: {
         ...DefaultStory,
-        ...{ color: "danger", message: "Grave danger? Is there another kind?" },
+        color: "danger",
+        message: "Grave danger? Is there another kind?",
     },
 };

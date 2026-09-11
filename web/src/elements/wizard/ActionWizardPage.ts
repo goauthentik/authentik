@@ -41,7 +41,7 @@ export class ActionWizardPage extends WizardPage {
         this.states = this.host.actions.map((act, idx) => ({
             action: act,
             state: ActionState.pending,
-            idx: idx,
+            idx,
         }));
 
         this.host.canBack = false;
@@ -133,13 +133,15 @@ export class ActionWizardPage extends WizardPage {
                                         <div class="pf-c-progress-stepper__step-title">
                                             ${state.action.displayName}
                                         </div>
-                                        ${state.action.subText
-                                            ? html`<div
-                                                  class="pf-c-progress-stepper__step-description"
-                                              >
-                                                  ${state.action.subText}
-                                              </div>`
-                                            : nothing}
+                                        ${
+                                            state.action.subText
+                                                ? html`<div
+                                                      class="pf-c-progress-stepper__step-description"
+                                                  >
+                                                      ${state.action.subText}
+                                                  </div>`
+                                                : nothing
+                                        }
                                     </div>
                                 </li>`;
                             })}
