@@ -51,9 +51,6 @@ func (k ObjectKey) String() string {
 type Result struct {
 	// Applied are the objects that were sent to the API server.
 	Applied []ObjectKey
-	// Pruned are the objects that were deleted because they are no longer
-	// wanted.
-	Pruned []ObjectKey
 	// Skipped are the objects whose kind the cluster does not know, which
 	// happens when an optional CRD such as ServiceMonitor is not installed.
 	Skipped []ObjectKey
@@ -100,7 +97,6 @@ func (a *Applier) Apply(ctx context.Context, owner client.Object, desired []clie
 	return result, nil
 }
 
-// applyObject sends one object through server-side apply.
 func (a *Applier) applyObject(ctx context.Context, object client.Object) error {
 	patch, err := a.forApply(object)
 	if err != nil {
@@ -114,8 +110,8 @@ func (a *Applier) applyObject(ctx context.Context, object client.Object) error {
 	// Client.Apply, which supersedes this patch type, only accepts a
 	// runtime.ApplyConfiguration. Unstructured objects do not implement that
 	// interface, and this operator has to apply them: ServiceMonitor,
-	// PrometheusRule, HTTPRoute and everything in additionalObjects belong to
-	// APIs it deliberately does not depend on.
+	// PrometheusRule and HTTPRoute belong to APIs it deliberately does not
+	// depend on.
 	//nolint:staticcheck // see above; Client.Apply cannot express this
 	return a.Client.Patch(ctx, patch, client.Apply, FieldOwner, client.ForceOwnership)
 }
@@ -163,7 +159,6 @@ func (a *Applier) canOwn(owner, object client.Object) bool {
 	return object.GetNamespace() != "" && object.GetNamespace() == owner.GetNamespace()
 }
 
-// objectKey identifies an object for logging and comparison.
 func (a *Applier) objectKey(object client.Object) (ObjectKey, error) {
 	gvk, err := apiutil.GVKForObject(object, a.Scheme)
 	if err != nil {

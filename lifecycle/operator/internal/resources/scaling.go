@@ -18,8 +18,8 @@ func (b *Builder) HorizontalPodAutoscaler(c *component) *autoscalingv2.Horizonta
 
 	metrics := spec.Metrics
 	if len(metrics) == 0 {
-		// The chart emits memory before CPU; the order is not significant to
-		// the autoscaler but keeping it avoids a needless diff on adoption.
+		// Memory before CPU, matching the chart: the order does not matter to
+		// the autoscaler, but keeping it avoids a diff on adoption.
 		if spec.TargetMemoryUtilizationPercentage != nil {
 			metrics = append(metrics, utilizationMetric(corev1.ResourceMemory, *spec.TargetMemoryUtilizationPercentage))
 		}
@@ -72,8 +72,8 @@ func (b *Builder) PodDisruptionBudget(c *component) *policyv1.PodDisruptionBudge
 		},
 	}
 
-	// The two bounds are mutually exclusive; maxUnavailable wins, matching the
-	// chart. Neither set means minAvailable 0, which permits any eviction.
+	// The two bounds are mutually exclusive; maxUnavailable wins. Neither set
+	// means minAvailable 0, which permits any eviction.
 	switch {
 	case spec.MaxUnavailable != nil:
 		pdb.Spec.MaxUnavailable = spec.MaxUnavailable

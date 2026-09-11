@@ -272,10 +272,9 @@ type PostgreSQLImageSpec struct {
 
 // PostgreSQLSpec configures the PostgreSQL database bundled with authentik.
 //
-// This is off by default: running a production database as a subchart is
-// convenient for evaluation but an external, separately backed-up PostgreSQL is
-// the recommended setup. Point authentik.postgresql at it and leave this
-// disabled.
+// This is off by default: it is convenient for evaluation, but an external,
+// separately backed-up PostgreSQL is the recommended setup. Point
+// authentik.postgresql at it and leave this disabled.
 type PostgreSQLSpec struct {
 	// enabled deploys a PostgreSQL StatefulSet alongside authentik.
 	// +optional
@@ -415,15 +414,12 @@ type AutoUpdateSpec struct {
 // AuthentikSpec defines the desired state of Authentik.
 //
 // Everything except releaseName, migrations, autoUpdate, reconcileInterval and
-// prune maps one-to-one onto the authentik Helm chart's values, using the same
-// key names, so a values.yaml can be moved into this spec as-is. The operator
-// builds the objects itself rather than rendering the chart, but staying
-// key-compatible keeps that migration path open.
+// prune uses the authentik Helm chart's values.yaml key names, so a values file
+// can be moved into this spec as-is.
 type AuthentikSpec struct {
-	// releaseName prefixes every object the operator creates, and matches the
-	// Helm release name the chart would have used, so an existing chart install
-	// can be adopted without renaming anything. Immutable; defaults to the
-	// Authentik object's own name.
+	// releaseName prefixes every object the operator creates. It matches the
+	// Helm release name, so an existing chart install is adopted rather than
+	// duplicated. Immutable; defaults to the Authentik object's own name.
 	// +kubebuilder:validation:MaxLength=53
 	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="releaseName is immutable"
@@ -495,17 +491,11 @@ type AuthentikSpec struct {
 	// postgresql configures the optional bundled PostgreSQL database.
 	// +optional
 	PostgreSQL *PostgreSQLSpec `json:"postgresql,omitempty"`
-
-	// additionalObjects are extra manifests to deploy alongside authentik.
-	// Helm template expressions are evaluated in them.
-	// +optional
-	AdditionalObjects []apiextensionsv1.JSON `json:"additionalObjects,omitempty"`
 }
 
 // Condition types set on an Authentik resource.
 const (
-	// ConditionReady is true once the desired version is deployed and the
-	// Helm release is healthy.
+	// ConditionReady is true once the desired version is deployed.
 	ConditionReady = "Ready"
 
 	// ConditionProgressing is true while the operator is working towards the
@@ -533,7 +523,7 @@ const (
 	// held back until it finishes.
 	PhaseMigrating Phase = "Migrating"
 
-	// PhaseDeploying means the Helm release is being installed or upgraded.
+	// PhaseDeploying means the desired objects are being applied.
 	PhaseDeploying Phase = "Deploying"
 
 	// PhaseReady means the desired version is deployed.
@@ -569,7 +559,7 @@ type AuthentikStatus struct {
 	// conditions represent the current state of the Authentik resource.
 	//
 	// Condition types:
-	// - "Ready": the desired version is deployed and the release is healthy
+	// - "Ready": the desired version is deployed
 	// - "Progressing": the operator is working towards the desired state
 	// - "Degraded": the operator could not reach the desired state
 	// - "Migrated": state of the migration Job that gates upgrades
@@ -613,7 +603,7 @@ type AuthentikStatus struct {
 	// appliedHash fingerprints the desired state that was last applied. The
 	// operator compares it against the current desired state to tell a real
 	// change from a periodic re-reconcile, so that re-reading its own status
-	// does not trigger another Helm upgrade.
+	// does not trigger another apply.
 	// +optional
 	AppliedHash string `json:"appliedHash,omitempty"`
 

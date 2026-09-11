@@ -525,25 +525,6 @@ func TestBuildPrometheusRuleCarriesTheChartsRules(t *testing.T) {
 	}
 }
 
-func TestBuildAdditionalObjects(t *testing.T) {
-	spec := minimalSpec()
-	spec.AdditionalObjects = []apiextensionsv1.JSON{{
-		Raw: []byte(`{"apiVersion":"v1","kind":"ConfigMap","metadata":{"name":"extra"},"data":{"a":"b"}}`),
-	}}
-
-	objects := build(t, spec)
-	extra := mustGet(t, objects, "ConfigMap/extra")
-
-	// It has to be namespaced and labelled, or pruning would never reclaim it.
-	if got := dig(t, extra, "metadata", "namespace"); got != namespace {
-		t.Errorf("namespace = %v, want %s", got, namespace)
-	}
-	labels, _ := dig(t, extra, "metadata", "labels").(map[string]any)
-	if labels[resources.ManagedByLabel] != resources.ManagedByValue {
-		t.Errorf("labels = %v, want the managed-by label", labels)
-	}
-}
-
 func TestBuildOwnerLabelDistinguishesInstances(t *testing.T) {
 	// Two instances in one namespace must not prune each other's objects.
 	first := build(t, minimalSpec())

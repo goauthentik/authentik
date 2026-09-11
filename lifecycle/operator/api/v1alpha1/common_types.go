@@ -10,9 +10,7 @@ import (
 
 // The JSON tags in this file deliberately match the keys of the authentik Helm
 // chart's values.yaml rather than Kubernetes' usual camelCase, so that a chart
-// values file can be moved into an Authentik spec unchanged. The operator no
-// longer renders the chart, but staying key-compatible keeps that migration
-// path open.
+// values file can be moved into an Authentik spec unchanged.
 //
 // Fields typed as apiextensionsv1.JSON belong to APIs this operator does not
 // depend on -- the Prometheus Operator and the Gateway API -- and are copied
@@ -24,7 +22,7 @@ type ImageSpec struct {
 	// +optional
 	Repository string `json:"repository,omitempty"`
 
-	// tag is the image tag. Defaults to the chart's appVersion.
+	// tag is the image tag. Required unless autoUpdate resolves it.
 	// +optional
 	Tag string `json:"tag,omitempty"`
 
@@ -50,8 +48,8 @@ type NodeAffinityPreset struct {
 	MatchExpressions []corev1.NodeSelectorRequirement `json:"matchExpressions,omitempty"`
 }
 
-// AffinityPreset configures the affinity rules the chart generates for
-// components that do not set an explicit affinity of their own.
+// AffinityPreset configures the affinity rules generated for components that
+// do not set an explicit affinity of their own.
 type AffinityPreset struct {
 	// podAntiAffinity spreads replicas across nodes (soft) or across nodes and
 	// availability zones (hard).
@@ -101,8 +99,8 @@ type GlobalSpec struct {
 	// +optional
 	FullnameOverride string `json:"fullnameOverride,omitempty"`
 
-	// namespaceOverride deploys the chart's objects into a different namespace
-	// than the Authentik resource lives in.
+	// namespaceOverride deploys the objects into a different namespace than the
+	// Authentik resource lives in.
 	// +optional
 	NamespaceOverride string `json:"namespaceOverride,omitempty"`
 

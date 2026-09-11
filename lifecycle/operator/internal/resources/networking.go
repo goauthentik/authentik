@@ -23,7 +23,7 @@ func (b *Builder) Ingress(c *component) *networkingv1.Ingress {
 
 	paths := spec.Paths
 	if len(paths) == 0 {
-		// The chart defaults this to the path authentik is served under.
+		// Defaults to the path authentik is served under.
 		paths = []string{b.webPath()}
 	}
 
@@ -127,7 +127,7 @@ func (b *Builder) Route(c *component) (*unstructured.Unstructured, error) {
 			return nil, err
 		}
 		if len(matches) == 0 {
-			// The chart defaults to matching everything under authentik's path.
+			// Default: match everything under authentik's path.
 			matches = []any{map[string]any{
 				"path": map[string]any{"type": "PathPrefix", "value": b.webPath()},
 			}}
@@ -167,8 +167,8 @@ func (b *Builder) Route(c *component) (*unstructured.Unstructured, error) {
 	return route, nil
 }
 
-// servicePort picks the server Service port that traffic should reach, honoring
-// the https switch shared by the Ingress and the route.
+// servicePort picks the server Service port traffic should reach, honoring the
+// https switch shared by the Ingress and the route.
 func (b *Builder) servicePort(https *bool) int32 {
 	spec := b.Authentik.Spec.Server
 	if https != nil && *https {

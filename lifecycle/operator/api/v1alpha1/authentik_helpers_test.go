@@ -31,7 +31,7 @@ var _ = Describe("Naming", func() {
 	})
 
 	It("honours an explicit release name over the object name", func() {
-		ak := authentik("my-authentik-cr", DefaultChartName, AuthentikSpec{ReleaseName: DefaultChartName})
+		ak := authentik("my-authentik-cr", DefaultName, AuthentikSpec{ReleaseName: DefaultName})
 		Expect(ak.ReleaseName()).To(Equal("authentik"))
 		Expect(ak.Fullname()).To(Equal("authentik"))
 	})
@@ -49,7 +49,7 @@ var _ = Describe("Naming", func() {
 			NameOverride: "ignored",
 			Global:       &GlobalSpec{NameOverride: "idp"},
 		})
-		Expect(ak.ChartObjectName()).To(Equal("idp"))
+		Expect(ak.BaseName()).To(Equal("idp"))
 		Expect(ak.Fullname()).To(Equal("release-idp"))
 	})
 

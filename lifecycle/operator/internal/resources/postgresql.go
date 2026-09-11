@@ -14,34 +14,26 @@ import (
 	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
 
-// The bundled database is a single primary, which is what the chart's subchart
-// defaults to as well. It exists so an evaluation install works out of the box;
-// a production deployment should point authentik.postgresql at an external
-// database that is backed up and upgraded separately.
+// The bundled database is a single primary. It exists so an evaluation install
+// works out of the box; production should point authentik.postgresql at an
+// external database that is backed up and upgraded separately.
 
 const postgresqlComponent = "postgresql"
 
-// postgresqlEnabled reports whether the operator runs the database.
 func (b *Builder) postgresqlEnabled() bool {
 	spec := b.Authentik.Spec.PostgreSQL
 	return spec != nil && spec.Enabled != nil && *spec.Enabled
 }
 
-// PostgreSQLName is the name of the database's objects.
+// PostgreSQLName is the name of the database's objects, and the hostname
+// authentik connects to.
 //
-// Built from the release name rather than the chart fullname, because that is
-// what both the chart's default authentik.postgresql.host and the Bitnami
-// subchart's own naming produce. Using the fullname would move the database for
-// any release whose name does not already contain "authentik".
+// Built from the release name rather than the fullname, because that is what
+// both the chart's default authentik.postgresql.host and the Bitnami subchart
+// produce. Using the fullname would move the database for any release whose
+// name does not already contain "authentik".
 func (b *Builder) PostgreSQLName() string {
 	return akv1alpha1.TruncateName(fmt.Sprintf("%s-%s", b.Authentik.ReleaseName(), postgresqlComponent))
-}
-
-// PostgreSQLServiceName is the hostname authentik connects to. It matches the
-// name the chart's subchart produces, so switching between them does not move
-// the database.
-func (b *Builder) PostgreSQLServiceName() string {
-	return b.PostgreSQLName()
 }
 
 // postgresqlSpec returns the database configuration with absent sections filled
@@ -228,7 +220,6 @@ func (b *Builder) attachPostgreSQLStorage(statefulSet *appsv1.StatefulSet, spec 
 	}}
 }
 
-// postgresqlPasswordRef points at the Secret key holding the password.
 func (b *Builder) postgresqlPasswordRef() (*corev1.EnvVarSource, error) {
 	spec := b.postgresqlSpec()
 
@@ -242,7 +233,6 @@ func (b *Builder) postgresqlPasswordRef() (*corev1.EnvVarSource, error) {
 	return secretKeyRef(b.PostgreSQLName(), defaultPostgresSecretKey), nil
 }
 
-// postgresqlImage assembles the database image reference.
 func (b *Builder) postgresqlImage(spec *akv1alpha1.PostgreSQLSpec) string {
 	registry, repository, tag := defaultPostgresRegistry, defaultPostgresRepository, defaultPostgresTag
 	if spec.Image != nil {

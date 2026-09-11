@@ -6,7 +6,7 @@ import (
 )
 
 // outpostVerbs are the verbs the worker needs on the objects it creates for a
-// Kubernetes outpost. A port of the chart's authentik-remote-cluster.api-verbs-rw.
+// Kubernetes outpost.
 var outpostVerbs = []string{"get", "create", "delete", "list", "patch"}
 
 // serviceAccountEnabled reports whether the operator manages the ServiceAccount
@@ -14,15 +14,15 @@ var outpostVerbs = []string{"get", "create", "delete", "list", "patch"}
 func (b *Builder) serviceAccountEnabled() bool {
 	spec := b.Authentik.Spec.ServiceAccount
 	if spec == nil || spec.Create == nil {
-		// The chart defaults this on, because a Kubernetes outpost is the
-		// common case and it cannot work without these permissions.
+		// Defaults on: a Kubernetes outpost is the common case and cannot
+		// work without these permissions.
 		return true
 	}
 	return *spec.Create
 }
 
-// serviceAccountAnnotations are applied to every object in this group, which is
-// how the chart lets a cloud IAM role be bound to the ServiceAccount.
+// serviceAccountAnnotations go on every object in this group, which is how a
+// cloud IAM role is bound to the ServiceAccount.
 func (b *Builder) serviceAccountAnnotations() map[string]string {
 	if spec := b.Authentik.Spec.ServiceAccount; spec != nil {
 		return spec.Annotations
@@ -116,7 +116,6 @@ func (b *Builder) Role() *rbacv1.Role {
 	}
 }
 
-// RoleBinding binds the Role to the ServiceAccount.
 func (b *Builder) RoleBinding() *rbacv1.RoleBinding {
 	if !b.serviceAccountEnabled() {
 		return nil
@@ -159,7 +158,6 @@ func (b *Builder) ClusterRole() *rbacv1.ClusterRole {
 	return role
 }
 
-// ClusterRoleBinding binds the ClusterRole to the ServiceAccount.
 func (b *Builder) ClusterRoleBinding() *rbacv1.ClusterRoleBinding {
 	if !b.serviceAccountEnabled() {
 		return nil

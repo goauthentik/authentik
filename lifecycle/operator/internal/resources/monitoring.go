@@ -25,10 +25,9 @@ const monitoringAPIVersion = "monitoring.coreos.com/v1"
 var promRuleAssets embed.FS
 
 // prometheusRuleGroups are the recording rules and alerts the chart ships.
-//
-// They are embedded as YAML rather than transcribed into Go, because they are
-// 41 static rules with no templating in them: lifting the chart's file verbatim
-// keeps the two from drifting.
+// Embedded as YAML rather than transcribed into Go: they are 41 static rules
+// with no templating, so lifting the file verbatim keeps the two from
+// drifting.
 var prometheusRuleGroups = sync.OnceValues(func() ([]any, error) {
 	raw, err := promRuleAssets.ReadFile("assets/prometheusrule-groups.yaml")
 	if err != nil {

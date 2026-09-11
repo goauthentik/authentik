@@ -107,8 +107,8 @@ type AuthentikReconciler struct {
 //  2. on an upgrade, run the database migrations to completion in a Job
 //  3. only then apply the Deployments
 //
-// Applying everything at once, as installing the chart does, starts new pods
-// that migrate the database while old pods are still serving the old schema.
+// Applying everything at once, as `helm upgrade` does, starts new pods that
+// migrate the database while old pods are still serving the old schema.
 func (r *AuthentikReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := logf.FromContext(ctx)
 
@@ -332,9 +332,9 @@ func (r *AuthentikReconciler) currentState(ctx context.Context, ak *akv1alpha1.A
 	if annotated := deployment.Annotations[versionKey]; annotated != "" {
 		state.version = annotated
 	}
-	// Fall back to the image itself, so an instance adopted from a chart
-	// install -- which carries none of these annotations -- still reports the
-	// version it is running and is correctly seen as an upgrade.
+	// Fall back to the image itself: an instance adopted from a chart install
+	// carries none of these annotations, but still has to report the version it
+	// runs and be seen as an upgrade.
 	if state.version == "" && len(deployment.Spec.Template.Spec.Containers) > 0 {
 		state.version = imageTag(deployment.Spec.Template.Spec.Containers[0].Image)
 	}
@@ -527,8 +527,6 @@ func (r *AuthentikReconciler) resolveVersion(
 	return result.Tag, nil
 }
 
-// registryCredential reads the registry credentials from the configured pull
-// secret, if there is one.
 func (r *AuthentikReconciler) registryCredential(
 	ctx context.Context,
 	ak *akv1alpha1.Authentik,
@@ -684,8 +682,6 @@ func (r *AuthentikReconciler) event(ak *akv1alpha1.Authentik, eventType, reason,
 	r.Recorder.Eventf(ak, nil, eventType, reason, action, "%s", message)
 }
 
-// patchStatus writes the status subresource, skipping the call when nothing
-// changed.
 func (r *AuthentikReconciler) patchStatus(
 	ctx context.Context,
 	ak *akv1alpha1.Authentik,

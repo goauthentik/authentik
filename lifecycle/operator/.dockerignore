@@ -10,7 +10,6 @@
 !go.mod
 !go.sum
 
-# Re-include the packaged Helm chart, which is compiled into the binary by
-# //go:embed. Without it the build fails, because the embed pattern matches
-# nothing. Produced by `make chart`.
-!internal/chart/embedded/**
+# Re-include the assets compiled into the binary by //go:embed. Without them
+# the build fails, because the embed pattern matches nothing.
+!internal/resources/assets/**

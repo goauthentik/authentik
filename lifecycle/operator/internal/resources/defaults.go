@@ -1,12 +1,10 @@
 package resources
 
-// The chart supplies these through its values.yaml, which the CRD does not
-// carry: a spec field left unset means "use the chart's default", so those
-// defaults have to live here instead.
+// The chart's values.yaml supplies these and the CRD does not carry them: a
+// spec field left unset means "use the chart's default", so they live here.
 //
 // Keep this list in step with lifecycle/charts/authentik/values.yaml. Anything
-// that disagrees is a behavior difference between installing the chart and
-// running the operator.
+// that disagrees is a behavior difference between the chart and the operator.
 const (
 	// defaultRevisionHistoryLimit is global.revisionHistoryLimit.
 	defaultRevisionHistoryLimit int32 = 3
@@ -105,7 +103,7 @@ const (
 	postgresSubPath   = "pgdata"
 )
 
-// Blueprint mount paths, from the chart's worker deployment.
+// Blueprint mount paths.
 const (
 	blueprintConfigMapPrefix = "blueprints-cm-"
 	blueprintSecretPrefix    = "blueprints-secret-"
@@ -119,8 +117,8 @@ const (
 )
 
 // configChecksumAnnotation restarts the pods when the configuration changes.
-// Without it a Secret edit would sit unread until something else replaced the
-// pods, which is how the chart behaves too.
+// Without it a Secret edit would sit unread until something else replaced
+// them.
 const configChecksumAnnotation = "checksum/secret"
 
 // volumeNameData is the volume and claim name for the database's storage.

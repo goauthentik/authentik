@@ -1,10 +1,10 @@
 // Package resources builds the Kubernetes objects that make up an authentik
 // installation.
 //
-// These are ports of the authentik Helm chart's templates. Object names, labels
-// and selectors match what the chart produces, so an existing chart release can
-// be adopted by the operator without recreating anything. The chart remains the
-// reference for what is correct here; see lifecycle/charts/authentik.
+// These are ports of the authentik Helm chart's templates: object names, labels
+// and selectors match what the chart produces, so an existing chart release is
+// adopted rather than duplicated. The chart remains the reference for what is
+// correct here; see lifecycle/charts/authentik.
 package resources
 
 import (
@@ -33,16 +33,15 @@ type Builder struct {
 	Version   string
 }
 
-// Namespace is where the built objects belong.
 func (b *Builder) Namespace() string {
 	return b.Authentik.TargetNamespace()
 }
 
-// Labels are the common labels the chart puts on every object, plus the two the
-// operator needs to recognize its own work.
+// Labels go on every object. The last two are what the operator recognizes its
+// own work by.
 func (b *Builder) Labels(component string) map[string]string {
 	labels := map[string]string{
-		"app.kubernetes.io/part-of": "authentik",
+		"app.kubernetes.io/part-of": akv1alpha1.DefaultName,
 		"app.kubernetes.io/version": akv1alpha1.LabelSafeVersion(b.Version),
 		ManagedByLabel:              ManagedByValue,
 		InstanceOwnerLabel:          b.Authentik.OwnerLabelValue(),
@@ -60,7 +59,7 @@ func (b *Builder) Labels(component string) map[string]string {
 // every existing Deployment un-updatable.
 func (b *Builder) SelectorLabels(component string) map[string]string {
 	labels := map[string]string{
-		"app.kubernetes.io/name":     b.Authentik.ChartObjectName(),
+		"app.kubernetes.io/name":     b.Authentik.BaseName(),
 		"app.kubernetes.io/instance": b.Authentik.ReleaseName(),
 	}
 	if component != "" {
@@ -69,7 +68,6 @@ func (b *Builder) SelectorLabels(component string) map[string]string {
 	return labels
 }
 
-// objectMeta is the metadata shared by every built object.
 func (b *Builder) objectMeta(name, component string, extraLabels, annotations map[string]string) metav1.ObjectMeta {
 	labels := b.Labels(component)
 	maps.Copy(labels, extraLabels)
@@ -82,18 +80,15 @@ func (b *Builder) objectMeta(name, component string, extraLabels, annotations ma
 	}
 }
 
-// ServerName is the name of the server's objects.
 func (b *Builder) ServerName() string {
 	return b.Authentik.ComponentFullname(b.Authentik.ServerComponentName())
 }
 
-// WorkerName is the name of the worker's objects.
 func (b *Builder) WorkerName() string {
 	return b.Authentik.ComponentFullname(b.Authentik.WorkerComponentName())
 }
 
-// ServiceAccountName is the name of the ServiceAccount the worker uses to
-// manage outposts, mirroring the authentik-remote-cluster chart's fullname.
+// ServiceAccountName is the ServiceAccount the worker uses to manage outposts.
 func (b *Builder) ServiceAccountName() string {
 	spec := b.Authentik.Spec.ServiceAccount
 
@@ -108,10 +103,9 @@ func (b *Builder) ServiceAccountName() string {
 		return akv1alpha1.TruncateName(override)
 	}
 
-	// The subchart's own name is "authentik-remote-cluster", but the parent
-	// chart pins fullnameOverride to "authentik", so this is the fallback that
-	// actually applies in practice.
-	return akv1alpha1.TruncateName(akv1alpha1.DefaultChartName)
+	// The authentik-remote-cluster subchart pins fullnameOverride to
+	// "authentik", so that is the fallback that applies in practice.
+	return akv1alpha1.TruncateName(akv1alpha1.DefaultName)
 }
 
 // ClusterScopedName is the name for the cluster-scoped RBAC objects. It carries

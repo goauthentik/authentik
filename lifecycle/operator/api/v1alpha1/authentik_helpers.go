@@ -14,9 +14,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// DefaultChartName is the chart name the naming templates fall back to. It has
-// to match the name in the chart's Chart.yaml.
-const DefaultChartName = "authentik"
+// DefaultName is what object names are built from when nothing overrides it.
+const DefaultName = "authentik"
 
 // Operator-only defaults.
 const (
@@ -50,7 +49,7 @@ const MigrateCommand = "migrate"
 // Django ones. `ak` waits for the database to accept connections first.
 var DefaultMigrationCommand = []string{"ak", MigrateCommand}
 
-// DefaultImageRepository is the image the chart deploys by default.
+// DefaultImageRepository is the image deployed by default.
 const DefaultImageRepository = "ghcr.io/goauthentik/server"
 
 // ReleaseName prefixes the objects belonging to this instance.
@@ -61,7 +60,7 @@ func (a *Authentik) ReleaseName() string {
 	return a.Name
 }
 
-// TargetNamespace is the namespace the chart's objects are deployed into.
+// TargetNamespace is where the objects are deployed.
 func (a *Authentik) TargetNamespace() string {
 	if g := a.Spec.Global; g != nil && g.NamespaceOverride != "" {
 		return g.NamespaceOverride
@@ -69,10 +68,9 @@ func (a *Authentik) TargetNamespace() string {
 	return a.Namespace
 }
 
-// ChartObjectName mirrors the chart's "authentik.name" template: the base name
-// the chart's object names are built from.
-func (a *Authentik) ChartObjectName() string {
-	name := DefaultChartName
+// BaseName is the base every object name is built from.
+func (a *Authentik) BaseName() string {
+	name := DefaultName
 	if a.Spec.NameOverride != "" {
 		name = a.Spec.NameOverride
 	}
@@ -82,8 +80,7 @@ func (a *Authentik) ChartObjectName() string {
 	return TruncateName(name)
 }
 
-// Fullname mirrors the chart's "authentik.fullname" template: the prefix shared
-// by the objects the chart creates.
+// Fullname is the prefix shared by this instance's objects.
 func (a *Authentik) Fullname() string {
 	fullnameOverride := a.Spec.FullnameOverride
 	if g := a.Spec.Global; g != nil && g.FullnameOverride != "" {
@@ -93,7 +90,7 @@ func (a *Authentik) Fullname() string {
 		return TruncateName(fullnameOverride)
 	}
 
-	name := a.ChartObjectName()
+	name := a.BaseName()
 	release := a.ReleaseName()
 	if strings.Contains(release, name) {
 		return TruncateName(release)
@@ -101,15 +98,13 @@ func (a *Authentik) Fullname() string {
 	return TruncateName(fmt.Sprintf("%s-%s", release, name))
 }
 
-// ComponentFullname is the name of the objects belonging to one component,
-// mirroring the chart's "authentik.server.fullname" and
-// "authentik.worker.fullname" templates.
+// ComponentFullname is the name of one component's objects.
 func (a *Authentik) ComponentFullname(component string) string {
 	return TruncateName(fmt.Sprintf("%s-%s", a.Fullname(), component))
 }
 
-// ServerComponentName is the server's component name, which the chart uses as
-// an object name suffix and as the app.kubernetes.io/component label.
+// ServerComponentName is the server's object name suffix and its
+// app.kubernetes.io/component label.
 func (a *Authentik) ServerComponentName() string {
 	if s := a.Spec.Server; s != nil && s.Name != "" {
 		return s.Name
@@ -125,8 +120,7 @@ func (a *Authentik) WorkerComponentName() string {
 	return "worker"
 }
 
-// ConfigSecretName is the Secret holding the authentik configuration that the
-// containers read their environment from.
+// ConfigSecretName is the Secret the containers read their environment from.
 func (a *Authentik) ConfigSecretName() string {
 	if c := a.Spec.Authentik; c != nil && c.ExistingSecret != nil && c.ExistingSecret.SecretName != "" {
 		return c.ExistingSecret.SecretName
@@ -134,8 +128,7 @@ func (a *Authentik) ConfigSecretName() string {
 	return a.Fullname()
 }
 
-// TruncateName applies the 63-character DNS label limit the chart's naming
-// templates enforce.
+// TruncateName applies the 63-character DNS label limit.
 func TruncateName(name string) string {
 	if len(name) > 63 {
 		name = name[:63]
@@ -146,15 +139,14 @@ func TruncateName(name string) string {
 // unsafeLabelChars matches everything a label value may not contain.
 var unsafeLabelChars = regexp.MustCompile(`[^a-zA-Z0-9._-]`)
 
-// LabelSafeVersion makes an image tag usable as a label value, matching the
-// chart's authentik.versionLabelValue helper: at most 63 characters of
-// alphanumerics, dashes, underscores and dots, with alphanumeric ends.
+// LabelSafeVersion makes an image tag usable as a label value: at most 63
+// characters of alphanumerics, dashes, underscores and dots, with alphanumeric
+// ends.
 func LabelSafeVersion(version string) string {
 	return strings.Trim(TruncateName(unsafeLabelChars.ReplaceAllString(version, "-")), "-_.")
 }
 
-// ImageRepository is the repository the authentik server and worker images come
-// from.
+// ImageRepository is where the server and worker images come from.
 func (a *Authentik) ImageRepository() string {
 	if g := a.Spec.Global; g != nil && g.Image != nil && g.Image.Repository != "" {
 		return g.Image.Repository
@@ -172,8 +164,7 @@ func (a *Authentik) ImageDigest() string {
 	return ""
 }
 
-// ImageRef builds the full image reference for a tag, matching how the chart's
-// Deployment templates assemble it.
+// ImageRef builds the full image reference for a tag.
 func (a *Authentik) ImageRef(tag string) string {
 	ref := fmt.Sprintf("%s:%s", a.ImageRepository(), tag)
 	if digest := a.ImageDigest(); digest != "" {
@@ -211,8 +202,7 @@ func (a *Authentik) AutoUpdateInterval() time.Duration {
 	return DefaultAutoUpdateInterval
 }
 
-// ConfiguredTag is the image tag set in the spec, if any. Empty means the chart
-// falls back to its own appVersion.
+// ConfiguredTag is the image tag set in the spec, if any.
 func (a *Authentik) ConfiguredTag() string {
 	if g := a.Spec.Global; g != nil && g.Image != nil {
 		return g.Image.Tag
@@ -280,11 +270,9 @@ const (
 	// objects, since owner references are not selectable.
 	InstanceOwnerLabel = "instance.goauthentik.io/owner"
 
-	// ManagedByLabelValue is the value of ManagedByLabel.
-	//
-	// The chart sets app.kubernetes.io/managed-by to "Helm". A distinct value
-	// keeps the pruning selector from ever matching a Helm-managed object, so a
-	// misconfigured operator cannot delete another tool's resources.
+	// ManagedByLabelValue is the value of ManagedByLabel. It is deliberately
+	// not "Helm", so the pruning selector can never match a chart-managed
+	// object.
 	ManagedByLabelValue = "authentik-operator"
 )
 
@@ -317,9 +305,9 @@ func DesiredStateHash(spec *AuthentikSpec, targetVersion string) (string, error)
 	return hex.EncodeToString(digest[:]), nil
 }
 
-// GetAffinity returns the affinity preset, filling in the defaults the chart's
-// values.yaml supplies: replicas prefer separate nodes, and node affinity is
-// only applied when match expressions are actually given.
+// GetAffinity returns the affinity preset with its defaults filled in:
+// replicas prefer separate nodes, and node affinity is only applied when match
+// expressions are actually given.
 func (g *GlobalSpec) GetAffinity() AffinityPreset {
 	preset := AffinityPreset{
 		PodAntiAffinity: "soft",

@@ -111,7 +111,6 @@ func (b *Builder) WorkerComponent() *component {
 	}
 }
 
-// Deployment renders one component's Deployment.
 func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 	global := b.global()
 
@@ -145,7 +144,6 @@ func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 	return deployment, nil
 }
 
-// podTemplate builds the pod template shared by both components.
 func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 	global := b.global()
 
@@ -175,6 +173,11 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 		return nil, err
 	}
 
+	nodeSelector := c.spec.NodeSelector
+	if len(nodeSelector) == 0 {
+		nodeSelector = global.NodeSelector
+	}
+
 	spec := corev1.PodSpec{
 		Containers:                    containers,
 		InitContainers:                c.spec.InitContainers,
@@ -183,7 +186,7 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 		SecurityContext:               securityContext,
 		PriorityClassName:             cmp.Or(c.spec.PriorityClassName, global.PriorityClassName),
 		Affinity:                      b.affinity(c),
-		NodeSelector:                  firstNonEmptyMap(c.spec.NodeSelector, global.NodeSelector),
+		NodeSelector:                  nodeSelector,
 		Tolerations:                   firstNonEmpty(c.spec.Tolerations, global.Tolerations),
 		TopologySpreadConstraints:     b.topologySpreadConstraints(c),
 		Volumes:                       b.volumes(c),
@@ -208,15 +211,14 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 	}, nil
 }
 
-// mainContainer builds the authentik container.
 func (b *Builder) mainContainer(c *component) *corev1.Container {
 	global := b.global()
 
 	env := slices.Concat(global.Env, c.spec.Env)
 
 	envFrom := []corev1.EnvFromSource{}
-	// The chart injects the configuration Secret whether the operator renders
-	// it or the user supplies it, and only skips it when disabled outright.
+	// Injected whether the operator renders the Secret or the user supplies
+	// it; only skipped when the configuration is disabled outright.
 	if b.configSecretMounted() {
 		envFrom = append(envFrom, corev1.EnvFromSource{
 			SecretRef: &corev1.SecretEnvSource{
@@ -240,9 +242,9 @@ func (b *Builder) mainContainer(c *component) *corev1.Container {
 		EnvFrom:         nilIfEmptySlice(envFrom),
 		Ports:           c.ports,
 		VolumeMounts:    nilIfEmptySlice(b.volumeMounts(c)),
-		LivenessProbe:   orProbe(c.spec.LivenessProbe, c.liveness),
-		ReadinessProbe:  orProbe(c.spec.ReadinessProbe, c.readiness),
-		StartupProbe:    orProbe(c.spec.StartupProbe, c.startup),
+		LivenessProbe:   cmp.Or(c.spec.LivenessProbe, c.liveness),
+		ReadinessProbe:  cmp.Or(c.spec.ReadinessProbe, c.readiness),
+		StartupProbe:    cmp.Or(c.spec.StartupProbe, c.startup),
 		Resources:       resources,
 		SecurityContext: c.spec.ContainerSecurityContext,
 		Lifecycle:       c.spec.Lifecycle,
@@ -303,7 +305,6 @@ func (b *Builder) geoipSidecar() *corev1.Container {
 	}
 }
 
-// volumeMounts collects the main container's mounts.
 func (b *Builder) volumeMounts(c *component) []corev1.VolumeMount {
 	global := b.global()
 	mounts := slices.Concat(global.VolumeMounts, c.spec.VolumeMounts)
@@ -332,7 +333,6 @@ func (b *Builder) volumeMounts(c *component) []corev1.VolumeMount {
 	return mounts
 }
 
-// volumes collects the pod's volumes.
 func (b *Builder) volumes(c *component) []corev1.Volume {
 	global := b.global()
 	volumes := slices.Concat(global.Volumes, c.spec.Volumes)
@@ -370,8 +370,7 @@ func (b *Builder) volumes(c *component) []corev1.Volume {
 	return nilIfEmptySlice(volumes)
 }
 
-// strategy is the rollout strategy, with the component's settings layered over
-// the global ones.
+// strategy layers the component's rollout settings over the global ones.
 func (b *Builder) strategy(c *component) (appsv1.DeploymentStrategy, error) {
 	merged, err := mergeStructs(b.global().DeploymentStrategy, c.spec.DeploymentStrategy)
 	if err != nil || merged == nil {
@@ -397,8 +396,8 @@ func (b *Builder) strategy(c *component) (appsv1.DeploymentStrategy, error) {
 	}
 }
 
-// affinity returns the component's own affinity, or the rules the chart
-// generates from the global preset.
+// affinity returns the component's own affinity, or the rules generated from
+// the global preset.
 func (b *Builder) affinity(c *component) *corev1.Affinity {
 	if c.spec.Affinity != nil {
 		return c.spec.Affinity
@@ -489,7 +488,6 @@ func (b *Builder) serviceAccountFor(c *component) string {
 	return ""
 }
 
-// pullPolicy resolves the component's image pull policy.
 func (b *Builder) pullPolicy(c *component) corev1.PullPolicy {
 	if c.spec.Image != nil && c.spec.Image.PullPolicy != "" {
 		return c.spec.Image.PullPolicy
@@ -500,8 +498,6 @@ func (b *Builder) pullPolicy(c *component) corev1.PullPolicy {
 	return defaultPullPolicy
 }
 
-// configSecretMounted reports whether the containers should read the
-// configuration Secret.
 func (b *Builder) configSecretMounted() bool {
 	config := b.Authentik.Spec.Authentik
 	if config == nil {
@@ -533,8 +529,8 @@ func (b *Builder) configChecksum() (string, error) {
 	return hex.EncodeToString(digest.Sum(nil)), nil
 }
 
-// webPath is the path authentik is served under, which the health endpoints
-// hang off.
+// webPath is the path authentik is served under; the health endpoints hang
+// off it.
 func (b *Builder) webPath() string {
 	if config := b.Authentik.Spec.Authentik; config != nil && config.Web != nil && config.Web.Path != "" {
 		return config.Web.Path
@@ -584,16 +580,8 @@ func secretKeyRef(name, key string) *corev1.EnvVarSource {
 	}
 }
 
-func orProbe(override, fallback *corev1.Probe) *corev1.Probe {
-	if override != nil {
-		return override
-	}
-	return fallback
-}
-
-// mergeStructs deep-merges override onto base through JSON, reproducing the
-// chart's mergeOverwrite for structured values, where a partial override keeps
-// the fields it does not mention.
+// mergeStructs deep-merges override onto base through JSON, so a partial
+// override keeps the fields it does not mention.
 func mergeStructs[T any](base, override *T) (*T, error) {
 	if base == nil {
 		return override, nil
@@ -619,13 +607,6 @@ func mergeStructs[T any](base, override *T) (*T, error) {
 }
 
 func firstNonEmpty[T any](value, fallback []T) []T {
-	if len(value) > 0 {
-		return value
-	}
-	return fallback
-}
-
-func firstNonEmptyMap(value, fallback map[string]string) map[string]string {
 	if len(value) > 0 {
 		return value
 	}
