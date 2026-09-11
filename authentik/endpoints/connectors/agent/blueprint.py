@@ -80,6 +80,17 @@ CURATED_FINDS = {
     ("authentik_crypto.certificatekeypair", "name", "authentik Self-signed Certificate"),
 }
 FIND_PARTS = 2
+# Token-validity cap, mirroring the Agent's client-side validator (24h).
+TOKEN_MAX_SECONDS = 60 * 60 * 24
+# authentik timedelta units, in seconds — the vocabulary of a validity string
+# like "hours=1;minutes=30".
+_DURATION_UNITS = {
+    "seconds": 1,
+    "minutes": 60,
+    "hours": 60 * 60,
+    "days": 60 * 60 * 24,
+    "weeks": 60 * 60 * 24 * 7,
+}
 
 
 def _mapping(node: Node | None) -> dict[str, Node]:
@@ -98,17 +109,46 @@ def _plain_scalar(node: Node | None) -> str | None:
     return node.value
 
 
+def _duration_seconds(node: Node | None) -> int | None:
+    """Resolve a token-validity value to seconds, or None if unparseable.
+
+    Accepts an integer (seconds) or an authentik timedelta string such as
+    "hours=1;minutes=30". Any unknown unit or malformed part rejects the whole
+    value (returns None), so the caller fails closed.
+    """
+    if not isinstance(node, ScalarNode):
+        return None
+    if node.tag == "tag:yaml.org,2002:int":
+        try:
+            return int(node.value)
+        except ValueError:
+            return None
+    if node.tag != "tag:yaml.org,2002:str":
+        return None
+    text = node.value.strip()
+    if text.isdigit():
+        return int(text)
+    total = 0
+    parsed = False
+    for part in text.split(";"):
+        part = part.strip()
+        if not part:
+            continue
+        unit, sep, amount = part.partition("=")
+        if not sep or unit.strip() not in _DURATION_UNITS or not amount.strip().isdigit():
+            return None
+        total += int(amount.strip()) * _DURATION_UNITS[unit.strip()]
+        parsed = True
+    return total if parsed else None
+
+
 def _check_reference(node: Node, entry_ids: set[str], errors: list[str]) -> None:
     if node.tag == "!KeyOf":
         target = _plain_scalar(node)
         if target not in entry_ids:
             errors.append("!KeyOf must reference an entry in this blueprint")
         return
-    if (
-        node.tag != "!Find"
-        or not isinstance(node, SequenceNode)
-        or len(node.value) != FIND_PARTS
-    ):
+    if node.tag != "!Find" or not isinstance(node, SequenceNode) or len(node.value) != FIND_PARTS:
         errors.append("references must be a curated !Find or an in-blueprint !KeyOf")
         return
     model = _plain_scalar(node.value[0])
@@ -153,11 +193,7 @@ def check_agent_apply_content(content: str) -> list[str]:
         return ["Blueprint must contain an entries list"]
 
     entry_maps = [_mapping(entry) for entry in entries.value]
-    entry_ids = {
-        entry_id
-        for entry in entry_maps
-        if (entry_id := _plain_scalar(entry.get("id")))
-    }
+    entry_ids = {entry_id for entry in entry_maps if (entry_id := _plain_scalar(entry.get("id")))}
     errors: list[str] = []
     _check_tags(root, entry_ids, errors)
 
@@ -193,8 +229,19 @@ def check_agent_apply_content(content: str) -> list[str]:
             if _plain_scalar(attrs.get("issuer_mode")) not in {None, "per_provider"}:
                 errors.append(f"entry {index}: issuer_mode must be per_provider")
             claims = attrs.get("include_claims_in_id_token")
-            if claims is None or claims.tag != "tag:yaml.org,2002:bool" or claims.value != "false":
+            if claims is not None and (
+                claims.tag != "tag:yaml.org,2002:bool" or claims.value != "false"
+            ):
                 errors.append(f"entry {index}: include_claims_in_id_token must be false")
+            for field in ("access_code_validity", "access_token_validity"):
+                if (validity := attrs.get(field)) is None:
+                    continue
+                seconds = _duration_seconds(validity)
+                if seconds is None or not 0 <= seconds <= TOKEN_MAX_SECONDS:
+                    errors.append(
+                        f"entry {index}: {field} must be a duration of at most "
+                        f"{TOKEN_MAX_SECONDS} seconds"
+                    )
     return errors
 
 

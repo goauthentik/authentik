@@ -1,9 +1,14 @@
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Group, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.endpoints.connectors.agent.blueprint import AGENT_APPLY_IDENTITY_USERNAME
+from authentik.endpoints.connectors.agent.blueprint import (
+    AGENT_APPLY_IDENTITY_USERNAME,
+    TOKEN_MAX_SECONDS,
+    check_agent_apply_content,
+)
 from authentik.endpoints.connectors.agent.models import AgentConnector
 from authentik.lib.generators import generate_id
 from authentik.rbac.models import Role
@@ -121,3 +126,48 @@ class TestAgentBlueprintApply(APITestCase):
         self._provision_identity()
         res = self._apply("this: is: not: a: blueprint")
         self.assertEqual(res.status_code, 400)
+
+
+class TestAgentApplyContentPolicy(TestCase):
+    """The server-side content policy, unit-tested independently of apply."""
+
+    def _provider(self, extra_attrs: str = "") -> str:
+        return (
+            "version: 1\nentries:\n"
+            "  - model: authentik_providers_oauth2.oauth2provider\n"
+            "    attrs:\n"
+            "      name: x\n" + extra_attrs
+        )
+
+    def test_forced_fields_optional_when_absent(self):
+        """Forced fields (sub_mode/issuer_mode/include_claims) are enforced only
+        when present — a provider that omits them is accepted, matching the
+        Agent's client-side validator so the propose→apply loop doesn't break."""
+        self.assertEqual(check_agent_apply_content(self._provider()), [])
+
+    def test_forced_fields_enforced_when_present(self):
+        self.assertTrue(
+            check_agent_apply_content(self._provider("      include_claims_in_id_token: true\n"))
+        )
+        self.assertTrue(check_agent_apply_content(self._provider("      sub_mode: user_id\n")))
+        self.assertEqual(
+            check_agent_apply_content(self._provider("      include_claims_in_id_token: false\n")),
+            [],
+        )
+
+    def test_token_validity_within_cap_accepted(self):
+        for value in ("3600", "hours=1", f"seconds={TOKEN_MAX_SECONDS}", "0"):
+            self.assertEqual(
+                check_agent_apply_content(
+                    self._provider(f"      access_token_validity: {value}\n")
+                ),
+                [],
+                value,
+            )
+
+    def test_token_validity_over_cap_or_unparseable_rejected(self):
+        for value in ("weeks=9999", "days=2", "-5", "forever", "hours=abc"):
+            self.assertTrue(
+                check_agent_apply_content(self._provider(f"      access_code_validity: {value}\n")),
+                value,
+            )
