@@ -141,14 +141,15 @@ return packet
             RadiusProviderPropertyMapping.objects.create(
                 name=generate_id(),
                 expression="""
-define_attribute(
-    vendor_code=9,
-    vendor_name="Cisco",
-    attribute_name="AV-Pair",
-    attribute_code=1,
-    attribute_type="string",
-)
-return {"Cisco-AV-Pair": "shell:priv-lvl=15"}
+return {
+    vendor(
+        vendor_code=9,
+        vendor_name="Cisco",
+        attribute_name="AV-Pair",
+        attribute_code=1,
+        attribute_type="string",
+    ): "shell:priv-lvl=15"
+}
                 """,
             )
         )

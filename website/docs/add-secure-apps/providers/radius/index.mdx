@@ -73,15 +73,15 @@ Starting with authentik 2024.8, you can create RADIUS provider property mappings
 For example, to add the Cisco AV-Pair attribute, this snippet can be used:
 
 ```python
-define_attribute(
-    vendor_code=9,
-    vendor_name="Cisco",
-    attribute_name="AV-Pair",
-    attribute_code=1,
-    attribute_type="string",
-)
-packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
-return packet
+return {
+    vendor(
+        vendor_code=9,
+        vendor_name="Cisco",
+        attribute_name="AV-Pair",
+        attribute_code=1,
+        attribute_type="string",
+    ): "shell:priv-lvl=15"
+}
 ```
 
 After creation, make sure to select the RADIUS property mapping in the RADIUS provider.

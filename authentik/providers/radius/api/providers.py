@@ -137,15 +137,18 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
                 dict.attributes[full_attribute_name] = Attribute(
                     attribute_name, attribute_code, attribute_type, vendor=vendor_name
                 )
+            return full_attribute_name
+
+        _globals = {
+            "define_attribute": define_attribute,
+            "vendor": define_attribute,
+        }
 
         for mapping in provider.property_mappings.all().order_by("name").select_subclasses():
             mapping: RadiusProviderPropertyMapping
             try:
                 res = mapping.evaluate(
-                    self.request.user,
-                    self.request,
-                    globals={"define_attribute": define_attribute},
-                    packet=packet,
+                    self.request.user, self.request, globals=_globals, packet=packet
                 )
                 # Normally we warn if a mapping returns None, however this was intended for this
                 # before 2026.11. We explicitly allow this here as a result, and only update
