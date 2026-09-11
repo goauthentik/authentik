@@ -21,7 +21,7 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/callback"),
+            [RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/callback")],
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
         self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
@@ -32,7 +32,7 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/callback"),
+            [RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/callback")],
         )
         self.assertNotIn("Access-Control-Allow-Origin", response)
 
@@ -42,10 +42,12 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(
-                RedirectURIMatchingMode.REGEX,
-                r"https://app-\w+\.example\.com",
-            ),
+            [
+                RedirectURI(
+                    RedirectURIMatchingMode.REGEX,
+                    r"https://app-\w+\.example\.com",
+                )
+            ],
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "https://app-abc123.example.com")
 
@@ -55,10 +57,12 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(
-                RedirectURIMatchingMode.REGEX,
-                r"https://app-\w+\.example\.com",
-            ),
+            [
+                RedirectURI(
+                    RedirectURIMatchingMode.REGEX,
+                    r"https://app-\w+\.example\.com",
+                )
+            ],
         )
         self.assertNotIn("Access-Control-Allow-Origin", response)
 
@@ -70,14 +74,14 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             self.factory.post("/", HTTP_ORIGIN="https://app-foo.example.com"),
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.REGEX, regex),
+            [RedirectURI(RedirectURIMatchingMode.REGEX, regex)],
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "https://app-foo.example.com")
         # Origin equal to a wrong host: must not match.
         response = cors_allow(
             self.factory.post("/", HTTP_ORIGIN="https://other.example.com"),
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.REGEX, regex),
+            [RedirectURI(RedirectURIMatchingMode.REGEX, regex)],
         )
         self.assertNotIn("Access-Control-Allow-Origin", response)
 
@@ -89,10 +93,12 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(
-                RedirectURIMatchingMode.REGEX,
-                r"https://app-\w+\.example\.com/callback",
-            ),
+            [
+                RedirectURI(
+                    RedirectURIMatchingMode.REGEX,
+                    r"https://app-\w+\.example\.com/callback",
+                )
+            ],
         )
         self.assertNotIn("Access-Control-Allow-Origin", response)
 
@@ -102,8 +108,10 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.REGEX, r"["),  # invalid regex
-            RedirectURI(RedirectURIMatchingMode.REGEX, r"https://good\.example\.com"),
+            [
+                RedirectURI(RedirectURIMatchingMode.REGEX, r"["),  # invalid regex
+                RedirectURI(RedirectURIMatchingMode.REGEX, r"https://good\.example\.com"),
+            ],
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "https://good.example.com")
 
@@ -114,7 +122,7 @@ class TestCorsAllow(TestCase):
         response = cors_allow(
             request,
             HttpResponse(),
-            RedirectURI(RedirectURIMatchingMode.REGEX, r"["),
+            [RedirectURI(RedirectURIMatchingMode.REGEX, r"[")],
         )
         self.assertNotIn("Access-Control-Allow-Origin", response)
 
@@ -132,7 +140,7 @@ class TestCorsAllow(TestCase):
     def test_bare_string_treated_as_strict(self):
         """Backwards compatibility: bare string entries are treated as STRICT."""
         request = self.factory.post("/", HTTP_ORIGIN="http://local.invalid")
-        response = cors_allow(request, HttpResponse(), "http://local.invalid/callback")
+        response = cors_allow(request, HttpResponse(), ["http://local.invalid/callback"])
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
 
     def test_mixed_strict_and_regex(self):
@@ -143,13 +151,13 @@ class TestCorsAllow(TestCase):
         )
         # Strict origin matches via the strict entry.
         response = cors_allow(
-            self.factory.post("/", HTTP_ORIGIN="http://local.invalid"), HttpResponse(), *entries
+            self.factory.post("/", HTTP_ORIGIN="http://local.invalid"), HttpResponse(), entries
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
         # Regex origin matches via the regex entry.
         response = cors_allow(
             self.factory.post("/", HTTP_ORIGIN="https://app-xyz.example.com"),
             HttpResponse(),
-            *entries,
+            entries,
         )
         self.assertEqual(response["Access-Control-Allow-Origin"], "https://app-xyz.example.com")

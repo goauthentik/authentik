@@ -56,10 +56,7 @@ class TokenView(View):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
-        if self.provider:
-            allowed_origins = self.provider.redirect_uris
-        cors_allow(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
