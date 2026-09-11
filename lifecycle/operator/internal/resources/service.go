@@ -38,10 +38,10 @@ func (b *Builder) ServerService(c *component) *corev1.Service {
 		httpsPort.NodePort = ptr.Deref(spec.NodePortHTTPS, defaultNodePortHTTPS)
 	}
 	if spec.ServicePortHTTPAppProtocol != "" {
-		httpPort.AppProtocol = ptr.To(spec.ServicePortHTTPAppProtocol)
+		httpPort.AppProtocol = new(spec.ServicePortHTTPAppProtocol)
 	}
 	if spec.ServicePortHTTPSAppProtocol != "" {
-		httpsPort.AppProtocol = ptr.To(spec.ServicePortHTTPSAppProtocol)
+		httpsPort.AppProtocol = new(spec.ServicePortHTTPSAppProtocol)
 	}
 
 	service := &corev1.Service{

@@ -42,9 +42,7 @@ func (b *Builder) Ingress(c *component) *networkingv1.Ingress {
 	}
 
 	rule := networkingv1.IngressRule{
-		IngressRuleValue: networkingv1.IngressRuleValue{
-			HTTP: &networkingv1.HTTPIngressRuleValue{Paths: rulePaths},
-		},
+		HTTP: &networkingv1.HTTPIngressRuleValue{Paths: rulePaths},
 	}
 
 	// With no hosts, a single host-less rule matches every hostname.
@@ -66,7 +64,7 @@ func (b *Builder) Ingress(c *component) *networkingv1.Ingress {
 		},
 	}
 	if spec.IngressClassName != "" {
-		ingress.Spec.IngressClassName = ptr.To(spec.IngressClassName)
+		ingress.Spec.IngressClassName = new(spec.IngressClassName)
 	}
 
 	return ingress

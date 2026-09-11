@@ -51,7 +51,7 @@ func utilizationMetric(name corev1.ResourceName, target int32) autoscalingv2.Met
 			Name: name,
 			Target: autoscalingv2.MetricTarget{
 				Type:               autoscalingv2.UtilizationMetricType,
-				AverageUtilization: ptr.To(target),
+				AverageUtilization: new(target),
 			},
 		},
 	}
@@ -80,7 +80,7 @@ func (b *Builder) PodDisruptionBudget(c *component) *policyv1.PodDisruptionBudge
 	case spec.MinAvailable != nil:
 		pdb.Spec.MinAvailable = spec.MinAvailable
 	default:
-		pdb.Spec.MinAvailable = ptr.To(intstr.FromInt32(0))
+		pdb.Spec.MinAvailable = new(intstr.FromInt32(0))
 	}
 
 	return pdb

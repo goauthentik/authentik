@@ -155,7 +155,7 @@ func (b *Builder) PostgreSQLStatefulSet() (*appsv1.StatefulSet, error) {
 		ObjectMeta: b.objectMeta(b.PostgreSQLName(), postgresqlComponent, nil, nil),
 		Spec: appsv1.StatefulSetSpec{
 			ServiceName: b.PostgreSQLName(),
-			Replicas:    ptr.To(int32(1)),
+			Replicas:    new(int32(1)),
 			Selector:    &metav1.LabelSelector{MatchLabels: b.SelectorLabels(postgresqlComponent)},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: b.Labels(postgresqlComponent)},
@@ -181,8 +181,8 @@ func (b *Builder) attachPostgreSQLStorage(statefulSet *appsv1.StatefulSet, spec 
 	if persistence != nil && persistence.Enabled != nil && !*persistence.Enabled {
 		// Explicitly opted out: the database lives and dies with the pod.
 		statefulSet.Spec.Template.Spec.Volumes = []corev1.Volume{{
-			Name:         volumeNameData,
-			VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			Name:     volumeNameData,
+			EmptyDir: &corev1.EmptyDirVolumeSource{},
 		}}
 		return
 	}
@@ -190,10 +190,8 @@ func (b *Builder) attachPostgreSQLStorage(statefulSet *appsv1.StatefulSet, spec 
 	if persistence != nil && persistence.ExistingClaim != "" {
 		statefulSet.Spec.Template.Spec.Volumes = []corev1.Volume{{
 			Name: volumeNameData,
-			VolumeSource: corev1.VolumeSource{
-				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-					ClaimName: persistence.ExistingClaim,
-				},
+			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+				ClaimName: persistence.ExistingClaim,
 			},
 		}}
 		return
@@ -204,12 +202,12 @@ func (b *Builder) attachPostgreSQLStorage(statefulSet *appsv1.StatefulSet, spec 
 	if persistence != nil {
 		size = cmp.Or(persistence.Size, size)
 		if persistence.StorageClass != "" {
-			storageClass = ptr.To(persistence.StorageClass)
+			storageClass = new(persistence.StorageClass)
 		}
 	}
 
 	statefulSet.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{{
-		ObjectMeta: metav1.ObjectMeta{Name: volumeNameData},
+		Name: volumeNameData,
 		Spec: corev1.PersistentVolumeClaimSpec{
 			AccessModes:      []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
 			StorageClassName: storageClass,
@@ -245,10 +243,8 @@ func (b *Builder) postgresqlImage(spec *akv1alpha1.PostgreSQLSpec) string {
 
 func postgresProbe(user, database string, initialDelay, period int32) *corev1.Probe {
 	return &corev1.Probe{
-		ProbeHandler: corev1.ProbeHandler{
-			Exec: &corev1.ExecAction{
-				Command: []string{"pg_isready", "-U", user, "-d", database},
-			},
+		Exec: &corev1.ExecAction{
+			Command: []string{"pg_isready", "-U", user, "-d", database},
 		},
 		InitialDelaySeconds: initialDelay,
 		PeriodSeconds:       period,

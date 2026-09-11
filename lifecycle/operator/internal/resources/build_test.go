@@ -8,7 +8,6 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/yaml"
@@ -16,8 +15,6 @@ import (
 	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 	"goauthentik.io/lifecycle/operator/internal/resources"
 )
-
-func ptr[T any](v T) *T { return &v }
 
 func ptrIntOrString(value string) *intstr.IntOrString {
 	parsed := intstr.FromString(value)
@@ -54,8 +51,8 @@ func build(t *testing.T, spec akv1alpha1.AuthentikSpec) map[string]map[string]an
 	t.Helper()
 
 	ak := &akv1alpha1.Authentik{
-		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
-		Spec:       spec,
+		Name: name, Namespace: namespace,
+		Spec: spec,
 	}
 	builder := &resources.Builder{Authentik: ak, Version: testTag}
 
@@ -104,20 +101,16 @@ func buildOurs(t *testing.T) map[string]map[string]any {
 			},
 		},
 		Server: &akv1alpha1.ServerSpec{
-			ComponentSpec: akv1alpha1.ComponentSpec{
-				Metrics: metrics(),
-				PDB:     &akv1alpha1.PDBSpec{Enabled: true},
-			},
+			Metrics: metrics(),
+			PDB:     &akv1alpha1.PDBSpec{Enabled: true},
 			Ingress: &akv1alpha1.IngressSpec{
 				Enabled: true,
 				Hosts:   []string{"authentik.example.com"},
 			},
 		},
 		Worker: &akv1alpha1.WorkerSpec{
-			ComponentSpec: akv1alpha1.ComponentSpec{
-				Metrics: metrics(),
-				PDB:     &akv1alpha1.PDBSpec{Enabled: true},
-			},
+			Metrics: metrics(),
+			PDB:     &akv1alpha1.PDBSpec{Enabled: true},
 		},
 		Prometheus: &akv1alpha1.PrometheusSpec{
 			Rules: &akv1alpha1.PrometheusRulesSpec{Enabled: true},
@@ -235,8 +228,8 @@ func TestBuildConfigSecretFlattening(t *testing.T) {
 			SecretKey: "x",
 			Email: &akv1alpha1.AuthentikEmailConfig{
 				Host:   testSMTP,
-				Port:   ptr(int32(465)),
-				UseSSL: ptr(true),
+				Port:   new(int32(465)),
+				UseSSL: new(true),
 			},
 			ExtraConfig: &apiextensionsv1.JSON{
 				Raw: []byte(`{"cache":{"timeout":600},"footer_links":[{"name":"Docs"}]}`),
@@ -355,14 +348,12 @@ func TestBuildDefaultAffinitySpreadsReplicas(t *testing.T) {
 func TestBuildAutoscalingLeavesReplicasUnset(t *testing.T) {
 	spec := minimalSpec()
 	spec.Server = &akv1alpha1.ServerSpec{
-		ComponentSpec: akv1alpha1.ComponentSpec{
-			Replicas: ptr(int32(3)),
-			Autoscaling: &akv1alpha1.AutoscalingSpec{
-				Enabled:                        true,
-				MinReplicas:                    ptr(int32(2)),
-				MaxReplicas:                    ptr(int32(8)),
-				TargetCPUUtilizationPercentage: ptr(int32(70)),
-			},
+		Replicas: new(int32(3)),
+		Autoscaling: &akv1alpha1.AutoscalingSpec{
+			Enabled:                        true,
+			MinReplicas:                    new(int32(2)),
+			MaxReplicas:                    new(int32(8)),
+			TargetCPUUtilizationPercentage: new(int32(70)),
 		},
 	}
 	objects := build(t, spec)
@@ -385,7 +376,7 @@ func TestBuildAutoscalingLeavesReplicasUnset(t *testing.T) {
 func TestBuildDisablingAComponent(t *testing.T) {
 	spec := minimalSpec()
 	spec.Worker = &akv1alpha1.WorkerSpec{
-		ComponentSpec: akv1alpha1.ComponentSpec{Enabled: ptr(false)},
+		Enabled: new(false),
 	}
 	objects := build(t, spec)
 
@@ -424,8 +415,8 @@ func TestBuildGeoIPSidecar(t *testing.T) {
 
 func TestBuildGeoIPRequiresCredentials(t *testing.T) {
 	ak := &akv1alpha1.Authentik{
-		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
-		Spec:       minimalSpec(),
+		Name: name, Namespace: namespace,
+		Spec: minimalSpec(),
 	}
 	ak.Spec.GeoIP = &akv1alpha1.GeoIPSpec{Enabled: true}
 
@@ -462,7 +453,7 @@ func TestBuildBlueprintMountsOnlyOnTheWorker(t *testing.T) {
 func TestBuildBundledPostgreSQL(t *testing.T) {
 	spec := minimalSpec()
 	spec.PostgreSQL = &akv1alpha1.PostgreSQLSpec{
-		Enabled: ptr(true),
+		Enabled: new(true),
 		Auth:    &akv1alpha1.PostgreSQLAuthSpec{Password: "p"},
 		Primary: &akv1alpha1.PostgreSQLPrimarySpec{
 			Persistence: &akv1alpha1.PostgreSQLPersistenceSpec{Size: "16Gi"},
@@ -492,10 +483,10 @@ func TestBuildBundledPostgreSQL(t *testing.T) {
 
 func TestBuildPostgreSQLRequiresAPassword(t *testing.T) {
 	ak := &akv1alpha1.Authentik{
-		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
-		Spec:       minimalSpec(),
+		Name: name, Namespace: namespace,
+		Spec: minimalSpec(),
 	}
-	ak.Spec.PostgreSQL = &akv1alpha1.PostgreSQLSpec{Enabled: ptr(true)}
+	ak.Spec.PostgreSQL = &akv1alpha1.PostgreSQLSpec{Enabled: new(true)}
 
 	builder := &resources.Builder{Authentik: ak, Version: testTag}
 	if _, err := builder.Build(); err == nil {
@@ -530,8 +521,8 @@ func TestBuildOwnerLabelDistinguishesInstances(t *testing.T) {
 	first := build(t, minimalSpec())
 
 	other := &akv1alpha1.Authentik{
-		ObjectMeta: metav1.ObjectMeta{Name: "other", Namespace: namespace},
-		Spec:       minimalSpec(),
+		Name: "other", Namespace: namespace,
+		Spec: minimalSpec(),
 	}
 	builder := &resources.Builder{Authentik: other, Version: testTag}
 	objects, err := builder.Build()
@@ -558,11 +549,9 @@ func TestBuildOwnerLabelDistinguishesInstances(t *testing.T) {
 func TestBuildMetricsAndServiceMonitor(t *testing.T) {
 	spec := minimalSpec()
 	spec.Server = &akv1alpha1.ServerSpec{
-		ComponentSpec: akv1alpha1.ComponentSpec{
-			Metrics: &akv1alpha1.MetricsSpec{
-				Enabled:        true,
-				ServiceMonitor: &akv1alpha1.ServiceMonitorSpec{Enabled: true},
-			},
+		Metrics: &akv1alpha1.MetricsSpec{
+			Enabled:        true,
+			ServiceMonitor: &akv1alpha1.ServiceMonitorSpec{Enabled: true},
 		},
 	}
 	objects := build(t, spec)
@@ -625,9 +614,7 @@ func TestBuildRecreateStrategyDropsRollingUpdate(t *testing.T) {
 		RollingUpdate: &akv1alpha1.RollingUpdate{MaxSurge: ptrIntOrString("25%")},
 	}
 	spec.Server = &akv1alpha1.ServerSpec{
-		ComponentSpec: akv1alpha1.ComponentSpec{
-			DeploymentStrategy: &akv1alpha1.DeploymentStrategy{Type: "Recreate"},
-		},
+		DeploymentStrategy: &akv1alpha1.DeploymentStrategy{Type: "Recreate"},
 	}
 
 	server := mustGet(t, build(t, spec), "Deployment/authentik-server")
@@ -645,13 +632,11 @@ func TestBuildSecurityContextMergesOverGlobal(t *testing.T) {
 	// the global value of the others.
 	spec := minimalSpec()
 	spec.Global.SecurityContext = &corev1.PodSecurityContext{
-		RunAsUser: ptr(int64(1000)),
-		FSGroup:   ptr(int64(2000)),
+		RunAsUser: new(int64(1000)),
+		FSGroup:   new(int64(2000)),
 	}
 	spec.Server = &akv1alpha1.ServerSpec{
-		ComponentSpec: akv1alpha1.ComponentSpec{
-			SecurityContext: &corev1.PodSecurityContext{RunAsUser: ptr(int64(1001))},
-		},
+		SecurityContext: &corev1.PodSecurityContext{RunAsUser: new(int64(1001))},
 	}
 
 	server := mustGet(t, build(t, spec), "Deployment/authentik-server")
@@ -671,7 +656,7 @@ func TestBuildYAMLIsValid(t *testing.T) {
 		Global:    &akv1alpha1.GlobalSpec{Image: &akv1alpha1.ImageSpec{Tag: testTag}},
 		Authentik: &akv1alpha1.AuthentikConfigSpec{SecretKey: "x"},
 		PostgreSQL: &akv1alpha1.PostgreSQLSpec{
-			Enabled: ptr(true),
+			Enabled: new(true),
 			Auth:    &akv1alpha1.PostgreSQLAuthSpec{Password: "p"},
 		},
 	})

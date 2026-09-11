@@ -3,14 +3,12 @@ package v1alpha1
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func authentik(name, namespace string, spec AuthentikSpec) *Authentik {
 	return &Authentik{
-		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
-		Spec:       spec,
+		Name: name, Namespace: namespace,
+		Spec: spec,
 	}
 }
 
@@ -73,7 +71,7 @@ var _ = Describe("Naming", func() {
 var _ = Describe("Defaults", func() {
 	It("prunes objects that leave the desired state unless explicitly disabled", func() {
 		Expect(authentik("a", "n", AuthentikSpec{}).PruneEnabled()).To(BeTrue())
-		Expect(authentik("a", "n", AuthentikSpec{Prune: ptr(false)}).PruneEnabled()).To(BeFalse())
+		Expect(authentik("a", "n", AuthentikSpec{Prune: new(false)}).PruneEnabled()).To(BeFalse())
 	})
 
 	It("scopes the owner selector to one instance, so two cannot prune each other", func() {
@@ -88,7 +86,7 @@ var _ = Describe("Defaults", func() {
 		Expect(authentik("a", "n", AuthentikSpec{}).MigrationsEnabled()).To(BeTrue())
 		Expect(authentik("a", "n", AuthentikSpec{Migrations: &MigrationsSpec{}}).MigrationsEnabled()).To(BeTrue())
 		Expect(authentik("a", "n", AuthentikSpec{
-			Migrations: &MigrationsSpec{Enabled: ptr(false)},
+			Migrations: &MigrationsSpec{Enabled: new(false)},
 		}).MigrationsEnabled()).To(BeFalse())
 	})
 
@@ -114,5 +112,3 @@ var _ = Describe("Defaults", func() {
 			"registry.example.com/authentik:2026.8.0@sha256:0000000000000000000000000000000000000000000000000000000000000000"))
 	})
 })
-
-func ptr[T any](v T) *T { return &v }

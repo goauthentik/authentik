@@ -7,11 +7,9 @@ import (
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	"k8s.io/utils/ptr"
 
 	instancev1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
@@ -38,12 +36,10 @@ func testScheme(t *testing.T) *runtime.Scheme {
 
 func testAuthentik(spec instancev1alpha1.AuthentikSpec) *instancev1alpha1.Authentik {
 	return &instancev1alpha1.Authentik{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-			UID:       "11111111-2222-3333-4444-555555555555",
-		},
-		Spec: spec,
+		Name:      name,
+		Namespace: namespace,
+		UID:       "11111111-2222-3333-4444-555555555555",
+		Spec:      spec,
 	}
 }
 
@@ -114,14 +110,12 @@ func TestBuildMigrationJobInheritsWorkerScheduling(t *testing.T) {
 	// that normally runs them.
 	ak := testAuthentik(instancev1alpha1.AuthentikSpec{
 		Worker: &instancev1alpha1.WorkerSpec{
-			ComponentSpec: instancev1alpha1.ComponentSpec{
-				NodeSelector:       map[string]string{"workload": name},
-				ServiceAccountName: "authentik-worker",
-				PriorityClassName:  "high",
-				Tolerations: []corev1.Toleration{{
-					Key: "dedicated", Operator: corev1.TolerationOpEqual, Value: name,
-				}},
-			},
+			NodeSelector:       map[string]string{"workload": name},
+			ServiceAccountName: "authentik-worker",
+			PriorityClassName:  "high",
+			Tolerations: []corev1.Toleration{{
+				Key: "dedicated", Operator: corev1.TolerationOpEqual, Value: name,
+			}},
 		},
 	})
 	job := buildJob(t, ak, chartTag)
@@ -199,7 +193,7 @@ func TestMigrationJobNameIgnoresUnrelatedChanges(t *testing.T) {
 	base := testAuthentik(instancev1alpha1.AuthentikSpec{})
 	scaled := testAuthentik(instancev1alpha1.AuthentikSpec{
 		Server: &instancev1alpha1.ServerSpec{
-			ComponentSpec: instancev1alpha1.ComponentSpec{Replicas: ptr.To(int32(5))},
+			Replicas: new(int32(5)),
 		},
 	})
 
