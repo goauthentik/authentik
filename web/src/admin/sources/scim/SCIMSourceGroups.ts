@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -18,7 +19,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesScimGroupsList({
+        return aki(SourcesApi).sourcesScimGroupsList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.sourceSlug,
         });
@@ -40,7 +41,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
 
     row(item: SCIMSourceGroup): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href=${toAdminInterface(`identity/groups/${item.groupObj.pk}`)}>
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.externalId}`,

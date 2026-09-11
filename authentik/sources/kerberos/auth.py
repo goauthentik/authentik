@@ -42,7 +42,7 @@ class KerberosBackend(InbuiltBackend):
             usersourceconnection__source__in=sources, username=username, **filters
         ).first()
 
-        if user is not None:
+        if user is not None and self.user_can_authenticate(user):
             # User found, let's get its connections for the sources that are available
             user_source_connections = UserKerberosSourceConnection.objects.filter(
                 user=user, source__in=sources

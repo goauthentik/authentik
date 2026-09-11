@@ -2,6 +2,7 @@ import { StorageAccessor } from "#common/storage";
 import { getCookie } from "#common/utils";
 
 import { ReactiveElementHost } from "#elements/types";
+import { findEmptyFocusCandidate } from "#elements/utils/focus";
 
 import type { IdentificationStage } from "#flow/stages/identification/IdentificationStage";
 
@@ -156,7 +157,7 @@ export class RememberMeController implements ReactiveController {
             return;
         }
 
-        const focusTarget = passwordField && usernameField?.value ? passwordField : usernameField;
+        const focusTarget = findEmptyFocusCandidate(usernameField, passwordField);
 
         if (focusTarget) {
             focusTarget.focus();

@@ -1,29 +1,113 @@
 import "#elements/EmptyState";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AKRefreshEvent } from "#common/events";
 
-import { Diagram } from "#elements/Diagram";
+import { listen } from "#elements/decorators/listen";
+import { Diagram } from "#elements/Diagram/ak-diagram";
 
-import { FlowsApi } from "@goauthentik/api";
+import { diagramToolbar } from "#admin/flows/FlowDiagramToolbar";
+import { buildFlowGraph, isEditableNode, resolveNodeID } from "#admin/flows/FlowGraph";
 
-import { customElement, property } from "lit/decorators.js";
+import { DiagramNode, FlowDiagram as FlowDiagramGraph, FlowsApi } from "@goauthentik/api";
+
+import { observes } from "@patternfly/pfe-core/decorators/observes.js";
+
+import { css, render } from "lit";
+import { customElement, property, queryAll } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
+const EditIconStyles = css`
+    .ak-diagram-toolbar > .pf-c-button {
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: var(--pf-global--spacer--lg, 1.5rem);
+        block-size: var(--pf-global--spacer--lg, 1.5rem);
+        padding: 0;
+        line-height: 1;
+
+        --pf-global--Color--200: var(--pf-global--palette--purple-500);
+        --pf-global--Color--100: var(--pf-global--palette--purple-600);
+    }
+`;
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {
-    @property()
-    flowSlug?: string;
+    public static override styles = [
+        // ---
+        ...Diagram.styles,
+        PFButton,
+        EditIconStyles,
+    ];
 
-    refreshHandler = (): void => {
-        this.diagram = undefined;
-        new FlowsApi(DEFAULT_CONFIG)
+    @property({ type: String, useDefault: true })
+    public flowSlug: string | null = null;
+
+    @property({ attribute: false })
+    public graph: FlowDiagramGraph | null = null;
+
+    protected nodes: ReadonlyMap<string, DiagramNode> = new Map();
+
+    @observes("flowSlug")
+    protected refresh(): Promise<void> {
+        if (!this.flowSlug) {
+            return Promise.resolve();
+        }
+
+        return aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })
-            .then((data) => {
-                this.diagram = data.diagram;
-                this.requestUpdate();
+            .then((graph) => {
+                this.graph = graph;
             });
+    }
+
+    @observes("graph")
+    protected rebuild() {
+        if (!this.graph) {
+            return;
+        }
+
+        const { diagram, nodes } = buildFlowGraph(this.graph);
+        this.nodes = nodes;
+        this.diagram = diagram;
+    }
+
+    // When the flow changes, the diagram must be rebuilt
+    @listen(AKRefreshEvent, { target: window })
+    protected reload = () => {
+        this.refresh();
     };
+
+    @queryAll("g.node[id]")
+    svgGroups!: SVGGElement[];
+
+    // Install the toolbar.
+    protected override diagramUpdated() {
+        for (const group of this.svgGroups) {
+            const id = resolveNodeID(group.id);
+            const node = id ? this.nodes.get(id) : null;
+
+            if (!(node && isEditableNode(node))) {
+                continue;
+            }
+
+            const toolbars = group.querySelectorAll<HTMLElement>(".ak-diagram-toolbar");
+            const toolbar = toolbars.item(toolbars.length - 1);
+
+            if (!toolbar) {
+                continue;
+            }
+
+            group.setAttribute("data-ak-node", node.identifier);
+
+            render(diagramToolbar(node), toolbar);
+        }
+    }
 }
 
 declare global {

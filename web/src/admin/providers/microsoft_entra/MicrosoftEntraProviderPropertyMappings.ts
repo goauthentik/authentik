@@ -1,12 +1,12 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 export async function microsoftEntraPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
+    const propertyMappings = await aki(
+        PropertymappingsApi,
     ).propertymappingsProviderMicrosoftEntraList({
         ordering: "managed",
         pageSize: 20,

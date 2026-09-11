@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { SlottedTemplateResult } from "#elements/types";
@@ -16,8 +16,7 @@ export function IconEnrollmentTokenCopyButton(tokenUuid?: string | null): Slotte
                 return Promise.resolve(new Blob([""], { type: "text/plain" }));
             }
 
-            return new EndpointsApi(DEFAULT_CONFIG)
-
+            return aki(EndpointsApi)
                 .endpointsAgentsEnrollmentTokensViewKeyRetrieve({
                     tokenUuid,
                 })

@@ -3,8 +3,9 @@
 from django.http import HttpResponse
 from rest_framework.fields import CharField
 
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.providers.oauth2.models import DeviceToken
@@ -35,7 +36,15 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
         # As we're required to be authenticated by now, we can rely on
         # request.user
         token.user = self.request.user
+        token.session = self.request.session.get("authenticatedsession")
         token.save()
+        # Log Application Authorization
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=plan.context[PLAN_CONTEXT_APPLICATION],
+            flow=plan.flow_pk,
+            scopes=" ".join(token.scope),
+        ).from_http(self.request)
         return OAuthDeviceCodeFinishChallenge(
             data={
                 "component": "ak-provider-oauth2-device-code-finish",
@@ -43,4 +52,4 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        self.executor.stage_ok()
+        return self.executor.stage_ok()

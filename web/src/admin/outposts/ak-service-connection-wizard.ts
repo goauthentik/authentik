@@ -4,7 +4,7 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 
@@ -18,7 +18,7 @@ export class AKServiceConnectionWizard extends CreateWizard {
     public static override verboseName = msg("Outpost Integration");
     public static override verboseNamePlural = msg("Outpost Integrations");
 
-    #api = new OutpostsApi(DEFAULT_CONFIG);
+    #api = aki(OutpostsApi);
 
     protected apiEndpoint = (): Promise<TypeCreate[]> => {
         return this.#api.outpostsServiceConnectionsAllTypesList();

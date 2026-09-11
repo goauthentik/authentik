@@ -1,5 +1,5 @@
 import "#components/ak-radio-input";
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -11,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -24,6 +24,7 @@ import {
     CoreGroupsListRequest,
     Group,
     MicrosoftEntraProvider,
+    MicrosoftEntraProviderRequest,
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
@@ -35,23 +36,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
-    loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraRetrieve({
-            id: pk,
-        });
-    }
-
-    async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
-        if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUpdate({
-                id: this.instance.pk,
-                microsoftEntraProviderRequest: data,
-            });
-        }
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
-            microsoftEntraProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersMicrosoftEntraRetrieve({ id }),
+        create: (microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
+            aki(ProvidersApi).providersMicrosoftEntraCreate({
+                microsoftEntraProviderRequest:
+                    microsoftEntraProviderRequest as unknown as MicrosoftEntraProviderRequest,
+            }),
+        update: (id: number, patchedMicrosoftEntraProviderRequest: MicrosoftEntraProvider) =>
+            aki(ProvidersApi).providersMicrosoftEntraPartialUpdate({
+                id,
+                patchedMicrosoftEntraProviderRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
@@ -77,16 +74,15 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client ID for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-hidden-text-input
+                    <ak-secret-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
-                        autocomplete="off"
-                        value="${this.instance?.clientSecret ?? ""}"
                         input-hint="code"
-                        required
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                         .help=${msg("Client secret for the app registration.")}
                     >
-                    </ak-hidden-text-input>
+                    </ak-secret-text-input>
                     <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"
@@ -171,9 +167,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
@@ -253,6 +247,12 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+                    <ak-switch-input
+                        name="discoveryEnabled"
+                        label=${msg("Enable automatic discovery of remote resources.")}
+                        ?checked=${this.instance?.discoveryEnabled ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

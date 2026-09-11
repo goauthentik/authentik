@@ -1,4 +1,6 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
@@ -17,7 +19,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     public override label = msg("Version");
 
     getPrimaryValue(): Promise<Version> {
-        return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        return aki(AdminApi).adminVersionRetrieve();
     }
 
     getStatus(value: Version): Promise<AdminStatus> {
@@ -37,7 +39,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("An outpost is on an incorrect version!")}
-                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
+                    <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
             });
         }
         if (value.versionLatestValid) {

@@ -1,5 +1,6 @@
 """Test Evaluator base functions"""
 
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -37,6 +38,17 @@ class TestEvaluator(TestCase):
     def test_expr_is_group_member(self):
         """Test expr_is_group_member"""
         self.assertFalse(BaseEvaluator.expr_is_group_member(create_test_admin_user(), name="test"))
+
+    def test_expr_obj_attr(self):
+        """Test expr_obj_attr"""
+        user = create_test_user()
+        user.attributes = {"locale": "en-US"}
+
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "locale", "en-GB"), "en-US")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "username"), user.username)
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "en-GB"), "en-GB")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", ""), "")
+        self.assertIsNone(BaseEvaluator.expr_obj_attr(user, "missing"))
 
     def test_expr_event_create(self):
         """Test expr_event_create"""
@@ -195,13 +207,17 @@ class TestEvaluator(TestCase):
         """Test ak_send_email with custom context parameter"""
         user = create_test_user()
         evaluator = BaseEvaluator(generate_id())
-        evaluator._context = {"user": user, "request_id": "123"}
+        evaluator._context = {
+            "user": user,
+            "request_id": "123",
+            "expires": datetime(year=2026, month=1, day=1),
+        }
 
         # Test sending email with template and custom context
         result = evaluator.evaluate(
             "return ak_send_email('test@example.com', 'Test Subject', "
             "template='email/password_reset.html', "
-            "context={'url': 'http://localhost', 'expires': '2026-01-01'})"
+            "context={'url': 'http://localhost', 'expires': expires})"
         )
 
         self.assertTrue(result)
@@ -216,7 +232,7 @@ class TestEvaluator(TestCase):
 
         self.assertEqual(message.subject, "Test Subject")
         self.assertEqual(message.to, ["test@example.com"])
-        self.assertIn("2026-01-01", message.body)
+        self.assertIn("minutes", message.body)
         self.assertIn("http://localhost", message.body)
 
     @patch("authentik.stages.email.tasks.send_mails")

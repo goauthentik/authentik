@@ -1,11 +1,12 @@
 import "#elements/LoadingOverlay";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isCausedByAbortError } from "#common/errors/network";
 
 import { AKCommandPaletteModal } from "#elements/commands/ak-command-palette-modal";
 import { PaletteCommandDefinition, PaletteCommandNamespace } from "#elements/commands/shared";
-import { navigate } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi } from "@goauthentik/api";
@@ -17,7 +18,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-command-palette-user-modal")
 export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
     protected loadingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
 
     public override placeholder = msg("Type a username or email address...", {
@@ -73,7 +74,7 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
                         namespace: PaletteCommandNamespace.Action,
                         keywords: user.groups,
                         label,
-                        action: () => navigate(`/identity/users/${user.pk}`),
+                        action: () => navigate(toAdminInterface(`identity/users/${user.pk}`)),
                         group: msg("Users"),
                     };
                 });

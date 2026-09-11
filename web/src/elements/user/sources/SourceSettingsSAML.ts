@@ -1,11 +1,13 @@
 import "#elements/Spinner";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { BaseUserSettings } from "#elements/user/sources/BaseUserSettings";
 
 import { SourcesApi } from "@goauthentik/api";
@@ -17,7 +19,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-user-settings-source-saml")
 export class SourceSettingsSAML extends BaseUserSettings {
     protected disconnectSource(): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesUserConnectionsSamlDestroy({
                 id: this.connectionPk,
             })
@@ -54,9 +56,7 @@ export class SourceSettingsSAML extends BaseUserSettings {
 
         return html`<a
             class="pf-c-button pf-m-primary"
-            href="${this.configureURL}${AndNext(
-                `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-            )}"
+            href="${this.configureURL}${AndNext(toUserInterface("settings/sources"))}"
         >
             ${msg("Connect")}
         </a>`;

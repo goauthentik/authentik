@@ -116,6 +116,10 @@ class StreamResponseSerializer(PassiveSerializer):
 class StreamView(SSFStreamView):
 
     def get(self, request: Request, *args, **kwargs):
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to read stream for this provider."
+            )
         stream = self.get_object()
         return Response(
             StreamResponseSerializer(instance=stream, context={"request": request}).data
@@ -141,6 +145,10 @@ class StreamView(SSFStreamView):
         return Response(response, status=201)
 
     def patch(self, request: Request, *args, **kwargs) -> Response:
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to update stream for this provider."
+            )
         stream = self.get_object()
         serializer = StreamSerializer(stream, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -151,6 +159,10 @@ class StreamView(SSFStreamView):
         return Response(response, status=200)
 
     def put(self, request: Request, *args, **kwargs) -> Response:
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to update stream for this provider."
+            )
         stream = self.get_object()
         serializer = StreamSerializer(stream, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -161,6 +173,10 @@ class StreamView(SSFStreamView):
         return Response(response, status=200)
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to delete stream for this provider."
+            )
         stream = self.get_object()
         if stream.status == StreamStatus.DISABLED_DELETED:
             raise Http404
@@ -172,6 +188,10 @@ class StreamView(SSFStreamView):
 class StreamVerifyView(SSFStreamView):
 
     def post(self, request: Request, *args, **kwargs):
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to verify stream for this provider."
+            )
         stream = self.get_object()
         state = request.data.get("state", None)
         send_ssf_events(
@@ -193,6 +213,10 @@ class StreamStatusView(SSFStreamView):
         status = ChoiceField(choices=StreamStatus.choices)
 
     def get(self, request: Request, *args, **kwargs):
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to read stream for this provider."
+            )
         stream = self.get_object()
         return Response(
             {
@@ -202,6 +226,10 @@ class StreamStatusView(SSFStreamView):
         )
 
     def post(self, request: Request, *args, **kwargs):
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to update stream for this provider."
+            )
         stream = self.get_object()
         serializer = self.StreamStatusSerializer(stream, data=request.data)
         serializer.is_valid(raise_exception=True)

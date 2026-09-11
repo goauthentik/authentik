@@ -1,11 +1,12 @@
 import "#elements/Expand";
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
@@ -348,12 +349,15 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                     <div class="pf-c-card__body">
                         <span
                             >${until(
-                                new FlowsApi(DEFAULT_CONFIG)
+                                aki(FlowsApi)
                                     .flowsInstancesList({
                                         flowUuid: this.event.context.flow as string,
                                     })
                                     .then((resp) => {
-                                        return html`<a href="#/flow/flows/${resp.results[0].slug}"
+                                        return html`<a
+                                            href=${toAdminInterface(
+                                                `flow/flows/${resp.results[0].slug}`,
+                                            )}
                                             >${resp.results[0].name}</a
                                         >`;
                                     }),

@@ -1,7 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -27,7 +27,7 @@ export class UserGroupTable extends Table<Group> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+        return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });

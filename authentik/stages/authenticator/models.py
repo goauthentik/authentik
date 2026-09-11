@@ -291,7 +291,7 @@ class VerifyNotAllowed:
 
 class ThrottlingMixin(models.Model):
     """
-    Mixin class for models that want throttling behaviour.
+    Mixin class for models that want throttling behavior.
 
     This implements exponential back-off for verifying tokens. Subclasses must
     implement :meth:`get_throttle_factor`, and must use the

@@ -1,9 +1,8 @@
 from typing import Any
 
-from django.db.models import Model
+from django.db.models import Model, Q
 from django.http import HttpRequest
 from django.utils.timezone import now
-from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from jwt import PyJWTError, decode, encode
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import PermissionDenied
@@ -17,6 +16,7 @@ from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.models import Device
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBindingModel
@@ -41,6 +41,7 @@ class DeviceUser(VirtualUser):
 
 class AgentEnrollmentAuth(BaseAuthentication):
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request)
         key = validate_auth(auth)
@@ -55,6 +56,7 @@ class AgentEnrollmentAuth(BaseAuthentication):
 
 class AgentAuth(BaseAuthentication):
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request)
         key = validate_auth(auth, format="bearer+agent")
@@ -96,12 +98,28 @@ def agent_auth_issue_token(device: Device, connector: AgentConnector, user: User
 
 class DeviceAuthFedAuthentication(BaseAuthentication):
 
+    @active_tracer().instrument()
     def authenticate(self, request):
         raw_token = validate_auth(get_authorization_header(request))
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.objects.filter(name=request.query_params.get("device")).first()
+        device = (
+            Device.objects.filter(
+                Q(
+                    name=request.query_params.get("device"),
+                )
+                | Q(
+                    **{
+                        "deviceconnection__devicefactsnapshot__"
+                        "data__vendor__goauthentik.io/platform__"
+                        "ssh_host_keys__contains": request.query_params.get("device"),
+                    }
+                )
+            )
+            .distinct()
+            .first()
+        )
         if not device:
             LOGGER.warning("Couldn't find device")
             return None
@@ -131,17 +149,6 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
             return None
-
-
-class DeviceFederationAuthSchema(OpenApiAuthenticationExtension):
-    """Auth schema"""
-
-    target_class = DeviceAuthFedAuthentication
-    name = "device_federation"
-
-    def get_security_definition(self, auto_schema):
-        """Auth schema"""
-        return {"type": "http", "scheme": "bearer"}
 
 
 def check_device_policies(device: Device, user: User, request: HttpRequest):

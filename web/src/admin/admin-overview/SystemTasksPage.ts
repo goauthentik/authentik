@@ -2,8 +2,8 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 import "#admin/rbac/ObjectPermissionModal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -40,7 +40,7 @@ export class SystemTasksPage extends AKElement {
 
     render(): TemplateResult {
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"

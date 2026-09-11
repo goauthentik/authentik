@@ -3,8 +3,9 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -18,6 +19,9 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-user-oauth-refresh-token-list")
 export class UserOAuthRefreshTokenList extends Table<TokenModel> {
+    public static override verboseName = msg("Refresh Token");
+    public static override verboseNamePlural = msg("Refresh Tokens");
+
     expandable = true;
 
     @property({ type: Number })
@@ -26,7 +30,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     static styles: CSSResult[] = [...super.styles, PFFlex];
 
     async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
-        return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
+        return aki(Oauth2Api).oauth2RefreshTokensList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
@@ -62,12 +66,12 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
             object-label=${msg("Refresh Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                return aki(Oauth2Api).oauth2RefreshTokensUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
+                return aki(Oauth2Api).oauth2RefreshTokensDestroy({
                     id: item.pk,
                 });
             }}
@@ -80,7 +84,9 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
 
     row(item: TokenModel): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.provider?.pk}`)}>
+                ${item.provider?.name}
+            </a>`,
             html`<ak-status-label
                 type="warning"
                 ?good=${!item.revoked}

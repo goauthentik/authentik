@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { ApplicationTransactionValidationError } from "#admin/applications/wizard/steps/providers/shared";
@@ -25,7 +25,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
 
     constructor() {
         super();
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesOauthList({
                 ordering: "name",
                 hasJwks: true,

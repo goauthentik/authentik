@@ -2,8 +2,9 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceUserForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -29,7 +30,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
             object-label=${msg("LDAP User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: UserLDAPSourceConnection) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapDestroy({
+                return aki(SourcesApi).sourcesUserConnectionsLdapDestroy({
                     id: item.pk,
                 });
             }}
@@ -58,7 +59,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<UserLDAPSourceConnection>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapList({
+        return aki(SourcesApi).sourcesUserConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.source?.slug,
         });
@@ -78,7 +79,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
 
     row(item: UserLDAPSourceConnection): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

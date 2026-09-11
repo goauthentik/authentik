@@ -1,0 +1,67 @@
+{
+    "name": "@goauthentik/fonts",
+    "version": "1.0.0",
+    "description": "The typefaces authentik ships: the RedHat variable faces and the PatternFly icon faces.",
+    "license": "MIT AND OFL-1.1 AND CC-BY-4.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/fonts"
+    },
+    "scripts": {
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./faces.css": "./faces.css",
+        "./icons.css": "./icons.css"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:"
+    },
+    "files": [
+        "faces.css",
+        "icons.css",
+        "*.woff",
+        "*.woff2",
+        "LICENSE.txt",
+        "NOTICE.md",
+        "licenses/**"
+    ],
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public"
+    },
+    "#exports-comment": [
+        "Only the two stylesheets need entries. The `url(\"./RedHatTextVF.woff2\")`",
+        "references inside them are resolved relative to the stylesheet by the",
+        "consuming bundler, not through this exports map.",
+        "faces.css holds the RedHat brand text faces; icons.css holds the icon",
+        "faces PatternFly components render glyphs from. They are separate so a",
+        "consumer can take the brand faces without the icon fonts.",
+        "There is no build step — the package is checked-in assets."
+    ],
+    "#license-comment": [
+        "The package itself is MIT (LICENSE.txt). The font files it redistributes",
+        "are not: the RedHat faces are OFL-1.1, Font Awesome's font files are",
+        "OFL-1.1 with the icons under CC-BY-4.0, and pficon is MIT via PatternFly.",
+        "NOTICE.md records the provenance and license of each file, and licenses/",
+        "carries the full texts. Both ship in the published package."
+    ]
+}

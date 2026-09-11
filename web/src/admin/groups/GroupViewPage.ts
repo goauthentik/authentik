@@ -11,12 +11,13 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/ak-mdx/ak-mdx";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
@@ -44,7 +45,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 export class GroupViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set groupId(id: string) {
-        new CoreApi(DEFAULT_CONFIG)
+        aki(CoreApi)
             .coreGroupsRetrieve({
                 groupUuid: id,
                 includeUsers: false,
@@ -83,7 +84,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
             return nothing;
         }
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <section
                     role="tabpanel"
                     tabindex="0"
@@ -116,7 +117,10 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                             : html`<ul class="pf-c-list">
                                                   ${this.group.rolesObj.map((role) => {
                                                       return html`<li>
-                                                          <a href=${`#/identity/roles/${role.pk}`}
+                                                          <a
+                                                              href=${toAdminInterface(
+                                                                  `identity/roles/${role.pk}`,
+                                                              )}
                                                               >${role.name}
                                                           </a>
                                                       </li>`;
@@ -125,7 +129,9 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                       (role) => {
                                                           return html`<li>
                                                               <a
-                                                                  href=${`#/identity/roles/${role.pk}`}
+                                                                  href=${toAdminInterface(
+                                                                      `identity/roles/${role.pk}`,
+                                                                  )}
                                                                   >${role.name}
                                                               </a>
                                                               <pf-tooltip
@@ -245,7 +251,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
 
     protected renderTabRoles(group: Group): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="groupRoles" vertical>
+            <ak-tabs routed vertical>
                 <div
                     role="tabpanel"
                     tabindex="0"

@@ -1,6 +1,6 @@
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -20,7 +20,7 @@ export class TopApplicationsTable extends AKElement {
     static styles: CSSResult[] = [PFTable];
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
+        aki(EventsApi)
             .eventsEventsTopPerUserList({
                 action: "authorize_application",
                 topN: 11,

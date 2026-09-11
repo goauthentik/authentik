@@ -3,10 +3,11 @@
 use std::{
     env,
     path::PathBuf,
+    str::FromStr,
     sync::atomic::{AtomicU8, Ordering},
 };
 
-use eyre::{Result, eyre};
+use eyre::{Report, Result, eyre};
 use tracing::trace;
 
 /// Stores the current mode.
@@ -53,6 +54,24 @@ impl From<Mode> for u8 {
     #[expect(clippy::as_conversions, reason = "repr of enum is u8")]
     fn from(value: Mode) -> Self {
         value as Self
+    }
+}
+
+impl FromStr for Mode {
+    type Err = Report;
+
+    fn from_str(s: &str) -> Result<Self> {
+        match s.to_lowercase().as_str() {
+            #[cfg(feature = "core")]
+            "allinone" => Ok(Self::AllInOne),
+            #[cfg(feature = "core")]
+            "server" => Ok(Self::Server),
+            #[cfg(feature = "core")]
+            "worker" => Ok(Self::Worker),
+            #[cfg(feature = "proxy")]
+            "proxy" => Ok(Self::Proxy),
+            _ => Err(eyre!("Unknown mode")),
+        }
     }
 }
 

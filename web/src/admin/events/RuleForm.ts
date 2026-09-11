@@ -7,7 +7,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -33,16 +33,26 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     public static verboseName = msg("Notification Rule");
     public static verboseNamePlural = msg("Notification Rules");
 
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EventsApi).eventsRulesRetrieve({
+                pbmUuid,
+            }),
+        create: (notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesCreate({
+                notificationRuleRequest,
+            }),
+        update: (pbmUuid: string, notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesUpdate({
+                pbmUuid,
+                notificationRuleRequest,
+            }),
+    };
+
     eventTransports?: PaginatedNotificationTransportList;
 
-    loadInstance(pk: string): Promise<NotificationRule> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
-            pbmUuid: pk,
-        });
-    }
-
     async load(): Promise<void> {
-        this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+        this.eventTransports = await aki(EventsApi).eventsTransportsList({
             ordering: "name",
         });
     }
@@ -51,18 +61,6 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         return this.instance
             ? msg("Successfully updated rule.")
             : msg("Successfully created rule.");
-    }
-
-    async send(data: NotificationRule): Promise<NotificationRule> {
-        if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
-                pbmUuid: this.instance.pk || "",
-                notificationRuleRequest: data,
-            });
-        }
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
-            notificationRuleRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {
@@ -87,7 +85,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                             args.search = query;
                         }
 
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        const groups = await aki(CoreApi).coreGroupsList(args);
 
                         return groups.results;
                     }}

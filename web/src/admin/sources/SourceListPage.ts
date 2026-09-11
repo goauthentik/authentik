@@ -8,10 +8,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -40,7 +41,7 @@ export class SourceListPage extends TablePage<Source> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Source>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
+        return aki(SourcesApi).sourcesAllList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -59,12 +60,12 @@ export class SourceListPage extends TablePage<Source> {
             object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
+                return aki(SourcesApi).sourcesAllUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Source) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesAllDestroy({
+                return aki(SourcesApi).sourcesAllDestroy({
                     slug: item.slug,
                 });
             }}
@@ -81,7 +82,7 @@ export class SourceListPage extends TablePage<Source> {
         }
 
         return [
-            html`<a href="#/core/sources/${item.slug}">
+            html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.enabled
                     ? nothing
@@ -100,7 +101,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} compact> ${msg("Built-in")}</ak-label>
+                <ak-label color=${PFColor.Gray} compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             nothing,

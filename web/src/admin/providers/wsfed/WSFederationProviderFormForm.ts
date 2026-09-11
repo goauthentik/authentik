@@ -10,10 +10,11 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -23,7 +24,6 @@ import {
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
@@ -34,11 +34,22 @@ import {
     SAMLPropertyMapping,
     ValidationError,
     WSFederationProvider,
+    WSFedSAMLVersionEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+const samlVersionAndLabel = [
+    [
+        WSFedSAMLVersionEnum._11,
+        msg("SAML 1.1 (required by Microsoft Entra ID / ADFS)", {
+            id: "wsfed.saml-version.option.saml11",
+        }),
+    ],
+    [WSFedSAMLVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
+];
 
 const samlNameIDPolicyAndLabel = [
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent, msg("Persistent")],
@@ -69,7 +80,7 @@ export function renderForm({
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
     const samlPropertyMappingSearch = async (query?: string) =>
         (
-            await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
+            await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                 withQuery(query, { ordering: "saml_name" }),
             )
         ).results;
@@ -177,7 +188,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -211,7 +222,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -284,6 +295,33 @@ export function renderForm({
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
+
+                <ak-form-element-horizontal
+                    label=${msg("SAML assertion version", {
+                        id: "wsfed.saml-version.label",
+                    })}
+                    required
+                    name="samlVersion"
+                >
+                    <select class="pf-c-form-control">
+                        ${samlVersionAndLabel.map(
+                            ([version, label]) => html`
+                                <option
+                                    value=${version}
+                                    ?selected=${provider?.samlVersion === version}
+                                >
+                                    ${label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.",
+                            { id: "wsfed.saml-version.description" },
                         )}
                     </p>
                 </ak-form-element-horizontal>

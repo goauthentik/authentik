@@ -35,11 +35,11 @@ class TestFleetConnector(APITestCase):
                 text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json=TEST_HOST,
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json={"hosts": []},
             )
             controller.sync_endpoints()
@@ -93,11 +93,11 @@ class TestFleetConnector(APITestCase):
                 text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json=TEST_HOST,
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json={"hosts": []},
             )
             controller.sync_endpoints()

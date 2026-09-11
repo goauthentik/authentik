@@ -4,7 +4,7 @@ import "#admin/endpoints/DeviceAccessGroupForm";
 import "#admin/policies/BoundPoliciesList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -36,7 +36,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     public override expandable = true;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<DeviceAccessGroup>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsList(
+        return aki(EndpointsApi).endpointsDeviceAccessGroupsList(
             await this.defaultEndpointConfig(),
         );
     }
@@ -70,12 +70,12 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: DeviceAccessGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsUsedByList({
+                return aki(EndpointsApi).endpointsDeviceAccessGroupsUsedByList({
                     pbmUuid: item.pbmUuid,
                 });
             }}
             .delete=${(item: DeviceAccessGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsDestroy({
+                return aki(EndpointsApi).endpointsDeviceAccessGroupsDestroy({
                     pbmUuid: item.pbmUuid,
                 });
             }}

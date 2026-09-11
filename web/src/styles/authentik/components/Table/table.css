@@ -1,6 +1,11 @@
 .pf-c-table {
     --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
     --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+
+    tbody > tr > * {
+        overflow-wrap: anywhere;
+        word-break: break-all;
+    }
 }
 
 .pf-c-toolbar {
@@ -20,6 +25,18 @@
         --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
 
         --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+    }
+}
+
+.pf-c-table .pf-c-table__check {
+    position: sticky;
+    left: -1px;
+    background: var(--pf-c-table--BackgroundColor);
+    z-index: 1;
+
+    @media (width < 768px) {
+        box-shadow: -0.5px 0px inset var(--pf-global--BorderColor--300);
+        --pf-c-table--m-compact--cell--first-last-child--PaddingLeft: var(--pf-global--spacer--sm);
     }
 }
 
