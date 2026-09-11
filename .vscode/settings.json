@@ -1,6 +1,27 @@
 {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.oxc": "explicit"
+    },
     "[css]": {
         "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\*/$"
+    },
+    "[markdown]": {
+        "editor.colorDecorators": false
+    },
+    "[yaml]": {
+        "editor.autoIndent": "advanced",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[go]": {
+        "editor.defaultFormatter": "golang.go"
+    },
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
     },
     "[makefile]": {
         "editor.minimap.markSectionHeaderRegex": "^#{25}\n##\\s\\s*(?<separator>-?)\\s*(?<label>[^\n]*)\n#{25}$"
@@ -9,6 +30,7 @@
         "editor.minimap.markSectionHeaderRegex": "\\bStage\\s*\\d:(?<separator>-?)\\s*(?<label>.*)$"
     },
     "[jsonc]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode",
         "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)$"
     },
     "[xml]": {
@@ -18,11 +40,9 @@
         // The built-in "ignore" language gives us enough syntax highlighting to make these files readable.
         "**/dictionaries/*.txt": "ignore"
     },
+    "oxc.fixKind": "safe_fix_or_suggestion",
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
-    "yaml.format.printWidth": 200,
-    "yaml.format.singleQuote": true,
-    "yaml.format.bracketSpacing": false,
     "yaml.customTags": [
         "!Condition sequence",
         "!Context scalar",

@@ -24,7 +24,7 @@ export class LicenseContextController extends ReactiveContextController<LicenseS
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: LicenseContext,
-            initialValue: initialValue,
+            initialValue,
         });
     }
 

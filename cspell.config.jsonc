@@ -203,8 +203,6 @@
         "tests/e2e/**/*.php", // PHP fixtures
         "compose.yml", // Docker Compose files
         //#region JavaScript/TypeScript
-        ".eslintignore", // ESLint ignore file
-        ".prettierignore", // Prettier ignore file
         ".yarn", // Yarn cache and configuration
         "node_modules", // Node modules
         "playwright-report", // Playwright test output

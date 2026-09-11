@@ -31,17 +31,6 @@ const config: KnipConfig = {
         ],
         project: [".storybook/**/*.{js,jsx,ts,tsx}"],
     },
-    eslint: {
-        entry: [
-            "eslint.config.mjs",
-            "scripts/eslint.precommit.mjs",
-            "scripts/eslint.nightmare.mjs",
-            "scripts/eslint-precommit.mjs",
-            "scripts/eslint-nightmare.mjs",
-            "scripts/eslint.mjs",
-        ],
-        config: ["package.json"],
-    },
 };
 
 export default config;

@@ -22,14 +22,26 @@ export interface OxlintConfigOptions {
     overrides?: OxlintConfig;
 }
 
-/** Default ignore patterns for generated/build output. */
+/**
+ * Default ignore patterns for generated and build output.
+ *
+ * Carried over from the former `@goauthentik/eslint-config`: the generated locale bundles and API
+ * client are checked in but never hand-edited, so linting them only produces noise.
+ */
 export const DefaultIgnorePatterns = [
     "**/out",
     "**/dist",
+    "**/build/**",
     "**/.docusaurus/**",
+    "**/.wireit",
     "**/node_modules",
     "**/coverage",
     "**/storybook-static",
+    // Generated: `lit-localize extract` owns these.
+    "**/locale-codes.ts",
+    "**/src/locales",
+    // Generated: `make gen-clients` owns this.
+    "packages/client-ts",
 ];
 
 /**
@@ -94,7 +106,10 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         "typescript/no-non-null-assertion": "off",
         "typescript/no-var-requires": "off",
         "typescript/no-require-imports": "off",
-        "goauthentik/padding-lines": "warn",
+        // Enable alongside `paddingRule` in `./plugin.ts` — both are commented out together.
+        // This is a new rule with no ESLint predecessor, so switching it on reformats code and
+        // belongs with the rest of the formatting sweep rather than the tooling swap.
+        // "goauthentik/padding-lines": "warn",
         ...(lit ? WebComponentRules : {}),
     };
 

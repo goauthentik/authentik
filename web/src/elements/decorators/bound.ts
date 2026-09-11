@@ -13,7 +13,7 @@
 // instance, instead of throwing it away?
 
 export function bound(
-    target: unknown,
+    _target: unknown,
     key: string,
     descriptor: PropertyDescriptor,
 ): PropertyDescriptor {

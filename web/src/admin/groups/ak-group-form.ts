@@ -49,8 +49,8 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return aki(CoreApi)
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -62,8 +62,8 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
     #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
         return aki(RbacApi)
             .rbacRolesList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {

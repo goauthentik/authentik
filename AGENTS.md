@@ -26,7 +26,7 @@ packages/           # Shared workspace packages, polyglot:
                     #   client-go / client-rust / client-ts  — GENERATED API clients (do not hand-edit)
                     #   ak-axum / ak-common / ak-guardian     — Rust crates
                     #   django-*                              — reusable Django apps (channels, dramatiq, cache)
-                    #   eslint-config / prettier-config / tsconfig / theme / docusaurus-config — shared JS config
+                    #   oxlint-config / oxfmt-config / tsconfig / theme / docusaurus-config — shared JS config
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup

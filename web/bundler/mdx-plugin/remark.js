@@ -1,9 +1,7 @@
 /**
- * @file Remark plugins for the build-time markdown pipeline.
- *
- * The runtime side (`src/elements/ak-mdx/remark/*`) mirrors a subset of
- * these. Keeping the shapes parallel makes it easier to spot drift when
- * either pipeline grows a new transform.
+ * @file Remark plugins for the build-time markdown pipeline. The runtime side
+ *   (`src/elements/ak-mdx/remark/*`) mirrors a subset of these. Keeping the shapes parallel makes
+ *   it easier to spot drift when either pipeline grows a new transform.
  */
 
 import { visit } from "unist-util-visit";
@@ -11,8 +9,8 @@ import { visit } from "unist-util-visit";
 const ADMONITIONS = new Set(["info", "warning", "danger", "note", "caution", "tip"]);
 
 /**
- * `caution` and `tip` aren't first-class PatternFly alert levels — map
- * them onto the closest equivalent so PFAlert styles render correctly.
+ * `caution` and `tip` aren't first-class PatternFly alert levels — map them onto the closest
+ * equivalent so PFAlert styles render correctly.
  */
 const ADMONITION_LEVEL = {
     info: "pf-m-info",
@@ -28,10 +26,9 @@ const ADMONITION_LEVEL = {
  *
  *     :::caution Reserved application slugs
  *
- * `remark-directive` only understands the spec form `:::name[label]{attrs}`
- * — a bare-space label silently falls through as plain text. We rewrite
- * the source so the directive parser sees the bracketed form and the
- * label is preserved as the directive's first paragraph.
+ * `remark-directive` only understands the spec form `:::name[label]{attrs}` — a bare-space label
+ * silently falls through as plain text. We rewrite the source so the directive parser sees the
+ * bracketed form and the label is preserved as the directive's first paragraph.
  */
 const ADMONITION_BARE_LABEL_RE = new RegExp(
     `^(:::(?:${[...ADMONITIONS].join("|")}))[ \\t]+(.+?)[ \\t]*$`,
@@ -40,6 +37,7 @@ const ADMONITION_BARE_LABEL_RE = new RegExp(
 
 /**
  * @param {string} source
+ *
  * @returns {string}
  */
 export function normalizeAdmonitionLabels(source) {
@@ -47,14 +45,13 @@ export function normalizeAdmonitionLabels(source) {
 }
 
 /**
- * Remark plugin: convert `:::info` / `:::warning` / `:::danger` / `:::note`
- * directives into `<ak-alert>` elements with a level attribute. The first
- * child paragraph carrying the `directiveLabel` flag (i.e. `:::info[Title]`
- * syntax) is promoted to a `<strong>` so the title renders as a heading-ish
- * element inside the slot.
+ * Remark plugin: convert `:::info` / `:::warning` / `:::danger` / `:::note` directives into
+ * `<ak-alert>` elements with a level attribute. The first child paragraph carrying the
+ * `directiveLabel` flag (i.e. `:::info[Title]` syntax) is promoted to a `<strong>` so the title
+ * renders as a heading-ish element inside the slot.
  */
 export function remarkAdmonition() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, (node) => {
             if (
                 node.type !== "containerDirective" &&
@@ -69,8 +66,8 @@ export function remarkAdmonition() {
             const data = node.data || (node.data = {});
             data.hName = tagName;
             data.hProperties = {
-                ...(data.hProperties || {}),
-                ...(node.attributes || {}),
+                ...data.hProperties,
+                ...node.attributes,
                 level:
                     /** @type {Record<string, string>} */ (ADMONITION_LEVEL)[node.name] ??
                     `pf-m-${node.name}`,
@@ -99,14 +96,14 @@ export function remarkAdmonition() {
 /**
  * Remark plugin: heading slugs into `id` attributes.
  *
- * Uses `github-slugger` to match the anchor IDs Docusaurus generates for the
- * same content.
+ * Uses `github-slugger` to match the anchor IDs Docusaurus generates for the same content.
  *
  * @param {RemarkHeadingsOptions} options
  */
 export function remarkHeadings({ slugger }) {
     /**
-     * @param {{ value?: string, children?: any[] }} n
+     * @param {{ value?: string; children?: any[] }} n
+     *
      * @returns {string}
      */
     const flatten = (n) => {
@@ -115,11 +112,11 @@ export function remarkHeadings({ slugger }) {
         return "";
     };
 
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, "heading", (node) => {
             const id = slugger.slug(flatten(node));
             const data = node.data || (node.data = {});
-            data.hProperties = { ...(data.hProperties || {}), id };
+            data.hProperties = { ...data.hProperties, id };
         });
     };
 }
@@ -128,11 +125,11 @@ export function remarkHeadings({ slugger }) {
  * Remark plugin: tag lists with PatternFly's content class.
  */
 export function remarkLists() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, "list", (node) => {
             const data = node.data || (node.data = {});
             data.hProperties = {
-                ...(data.hProperties || {}),
+                ...data.hProperties,
                 className: "pf-c-list",
             };
         });

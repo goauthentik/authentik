@@ -50,10 +50,10 @@ make docs-api-clean    # Remove generated API reference
 
 ```bash
 make lint-spellcheck   # cspell over the repo (also part of docs-lint-fix)
-make docs-lint-fix     # spellcheck + prettier --write
+make docs-lint-fix     # spellcheck + oxlint --fix + oxfmt --write
 ```
 
-Inside `website/` the underlying scripts are `pnpm run prettier`, `pnpm run lint` / `pnpm run lint-check` (ESLint), and `pnpm run check-types` (`tsc -b`). Prefer the `make` targets — they wire up the correct working directory and ordering.
+Inside `website/` the underlying scripts are `pnpm run lint` / `pnpm run lint-check` (oxlint plus an `oxfmt --check`), `pnpm run lint:fix` (oxlint `--fix` then `oxfmt --write`), and `pnpm run check-types` (`tsc -b`). oxfmt formats the MDX and CSS too. Prefer the `make` targets — they wire up the correct working directory and ordering.
 
 ## Architecture
 
@@ -154,14 +154,14 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 
 ## Tech Stack
 
-| Concern        | Tooling                                                                             |
-| -------------- | ----------------------------------------------------------------------------------- |
-| Site generator | Docusaurus 3.x (classic preset + Mermaid)                                           |
-| Content        | MDX + React                                                                         |
-| API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                      |
-| Build runtime  | Node ≥ 24, pnpm ≥ 12.4 (pinned via `packageManager`)                                |
-| Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
-| Lint / format  | ESLint 9 (`@goauthentik/eslint-config`) + Prettier (`@goauthentik/prettier-config`) |
-| Spell check    | cspell (typo-only mode)                                                             |
-| Types          | TypeScript (`tsc -b`)                                                               |
-| Hosting        | Netlify + GitHub Actions                                                            |
+| Concern        | Tooling                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------ |
+| Site generator | Docusaurus 3.x (classic preset + Mermaid)                                                        |
+| Content        | MDX + React                                                                                      |
+| API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                                   |
+| Build runtime  | Node ≥ 24, pnpm ≥ 12.4 (pinned via `packageManager`)                                             |
+| Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)                               |
+| Lint / format  | oxlint + oxfmt (`@goauthentik/oxlint-config`, `@goauthentik/oxfmt-config`)          |
+| Spell check    | cspell (typo-only mode)                                                                          |
+| Types          | TypeScript (`tsc -b`)                                                                            |
+| Hosting        | Netlify + GitHub Actions                                                                         |

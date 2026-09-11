@@ -30,7 +30,7 @@ const FONT_PATH = dirname(FONTS_CSS);
 const CSS_URL_RE = /url\("(\.\/[^"]+)"\)/g;
 
 function findFontFiles() {
-    let fontFiles = new Set();
+    const fontFiles = new Set();
     for (const sheet of [FONTS_CSS, ICONS_CSS]) {
         const css = readFileSync(sheet, "utf-8");
         const fontpaths = Array.from(css.matchAll(CSS_URL_RE));

@@ -10,10 +10,14 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check .",
+        "lint": "run-s lint:oxlint",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
         "watch": "tsc -p . --watch"
     },
     "type": "module",
@@ -36,17 +40,15 @@
         }
     },
     "devDependencies": {
-        "@eslint/js": "catalog:",
-        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "oxlint": "catalog:",
+        "oxfmt": "catalog:",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
-        "eslint": "catalog:",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.3",
-        "prettier": "catalog:",
-        "prettier-plugin-packagejson": "catalog:",
-        "typescript": "catalog:",
-        "typescript-eslint": "^8.65.0"
+        "typescript": "catalog:"
     },
     "peerDependencies": {
         "pino": "^10.3.1",
@@ -68,7 +70,6 @@
         }
     },
     "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "@goauthentik/prettier-config",
     "peerDependenciesMeta": {
         "pino": {
             "optional": true

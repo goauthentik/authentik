@@ -27,9 +27,9 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/pnpm-workspace.yaml,src=./pnpm-workspace.yaml \
     --mount=type=bind,target=/work/packages/docusaurus-config/package.json,src=./packages/docusaurus-config/package.json \
     --mount=type=bind,target=/work/packages/esbuild-plugin-live-reload/package.json,src=./packages/esbuild-plugin-live-reload/package.json \
-    --mount=type=bind,target=/work/packages/eslint-config/package.json,src=./packages/eslint-config/package.json \
+    --mount=type=bind,target=/work/packages/oxlint-config/package.json,src=./packages/oxlint-config/package.json \
     --mount=type=bind,target=/work/packages/logger-js/package.json,src=./packages/logger-js/package.json \
-    --mount=type=bind,target=/work/packages/prettier-config/package.json,src=./packages/prettier-config/package.json \
+    --mount=type=bind,target=/work/packages/oxfmt-config/package.json,src=./packages/oxfmt-config/package.json \
     --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
     --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
     --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \

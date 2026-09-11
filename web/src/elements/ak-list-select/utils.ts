@@ -13,5 +13,5 @@ export function isVisibleInScrollRegion(el: HTMLElement, container: HTMLElement)
 }
 
 export function groupOptions(options: SelectOptions): GroupedOptions {
-    return Array.isArray(options) ? { grouped: false, options: options } : options;
+    return Array.isArray(options) ? { grouped: false, options } : options;
 }

@@ -1,11 +1,11 @@
 import "#elements/banner/BaseURLBanner";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
-import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
+import "#elements/router/core/RouterView";
+import "#elements/sidebar/Sidebar";
+import "#elements/sidebar/SidebarItem";
 
 import {
     createAdminSidebarEnterpriseEntries,
@@ -47,8 +47,8 @@ import {
     renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
-import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import Styles from "#admin/ak-interface-admin.css";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -200,7 +200,7 @@ export class AdminInterface extends WithLicenseSummary(
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async (data, event) => {
+                action: async (_data, event) => {
                     event?.stopPropagation();
 
                     const userPalette = this.ownerDocument.createElement(
@@ -289,9 +289,9 @@ export class AdminInterface extends WithLicenseSummary(
                         aria-controls="global-nav"
                         class="pf-c-button pf-m-plain"
                         @click=${this.toggleSidebar}
-                        aria-label=${this.sidebarOpen
-                            ? msg("Collapse navigation")
-                            : msg("Expand navigation")}
+                        aria-label=${
+                            this.sidebarOpen ? msg("Collapse navigation") : msg("Expand navigation")
+                        }
                         aria-expanded=${this.sidebarOpen ? "true" : "false"}
                     >
                         <i aria-hidden="true" class="fas fa-bars"></i>

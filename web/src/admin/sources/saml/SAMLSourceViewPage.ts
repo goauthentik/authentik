@@ -1,7 +1,7 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -34,7 +34,7 @@ export class SAMLSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesSamlRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;

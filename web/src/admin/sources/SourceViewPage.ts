@@ -25,7 +25,7 @@ export class SourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesAllRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;

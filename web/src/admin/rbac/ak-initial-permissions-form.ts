@@ -1,9 +1,9 @@
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -113,8 +113,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
                         return aki(RbacApi)
                             .rbacPermissionsList({
-                                page: page,
-                                search: search,
+                                page,
+                                search,
                             })
                             .then((results) => {
                                 return {

@@ -1,5 +1,5 @@
-import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
+import "#elements/ak-progress-bar";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
@@ -7,8 +7,8 @@ import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
 
-import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
+import { BaseTableListRequest, TableLike } from "./shared.js";
 
 import { type PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -26,9 +26,9 @@ import {
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
-import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
+import { AKTableRefreshEvent } from "#elements/table/events";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
@@ -69,8 +69,8 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 /**
  * An instance of a Table component.
  *
- * This is necessary to work around limitations in Lit's typing system
- * not recognizing abstract properties.
+ * This is necessary to work around limitations in Lit's typing system not recognizing abstract
+ * properties.
  */
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
@@ -214,8 +214,8 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
-     * An optional message to display when the table is empty and no search is applied.
-     * If not provided, a default message will be used.
+     * An optional message to display when the table is empty and no search is applied. If not
+     * provided, a default message will be used.
      */
     protected emptyStateMessage: string | null = null;
 
@@ -334,10 +334,10 @@ export abstract class Table<T extends object, D = T>
     public page = 1;
 
     /**
-     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
-     * so that stale data is cleared out when the API returns a new list minus the deleted entries.
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
+     * stale data is cleared out when the API returns a new list minus the deleted entries.
      *
-     * @prop
+     * @property
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
     public clearOnRefresh = false;
@@ -394,8 +394,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * The search parameter this table's search and page are serialized to.
      *
-     * This is used to synchronize the table's state with the URL,
-     * allowing for deep-linking and back/forward navigation.
+     * This is used to synchronize the table's state with the URL, allowing for deep-linking and
+     * back/forward navigation.
      */
     @property({ type: String, attribute: "search-param" })
     public searchParam: string | null = null;
@@ -405,10 +405,11 @@ export abstract class Table<T extends object, D = T>
     //#region Public methods
 
     /**
-     * An overridable method to convert selected items to a custom JSON format,
-     * for example when used in a modal with a confirm button.
+     * An overridable method to convert selected items to a custom JSON format, for example when
+     * used in a modal with a confirm button.
      *
-     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     * By default, it returns the selected elements as an array, but it can be customized to return
+     * any data structure needed.
      */
     public toJSON(): D[] {
         return this.selectedElements as unknown as D[];
@@ -660,11 +661,13 @@ export abstract class Table<T extends object, D = T>
         return html`<tr role="presentation">
             <td role="presentation" colspan=${this.columnCount}>
                 <div class="pf-l-bullseye">
-                    ${inner ??
-                    html`<ak-empty-state
-                        ><span>${this.formatEmptyStateMessage()}</span>
-                        <div slot="primary">${this.renderObjectCreate()}</div>
-                    </ak-empty-state>`}
+                    ${
+                        inner ??
+                        html`<ak-empty-state
+                            ><span>${this.formatEmptyStateMessage()}</span>
+                            <div slot="primary">${this.renderObjectCreate()}</div>
+                        </ak-empty-state>`
+                    }
                 </div>
             </td>
         </tr>`;
@@ -698,8 +701,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * An overridable event listener when a row is clicked.
      *
-     * @bound
      * @abstract
+     * @bound
      */
     protected rowClickListener(item: T, event?: InputEvent | PointerEvent): void {
         if (event?.defaultPrevented) {
@@ -852,7 +855,7 @@ export abstract class Table<T extends object, D = T>
     #renderRowGroupItem(
         item: T,
         rowIndex: number,
-        items: T[],
+        _items: T[],
         groupIndex: number,
     ): SlottedTemplateResult {
         const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
@@ -1002,11 +1005,13 @@ export abstract class Table<T extends object, D = T>
             aria-label="${label}"
             part="toolbar"
         >
-            ${primaryToolbar.length
-                ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
-                      ${primaryToolbar}
-                  </div>`
-                : nothing}
+            ${
+                primaryToolbar.length
+                    ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
+                          ${primaryToolbar}
+                      </div>`
+                    : nothing
+            }
 
             <div class="pf-c-toolbar__content" part="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
@@ -1081,8 +1086,7 @@ export abstract class Table<T extends object, D = T>
     };
 
     /**
-     * The checkbox on the table header row that allows the user to
-     * "activate all on this page,"
+     * The checkbox on the table header row that allows the user to "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): SlottedTemplateResult {
@@ -1109,8 +1113,8 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
-     * For very large tables where the user is selecting a limited number of entries,
-     * we provide a chip-based subtable at the top that shows the list of selected entries.
+     * For very large tables where the user is selecting a limited number of entries, we provide a
+     * chip-based subtable at the top that shows the list of selected entries.
      *
      * Long text result in ellipsized chips, which is sub-optimal.
      */
@@ -1184,9 +1188,9 @@ export abstract class Table<T extends object, D = T>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.renderLoadingBar()}${this.needChipGroup
-                ? this.renderChipGroup()
-                : nothing}
+        return html`${this.renderLoadingBar()}${
+                this.needChipGroup ? this.renderChipGroup() : nothing
+            }
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
@@ -1200,12 +1204,14 @@ export abstract class Table<T extends object, D = T>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable
-                                ? html`<th
-                                      class="pf-c-table__toggle pf-m-pressable"
-                                      aria-hidden="true"
-                                  ></th>`
-                                : nothing}
+                            ${
+                                this.expandable
+                                    ? html`<th
+                                          class="pf-c-table__toggle pf-m-pressable"
+                                          aria-hidden="true"
+                                      ></th>`
+                                    : nothing
+                            }
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
