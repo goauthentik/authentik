@@ -26,7 +26,7 @@ docker compose run --rm server hash_password
 For automation, pipe the password through standard input:
 
 ```bash
-echo "$PASSWORD" | docker compose run --rm server hash_password
+printf '%s' "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 ### "Prevent duplicate device" in WebAuthn setup stage removed

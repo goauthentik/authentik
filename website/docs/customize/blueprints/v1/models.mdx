@@ -58,7 +58,7 @@ docker compose run --rm server hash_password
 For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history:
 
 ```bash
-echo "$PASSWORD" | docker compose run --rm server hash_password
+printf '%s' "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 For example:
