@@ -8,6 +8,8 @@ import (
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/utils/ptr"
+
+	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
 
 // Ingress routes external traffic to the server, or nil when disabled.
@@ -168,15 +170,19 @@ func (b *Builder) Route(c *component) (*unstructured.Unstructured, error) {
 // servicePort picks the server Service port traffic should reach, honoring the
 // https switch shared by the Ingress and the route.
 func (b *Builder) servicePort(https *bool) int32 {
-	spec := b.Authentik.Spec.Server
+	var service *akv1alpha1.ServerServiceSpec
+	if spec := b.Authentik.Spec.Server; spec != nil {
+		service = spec.Service
+	}
+
 	if https != nil && *https {
-		if spec != nil && spec.Service != nil {
-			return ptr.Deref(spec.Service.ServicePortHTTPS, defaultServicePortHTTPS)
+		if service != nil {
+			return ptr.Deref(service.ServicePortHTTPS, defaultServicePortHTTPS)
 		}
 		return defaultServicePortHTTPS
 	}
-	if spec != nil && spec.Service != nil {
-		return ptr.Deref(spec.Service.ServicePortHTTP, defaultServicePortHTTP)
+	if service != nil {
+		return ptr.Deref(service.ServicePortHTTP, defaultServicePortHTTP)
 	}
 	return defaultServicePortHTTP
 }
