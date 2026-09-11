@@ -48,6 +48,8 @@ for _authentik_app in get_apps():
 urlpatterns = [
     path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns)),
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
+    # Stub view, this is handled by `LivenessMiddleware`, this path is merely here
+    # for reversing the URL
     path("-/health/live/", View.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
