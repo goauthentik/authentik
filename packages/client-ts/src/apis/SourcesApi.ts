@@ -294,6 +294,7 @@ import {
     type SCIMSourceUserRequest,
     SCIMSourceUserRequestToJSON,
 } from "../models/SCIMSourceUserRequest";
+import { type ServiceBindMethodEnum } from "../models/ServiceBindMethodEnum";
 import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
 import { type Source, SourceFromJSON } from "../models/Source";
 import { type SourceType, SourceTypeFromJSON } from "../models/SourceType";
@@ -1180,6 +1181,10 @@ export interface SourcesLdapListRequest {
      *
      */
     serverUri?: string;
+    /**
+     *
+     */
+    serviceBindMethod?: ServiceBindMethodEnum;
     /**
      *
      */
@@ -7260,6 +7265,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["serverUri"] != null) {
             queryParameters["server_uri"] = requestParameters["serverUri"];
+        }
+
+        if (requestParameters["serviceBindMethod"] != null) {
+            queryParameters["service_bind_method"] = requestParameters["serviceBindMethod"];
         }
 
         if (requestParameters["slug"] != null) {
