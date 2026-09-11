@@ -810,6 +810,7 @@ export * from "./ScheduleRequest";
 export * from "./ScopeMapping";
 export * from "./ScopeMappingRequest";
 export * from "./SelectableStage";
+export * from "./ServiceBindMethodEnum";
 export * from "./ServiceConnection";
 export * from "./ServiceConnectionState";
 export * from "./SessionEndChallenge";
