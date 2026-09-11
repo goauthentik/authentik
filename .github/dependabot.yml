@@ -122,13 +122,12 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxlint/*"
+          - "oxlint-*"
+          - "oxlint"
+          - "oxfmt"
       storybook:
         patterns:
           - "@storybook/*"
@@ -164,10 +163,10 @@ updates:
 
   - package-ecosystem: npm
     directories:
-      - "/packages/prettier-config"
+      - "/packages/oxfmt-config"
       - "/packages/tsconfig"
       - "/packages/docusaurus-config"
-      - "/packages/eslint-config"
+      - "/packages/oxlint-config"
       - "/packages/logger-js"
       - "/packages/esbuild-plugin-live-reload"
     schedule:
@@ -190,13 +189,12 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxlint/*"
+          - "oxlint-*"
+          - "oxlint"
+          - "oxfmt"
       storybook:
         patterns:
           - "@storybook/*"
@@ -259,16 +257,15 @@ updates:
           - "@rspack/binding*"
       goauthentik:
         patterns:
-          - "@goauthentik/eslint-config"
-          - "@goauthentik/prettier-config"
+          - "@goauthentik/oxfmt-config"
+          - "@goauthentik/oxlint-config"
           - "@goauthentik/tsconfig"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxlint/*"
+          - "oxlint-*"
+          - "oxlint"
+          - "oxfmt"
 
   #endregion
 

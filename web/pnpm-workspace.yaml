@@ -6,13 +6,14 @@ packages:
   # instead (see web + sfe package.json).
   - "!packages/client-ts"
   # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
-  # materializing their targets — and `prettier-config`'s own linked
+  # materializing their targets — and `oxfmt-config`'s own linked
   # `tsconfig` — under web/packages/ when it regenerates this workspace's
   # lockfile. Without these exclusions the `packages/*` glob then swallows
   # them as workspace importers, committing phantom entries that every local
   # `pnpm install` prunes right back out.
   - "!packages/fonts"
-  - "!packages/prettier-config"
+  - "!packages/oxlint-config"
+  - "!packages/oxfmt-config"
   - "!packages/theme"
   - "!packages/tsconfig"
 
@@ -28,40 +29,25 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  "@eslint/js": "^9.39.5"
   "@playwright/test": "^1.62.1"
-  "@typescript-eslint/eslint-plugin": "^8.65.0"
-  "@typescript-eslint/parser": "^8.65.0"
-  "@typescript-eslint/utils": "^8.65.0"
   "@types/node": "^26.1.2"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
   esbuild: "^0.28.1"
-  eslint: "^9.39.5"
+  oxfmt: "0.67.0"
+  oxlint: "^1.82.0"
   playwright: "^1.62.1"
-  prettier: "3.8.3"
-  prettier-plugin-packagejson: "^3.0.2"
   typescript: "^6.0.3"
-  typescript-eslint: "^8.65.0"
   vite: "^8.2.0"
   vitest: "^4.1.10"
 
 overrides:
   "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
   "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
-  "@goauthentik/eslint-config>typescript": "catalog:"
-  "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
-  "@goauthentik/prettier-config>typescript": "catalog:"
   "@mrmarble/djangoql-completion>lex": "workspace:*"
   "@mrmarble/djangoql-completion>lodash": "^4.18.1"
-  "@typescript-eslint/eslint-plugin>typescript": "catalog:"
-  "@typescript-eslint/parser>typescript": "catalog:"
-  "@typescript-eslint/typescript-estree>typescript": "catalog:"
-  "@typescript-eslint/utils>typescript": "catalog:"
-  "format-imports>eslint": "catalog:"
   "node-fetch-commonjs>node-domexception": "workspace:*"
   "rapidoc>@apitools/openapi-parser": "0.0.37"
-  "typescript-eslint>typescript": "catalog:"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +

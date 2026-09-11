@@ -54,26 +54,36 @@ const customGroups: CustomGroupItemConfig[] = [
 const groups: SortGroupItemConfig[] = [
     "side-effect",
     "builtin",
-    // Relative imports (`../`, `./`, `./index`) and relative stylesheets, kept together.
-    ["parent", "sibling", "index", "style"],
+    // Relative imports (`../`, `./`, `./index`).
+    ["parent", "sibling", "index"],
     ...WebSubmodules,
     "ak-internal",
     "ak-namespace",
     "external",
     "lit",
+    // Stylesheet imports sort last, matching the former plugin's trailing `\.css$` rule. The
+    // `style` selector matches on extension alone, so this covers both the relative
+    // (`#common/styles/…css`) and bare-package (`@patternfly/…css`) forms — which is exactly the
+    // old behavior, and why `style` must not be listed with the relative imports above.
+    "style",
 ];
 
 /**
  * authentik's oxfmt import-sorting configuration.
  *
  * @remarks
- * `sortSideEffects` is left `false` so side-effect imports keep their authored order — reordering
- * them can change CSS cascade or polyfill timing. (oxfmt omits the trailing blank line after an
- * unsorted side-effect block; this is the one cosmetic difference from the former Prettier output.)
+ * `sortSideEffects` is `true` because the former `format-imports` plugin sorted side-effect imports
+ * too — every checked-in side-effect block is already in sorted order, and leaving it `false` both
+ * deviates from that and makes oxfmt drop the blank line that separates the block from the imports
+ * below it.
+ *
+ * `ignoreCase` is `false` to match the previous case-sensitive collation, which sorts
+ * `#elements/CodeMirror` before `#elements/ak-dual-select`.
  */
 export const authentikSortImportsConfig: SortImportsConfig = {
     groups,
     customGroups,
     newlinesBetween: true,
-    sortSideEffects: false,
+    sortSideEffects: true,
+    ignoreCase: false,
 };

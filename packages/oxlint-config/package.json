@@ -10,7 +10,9 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "prepare": "tsc -p ."
+        "prepare": "tsc -p .",
+        "lint": "run-s lint:oxlint",
+        "lint-check": "run-s lint-check:oxlint"
     },
     "type": "module",
     "types": "./out/index.d.ts",
@@ -31,6 +33,9 @@
     },
     "devDependencies": {
         "@goauthentik/tsconfig": "link:../tsconfig",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "typescript": "catalog:"
     },
     "peerDependencies": {

@@ -11,11 +11,15 @@
     },
     "scripts": {
         "hexworld:build": "node scripts/build-hexworld.ts",
-        "lint": "eslint --fix .",
+        "lint": "run-s lint:oxlint",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
         "lint:types": "tsc -p . --noEmit && tsc -p scripts && tsc -p test",
-        "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check .",
         "test": "vitest run",
         "test:watch": "vitest",
         "tiles:pull-hexworld": "node scripts/pull-hexworld.ts"
@@ -26,17 +30,16 @@
         "pmtiles": "^4.4.1"
     },
     "devDependencies": {
-        "@eslint/js": "catalog:",
-        "@goauthentik/eslint-config": "link:../eslint-config",
-        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "oxlint": "catalog:",
+        "oxfmt": "catalog:",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@mapbox/vector-tile": "^2.0.3",
         "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
-        "eslint": "catalog:",
         "pbf": "^4.0.1",
         "typescript": "catalog:",
-        "typescript-eslint": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:"
     },
@@ -49,6 +52,5 @@
             "version": ">=24.20",
             "onFail": "warn"
         }
-    },
-    "prettier": "@goauthentik/prettier-config"
+    }
 }

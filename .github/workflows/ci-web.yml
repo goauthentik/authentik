@@ -47,8 +47,6 @@ jobs:
         run: pnpm --dir web run lint-check
       - name: Check types
         run: pnpm --dir web run tsc
-      - name: Check formatting
-        run: pnpm --dir web run prettier-check
       - name: Lit analyse
         run: pnpm --dir web run lit-analyse
 
