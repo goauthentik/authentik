@@ -28,14 +28,17 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_IS_REDIRECTED,
     PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_POLICY_RESULTS,
     FlowPlanner,
     cache_key,
+    update_policy_results,
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
@@ -197,6 +200,163 @@ class TestFlowPlanner(TestCase):
         key = cache_key(flow, user)
         self.assertTrue(cache.get(key) is not None)
 
+    def test_policy_results_context(self):
+        """Policy results are available to later policies in the flow context."""
+        flow = create_test_flow()
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+        )
+        flow_policy = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            expression='ak_message("flow policy")\nreturn {"risk": 7}',
+        )
+        flow_policy_binding = PolicyBinding.objects.create(target=flow, policy=flow_policy, order=0)
+        stage_policy = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            expression=(
+                f'return context["{PLAN_CONTEXT_POLICY_RESULTS}"]'
+                f'["{flow_policy_binding.pk}"]["raw_result"]["risk"] == 7'
+            ),
+        )
+        stage_policy_binding = PolicyBinding.objects.create(
+            target=stage_binding, policy=stage_policy, order=0
+        )
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        plan = FlowPlanner(flow).plan(request)
+
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_POLICY_RESULTS],
+            {
+                str(flow_policy_binding.pk): {
+                    "policy": flow_policy.name,
+                    "passing": True,
+                    "messages": ["flow policy"],
+                    "raw_result": {"risk": 7},
+                },
+                str(stage_policy_binding.pk): {
+                    "policy": stage_policy.name,
+                    "passing": True,
+                    "messages": [],
+                    "raw_result": True,
+                },
+            },
+        )
+
+    def test_failing_stage_policy_results_context(self):
+        """A failed planning policy is recorded even though its stage is excluded."""
+        flow = create_test_flow()
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        policy_binding = PolicyBinding.objects.create(target=stage_binding, policy=policy, order=0)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        plan = planner.plan(request)
+
+        self.assertEqual(plan.bindings, [])
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_POLICY_RESULTS][str(policy_binding.pk)],
+            {
+                "policy": policy.name,
+                "passing": False,
+                "messages": ["dummy"],
+                "raw_result": None,
+            },
+        )
+
+    def test_policy_results_snapshot_raw_result(self):
+        """Raw results are snapshots and cannot create a recursive flow context."""
+        flow = create_test_flow()
+        policy = ExpressionPolicy.objects.create(name=generate_id(), expression="return True")
+        binding = PolicyBinding.objects.create(target=flow, policy=policy, order=0)
+        context = {PLAN_CONTEXT_POLICY_RESULTS: {}}
+        source_result = PolicyResult(True)
+        source_result.source_binding = binding
+        source_result.raw_result = context[PLAN_CONTEXT_POLICY_RESULTS]
+        result = PolicyResult(True)
+        result.source_results = [source_result]
+
+        update_policy_results(context, result)
+
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], {})
+        self.assertIsNot(stored_result["raw_result"], context[PLAN_CONTEXT_POLICY_RESULTS])
+
+        recursive_result = []
+        recursive_result.append(recursive_result)
+        source_result.raw_result = {("unsupported", "key"): recursive_result}
+        update_policy_results(context, result)
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], {"('unsupported', 'key')": [None]})
+
+        source_result.raw_result = ({"value"},)
+        update_policy_results(context, result)
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], ({"value"},))
+
+        class Uncopyable:
+            def __deepcopy__(self, _memo):
+                raise TypeError
+
+            def __str__(self):
+                return "uncopyable"
+
+        source_result.raw_result = Uncopyable()
+        update_policy_results(context, result)
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], "uncopyable")
+
+        stored_results = context[PLAN_CONTEXT_POLICY_RESULTS].copy()
+        source_result.source_binding = None
+        update_policy_results(context, result)
+        self.assertEqual(context[PLAN_CONTEXT_POLICY_RESULTS], stored_results)
+
+    def test_cached_plan_policy_results_context(self):
+        """Cached plans do not expose results from a previous execution."""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+        )
+        flow_policy = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='return context["value"]'
+        )
+        flow_policy_binding = PolicyBinding.objects.create(target=flow, policy=flow_policy, order=0)
+        stage_policy = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='return context["value"]'
+        )
+        stage_policy_binding = PolicyBinding.objects.create(
+            target=stage_binding, policy=stage_policy, order=0
+        )
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        FlowPlanner(flow).plan(request, {"value": "first"})
+        plan = FlowPlanner(flow).plan(request, {"value": "second"})
+
+        results = plan.context[PLAN_CONTEXT_POLICY_RESULTS]
+        self.assertEqual(results[str(flow_policy_binding.pk)]["raw_result"], "second")
+        self.assertNotIn(str(stage_policy_binding.pk), results)
+
     def test_planner_marker_reevaluate(self):
         """Test that the planner creates the proper marker"""
         flow = create_test_flow()
@@ -253,6 +413,34 @@ class TestFlowPlanner(TestCase):
             self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+
+    def test_reevaluate_updates_policy_results_context(self):
+        """Re-evaluating a binding replaces its previous policy result."""
+        flow = create_test_flow()
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+            re_evaluate_policies=True,
+        )
+        policy = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='return context["policy_value"]'
+        )
+        policy_binding = PolicyBinding.objects.create(target=stage_binding, policy=policy, order=0)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        plan = FlowPlanner(flow).plan(request, {"policy_value": True})
+        result = plan.context[PLAN_CONTEXT_POLICY_RESULTS][str(policy_binding.pk)]
+        self.assertEqual(result["raw_result"], True)
+
+        plan.context["policy_value"] = False
+
+        self.assertIsNone(plan.next(request))
+        result = plan.context[PLAN_CONTEXT_POLICY_RESULTS][str(policy_binding.pk)]
+        self.assertEqual(result["passing"], False)
+        self.assertEqual(result["raw_result"], False)
 
     def test_to_redirect(self):
         """Test to_redirect and skipping the flow executor"""

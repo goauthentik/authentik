@@ -45,7 +45,7 @@ class ReevaluateMarker(StageMarker):
         http_request: HttpRequest,
     ) -> FlowStageBinding | None:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
-        from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+        from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, update_policy_results
 
         LOGGER.debug(
             "f(plan_inst): running re-evaluation",
@@ -62,6 +62,7 @@ class ReevaluateMarker(StageMarker):
         engine.request.context.update(plan.context)
         engine.build()
         result = engine.result
+        update_policy_results(plan.context, result)
         for message in result.messages:
             add_message(http_request, INFO, message)
         if result.passing:

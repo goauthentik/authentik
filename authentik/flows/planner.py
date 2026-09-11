@@ -1,5 +1,6 @@
 """Flows Planner"""
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
@@ -50,6 +51,7 @@ PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
 PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
 PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
+PLAN_CONTEXT_POLICY_RESULTS = "policy_results"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
@@ -60,6 +62,54 @@ def cache_key(flow: Flow, user: User | None = None) -> str:
     if user:
         prefix += f"#{user.pk}"
     return prefix
+
+
+def _snapshot_policy_result(value: Any, seen: set[int] | None = None) -> Any:
+    """Copy policy result data without retaining aliases or recursive references."""
+    if seen is None:
+        seen = set()
+    if isinstance(value, dict | list | tuple | set):
+        value_id = id(value)
+        if value_id in seen:
+            return None
+        seen.add(value_id)
+        try:
+            if isinstance(value, dict):
+                return {
+                    key if isinstance(key, str | int | float | bool) or key is None else str(key): (
+                        _snapshot_policy_result(item, seen)
+                    )
+                    for key, item in value.items()
+                }
+            if isinstance(value, list):
+                return [_snapshot_policy_result(item, seen) for item in value]
+            if isinstance(value, tuple):
+                return tuple(_snapshot_policy_result(item, seen) for item in value)
+            return {_snapshot_policy_result(item, seen) for item in value}
+        finally:
+            seen.remove(value_id)
+    try:
+        return deepcopy(value)
+    except Exception:  # noqa: BLE001
+        return str(value)
+
+
+def update_policy_results(context: dict[str, Any], result: PolicyResult) -> None:
+    """Store individual policy results in the flow context."""
+    for source_result in result.source_results or []:
+        binding = source_result.source_binding
+        if not binding or not binding.policy:
+            continue
+        policy_results = context.get(PLAN_CONTEXT_POLICY_RESULTS)
+        if not isinstance(policy_results, dict):
+            policy_results = {}
+            context[PLAN_CONTEXT_POLICY_RESULTS] = policy_results
+        policy_results[str(binding.pk)] = {
+            "policy": binding.policy.name,
+            "passing": source_result.passing,
+            "messages": list(source_result.messages),
+            "raw_result": _snapshot_policy_result(source_result.raw_result),
+        }
 
 
 @dataclass(slots=True)
@@ -287,6 +337,7 @@ class FlowPlanner:
             engine.request.context.update(context)
             engine.build()
             result = engine.result
+            update_policy_results(context, result)
             if not result.passing:
                 raise FlowNonApplicableException(result)
             # User is passing so far, check if we have a cached plan
@@ -306,7 +357,12 @@ class FlowPlanner:
             )
             plan = self._build_plan(user, request, context)
             if self.use_cache:
-                cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
+                cached_plan = FlowPlan(
+                    flow_pk=plan.flow_pk,
+                    bindings=plan.bindings.copy(),
+                    markers=plan.markers.copy(),
+                )
+                cache.set(cache_key(self.flow, user), cached_plan, CACHE_TIMEOUT)
             if not plan.bindings and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan
@@ -353,7 +409,9 @@ class FlowPlanner:
                     engine.request.context["flow_plan"] = plan
                     engine.request.context.update(plan.context)
                     engine.build()
-                    if engine.passing:
+                    result = engine.result
+                    update_policy_results(plan.context, result)
+                    if result.passing:
                         self._logger.debug(
                             "f(plan): stage passing",
                             stage=stage,

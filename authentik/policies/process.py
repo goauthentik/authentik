@@ -140,5 +140,6 @@ class PolicyProcess(PROCESS_CLASS):
         except Exception as exc:  # noqa
             LOGGER.warning("Policy failed to run", exc=exc)
             result = PolicyResult(False, str(exc))
+            result.source_binding = self.binding
         finally:
             self.connection.send(result)
