@@ -995,7 +995,7 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC is enforced by the Agent\'s client-side validator.
+     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. The server independently enforces a strict allow-list of models, attributes, tags, and external references.
      */
     async endpointsAgentsConnectorsApplyBlueprintCreateRaw(
         requestParameters: EndpointsAgentsConnectorsApplyBlueprintCreateRequest,
@@ -1011,7 +1011,7 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC is enforced by the Agent\'s client-side validator.
+     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. The server independently enforces a strict allow-list of models, attributes, tags, and external references.
      */
     async endpointsAgentsConnectorsApplyBlueprintCreate(
         requestParameters: EndpointsAgentsConnectorsApplyBlueprintCreateRequest,

@@ -31,6 +31,7 @@ from authentik.endpoints.connectors.agent.auth import (
     check_device_policies,
 )
 from authentik.endpoints.connectors.agent.blueprint import (
+    check_agent_apply_content,
     check_agent_apply_perms,
     get_agent_apply_identity,
 )
@@ -138,11 +139,13 @@ class AgentConnectorViewSet(
     def apply_blueprint(self, request: Request, pk: str) -> Response:
         """Validate and apply a proposed Blueprint as the bounded Agent apply
         identity — never as the requesting user, and never via the stored-instance
-        apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC
-        is enforced by the Agent's client-side validator."""
+        apply that bypasses RBAC. The server independently enforces a strict
+        allow-list of models, attributes, tags, and external references."""
         self.get_object()
         data = AgentBlueprintApplySerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        if errors := check_agent_apply_content(data.validated_data["content"]):
+            raise ValidationError({"content": errors})
         identity = get_agent_apply_identity()
         if identity is None:
             raise ValidationError(_("Agent apply identity is not provisioned"))

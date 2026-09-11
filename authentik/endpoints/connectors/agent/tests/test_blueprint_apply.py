@@ -69,7 +69,7 @@ class TestAgentBlueprintApply(APITestCase):
             f"version: 1\nentries:\n  - model: authentik_core.group\n"
             f"    identifiers: {{name: {name}}}\n    attrs: {{is_superuser: true}}"
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, 400)
         self.assertFalse(Group.objects.filter(name=name).exists())
 
     def test_apply_destructive_denied(self):
@@ -81,8 +81,31 @@ class TestAgentBlueprintApply(APITestCase):
             f"version: 1\nentries:\n  - model: authentik_core.application\n"
             f"    state: absent\n    identifiers: {{slug: {app.slug}}}"
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, 400)
         self.assertTrue(Application.objects.filter(pk=app.pk).exists())
+
+    def test_apply_rejects_permissions_and_unsafe_tags(self):
+        """Content policy cannot be bypassed by a modified Agent binary."""
+        self._provision_identity()
+        res = self._apply(
+            "version: 1\nentries:\n  - model: authentik_core.application\n"
+            "    identifiers: {slug: x}\n    attrs: {name: !Env SECRET}\n"
+            "    permissions: [{permission: authentik_core.change_application}]"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_apply_rejects_api_scope(self):
+        """OAuth API scopes must never be attachable through Agent apply."""
+        self._provision_identity()
+        res = self._apply(
+            "version: 1\nentries:\n  - model: authentik_providers_oauth2.oauth2provider\n"
+            "    identifiers: {name: x}\n    attrs:\n      name: x\n"
+            "      include_claims_in_id_token: false\n"
+            "      property_mappings:\n"
+            "        - !Find [authentik_providers_oauth2.scopemapping, [managed, "
+            "goauthentik.io/providers/oauth2/scope-authentik_api]]"
+        )
+        self.assertEqual(res.status_code, 400)
 
     def test_apply_identity_not_provisioned(self):
         """Without the provisioned identity the endpoint refuses rather than
