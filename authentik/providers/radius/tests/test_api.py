@@ -142,7 +142,7 @@ return packet
                 name=generate_id(),
                 expression="""
 return {
-    vendor(
+    vendor_attribute(
         vendor_code=9,
         vendor_name="Cisco",
         attribute_name="AV-Pair",

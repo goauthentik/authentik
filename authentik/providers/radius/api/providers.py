@@ -141,7 +141,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
         _globals = {
             "define_attribute": define_attribute,
-            "vendor": define_attribute,
+            "vendor_attribute": define_attribute,
         }
 
         for mapping in provider.property_mappings.all().order_by("name").select_subclasses():
