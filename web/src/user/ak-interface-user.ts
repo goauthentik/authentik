@@ -6,6 +6,7 @@ import "#elements/router/core/RouterView";
 import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
+import { UIConfig } from "#common/ui/config";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -47,6 +48,8 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+
+type Feature = keyof UIConfig["enabledFeatures"];
 
 @customElement("ak-interface-user")
 class UserInterface extends WithLicenseSummary(
@@ -123,6 +126,27 @@ class UserInterface extends WithLicenseSummary(
         });
     }
 
+    protected licenseCan(feature: Feature, capability: CapabilitiesEnum, label: string) {
+        const L = LicenseSummaryStatusEnum;
+        // Matches `authentik/enterprise/models.py
+        const licensed: LicenseSummaryStatusEnum[] = [L.Valid, L.ExpirySoon];
+
+        const can =
+            this.licenseSummary?.status &&
+            licensed.includes(this.licenseSummary.status) &&
+            this.uiConfig.enabledFeatures[feature] &&
+            this.can(capability);
+
+        // This currently only works by coincidence: `feature` and the target address are the same,
+        // "agent" goes to "/if/user/agents" and "requests" goes to "/if/user/requests"; if these
+        // cease to coincide, we may have to do something else
+
+        // The return type is meant to make building the array of labels easier using spread
+        // operators.
+
+        return can ? [{ label, link: toUserInterface(feature) }] : [];
+    }
+
     protected render() {
         const { currentUser } = this;
 
@@ -142,25 +166,16 @@ class UserInterface extends WithLicenseSummary(
 
         const backgroundStyles = this.uiConfig.theme.background;
 
-        const navItems = [{ label: msg("Applications"), link: toUserInterface("library") }];
         // Requests are an enterprise feature, can be disabled for the user interface
         // and are only shown when the admin has configured at least one request rule
         // We can't easily check if this user actually has something they can request,
         // that is a semi-expensive request
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.requests &&
-            this.can(CapabilitiesEnum.CanRequest)
-        ) {
-            navItems.push({ label: msg("Discover"), link: toUserInterface("requests") });
-        }
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.agents &&
-            this.can(CapabilitiesEnum.CanAgentSelfService)
-        ) {
-            navItems.push({ label: msg("Agents"), link: toUserInterface("agents") });
-        }
+
+        const navItems = [
+            { label: msg("Applications"), link: toUserInterface("library") },
+            ...this.licenseCan("requests", CapabilitiesEnum.CanRequest, msg("Discover")),
+            ...this.licenseCan("agents", CapabilitiesEnum.CanAgentSelfService, msg("Agents")),
+        ];
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
