@@ -248,6 +248,38 @@ class TestFlowPlanner(TestCase):
             },
         )
 
+    def test_failing_stage_policy_results_context(self):
+        """A failed planning policy is recorded even though its stage is excluded."""
+        flow = create_test_flow()
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            evaluate_on_plan=True,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        policy_binding = PolicyBinding.objects.create(target=stage_binding, policy=policy, order=0)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        plan = planner.plan(request)
+
+        self.assertEqual(plan.bindings, [])
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_POLICY_RESULTS][str(policy_binding.pk)],
+            {
+                "policy": policy.name,
+                "passing": False,
+                "messages": ["dummy"],
+                "raw_result": None,
+            },
+        )
+
     def test_policy_results_snapshot_raw_result(self):
         """Raw results are snapshots and cannot create a recursive flow context."""
         flow = create_test_flow()
@@ -272,6 +304,28 @@ class TestFlowPlanner(TestCase):
         update_policy_results(context, result)
         stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
         self.assertEqual(stored_result["raw_result"], {"('unsupported', 'key')": [None]})
+
+        source_result.raw_result = ({"value"},)
+        update_policy_results(context, result)
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], ({"value"},))
+
+        class Uncopyable:
+            def __deepcopy__(self, _memo):
+                raise TypeError
+
+            def __str__(self):
+                return "uncopyable"
+
+        source_result.raw_result = Uncopyable()
+        update_policy_results(context, result)
+        stored_result = context[PLAN_CONTEXT_POLICY_RESULTS][str(binding.pk)]
+        self.assertEqual(stored_result["raw_result"], "uncopyable")
+
+        stored_results = context[PLAN_CONTEXT_POLICY_RESULTS].copy()
+        source_result.source_binding = None
+        update_policy_results(context, result)
+        self.assertEqual(context[PLAN_CONTEXT_POLICY_RESULTS], stored_results)
 
     def test_cached_plan_policy_results_context(self):
         """Cached plans do not expose results from a previous execution."""
