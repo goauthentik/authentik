@@ -25,11 +25,11 @@ export interface AgentPSSOUserRegistrationRequest {
     /**
      *
      */
-    userSecureEnclaveKey: string;
+    userSecureEnclaveKey?: string;
     /**
      *
      */
-    enclaveKeyId: string;
+    enclaveKeyId?: string;
 }
 
 /**
@@ -43,20 +43,6 @@ export function instanceOfAgentPSSOUserRegistrationRequest(
             !("user_auth" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["userAuth"] === undefined &&
             (value as Record<string, any>)["user_auth"] === undefined)
-    )
-        return false;
-    if (
-        (!("userSecureEnclaveKey" in (value as Record<string, any>)) &&
-            !("user_secure_enclave_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userSecureEnclaveKey"] === undefined &&
-            (value as Record<string, any>)["user_secure_enclave_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("enclaveKeyId" in (value as Record<string, any>)) &&
-            !("enclave_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["enclaveKeyId"] === undefined &&
-            (value as Record<string, any>)["enclave_key_id"] === undefined)
     )
         return false;
     return true;
@@ -77,8 +63,9 @@ export function AgentPSSOUserRegistrationRequestFromJSONTyped(
     }
     return {
         userAuth: json["user_auth"],
-        userSecureEnclaveKey: json["user_secure_enclave_key"],
-        enclaveKeyId: json["enclave_key_id"],
+        userSecureEnclaveKey:
+            json["user_secure_enclave_key"] == null ? undefined : json["user_secure_enclave_key"],
+        enclaveKeyId: json["enclave_key_id"] == null ? undefined : json["enclave_key_id"],
     };
 }
 

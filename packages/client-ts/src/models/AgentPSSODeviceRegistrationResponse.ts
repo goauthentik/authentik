@@ -42,6 +42,12 @@ export interface AgentPSSODeviceRegistrationResponse {
      *
      */
     nonceEndpoint: string;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof AgentPSSODeviceRegistrationResponse
+     */
+    biometricPolicies?: Array<string>;
 }
 
 /**
@@ -103,6 +109,8 @@ export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
         jwksEndpoint: json["jwks_endpoint"],
         audience: json["audience"],
         nonceEndpoint: json["nonce_endpoint"],
+        biometricPolicies:
+            json["biometric_policies"] == null ? undefined : json["biometric_policies"],
     };
 }
 
@@ -127,5 +135,6 @@ export function AgentPSSODeviceRegistrationResponseToJSONTyped(
         jwks_endpoint: value["jwksEndpoint"],
         audience: value["audience"],
         nonce_endpoint: value["nonceEndpoint"],
+        biometric_policies: value["biometricPolicies"],
     };
 }

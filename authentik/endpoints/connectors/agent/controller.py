@@ -1,5 +1,5 @@
 from plistlib import PlistFormat, dumps
-from uuid import uuid4
+from uuid import uuid5
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
@@ -7,7 +7,12 @@ from django.urls import reverse
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    ApplePSSOAuthenticationMethod,
+    ApplePSSOAuthenticationPolicy,
+    EnrollmentToken,
+)
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 
@@ -88,6 +93,83 @@ class AgentConnectorController(BaseController[AgentConnector]):
             }
         )
 
+    def _psso_authentication_method(self) -> str:
+        return {
+            ApplePSSOAuthenticationMethod.PASSWORD: "Password",
+            ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
+        }[self.connector.apple_psso_authentication_method]
+
+    def _psso_login_policies(self) -> dict:
+        """Build the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the Platform SSO
+        payload from the connector configuration. Each is an array of policy strings (see
+        the reference ee/psso/example.mobileconfig); the key is omitted entirely when the
+        policy is left at "none" so Platform SSO keeps its passive, background-token-only
+        behaviour.
+
+        Apple documents all three as applying only when AuthenticationMethod is Password,
+        so they are omitted in Secure Enclave key mode rather than written and ignored.
+
+        Each array holds the enforcement mode followed by any modifiers. The grace periods
+        are modifiers rather than standalone keys, so they are appended to every policy that
+        is actually being enforced; a policy left at "none" stays absent entirely, and a
+        grace period attached to nothing would do nothing. AllowTouchIDOrWatchForUnlock is
+        an UnlockPolicy-only modifier that Apple documents as acting when
+        RequireAuthentication is enabled, so it is appended only in that combination —
+        under "attempt" Touch ID and watch unlock already work."""
+        if (
+            self.connector.apple_psso_authentication_method
+            != ApplePSSOAuthenticationMethod.PASSWORD
+        ):
+            return {}
+        mapping = {
+            ApplePSSOAuthenticationPolicy.ATTEMPT: "AttemptAuthentication",
+            ApplePSSOAuthenticationPolicy.REQUIRE: "RequireAuthentication",
+        }
+        modifiers = []
+        if self.connector.apple_psso_authentication_grace_period:
+            modifiers.append("AllowAuthenticationGracePeriod")
+        if self.connector.apple_psso_offline_grace_period:
+            modifiers.append("AllowOfflineGracePeriod")
+        policies = {}
+        for field, payload_key in (
+            ("apple_psso_login_policy", "LoginPolicy"),
+            ("apple_psso_unlock_policy", "UnlockPolicy"),
+            ("apple_psso_filevault_policy", "FileVaultPolicy"),
+        ):
+            value = mapping.get(getattr(self.connector, field))
+            if value:
+                policies[payload_key] = [value, *modifiers]
+                if (
+                    payload_key == "UnlockPolicy"
+                    and value == "RequireAuthentication"
+                    and self.connector.apple_psso_unlock_allow_touch_id_or_watch
+                ):
+                    policies[payload_key].append("AllowTouchIDOrWatchForUnlock")
+        if policies:
+            if self.connector.apple_psso_authentication_grace_period:
+                policies["AuthenticationGracePeriod"] = (
+                    self.connector.apple_psso_authentication_grace_period
+                )
+            if self.connector.apple_psso_offline_grace_period:
+                policies["OfflineGracePeriod"] = self.connector.apple_psso_offline_grace_period
+        if self.connector.apple_psso_non_platform_sso_accounts:
+            policies["NonPlatformSSOAccounts"] = self.connector.apple_psso_non_platform_sso_accounts
+        if self.connector.apple_psso_enable_create_user_at_login:
+            policies["EnableCreateUserAtLogin"] = True
+        return policies
+
+    def _payload_uuid(self, token: EnrollmentToken, payload_type: str) -> str:
+        """Deterministic PayloadUUID for an inner payload.
+
+        Random UUIDs would make every download of an unchanged configuration a new
+        profile in the MDM's eyes, and redelivering an extensiblesso payload with a
+        changed PayloadUUID makes macOS remove and re-add it, which deregisters
+        Platform SSO. Apple updates a payload in place when PayloadIdentifier and
+        PayloadUUID both match the installed profile, so both are derived from the
+        same inputs: the identifier embeds the enrollment token, the UUID hashes the
+        token and payload type into the connector's namespace."""
+        return str(uuid5(self.connector.pk, f"{token.pk}:{payload_type}"))
+
     def _generate_mdm_config_macos(
         self, request: HttpRequest, token: EnrollmentToken
     ) -> MDMConfigResponseSerializer:
@@ -100,7 +182,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "authentik Platform",
                         "PayloadIdentifier": f"io.goauthentik.platform.{token_uuid}",
                         "PayloadType": "io.goauthentik.platform",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "io.goauthentik.platform"),
                         "PayloadVersion": 1,
                         "RegistrationToken": token.key,
                         "URL": request.build_absolute_uri(reverse("authentik_core:root-redirect")),
@@ -110,7 +192,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Associated Domains",
                         "PayloadIdentifier": f"com.apple.associated-domains.{token_uuid}",
                         "PayloadType": "com.apple.associated-domains",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.associated-domains"),
                         "PayloadVersion": 1,
                         "Configuration": [
                             {
@@ -125,7 +207,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Platform Single Sign-On",
                         "PayloadIdentifier": f"com.apple.extensiblesso.{token_uuid}",
                         "PayloadType": "com.apple.extensiblesso",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.extensiblesso"),
                         "PayloadVersion": 1,
                         "ExtensionIdentifier": "io.goauthentik.platform.psso",
                         "TeamIdentifier": "232G855Y8N",
@@ -136,9 +218,11 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PlatformSSO": {
                             "AccountDisplayName": "authentik",
                             "AllowDeviceIdentifiersInAttestation": True,
-                            "AuthenticationMethod": "UserSecureEnclaveKey",
+                            "AuthenticationMethod": self._psso_authentication_method(),
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
+                            "LoginFrequency": self.connector.apple_psso_login_frequency,
+                            **self._psso_login_policies(),
                         },
                     },
                 ],

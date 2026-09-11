@@ -12,6 +12,22 @@
  * Do not edit the class manually.
  */
 
+import type { ApplePssoAuthenticationMethodEnum } from "./ApplePssoAuthenticationMethodEnum";
+import {
+    ApplePssoAuthenticationMethodEnumFromJSON,
+    ApplePssoAuthenticationMethodEnumToJSON,
+} from "./ApplePssoAuthenticationMethodEnum";
+import type { ApplePssoBiometricRequirementEnum } from "./ApplePssoBiometricRequirementEnum";
+import {
+    ApplePssoBiometricRequirementEnumFromJSON,
+    ApplePssoBiometricRequirementEnumToJSON,
+} from "./ApplePssoBiometricRequirementEnum";
+import type { ApplePssoFilevaultPolicyEnum } from "./ApplePssoFilevaultPolicyEnum";
+import {
+    ApplePssoFilevaultPolicyEnumFromJSON,
+    ApplePssoFilevaultPolicyEnumToJSON,
+} from "./ApplePssoFilevaultPolicyEnum";
+
 /**
  *
  * @export
@@ -90,6 +106,84 @@ export interface AgentConnector {
      *
      */
     jwtFederationProviders?: Array<number>;
+    /**
+     *
+     * @type {ApplePssoAuthenticationMethodEnum}
+     * @memberof AgentConnector
+     */
+    applePssoAuthenticationMethod?: ApplePssoAuthenticationMethodEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof AgentConnector
+     */
+    applePssoAuthenticationGracePeriod?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof AgentConnector
+     */
+    applePssoOfflineGracePeriod?: number;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof AgentConnector
+     */
+    applePssoNonPlatformSsoAccounts?: Array<string>;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnector
+     */
+    applePssoEnableCreateUserAtLogin?: boolean;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnector
+     */
+    applePssoLoginPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnector
+     */
+    applePssoUnlockPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnector
+     */
+    applePssoUnlockAllowTouchIdOrWatch?: boolean;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnector
+     */
+    applePssoFilevaultPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof AgentConnector
+     */
+    applePssoLoginFrequency?: number;
+    /**
+     *
+     * @type {ApplePssoBiometricRequirementEnum}
+     * @memberof AgentConnector
+     */
+    applePssoBiometricRequirement?: ApplePssoBiometricRequirementEnum;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnector
+     */
+    applePssoBiometricPasswordFallback?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnector
+     */
+    applePssoBiometricReuseDuringUnlock?: boolean;
 }
 
 /**
@@ -171,6 +265,62 @@ export function AgentConnectorFromJSONTyped(
                 : json["challenge_trigger_check_in"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        applePssoAuthenticationMethod:
+            json["apple_psso_authentication_method"] == null
+                ? undefined
+                : ApplePssoAuthenticationMethodEnumFromJSON(
+                      json["apple_psso_authentication_method"],
+                  ),
+        applePssoAuthenticationGracePeriod:
+            json["apple_psso_authentication_grace_period"] == null
+                ? undefined
+                : json["apple_psso_authentication_grace_period"],
+        applePssoOfflineGracePeriod:
+            json["apple_psso_offline_grace_period"] == null
+                ? undefined
+                : json["apple_psso_offline_grace_period"],
+        applePssoNonPlatformSsoAccounts:
+            json["apple_psso_non_platform_sso_accounts"] == null
+                ? undefined
+                : json["apple_psso_non_platform_sso_accounts"],
+        applePssoEnableCreateUserAtLogin:
+            json["apple_psso_enable_create_user_at_login"] == null
+                ? undefined
+                : json["apple_psso_enable_create_user_at_login"],
+        applePssoLoginPolicy:
+            json["apple_psso_login_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_login_policy"]),
+        applePssoUnlockPolicy:
+            json["apple_psso_unlock_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_unlock_policy"]),
+        applePssoUnlockAllowTouchIdOrWatch:
+            json["apple_psso_unlock_allow_touch_id_or_watch"] == null
+                ? undefined
+                : json["apple_psso_unlock_allow_touch_id_or_watch"],
+        applePssoFilevaultPolicy:
+            json["apple_psso_filevault_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_filevault_policy"]),
+        applePssoLoginFrequency:
+            json["apple_psso_login_frequency"] == null
+                ? undefined
+                : json["apple_psso_login_frequency"],
+        applePssoBiometricRequirement:
+            json["apple_psso_biometric_requirement"] == null
+                ? undefined
+                : ApplePssoBiometricRequirementEnumFromJSON(
+                      json["apple_psso_biometric_requirement"],
+                  ),
+        applePssoBiometricPasswordFallback:
+            json["apple_psso_biometric_password_fallback"] == null
+                ? undefined
+                : json["apple_psso_biometric_password_fallback"],
+        applePssoBiometricReuseDuringUnlock:
+            json["apple_psso_biometric_reuse_during_unlock"] == null
+                ? undefined
+                : json["apple_psso_biometric_reuse_during_unlock"],
     };
 }
 
@@ -204,5 +354,26 @@ export function AgentConnectorToJSONTyped(
         challenge_idle_timeout: value["challengeIdleTimeout"],
         challenge_trigger_check_in: value["challengeTriggerCheckIn"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        apple_psso_authentication_method: ApplePssoAuthenticationMethodEnumToJSON(
+            value["applePssoAuthenticationMethod"],
+        ),
+        apple_psso_authentication_grace_period: value["applePssoAuthenticationGracePeriod"],
+        apple_psso_offline_grace_period: value["applePssoOfflineGracePeriod"],
+        apple_psso_non_platform_sso_accounts: value["applePssoNonPlatformSsoAccounts"],
+        apple_psso_enable_create_user_at_login: value["applePssoEnableCreateUserAtLogin"],
+        apple_psso_login_policy: ApplePssoFilevaultPolicyEnumToJSON(value["applePssoLoginPolicy"]),
+        apple_psso_unlock_policy: ApplePssoFilevaultPolicyEnumToJSON(
+            value["applePssoUnlockPolicy"],
+        ),
+        apple_psso_unlock_allow_touch_id_or_watch: value["applePssoUnlockAllowTouchIdOrWatch"],
+        apple_psso_filevault_policy: ApplePssoFilevaultPolicyEnumToJSON(
+            value["applePssoFilevaultPolicy"],
+        ),
+        apple_psso_login_frequency: value["applePssoLoginFrequency"],
+        apple_psso_biometric_requirement: ApplePssoBiometricRequirementEnumToJSON(
+            value["applePssoBiometricRequirement"],
+        ),
+        apple_psso_biometric_password_fallback: value["applePssoBiometricPasswordFallback"],
+        apple_psso_biometric_reuse_during_unlock: value["applePssoBiometricReuseDuringUnlock"],
     };
 }

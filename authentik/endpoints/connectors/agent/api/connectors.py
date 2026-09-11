@@ -58,6 +58,19 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "challenge_idle_timeout",
             "challenge_trigger_check_in",
             "jwt_federation_providers",
+            "apple_psso_authentication_method",
+            "apple_psso_authentication_grace_period",
+            "apple_psso_offline_grace_period",
+            "apple_psso_non_platform_sso_accounts",
+            "apple_psso_enable_create_user_at_login",
+            "apple_psso_login_policy",
+            "apple_psso_unlock_policy",
+            "apple_psso_unlock_allow_touch_id_or_watch",
+            "apple_psso_filevault_policy",
+            "apple_psso_login_frequency",
+            "apple_psso_biometric_requirement",
+            "apple_psso_biometric_password_fallback",
+            "apple_psso_biometric_reuse_during_unlock",
         ]
 
 
