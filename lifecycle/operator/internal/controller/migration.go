@@ -14,7 +14,6 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -137,7 +136,7 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	envFrom := make([]corev1.EnvFromSource, 0, 1+len(global.EnvFrom)+len(worker.EnvFrom))
 	envFrom = append(envFrom, corev1.EnvFromSource{
 		SecretRef: &corev1.SecretEnvSource{
-			LocalObjectReference: corev1.LocalObjectReference{Name: ak.ConfigSecretName()},
+			Name: ak.ConfigSecretName(),
 		},
 	})
 	envFrom = append(envFrom, global.EnvFrom...)
@@ -171,10 +170,8 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	}
 
 	template := corev1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{
-			Labels:      labels,
-			Annotations: podAnnotations,
-		},
+		Labels:      labels,
+		Annotations: podAnnotations,
 		Spec: corev1.PodSpec{
 			// A migration either completes or it does not; retrying the whole
 			// pod is the Job controller's business.
@@ -208,12 +205,10 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	}
 
 	job := &batchv1.Job{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:        name,
-			Namespace:   ak.TargetNamespace(),
-			Labels:      labels,
-			Annotations: annotations,
-		},
+		Name:        name,
+		Namespace:   ak.TargetNamespace(),
+		Labels:      labels,
+		Annotations: annotations,
 		Spec: batchv1.JobSpec{
 			BackoffLimit:            &backoffLimit,
 			ActiveDeadlineSeconds:   &deadline,

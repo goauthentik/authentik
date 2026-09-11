@@ -128,7 +128,7 @@ func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 		ObjectMeta: b.objectMeta(c.objectName, c.name, nil,
 			mergedMap(global.DeploymentAnnotations, c.spec.DeploymentAnnotations)),
 		Spec: appsv1.DeploymentSpec{
-			RevisionHistoryLimit: ptr.To(ptr.Deref(global.RevisionHistoryLimit, defaultRevisionHistoryLimit)),
+			RevisionHistoryLimit: new(ptr.Deref(global.RevisionHistoryLimit, defaultRevisionHistoryLimit)),
 			Selector:             &metav1.LabelSelector{MatchLabels: b.SelectorLabels(c.name)},
 			Template:             *template,
 			Strategy:             strategy,
@@ -138,7 +138,7 @@ func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 	// Leaving replicas unset hands the count to the HorizontalPodAutoscaler;
 	// setting both would have the two fight over it.
 	if c.spec.Autoscaling == nil || !c.spec.Autoscaling.Enabled {
-		deployment.Spec.Replicas = ptr.To(ptr.Deref(c.spec.Replicas, defaultReplicas))
+		deployment.Spec.Replicas = new(ptr.Deref(c.spec.Replicas, defaultReplicas))
 	}
 
 	return deployment, nil
@@ -192,8 +192,8 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 		Volumes:                       b.volumes(c),
 		DNSConfig:                     c.spec.DNSConfig,
 		DNSPolicy:                     c.spec.DNSPolicy,
-		TerminationGracePeriodSeconds: ptr.To(ptr.Deref(c.spec.TerminationGracePeriodSeconds, defaultTerminationGracePeriod)),
-		EnableServiceLinks:            ptr.To(true),
+		TerminationGracePeriodSeconds: new(ptr.Deref(c.spec.TerminationGracePeriodSeconds, defaultTerminationGracePeriod)),
+		EnableServiceLinks:            new(true),
 	}
 
 	if c.spec.HostNetwork != nil {
@@ -206,8 +206,8 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 	}
 
 	return &corev1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: podLabels, Annotations: nilIfEmpty(podAnnotations)},
-		Spec:       spec,
+		Labels: podLabels, Annotations: nilIfEmpty(podAnnotations),
+		Spec: spec,
 	}, nil
 }
 
@@ -222,7 +222,7 @@ func (b *Builder) mainContainer(c *component) *corev1.Container {
 	if b.configSecretMounted() {
 		envFrom = append(envFrom, corev1.EnvFromSource{
 			SecretRef: &corev1.SecretEnvSource{
-				LocalObjectReference: corev1.LocalObjectReference{Name: b.Authentik.ConfigSecretName()},
+				Name: b.Authentik.ConfigSecretName(),
 			},
 		})
 	}
@@ -339,8 +339,8 @@ func (b *Builder) volumes(c *component) []corev1.Volume {
 
 	if geoip := b.Authentik.Spec.GeoIP; geoip != nil && geoip.Enabled {
 		volumes = append(volumes, corev1.Volume{
-			Name:         geoipVolumeName,
-			VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}},
+			Name:     geoipVolumeName,
+			EmptyDir: &corev1.EmptyDirVolumeSource{},
 		})
 	}
 
@@ -349,19 +349,15 @@ func (b *Builder) volumes(c *component) []corev1.Volume {
 			for _, name := range blueprints.ConfigMaps {
 				volumes = append(volumes, corev1.Volume{
 					Name: blueprintConfigMapPrefix + name,
-					VolumeSource: corev1.VolumeSource{
-						ConfigMap: &corev1.ConfigMapVolumeSource{
-							LocalObjectReference: corev1.LocalObjectReference{Name: name},
-						},
+					ConfigMap: &corev1.ConfigMapVolumeSource{
+						Name: name,
 					},
 				})
 			}
 			for _, name := range blueprints.Secrets {
 				volumes = append(volumes, corev1.Volume{
-					Name: blueprintSecretPrefix + name,
-					VolumeSource: corev1.VolumeSource{
-						Secret: &corev1.SecretVolumeSource{SecretName: name},
-					},
+					Name:   blueprintSecretPrefix + name,
+					Secret: &corev1.SecretVolumeSource{SecretName: name},
 				})
 			}
 		}
@@ -547,9 +543,7 @@ func (b *Builder) global() *akv1alpha1.GlobalSpec {
 
 func httpProbe(path string, failureThreshold, initialDelay int32) *corev1.Probe {
 	return &corev1.Probe{
-		ProbeHandler: corev1.ProbeHandler{
-			HTTPGet: &corev1.HTTPGetAction{Path: path, Port: intstr.FromString("http")},
-		},
+		HTTPGet:             &corev1.HTTPGetAction{Path: path, Port: intstr.FromString("http")},
 		FailureThreshold:    failureThreshold,
 		InitialDelaySeconds: initialDelay,
 		PeriodSeconds:       defaultProbePeriod,
@@ -560,9 +554,7 @@ func httpProbe(path string, failureThreshold, initialDelay int32) *corev1.Probe 
 
 func execProbe(failureThreshold, initialDelay int32) *corev1.Probe {
 	return &corev1.Probe{
-		ProbeHandler: corev1.ProbeHandler{
-			Exec: &corev1.ExecAction{Command: []string{"ak", "healthcheck"}},
-		},
+		Exec:                &corev1.ExecAction{Command: []string{"ak", "healthcheck"}},
 		FailureThreshold:    failureThreshold,
 		InitialDelaySeconds: initialDelay,
 		PeriodSeconds:       defaultProbePeriod,
@@ -574,8 +566,8 @@ func execProbe(failureThreshold, initialDelay int32) *corev1.Probe {
 func secretKeyRef(name, key string) *corev1.EnvVarSource {
 	return &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
-			LocalObjectReference: corev1.LocalObjectReference{Name: name},
-			Key:                  key,
+			Name: name,
+			Key:  key,
 		},
 	}
 }
