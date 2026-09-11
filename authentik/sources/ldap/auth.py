@@ -60,12 +60,9 @@ class LDAPBackend(InbuiltBackend):
         # Try to bind as new user
         LOGGER.debug("Attempting to bind as user", user=user)
         try:
-            # source.connection also attempts to bind
-            source.connection(
-                connection_kwargs={
-                    "user": user.attributes.get(LDAP_DISTINGUISHED_NAME),
-                    "password": password,
-                }
+            source.connection_as_user(
+                user.attributes.get(LDAP_DISTINGUISHED_NAME),
+                password,
             )
             return user
         except LDAPInvalidCredentialsResult as exc:
