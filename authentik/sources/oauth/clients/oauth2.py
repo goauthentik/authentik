@@ -76,18 +76,25 @@ class OAuth2Client(BaseOAuthClient):
                 pkce_mode = self.source.pkce
             if pkce_mode != PKCEMethod.NONE:
                 args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
+        client_id = self.get_client_id()
+        client_secret = self.get_client_secret()
         if (
             self.source.source_type.authorization_code_auth_method
             == AuthorizationCodeAuthMethod.POST_BODY
         ):
-            args["client_id"] = self.get_client_id()
-            args["client_secret"] = self.get_client_secret()
+            args["client_id"] = client_id
+            if client_secret:
+                args["client_secret"] = client_secret
+        # For public clients (no secret, no basic auth), always include client_id
+        if not self.get_access_token_auth():
+            args.setdefault("client_id", client_id)
         return args
 
     def get_access_token_auth(self) -> AuthBase | None:
         if (
             self.source.source_type.authorization_code_auth_method
             == AuthorizationCodeAuthMethod.BASIC_AUTH
+            and self.get_client_secret()
         ):
             return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
         return None
