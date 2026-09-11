@@ -1,24 +1,22 @@
 ---
 title: Get started with authentik Enterprise
-description: "Enable authentik Enterprise on a new or existing installation"
+description: Obtain and install an Enterprise license, including in air-gapped environments.
 sidebar_position: 1
 ---
 
-Installing authentik is exactly the same process for both the Enterprise version and our open source version. Enterprise features are enabled by installing a license.
+Enable authentik Enterprise by installing a license key in the Admin interface. authentik Enterprise uses the same installation process and container images as the open source version; you do not need to reinstall authentik or deploy a separate Enterprise service.
+
+authentik validates licenses locally. Installing and using a license does not require internet access. For an offline deployment, see [air-gapped licensing](#air-gapped-environments).
 
 ## Before you begin
 
-You need:
+You need a running, [supported version of authentik](../security/policy.mdx#supported-versions) and administrator access to its Admin interface. For a new deployment, [install authentik](../install-config/index.mdx) first.
 
-- A running, supported version of authentik.
-- Administrator access to the authentik Admin interface.
-- Access to an organization in the [Customer Portal](https://customers.goauthentik.io/).
-
-For a new deployment, [install authentik](../install-config/index.mdx) before continuing.
+If you already have a license key for this deployment, skip to [install the license key](#3-install-the-license-key).
 
 ## 1. Copy the Install ID
 
-Each authentik installation has a unique Install ID that binds a license to that installation.
+A license is bound to an authentik deployment by its Install ID.
 
 1. Log in to the authentik Admin interface.
 2. Navigate to **Enterprise** > **Licenses**.
@@ -28,9 +26,9 @@ In a [multi-tenant deployment](../sys-mgmt/tenancy.mdx), each tenant has its own
 
 ## 2. Obtain a license key
 
-You can purchase a license from the **Your Install ID** card in the Admin interface or directly from the [Customer Portal](https://customers.goauthentik.io/).
+To purchase a license, open the [Customer Portal](https://customers.goauthentik.io/) and select or create the organization that will own it. Provide the Install ID and the required [internal and external user capacity](./manage-enterprise.mdx#about-users-and-licenses). See [Purchase a license](./manage-enterprise.mdx#purchase-a-license) for the checkout steps.
 
-When you purchase a license, provide the Install ID and the required internal and external user capacity. For the complete purchase workflow, see [Purchase a license](./manage-enterprise.mdx#purchase-a-license).
+After purchase, open the license's **Details** in the Customer Portal and copy the license key. If another person manages your subscription, ask them for the key or [access to the Customer Portal organization](./manage-enterprise.mdx#manage-organization-members).
 
 To request a trial or discuss an Enterprise Plus agreement, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
@@ -38,15 +36,27 @@ To request a trial or discuss an Enterprise Plus agreement, contact [hello@goaut
 
 1. In the Admin interface, navigate to **Enterprise** > **Licenses**.
 2. Click **Install**.
-3. Paste the license key into **License key**.
-4. Click **Install**.
+3. Paste the complete license key into **License key** and submit the form.
+4. Check the installed license's user capacity and expiry date. **Current license status** shows the combined status and capacity of all active licenses for the deployment.
 
-The **Licenses** page displays the installed license, its internal and external user capacity, and its expiry date. The **Current license status** card displays the combined status and capacity of all active licenses for the installation.
+Enterprise features are available once the license is valid. Follow the [feature documentation](./enterprise-features.mdx) to configure them.
 
-If authentik rejects the key, verify that you copied the complete key and that its Install ID matches the current installation. Contact [Enterprise support](./enterprise-support.mdx) if a valid key still cannot be installed.
+### If the key is rejected
+
+Check that you copied the complete key, that it has not expired, and that it was issued for the Install ID shown on this deployment. A key issued for another deployment will not work. Check the server's clock if an unexpired key is rejected.
+
+If the license installs but its status shows a capacity problem, compare the active internal and external user counts with the licensed capacity for each type. See [license status and enforcement](./manage-enterprise.mdx#license-expiry-and-capacity-enforcement), or contact [Enterprise support](./enterprise-support.mdx).
+
+## Air-gapped environments
+
+Use the same license installation steps in an air-gapped environment. Copy the Install ID from the deployment, obtain the license key on a connected system, and install it via the Enterprise > Licenses section of the admin interface.
+
+The Customer Portal needs internet access to purchase or retrieve keys. Your authentik deployment does not contact it to install or validate a license, and there is no periodic online license check. Renewals follow the same transfer process; [update the installed key](./manage-enterprise.mdx#update-a-license-key) before it expires.
+
+For image preparation, outbound-connection settings, and the complete offline license procedure, see [Air-gapped environments](../install-config/air-gapped.mdx#enterprise-licenses).
 
 ## Next steps
 
-- Review the [Enterprise features](./enterprise-features.mdx) and configure the features that you need in the standard authentik documentation.
-- Learn how authentik [counts licensed users](./manage-enterprise.mdx#about-users-and-licenses).
-- Configure additional Customer Portal users to avoid relying on a single account for license access.
+- Configure the [Enterprise features](./enterprise-features.mdx) you need.
+- [Manage licenses and billing](./manage-enterprise.mdx), including renewals and user capacity.
+- Use [Enterprise support](./enterprise-support.mdx) for installation and configuration help.
