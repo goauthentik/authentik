@@ -37,12 +37,41 @@ interface GlobalAuthentik {
     };
 }
 
+function readMeta(name: string): string | null {
+    return document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)?.content || null;
+}
+
+function readJSONScript<T>(id: string): T | null {
+    const element = document.getElementById(id);
+
+    if (!element?.textContent) return null;
+
+    try {
+        return JSON.parse(element.textContent) as T;
+    } catch {
+        return null;
+    }
+}
+
+let context: GlobalAuthentik | null = null;
+
+/**
+ * The values the server injected into this document.
+ *
+ * `base/header_js.html` renders them as data — a `json_script` block for the
+ * brand and `<meta>` tags for the scalars — rather than assigning
+ * `window.authentik`. This reader is deliberately standalone: the main bundle's
+ * equivalent in `web/src/common/global.ts` pulls in the generated API client,
+ * which would dwarf this one.
+ *
+ * The brand block is the serializer's own output, so its keys stay snake_case
+ * here rather than being converted the way the main bundle converts them.
+ */
 function ak(): GlobalAuthentik {
-    return (
-        window as unknown as {
-            authentik: GlobalAuthentik;
-        }
-    ).authentik;
+    return (context ??= {
+        brand: readJSONScript<GlobalAuthentik["brand"]>("ak-brand") ?? { branding_logo: "" },
+        api: { base: readMeta("ak-base-url") ?? "/" },
+    });
 }
 
 // The SFE is rendered without dark mode support, so always use the light variant.

@@ -13,6 +13,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#comm
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -28,6 +29,28 @@ import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+export function getPolicyUserGroupRowLabel(item: PolicyBinding): string {
+    if (item.policy) {
+        return msg(str`Policy ${item.policyObj?.name}`);
+    } else if (item.group) {
+        return msg(str`Group ${item.groupObj?.name}`);
+    } else if (item.user) {
+        return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
+    }
+    return msg("-");
+}
+
+export function getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
+    const label = getPolicyUserGroupRowLabel(item);
+    if (item.user) {
+        return html` <a href=${toAdminInterface(`identity/users/${item.user}`)}> ${label} </a> `;
+    }
+    if (item.group) {
+        return html` <a href=${toAdminInterface(`identity/groups/${item.group}`)}> ${label} </a> `;
+    }
+    return html`${label}`;
+}
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
@@ -90,28 +113,6 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    protected getPolicyUserGroupRowLabel(item: PolicyBinding): string {
-        if (item.policy) {
-            return msg(str`Policy ${item.policyObj?.name}`);
-        } else if (item.group) {
-            return msg(str`Group ${item.groupObj?.name}`);
-        } else if (item.user) {
-            return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
-        }
-        return msg("-");
-    }
-
-    protected getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
-        const label = this.getPolicyUserGroupRowLabel(item);
-        if (item.user) {
-            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
-        }
-        if (item.group) {
-            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
-        }
-        return html`${label}`;
-    }
-
     protected getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policyObj) {
             return IconEditButtonByTagName(item.policyObj.component, item.policyObj.pk);
@@ -140,7 +141,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                         { key: msg("Order"), value: item.order.toString() },
                         {
                             key: this.allowedTypesLabel,
-                            value: this.getPolicyUserGroupRowLabel(item),
+                            value: getPolicyUserGroupRowLabel(item),
                         },
                     ];
                 }}
@@ -193,7 +194,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     protected override row(item: PolicyBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
-            html`${this.getPolicyUserGroupRow(item)}`,
+            html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
@@ -207,7 +208,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     },
                     iconName: "fa-link",
                 })}
-                ${IconPermissionButton(this.getPolicyUserGroupRowLabel(item), {
+                ${IconPermissionButton(getPolicyUserGroupRowLabel(item), {
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
                 })}
