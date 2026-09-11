@@ -26,6 +26,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     startedRedirect = false;
 
+    #keydownController: AbortController | null = null;
+
     static styles: CSSResult[] = [
         PFLogin,
         PFForm,
@@ -40,31 +42,51 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge?.to || "", document.baseURI).toString();
+        return new URL(this.challenge?.to || "", this.ownerDocument.baseURI).toString();
     }
 
     // The current implementation expects the button and the stage to share the same DOM context,
     // and the same rootNode. If that changes, this will need to be updated.
-    get promptUser() {
+    public get promptUser(): boolean {
         return !!(this.getRootNode() as Element | undefined)?.querySelector(
             "ak-flow-inspector-button",
         )?.open;
     }
 
-    updated(changed: PropertyValues<this>): void {
+    protected keydownListener = (event: KeyboardEvent): void => {
+        if (event.key === "Enter") {
+            this.redirect();
+        }
+    };
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.#keydownController?.abort();
+        this.#keydownController = null;
+    }
+
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (!changed.has("challenge")) {
             return;
         }
+
         if (this.promptUser) {
-            document.addEventListener("keydown", (ev) => {
-                if (ev.key === "Enter") {
-                    this.redirect();
-                }
-            });
+            // Register the listener once for the element's lifetime; `updated` runs on every
+            // challenge change, and the AbortController tears it down on disconnect.
+            if (!this.#keydownController) {
+                this.#keydownController = new AbortController();
+
+                this.ownerDocument.addEventListener("keydown", this.keydownListener, {
+                    signal: this.#keydownController.signal,
+                });
+            }
+
             return;
         }
+
         this.redirect();
     }
 

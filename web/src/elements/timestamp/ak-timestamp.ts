@@ -65,7 +65,7 @@ export class AKTimestamp extends AKElement {
         cancelAnimationFrame(this.#animationFrameID);
     }
 
-    public updated(changed: PropertyValues<this>): void {
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (changed.has("visible") || changed.has("timestamp") || changed.has("refresh")) {
