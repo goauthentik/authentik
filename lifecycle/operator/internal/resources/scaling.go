@@ -1,0 +1,87 @@
+package resources
+
+import (
+	autoscalingv2 "k8s.io/api/autoscaling/v2"
+	corev1 "k8s.io/api/core/v1"
+	policyv1 "k8s.io/api/policy/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/utils/ptr"
+)
+
+// HorizontalPodAutoscaler scales a component, or nil when autoscaling is off.
+func (b *Builder) HorizontalPodAutoscaler(c *component) *autoscalingv2.HorizontalPodAutoscaler {
+	spec := c.spec.Autoscaling
+	if spec == nil || !spec.Enabled {
+		return nil
+	}
+
+	metrics := spec.Metrics
+	if len(metrics) == 0 {
+		// Memory before CPU, matching the chart: the order does not matter to
+		// the autoscaler, but keeping it avoids a diff on adoption.
+		if spec.TargetMemoryUtilizationPercentage != nil {
+			metrics = append(metrics, utilizationMetric(corev1.ResourceMemory, *spec.TargetMemoryUtilizationPercentage))
+		}
+		if spec.TargetCPUUtilizationPercentage != nil {
+			metrics = append(metrics, utilizationMetric(corev1.ResourceCPU, *spec.TargetCPUUtilizationPercentage))
+		}
+	}
+
+	return &autoscalingv2.HorizontalPodAutoscaler{
+		ObjectMeta: b.objectMeta(c.objectName, c.name, nil, spec.Annotations),
+		Spec: autoscalingv2.HorizontalPodAutoscalerSpec{
+			ScaleTargetRef: autoscalingv2.CrossVersionObjectReference{
+				APIVersion: "apps/v1",
+				Kind:       "Deployment",
+				Name:       c.objectName,
+			},
+			MinReplicas: spec.MinReplicas,
+			MaxReplicas: ptr.Deref(spec.MaxReplicas, 5),
+			Metrics:     metrics,
+			Behavior:    spec.Behavior,
+		},
+	}
+}
+
+func utilizationMetric(name corev1.ResourceName, target int32) autoscalingv2.MetricSpec {
+	return autoscalingv2.MetricSpec{
+		Type: autoscalingv2.ResourceMetricSourceType,
+		Resource: &autoscalingv2.ResourceMetricSource{
+			Name: name,
+			Target: autoscalingv2.MetricTarget{
+				Type:               autoscalingv2.UtilizationMetricType,
+				AverageUtilization: new(target),
+			},
+		},
+	}
+}
+
+// PodDisruptionBudget protects a component during voluntary disruption, or nil
+// when disabled.
+func (b *Builder) PodDisruptionBudget(c *component) *policyv1.PodDisruptionBudget {
+	spec := c.spec.PDB
+	if spec == nil || !spec.Enabled {
+		return nil
+	}
+
+	pdb := &policyv1.PodDisruptionBudget{
+		ObjectMeta: b.objectMeta(c.objectName, c.name, spec.Labels, spec.Annotations),
+		Spec: policyv1.PodDisruptionBudgetSpec{
+			Selector: &metav1.LabelSelector{MatchLabels: b.SelectorLabels(c.name)},
+		},
+	}
+
+	// The two bounds are mutually exclusive; maxUnavailable wins. Neither set
+	// means minAvailable 0, which permits any eviction.
+	switch {
+	case spec.MaxUnavailable != nil:
+		pdb.Spec.MaxUnavailable = spec.MaxUnavailable
+	case spec.MinAvailable != nil:
+		pdb.Spec.MinAvailable = spec.MinAvailable
+	default:
+		pdb.Spec.MinAvailable = new(intstr.FromInt32(0))
+	}
+
+	return pdb
+}
