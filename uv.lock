@@ -123,11 +123,11 @@ requires-dist = [
 
 [[package]]
 name = "annotated-types"
-version = "0.7.0"
+version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89", size = 16081, upload-time = "2024-05-20T21:33:25.928Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/56/a8120250d128bed162cd73c76d45f6ef9991f3e068f62a8ee060afa3104a/annotated_types-0.8.0.tar.gz", hash = "sha256:13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7", size = 15893, upload-time = "2026-07-23T20:16:13.995Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl", hash = "sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53", size = 13643, upload-time = "2024-05-20T21:33:24.1Z" },
+    { url = "https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl", hash = "sha256:f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0", size = 13427, upload-time = "2026-07-23T20:16:12.938Z" },
 ]
 
 [[package]]
@@ -423,7 +423,7 @@ requires-dist = [
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "django-tenants", specifier = "==3.13.0" },
     { name = "djangoql", specifier = "==0.19.1" },
-    { name = "djangorestframework", specifier = "==3.18.0" },
+    { name = "djangorestframework", specifier = "==3.18.1" },
     { name = "docker", specifier = "==7.2.0" },
     { name = "drf-spectacular", specifier = "==0.29.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
@@ -513,7 +513,7 @@ dev = [
     { name = "selenium", specifier = "==4.48.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-docker", specifier = "==7.2.0.20260827" },
-    { name = "types-jwcrypto", specifier = "==1.5.9.20260901" },
+    { name = "types-jwcrypto", specifier = "==1.6.0.20260903" },
     { name = "types-ldap3", specifier = "==2.9.13.20260827" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20260518" },
@@ -1446,14 +1446,14 @@ wheels = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.18.0"
+version = "3.18.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/79/bc/de04e3d4dc65e8b926700956ee70d4f084f2005603d21122d4d0683006fd/djangorestframework-3.18.0.tar.gz", hash = "sha256:2323a5111837e0b784dcb8323abc78ecc54fa2a5af7aff2677cf50cdd849477f", size = 913667, upload-time = "2026-08-07T14:53:33.571Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/2e/b3ce9d449b1ed9f9dd74fb7dfbc5f20860d5f40c2b4b10a2c3eabd8ff579/djangorestframework-3.18.1.tar.gz", hash = "sha256:605d79fa2ec2f02905492e5ea13d903c2d842d0b4c915a57f7bf02ab9f3c91dd", size = 915653, upload-time = "2026-09-07T18:04:08.288Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/d7/7461738e819b853275b35fd35712a85806c09a327e1fd5f8ff766bdd317e/djangorestframework-3.18.0-py3-none-any.whl", hash = "sha256:381fc44d3249c9565c5f723850855b734e99030eb30957a49f506d3fe11d7dcb", size = 900032, upload-time = "2026-08-07T14:53:31.881Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/83/5ed615e47339d8e65f62eb1a8133f8f046492eb3a25ad40d90acb9a208b3/djangorestframework-3.18.1-py3-none-any.whl", hash = "sha256:f1409d698967aaf82d5d98d76b549c8fba8bd92ebd0d83d24454508f72168dc2", size = 901373, upload-time = "2026-09-07T18:04:06.237Z" },
 ]
 
 [[package]]
@@ -3790,11 +3790,11 @@ wheels = [
 
 [[package]]
 name = "std-uritemplate"
-version = "2.0.10"
+version = "2.0.12"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/74/45/575604653c42b26eb693a6564cfbcf38ea8eb1feaa0a1f85df1a0d995a4b/std_uritemplate-2.0.10.tar.gz", hash = "sha256:35048a322217aed9766fdffe5a69f0632f7319577a4a265268761cd4ffa3205e", size = 6146, upload-time = "2026-05-20T14:49:56.888Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/f8/8f2b708394a6371e9b0e1cabdaf1be314f6b28c3697786a0a7e5f31ee9bf/std_uritemplate-2.0.12.tar.gz", hash = "sha256:c245e6d9c6804e435c45fa94ee4a3c8a57e08aeeb45af261101cb0d513964534", size = 6557, upload-time = "2026-07-16T11:04:14.654Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/5b/86b48580bcebff823102978c36c15eaaca45f2f0c74001dc39e759ff5d10/std_uritemplate-2.0.10-py3-none-any.whl", hash = "sha256:bc93137c5718216aaaf6e5a016ce24cb6e356512cedb66182b1f835bc57a55cb", size = 6671, upload-time = "2026-05-20T14:49:58.319Z" },
+    { url = "https://files.pythonhosted.org/packages/53/9b/77a4936805a7853189ca040b698f7c8d6a1d4ca88c09a880a95b8d544d6a/std_uritemplate-2.0.12-py3-none-any.whl", hash = "sha256:42b702d8d7eb8c13b586c527b8f2edaff456b69fee88e817d2f5dc5f088b8765", size = 7095, upload-time = "2026-07-16T11:04:15.43Z" },
 ]
 
 [[package]]
@@ -3956,14 +3956,14 @@ wheels = [
 
 [[package]]
 name = "types-jwcrypto"
-version = "1.5.9.20260901"
+version = "1.6.0.20260903"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bc/0c/47e26ad2f83277064fe72ae934003720ef4bb9417a6c5b93de83492fbaaa/types_jwcrypto-1.5.9.20260901.tar.gz", hash = "sha256:f31488245bc3f8adb7395ff5194e99d77172db78df3baa0b7627fe6fcd727c63", size = 12530, upload-time = "2026-09-01T06:54:47.803Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/99/7a12dc08492930465ebb48b1ed2b35a63e239386130b76c64e943e6cd0e8/types_jwcrypto-1.6.0.20260903.tar.gz", hash = "sha256:d210d075c910dd5098589b7d55e7908b43fcf2e1606a05a750aa856cc4012fb9", size = 12552, upload-time = "2026-09-03T06:36:52.7Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/b4/7a9320b20aa0524c9d97e27376a391ba84aa14a9f197ab704a497f45abb1/types_jwcrypto-1.5.9.20260901-py3-none-any.whl", hash = "sha256:a70c1e88b23e06704c1cc5ac37f54faac1caa953276fa18187c31afe397fab43", size = 13532, upload-time = "2026-09-01T06:54:46.948Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/b3/0086a54cc42b91bd4d5601f5d824ca5f6a86e09df6a8927f8587d3338211/types_jwcrypto-1.6.0.20260903-py3-none-any.whl", hash = "sha256:9a05d64392f35c5133403e2c25e64a534298c07fcde80f60571f7ad41e32959f", size = 13532, upload-time = "2026-09-03T06:36:51.89Z" },
 ]
 
 [[package]]
