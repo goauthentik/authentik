@@ -1,0 +1,100 @@
+---
+title: Create a RADIUS provider
+---
+
+Creating an authentik RADIUS provider requires the following steps:
+
+1. [Choose an authentication flow](#choose-an-authentication-flow)
+2. [Create a RADIUS application and provider](#create-a-radius-application-and-provider)
+3. [Deploy the provider to a RADIUS outpost](#deploy-the-provider-to-a-radius-outpost)
+4. [Configure the RADIUS client](#configure-the-radius-client)
+5. [Verify the configuration](#configuration-verification)
+
+## Choose an authentication flow
+
+The RADIUS provider runs an authentication flow in the background. Choose a flow that uses the [supported stages](./index.mdx#authentication-flow).
+
+For password-based authentication with PAP, you can use an existing flow if its stages and MFA requirements are compatible with RADIUS. If you need different requirements for RADIUS, [create a separate flow](../../flows-stages/flow/index.mdx#create-a-flow) with **Designation** set to **Authentication**, rather than changing the flow used for web logins.
+
+A typical PAP authentication flow runs these stages in order:
+
+1. [Identification stage](../../flows-stages/stages/identification/index.mdx): identify the user.
+2. [Password stage](../../flows-stages/stages/password/index.mdx): validate the user's password.
+3. [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx), when MFA is required: validate a supported authenticator.
+4. [User login stage](../../flows-stages/stages/user_login/index.mdx): complete authentication.
+
+If the flow requires MFA, ensure that users have a supported authenticator configured. For passwords with an appended TOTP or static code, enable **Code-based MFA Support** on the provider. See [Code-based MFA support](./index.mdx#code-based-mfa-support).
+
+For certificate-based authentication, follow the [EAP-TLS configuration instructions](./index.mdx#eap). EAP-TLS requires authentik Enterprise.
+
+## Create a RADIUS application and provider
+
+You can create an application and provider together from the Admin interface:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application**.
+3. Provide an **Application Name** and **Slug**, configure any other application details, and click **Next**.
+4. Select **Radius Provider** as the provider type and click **Next**.
+5. On the **Configure Radius Provider** page, set the following configurations:
+    - Provide a **Provider Name**.
+    - Set **Authentication Flow** to the flow selected in the previous section.
+    - Configure **Code-based MFA Support** to match your authentication requirements.
+    - Under **Protocol settings**, configure the **Shared secret** and **Client Networks** as described in [Configure RADIUS clients](#configure-radius-clients).
+    - For EAP-TLS, select the server certificate under **Certificate**.
+    - Optionally, select [property mappings](./index.mdx#radius-attributes) under **Property mappings**.
+6. Click **Next**. Configure any policy, user, or group bindings that should control access to the application, then click **Next** again.
+7. Review the application and provider details and click **Create Application**.
+
+Users must be allowed to access the application before their RADIUS authentication can succeed. If the application has [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), ensure that users are included in an applicable binding.
+
+:::info Create a provider separately
+You can also create a provider from **Applications** > **Providers** by clicking **New Provider** and selecting **Radius Provider**. Associate the provider with an application before adding it to an outpost.
+:::
+
+### Configure RADIUS clients
+
+The **Protocol settings** on the provider determine which RADIUS clients can connect:
+
+- **Shared secret**: configure the same value on the provider and the network access server (NAS) or other RADIUS client.
+- **Client Networks**: enter a comma-separated list of CIDR networks for the RADIUS clients. For example, `192.0.2.10/32` allows a client at that IPv4 address. Use the source address that the outpost sees, which might differ from the client's address if requests pass through NAT.
+
+The default **Client Networks** value, `0.0.0.0/0, ::/0`, matches all IPv4 and IPv6 addresses. Restrict it to the RADIUS clients that should use this provider. These are the devices sending RADIUS requests, not necessarily the end-user devices being authenticated.
+
+:::warning Multiple RADIUS providers
+When assigning multiple providers to one outpost, use distinct shared secrets and non-overlapping client networks. The outpost uses the request's source address to select a shared secret, then uses that secret to select the provider. Reusing secrets or overlapping networks can cause requests to use an unintended provider.
+:::
+
+## Deploy the provider to a RADIUS outpost
+
+The RADIUS provider requires a [RADIUS outpost](../../outposts/index.mdx).
+
+1. In the Admin interface, navigate to **Applications** > **Outposts** and click **New Outpost**.
+2. Set the following configurations:
+    - Provide an **Outpost Name** (e.g. `radius-outpost`).
+    - Set **Type** to **Radius**.
+    - Select an **Integration** for authentik to manage the deployment, or leave it empty to deploy the outpost manually.
+    - Under **Applications**, select the RADIUS application created in the previous section.
+    - Under **Advanced settings**, configure any required [outpost settings](../../outposts/index.mdx#configuration).
+3. Click **Create**.
+4. If you did not select an integration, deploy the outpost using the [RADIUS Docker Compose example](../../outposts/manual-deploy-docker-compose.mdx#radius-outpost). For Kubernetes, adapt the [manual deployment template](../../outposts/manual-deploy-kubernetes.mdx): use the `ghcr.io/goauthentik/radius` image, configure UDP port `1812` on the container and Service, and replace the proxy-specific HTTP Ingress with a way for RADIUS clients to reach the UDP Service.
+
+Ensure that the RADIUS client can reach the outpost's authentication port, normally UDP port `1812`. If you customize the exposed port, use that port in the client configuration.
+
+## Configure the RADIUS client
+
+Configure the RADIUS client with:
+
+- The address of the RADIUS outpost and its exposed authentication port
+- The shared secret configured on the provider
+- The authentication method: PAP for password-based authentication, or EAP-TLS for certificate-based authentication
+
+For EAP-TLS, also configure the end-user devices with their client certificates and private keys, and configure them to validate the RADIUS server certificate. See [EAP-TLS](./index.mdx#eap).
+
+## Configuration verification
+
+1. Send an authentication request from a configured RADIUS client using an account that is allowed to access the application.
+2. Confirm that authentication succeeds and that the final RADIUS response is an `Access-Accept`. EAP-TLS uses intermediate challenge exchanges before the final response.
+3. If you configured RADIUS property mappings, inspect the decoded `Access-Accept` and verify that the expected attributes and values are present. Successful authentication alone does not confirm that a mapping worked.
+4. Test an authentication or application-authorization denial separately and confirm that it produces an `Access-Reject`. Requests denied at these stages do not run response property mappings.
+
+If authentication fails, check the RADIUS outpost logs and **Events** > **Logs** in the Admin interface. For missing response attributes, see [Troubleshoot a failed mapping](./index.mdx#troubleshoot-a-failed-mapping). If the client receives no response, also check the network path, exposed UDP port, **Client Networks**, and shared secret; not every invalid request receives an `Access-Reject`.
