@@ -22,7 +22,11 @@ If a listed flow doesn't exist or its policies deny the user, the session remain
 
 ## Require an action for a user
 
-Set the `goauthentik.io/user/next-actions` attribute on the user, through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click the name of the user.
+3. In the **Next actions on login** card, select a flow and click **Add**. Pending actions are listed in the same card and can be removed there.
+
+Because the actions are stored in the `goauthentik.io/user/next-actions` attribute, they can also be set through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
 
 ```yaml
 goauthentik.io/user/next-actions:
