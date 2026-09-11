@@ -171,6 +171,14 @@ export class SessionFixture extends PageFixture {
 
         await page.getByRole("menuitem", { name: "Sign out current user" }).click();
 
-        await this.$identificationStage.waitFor({ state: "visible" });
+        // Whichever stage the flow settles on, not identification specifically.
+        // With remember-me stored, the executor fills the identification stage
+        // and submits it for you, so the flow is already on the password stage
+        // by the time this runs — and waiting for identification then blocks
+        // until the test's own budget runs out.
+        await page
+            .locator("ak-stage-identification, ak-stage-password")
+            .first()
+            .waitFor({ state: "visible" });
     }
 }
