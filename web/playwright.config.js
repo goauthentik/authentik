@@ -1,9 +1,10 @@
 /**
+ * @import {
+ *   LogFn,
+ *   Logger
+ * } from "pino"
  * @file Playwright configuration.
- *
  * @see https://playwright.dev/docs/test-configuration
- *
- * @import { LogFn, Logger } from "pino"
  */
 
 import { ConsoleLogger } from "#logger/node";

@@ -40,6 +40,17 @@ export default defineConfig({
         ],
         projects: [
             {
+                // The root `tsconfig.json` excludes `src/**/*.test.ts`, so `vite:oxc`'s
+                // per-file tsconfig discovery bails with `[TSCONFIG_ERROR] Tsconfig not
+                // found` on co-located `src/**/*.unit.test.ts`. Disabling tsconfig
+                // discovery for this Node project lets oxc transform those files while
+                // leaving `lint:types` (`tsgo -p .`) and the root excludes untouched.
+                // `tsconfig` is forwarded to oxc's transform at runtime but is omitted
+                // from vite's `OxcOptions` type, so the assertion adds it back to keep
+                // `tsgo -p .` clean.
+                oxc: /** @type {import("vite").OxcOptions & { tsconfig: false }} */ ({
+                    tsconfig: false,
+                }),
                 test: {
                     include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
                     name: "Unit Tests",
@@ -50,6 +61,11 @@ export default defineConfig({
                 },
             },
             {
+                // Projects do not inherit the root plugin list, and elements
+                // import their stylesheets as text for `unsafeCSS`. Without
+                // this the CSS resolves to a Vite style side-effect with no
+                // default export, and importing any AKElement throws.
+                plugins: [inlineCSSPlugin()],
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 
