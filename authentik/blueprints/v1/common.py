@@ -15,7 +15,7 @@ from uuid import UUID
 
 from deepmerge import always_merger
 from django.apps import apps
-from django.db.models import CharField, Model, Q, TextField
+from django.db.models import CharField, Model, Q, TextField, UniqueConstraint
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
@@ -123,6 +123,37 @@ def _readable_key(obj: Model) -> str | None:
     return None
 
 
+def _unique_together_groups(model_class: type[Model]) -> Iterable[tuple[str, ...]]:
+    """Field-name groups declared unique together on a model, via either the legacy
+    Meta.unique_together or a plain (unconditional) Meta.constraints UniqueConstraint"""
+    yield from model_class._meta.unique_together
+    for constraint in model_class._meta.constraints:
+        if not isinstance(constraint, UniqueConstraint):
+            continue
+        if not constraint.condition and constraint.fields:
+            yield constraint.fields
+
+
+def _composite_identifier_fields(
+    model_class: type[Model], all_attrs: dict[str, Any], fields: dict[str, Field]
+) -> list[str]:
+    """When no single field can serve as a stable identifier, fall back to a composite
+    of fields that together identify the instance: a declared unique-together group if
+    one is fully known, otherwise every populated relation to another exported object
+    (e.g. a binding's target and policy), mirroring how such join objects are naturally
+    keyed. Portable across instances, as relations are resolved to !KeyOf tags."""
+    for group in _unique_together_groups(model_class):
+        if all(name in all_attrs and all_attrs[name] is not None for name in group):
+            return list(group)
+    return [
+        name
+        for name, ser_field in fields.items()
+        if name in all_attrs
+        and all_attrs[name] is not None
+        and _relation_target_model(ser_field) is not None
+    ]
+
+
 class ReferenceIndex:
     """Tracks exported model instances so relations between them can be
     rewritten as !KeyOf references instead of raw primary keys."""
@@ -210,7 +241,6 @@ class BlueprintEntry:
     @staticmethod
     def from_model(
         model: SerializerModel,
-        *extra_identifier_names: str,
         reference_index: ReferenceIndex | None = None,
     ) -> BlueprintEntry:
         """Convert a SerializerModel instance to a blueprint Entry"""
@@ -218,12 +248,14 @@ class BlueprintEntry:
         if reference_index is not None:
             all_attrs = resolve_references(all_attrs, fields, reference_index)
 
-        identifier_names = list(extra_identifier_names)
-        for field_name in _stable_identifier_fields(type(model)):
-            if field_name in identifier_names or field_name not in all_attrs:
-                continue
-            if _is_stable_value(all_attrs[field_name]):
-                identifier_names.append(field_name)
+        identifier_names = [
+            field_name
+            for field_name in _stable_identifier_fields(type(model))
+            if field_name in all_attrs and _is_stable_value(all_attrs[field_name])
+        ]
+
+        if not identifier_names:
+            identifier_names = _composite_identifier_fields(type(model), all_attrs, fields)
 
         identifiers = {}
         for identifier_name in identifier_names:

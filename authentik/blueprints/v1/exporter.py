@@ -153,7 +153,7 @@ class FlowExporter(Exporter):
 
         objects = [self.flow, *prompts, *policies, *stages, *stage_bindings, *policy_bindings]
         entries = [
-            BlueprintEntry.from_model(self.flow, "slug", reference_index=reference_index),
+            BlueprintEntry.from_model(self.flow, reference_index=reference_index),
             *(
                 BlueprintEntry.from_model(prompt, reference_index=reference_index)
                 for prompt in prompts
@@ -163,19 +163,15 @@ class FlowExporter(Exporter):
                 for policy in policies
             ),
             *(
-                BlueprintEntry.from_model(stage, "name", reference_index=reference_index)
+                BlueprintEntry.from_model(stage, reference_index=reference_index)
                 for stage in stages
             ),
             *(
-                BlueprintEntry.from_model(
-                    binding, "target", "stage", "order", reference_index=reference_index
-                )
+                BlueprintEntry.from_model(binding, reference_index=reference_index)
                 for binding in stage_bindings
             ),
             *(
-                BlueprintEntry.from_model(
-                    binding, "policy", "target", "order", reference_index=reference_index
-                )
+                BlueprintEntry.from_model(binding, reference_index=reference_index)
                 for binding in policy_bindings
             ),
         ]
