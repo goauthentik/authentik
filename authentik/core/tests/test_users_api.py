@@ -3,7 +3,11 @@
 from datetime import datetime, timedelta
 from json import loads
 
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import (
+    PBKDF2PasswordHasher,
+    check_password,
+    make_password,
+)
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -25,13 +29,17 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
-INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
+INVALID_PASSWORD_HASH_ERROR = (
+    "Invalid password hash. The value must be a complete encoded password hash in one of "
+    "authentik's configured formats."
+)
 
 
 class TestUsersAPI(APITestCase):
@@ -41,10 +49,15 @@ class TestUsersAPI(APITestCase):
         self.admin = create_test_admin_user()
         self.user = create_test_user()
 
-    def _set_password_hash(self, user: User, password_hash: str, client=None):
+    def _set_password_hash(
+        self, user: User, password_hash: str, client=None, override: bool | None = None
+    ):
+        data: dict[str, str | bool] = {"password": password_hash}
+        if override is not None:
+            data["override"] = override
         return (client or self.client).post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
-            data={"password": password_hash},
+            data=data,
         )
 
     def _assert_password_hash_set(
@@ -53,16 +66,20 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204, response.data)
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
-        self.assertTrue(user.check_password(password))
+        self.assertTrue(check_password(password, user.password))
 
     def _assert_password_hash_rejected(
-        self, user: User, original_password_hash: str, response
+        self,
+        user: User,
+        original_password_hash: str,
+        response,
+        errors: str | list[str] | None = INVALID_PASSWORD_HASH_ERROR,
     ) -> None:
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"password": [INVALID_PASSWORD_HASH_ERROR]},
-        )
+        if errors is not None:
+            if isinstance(errors, str):
+                errors = [errors]
+            self.assertJSONEqual(response.content, {"password": errors})
         user.refresh_from_db()
         self.assertEqual(user.password, original_password_hash)
 
@@ -159,7 +176,7 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
     def test_set_password_hash(self):
-        """Test setting a user's password from a hash."""
+        """Test setting a user's password from a current hash."""
         self.client.force_login(self.admin)
         password = generate_key()
         password_hash = make_password(password)
@@ -170,15 +187,40 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
-        original_password = self.user.password
-        for password_hash in (
-            INVALID_PASSWORD_HASH,
-            "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
-        ):
-            with self.subTest(password_hash=password_hash):
-                response = self._set_password_hash(self.user, password_hash)
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
 
-                self._assert_password_hash_rejected(self.user, original_password, response)
+        self._assert_password_hash_rejected(self.user, self.user.password, response)
+
+    def _noncurrent_pbkdf2_hash(self, password: str, salt: str | None = None) -> str:
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations -= 1
+        return hasher.encode(password, salt or hasher.salt())
+
+    def test_set_password_hash_override(self):
+        """Test override imports a non-current hash, but not an invalid one."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        password = generate_key()
+        password_hash = self._noncurrent_pbkdf2_hash(password, "salt")
+
+        response = self._set_password_hash(self.user, password_hash)
+        errors = response.json()["password"]
+        self._assert_password_hash_rejected(self.user, original_password, response, errors=errors)
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(all("override" in error for error in errors))
+
+        response = self._set_password_hash(self.user, password_hash, override=True)
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_SET,
+                user__pk=self.user.pk,
+                context__hasher_defaults_overridden=True,
+            ).exists()
+        )
+
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
+        self._assert_password_hash_rejected(self.user, password_hash, response)
 
     def test_recovery(self):
         """Test user recovery link"""
