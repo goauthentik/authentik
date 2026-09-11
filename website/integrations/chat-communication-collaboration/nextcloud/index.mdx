@@ -84,13 +84,13 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
                 "name": request.user.name,
                 "groups": groups,
                 "quota": quota,
-                "user_id": request.user.attributes.get("nextcloud_user_id", str(request.user.uuid)),
+                "user_id": request.user.attributes.get("nextcloud_user_id", request.user.username.lower()),
             }
             ```
 
 3. Click **Finish**.
 
-To set a quota, define the `nextcloud_quota` attribute on a user, group, or Nextcloud application entitlement. For example, setting it to `1 GB` restricts the user to 1 GB of storage. To connect an authentik user to an existing Nextcloud account, set the user's `nextcloud_user_id` attribute to the existing Nextcloud username.
+To set a quota, define the `nextcloud_quota` attribute on a user, group, or Nextcloud application entitlement. For example, setting it to `1 GB` restricts the user to 1 GB of storage. To connect an authentik user to an existing Nextcloud account, set the user's `nextcloud_user_id` attribute to the existing Nextcloud username. If the authentik username already matches the existing Nextcloud username, the `nextcloud_user_id` attribute can be omitted.
 
 ### Create an application and provider
 
