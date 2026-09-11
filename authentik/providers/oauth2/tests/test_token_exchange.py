@@ -490,6 +490,24 @@ class TestTokenExchange(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_successful_hs256_subject_token(self):
+        """test successful exchange of a subject token signed with the client secret"""
+        hs256_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+        )
+        self.provider.jwt_federation_providers.add(hs256_provider)
+        subject_token = self.create_subject_token(self.user, provider=hs256_provider)
+
+        response = self._exchange(subject_token=subject_token)
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+        self.assertEqual(body["token_type"], TOKEN_TYPE)
+        self.assertEqual(body["issued_token_type"], TOKEN_TYPE_URI_ACCESS_TOKEN)
+
+        jwt = self._decode_for(self.provider, body["access_token"])
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+
     def test_successful(self):
         """test successful exchange, preserving the subject's identity"""
         response = self.client.post(
