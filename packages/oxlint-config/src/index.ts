@@ -1,6 +1,8 @@
+import { PaddingRules } from "./padding-rules.js";
 import { createRuntimeOverrides } from "./restrictions.js";
 import { WebComponentJsPlugins, WebComponentRules } from "./web-components.js";
 
+export * from "./padding-rules.js";
 export * from "./restrictions.js";
 export * from "./web-components.js";
 
@@ -16,6 +18,15 @@ export interface OxlintConfigOptions {
      * loaded as `jsPlugins`). Off by default; the web UI turns it on.
      */
     lit?: boolean;
+    /**
+     * Enable the blank-line padding rules (`padding-lines`, `console-padding`,
+     * `multiline-statement-padding`). Off by default.
+     *
+     * @remarks
+     *   These autofix by rewriting source, so switching them on reformats a codebase that has not
+     *   been written to them. Opt in deliberately, and land the resulting fix in its own commit.
+     */
+    padding?: boolean;
     /** Override the default ignore patterns. */
     ignorePatterns?: string[];
     /** Extra config deep-merged last; an escape hatch for per-repo tweaks. */
@@ -63,6 +74,7 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         packageNamespace = "@goauthentik",
         react = false,
         lit = false,
+        padding = false,
         ignorePatterns = DefaultIgnorePatterns,
         overrides = {},
     } = options;
@@ -106,10 +118,7 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         "typescript/no-non-null-assertion": "off",
         "typescript/no-var-requires": "off",
         "typescript/no-require-imports": "off",
-        // Enable alongside `paddingRule` in `./plugin.ts` — both are commented out together.
-        // This is a new rule with no ESLint predecessor, so switching it on reformats code and
-        // belongs with the rest of the formatting sweep rather than the tooling swap.
-        // "goauthentik/padding-lines": "warn",
+        ...(padding ? PaddingRules : {}),
         ...(lit ? WebComponentRules : {}),
     };
 

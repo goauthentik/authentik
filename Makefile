@@ -370,6 +370,10 @@ ci-lint-clippy: ci--meta-debug
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
 
+ci-lint-oxlint-fixtures: ci--meta-debug
+	pnpm --filter @goauthentik/oxlint-config run build
+	pnpm --filter @goauthentik/oxlint-config run verify
+
 ci-lint-check-types: ci--meta-debug
 	pnpm run check-types
 
