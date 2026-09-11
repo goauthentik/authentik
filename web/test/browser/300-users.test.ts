@@ -21,7 +21,7 @@ test.describe("Users", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/users",
+                to: "/if/admin/identity/users",
             });
         });
     });
@@ -134,7 +134,7 @@ test.describe("Impersonation", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/users",
+                to: "/if/admin/identity/users",
             });
         });
     });
@@ -167,7 +167,7 @@ test.describe("Impersonation", () => {
 
             await createDialog.getByRole("button", { name: "Create" }).click();
 
-            await createDialog.waitFor({ state: "hidden", timeout: 10_000 });
+            await createDialog.waitFor({ state: "hidden" });
             await expect(createDialog, "Create dialog closes").toBeHidden();
         });
 
@@ -188,9 +188,7 @@ test.describe("Impersonation", () => {
 
             await impersonateDialog.getByRole("button", { name: "Impersonate" }).click();
 
-            await navigator.waitForPathname("/if/user/library", {
-                timeout: 10_000,
-            });
+            await navigator.waitForPathname("/if/user/library");
         });
 
         await test.step("Confirm impersonation", async () => {

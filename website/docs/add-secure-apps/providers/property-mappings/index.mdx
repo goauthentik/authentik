@@ -91,6 +91,10 @@ See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization
 
 Synchronization providers use property mappings to build the user and group data that they send to integrated services. The mapping must return data in the format that the integrated service expects.
 
+:::warning Property mapping errors
+Synchronization providers evaluate property mappings in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings. Other provider types generally record the error and continue with the next property mapping.
+:::
+
 Refer to the provider documentation for supported fields and examples:
 
 - [SCIM](../scim/index.mdx#attribute-mapping)
