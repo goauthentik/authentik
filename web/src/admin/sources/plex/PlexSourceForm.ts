@@ -12,7 +12,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
@@ -38,7 +38,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async loadInstance(pk: string): Promise<PlexSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
+        const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
         this.plexToken = source.plexToken;
@@ -61,13 +61,13 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         if (this.instance?.pk) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
+            return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+        return aki(SourcesApi).sourcesPlexCreate({
             plexSourceRequest: data,
         });
     }

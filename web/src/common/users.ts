@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isResponseErrorLike } from "#common/errors/network";
+import { globalAK } from "#common/global";
 import { UIConfig, UserDisplay } from "#common/ui/config";
 
 import { CoreApi, SessionUser, UserSelf } from "@goauthentik/api";
@@ -82,12 +83,10 @@ export function formatDisambiguatedUserDisplayName(
         }
     }
     if (email && email !== username) {
-        segments.push(
-            msg(str`<${email}>`, {
-                id: "user.display.emailInAngleBrackets",
-                desc: "The user's email in angle brackets, used when the email is different from the username",
-            }),
-        );
+        // Angle brackets are kept outside `msg(str...)` because lit-localize-tools'
+        // template-literal escape pass converts `<` and `>` to `&lt;` / `&gt;` in
+        // every non-source locale, producing literal entity text on the page.
+        segments.push(`<${email}>`);
     }
 
     if (!segments.length) {
@@ -115,6 +114,7 @@ function createGuestSession(): SessionUser {
             pk: -1,
             isSuperuser: false,
             isActive: true,
+            isCurrent: true,
             groups: [],
             roles: [],
             avatar: "",
@@ -124,6 +124,7 @@ function createGuestSession(): SessionUser {
             settings: {},
             systemPermissions: [],
         },
+        users: [],
     };
 
     return guest;
@@ -136,15 +137,19 @@ let pendingRedirect = false;
  *
  * @category Session
  */
-export function redirectToAuthFlow(nextPathname = "/flows/-/default/authentication/"): void {
+export function redirectToAuthFlow(nextPathname?: string): void {
     if (pendingRedirect) {
         console.debug("authentik/users: Redirect already pending, ");
         return;
     }
 
+    // Base-path-aware default: `api.base` carries the deployment prefix (e.g.
+    // `/auth/`), so the login flow resolves correctly under a non-root web.path.
+    const flowPathname = nextPathname ?? `${globalAK().api.base}flows/-/default/authentication/`;
+
     const { pathname, search, hash } = window.location;
 
-    const authFlowRedirectURL = new URL(nextPathname, window.location.origin);
+    const authFlowRedirectURL = new URL(flowPathname, window.location.origin);
 
     authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
 
@@ -161,7 +166,7 @@ export function redirectToAuthFlow(nextPathname = "/flows/-/default/authenticati
  * Start account lockdown and follow the returned flow link.
  */
 export async function startAccountLockdown(user?: number): Promise<void> {
-    const response = await new CoreApi(DEFAULT_CONFIG).coreUsersAccountLockdownCreate({
+    const response = await aki(CoreApi).coreUsersAccountLockdownCreate({
         userAccountLockdownRequest: user !== undefined ? { user } : {},
     });
     if (response.link) {
@@ -172,14 +177,12 @@ export async function startAccountLockdown(user?: number): Promise<void> {
 /**
  * Retrieve the current user session.
  *
- * This is a memoized function, so it will only make one request per page load.
- *
  * @see {@linkcode refreshMe} to force a refresh.
  *
  * @category Session
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
-    return new CoreApi(DEFAULT_CONFIG)
+    return aki(CoreApi)
         .coreUsersMeRetrieve(requestInit)
         .catch(async (error: unknown) => {
             if (isResponseErrorLike(error)) {

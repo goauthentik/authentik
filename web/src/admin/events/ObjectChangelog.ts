@@ -4,7 +4,7 @@ import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -46,7 +46,7 @@ export class ObjectChangelog extends Table<Event> {
         if (this.targetModelName === "") {
             return Promise.reject();
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             action: "model_",
             contextModelApp: appName,

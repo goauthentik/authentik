@@ -7,7 +7,7 @@ import (
 
 func GetTLSConfig() *tls.Config {
 	// Based on
-	// https://ssl-config.mozilla.org/#server=go&version=1.25&config=intermediate&guideline=5.7
+	// https://configurator.tlsref.org/#server=go&version=1.27&config=intermediate&hsts&guideline=6.0
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
 		CurvePreferences: []tls.CurveID{
@@ -15,8 +15,7 @@ func GetTLSConfig() *tls.Config {
 			tls.CurveP256,
 			tls.CurveP384,
 		},
-		PreferServerCipherSuites: true,
-		CipherSuites:             []uint16{},
+		CipherSuites: []uint16{},
 	}
 
 	excludedCiphers := []uint16{

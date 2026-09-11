@@ -80,6 +80,7 @@ class TokenIntrospectionView(View):
             response = {}
             if self.params.id_token:
                 response.update(self.params.id_token.to_dict())
+                response.pop("cnf", None)
             response["active"] = not self.params.token.is_expired and not self.params.token.revoked
             response["scope"] = " ".join(self.params.token.scope)
             response["client_id"] = self.params.provider.client_id

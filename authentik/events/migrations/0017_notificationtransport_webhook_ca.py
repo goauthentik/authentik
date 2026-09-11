@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name="webhook_ca",
             field=models.ForeignKey(
                 default=None,
-                help_text="When set, the selected ceritifcate is used to validate the certificate of the webhook server.",
+                help_text="When set, the selected certificate is used to validate the certificate of the webhook server.",
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 to="authentik_crypto.certificatekeypair",

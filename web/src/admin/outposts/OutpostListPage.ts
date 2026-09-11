@@ -5,13 +5,15 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
@@ -21,7 +23,6 @@ import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -38,12 +39,13 @@ export class OutpostListPage extends TablePage<Outpost> {
     public override pageIcon = "pf-icon pf-icon-zone";
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
-        const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
+        const outposts = await aki(OutpostsApi).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
-        await Promise.all(
+
+        return Promise.all(
             outposts.results.map((outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG)
+                return aki(OutpostsApi)
                     .outpostsInstancesHealthList({
                         uuid: outpost.pk,
                     })
@@ -51,8 +53,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                         this.health[outpost.pk] = health;
                     });
             }),
-        );
-        return outposts;
+        ).then(() => outposts);
     }
 
     @state()
@@ -80,7 +81,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>
-                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                    <a href=${toAdminInterface(`core/providers/${p.pk}`)}>${p.name}</a>
                 </li>`;
             })}
         </ul>`;
@@ -88,7 +89,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     protected row(item: Outpost): SlottedTemplateResult[] {
         return [
-            html`<a href="#/outpost/outposts/${item.pk}"
+            html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
                 ${(item.config.authentik_host ?? "") === ""
                     ? html`<ak-label color=${PFColor.Orange} compact>
@@ -104,11 +105,13 @@ export class OutpostListPage extends TablePage<Outpost> {
             this.renderItemProviders(item),
             html`${item.serviceConnectionObj?.name || msg("No integration active")}`,
             html`<ak-outpost-health-simple
-                outpostId=${ifDefined(item.pk)}
+                outpost-id=${ifPresent(item.pk)}
             ></ak-outpost-health-simple>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(OutpostForm, item.pk, item.name, {
-                    embedded: item.managed === embeddedOutpostManaged,
+                    modalProps: {
+                        embedded: item.managed === embeddedOutpostManaged,
+                    },
                 })}
             </div>`,
         ];
@@ -121,12 +124,12 @@ export class OutpostListPage extends TablePage<Outpost> {
             object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
+                return aki(OutpostsApi).outpostsInstancesUsedByList({
                     uuid: item.pk,
                 });
             }}
             .delete=${(item: Outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
+                return aki(OutpostsApi).outpostsInstancesDestroy({
                     uuid: item.pk,
                 });
             }}

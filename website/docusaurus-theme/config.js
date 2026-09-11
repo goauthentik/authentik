@@ -3,6 +3,7 @@
  *
  * @import { Config } from "@docusaurus/types";
  * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
+ * @import { AKMDXOnlyPluginOptions } from "./mdx-only/plugin.mjs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { BuildUrlValues } from "remark-github";
  */
@@ -32,6 +33,11 @@ export const DocusaurusExcludePatterns = [
     "**/*.test.{js,jsx,ts,tsx}",
     "**/__tests__/**",
     "**/node_modules/**",
+    // Build output lives under the docs root (path: ".") — never scan it as
+    // content. The llms.txt plugin writes per-page `.md` into build/, so without
+    // this a second build (with a dirty build/) ingests them as source and fails.
+    "**/build/**",
+    "**/out/**",
 ];
 
 //#region Preset
@@ -116,6 +122,34 @@ export function createAlgoliaConfig(overrides) {
 }
 
 /**
+ * Create the llms.txt plugin tuple.
+ *
+ * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
+ * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
+ */
+export function createLLMSPlugin(options) {
+    return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
+}
+
+/**
+ * Create the MDX-only plugin tuple, which fails the build on `.md` content.
+ *
+ * @param {AKMDXOnlyPluginOptions} [options]
+ * @returns {[string, AKMDXOnlyPluginOptions]}
+ */
+export function createMDXOnlyPlugin(options) {
+    return [
+        "@goauthentik/docusaurus-theme/mdx-only/plugin",
+        { ignore: DocusaurusExcludePatterns, ...options },
+    ];
+}
+
+/**
+ * Footer copyright line shared by every site.
+ */
+export const FOOTER_COPYRIGHT = `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`;
+
+/**
  * @param {Partial<Config>} overrides
  * @returns {Partial<Config>}
  */
@@ -124,6 +158,8 @@ export function extendConfig(overrides) {
      * @type {Partial<Config>}
      */
     const commonConfig = {
+        plugins: [createMDXOnlyPlugin()],
+
         staticDirectories: [
             // ---
             resolve(__dirname, "..", "static"),
@@ -132,7 +168,7 @@ export function extendConfig(overrides) {
 
         themeConfig: /** @type {Partial<UserThemeConfig>} */ ({
             footer: {
-                copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
+                copyright: FOOTER_COPYRIGHT,
             },
         }),
     };

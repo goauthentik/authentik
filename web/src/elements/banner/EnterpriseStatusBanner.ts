@@ -1,7 +1,6 @@
-import { globalAK } from "#common/global";
-
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -75,7 +74,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 : "pf-m-gold"}"
         >
             ${message}
-            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses"
+            <a href=${toAdminInterface("enterprise/licenses")}
                 >${msg("Click here for more info.")}</a
             >
         </div>`;

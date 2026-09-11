@@ -1,6 +1,6 @@
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { asInstanceInvoker } from "#elements/dialogs";
@@ -26,7 +26,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
 
     protected refreshReasonRequirement = async () => {
         try {
-            const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
+            const settings = await aki(AdminApi).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
         } catch (error) {
             console.error("Failed to fetch impersonation settings:", error);
@@ -49,7 +49,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
     }
 
     async send(data: ImpersonationRequest): Promise<void> {
-        return new CoreApi(DEFAULT_CONFIG)
+        return aki(CoreApi)
             .coreUsersImpersonateCreate({
                 id: this.instancePk || 0,
                 impersonationRequest: data,

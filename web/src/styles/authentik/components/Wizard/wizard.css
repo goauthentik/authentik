@@ -35,7 +35,8 @@
     }
 
     & > .pf-c-form {
-        place-content: start;
+        align-content: start;
+        justify-content: stretch;
     }
 }
 

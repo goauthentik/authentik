@@ -1,7 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -9,7 +9,7 @@ import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
 import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, UsedBy, User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 import { str } from "@lit/localize";
 import { msg } from "@lit/localize/init/install";
@@ -24,7 +24,9 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
     public static override verboseName = msg("User");
     public static override verboseNamePlural = msg("Users");
 
-    protected coreAPI = new CoreApi(DEFAULT_CONFIG);
+    public override size = PFSize.Small;
+
+    protected coreAPI = aki(CoreApi);
 
     protected override send(): Promise<unknown> {
         if (!this.instance) {
@@ -68,13 +70,19 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
     }
 
-    public override usedBy = (): Promise<UsedBy[]> => {
-        if (!this.instance) {
-            return Promise.resolve([]);
-        }
+    protected override renderForm(): SlottedTemplateResult {
+        const displayName = this.formatDisplayName();
 
-        return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
-    };
+        return html`<p class="pf-c-form__helper-text">
+            ${this.instance?.isActive
+                ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
+                      id: "user.activation.confirm.deactivate",
+                  })
+                : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
+                      id: "user.activation.confirm.activate",
+                  })}
+        </p>`;
+    }
 }
 
 declare global {

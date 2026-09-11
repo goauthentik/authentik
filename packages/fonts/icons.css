@@ -1,0 +1,36 @@
+/*
+ * Icon font faces.
+ *
+ * These bind the two icon families authentik's PatternFly 4 components render
+ * glyphs from. The matching icon classes (`.pf-icon-*`, `.fa`) stay with
+ * PatternFly — only the @font-face declarations and the font files live here,
+ * so every consumer resolves the same bytes from one place.
+ *
+ * Provenance, both taken verbatim from @patternfly/patternfly@4.224.5:
+ *
+ *   pficon               PatternFly's own icon set. MIT, © Red Hat, Inc.
+ *   Font Awesome 5 Free  The solid weight only, which is all PatternFly 4
+ *                        bundles. The font files are SIL OFL 1.1; the icons
+ *                        they encode are CC BY 4.0, © Fonticons, Inc.
+ *
+ * See NOTICE.md for the full attribution and licenses/ for the license texts.
+ *
+ * @font-face only takes effect at the document level. Declaring these inside a
+ * shadow root does nothing — components inherit the faces registered here.
+ */
+
+@font-face {
+    font-family: "pficon";
+    src:
+        url("./pficon.woff2") format("woff2"),
+        url("./pficon.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    src:
+        url("./fa-solid-900.woff2") format("woff2"),
+        url("./fa-solid-900.woff") format("woff");
+}

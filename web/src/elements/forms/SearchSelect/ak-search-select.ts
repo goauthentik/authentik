@@ -16,6 +16,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => SlottedTemplateResult;
+    optionDisabled?: (element: T) => boolean;
     value: (element: T | null) => string | number;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
@@ -53,7 +54,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  */
 @customElement("ak-search-select")
 export class SearchSelect<
-    TFetch extends (query?: string) => Promise<never[]>,
+    TFetch extends (query?: string) => Promise<never[]> = (query?: string) => Promise<never[]>,
     T = AsyncReturnArrayElement<TFetch>,
 > extends SearchSelectBase<T> {
     @property({ attribute: false })
@@ -64,6 +65,9 @@ export class SearchSelect<
 
     @property({ attribute: false })
     public renderDescription?: (element: T) => SlottedTemplateResult;
+
+    @property({ attribute: false })
+    public optionDisabled?: (element: T) => boolean;
 
     @property({ attribute: false })
     public value!: (element: T | null) => string | number | undefined;

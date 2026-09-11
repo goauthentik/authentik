@@ -25,15 +25,19 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
     """Base client for syncing to google workspace"""
 
     domains: list
+    can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)
-        self.directory_service = build(
-            "admin",
-            "directory_v1",
-            cache_discovery=False,
-            **provider.google_credentials(),
-        )
+        try:
+            self.directory_service = build(
+                "admin",
+                "directory_v1",
+                cache_discovery=False,
+                **provider.google_credentials(),
+            )
+        except GoogleAuthError as exc:
+            raise StopSync(exc) from exc
         self.__prefetch_domains()
 
     def __prefetch_domains(self):

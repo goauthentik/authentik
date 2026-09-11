@@ -1,0 +1,109 @@
+---
+title: Object attributes
+description: "Define reusable object attribute fields for authentik objects"
+sidebar_label: Object attributes
+authentik_version: "2026.8"
+authentik_preview: true
+---
+
+## About object attributes
+
+Object attributes let you define structured, reusable attribute fields for Users, Groups, Application entitlements, and Device access groups. When you define an object attribute, authentik displays it as a labeled field in the relevant create and edit forms. You can group related attribute fields and optionally validate submitted values.
+
+Attributes remain editable in the **Attributes** field on an object. However, when an attribute has an object attribute definition, its generated form field is authoritative. When you save the object, authentik overwrites any value entered directly in **Attributes** for the same key.
+
+## Default object attribute definitions
+
+authentik includes definitions for common attributes. These defaults are disabled by default; [enable a definition](#enable-or-disable-an-object-attribute-definition) when you want its labeled field on forms.
+
+| Key                   | Description                                      |
+| --------------------- | ------------------------------------------------ |
+| `given_name`          | The user's given (first) name                    |
+| `family_name`         | The user's family (last) name                    |
+| `settings.locale`     | The user's preferred locale, for example `en-US` |
+| `address_street`      | Street address                                   |
+| `address_locality`    | City or locality                                 |
+| `address_region`      | State, province, or region                       |
+| `address_postal_code` | Postal or ZIP code                               |
+| `phone_number`        | Telephone number                                 |
+| `unix_shell`          | Login shell, used by the LDAP provider           |
+| `employee_number`     | Employee or personnel number                     |
+| `employee_job_title`  | Job title                                        |
+| `employee_department` | Department name                                  |
+
+## Object attribute fields
+
+The following fields are available when defining an object attribute:
+
+| Field                 | Required | Description                                                                                                 |
+| --------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| Label                 | Yes      | The display name of the attribute in the Admin interface                                                    |
+| Key                   | Yes      | The attribute key. Can be nested via dot notation, for example: `settings.locale`                           |
+| Group                 | No       | Groups attributes under a shared heading on forms. Attributes without a group are rendered ungrouped        |
+| Enabled               | Yes      | Controls whether the attribute is shown on forms for the selected object type                               |
+| Type                  | Yes      | The attribute type: Text, Number, or Boolean                                                                |
+| Object type           | Yes      | The object type that the attribute applies to: User, Group, Application entitlement, or Device access group |
+| Attribute is required | No       | Enforces whether a value is required for the attribute on the selected object type                          |
+| Attribute is unique   | No       | Enforces whether the value must be unique across all instances of the selected object type                  |
+| Regex                 | No       | A regular expression that the value of the attribute is validated against                                   |
+
+## Use object attributes
+
+### Create an object attribute definition
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Directory** > **Object attributes** and click **Create**.
+3. Enter a **Label**, for example `Employee ID`.
+4. Enter a **Key**, for example `employee_id`.
+5. Select a **Type** for the attribute: Text, Number, or Boolean.
+6. Select the **Object type** the attribute applies to: User, Group, Application entitlement, or Device access group.
+7. Optionally set a **Group**, for example `Employment`, to group the attribute field with related attribute fields.
+8. Optionally set **Attribute is required**, **Attribute is unique**, or a **Regex** pattern for validation.
+9. Click **Create**.
+
+Create or edit an object of that type, then confirm that the new field appears on the form.
+
+### Enable or disable an object attribute definition
+
+Disable an object attribute definition when you want to remove the attribute field on forms without losing the values already stored on objects.
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Directory** > **Object attributes**.
+3. Select an object attribute definition and click **Edit**.
+4. Toggle **Enabled**, then click **Update**.
+
+Disabling a definition removes the field from forms and stops Regex and uniqueness validation for that key. When you re-enable an object attribute definition, stored values remain present and validation resumes on subsequent saves.
+
+### Use object attributes in property mappings
+
+**Example**: SAML property mapping:
+
+```python
+return ak_obj_attr(request.user, "given_name", user.name)
+```
+
+**Example**: Nested attribute value in an OAuth2 scope mapping:
+
+```python
+return {
+    "locale": ak_obj_attr(request.user, "settings.locale", "en-US")
+}
+```
+
+Always use `ak_obj_attr()` with a fallback (e.g., "en-US"). An object attribute definition does not guarantee that every object has a value for that key.
+
+## Validation
+
+### Uniqueness
+
+If an object attribute definition has **Attribute is unique** enabled, authentik rejects a save when another object already stores the same value for that key. Uniqueness is only enforced while the object attribute definition is enabled.
+
+### Existing data
+
+Creating an object attribute definition does not validate values already stored on existing objects. Validation runs when an object is saved, so an object created before the definition existed can hold a value that does not match the definition's regex.
+
+## Considerations and limitations
+
+- Array values are not currently supported for object attributes, whether set through the UI, blueprints, or direct API calls to the affected objects. Only Text, Number, or Boolean values are supported. Support for array values is tracked in [this issue](https://github.com/goauthentik/authentik/issues/24250).
+- Definitions are metadata. They do not create database constraints and do not migrate existing values.
+- Validation is applied on save, not retroactively.

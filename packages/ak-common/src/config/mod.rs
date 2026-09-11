@@ -378,6 +378,42 @@ mod tests {
     }
 
     #[test]
+    fn expand_typed() {
+        let temp_dir = tempdir().expect("failed to create temp dir");
+
+        // A numeric value destined for an integer field (postgresql.port: u16) must be coerced
+        // from the string a file:// reference resolves to.
+        let port_path = temp_dir.path().join("port");
+        let mut port_file = File::create(&port_path).expect("failed to create file");
+        write!(port_file, "5432").expect("failed to write to file");
+        drop(port_file);
+
+        // A numeric-looking value destined for a string field (postgresql.password) must stay a
+        // string and never be coerced into a number.
+        let password_path = temp_dir.path().join("password");
+        let mut password_file = File::create(&password_path).expect("failed to create file");
+        write!(password_file, "12345").expect("failed to write to file");
+        drop(password_file);
+
+        let config_file_path = temp_dir.path().join("config");
+        let mut config_file = File::create(&config_file_path).expect("failed to create file");
+        writeln!(
+            config_file,
+            "postgresql:\n  port: file://{}\n  password: file://{}",
+            port_path.display(),
+            password_path.display()
+        )
+        .expect("failed to write to file");
+        drop(config_file);
+
+        let (config, _) =
+            super::Config::load(&[config_file_path], None).expect("failed to load config");
+
+        assert_eq!(config.postgresql.port, 5432);
+        assert_eq!(config.postgresql.password, "12345");
+    }
+
+    #[test]
     fn init() {
         super::init_with_paths(vec![]).expect("failed to init config");
     }

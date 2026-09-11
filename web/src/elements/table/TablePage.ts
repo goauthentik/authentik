@@ -14,6 +14,8 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T extends object> extends Table<T> {
+    public override searchParam = "q";
+
     static styles: CSSResult[] = [
         // ---
         ...super.styles,
@@ -93,7 +95,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${this.emptyStateMessage}</span>
+                      ><span>${this.formatEmptyStateMessage()}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>

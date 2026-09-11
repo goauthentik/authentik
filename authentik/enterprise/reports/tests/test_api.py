@@ -4,11 +4,11 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event
 
 
-@patch_license
+@enterprise_test()
 class TestExportAPI(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()

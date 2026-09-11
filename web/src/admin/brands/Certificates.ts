@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import {
     DataProvider,
@@ -7,31 +7,41 @@ import {
     DualSelectPairSource,
 } from "#elements/ak-dual-select/types";
 
-import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+
+import { CertificateKeyPair, CryptoApi, KeyTypeEnum } from "@goauthentik/api";
 
 const certToSelect = (cert: CertificateKeyPair): DualSelectPair<CertificateKeyPair> => {
     return [cert.pk, cert.name, cert.name, cert];
 };
 
-export const certificateProvider: DataProvider = async (
-    page = 1,
-    search = "",
-): Promise<DataProvision> => {
-    return new CryptoApi(DEFAULT_CONFIG)
-        .cryptoCertificatekeypairsList({
-            ordering: "name",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-            hasKey: undefined,
-        })
-        .then(({ pagination, results }) => {
-            return {
-                pagination,
-                options: results.map(certToSelect),
-            };
-        });
-};
+function createCertificateProvider(allowedKeyTypes?: KeyTypeEnum[]): DataProvider {
+    return async (page = 1, search = ""): Promise<DataProvision> => {
+        return aki(CryptoApi)
+            .cryptoCertificatekeypairsList({
+                ordering: "name",
+                pageSize: 20,
+                search: search.trim(),
+                page,
+                hasKey: undefined,
+                keyType: allowedKeyTypes,
+            })
+            .then(({ pagination, results }) => {
+                return {
+                    pagination,
+                    options: results.map(certToSelect),
+                };
+            });
+    };
+}
+
+export const certificateProvider: DataProvider = createCertificateProvider();
+
+/**
+ * Certificates that can be used for TLS. Restricted to the key types Go's x509 verifier can
+ * chain-validate, since these are consumed by the outposts.
+ */
+export const tlsCertificateProvider: DataProvider = createCertificateProvider(TLSKeyTypes);
 
 export function certificateSelector(
     instanceMappings?: string[],
@@ -41,7 +51,7 @@ export function certificateSelector(
     }
 
     return async () => {
-        const pm = new CryptoApi(DEFAULT_CONFIG);
+        const pm = aki(CryptoApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.cryptoCertificatekeypairsRetrieve({ kpUuid: instanceId }),

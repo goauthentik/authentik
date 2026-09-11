@@ -4,13 +4,15 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { getRouterConfig } from "#elements/router/core/config";
+import { translateHashRoute } from "#elements/router/core/hash-shim";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,6 +24,7 @@ import { LifecycleApi, LifecycleIteration } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-review-list")
 export class ReviewListPage extends TablePage<LifecycleIteration> {
@@ -41,7 +44,7 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
     showOnlyMine = false;
 
     async apiEndpoint(): Promise<PaginatedResponse<LifecycleIteration>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleIterationsListOpen({
+        return aki(LifecycleApi).lifecycleIterationsListOpen({
             ...(await this.defaultEndpointConfig()),
             userIsReviewer: this.showOnlyMine || undefined,
         });
@@ -78,7 +81,14 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
     row(item: LifecycleIteration): SlottedTemplateResult[] {
         return [
             LifecycleIterationStatus({ status: item.state }),
-            html`<a href="#${item.objectAdminUrl}">${item.objectVerbose}</a>`,
+            // `translateHashRoute` returns null for a non-legacy hash; the row then
+            // renders as plain text rather than a link to nowhere.
+            html`<a
+                href=${ifDefined(
+                    translateHashRoute(`#${item.objectAdminUrl}`, getRouterConfig()) ?? undefined,
+                )}
+                >${item.objectVerbose}</a
+            >`,
             html`${item.rule.name}`,
             html`<ak-timestamp .timestamp=${item.openedOn} datetime dateonly></ak-timestamp>`,
             html`<ak-timestamp .timestamp=${item.gracePeriodEnd} datetime dateonly></ak-timestamp>`,

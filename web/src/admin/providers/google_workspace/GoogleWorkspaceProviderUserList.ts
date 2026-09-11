@@ -1,10 +1,11 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -39,9 +40,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersGoogleWorkspaceSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersGoogleWorkspaceSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -57,7 +56,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             object-label=${msg("Google Workspace User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersDestroy({
+                return aki(ProvidersApi).providersGoogleWorkspaceUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -69,7 +68,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
+        return aki(ProvidersApi).providersGoogleWorkspaceUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
@@ -87,7 +86,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
 
     row(item: GoogleWorkspaceProviderUser): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

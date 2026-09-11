@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -21,27 +21,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
-    async loadInstance(pk: string): Promise<SCIMSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
-            .sourcesScimRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                return source;
-            });
-    }
-
-    async send(data: SCIMSource): Promise<SCIMSource> {
-        if (this.instance?.slug) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesScimPartialUpdate({
-                slug: this.instance.slug,
-                patchedSCIMSourceRequest: data,
-            });
-        }
-        return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
-            sCIMSourceRequest: data as unknown as SCIMSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesScimRetrieve({ slug }),
+        create: (sCIMSource: SCIMSource) =>
+            aki(SourcesApi).sourcesScimCreate({
+                sCIMSourceRequest: sCIMSource as unknown as SCIMSourceRequest,
+            }),
+        update: (slug: string, patchedSCIMSourceRequest: SCIMSource) =>
+            aki(SourcesApi).sourcesScimPartialUpdate({ slug, patchedSCIMSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input

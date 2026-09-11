@@ -86,6 +86,12 @@ class TelegramLoginView(ChallengeStageView):
         raw_info.pop("hash")
         raw_info.pop("auth_date")
         source = self.source
+        # The pre_authentication_flow executor overwrites SESSION_KEY_GET with an empty
+        # dict (its redirect URL carries no query string), losing the original next= param.
+        # Restore it from PLAN_CONTEXT_REDIRECT, which TelegramStartView saved before that
+        # overwrite. Mirrors the same fix in the SAML source's ACSView.
+        if plan_redirect := self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT):
+            self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
         sfm = TelegramSourceFlowManager(
             source=source,
             request=self.request,

@@ -7,14 +7,16 @@ from tempfile import gettempdir
 
 from django.conf import settings
 from django.utils.module_loading import import_string
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 
 SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
+LOGGER = get_logger()
 
 
 def all_subclasses[T: type](cls: T, sort=True) -> list[T] | set[T]:
-    """Recursively return all subclassess of cls"""
+    """Recursively return all subclasses of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
     )
@@ -77,4 +79,5 @@ def ConditionalInheritance(path: str):
         cls = import_string(path)
         return cls
     except ModuleNotFoundError:
+        LOGGER.warning("Unable to import", path=path)
         return _dummy

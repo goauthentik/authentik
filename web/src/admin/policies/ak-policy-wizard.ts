@@ -12,7 +12,7 @@ import "#elements/wizard/Wizard";
 import "#elements/forms/FormGroup";
 import "#admin/policies/PolicyBindingForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
@@ -38,7 +38,7 @@ const initialStep = "initial";
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends CreateWizard {
-    protected policiesAPI = new PoliciesApi(DEFAULT_CONFIG);
+    protected policiesAPI = aki(PoliciesApi);
 
     @property({ type: Boolean })
     public showBindingPage = false;

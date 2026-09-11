@@ -11,24 +11,32 @@ import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { type PaginatedResponse } from "#common/api/responses";
-import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
+import { truncateWords } from "#common/strings";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
-import { type TransclusionChildElement, TransclusionChildSymbol } from "#elements/dialogs/shared";
+import {
+    isTransclusionParentElement,
+    NamedEntityElement,
+    type TransclusionChildElement,
+    TransclusionChildSymbol,
+} from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
+import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
+import { dateProperty } from "#elements/utils/properties";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { kebabCase } from "change-case";
 
@@ -80,10 +88,47 @@ export interface ColumnOptions {
  * @template T The type of the items to display in the table.
  * @template D An optional `toJSON()` result type.
  */
+// Dev-only guard: warns when two connected searchable tables claim the same
+// search parameter on one document (they would clobber each other's `?q=`).
+const connectedSearchParams = new Map<string, number>();
+
+function registerSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 0) + 1;
+
+    connectedSearchParams.set(param, next);
+
+    if (next > 1) {
+        console.warn(
+            `Multiple connected tables share the search parameter "${param}". ` +
+                `Set a distinct \`search-param\` on all but one.`,
+        );
+    }
+}
+
+function unregisterSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 1) - 1;
+
+    if (next <= 0) {
+        connectedSearchParams.delete(param);
+    } else {
+        connectedSearchParams.set(param, next);
+    }
+}
+
 export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
 {
+    declare ["constructor"]: NamedEntityElement;
+
     static styles: CSSResult[] = [
         PFTable,
         PFBullseye,
@@ -92,8 +137,12 @@ export abstract class Table<T extends object, D = T>
         PFToolbar,
         PFDropdown,
         PFPagination,
+        AKFadeIn,
         Styles,
     ];
+
+    public static verboseName: string = msg("Object");
+    public static verboseNamePlural: string = msg("Objects");
 
     public [TransclusionChildSymbol] = true;
 
@@ -124,10 +173,51 @@ export abstract class Table<T extends object, D = T>
 
     //#region Protected Properties
 
+    #verboseName: string | null = null;
+
     /**
-     * Customize the "No objects found" message.
+     * Optional singular label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseName` property for this instance.
      */
-    protected emptyStateMessage = msg("No objects found.");
+    @property({ type: String, attribute: "verbose-name" })
+    public set verboseName(value: string | null) {
+        this.#verboseName = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseName(): string | null {
+        return this.#verboseName || this.constructor.verboseName || null;
+    }
+
+    #verboseNamePlural: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseNamePlural` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name-plural" })
+    public set verboseNamePlural(value: string | null) {
+        this.#verboseNamePlural = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.#verboseNamePlural || this.constructor.verboseNamePlural || null;
+    }
+
+    /**
+     * An optional message to display when the table is empty and no search is applied.
+     * If not provided, a default message will be used.
+     */
+    protected emptyStateMessage: string | null = null;
 
     /**
      * Whether the table is currently fetching data.
@@ -138,8 +228,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * A timestamp of the last attempt to refresh the table data.
      */
-    @state()
-    protected lastRefreshedAt: Date | null = null;
+    @property(dateProperty)
+    public lastRefreshedAt: Date | null = null;
 
     /**
      * Logger instance for this table.
@@ -212,7 +302,6 @@ export abstract class Table<T extends object, D = T>
     }
 
     readonly #pageParam: string;
-    readonly #searchParam: string;
 
     /**
      * A mapping of the current items to their respective identifiers.
@@ -242,7 +331,7 @@ export abstract class Table<T extends object, D = T>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page: number;
+    public page = 1;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -302,6 +391,15 @@ export abstract class Table<T extends object, D = T>
     @property({ type: String, attribute: "search-placeholder" })
     public searchPlaceholder: string | null = null;
 
+    /**
+     * The search parameter this table's search and page are serialized to.
+     *
+     * This is used to synchronize the table's state with the URL,
+     * allowing for deep-linking and back/forward navigation.
+     */
+    @property({ type: String, attribute: "search-param" })
+    public searchParam: string | null = null;
+
     //#endregion
 
     //#region Public methods
@@ -324,6 +422,44 @@ export abstract class Table<T extends object, D = T>
         return this.fetch();
     };
 
+    /**
+     * An overridable method for formatting the empty state message when no objects are found.
+     */
+    public formatEmptyStateMessage(): string {
+        if (this.searchEnabled && this.search) {
+            const singularNoun = this.verboseName?.toLocaleLowerCase() || msg("object");
+
+            return msg(str`No ${singularNoun} matches "${truncateWords(this.search, 50)}"`, {
+                id: "table.emptyState.search",
+                desc: "Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.",
+            });
+        }
+
+        if (this.emptyStateMessage) {
+            return this.emptyStateMessage;
+        }
+
+        const pluralNoun = this.verboseNamePlural?.toLocaleLowerCase() || msg("objects");
+
+        return msg(str`No ${pluralNoun} found.`, {
+            id: "table.emptyState.default",
+            desc: "Empty state message when no objects are found, where the entity plural is interpolated.",
+        });
+    }
+
+    public formatSearchPlaceholder(): string {
+        if (this.searchPlaceholder) {
+            return this.searchPlaceholder;
+        }
+
+        const pluralNoun = this.verboseNamePlural?.toLocaleLowerCase() || msg("objects");
+
+        return msg(str`Search for ${pluralNoun}...`, {
+            id: "table.search.placeholder",
+            desc: "Placeholder text for the search input, where the entity plural is interpolated.",
+        });
+    }
+
     //#endregion
 
     //#region Lifecycle
@@ -333,7 +469,9 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
-        return this.fetch();
+        return this.fetch().then(() => {
+            this.dispatchEvent(new AKTableRefreshEvent(this));
+        });
     };
 
     constructor() {
@@ -342,8 +480,6 @@ export abstract class Table<T extends object, D = T>
         const { localName } = this;
 
         this.#pageParam = `${localName}-page`;
-        this.#searchParam = `${localName}-search`;
-        this.page = getURLParam(this.#pageParam, 1);
 
         this.logger = ConsoleLogger.prefix(localName);
     }
@@ -354,8 +490,13 @@ export abstract class Table<T extends object, D = T>
         this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.addEventListener("submit", this.refreshListener);
 
-        if (this.searchEnabled) {
-            this.search = getURLParam(this.#searchParam, "");
+        if (this.searchParam) {
+            this.page = getSearchParam(this.#pageParam, 1);
+
+            if (this.searchEnabled) {
+                this.search = getSearchParam(this.searchParam, "");
+                registerSearchParam(this.searchParam);
+            }
         }
 
         // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
@@ -367,28 +508,32 @@ export abstract class Table<T extends object, D = T>
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.refreshListener);
+        this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
+
+        if (this.searchEnabled && this.searchParam) {
+            unregisterSearchParam(this.searchParam);
+        }
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
         super.willUpdate(changedProperties);
 
-        const interactive = isInteractiveElement(this);
+        const { searchParam } = this;
 
-        if (!interactive) {
+        if (!searchParam || !isInteractiveElement(this)) {
             return;
         }
 
         if (changedProperties.has("page")) {
-            updateURLParams({
+            updateSearchParams({
                 [this.#pageParam]: this.page === 1 ? null : this.page,
             });
         }
 
         if (changedProperties.has("search")) {
-            updateURLParams({
-                [this.#searchParam]: this.search,
+            updateSearchParams({
+                [searchParam]: this.search,
             });
         }
     }
@@ -512,19 +657,17 @@ export abstract class Table<T extends object, D = T>
     }
 
     protected renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
-        return html`
-            <tr role="presentation">
-                <td role="presentation" colspan=${this.columnCount}>
-                    <div class="pf-l-bullseye">
-                        ${inner ??
-                        html`<ak-empty-state
-                            ><span>${this.emptyStateMessage}</span>
-                            <div slot="primary">${this.renderObjectCreate()}</div>
-                        </ak-empty-state>`}
-                    </div>
-                </td>
-            </tr>
-        `;
+        return html`<tr role="presentation">
+            <td role="presentation" colspan=${this.columnCount}>
+                <div class="pf-l-bullseye">
+                    ${inner ??
+                    html`<ak-empty-state
+                        ><span>${this.formatEmptyStateMessage()}</span>
+                        <div slot="primary">${this.renderObjectCreate()}</div>
+                    </ak-empty-state>`}
+                </div>
+            </td>
+        </tr>`;
     }
 
     /**
@@ -902,7 +1045,7 @@ export abstract class Table<T extends object, D = T>
             part="toolbar-search"
             .defaultValue=${this.search}
             label=${ifPresent(this.searchLabel)}
-            placeholder=${ifPresent(this.searchPlaceholder)}
+            placeholder=${ifPresent(this.formatSearchPlaceholder())}
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}

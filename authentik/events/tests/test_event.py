@@ -225,3 +225,14 @@ class TestEvents(TestCase):
 
         new_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
         self.assertEqual(new_count, old_count + 1)
+
+    def test_log_deprecation(self):
+        """Test Event.log_deprecation"""
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation", cause=create_test_user())
+        logs = Event.objects.filter(
+            action=EventAction.CONFIGURATION_WARNING, context__deprecation=self.__module__
+        )
+        self.assertEqual(logs.count(), 2)

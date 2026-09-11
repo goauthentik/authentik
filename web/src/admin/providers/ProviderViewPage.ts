@@ -12,7 +12,7 @@ import "#admin/providers/wsfed/WSFederationProviderViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -31,7 +31,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 export class ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersAllRetrieve({
                 id: value,
             })

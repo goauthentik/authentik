@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
+from django_tenants.utils import get_public_schema_name, schema_context
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import BlueprintInstance
@@ -14,6 +15,9 @@ from authentik.core.apps import Setup
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_current_tenant, normalize_base_url
 
 LOGGER = get_logger()
 FLOW_CONTEXT_START_BY = "goauthentik.io/core/setup/started-by"
@@ -65,8 +69,16 @@ class PostSetupStageView(StageView):
         """Wrapper when this stage gets hit with a post request"""
         return self.get(request, *args, **kwargs)
 
-    def get(self, requeset: HttpRequest, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs):
         with transaction.atomic():
+            # Persist the base_url captured during the setup flow onto the tenant
+            base_url = normalize_base_url(
+                (self.executor.plan.context.get(PLAN_CONTEXT_PROMPT) or {}).get("base_url")
+            )
+            if base_url:
+                tenant = get_current_tenant()
+                with schema_context(get_public_schema_name()):
+                    Tenant.objects.filter(pk=tenant.pk).update(base_url=base_url)
             # Remember we're setup
             Setup.set(True)
             # Disable OOBE Blueprints

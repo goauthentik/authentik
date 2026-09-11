@@ -1,0 +1,58 @@
+:host {
+    display: block;
+}
+
+.ak-user-info-body {
+    display: grid;
+    gap: var(--pf-global--spacer--lg);
+}
+
+.ak-user-info-empty {
+    color: var(--pf-global--Color--200);
+}
+
+.ak-user-recovery-empty {
+    color: var(--pf-global--Color--200);
+    font-size: var(--pf-global--FontSize--sm);
+}
+
+.ak-user-management {
+    display: grid;
+    gap: var(--pf-global--spacer--md);
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.ak-user-management-section {
+    display: grid;
+    gap: var(--pf-global--spacer--sm);
+    min-width: 0;
+}
+
+.ak-user-management-heading {
+    color: var(--pf-global--Color--100);
+    font-family: var(--pf-c-card__title--FontFamily);
+    font-size: var(--pf-c-card__title--FontSize);
+    font-weight: var(--pf-c-card__title--FontWeight);
+    margin: 0;
+}
+
+.ak-user-management-divider {
+    border-top: 1px solid var(--pf-global--BorderColor--100);
+    padding-top: var(--pf-global--spacer--md);
+}
+
+.ak-user-button-collection {
+    align-items: start;
+    display: grid;
+    gap: var(--pf-global--spacer--form-element);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.ak-user-button-collection > * {
+    min-width: 0;
+}
+
+.ak-user-button-collection > p {
+    grid-column: 1 / -1;
+    margin: 0;
+}

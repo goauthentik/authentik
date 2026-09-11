@@ -5,9 +5,10 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,6 +23,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connectors-list")
 export class ConnectorsListPage extends TablePage<Connector> {
+    public static override verboseName = msg("Connector");
+    public static override verboseNamePlural = msg("Connectors");
+
     public override searchPlaceholder = msg("Search connectors by name or type...");
     public override pageIcon = "pf-icon pf-icon-data-source";
     public override pageTitle = msg("Connectors");
@@ -39,14 +43,14 @@ export class ConnectorsListPage extends TablePage<Connector> {
     public override checkbox = true;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Connector>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(EndpointsApi).endpointsConnectorsList(await this.defaultEndpointConfig());
     }
 
     protected override row(item: Connector): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`endpoints/connectors/${item.connectorUuid}`)}
+                >${item.name}</a
+            >`,
             item.verboseName,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.connectorUuid, item.verboseName)}
@@ -67,12 +71,12 @@ export class ConnectorsListPage extends TablePage<Connector> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsUsedByList({
+                return aki(EndpointsApi).endpointsConnectorsUsedByList({
                     connectorUuid: item.connectorUuid!,
                 });
             }}
             .delete=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsDestroy({
+                return aki(EndpointsApi).endpointsConnectorsDestroy({
                     connectorUuid: item.connectorUuid!,
                 });
             }}

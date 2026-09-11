@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKModal } from "#elements/dialogs/ak-modal";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -39,7 +39,7 @@ export class RACLaunchEndpointLaunch extends Table<Endpoint> {
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
-        const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
+        const endpoints = await aki(RacApi).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
         });

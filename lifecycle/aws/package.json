@@ -7,24 +7,19 @@
         "aws-cfn": "cross-env CI=false cdk synth --version-reporting=false > template.yaml"
     },
     "devDependencies": {
-        "aws-cdk": "^2.1121.0",
+        "aws-cdk": "^2.1129.0",
         "cross-env": "^10.1.0"
     },
     "engines": {
         "node": ">=24",
-        "npm": ">=11.14.1"
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
-            "onFail": "warn"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
-    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367"
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

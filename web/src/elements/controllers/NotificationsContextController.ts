@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
 import { actionToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
@@ -13,8 +13,10 @@ import {
     NotificationsMixin,
 } from "#elements/mixins/notifications";
 import { SessionMixin } from "#elements/mixins/session";
-import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import type { ReactiveElementHost } from "#elements/types";
+
+import { createPaginatedNotificationListFrom } from "#components/notifications/utils";
 
 import { EventsApi } from "@goauthentik/api";
 
@@ -61,7 +63,7 @@ export class NotificationsContextController extends ReactiveContextController<No
 
         this.logger.debug("Fetching notifications...");
 
-        return new EventsApi(DEFAULT_CONFIG)
+        return aki(EventsApi)
             .eventsNotificationsList(
                 {
                     seen: false,
@@ -124,7 +126,7 @@ export class NotificationsContextController extends ReactiveContextController<No
                 ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
                 : nothing}
             ${notification.event
-                ? html`<br /><a href="#/events/log/${notification.event.pk}"
+                ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
                           >${msg("View details...")}</a
                       >`
                 : nothing}`,

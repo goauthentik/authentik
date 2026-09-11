@@ -1,144 +1,111 @@
 import "#elements/forms/HorizontalFormElement";
+import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 import { docLink } from "#common/global";
-import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
+import {
+    assertValidFileName,
+    FileNamePattern,
+    formatValidationMessage,
+    getFileExtension,
+} from "#elements/utils/files";
 
-import { AdminApi, UsageEnum } from "@goauthentik/api";
+import { AKLabel } from "#components/ak-label";
+
+import { AdminApi, AdminFileCreateRequest, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 
-// Theme variable placeholder for theme-specific files like logo-%(theme)s.png
-const THEME_VARIABLE = "%(theme)s";
-
-// Same regex is used in the backend as well (after replacing %(theme)s)
-const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
-
-// Note: browsers compile `pattern` using the new `v` RegExp flag (Unicode sets). Under `/v`,
-// both `/` and `-` must be escaped inside character classes.
-// This pattern allows %(theme)s by including %, (, and ) characters
-const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-%()+]+$";
-
-function assertValidFileName(fileName: string): void {
-    // Allow %(theme)s placeholder for theme-specific files
-    // Replace with placeholder for validation, then check the result
-    const nameForValidation = fileName.replaceAll(THEME_VARIABLE, "theme");
-    if (!VALID_FILE_NAME_PATTERN.test(nameForValidation)) {
-        throw new Error(
-            msg(
-                "Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s",
-            ),
-        );
-    }
-}
-
-function getFileExtension(fileName: string): string {
-    const lastDot = fileName.lastIndexOf(".");
-    if (lastDot <= 0) return "";
-    return fileName.slice(lastDot);
+interface FileUploadFormData {
+    /**
+     * Fake path provided by the browser for the selected file.
+     */
+    file: string;
+    /**
+     * Custom name for the file, without an extension.
+     */
+    name: string;
 }
 
 @customElement("ak-file-upload-form")
-export class FileUploadForm extends Form<Record<string, unknown>> {
+export class FileUploadForm extends Form<FileUploadFormData> {
+    public static override verboseName = msg("File");
+    public static override verboseNamePlural = msg("Files");
+    public static override submitVerb = msg("Upload");
+    public static override createLabel = msg("Upload");
+    public override headline = msg("Select File");
+
+    public override size = PFSize.Medium;
+
     @property({ type: String, useDefault: true })
     public usage: UsageEnum = UsageEnum.Media;
 
-    @state()
-    protected selectedFile: File | null = null;
+    public override async send(data: FileUploadFormData): Promise<AdminFileCreateRequest> {
+        const file = this.files<keyof FileUploadFormData>().get("file");
 
-    #formRef = createRef<HTMLFormElement>();
-
-    public override reset(): void {
-        super.reset();
-
-        this.selectedFile = null;
-    }
-
-    #fileChangeListener = (e: Event) => {
-        const input = e.target as HTMLInputElement;
-        if (input.files?.length) {
-            this.selectedFile = input.files[0];
-        } else {
-            this.selectedFile = null;
-        }
-    };
-
-    protected clearFileInput() {
-        this.selectedFile = null;
-        this.#formRef.value?.reset();
-    }
-
-    public override async send(data: Record<string, unknown>): Promise<void> {
-        if (!this.selectedFile) {
+        if (!file) {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        const api = new AdminApi(DEFAULT_CONFIG);
         const customName = typeof data.name === "string" ? data.name.trim() : "";
 
         // If custom name provided, append original file extension; otherwise use original filename
-        const finalName = customName
-            ? `${customName}${getFileExtension(this.selectedFile.name)}`
-            : this.selectedFile.name;
+        const finalName = customName ? `${customName}${getFileExtension(file.name)}` : file.name;
 
         assertValidFileName(finalName);
 
-        await api.adminFileCreate({
-            file: this.selectedFile,
+        const payload: AdminFileCreateRequest = {
+            file,
             name: finalName,
             usage: this.usage,
-        });
+        };
 
-        showMessage({
-            level: MessageLevel.success,
-            message: msg("File uploaded successfully"),
-        });
-
-        this.reset();
-        this.clearFileInput();
+        return aki(AdminApi)
+            .adminFileCreate(payload)
+            .then(() => payload);
     }
 
-    renderForm() {
-        return html`
-            <form ${ref(this.#formRef)} class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${msg("File")} required>
-                    <input
-                        type="file"
-                        class="pf-c-form-control"
-                        id="file-input"
-                        required
-                        @change=${this.#fileChangeListener}
-                    />
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("File Name")} name="name">
-                    <input
-                        type="text"
-                        class="pf-c-form-control"
-                        pattern=${VALID_FILE_NAME_PATTERN_STRING}
-                        placeholder=${msg("Type an optional custom file name...")}
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Optionally rename the file (without extension). Leave empty to keep the original filename.",
-                        )}
-                        <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href=${docLink("/customize/file-picker/")}
-                        >
-                            ${msg("See documentation for path rules and theme-aware names.")}
-                        </a>
-                    </p>
-                </ak-form-element-horizontal>
-            </form>
-        `;
+    protected override renderForm(): SlottedTemplateResult {
+        const validationMessage = formatValidationMessage();
+
+        return html`<ak-form-element-horizontal required name="file">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "file-input",
+                        required: true,
+                    },
+                    msg("File"),
+                )}
+                <input type="file" class="pf-c-form-control" id="file-input" required />
+            </ak-form-element-horizontal>
+            <ak-text-input
+                name="name"
+                autocomplete="off"
+                control-title=${validationMessage}
+                pattern=${FileNamePattern.DOM}
+                placeholder=${msg("Type an optional file name without an extension...")}
+                label=${msg("Custom Name")}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                    ${msg("Leave empty to keep the original filename.")} ${validationMessage}
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/customize/file-picker/")}
+                    >
+                        <br />
+                        ${msg("See documentation for path rules and theme-aware names.")}
+                    </a>
+                </p>`}
+            ></ak-text-input>`;
     }
 }
 

@@ -95,10 +95,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public submit() {
         if (!this.form) return;
 
+        // Not composed, matching the native `submit` event. Composed lets a table's own
+        // search escape the shadow root and reach `window`, where every connected
+        // `Table` treats it as "a form was submitted, refresh" — so searching inside a
+        // dialog refetches the table behind it, and that re-render tears the dialog down.
         const submitEvent = new SubmitEvent("submit", {
             submitter: this,
             bubbles: true,
-            composed: true,
+            composed: false,
             cancelable: true,
         });
 

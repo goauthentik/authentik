@@ -11,7 +11,7 @@ slug: "/releases/2025.8"
 
 ![Screenshot of the admin interface showing events plotted on a histogram chart and on a map](../../sys-mgmt/events/event-map-chart.png)
 
-- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#advanced-queries) and [event logs](../../sys-mgmt/events/logging-events.mdx#advanced-queries) with custom query language to filter on their properties and attributes.
+- **Advanced search**: :ak-enterprise Search with [AKQL](../../sys-mgmt/akql.mdx) to filter users and event logs by their properties and attributes.
 
 - **Email stage rate limiting**: The email stage can now be configured to set a maximum number of emails that can be sent within a specified time period.
 
@@ -19,7 +19,7 @@ slug: "/releases/2025.8"
 
 ### Worker and background tasks revamped
 
-The authentik [worker](../../sys-mgmt/ops/worker.md) and [background tasks](../../sys-mgmt/background-tasks.md) have been reworked for better observability of tasks, and better configurability of scheduled tasks.
+The authentik [worker](../../sys-mgmt/ops/worker.mdx) and [background tasks](../../sys-mgmt/background-tasks.mdx) have been reworked for better observability of tasks, and better configurability of scheduled tasks.
 
 This rework also allowed us to not depend on Redis for background tasks. However, we replaced the engine used to manage these tasks, and as such, don't have a seamless migration path.
 
@@ -130,7 +130,7 @@ Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/8
 
 Redis has also been updated from 8.0 to 8.2.
 
-From this point on, we recommend using the bundled PostgreSQL dependency for demonstration and test purposes only. See our [installation documentation](../../install-config/install/kubernetes.md) for alternatives to run PostgreSQL in a production environment.
+From this point on, we recommend using the bundled PostgreSQL dependency for demonstration and test purposes only. See our [installation documentation](../../install-config/install/kubernetes.mdx) for alternatives to run PostgreSQL in a production environment.
 
 ## New features and improvements
 
@@ -139,7 +139,7 @@ From this point on, we recommend using the bundled PostgreSQL dependency for dem
     - LDAP connections are now terminated upon session deletion in authentik.
 
 - **Accessibility improvements**: Better screen reader support within the admin interface for navigation, forms, and wizard elements.
-- **Send event notifications to associated user**: Configure notification rules to send the event notification to the user associated to the event. Read more in our [notifications documentation](../../sys-mgmt/events/notifications.md).
+- **Send event notifications to associated user**: Configure notification rules to send the event notification to the user associated to the event. Read more in our [notifications documentation](../../sys-mgmt/events/notifications.mdx).
 - **Policy bindings performance improvements**: Policy bindings evaluation avoids forking new processes for user and group policy bindings.
 - **SCIM Source patch support**: Add full patch support for all properties of users and groups.
 - **Secret inputs in the admin interface are now hidden by default**.
@@ -193,7 +193,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - blueprints: add File tag (#15727)
 - blueprints: add FindObject tag (#12415)
 - blueprints: add JSON tag to parse JSON from string (#15235)
-- blueprints: add section support for organisation (#15045)
+- blueprints: add section support for organization (#15045)
 - blueprints: sort schema items (#15022)
 - brands: revert sort matched brand by match length (revert #15413) (cherry-pick #16233) (#16235)
 - brands: sort matched brand by match length (#15413)
@@ -402,7 +402,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - \*/bindings: order by pk (cherry-pick #17027) (#17053)
 - cmd/server/healthcheck: info log success instead of debug (cherry-pick #17093 to version-2025.8) (#17097)
 - core: add index on Group.is_superuser (cherry-pick #17011) (#17017)
-- lib: match exception_to_dict locals behaviour (cherry-pick #17006) (#17016)
+- lib: match exception_to_dict locals behavior (cherry-pick #17006) (#17016)
 - lib/config: fix listen settings (cherry-pick #17005) (#17023)
 - outposts/ldap: add pwdChangeTime attribute (cherry-pick #17010 to version-2025.8) (#17101)
 - packages/django-dramatiq-postgres: broker: fix new messages not being picked up when too many messages are waiting (cherry-pick #17106 to version-2025.8) (#17108)
@@ -435,9 +435,9 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 ## Fixed in 2025.8.6
 
 - root: update client-go generation (cherry-pick #19762 and #19906 to version-2025.8) (#19934)
-- security: [CVE-2026-25227](../../security/cves/CVE-2026-25227.md) (#20233)
-- security: [CVE-2026-25748](../../security/cves/CVE-2026-25748.md) (#20234)
-- security: [CVE-2026-25922](../../security/cves/CVE-2026-25922.md) (#20235)
+- security: [CVE-2026-25227](../../security/cves/CVE-2026-25227.mdx) (#20233)
+- security: [CVE-2026-25748](../../security/cves/CVE-2026-25748.mdx) (#20234)
+- security: [CVE-2026-25922](../../security/cves/CVE-2026-25922.mdx) (#20235)
 
 ## API Changes
 

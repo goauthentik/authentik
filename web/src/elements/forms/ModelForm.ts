@@ -9,14 +9,25 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { msg, str } from "@lit/localize";
+import type { CSSResult } from "lit";
 import { html } from "lit-html";
 import { property, state } from "lit/decorators.js";
 
 interface NamedInstance {
     verboseName?: string;
     verboseNamePlural?: string;
+}
+
+/*
+ * Type for saving and retrieving data ops from the Authentik API.
+ */
+export interface ModelEndpoints<T, PKT extends string | number = string, D = T> {
+    load: (pk: PKT) => Promise<T>;
+    create: (data: NonNullable<D>) => Promise<unknown>;
+    update: (pk: PKT, data: NonNullable<D>) => Promise<unknown>;
 }
 
 /**
@@ -48,6 +59,8 @@ export abstract class ModelForm<
     PKT extends string | number = string | number,
     D = T,
 > extends Form<T, D> {
+    public static styles: CSSResult[] = [...Form.styles, AKFadeIn];
+
     /**
      * The modifier to use in the default headline when editing an instance, e.g. "Edit".
      */
@@ -71,6 +84,14 @@ export abstract class ModelForm<
     });
 
     /**
+     * The message shown after the form has been successfully submitted when
+     * editing an instance, e.g. "Changes Saved".
+     */
+    public static savedLabel: string | null = msg("Changes Saved", {
+        id: "form.submit.changes-saved",
+    });
+
+    /**
      * A helper method to create an invoker for editing an instance of this form.
      *
      * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
@@ -79,6 +100,8 @@ export abstract class ModelForm<
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
     public static asInstanceInvoker = asInstanceInvoker;
+
+    protected endpoints?: ModelEndpoints<NonNullable<T>, PKT, D>;
 
     protected logger = ConsoleLogger.prefix(`model-form/${this.localName}`);
 
@@ -96,7 +119,30 @@ export abstract class ModelForm<
      * @param pk The primary key of the instance to load.
      * @returns A promise that resolves to the loaded instance.
      */
-    protected abstract loadInstance(pk: PKT): Promise<T | null>;
+    protected loadInstance(pk: PKT): Promise<T | null> {
+        if (!this.endpoints) {
+            throw new TypeError(
+                "Neither 'endpoints' or 'loadInstance' defined on ${this.localName}",
+            );
+        }
+        return this.endpoints.load(pk);
+    }
+
+    protected override send(data: NonNullable<D>) {
+        if (!this.endpoints) {
+            throw new TypeError("Neither 'endpoints' or 'send' defined on ${this.localName}");
+        }
+        return this.instancePk === null
+            ? this.endpoints.create(data)
+            : this.endpoints.update(this.instancePk, data);
+    }
+
+    public override getSuccessMessage() {
+        if (!this.verboseName) return super.getSuccessMessage();
+        return this.instancePk === null
+            ? msg(str`Successfully created ${this.verboseName}`)
+            : msg(str`Successfully updated ${this.verboseName}`);
+    }
 
     /**
      * An overridable method for assigning the loaded instance to the form's state.
@@ -180,6 +226,16 @@ export abstract class ModelForm<
         }
 
         return super.formatSubmittingLabel(submittingLabel);
+    }
+
+    protected override formatSubmittedLabel(submittedLabel?: string): string {
+        const { savedLabel } = this.constructor as typeof ModelForm;
+
+        if (this.instancePk && savedLabel) {
+            return savedLabel;
+        }
+
+        return super.formatSubmittedLabel(submittedLabel);
     }
 
     protected override formatHeadline(modifier?: string | null): string {

@@ -13,7 +13,7 @@ export const DEFAULT_VERSION_SUPPORT_DURATION = 2 * 365 * 24 * 60 * 60 * 1000;
 export class VersionValidationError extends Error {}
 
 /**
- * @throws {Error} if the version is older than 2 years
+ * @throws {VersionValidationError} if the version is older than 2 years
  *
  * @param {import("semver").SemVer} parsed Parsed semver version
  * @param {number} [supportDuration] Milliseconds cutoff

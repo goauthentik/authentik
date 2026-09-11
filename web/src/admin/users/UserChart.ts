@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { EventChart } from "#elements/charts/EventChart";
 
@@ -15,7 +15,7 @@ export class UserChart extends EventChart {
     username?: string;
 
     async apiRequest(): Promise<EventVolume[]> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
+        return aki(EventsApi).eventsEventsVolumeList({
             actions: [
                 EventActions.Login,
                 EventActions.LoginFailed,

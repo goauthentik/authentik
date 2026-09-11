@@ -4,6 +4,7 @@ sidebar_label: Anthropic
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -88,13 +89,15 @@ Create SAML property mappings for the attributes that WorkOS expects from the id
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name or accept the auto-provided name, the authorization flow to use for this provider, and the following required configurations.
-        - Set the **ACS URL** to a temporary value. You will replace this after Anthropic provides the real ACS URL.
-        - Set the **Audience** to a temporary value. You will replace this after Anthropic provides the real SP Entity ID.
+        - Set the **ACS URL** to `https://temp.temp`. You will replace this after Anthropic provides the real ACS URL.
+        - Set the **Audience** to `https://temp.temp`. You will replace this after Anthropic provides the real SP Entity ID.
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
@@ -150,8 +153,8 @@ Do not require SSO until the users who need access are assigned to the Anthropic
 
 To provision users automatically, choose one of the options below:
 
-- **Just-in-time (JIT)**: users assigned to the authentik application are automatically provisioned when they first log in.
-- **SCIM directory sync**: users and groups are automatically provisioned and deprovisioned from authentik without waiting for user login. SCIM is available for Enterprise plans and eligible Claude Console organizations.
+- **Just-in-time (JIT)**: users assigned to the authentik application are automatically provisioned when they first log in. JIT is available for Team plans, Enterprise plans, and Claude Console organizations.
+- **SCIM directory sync**: users and groups are automatically provisioned and deprovisioned from authentik without waiting for user login. SCIM is available for Enterprise plans and Claude Console organizations with their own parent organization or joined to an Enterprise parent organization.
 
 <Tabs
   defaultValue="jit"
@@ -186,11 +189,11 @@ Anthropic documents the current role and seat type options in [Set up JIT or SCI
 
 1. In authentik, open the Anthropic application that you created earlier.
 2. Click the **Application entitlements** tab.
-3. Click **New Entitlement**.
+3. Click **Create entitlement**.
 4. In **Name**, enter the IdP group value that you want to map in Anthropic, such as `Claude Owner` or `Console Developer`.
 5. Leave **Attributes** empty unless you need to store additional metadata, then click **Create**.
 6. In the entitlements list, expand the entitlement that you created.
-7. Click **Bind existing Group/User**.
+7. Click **Bind existing group/user**.
 8. Select **Group** or **User**, select the authentik group or user that should receive this Anthropic role or seat type, and click **Create**.
 9. Repeat these steps for each Anthropic role or seat type that you want to assign with JIT entitlement mappings.
 
@@ -198,7 +201,7 @@ Anthropic documents the current role and seat type options in [Set up JIT or SCI
 
 1. Return to the Anthropic JIT provisioning settings.
 2. Enable **group mappings** before saving the JIT provisioning configuration.
-3. Map each entitlement value from the SAML `groups` attribute to the appropriate Anthropic role or seat type.
+3. Map each entitlement value from the SAML `groups` attribute to the appropriate Anthropic role or seat type. When group mappings are enabled, every user who needs access must have a mapped role entitlement; seat type entitlements are optional unless your organization requires explicit seat assignment.
 4. Click **Save changes**.
 
 :::tip Entitlement names
@@ -210,7 +213,7 @@ For JIT entitlement mappings, role and seat type changes apply on the user's nex
 :::
 
 :::warning Keep administrator access
-Before saving mappings, make sure at least one administrator has an entitlement mapped to an Owner role for Claude or an Admin role for Claude Console. Otherwise that administrator can lose elevated access.
+Before saving mappings, make sure at least one administrator has an entitlement mapped to an Owner role for Claude or an Admin role for Claude Console. Otherwise that administrator can lose elevated access. For SCIM group mappings, Anthropic exempts only the Primary Owner from SCIM reconciliation; Owner and Admin users must still have a mapped role.
 :::
 
   </TabItem>

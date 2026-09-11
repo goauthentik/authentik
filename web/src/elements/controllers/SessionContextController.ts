@@ -1,6 +1,5 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
-import { globalAK } from "#common/global";
 import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
@@ -20,8 +19,10 @@ import {
     SessionMixin,
     UIConfigContext,
 } from "#elements/mixins/session";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import { toAdminInterface, toUserInterface } from "#elements/router/core/interfaces";
 import type { ReactiveElementHost } from "#elements/types";
+
+import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { CoreApi, SessionUser } from "@goauthentik/api";
 
@@ -114,7 +115,6 @@ export class SessionContextController extends ReactiveContextController<APIResul
             return;
         }
 
-        const base = globalAK().api.base;
         const group = msg("Session");
         const weight = 0.5;
 
@@ -127,7 +127,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/user/#/settings`);
+                    window.location.assign(toUserInterface("settings"));
                 },
             },
         ];
@@ -167,7 +167,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/admin/`);
+                    window.location.assign(toAdminInterface());
                 },
             });
         }
@@ -179,7 +179,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: async () => {
-                    await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+                    await aki(CoreApi).coreUsersImpersonateEndRetrieve();
                     window.location.reload();
                 },
             });
