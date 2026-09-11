@@ -110,8 +110,8 @@ class MicrosoftEntraGroupClient(
             # Resource missing is handled by self.write, which will re-create the group
             raise
 
-    def write(self, obj: Group):
-        microsoft_group, created = super().write(obj)
+    def _write(self, obj: Group):
+        microsoft_group, created = super()._write(obj)
         self.create_sync_members(obj, microsoft_group)
         return microsoft_group, created
 
