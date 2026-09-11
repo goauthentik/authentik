@@ -149,420 +149,1026 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface PoliciesAllDestroyRequest {
+    /**
+     * A UUID string identifying this Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesAllListRequest {
+    /**
+     *
+     */
     bindingsIsnull?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     promptstageIsnull?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesAllRetrieveRequest {
+    /**
+     * A UUID string identifying this Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesAllTestCreateRequest {
+    /**
+     * A UUID string identifying this Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     policyTestRequest: PolicyTestRequest;
 }
 
 export interface PoliciesAllUsedByListRequest {
+    /**
+     * A UUID string identifying this Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesBindingsCreateRequest {
+    /**
+     *
+     */
     policyBindingRequest: PolicyBindingRequest;
 }
 
 export interface PoliciesBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Policy Binding.
+     */
     policyBindingUuid: string;
 }
 
 export interface PoliciesBindingsListRequest {
+    /**
+     *
+     */
     enabled?: boolean;
+    /**
+     *
+     */
     order?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policy?: string;
+    /**
+     *
+     */
     policyIsnull?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     target?: string;
+    /**
+     *
+     */
     targetIn?: Array<string>;
+    /**
+     *
+     */
     timeout?: number;
 }
 
 export interface PoliciesBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Policy Binding.
+     */
     policyBindingUuid: string;
+    /**
+     *
+     */
     patchedPolicyBindingRequest?: PatchedPolicyBindingRequest;
 }
 
 export interface PoliciesBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Policy Binding.
+     */
     policyBindingUuid: string;
 }
 
 export interface PoliciesBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Policy Binding.
+     */
     policyBindingUuid: string;
+    /**
+     *
+     */
     policyBindingRequest: PolicyBindingRequest;
 }
 
 export interface PoliciesBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Policy Binding.
+     */
     policyBindingUuid: string;
 }
 
 export interface PoliciesDummyCreateRequest {
+    /**
+     *
+     */
     dummyPolicyRequest: DummyPolicyRequest;
 }
 
 export interface PoliciesDummyDestroyRequest {
+    /**
+     * A UUID string identifying this Dummy Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesDummyListRequest {
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     *
+     */
     result?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     waitMax?: number;
+    /**
+     *
+     */
     waitMin?: number;
 }
 
 export interface PoliciesDummyPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedDummyPolicyRequest?: PatchedDummyPolicyRequest;
 }
 
 export interface PoliciesDummyRetrieveRequest {
+    /**
+     * A UUID string identifying this Dummy Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesDummyUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     dummyPolicyRequest: DummyPolicyRequest;
 }
 
 export interface PoliciesDummyUsedByListRequest {
+    /**
+     * A UUID string identifying this Dummy Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesEventMatcherCreateRequest {
+    /**
+     *
+     */
     eventMatcherPolicyRequest: EventMatcherPolicyRequest;
 }
 
 export interface PoliciesEventMatcherDestroyRequest {
+    /**
+     * A UUID string identifying this Event Matcher Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesEventMatcherListRequest {
+    /**
+     *
+     */
     action?: EventActions | null;
+    /**
+     *
+     */
     app?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     model?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     *
+     */
     query?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesEventMatcherPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Event Matcher Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedEventMatcherPolicyRequest?: PatchedEventMatcherPolicyRequest;
 }
 
 export interface PoliciesEventMatcherRetrieveRequest {
+    /**
+     * A UUID string identifying this Event Matcher Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesEventMatcherUpdateRequest {
+    /**
+     * A UUID string identifying this Event Matcher Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     eventMatcherPolicyRequest: EventMatcherPolicyRequest;
 }
 
 export interface PoliciesEventMatcherUsedByListRequest {
+    /**
+     * A UUID string identifying this Event Matcher Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesExpressionCreateRequest {
+    /**
+     *
+     */
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
 
 export interface PoliciesExpressionDestroyRequest {
+    /**
+     * A UUID string identifying this Expression Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesExpressionListRequest {
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     expression?: string;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesExpressionPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Expression Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedExpressionPolicyRequest?: PatchedExpressionPolicyRequest;
 }
 
 export interface PoliciesExpressionRetrieveRequest {
+    /**
+     * A UUID string identifying this Expression Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesExpressionUpdateRequest {
+    /**
+     * A UUID string identifying this Expression Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
 
 export interface PoliciesExpressionUsedByListRequest {
+    /**
+     * A UUID string identifying this Expression Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesGeoipCreateRequest {
+    /**
+     *
+     */
     geoIPPolicyRequest: GeoIPPolicyRequest;
 }
 
 export interface PoliciesGeoipDestroyRequest {
+    /**
+     * A UUID string identifying this GeoIP Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesGeoipListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesGeoipPartialUpdateRequest {
+    /**
+     * A UUID string identifying this GeoIP Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedGeoIPPolicyRequest?: PatchedGeoIPPolicyRequest;
 }
 
 export interface PoliciesGeoipRetrieveRequest {
+    /**
+     * A UUID string identifying this GeoIP Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesGeoipUpdateRequest {
+    /**
+     * A UUID string identifying this GeoIP Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     geoIPPolicyRequest: GeoIPPolicyRequest;
 }
 
 export interface PoliciesGeoipUsedByListRequest {
+    /**
+     * A UUID string identifying this GeoIP Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordCreateRequest {
+    /**
+     *
+     */
     passwordPolicyRequest: PasswordPolicyRequest;
 }
 
 export interface PoliciesPasswordDestroyRequest {
+    /**
+     * A UUID string identifying this Password Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordExpiryCreateRequest {
+    /**
+     *
+     */
     passwordExpiryPolicyRequest: PasswordExpiryPolicyRequest;
 }
 
 export interface PoliciesPasswordExpiryDestroyRequest {
+    /**
+     * A UUID string identifying this Password Expiry Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordExpiryListRequest {
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     days?: number;
+    /**
+     *
+     */
     denyOnly?: boolean;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesPasswordExpiryPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Password Expiry Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedPasswordExpiryPolicyRequest?: PatchedPasswordExpiryPolicyRequest;
 }
 
 export interface PoliciesPasswordExpiryRetrieveRequest {
+    /**
+     * A UUID string identifying this Password Expiry Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordExpiryUpdateRequest {
+    /**
+     * A UUID string identifying this Password Expiry Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     passwordExpiryPolicyRequest: PasswordExpiryPolicyRequest;
 }
 
 export interface PoliciesPasswordExpiryUsedByListRequest {
+    /**
+     * A UUID string identifying this Password Expiry Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordListRequest {
+    /**
+     *
+     */
     amountDigits?: number;
+    /**
+     *
+     */
     amountLowercase?: number;
+    /**
+     *
+     */
     amountSymbols?: number;
+    /**
+     *
+     */
     amountUppercase?: number;
+    /**
+     *
+     */
     checkHaveIBeenPwned?: boolean;
+    /**
+     *
+     */
     checkStaticRules?: boolean;
+    /**
+     *
+     */
     checkZxcvbn?: boolean;
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     errorMessage?: string;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     hibpAllowedCount?: number;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     lengthMin?: number;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     passwordField?: string;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     symbolCharset?: string;
+    /**
+     *
+     */
     zxcvbnScoreThreshold?: number;
 }
 
 export interface PoliciesPasswordPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Password Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedPasswordPolicyRequest?: PatchedPasswordPolicyRequest;
 }
 
 export interface PoliciesPasswordRetrieveRequest {
+    /**
+     * A UUID string identifying this Password Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesPasswordUpdateRequest {
+    /**
+     * A UUID string identifying this Password Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     passwordPolicyRequest: PasswordPolicyRequest;
 }
 
 export interface PoliciesPasswordUsedByListRequest {
+    /**
+     * A UUID string identifying this Password Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesReputationCreateRequest {
+    /**
+     *
+     */
     reputationPolicyRequest: ReputationPolicyRequest;
 }
 
 export interface PoliciesReputationDestroyRequest {
+    /**
+     * A UUID string identifying this Reputation Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesReputationListRequest {
+    /**
+     *
+     */
     checkIp?: boolean;
+    /**
+     *
+     */
     checkUsername?: boolean;
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     threshold?: number;
 }
 
 export interface PoliciesReputationPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Reputation Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedReputationPolicyRequest?: PatchedReputationPolicyRequest;
 }
 
 export interface PoliciesReputationRetrieveRequest {
+    /**
+     * A UUID string identifying this Reputation Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesReputationScoresDestroyRequest {
+    /**
+     * A UUID string identifying this Reputation Score.
+     */
     reputationUuid: string;
 }
 
 export interface PoliciesReputationScoresListRequest {
+    /**
+     *
+     */
     identifier?: string;
+    /**
+     * Multiple values may be separated by commas.
+     */
     identifierIn?: Array<string>;
+    /**
+     *
+     */
     ip?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     score?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesReputationScoresRetrieveRequest {
+    /**
+     * A UUID string identifying this Reputation Score.
+     */
     reputationUuid: string;
 }
 
 export interface PoliciesReputationScoresUsedByListRequest {
+    /**
+     * A UUID string identifying this Reputation Score.
+     */
     reputationUuid: string;
 }
 
 export interface PoliciesReputationUpdateRequest {
+    /**
+     * A UUID string identifying this Reputation Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     reputationPolicyRequest: ReputationPolicyRequest;
 }
 
 export interface PoliciesReputationUsedByListRequest {
+    /**
+     * A UUID string identifying this Reputation Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesUniquePasswordCreateRequest {
+    /**
+     *
+     */
     uniquePasswordPolicyRequest: UniquePasswordPolicyRequest;
 }
 
 export interface PoliciesUniquePasswordDestroyRequest {
+    /**
+     * A UUID string identifying this Password Uniqueness Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesUniquePasswordListRequest {
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     executionLogging?: boolean;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     numHistoricalPasswords?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     passwordField?: string;
+    /**
+     *
+     */
     policyUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesUniquePasswordPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Password Uniqueness Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     patchedUniquePasswordPolicyRequest?: PatchedUniquePasswordPolicyRequest;
 }
 
 export interface PoliciesUniquePasswordRetrieveRequest {
+    /**
+     * A UUID string identifying this Password Uniqueness Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesUniquePasswordUpdateRequest {
+    /**
+     * A UUID string identifying this Password Uniqueness Policy.
+     */
     policyUuid: string;
+    /**
+     *
+     */
     uniquePasswordPolicyRequest: UniquePasswordPolicyRequest;
 }
 
 export interface PoliciesUniquePasswordUsedByListRequest {
+    /**
+     * A UUID string identifying this Password Uniqueness Policy.
+     */
     policyUuid: string;
 }
 
@@ -1707,7 +2313,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["executionLogging"] != null) {
@@ -1715,9 +2323,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -2221,7 +2829,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["executionLogging"] != null) {
@@ -2229,9 +2839,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["model"] != null) {
@@ -2739,7 +3349,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["executionLogging"] != null) {
@@ -2751,9 +3363,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -3905,7 +4517,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["days"] != null) {
@@ -3921,9 +4535,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -4329,7 +4943,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["errorMessage"] != null) {
@@ -4345,9 +4961,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["lengthMin"] != null) {
@@ -4863,7 +5479,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["executionLogging"] != null) {
@@ -4871,9 +5489,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -5673,7 +6291,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["executionLogging"] != null) {
@@ -5681,9 +6301,9 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {

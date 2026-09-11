@@ -4,7 +4,7 @@
 
 import { setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { type ThemedUrls, UiThemeEnum } from "@goauthentik/api";
 
 //#region Scheme Types
 
@@ -131,6 +131,20 @@ export function resolveUITheme(
     const mediaQueryList = createColorSchemeTarget(colorSchemeInversion);
 
     return mediaQueryList.matches ? colorSchemeInversion : defaultUITheme;
+}
+
+/**
+ * Resolve the URL for the given theme, falling back to the raw URL
+ * when no themed variants are available.
+ *
+ * @category CSS
+ */
+export function resolveThemedUrl(
+    theme: ResolvedUITheme,
+    themedUrls?: ThemedUrls | null,
+    fallback?: string | null,
+): string | null {
+    return themedUrls?.[theme] ?? fallback ?? null;
 }
 
 /**

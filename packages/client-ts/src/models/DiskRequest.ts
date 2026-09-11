@@ -20,38 +20,26 @@
 export interface DiskRequest {
     /**
      *
-     * @type {string}
-     * @memberof DiskRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof DiskRequest
      */
     mountpoint: string;
     /**
      *
-     * @type {string}
-     * @memberof DiskRequest
      */
     label?: string;
     /**
      *
-     * @type {number}
-     * @memberof DiskRequest
      */
     capacityTotalBytes?: number;
     /**
      *
-     * @type {number}
-     * @memberof DiskRequest
      */
     capacityUsedBytes?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof DiskRequest
      */
     encryptionEnabled?: boolean;
 }

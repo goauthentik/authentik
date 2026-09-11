@@ -20,50 +20,34 @@
 export interface TransactionPolicyBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof TransactionPolicyBindingRequest
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof TransactionPolicyBindingRequest
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
      */
     user?: number | null;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
      */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
      */
     failureResult?: boolean;
 }

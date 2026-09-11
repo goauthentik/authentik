@@ -1,5 +1,6 @@
 ---
 title: Mutual TLS stage
+description: Authenticate or enroll users by validating their client certificates.
 authentik_enterprise: true
 toc_max_heading_level: 5
 ---

@@ -15,6 +15,7 @@ import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -91,7 +92,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
             html`${item.destinationGroupObj
-                ? html`<a href="#/identity/groups/${item.destinationGroupObj.pk}"
+                ? html`<a href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,

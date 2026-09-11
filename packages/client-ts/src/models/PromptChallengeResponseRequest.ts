@@ -22,8 +22,6 @@ export interface PromptChallengeResponseRequest {
     [key: string]: any | any;
     /**
      *
-     * @type {string}
-     * @memberof PromptChallengeResponseRequest
      */
     component?: string;
 }

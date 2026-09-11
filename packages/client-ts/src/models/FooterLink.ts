@@ -20,14 +20,10 @@
 export interface FooterLink {
     /**
      *
-     * @type {string}
-     * @memberof FooterLink
      */
     readonly href: string | null;
     /**
      *
-     * @type {string}
-     * @memberof FooterLink
      */
     readonly name: string;
 }

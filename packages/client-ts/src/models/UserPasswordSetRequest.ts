@@ -20,8 +20,6 @@
 export interface UserPasswordSetRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserPasswordSetRequest
      */
     password: string;
 }

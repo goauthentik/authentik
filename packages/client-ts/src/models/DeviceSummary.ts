@@ -20,20 +20,14 @@
 export interface DeviceSummary {
     /**
      *
-     * @type {number}
-     * @memberof DeviceSummary
      */
     totalCount: number;
     /**
      *
-     * @type {number}
-     * @memberof DeviceSummary
      */
     unreachableCount: number;
     /**
      *
-     * @type {number}
-     * @memberof DeviceSummary
      */
     outdatedAgentCount: number;
 }

@@ -17,7 +17,10 @@ test.describe("Provider Wizard", () => {
 
         const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
-        await test.step("Authenticate", async () => session.login());
+        await test.step("Authenticate", async () =>
+            session.login({
+                to: "/if/admin/core/providers",
+            }));
 
         await test.step("Navigate to provider wizard", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();

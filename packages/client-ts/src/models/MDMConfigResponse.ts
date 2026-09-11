@@ -20,20 +20,14 @@
 export interface MDMConfigResponse {
     /**
      *
-     * @type {string}
-     * @memberof MDMConfigResponse
      */
     config: string;
     /**
      *
-     * @type {string}
-     * @memberof MDMConfigResponse
      */
     mimeType: string;
     /**
      *
-     * @type {string}
-     * @memberof MDMConfigResponse
      */
     filename: string;
 }

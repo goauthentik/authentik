@@ -1,5 +1,6 @@
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
@@ -60,7 +61,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
-                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
+                    <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
             });
         }
         if (!value.httpIsSecure && document.location.protocol === "https:") {

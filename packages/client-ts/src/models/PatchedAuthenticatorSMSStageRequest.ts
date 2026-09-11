@@ -25,68 +25,46 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 export interface PatchedAuthenticatorSMSStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     name?: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {ProviderEnum}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     provider?: ProviderEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     fromNumber?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     accountSid?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     auth?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     authPassword?: string;
     /**
      *
-     * @type {AuthTypeEnum}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     authType?: AuthTypeEnum;
     /**
      * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-     * @type {boolean}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     verifyOnly?: boolean;
     /**
      * Optionally modify the payload being sent to custom providers.
-     * @type {string}
-     * @memberof PatchedAuthenticatorSMSStageRequest
      */
     mapping?: string | null;
 }

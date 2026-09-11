@@ -12,7 +12,9 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.outposts.permissions import IsOutpostServiceAccount
 from authentik.providers.oauth2.api.providers import RedirectURISerializer
 from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView
@@ -100,7 +102,10 @@ class ProxyProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "outpost_set",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
@@ -188,6 +193,7 @@ class ProxyOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
+    permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]

@@ -26,6 +26,8 @@ import {
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+
 import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -145,6 +147,7 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
                         label=${msg("Certificate")}
                         placeholder=${msg("Select a certificate...")}
                         certificate=${ifPresent(provider.certificate)}
+                        .allowedKeyTypes=${TLSKeyTypes}
                         name="certificate"
                     >
                     </ak-crypto-certificate-search>

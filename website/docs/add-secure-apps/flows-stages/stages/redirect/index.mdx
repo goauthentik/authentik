@@ -1,5 +1,6 @@
 ---
 title: Redirect stage
+description: Redirect users to another flow or to a specified URL.
 authentik_version: "2024.12"
 ---
 

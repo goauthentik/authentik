@@ -20,8 +20,6 @@
 export interface IframeLogoutChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof IframeLogoutChallengeResponseRequest
      */
     component?: string;
 }

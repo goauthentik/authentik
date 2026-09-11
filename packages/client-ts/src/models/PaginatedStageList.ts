@@ -25,20 +25,14 @@ import { StageFromJSON, StageToJSON } from "./Stage";
 export interface PaginatedStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Stage>}
-     * @memberof PaginatedStageList
      */
     results: Array<Stage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedStageList
      */
     autocomplete: { [key: string]: any };
 }

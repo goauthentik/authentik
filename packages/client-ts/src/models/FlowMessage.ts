@@ -23,14 +23,10 @@ import { FlowMessageLevelEnumFromJSON, FlowMessageLevelEnumToJSON } from "./Flow
 export interface FlowMessage {
     /**
      *
-     * @type {FlowMessageLevelEnum}
-     * @memberof FlowMessage
      */
     level: FlowMessageLevelEnum;
     /**
      *
-     * @type {string}
-     * @memberof FlowMessage
      */
     message: string;
 }

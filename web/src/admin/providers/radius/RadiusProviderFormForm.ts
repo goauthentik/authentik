@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -15,6 +15,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProv
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
+
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     CurrentBrand,
@@ -91,14 +93,20 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
                     .errorMessages=${errors.sharedSecret}
-                    value=${provider.sharedSecret ?? randomString(128, ascii_letters + digits)}
-                    required
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.sharedSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
-                ></ak-hidden-text-input>
+                    plaintext
+                    ?required=${!provider.pk}
+                    ?revealed=${!provider.pk}
+                ></ak-secret-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
@@ -111,6 +119,7 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         certificate=${ifPresent(provider?.certificate)}
+                        .allowedKeyTypes=${TLSKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

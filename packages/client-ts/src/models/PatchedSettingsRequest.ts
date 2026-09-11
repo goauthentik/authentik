@@ -26,104 +26,70 @@ import {
 export interface PatchedSettingsRequest {
     /**
      * Configure how authentik should show avatars for users.
-     * @type {string}
-     * @memberof PatchedSettingsRequest
      */
     avatars?: string;
     /**
      * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
-     * @type {string}
-     * @memberof PatchedSettingsRequest
      */
     baseUrl?: string;
     /**
      * Enable the ability for users to change their name.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     defaultUserChangeName?: boolean;
     /**
      * Enable the ability for users to change their email address.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     defaultUserChangeEmail?: boolean;
     /**
      * Enable the ability for users to change their username.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     defaultUserChangeUsername?: boolean;
     /**
      * Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).
-     * @type {string}
-     * @memberof PatchedSettingsRequest
      */
     eventRetention?: string;
     /**
      * Reputation cannot decrease lower than this value. Zero or negative.
-     * @type {number}
-     * @memberof PatchedSettingsRequest
      */
     reputationLowerLimit?: number;
     /**
      * Reputation cannot increase higher than this value. Zero or positive.
-     * @type {number}
-     * @memberof PatchedSettingsRequest
      */
     reputationUpperLimit?: number;
     /**
      *
-     * @type {any}
-     * @memberof PatchedSettingsRequest
      */
     footerLinks?: any | null;
     /**
      * When enabled, all the events caused by a user will be deleted upon the user's deletion.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     gdprCompliance?: boolean;
     /**
      * Globally enable/disable impersonation.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     impersonation?: boolean;
     /**
      * Require administrators to provide a reason for impersonating a user.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequest
      */
     impersonationRequireReason?: boolean;
     /**
      * Default token duration
-     * @type {string}
-     * @memberof PatchedSettingsRequest
      */
     defaultTokenDuration?: string;
     /**
      * Default token length
-     * @type {number}
-     * @memberof PatchedSettingsRequest
      */
     defaultTokenLength?: number;
     /**
      * Default page size for API responses, if no size was requested.
-     * @type {number}
-     * @memberof PatchedSettingsRequest
      */
     paginationDefaultPageSize?: number;
     /**
      * Maximum page size
-     * @type {number}
-     * @memberof PatchedSettingsRequest
      */
     paginationMaxPageSize?: number;
     /**
      *
-     * @type {PatchedSettingsRequestFlags}
-     * @memberof PatchedSettingsRequest
      */
     flags?: PatchedSettingsRequestFlags;
 }

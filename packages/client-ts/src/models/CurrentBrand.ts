@@ -29,128 +29,86 @@ import { UiThemeEnumFromJSON } from "./UiThemeEnum";
 export interface CurrentBrand {
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     matchedDomain: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     brandingTitle: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     brandingLogo: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof CurrentBrand
      */
     readonly brandingLogoThemedUrls: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     brandingFavicon: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof CurrentBrand
      */
     readonly brandingFaviconThemedUrls: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     brandingCustomCss: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     brandingMapTiles: string;
     /**
      *
-     * @type {Array<FooterLink>}
-     * @memberof CurrentBrand
      */
     readonly uiFooterLinks: Array<FooterLink>;
     /**
      *
-     * @type {UiThemeEnum}
-     * @memberof CurrentBrand
      */
     readonly uiTheme: UiThemeEnum;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowAuthentication?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowUserSwitch?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowInvalidation?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowRecovery?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowUnenrollment?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowUserSettings?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowDeviceCode?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowLockdown?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     flowRequest?: string;
     /**
      *
-     * @type {string}
-     * @memberof CurrentBrand
      */
     readonly defaultLocale: string;
     /**
      *
-     * @type {CurrentBrandFlags}
-     * @memberof CurrentBrand
      */
     flags: CurrentBrandFlags;
 }

@@ -29,40 +29,82 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EnterpriseLicenseCreateRequest {
+    /**
+     *
+     */
     licenseRequest: LicenseRequest;
 }
 
 export interface EnterpriseLicenseDestroyRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 
 export interface EnterpriseLicenseListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EnterpriseLicensePartialUpdateRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
+    /**
+     *
+     */
     patchedLicenseRequest?: PatchedLicenseRequest;
 }
 
 export interface EnterpriseLicenseRetrieveRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 
 export interface EnterpriseLicenseSummaryRetrieveRequest {
+    /**
+     *
+     */
     cached?: boolean;
 }
 
 export interface EnterpriseLicenseUpdateRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
+    /**
+     *
+     */
     licenseRequest: LicenseRequest;
 }
 
 export interface EnterpriseLicenseUsedByListRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 

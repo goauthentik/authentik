@@ -20,20 +20,14 @@
 export interface PatchedCertificateKeyPairRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedCertificateKeyPairRequest
      */
     name?: string;
     /**
      * PEM-encoded Certificate data
-     * @type {string}
-     * @memberof PatchedCertificateKeyPairRequest
      */
     certificateData?: string;
     /**
      * Optional Private Key. If this is set, you can use this keypair for encryption.
-     * @type {string}
-     * @memberof PatchedCertificateKeyPairRequest
      */
     keyData?: string;
 }

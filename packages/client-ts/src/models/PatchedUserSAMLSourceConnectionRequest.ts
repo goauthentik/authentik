@@ -20,14 +20,10 @@
 export interface PatchedUserSAMLSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserSAMLSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserSAMLSourceConnectionRequest
      */
     identifier?: string;
 }

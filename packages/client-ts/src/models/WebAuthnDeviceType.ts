@@ -20,14 +20,10 @@
 export interface WebAuthnDeviceType {
     /**
      *
-     * @type {string}
-     * @memberof WebAuthnDeviceType
      */
     aaguid: string;
     /**
      *
-     * @type {string}
-     * @memberof WebAuthnDeviceType
      */
     description: string;
 }

@@ -23,38 +23,26 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface GoogleWorkspaceProviderUser {
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderUser
      */
     readonly id: string;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderUser
      */
     googleId: string;
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderUser
      */
     user: number;
     /**
      *
-     * @type {PartialUser}
-     * @memberof GoogleWorkspaceProviderUser
      */
     readonly userObj: PartialUser;
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderUser
      */
     provider: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleWorkspaceProviderUser
      */
     readonly attributes: { [key: string]: any };
 }

@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGrantRequestList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGrantRequestList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GrantRequest>}
-     * @memberof PaginatedGrantRequestList
      */
     results: Array<GrantRequest>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGrantRequestList
      */
     autocomplete: { [key: string]: any };
 }

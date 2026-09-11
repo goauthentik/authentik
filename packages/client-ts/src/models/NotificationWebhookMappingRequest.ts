@@ -20,14 +20,10 @@
 export interface NotificationWebhookMappingRequest {
     /**
      *
-     * @type {string}
-     * @memberof NotificationWebhookMappingRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof NotificationWebhookMappingRequest
      */
     expression: string;
 }

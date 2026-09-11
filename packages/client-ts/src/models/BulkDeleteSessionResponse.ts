@@ -20,8 +20,6 @@
 export interface BulkDeleteSessionResponse {
     /**
      *
-     * @type {number}
-     * @memberof BulkDeleteSessionResponse
      */
     deleted: number;
 }

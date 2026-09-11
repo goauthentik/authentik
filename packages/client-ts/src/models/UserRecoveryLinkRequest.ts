@@ -20,8 +20,6 @@
 export interface UserRecoveryLinkRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserRecoveryLinkRequest
      */
     tokenDuration?: string;
 }

@@ -8,6 +8,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -90,7 +91,7 @@ export class StageListPage extends TablePage<Stage> {
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>
-                        <a href="#/flow/flows/${flow.slug}">
+                        <a href=${toAdminInterface(`flow/flows/${flow.slug}`)}>
                             <code>${flow.slug}</code>
                         </a>
                     </li>`;

@@ -11,8 +11,9 @@ import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
-import { asInstanceInvokerByTagName, modalInvoker } from "#elements/dialogs";
+import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -104,41 +105,29 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     protected getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
-            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
+            return html`
+                <a href=${toAdminInterface(`identity/users/${item.user}`)}> ${label} </a>
+            `;
         }
         if (item.group) {
-            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
+            return html`
+                <a href=${toAdminInterface(`identity/groups/${item.group}`)}> ${label} </a>
+            `;
         }
         return html`${label}`;
     }
 
     protected getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policyObj) {
-            return html`<button
-                type="button"
-                class="pf-c-button pf-m-secondary"
-                ${asInstanceInvokerByTagName(item.policyObj?.component, item.policyObj?.pk)}
-            >
-                ${msg("Edit Policy")}
-            </button>`;
+            return IconEditButtonByTagName(item.policyObj.component, item.policyObj.pk);
         }
 
         if (item.groupObj) {
-            return html`<button
-                class="pf-c-button pf-m-secondary"
-                ${GroupForm.asInstanceInvoker(item.groupObj?.pk)}
-            >
-                ${msg("Edit Group")}
-            </button>`;
+            return IconEditButton(GroupForm, item.groupObj.pk);
         }
 
         if (item.userObj) {
-            return html`<button
-                class="pf-c-button pf-m-secondary"
-                ${UserForm.asInstanceInvoker(item.userObj?.pk)}
-            >
-                ${msg("Edit User")}
-            </button>`;
+            return IconEditButton(UserForm, item.userObj.pk);
         }
 
         return null;
@@ -214,20 +203,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-secondary"
-                    ${modalInvoker(() => {
-                        return StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
-                            instancePk: item.pk,
-                            allowedTypes: this.allowedTypes,
-                            typeNotices: this.typeNotices,
-                            targetPk: this.target || "",
-                        });
-                    })}
-                >
-                    ${msg("Edit Binding")}
-                </button>
+                ${IconEditButtonByTagName(this.bindingEditForm, item.pk, null, {
+                    modalProps: {
+                        // @ts-expect-error Attribute passthrough does not handle generics well
+                        allowedTypes: this.allowedTypes,
+                        typeNotices: this.typeNotices,
+                        targetPk: this.target || "",
+                    },
+                    iconName: "fa-link",
+                })}
                 ${IconPermissionButton(this.getPolicyUserGroupRowLabel(item), {
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,

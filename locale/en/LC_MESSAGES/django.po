@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 00:13+0000\n"
+"POT-Creation-Date: 2026-09-09 00:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1973,53 +1973,6 @@ msgstr ""
 msgid "Flow not applicable to current user/request: {messages}"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Policy ({type})"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Binding {order}"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy passed"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Stage ({type})"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy denied"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "End of the flow"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement not fulfilled"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Flow authentication requirement"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement fulfilled"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Pre-flow policies"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
-msgid "Flow"
-msgstr ""
-
 #: authentik/flows/apps.py
 msgid ""
 "Upon successful authentication, re-start authentication in other open tabs."
@@ -2064,6 +2017,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
+msgstr ""
+
+#: authentik/flows/models.py
+msgid "Flow"
 msgstr ""
 
 #: authentik/flows/models.py
@@ -3575,6 +3532,10 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can manage media files"
+msgstr ""
+
+#: authentik/rbac/tasks.py
+msgid "Remove object-level permissions whose object no longer exists."
 msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
@@ -5457,6 +5418,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
 msgstr ""
 
 #: authentik/tenants/models.py

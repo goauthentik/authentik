@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Dummy Policy Serializer
  * @export
@@ -20,68 +22,54 @@
 export interface DummyPolicy {
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof DummyPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof DummyPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {boolean}
-     * @memberof DummyPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
+    /**
+     *
      */
     result?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMin?: number;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMax?: number;
 }
@@ -121,6 +109,14 @@ export function instanceOfDummyPolicy(value: object): value is DummyPolicy {
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -141,6 +137,11 @@ export function DummyPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         result: json["result"] == null ? undefined : json["result"],
         waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
         waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
@@ -154,7 +155,14 @@ export function DummyPolicyToJSON(json: any): DummyPolicy {
 export function DummyPolicyToJSONTyped(
     value?: Omit<
         DummyPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

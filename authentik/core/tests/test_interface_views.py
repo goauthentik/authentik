@@ -3,6 +3,7 @@
 from django.test import TestCase
 from django.urls import resolve, reverse
 
+from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import Application, UserTypes
@@ -159,9 +160,9 @@ class TestInterfaceCatchAll(TestCase):
         """The deep-path shell carries the same injected config as the root."""
         response = self.client.get("/if/admin/core/applications")
         self.assertEqual(response.status_code, 200)
-        # base/header_js.html injects window.authentik from the InterfaceView context.
-        self.assertIn(b"window.authentik", response.content)
-        self.assertIn(b'relBase: "/"', response.content)
+        # base/header_js.html injects the interface context as data, not script.
+        self.assertIn(b'id="ak-config"', response.content)
+        self.assertIn(b'<meta name="ak-base-url-rel" content="/">', response.content)
 
     def test_exact_admin_prefix_not_shadowed_by_catchall(self):
         """Ordering: the exact route wins over the catch-all for /if/admin/."""
@@ -184,7 +185,7 @@ class TestInterfaceCatchAll(TestCase):
         self.assertNotIn(resolve("/api/v3/core/users/").url_name, ("if-admin-path", "if-user-path"))
 
     def test_web_path_reflected_in_shell_context(self):
-        """When web.path is non-root, the shell advertises it via relBase.
+        """When web.path is non-root, the shell advertises it as ak-base-url-rel.
 
         Routing under web.path is resolved at import time in the root urlconf, so
         only the request-time context value is exercised here; deployment-prefix
@@ -193,4 +194,59 @@ class TestInterfaceCatchAll(TestCase):
         with CONFIG.patch("web.path", "/auth/"):
             response = self.client.get("/if/user/settings")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'relBase: "/auth/"', response.content)
+        self.assertIn(b'<meta name="ak-base-url-rel" content="/auth/">', response.content)
+
+
+class TestInterfaceFavicon(TestCase):
+    """The favicon links follow the brand's configured theme, and fall back to the
+    system color scheme only when the brand expresses none."""
+
+    def setUp(self):
+        Setup.set(True)
+        self.user = create_test_user(type=UserTypes.INTERNAL)
+        self.brand = create_test_brand(
+            branding_favicon="https://example.com/icon-%(theme)s.png",
+        )
+        self.client.force_login(self.user)
+
+    def _render(self, ui_theme: str | None = None) -> str:
+        if ui_theme:
+            self.brand.attributes = {"settings": {"theme": {"base": ui_theme}}}
+            self.brand.save()
+        response = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(response.status_code, 200)
+        return response.content.decode()
+
+    def test_automatic_theme_uses_media_queries(self):
+        """Without a brand theme, the browser picks the favicon by system color scheme."""
+        content = self._render()
+        self.assertIn(
+            '<link rel="icon" href="https://example.com/icon-light.png" '
+            'media="(prefers-color-scheme: light)">',
+            content,
+        )
+        self.assertIn(
+            '<link rel="icon" href="https://example.com/icon-dark.png" '
+            'media="(prefers-color-scheme: dark)">',
+            content,
+        )
+
+    def test_dark_theme_pins_favicon(self):
+        """A brand pinned to dark gets the dark favicon regardless of the system scheme."""
+        content = self._render(Themes.DARK)
+        self.assertIn('<link rel="icon" href="https://example.com/icon-dark.png">', content)
+        self.assertNotIn('href="https://example.com/icon-light.png"', content)
+
+    def test_light_theme_pins_favicon(self):
+        """A brand pinned to light gets the light favicon regardless of the system scheme."""
+        content = self._render(Themes.LIGHT)
+        self.assertIn('<link rel="icon" href="https://example.com/icon-light.png">', content)
+        self.assertNotIn('href="https://example.com/icon-dark.png"', content)
+
+    def test_untemplated_favicon_unchanged(self):
+        """A favicon without a %(theme)s variable renders a single plain link."""
+        self.brand.branding_favicon = "https://example.com/icon.png"
+        self.brand.save()
+        content = self._render()
+        self.assertIn('<link rel="icon" href="https://example.com/icon.png">', content)
+        self.assertIn('<link rel="shortcut icon" href="https://example.com/icon.png">', content)

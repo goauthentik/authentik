@@ -199,7 +199,7 @@ jobs:
         with:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
       - name: Setup rust
-        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
+        uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2.0.0
         with:
           rustflags: ""
           target: "${{ matrix.target.triple }}"
@@ -307,7 +307,7 @@ jobs:
             container/rac.oci.tar
             binaries/authentik-outpost-*
       - name: Create Release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ needs.check-inputs.outputs.version }}"

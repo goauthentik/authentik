@@ -7,6 +7,7 @@ import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
 import { ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -111,7 +112,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     protected override row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
-        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
+        const baseRow = [
+            html` <a href=${toAdminInterface(`identity/roles/${item.rolePk}`)}>${item.name}</a>`,
+        ];
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,

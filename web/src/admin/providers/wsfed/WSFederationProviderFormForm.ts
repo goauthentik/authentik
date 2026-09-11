@@ -14,6 +14,7 @@ import { aki } from "#common/api/client";
 
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -23,7 +24,6 @@ import {
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
@@ -32,9 +32,9 @@ import {
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
-    SamlVersionEnum,
     ValidationError,
     WSFederationProvider,
+    WSFedSAMLVersionEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -43,12 +43,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const samlVersionAndLabel = [
     [
-        SamlVersionEnum._11,
+        WSFedSAMLVersionEnum._11,
         msg("SAML 1.1 (required by Microsoft Entra ID / ADFS)", {
             id: "wsfed.saml-version.option.saml11",
         }),
     ],
-    [SamlVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
+    [WSFedSAMLVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
 ];
 
 const samlNameIDPolicyAndLabel = [
@@ -188,7 +188,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -222,7 +222,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}

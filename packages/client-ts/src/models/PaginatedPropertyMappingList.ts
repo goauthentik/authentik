@@ -25,20 +25,14 @@ import { PropertyMappingFromJSON, PropertyMappingToJSON } from "./PropertyMappin
 export interface PaginatedPropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PropertyMapping>}
-     * @memberof PaginatedPropertyMappingList
      */
     results: Array<PropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

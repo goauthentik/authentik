@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AuthenticatorStaticChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorStaticChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorStaticChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof AuthenticatorStaticChallenge
      */
     codes: Array<string>;
 }

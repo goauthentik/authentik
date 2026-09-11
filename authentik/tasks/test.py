@@ -1,3 +1,4 @@
+from itertools import count
 from queue import PriorityQueue
 
 from django.utils.module_loading import import_string
@@ -19,6 +20,7 @@ class TestWorker(Worker):
         super().__init__(broker=broker)
         self.worker_id = 1000
         self.work_queue = PriorityQueue()
+        self._work_queue_counter = count()
         self.consumers = {
             TESTING_QUEUE: ConsumerThread(
                 broker=self.broker,
@@ -45,7 +47,7 @@ class TestWorker(Worker):
         self.broker.emit_after("process_boot")
 
     def process_message(self, message: MessageProxy):
-        self.work_queue.put((0, message))
+        self.work_queue.put((0, next(self._work_queue_counter), message))
         self.consumers[TESTING_QUEUE].consumer.in_processing.add(message.message_id)
         self._worker.process_message(message)
 
