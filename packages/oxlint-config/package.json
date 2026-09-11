@@ -10,7 +10,8 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "prepare": "tsc -p ."
+        "prepare": "tsc -p .",
+        "verify": "node scripts/verify-fixtures.mjs"
     },
     "type": "module",
     "types": "./out/index.d.ts",
