@@ -40539,10 +40539,16 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
       required:
       - facts
       - name
       - pbm_uuid
+      - primary_binding_obj
     EndpointDeviceDetails:
       type: object
       properties:
@@ -40575,6 +40581,11 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
         connections_obj:
           type: array
           items:
@@ -40598,6 +40609,7 @@ components:
       - name
       - pbm_uuid
       - policies
+      - primary_binding_obj
     EndpointDeviceRequest:
       type: object
       properties:

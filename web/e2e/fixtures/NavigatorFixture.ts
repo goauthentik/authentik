@@ -39,6 +39,31 @@ export class NavigatorFixture extends PageFixture {
     };
 
     /**
+     * Wait for the current page to navigate away from the given pathname.
+     *
+     * Use this when the destination isn't known ahead of time, such as a login whose
+     * post-submit redirect lands on whichever interface the user defaults to. Waiting
+     * on a known pathname would match the page we're already on and resolve before the
+     * navigation lands.
+     *
+     * @see {@linkcode waitForPathname} when the destination is known.
+     *
+     * @param from The pathname or URL to wait for the page to leave.
+     */
+    public waitForPathnameChange = async (
+        from: string | URL,
+        options?: Parameters<Page["waitForURL"]>[1],
+    ): Promise<void> => {
+        const currentPathname = typeof from === "string" ? from : from.pathname;
+
+        this.logger.info(`Waiting for URL to change away from ${currentPathname}`);
+
+        await this.page.waitForURL((url) => url.pathname !== currentPathname, options);
+
+        this.logger.info(`URL changed to ${this.page.url()}`);
+    };
+
+    /**
      * Navigate to the given URL or pathname, and wait for the navigation to complete.
      */
     public navigate = async (to: URL | string | null | undefined): Promise<void> => {

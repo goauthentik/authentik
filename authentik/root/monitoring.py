@@ -18,13 +18,6 @@ class MetricsView(View):
         return HttpResponse(status=204)
 
 
-class LiveView(View):
-    """View for liveness probe, always returns Http 200"""
-
-    def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=200)
-
-
 class ReadyView(View):
     """View for readiness probe, always returns Http 200, unless sql is down"""
 

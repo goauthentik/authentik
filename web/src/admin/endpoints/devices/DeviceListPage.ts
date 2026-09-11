@@ -5,15 +5,17 @@ import "#admin/endpoints/devices/DeviceAddHowTo";
 import { aki } from "#common/api/client";
 
 import { modalInvoker } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
+import { getPolicyUserGroupRow } from "#admin/policies/BoundPoliciesList";
 
 import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -44,6 +46,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("OS")],
+        [msg("Primary user")],
         [msg("Group")],
         [msg("Last updated")],
         [msg("Actions"), null, msg("Row Actions")],
@@ -123,12 +126,23 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         `;
     }
 
+    renderName(item: EndpointDevice) {
+        if (item.facts?.data.network?.hostname && item.facts.data.network.hostname !== item.name) {
+            return msg(str`${item.facts.data.network.hostname} (${item.name})`);
+        }
+        return item.name;
+    }
+
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/devices/${item.deviceUuid}">
-                <div>${item.facts?.data.network?.hostname || item.name}</div>
+            html`<a href=${toAdminInterface(`endpoints/devices/${item.deviceUuid}`)}>
+                <div>${this.renderName(item)}</div>
+                ${item.facts?.data.hardware?.serial
+                    ? html`<small>${item.facts?.data.hardware?.serial}</small>`
+                    : nothing}
             </a>`,
             html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}`,
+            item.primaryBindingObj ? getPolicyUserGroupRow(item.primaryBindingObj) : html`-`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts?.created ? Timestamp(item.facts?.created) : html`-`,
             html`<button

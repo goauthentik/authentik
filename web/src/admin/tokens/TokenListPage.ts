@@ -13,6 +13,7 @@ import { formatIntentLabel } from "#common/labels";
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -91,7 +92,9 @@ export class TokenListPage extends TablePage<Token> {
                 ${item.managed
                     ? html`<small>${msg("Token is managed by authentik.")}</small>`
                     : nothing}`,
-            html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj?.pk}`)}
+                >${item.userObj?.username}</a
+            >`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,

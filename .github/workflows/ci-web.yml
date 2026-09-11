@@ -16,6 +16,11 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -73,6 +78,168 @@ jobs:
           NODE_ENV: "production"
         working-directory: web/
         run: pnpm run build
+  e2e:
+    name: e2e (playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      # Required so the codecov upload below can mint an OIDC token.
+      id-token: write
+    env:
+      # Drives blueprints/system/bootstrap.yaml at startup: creates akadmin with
+      # these credentials, which are the ones SessionFixture logs in with. Without
+      # them the bootstrap blueprint leaves the user without a usable password and
+      # the root URL bounces through /setup.
+      AUTHENTIK_BOOTSTRAP_EMAIL: "test-admin@goauthentik.io"
+      AUTHENTIK_BOOTSTRAP_PASSWORD: "test-runner"
+      # The embedded outpost wants to reconcile against Docker/Kubernetes, which
+      # isn't available here and only produces noise in the logs.
+      AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST: "true"
+      # Both default to the container layout (`/blueprints`, `/certs`), which does
+      # not exist in a source checkout. Without these the bootstrap blueprint
+      # cannot be read, gunicorn's workers fail to boot, and :9000 never opens —
+      # the readiness gate then just times out with nothing useful on stdout.
+      AUTHENTIK_BLUEPRINTS_DIR: "./blueprints"
+      AUTHENTIK_CERT_DISCOVERY_DIR: "./certs"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: system,python,node,rust,runtime
+      # The web build has to run before cargo: src/server/core.rs embeds
+      # web/dist/standalone/loading/startup.html with include_str!, so the Rust
+      # build fails to compile without it.
+      - name: Build web UI
+        env:
+          NODE_ENV: "production"
+        run: pnpm --dir web run build
+      - name: Build authentik
+        run: |
+          cargo build --release
+          sudo install -m 0755 ./target/release/authentik /usr/local/bin/authentik
+      - name: Apply migrations
+        run: uv run python -m lifecycle.migrate
+      - name: Resolve Playwright version
+        id: playwright-version
+        working-directory: web
+        run: | # shell
+          version=$(node -p "require('@playwright/test/package.json').version")
+          if [ -z "$version" ]; then
+            echo "Failed to resolve @playwright/test version" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        working-directory: web
+        run: | # shell
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            pnpm exec playwright install-deps chromium
+          else
+            pnpm exec playwright install --with-deps chromium
+          fi
+      # `ak allinone` runs the server and the worker in a single process, so
+      # there is only one listener on :9000 and no need to shuffle the worker's
+      # HTTP/metrics ports out of the way.
+      - name: Start authentik
+        run: | # shell
+          set -euo pipefail
+          mkdir -p /tmp/ak-logs
+          # The certificate discovery watcher inotify-watches this directory and
+          # raises if it is absent; a checkout has no `certs/`.
+          mkdir -p certs
+          uv run ak allinone > /tmp/ak-logs/authentik.log 2>&1 &
+          echo $! > /tmp/ak-logs/authentik.pid
+      - name: Wait for authentik to be ready
+        run: | # shell
+          set -uo pipefail
+          pid="$(cat /tmp/ak-logs/authentik.pid)"
+
+          # Poll until the URL answers, giving up when the deadline passes or the
+          # server process is gone. The liveness check matters: without it a boot
+          # failure is indistinguishable from a slow start and burns the whole
+          # timeout emitting connection-refused, with the real cause only in the
+          # uploaded log.
+          await() {
+            local url="$1"
+            local deadline=$(( SECONDS + $2 ))
+
+            until curl -fsS -o /dev/null "$url"; do
+              if ! kill -0 "$pid" 2>/dev/null; then
+                echo "authentik exited before ${url} became ready" >&2
+                return 1
+              fi
+              if (( SECONDS >= deadline )); then
+                echo "timed out after $2s waiting for ${url}" >&2
+                return 1
+              fi
+              sleep 2
+            done
+          }
+
+          # Readiness only covers the HTTP listener and the database. The default
+          # flows the tests drive arrive later, when the worker finishes applying
+          # blueprints/default/, so gate on the flow executor actually resolving
+          # `default-authentication-flow` rather than on the SPA shell rendering
+          # (which it does regardless of whether the flow exists).
+          if await "http://localhost:9000/-/health/ready/" 240 \
+            && await "http://localhost:9000/api/v3/flows/executor/default-authentication-flow/?query=" 300; then
+            exit 0
+          fi
+
+          echo "::group::authentik.log (last 200 lines)"
+          tail -n 200 /tmp/ak-logs/authentik.log || true
+          echo "::endgroup::"
+          exit 1
+      - name: Run Playwright tests
+        working-directory: web
+        env:
+          AK_TEST_RUNNER_PAGE_URL: http://localhost:9000
+        run: pnpm run test:e2e
+      # Reporting / upload steps below intentionally use `!cancelled()` rather
+      # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
+      # not a real result and shouldn't be reported. `if-no-files-found: ignore`
+      # keeps the "passed" case quiet.
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload Playwright traces and videos
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: web/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload authentik logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: authentik-logs
+          path: /tmp/ak-logs/
+          retention-days: 14
+          if-no-files-found: ignore
+      # Test analytics only — no coverage is collected for the browser suite.
+      - name: Upload Playwright results to codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
+        with:
+          files: web/playwright-report/results.xml
+          flags: e2e-web
+          use_oidc: true
+          report_type: test_results
   ci-web-mark:
     if: always()
     needs:
