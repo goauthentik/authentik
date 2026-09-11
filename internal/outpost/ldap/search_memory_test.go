@@ -21,10 +21,10 @@ import (
 )
 
 const (
-	memTestBaseDN  = "dc=ldap,dc=goauthentik,dc=io"
-	memTestUserDN  = "ou=users,dc=ldap,dc=goauthentik,dc=io"
-	memTestGroupDN = "ou=groups,dc=ldap,dc=goauthentik,dc=io"
-	memTestVGDN    = "ou=virtual-groups,dc=ldap,dc=goauthentik,dc=io"
+	memTestBaseDN         = "dc=ldap,dc=goauthentik,dc=io"
+	memTestUserDN         = "ou=users,dc=ldap,dc=goauthentik,dc=io"
+	memTestGroupDN        = "ou=groups,dc=ldap,dc=goauthentik,dc=io"
+	memTestVirtualGroupDN = "ou=virtual-groups,dc=ldap,dc=goauthentik,dc=io"
 
 	memTestAliceDN  = "cn=alice,ou=users,dc=ldap,dc=goauthentik,dc=io"
 	memTestGroupXPk = "00000000-0000-0000-0000-0000000000a0"
@@ -178,7 +178,7 @@ func memProviderInstance(client *api.APIClient) *ProviderInstance {
 		BaseDN:          memTestBaseDN,
 		UserDN:          memTestUserDN,
 		GroupDN:         memTestGroupDN,
-		VirtualGroupDN:  memTestVGDN,
+		VirtualGroupDN:  memTestVirtualGroupDN,
 		s:               &LDAPServer{ac: &ak.APIController{Client: client}},
 		log:             log.WithField("logger", "authentik.outpost.ldap.test"),
 		boundUsersMutex: &sync.RWMutex{},
