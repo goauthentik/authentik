@@ -81,6 +81,12 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
+    @property
+    def primary_user_binding(self) -> DeviceUserBinding | None:
+        if hasattr(self, "user_bindings"):
+            return next((b for b in self.user_bindings if b.is_primary), None)
+        return DeviceUserBinding.objects.filter(target=self, is_primary=True).first()
+
     def __str__(self):
         return f"Device {self.name} {self.identifier} ({self.pk})"
 
