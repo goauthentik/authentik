@@ -56,8 +56,6 @@ func credentialFromDockerConfig(secret *corev1.Secret, registry string) (version
 	return decodeAuth(auth)
 }
 
-// dockerConfigData returns the Secret's credential payload and which key it
-// came from.
 func dockerConfigData(secret *corev1.Secret) ([]byte, string) {
 	if raw, ok := secret.Data[corev1.DockerConfigJsonKey]; ok {
 		return raw, corev1.DockerConfigJsonKey
@@ -96,8 +94,6 @@ func normalizeRegistryHost(host string) string {
 	return host
 }
 
-// decodeAuth prefers the explicit username and password, falling back to the
-// base64 auth blob.
 func decodeAuth(auth dockerAuth) (version.Credential, error) {
 	if auth.Username != "" || auth.Password != "" {
 		return version.Credential{Username: auth.Username, Password: auth.Password}, nil

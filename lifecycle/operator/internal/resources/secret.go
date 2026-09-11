@@ -58,20 +58,19 @@ func (b *Builder) ConfigSecret() (*corev1.Secret, error) {
 }
 
 // configEnv flattens the authentik configuration into the AUTHENTIK_-prefixed
-// environment variables the containers read.
-//
-// This is a port of the chart's "authentik.env" helper: nested keys are joined
-// with a double underscore and upper-cased, so {"email": {"host": "x"}} becomes
+// environment variables the containers read: nested keys are joined with a
+// double underscore and upper-cased, so {"email": {"host": "x"}} becomes
 // AUTHENTIK_EMAIL__HOST. Empty values are dropped rather than set to the empty
-// string, because authentik distinguishes unset from empty for several options.
+// string, because authentik distinguishes unset from empty for several
+// options.
 func (b *Builder) configEnv() (map[string]string, error) {
 	config := b.Authentik.Spec.Authentik
 	if config == nil {
 		return map[string]string{}, nil
 	}
 
-	// Going through JSON keeps this in step with the spec's own field tags,
-	// which are the chart's values.yaml keys, rather than repeating them here.
+	// Going through JSON keeps this in step with the spec's own field tags
+	// rather than repeating them here.
 	encoded, err := json.Marshal(config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal the authentik configuration: %w", err)
@@ -140,7 +139,7 @@ func (b *Builder) configDefaults() map[string]any {
 			// The chart points authentik at the bundled database's name whether
 			// or not it is enabled, so an external database is named explicitly
 			// either way.
-			"host": b.PostgreSQLServiceName(),
+			"host": b.PostgreSQLName(),
 			"name": defaultPostgresDatabase,
 			"user": defaultPostgresUser,
 			"port": float64(defaultPostgresPort),
@@ -148,7 +147,6 @@ func (b *Builder) configDefaults() map[string]any {
 	}
 }
 
-// flatten walks the configuration tree, writing AUTHENTIK_-prefixed keys.
 func flatten(prefix string, tree map[string]any, out map[string]string) error {
 	// Sorted for a stable result, so an unchanged config produces an unchanged
 	// Secret and does not churn the pod template hash.
@@ -178,9 +176,9 @@ func flatten(prefix string, tree map[string]any, out map[string]string) error {
 	return nil
 }
 
-// renderValue stringifies a scalar the way the chart's toString would, and
-// encodes anything structured as JSON, which is what authentik expects for
-// list-valued options such as footer_links.
+// renderValue stringifies a scalar, and encodes anything structured as JSON,
+// which is what authentik expects for list-valued options such as
+// footer_links.
 func renderValue(value any) (string, error) {
 	switch typed := value.(type) {
 	case string:

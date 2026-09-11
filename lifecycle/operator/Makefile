@@ -106,22 +106,6 @@ lint-config: golangci-lint ## Verify golangci-lint linter configuration
 
 ##@ Build
 
-# Source chart that gets compiled into the manager binary.
-CHART_SRC ?= ../charts/authentik
-CHART_DATA_DIR := internal/chart/embedded
-
-.PHONY: chart
-chart: ## Package the authentik Helm chart into the binary's embed directory.
-	@command -v helm >/dev/null 2>&1 || { echo "helm is not installed, see https://helm.sh/docs/intro/install/"; exit 1; }
-	rm -f $(CHART_DATA_DIR)/*.tgz
-	# `helm dependency update` replaces the archives it manages but leaves
-	# unpacked subchart directories from earlier chart versions behind, and
-	# `helm package` would then bundle those too -- deploying a stale subchart,
-	# or one that is no longer a dependency at all.
-	rm -rf $(CHART_SRC)/charts
-	helm dependency update $(CHART_SRC)
-	helm package $(CHART_SRC) --destination $(CHART_DATA_DIR)
-
 .PHONY: build
 build: manifests generate fmt vet ## Build manager binary.
 	go build -o bin/manager cmd/main.go
@@ -134,7 +118,7 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: chart ## Build docker image with the manager.
+docker-build: ## Build docker image with the manager.
 	$(CONTAINER_TOOL) build -t ${IMG} .
 
 .PHONY: docker-push
@@ -149,7 +133,7 @@ docker-push: ## Push docker image with the manager.
 # To adequately provide solutions that are compatible with multiple platforms, you should consider using this option.
 PLATFORMS ?= linux/arm64,linux/amd64,linux/s390x,linux/ppc64le
 .PHONY: docker-buildx
-docker-buildx: chart ## Build and push docker image for the manager for cross-platform support
+docker-buildx: ## Build and push docker image for the manager for cross-platform support
 	# copy existing Dockerfile and insert --platform=${BUILDPLATFORM} into Dockerfile.cross, and preserve the original Dockerfile
 	sed -e '1 s/\(^FROM\)/FROM --platform=\$$\{BUILDPLATFORM\}/; t' -e ' 1,// s//FROM --platform=\$$\{BUILDPLATFORM\}/' Dockerfile > Dockerfile.cross
 	- $(CONTAINER_TOOL) buildx create --name operator-builder
@@ -166,9 +150,8 @@ build-installer: manifests generate kustomize ## Generate a consolidated YAML wi
 
 ##@ Deployment
 
-# The Authentik CRD's schema is large, because it types the full surface of the
-# Helm chart's values including Kubernetes' own volume, affinity and security
-# context types. Client-side apply stores the whole object in the
+# The CRD is ~1.4MB, because it types Kubernetes' own volume, affinity and
+# security context types. Client-side apply stores the whole object in the
 # last-applied-configuration annotation, which is capped at 256KB, so it has to
 # be applied server-side.
 SERVER_SIDE_APPLY ?= --server-side --force-conflicts

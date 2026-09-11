@@ -11,7 +11,6 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-// rbacGroup is the API group the RBAC kinds live in.
 const rbacGroup = "rbac.authorization.k8s.io"
 
 // prunableKinds are the kinds the operator will delete when they carry its
@@ -100,7 +99,6 @@ func (a *Applier) Prune(
 	return pruned, nil
 }
 
-// listManaged returns the operator's objects of one kind.
 func (a *Applier) listManaged(
 	ctx context.Context,
 	gvk schema.GroupVersionKind,
@@ -131,7 +129,6 @@ func (a *Applier) listManaged(
 	return list.Items, nil
 }
 
-// isClusterScoped reports whether a kind lives outside a namespace.
 func isClusterScoped(gvk schema.GroupVersionKind) bool {
 	switch gvk.Kind {
 	case "ClusterRole", "ClusterRoleBinding":
@@ -141,12 +138,9 @@ func isClusterScoped(gvk schema.GroupVersionKind) bool {
 	}
 }
 
-// DeleteClusterScoped removes the cluster-scoped objects belonging to an
-// instance.
-//
-// These have no owner reference -- a namespaced resource cannot own a
-// cluster-scoped one -- so nothing would otherwise delete them when the
-// Authentik resource goes away.
+// DeleteClusterScoped removes an instance's cluster-scoped objects. They have
+// no owner reference -- a namespaced resource cannot own a cluster-scoped one
+// -- so nothing else would delete them when the Authentik resource goes away.
 func (a *Applier) DeleteClusterScoped(ctx context.Context, selector map[string]string) error {
 	if len(selector) == 0 {
 		return fmt.Errorf("refusing to delete cluster-scoped objects without a label selector")

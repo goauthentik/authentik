@@ -57,13 +57,6 @@ spec:
           spec:
             description: spec defines the desired state of Authentik
             properties:
-              additionalObjects:
-                description: |-
-                  additionalObjects are extra manifests to deploy alongside authentik.
-                  Helm template expressions are evaluated in them.
-                items:
-                  x-kubernetes-preserve-unknown-fields: true
-                type: array
               authentik:
                 description: authentik is the authentik application configuration.
                 properties:
@@ -737,8 +730,8 @@ spec:
                           tag.
                         type: string
                       tag:
-                        description: tag is the image tag. Defaults to the chart's
-                          appVersion.
+                        description: tag is the image tag. Required unless autoUpdate
+                          resolves it.
                         type: string
                     type: object
                   licenseKey:
@@ -1255,8 +1248,8 @@ spec:
                           tag.
                         type: string
                       tag:
-                        description: tag is the image tag. Defaults to the chart's
-                          appVersion.
+                        description: tag is the image tag. Required unless autoUpdate
+                          resolves it.
                         type: string
                     type: object
                   imagePullSecrets:
@@ -1285,8 +1278,8 @@ spec:
                     type: string
                   namespaceOverride:
                     description: |-
-                      namespaceOverride deploys the chart's objects into a different namespace
-                      than the Authentik resource lives in.
+                      namespaceOverride deploys the objects into a different namespace than the
+                      Authentik resource lives in.
                     type: string
                   nodeSelector:
                     additionalProperties:
@@ -4635,10 +4628,9 @@ spec:
                 type: string
               releaseName:
                 description: |-
-                  releaseName prefixes every object the operator creates, and matches the
-                  Helm release name the chart would have used, so an existing chart install
-                  can be adopted without renaming anything. Immutable; defaults to the
-                  Authentik object's own name.
+                  releaseName prefixes every object the operator creates. It matches the
+                  Helm release name, so an existing chart install is adopted rather than
+                  duplicated. Immutable; defaults to the Authentik object's own name.
                 maxLength: 53
                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                 type: string
@@ -8345,8 +8337,8 @@ spec:
                           tag.
                         type: string
                       tag:
-                        description: tag is the image tag. Defaults to the chart's
-                          appVersion.
+                        description: tag is the image tag. Required unless autoUpdate
+                          resolves it.
                         type: string
                     type: object
                   imagePullSecrets:
@@ -17513,8 +17505,8 @@ spec:
                           tag.
                         type: string
                       tag:
-                        description: tag is the image tag. Defaults to the chart's
-                          appVersion.
+                        description: tag is the image tag. Required unless autoUpdate
+                          resolves it.
                         type: string
                     type: object
                   imagePullSecrets:
@@ -22653,14 +22645,14 @@ spec:
                   appliedHash fingerprints the desired state that was last applied. The
                   operator compares it against the current desired state to tell a real
                   change from a periodic re-reconcile, so that re-reading its own status
-                  does not trigger another Helm upgrade.
+                  does not trigger another apply.
                 type: string
               conditions:
                 description: |-
                   conditions represent the current state of the Authentik resource.
 
                   Condition types:
-                  - "Ready": the desired version is deployed and the release is healthy
+                  - "Ready": the desired version is deployed
                   - "Progressing": the operator is working towards the desired state
                   - "Degraded": the operator could not reach the desired state
                   - "Migrated": state of the migration Job that gates upgrades

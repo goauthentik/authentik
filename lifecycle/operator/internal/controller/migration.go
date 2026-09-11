@@ -82,8 +82,8 @@ func (r *AuthentikReconciler) buildMigrationJob(
 		spec = &instancev1alpha1.MigrationsSpec{}
 	}
 
-	// Substituting empty values for absent sections keeps the fallbacks below
-	// from each needing their own nil check.
+	// Empty values for absent sections keep the fallbacks below from each
+	// needing their own nil check.
 	global := ak.Spec.Global
 	if global == nil {
 		global = &instancev1alpha1.GlobalSpec{}
@@ -106,10 +106,10 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	}
 
 	labels := map[string]string{
-		"app.kubernetes.io/name":       ak.ChartObjectName(),
+		"app.kubernetes.io/name":       ak.BaseName(),
 		"app.kubernetes.io/instance":   ak.ReleaseName(),
 		"app.kubernetes.io/component":  instancev1alpha1.MigrateCommand,
-		"app.kubernetes.io/part-of":    instancev1alpha1.DefaultChartName,
+		"app.kubernetes.io/part-of":    instancev1alpha1.DefaultName,
 		"app.kubernetes.io/managed-by": instancev1alpha1.ManagedByLabelValue,
 		// Makes it obvious which Job belongs to which rollout, and lets the
 		// operator find its own Jobs without parsing names.
@@ -147,8 +147,8 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	volumeMounts := slices.Concat(global.VolumeMounts, worker.VolumeMounts)
 	volumes := slices.Concat(global.Volumes, worker.Volumes)
 
-	// The chart lets a component override each of these, falling back to the
-	// global value when it does not.
+	// Each of these falls back to the global value when the worker does not
+	// set it.
 	pullSecrets := worker.ImagePullSecrets
 	if len(pullSecrets) == 0 {
 		pullSecrets = global.ImagePullSecrets
@@ -265,7 +265,6 @@ func (r *AuthentikReconciler) reconcileMigration(
 	return jobOutcome(existing), existing, nil
 }
 
-// jobOutcome reads a Job's terminal conditions.
 func jobOutcome(job *batchv1.Job) migrationOutcome {
 	for _, condition := range job.Status.Conditions {
 		if condition.Status != corev1.ConditionTrue {

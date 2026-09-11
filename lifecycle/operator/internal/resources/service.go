@@ -2,7 +2,6 @@ package resources
 
 import (
 	"cmp"
-	"fmt"
 	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
@@ -75,8 +74,7 @@ func (b *Builder) ServerService(c *component) *corev1.Service {
 	return service
 }
 
-// MetricsService exposes a component's metrics port, or nil when metrics are
-// off.
+// MetricsService exposes a component's metrics port, or nil when metrics are off.
 func (b *Builder) MetricsService(c *component) *corev1.Service {
 	metrics := c.spec.Metrics
 	if metrics == nil || !metrics.Enabled {
@@ -101,7 +99,8 @@ func (b *Builder) MetricsService(c *component) *corev1.Service {
 
 	serviceType := corev1.ServiceType(cmp.Or(string(spec.Type), defaultServiceType))
 	service := &corev1.Service{
-		ObjectMeta: b.objectMeta(b.metricsName(c), c.name+"-metrics", spec.Labels, annotations),
+		ObjectMeta: b.objectMeta(akv1alpha1.TruncateName(c.objectName+"-metrics"),
+			c.name+"-metrics", spec.Labels, annotations),
 		Spec: corev1.ServiceSpec{
 			Type: serviceType,
 			Ports: []corev1.ServicePort{{
@@ -123,12 +122,6 @@ func (b *Builder) MetricsService(c *component) *corev1.Service {
 	return service
 }
 
-// metricsName is the name of a component's metrics Service.
-func (b *Builder) metricsName(c *component) string {
-	return akv1alpha1.TruncateName(fmt.Sprintf("%s-metrics", c.objectName))
-}
-
-// containerPort looks up a named port on the component's container.
 func (b *Builder) containerPort(c *component, name string) int32 {
 	for _, port := range c.ports {
 		if port.Name == name {
