@@ -1,0 +1,5 @@
+[build]
+  base    = "web"
+  command = "npm run build-locales && npm run storybook:build"
+  publish = "storybook-static/"
+  ignore  = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- web package.json pnpm-lock.yaml"
