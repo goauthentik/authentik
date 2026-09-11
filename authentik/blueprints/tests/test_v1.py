@@ -1,15 +1,17 @@
 """Test blueprints v1"""
 
 from os import chmod, environ, unlink, write
+from pathlib import Path
 from tempfile import mkstemp
 
 from django.test import TransactionTestCase
 from django.utils.text import slugify
 from yaml import load
 
+from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.common import BlueprintLoader, KeyOf
-from authentik.blueprints.v1.exporter import FlowExporter
+from authentik.blueprints.v1.exporter import Exporter, FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -400,6 +402,22 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
+
+    def test_export_default_blueprints_no_static_identifiers(self):
+        """Test that exporting a full instance after applying all default blueprints
+        never falls back to an opaque, non-portable `pk` identifier, e.g. for models
+        such as FlowStageBinding that have no unique text field of their own"""
+        for blueprint_file in sorted(Path("blueprints/default").glob("*.yaml")):
+            rel_path = str(blueprint_file.relative_to("blueprints"))
+            importer = Importer.from_string(BlueprintInstance(path=rel_path).retrieve())
+            self.assertTrue(importer.validate()[0])
+            self.assertTrue(importer.apply())
+
+        export = Exporter().export()
+        for entry in export.entries:
+            self.assertNotIn(
+                "pk", entry.identifiers, f"{entry.model} entry has a static pk identifier"
+            )
 
     def test_export_validate_import_prompt(self):
         """Test export and validate it"""
