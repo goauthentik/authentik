@@ -1,10 +1,10 @@
+import "#admin/events/UserEvents";
 import "#admin/groups/RelatedGroupList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/users/UserApplicationsTab";
 import "#admin/users/UserCredentialsTab";
 import "#admin/users/UserOverviewTab";
 import "#admin/users/UserRolesTab";
-import "#admin/events/UserEvents";
 import "#elements/Tabs";
 
 import { aki } from "#common/api/client";

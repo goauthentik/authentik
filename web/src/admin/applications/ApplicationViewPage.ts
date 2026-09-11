@@ -1,17 +1,17 @@
 import "#admin/applications/ApplicationAuthorizeChart";
 import "#admin/applications/ApplicationCheckAccessForm";
+import "#admin/applications/ApplicationEvents";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
-import "#admin/policies/BoundPoliciesList";
-import "#admin/requests/BoundRequestRulesTable";
-import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
+import "#admin/lifecycle/ObjectLifecyclePage";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/requests/BoundRequestRulesTable";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
-import "#admin/applications/ApplicationEvents";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -21,8 +21,8 @@ import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { ApplicationCheckAccessForm } from "#admin/applications/ApplicationCheckAccessForm";
 import { ApplicationForm } from "#admin/applications/ApplicationForm";
@@ -220,16 +220,18 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                 >
                                     ${msg("Check access")}
                                 </button>
-                                ${this.application.launchUrl
-                                    ? html`<a
-                                          target="_blank"
-                                          href=${this.application.launchUrl}
-                                          slot="trigger"
-                                          class="pf-c-button pf-m-secondary pf-m-block"
-                                      >
-                                          ${msg("Launch")}
-                                      </a>`
-                                    : null}`,
+                                ${
+                                    this.application.launchUrl
+                                        ? html`<a
+                                              target="_blank"
+                                              href=${this.application.launchUrl}
+                                              slot="trigger"
+                                              class="pf-c-button pf-m-secondary pf-m-block"
+                                          >
+                                              ${msg("Launch")}
+                                          </a>`
+                                        : null
+                                }`,
                         ],
                     ])}
                 </div>
@@ -270,9 +272,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     ${msg("Logins over the last week (per 8 hours)")}
                 </div>
                 <div class="pf-c-card__body">
-                    ${this.application &&
-                    html`<ak-charts-application-authorize application-id=${this.application.pk}>
-                    </ak-charts-application-authorize>`}
+                    ${
+                        this.application &&
+                        html`<ak-charts-application-authorize application-id=${this.application.pk}>
+                        </ak-charts-application-authorize>`
+                    }
                 </div>
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -297,27 +301,35 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
 
         return html`<main>
             <ak-tabs routed>
-                ${this.missingOutpost
-                    ? html`
-                          <div
-                              slot="header"
-                              class="pf-c-banner pf-m-warning"
-                              role="status"
-                              aria-live="polite"
-                          >
-                              <div class="pf-l-flex pf-m-space-items-sm">
-                                  <div class="pf-l-flex__item">
-                                      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                                  </div>
-                                  <div class="pf-l-flex__item">
-                                      ${msg("Warning: Application is not used by any Outpost.", {
-                                          id: "application.outpost.missing.warning",
-                                      })}
+                ${
+                    this.missingOutpost
+                        ? html`
+                              <div
+                                  slot="header"
+                                  class="pf-c-banner pf-m-warning"
+                                  role="status"
+                                  aria-live="polite"
+                              >
+                                  <div class="pf-l-flex pf-m-space-items-sm">
+                                      <div class="pf-l-flex__item">
+                                          <i
+                                              class="fas fa-exclamation-triangle"
+                                              aria-hidden="true"
+                                          ></i>
+                                      </div>
+                                      <div class="pf-l-flex__item">
+                                          ${msg(
+                                              "Warning: Application is not used by any Outpost.",
+                                              {
+                                                  id: "application.outpost.missing.warning",
+                                              },
+                                          )}
+                                      </div>
                                   </div>
                               </div>
-                          </div>
-                      `
-                    : nothing}
+                          `
+                        : nothing
+                }
                 <section
                     role="tabpanel"
                     tabindex="0"
@@ -393,35 +405,37 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     model=${ModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.hasEnterpriseLicense
-                    ? html` <section
-                              role="tabpanel"
-                              tabindex="0"
-                              slot="page-rule-bindings"
-                              id="page-rule-bindings"
-                              aria-label="${msg("Request rules")}"
-                              class="pf-c-page__main-section pf-m-no-padding-mobile"
-                          >
-                              <div class="pf-c-card">
-                                  <div class="pf-c-card__title">
-                                      ${msg(
-                                          "Configure rules which grant users the ability to request access to this app.",
-                                      )}
+                ${
+                    this.hasEnterpriseLicense
+                        ? html` <section
+                                  role="tabpanel"
+                                  tabindex="0"
+                                  slot="page-rule-bindings"
+                                  id="page-rule-bindings"
+                                  aria-label="${msg("Request rules")}"
+                                  class="pf-c-page__main-section pf-m-no-padding-mobile"
+                              >
+                                  <div class="pf-c-card">
+                                      <div class="pf-c-card__title">
+                                          ${msg(
+                                              "Configure rules which grant users the ability to request access to this app.",
+                                          )}
+                                      </div>
+                                      <ak-bound-request-rules-table .target=${this.application.pk}>
+                                      </ak-bound-request-rules-table>
                                   </div>
-                                  <ak-bound-request-rules-table .target=${this.application.pk}>
-                                  </ak-bound-request-rules-table>
-                              </div>
-                          </section>
-                          <ak-object-lifecycle-page
-                              role="tabpanel"
-                              tabindex="0"
-                              slot="page-lifecycle"
-                              id="page-lifecycle"
-                              aria-label=${msg("Lifecycle")}
-                              model=${ContentTypeEnum.AuthentikCoreApplication}
-                              object-pk=${this.application.pk}
-                          ></ak-object-lifecycle-page>`
-                    : nothing}
+                              </section>
+                              <ak-object-lifecycle-page
+                                  role="tabpanel"
+                                  tabindex="0"
+                                  slot="page-lifecycle"
+                                  id="page-lifecycle"
+                                  aria-label=${msg("Lifecycle")}
+                                  model=${ContentTypeEnum.AuthentikCoreApplication}
+                                  object-pk=${this.application.pk}
+                              ></ak-object-lifecycle-page>`
+                        : nothing
+                }
             </ak-tabs>
         </main>`;
     }

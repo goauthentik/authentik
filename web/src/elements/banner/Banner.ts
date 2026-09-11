@@ -7,9 +7,10 @@ import {
     P4Disposition,
 } from "#styles/patternfly/constants";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -23,7 +24,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
  * A sticky, full-width notice for surfacing instance-wide conditions to
  * administrators — missing configuration, a pending upgrade, an expiring
  * license or certificate, and so on. Presentational only: each caller decides
- * *when* to show the banner and supplies the message (and any action link) as
+ * _when_ to show the banner and supplies the message (and any action link) as
  * slotted content.
  *
  * Set `dismiss-key` to make the banner dismissible; the dismissal is remembered
@@ -66,11 +67,10 @@ export class Banner extends AKElement {
     public sticky = true;
 
     /**
-     * Optional call-to-action link, rendered after the message. Provided as
-     * properties (rather than a slotted `<a>`) so the anchor lives inside this
-     * element's shadow root, where PatternFly's `.pf-c-banner a` rule can give
-     * it a readable, on-brand color — a slotted anchor would instead inherit the
-     * default blue link color from the caller's own `patternfly-base` styles.
+     * Optional call-to-action link, rendered after the message. Provided as properties (rather than
+     * a slotted `<a>`) so the anchor lives inside this element's shadow root, where PatternFly's
+     * `.pf-c-banner a` rule can give it a readable, on-brand color — a slotted anchor would instead
+     * inherit the default blue link color from the caller's own `patternfly-base` styles.
      *
      * @attr
      */
@@ -86,8 +86,8 @@ export class Banner extends AKElement {
     public actionLabel: string | null = null;
 
     /**
-     * When set, renders a dismiss button and remembers the dismissal under this
-     * key. Omit for non-dismissible notices.
+     * When set, renders a dismiss button and remembers the dismissal under this key. Omit for
+     * non-dismissible notices.
      *
      * @attr
      */
@@ -138,21 +138,25 @@ export class Banner extends AKElement {
                 </span>
                 <div class="pf-c-banner__content" part="content">
                     <slot></slot>
-                    ${actionHref && actionLabel
-                        ? html`<a part="action-link" href=${actionHref}>${actionLabel}</a>`
-                        : null}
+                    ${
+                        actionHref && actionLabel
+                            ? html`<a part="action-link" href=${actionHref}>${actionLabel}</a>`
+                            : null
+                    }
                 </div>
-                ${dismissKey
-                    ? html`<button
-                          part="dismiss-button"
-                          class="pf-c-button ${dispositionClass}"
-                          type="button"
-                          aria-label=${msg("Dismiss banner", { id: "banner.dismiss.aria-label" })}
-                          @click=${this.dismiss}
-                      >
-                          <i class="fas fa-times" aria-hidden="true"></i>
-                      </button>`
-                    : null}
+                ${
+                    dismissKey
+                        ? html`<button
+                              part="dismiss-button"
+                              class="pf-c-button ${dispositionClass}"
+                              type="button"
+                              aria-label=${msg("Dismiss banner", { id: "banner.dismiss.aria-label" })}
+                              @click=${this.dismiss}
+                          >
+                              <i class="fas fa-times" aria-hidden="true"></i>
+                          </button>`
+                        : null
+                }
             </div>`;
         });
     }

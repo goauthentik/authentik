@@ -1,13 +1,12 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import Styles from "./styles.css";
-
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import Styles from "./styles.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 
@@ -27,24 +26,26 @@ export class Chip extends AKElement {
                 <span class="pf-c-chip__text">
                     <slot></slot>
                 </span>
-                ${this.removable
-                    ? html`<button
-                          class="pf-c-button pf-m-plain"
-                          type="button"
-                          @click=${() => {
-                              this.dispatchEvent(
-                                  new CustomEvent("remove", {
-                                      bubbles: true,
-                                      composed: true,
-                                  }),
-                              );
-                          }}
-                      >
-                          <pf-tooltip position="right" content=${msg("Remove item")}>
-                              <i class="fas fa-times" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </button>`
-                    : nothing}
+                ${
+                    this.removable
+                        ? html`<button
+                              class="pf-c-button pf-m-plain"
+                              type="button"
+                              @click=${() => {
+                                  this.dispatchEvent(
+                                      new CustomEvent("remove", {
+                                          bubbles: true,
+                                          composed: true,
+                                      }),
+                                  );
+                              }}
+                          >
+                              <pf-tooltip position="right" content=${msg("Remove item")}>
+                                  <i class="fas fa-times" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </button>`
+                        : nothing
+                }
             </div>
         </li>`;
     }

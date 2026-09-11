@@ -68,10 +68,11 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 break;
         }
         return html`<div
-            class="pf-c-banner pf-m-sticky ${this.licenseSummary?.status ===
-            LicenseSummaryStatusEnum.ReadOnly
-                ? "pf-m-red"
-                : "pf-m-gold"}"
+            class="pf-c-banner pf-m-sticky ${
+                this.licenseSummary?.status === LicenseSummaryStatusEnum.ReadOnly
+                    ? "pf-m-red"
+                    : "pf-m-gold"
+            }"
         >
             ${message}
             <a href=${toAdminInterface("enterprise/licenses")}
@@ -82,16 +83,20 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
 
     renderFlagBanner() {
         return html`
-            ${this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.Trial)
-                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
-                      ${msg("This authentik instance uses a Trial license.")}
-                  </div>`
-                : nothing}
-            ${this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.NonProduction)
-                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
-                      ${msg("This authentik instance uses a Non-production license.")}
-                  </div>`
-                : nothing}
+            ${
+                this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.Trial)
+                    ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                          ${msg("This authentik instance uses a Trial license.")}
+                      </div>`
+                    : nothing
+            }
+            ${
+                this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.NonProduction)
+                    ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                          ${msg("This authentik instance uses a Non-production license.")}
+                      </div>`
+                    : nothing
+            }
         `;
     }
 

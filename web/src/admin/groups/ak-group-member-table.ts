@@ -4,8 +4,8 @@ import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
 
-import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";

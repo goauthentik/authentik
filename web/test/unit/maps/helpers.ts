@@ -2,9 +2,9 @@ import type { LayerSpecification, StyleSpecification } from "maplibre-gl";
 import { expect } from "vitest";
 
 /**
- * Narrow away the `null | undefined` that lookups (`find`, `Map.get`, a
- * parser that rejects bad input) carry, failing the test if it is actually
- * absent. Keeps assertions readable instead of scattering `!` through them.
+ * Narrow away the `null | undefined` that lookups (`find`, `Map.get`, a parser that rejects bad
+ * input) carry, failing the test if it is actually absent. Keeps assertions readable instead of
+ * scattering `!` through them.
  */
 export function required<T>(value: T | null | undefined, what = "value"): T {
     if (value === null || value === undefined) {
@@ -23,10 +23,9 @@ export function layerById(style: StyleSpecification, id: string): LayerSpecifica
 }
 
 /**
- * `paint` and `layout` are per-layer-type unions in MapLibre's typings, so a
- * property only reachable on one variant cannot be indexed off the union.
- * Tests assert on individual properties by name; widen once, here, rather than
- * narrowing by layer type at every call site.
+ * `paint` and `layout` are per-layer-type unions in MapLibre's typings, so a property only
+ * reachable on one variant cannot be indexed off the union. Tests assert on individual properties
+ * by name; widen once, here, rather than narrowing by layer type at every call site.
  */
 export function paintOf(layer: LayerSpecification): Record<string, unknown> {
     return required(layer.paint, `paint on layer ${layer.id}`) as Record<string, unknown>;

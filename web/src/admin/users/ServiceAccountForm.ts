@@ -1,8 +1,8 @@
 import "#components/ak-hidden-text-input";
-import "#elements/forms/HorizontalFormElement";
-import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";

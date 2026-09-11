@@ -1,10 +1,8 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ak-library-application-empty-list.js";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import Styles from "./ak-library-impl.css";
-import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import { ViewMode } from "./types.js";
@@ -12,8 +10,8 @@ import { ViewMode } from "./types.js";
 import { StorageAccessor } from "#common/storage";
 import { groupBy } from "#common/utils";
 
-import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { navigate } from "#elements/router/core/navigation";
@@ -33,6 +31,8 @@ import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
 
+import AKLibraryApplicationListStyles from "./ApplicationList.css";
+import Styles from "./ak-library-impl.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -89,13 +89,12 @@ function createViewToggleContent(
 /**
  * List of Applications available
  *
- * Properties:
- * apps: a list of the applications available to the user.
+ * Properties: apps: a list of the applications available to the user.
  *
  * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
  *
+ * - Display the list of applications available to the user
+ * - Filter that list using the search bar
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends WithSession(AKElement) {
@@ -109,7 +108,7 @@ export class LibraryPage extends WithSession(AKElement) {
      * Whether to enable the datalist for search suggestions.
      *
      * @remarks
-     * Disabled on Firefox due to performance issues between renders.
+     *   Disabled on Firefox due to performance issues between renders.
      */
     static DataListEnabled = !isFirefox();
 
@@ -143,7 +142,7 @@ export class LibraryPage extends WithSession(AKElement) {
     #applications: Application[] = [];
 
     /**
-     * The *complete* list of applications for this user. Not paginated.
+     * The _complete_ list of applications for this user. Not paginated.
      *
      * @attr
      */
@@ -299,12 +298,11 @@ export class LibraryPage extends WithSession(AKElement) {
     /**
      * Open the row `targetRef` points at, once the render that binds it has run.
      *
-     * `selectedApp` is null while the query is empty, so no row carries the ref
-     * until a query exists. Committing a search from empty dispatches `input`
-     * and `change` in the same task: the query setter has narrowed
-     * `visibleApplications` synchronously, but Lit's re-render — and with it the
-     * ref binding — is still pending. Reading `targetRef` before awaiting would
-     * find the previous render's element, or nothing at all on a first search.
+     * `selectedApp` is null while the query is empty, so no row carries the ref until a query
+     * exists. Committing a search from empty dispatches `input` and `change` in the same task: the
+     * query setter has narrowed `visibleApplications` synchronously, but Lit's re-render — and with
+     * it the ref binding — is still pending. Reading `targetRef` before awaiting would find the
+     * previous render's element, or nothing at all on a first search.
      */
     async #openSelected(): Promise<void> {
         await this.updateComplete;
@@ -464,15 +462,17 @@ export class LibraryPage extends WithSession(AKElement) {
                 ${this.renderDataList(showDataList)}
 
                 <span id="search-action-hint" class="sr-only">
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.search.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : msg("Type to filter applications", {
-                              id: "user.library.search.type-to-filter-hint",
-                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
-                          })}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.search.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : msg("Type to filter applications", {
+                                  id: "user.library.search.type-to-filter-hint",
+                                  desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                              })
+                    }
                 </span>
             </form>
         </search>`;
@@ -553,12 +553,14 @@ export class LibraryPage extends WithSession(AKElement) {
             >
                 <p>${message}</p>
                 <p>
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.application-count.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : nothing}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.application-count.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : nothing
+                    }
                 </p>
             </output>`;
         });

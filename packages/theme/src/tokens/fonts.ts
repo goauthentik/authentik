@@ -1,14 +1,10 @@
 /**
- * @file Font-family tokens — the concrete brand typefaces.
- *
- * Names authentik's font stacks: the variable RedHat faces, then platform
- * fallbacks. The semantic typography tokens (`font.family-body/heading/code`)
- * alias these, and the PatternFly bridge maps `--pf-global--FontFamily--*` onto
- * the semantic layer.
- *
- * The `@font-face` rules that bind these names to real files live in
- * `@goauthentik/fonts` — this package ships no font bytes, so a consumer that
- * does not load those faces falls through to the platform fallbacks.
+ * @file Font-family tokens — the concrete brand typefaces. Names authentik's font stacks: the
+ *   variable RedHat faces, then platform fallbacks. The semantic typography tokens
+ *   (`font.family-body/heading/code`) alias these, and the PatternFly bridge maps
+ *   `--pf-global--FontFamily--*` onto the semantic layer. The `@font-face` rules that bind these
+ *   names to real files live in `@goauthentik/fonts` — this package ships no font bytes, so a
+ *   consumer that does not load those faces falls through to the platform fallbacks.
  */
 
 import { instance } from "../shared.js";

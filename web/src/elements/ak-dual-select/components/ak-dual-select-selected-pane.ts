@@ -19,20 +19,17 @@ const hostAttributes = [
 ] as const satisfies Array<[string, string]>;
 
 /**
+ * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
+ *   Includes the current `toMove` content.
+ * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
+ *
+ *   It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
+ *   attribute will be read by the parent when a control is clicked.
+ * @property {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  * @element ak-dual-select-available-panel
  *
  * The "selected options" or "right" pane in a dual-list multi-select.  It receives from its parent
  * a list of the selected options, and maintains an internal list of objects selected to move.
- *
- * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
- * Includes the current `toMove` content.
- *
- * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
- *
- * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
- * attribute will be read by the parent when a control is clicked.
- *
- * @prop {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
@@ -49,12 +46,12 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
     //#region State
 
     /**
-     * This is the only mutator for this object.
-     * It collects the list of objects the user has clicked on *in this pane*.
+     * This is the only mutator for this object. It collects the list of objects the user has
+     * clicked on _in this pane_.
      *
-     * It is explicitly marked as "public" to emphasize that the parent orchestrator
-     * for the dual-select widget can and will access it to get the list of keys to be
-     * moved (removed) if the user so requests.
+     * It is explicitly marked as "public" to emphasize that the parent orchestrator for the
+     * dual-select widget can and will access it to get the list of keys to be moved (removed) if
+     * the user so requests.
      */
     @state()
     public toMove: Set<string | number> = new Set();

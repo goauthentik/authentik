@@ -1,7 +1,7 @@
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/ak-search-select";
 
 import { aki } from "#common/api/client";
 

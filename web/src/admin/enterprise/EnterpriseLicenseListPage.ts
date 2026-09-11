@@ -11,8 +11,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -96,15 +96,17 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     // of the object to use in the renderEmpty
     protected override renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No licenses found.")}</span>
-                      <div slot="body">
-                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
-                      </div>
-                      <div slot="primary">${this.renderObjectCreate()}</div>
-                  </ak-empty-state>`}
+            ${
+                inner
+                    ? inner
+                    : html`<ak-empty-state icon=${this.pageIcon}
+                          ><span>${msg("No licenses found.")}</span>
+                          <div slot="body">
+                              ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                          </div>
+                          <div slot="primary">${this.renderObjectCreate()}</div>
+                      </ak-empty-state>`
+            }
         `);
     }
 
@@ -181,12 +183,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         icon="pf-icon pf-icon-user"
                         label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
-                        >${this.summary &&
-                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? Timestamp(this.summary.latestValid)
-                            : html`<span aria-label=${msg("No expiry")}
-                                  >-</span
-                              >`}</ak-aggregate-card
+                        >${
+                            this.summary &&
+                            this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                                ? Timestamp(this.summary.latestValid)
+                                : html`<span aria-label=${msg("No expiry")}>-</span>`
+                        }</ak-aggregate-card
                     >
                 </div>
             </section>

@@ -1,7 +1,5 @@
 import "#elements/commands/ak-command-palette-modal";
 
-import HostStyles from "./ak-command-palette.css";
-
 import { AKElement } from "#elements/Base";
 import { AKCommandPaletteModal } from "#elements/commands/ak-command-palette-modal";
 import { listen } from "#elements/decorators/listen";
@@ -9,6 +7,8 @@ import { listen } from "#elements/decorators/listen";
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { customElement } from "lit/decorators.js";
+
+import HostStyles from "./ak-command-palette.css";
 
 @customElement("ak-command-palette")
 export class AKCommandPalette extends AKElement {

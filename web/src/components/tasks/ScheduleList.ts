@@ -1,18 +1,18 @@
+import "#components/tasks/ScheduleForm";
+import "#components/tasks/TaskList";
+import "#components/tasks/TaskStatus";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/ScheduleForm";
-import "#components/tasks/TaskList";
-import "#components/tasks/TaskStatus";
 import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
-import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";

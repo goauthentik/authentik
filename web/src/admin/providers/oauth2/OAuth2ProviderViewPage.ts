@@ -2,18 +2,18 @@
  * @file Display details for an OAuth2 provider: Overview, Preview, Changelog, Permissions
  */
 
-import "#admin/providers/RelatedApplicationButton";
 import "#admin/events/ObjectChangelog";
-import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/providers/RelatedApplicationButton";
 import "#admin/rbac/ObjectPermissionModal";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/CodeMirror";
+import "#elements/Divider";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/Divider";
-import "#admin/policies/BoundPoliciesList";
 import "../../../elements/forms/ConfirmationForm";
 
 import { aki } from "#common/api/client";
@@ -234,11 +234,13 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     renderTabOverview(provider: OAuth2Provider): SlottedTemplateResult {
-        return html`${provider.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
+        return html`${
+                provider.assignedApplicationName
+                    ? nothing
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
@@ -411,31 +413,34 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                         </form>
                     </div>
-                    ${this.dcrConfig !== null
-                        ? html`<ak-divider></ak-divider>
-                              <div class="pf-c-card__body">
-                                  <form class="pf-c-form">
-                                      <div class="pf-c-form__group">
-                                          <label
-                                              class="pf-c-form__label"
-                                              for="${IDGenerator.elementID("registration")}"
-                                          >
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("Dynamic Client Registration URL")}</span
+                    ${
+                        this.dcrConfig !== null
+                            ? html`<ak-divider></ak-divider>
+                                  <div class="pf-c-card__body">
+                                      <form class="pf-c-form">
+                                          <div class="pf-c-form__group">
+                                              <label
+                                                  class="pf-c-form__label"
+                                                  for="${IDGenerator.elementID("registration")}"
                                               >
-                                          </label>
-                                          <input
-                                              id="${IDGenerator.elementID("registration")}"
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${this.providerUrls?.dcrRegistration ||
-                                              msg("-")}"
-                                          />
-                                      </div>
-                                  </form>
-                              </div>`
-                        : nothing}
+                                                  <span class="pf-c-form__label-text"
+                                                      >${msg("Dynamic Client Registration URL")}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  id="${IDGenerator.elementID("registration")}"
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${
+                                                      this.providerUrls?.dcrRegistration || msg("-")
+                                                  }"
+                                              />
+                                          </div>
+                                      </form>
+                                  </div>`
+                            : nothing
+                    }
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
@@ -520,9 +525,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                     )}
                 </div>
                 <div class="pf-c-card__body">
-                    ${this.preview
-                        ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
-                        : html` <ak-empty-state loading></ak-empty-state> `}
+                    ${
+                        this.preview
+                            ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
+                            : html` <ak-empty-state loading></ak-empty-state> `
+                    }
                 </div>
             </div>
         </div>`;
@@ -568,15 +575,19 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${renderDescriptionList([
                         [
                             msg("Default application group"),
-                            html`${dcr.defaultApplicationGroup !== ""
-                                ? dcr.defaultApplicationGroup
-                                : "-"}`,
+                            html`${
+                                dcr.defaultApplicationGroup !== ""
+                                    ? dcr.defaultApplicationGroup
+                                    : "-"
+                            }`,
                         ],
                         [
                             msg("Allowed grant types"),
-                            html`${(dcr.allowedGrantTypes || []).length > 0
-                                ? dcr.allowedGrantTypes?.join(", ")
-                                : msg("All")}`,
+                            html`${
+                                (dcr.allowedGrantTypes || []).length > 0
+                                    ? dcr.allowedGrantTypes?.join(", ")
+                                    : msg("All")
+                            }`,
                         ],
                         [
                             msg("Related actions"),

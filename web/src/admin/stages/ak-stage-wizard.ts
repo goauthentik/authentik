@@ -1,10 +1,10 @@
+import "#admin/flows/StageBindingForm";
 import "#admin/stages/register";
 import "#elements/LicenseNotice";
+import "#elements/forms/FormGroup";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-import "#elements/forms/FormGroup";
-import "#admin/flows/StageBindingForm";
 
 import { aki } from "#common/api/client";
 
@@ -77,13 +77,15 @@ export class AKStageWizard extends CreateWizard {
 
         return html`<ak-form-group slot="pre-items" label=${msg("Existing Stage")} open>
             <ak-radio
-                .options=${[
-                    {
-                        label: "Bind existing stage",
-                        description: msg("Bind an existing stage to this flow."),
-                        value: true,
-                    },
-                ] satisfies RadioOption<boolean>[]}
+                .options=${
+                    [
+                        {
+                            label: "Bind existing stage",
+                            description: msg("Bind an existing stage to this flow."),
+                            value: true,
+                        },
+                    ] satisfies RadioOption<boolean>[]
+                }
                 @change=${() => {
                     if (!this.wizard) {
                         return;

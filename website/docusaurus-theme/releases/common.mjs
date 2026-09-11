@@ -1,7 +1,7 @@
 /**
  * @typedef {object} AKReleasesPluginEnvironment
- * @property {string} [branch] The current branch name, if available.
- * e.g. "main" `version-${year}.${month}`, "feature-branch"
+ * @property {string} [branch] The current branch name, if available. e.g. "main"
+ *   `version-${year}.${month}`, "feature-branch"
  * @property {string} currentReleaseOrigin The URL to the current release documentation.
  * @property {string} preReleaseOrigin The URL to the pre-release documentation.
  * @property {string} apiReferenceOrigin The URL to the API reference documentation.
@@ -23,7 +23,7 @@
 /**
  * @typedef {AKReleaseFileMetadata & { frontMatter?: AKReleaseFrontMatter }} AKReleaseFile
  *
- * Represents a release file with additional frontmatter properties.
+ *   Represents a release file with additional frontmatter properties.
  */
 
 /**

@@ -30,12 +30,13 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
- * The first step of the application wizard, responsible for collecting
- * basic application information such as name, slug, group, and UI settings.
+ * The first step of the application wizard, responsible for collecting basic application
+ * information such as name, slug, group, and UI settings.
  *
- * This step performs validation on the form inputs and updates the wizard state accordingly when the "Next" button is clicked.
+ * This step performs validation on the form inputs and updates the wizard state accordingly when
+ * the "Next" button is clicked.
  *
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
@@ -171,8 +172,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             placeholder=${msg("https://...")}
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
-                            .errorMessages=${errors.metaLaunchUrl ??
-                            this.errorMessages("metaLaunchUrl")}
+                            .errorMessages=${
+                                errors.metaLaunchUrl ?? this.errorMessages("metaLaunchUrl")
+                            }
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                             )}

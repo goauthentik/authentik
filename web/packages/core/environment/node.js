@@ -10,8 +10,8 @@
  *
  * Note, this should only be used during the build process.
  *
- * If you need to check the environment at runtime, use `process.env.NODE_ENV` to
- * ensure that module tree-shaking works correctly.
+ * If you need to check the environment at runtime, use `process.env.NODE_ENV` to ensure that module
+ * tree-shaking works correctly.
  *
  * @category Environment
  * @runtime node
@@ -20,6 +20,7 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
 
 /**
  * A source environment variable, which can be a string, number, boolean, null, or undefined.
+ *
  * @typedef {string | number | boolean | null | undefined} EnvironmentVariable
  */
 
@@ -36,23 +37,21 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
 //#region Utilities
 
 /**
- * Given an object of environment variables, serializes them into a mapping of
- * environment variable names to their respective runtime constants.
+ * Given an object of environment variables, serializes them into a mapping of environment variable
+ * names to their respective runtime constants.
  *
  * This is useful for defining environment variables while bundling with ESBuild, Vite, etc.
  *
  * @category Environment
+ * @typeParam {string} [Prefix='import.meta.env.']
+ * @typedef {Record<string, EnvironmentVariable>} EnvRecord
  * @runtime node
  *
- * @typeParam {string} [Prefix='import.meta.env.']
- *
- * @typedef {Record<string, EnvironmentVariable>} EnvRecord
  * @typedef {string} Prefix
- *
  * @param {EnvRecord} input
- * @param {Prefix} [prefix='import.meta.env.']
+ * @param {Prefix} [prefix='import.meta.env.'] Default is `'import.meta.env.'`
  *
- * @returns {{[K in keyof EnvRecord as `${Prefix}${K}`]: JSONify<EnvRecord[K]>}}
+ * @returns {{ [K in keyof EnvRecord as `${Prefix}${K}`]: JSONify<EnvRecord[K]> }}
  */
 export function serializeEnvironmentVars(
     input,

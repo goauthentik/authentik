@@ -1,6 +1,6 @@
 import Link from "@docusaurus/Link";
-import { ThemeClassNames } from "@docusaurus/theme-common";
 import Translate from "@docusaurus/Translate";
+import { ThemeClassNames } from "@docusaurus/theme-common";
 import Admonition from "@theme/Admonition";
 import ExternalLinkIcon from "@theme/Icon/ExternalLink";
 import React from "react";

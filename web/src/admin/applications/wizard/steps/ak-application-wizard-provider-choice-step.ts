@@ -15,15 +15,15 @@ import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWiz
 
 import type { TypeCreate } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, state } from "lit/decorators.js";
 
 /**
- *
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {

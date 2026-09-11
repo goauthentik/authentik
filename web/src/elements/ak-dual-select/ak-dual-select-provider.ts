@@ -36,7 +36,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
     public provider!: DataProvider;
 
     /**
-     * The list of selected items. This is the *complete* list, not paginated, as presented by a
+     * The list of selected items. This is the _complete_ list, not paginated, as presented by a
      * component with a multi-select list of items to track.
      *
      * @attr

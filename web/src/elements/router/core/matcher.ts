@@ -1,9 +1,7 @@
 /**
- * @file Pure route matcher.
- *
- * First-match-wins linear scan over pre-compiled `URLPattern`s. No globals,
- * no side effects. Depends only on the structural shape of a route (a compiled
- * `pattern`), so it never imports `Route`.
+ * @file Pure route matcher. First-match-wins linear scan over pre-compiled `URLPattern`s. No
+ *   globals, no side effects. Depends only on the structural shape of a route (a compiled
+ *   `pattern`), so it never imports `Route`.
  */
 
 /**
@@ -22,11 +20,11 @@ export interface RouteMatch<R extends RoutePatternLike> {
 /**
  * Match a pathname against a route table, first-match-wins.
  *
- * @param pathname The interface-relative pathname, beginning with `/`.
- * The interface root is `/`. Callers stripping the interface prefix from
- * `location.pathname` must keep (or restore) the leading slash:
- * `/if/admin/users/42` → `/users/42`, `/if/admin/` → `/`.
+ * @param pathname The interface-relative pathname, beginning with `/`. The interface root is `/`.
+ *   Callers stripping the interface prefix from `location.pathname` must keep (or restore) the
+ *   leading slash: `/if/admin/users/42` → `/users/42`, `/if/admin/` → `/`.
  * @param routes The route table, scanned in order.
+ *
  * @returns The first match, or `null` when nothing matches.
  */
 export function matchRoute<R extends RoutePatternLike>(
@@ -51,10 +49,10 @@ export function matchRoute<R extends RoutePatternLike>(
 }
 
 /**
- * `URLPattern` names unnamed groups — `*` and `(.*)` — with sequential integer
- * keys. A route that matches a subtree (`/users/:id{/*}?`) captures the tail
- * this way, and that tail is sub-navigation the *mounted* view owns (its tabs),
- * not the identity of the mount. Named groups (`:id`) identify the mount.
+ * `URLPattern` names unnamed groups — `*` and `(.*)` — with sequential integer keys. A route that
+ * matches a subtree (`/users/:id{/*}?`) captures the tail this way, and that tail is sub-navigation
+ * the _mounted_ view owns (its tabs), not the identity of the mount. Named groups (`:id`) identify
+ * the mount.
  */
 const WILDCARD_GROUP_KEY = /^\d+$/;
 
@@ -63,16 +61,15 @@ function identifyingKeys(parameters: Record<string, string | undefined>): string
 }
 
 /**
- * Whether two matches resolve to the same mounted view: the same route with the
- * same *identifying* (named) path parameters. {@linkcode matchRoute} returns a
- * fresh object every call, so a search-only navigation (a table filter) or a
- * wildcard-tail change (a tab, in a subtree route) yields an equal-but-new match
- * — comparing structurally lets the outlet skip re-resolving it, which would
- * otherwise tear down and reload an already-mounted view.
+ * Whether two matches resolve to the same mounted view: the same route with the same _identifying_
+ * (named) path parameters. {@linkcode matchRoute} returns a fresh object every call, so a
+ * search-only navigation (a table filter) or a wildcard-tail change (a tab, in a subtree route)
+ * yields an equal-but-new match — comparing structurally lets the outlet skip re-resolving it,
+ * which would otherwise tear down and reload an already-mounted view.
  *
- * The wildcard tail is deliberately excluded: a subtree route stays mounted
- * while its tabs move through the tail, and the nested outlet inside it handles
- * the tail. A change to a named parameter (a different `:id`) still remounts.
+ * The wildcard tail is deliberately excluded: a subtree route stays mounted while its tabs move
+ * through the tail, and the nested outlet inside it handles the tail. A change to a named parameter
+ * (a different `:id`) still remounts.
  */
 export function sameRouteMatch<R extends RoutePatternLike>(
     a: RouteMatch<R> | null,

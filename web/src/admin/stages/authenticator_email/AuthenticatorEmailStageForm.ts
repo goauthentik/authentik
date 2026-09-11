@@ -1,10 +1,10 @@
 import "#components/ak-secret-text-input";
+import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 
@@ -249,18 +249,22 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             class="pf-c-form-control"
                             ?disabled=${!this.templates || this.templates.length === 0}
                         >
-                            ${this.templates && this.templates.length > 0
-                                ? this.templates.map((template: TypeCreate) => {
-                                      return html`<option
-                                          value="${template.name}"
-                                          ?selected=${this.instance?.template === template.name ||
-                                          (!this.instance?.template &&
-                                              template.name === "email/email_otp.html")}
-                                      >
-                                          ${template.description}
-                                      </option>`;
-                                  })
-                                : html`<option value="">${msg("Loading templates...")}</option>`}
+                            ${
+                                this.templates && this.templates.length > 0
+                                    ? this.templates.map((template: TypeCreate) => {
+                                          return html`<option
+                                              value="${template.name}"
+                                              ?selected=${
+                                                  this.instance?.template === template.name ||
+                                                  (!this.instance?.template &&
+                                                      template.name === "email/email_otp.html")
+                                              }
+                                          >
+                                              ${template.description}
+                                          </option>`;
+                                      })
+                                    : html`<option value="">${msg("Loading templates...")}</option>`
+                            }
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg("Template used for the verification email.")}

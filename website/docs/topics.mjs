@@ -1,8 +1,8 @@
 /**
- * Display labels for the top-level documentation topics, used as the section
- * headings in the generated `llms.txt`. The keys are the top-level directory
- * slugs (and the `glossary` group split out of `core/glossary`); labels mirror
- * the site sidebar. Slugs without an entry fall back to a title-cased form.
+ * Display labels for the top-level documentation topics, used as the section headings in the
+ * generated `llms.txt`. The keys are the top-level directory slugs (and the `glossary` group split
+ * out of `core/glossary`); labels mirror the site sidebar. Slugs without an entry fall back to a
+ * title-cased form.
  *
  * @type {ReadonlyArray<readonly [string, string]>}
  */

@@ -13,9 +13,9 @@ type ElementConstructorInfo = [
 ];
 
 /**
- * Build a minimal `CustomElementRegistry`-shaped object suitable for driving
- * the polyfill in a Node environment. `getName` is omitted to simulate older
- * WebKit; `defined` collects the args that reach the underlying `define`.
+ * Build a minimal `CustomElementRegistry`-shaped object suitable for driving the polyfill in a Node
+ * environment. `getName` is omitted to simulate older WebKit; `defined` collects the args that
+ * reach the underlying `define`.
  */
 function createMockRegistry(): {
     registry: CustomElementRegistryMock;

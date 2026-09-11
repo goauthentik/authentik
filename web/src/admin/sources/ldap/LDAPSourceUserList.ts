@@ -1,6 +1,6 @@
+import "#admin/sources/ldap/LDAPSourceUserForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/sources/ldap/LDAPSourceUserForm";
 
 import { aki } from "#common/api/client";
 

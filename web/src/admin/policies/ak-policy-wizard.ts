@@ -1,3 +1,4 @@
+import "#admin/policies/PolicyBindingForm";
 import "#admin/policies/dummy/DummyPolicyForm";
 import "#admin/policies/event_matcher/EventMatcherPolicyForm";
 import "#admin/policies/expiry/ExpiryPolicyForm";
@@ -6,11 +7,10 @@ import "#admin/policies/geoip/GeoIPPolicyForm";
 import "#admin/policies/password/PasswordPolicyForm";
 import "#admin/policies/reputation/ReputationPolicyForm";
 import "#admin/policies/unique_password/UniquePasswordPolicyForm";
+import "#elements/forms/FormGroup";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-import "#elements/forms/FormGroup";
-import "#admin/policies/PolicyBindingForm";
 
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
@@ -108,23 +108,25 @@ export class PolicyWizard extends CreateWizard {
             open
         >
             <ak-radio
-                .options=${[
-                    {
-                        label: msg("Bind a user"),
-                        description: html`${msg("Statically bind an existing user.")}`,
-                        value: PolicyBindingCheckTarget.User,
-                    },
-                    {
-                        label: msg("Bind a group"),
-                        description: html`${msg("Statically bind an existing group.")}`,
-                        value: PolicyBindingCheckTarget.Group,
-                    },
-                    {
-                        label: msg("Bind an existing policy"),
-                        description: html`${msg("Bind an existing policy.")}`,
-                        value: PolicyBindingCheckTarget.Policy,
-                    },
-                ] satisfies RadioOption<PolicyBindingCheckTarget>[]}
+                .options=${
+                    [
+                        {
+                            label: msg("Bind a user"),
+                            description: html`${msg("Statically bind an existing user.")}`,
+                            value: PolicyBindingCheckTarget.User,
+                        },
+                        {
+                            label: msg("Bind a group"),
+                            description: html`${msg("Statically bind an existing group.")}`,
+                            value: PolicyBindingCheckTarget.Group,
+                        },
+                        {
+                            label: msg("Bind an existing policy"),
+                            description: html`${msg("Bind an existing policy.")}`,
+                            value: PolicyBindingCheckTarget.Policy,
+                        },
+                    ] satisfies RadioOption<PolicyBindingCheckTarget>[]
+                }
                 @change=${(ev: CustomEvent<RadioChangeEventDetail<PolicyBindingCheckTarget>>) => {
                     if (!this.wizard) {
                         return;

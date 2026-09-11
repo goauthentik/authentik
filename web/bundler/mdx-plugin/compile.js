@@ -1,9 +1,7 @@
 /**
- * @file Build-time markdown → HTML pipeline.
- *
- * The output is wrapped in a `<div class="pf-c-content" part="content">`
- * envelope so consuming `<ak-mdx>` elements can rely on PatternFly content
- * styles and expose CSS parts (`title`, `content`) to host pages.
+ * @file Build-time markdown → HTML pipeline. The output is wrapped in a `<div class="pf-c-content"
+ *   part="content">` envelope so consuming `<ak-mdx>` elements can rely on PatternFly content
+ *   styles and expose CSS parts (`title`, `content`) to host pages.
  */
 
 import { rehypeAnchors, rehypeMermaid } from "./rehype.js";
@@ -31,11 +29,12 @@ import { unified } from "unified";
 import { parse as parseYAML } from "yaml";
 
 /**
- * Pull a YAML frontmatter block off the top of `source` and return both
- * pieces. Returns an empty object if there is no frontmatter.
+ * Pull a YAML frontmatter block off the top of `source` and return both pieces. Returns an empty
+ * object if there is no frontmatter.
  *
  * @param {string} source
- * @returns {{ body: string, frontmatter: Record<string, unknown> }}
+ *
+ * @returns {{ body: string; frontmatter: Record<string, unknown> }}
  */
 function splitFrontmatter(source) {
     const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
@@ -45,18 +44,18 @@ function splitFrontmatter(source) {
 }
 
 /**
- * Build the wrapping `<div class="pf-c-content" part="content">` envelope
- * with an optional `<h1 part="title">` prefix, then serialize the whole
- * tree through `hast-util-to-html`. One serializer means one set of
- * escaping rules — no hand-rolled `&`/`<`/`>`/`"` replacement that has
- * to be remembered and audited separately.
+ * Build the wrapping `<div class="pf-c-content" part="content">` envelope with an optional `<h1
+ * part="title">` prefix, then serialize the whole tree through `hast-util-to-html`. One serializer
+ * means one set of escaping rules — no hand-rolled `&`/`<`/`>`/`"` replacement that has to be
+ * remembered and audited separately.
  *
- * @param {import('hast').Element[]} bodyChildren Hast nodes from the markdown pipeline.
+ * @param {import("hast").Element[]} bodyChildren Hast nodes from the markdown pipeline.
  * @param {string | null} title Frontmatter title, or `null` to omit the `<h1>`.
+ *
  * @returns {string}
  */
 function renderEnvelope(bodyChildren, title) {
-    /** @type {import('hast').Element[]} */
+    /** @type {import("hast").Element[]} */
     const children = [];
 
     if (title) {
@@ -70,7 +69,7 @@ function renderEnvelope(bodyChildren, title) {
 
     children.push(...bodyChildren);
 
-    /** @type {import('hast').Root} */
+    /** @type {import("hast").Root} */
     const root = {
         type: "root",
         children: [
@@ -87,14 +86,15 @@ function renderEnvelope(bodyChildren, title) {
 }
 
 /**
- * Compile a markdown source string to a wrapped HTML string and parsed
- * frontmatter. Used by the build-time plugin; the runtime side mirrors
- * this pipeline in the browser for admin-supplied prose.
+ * Compile a markdown source string to a wrapped HTML string and parsed frontmatter. Used by the
+ * build-time plugin; the runtime side mirrors this pipeline in the browser for admin-supplied
+ * prose.
  *
  * @param {string} source
- * @param {string} publicDirectory Path of the file's directory inside the
- *     docs site, used to resolve relative `<a>` hrefs at build time.
- * @returns {Promise<{ html: string, frontmatter: Record<string, unknown> }>}
+ * @param {string} publicDirectory Path of the file's directory inside the docs site, used to
+ *   resolve relative `<a>` hrefs at build time.
+ *
+ * @returns {Promise<{ html: string; frontmatter: Record<string, unknown> }>}
  */
 export async function compileMarkdown(source, publicDirectory) {
     const { body: rawBody, frontmatter } = splitFrontmatter(source);
@@ -125,12 +125,12 @@ export async function compileMarkdown(source, publicDirectory) {
         })
         .use(rehypeMermaid);
 
-    const tree = /** @type {import('hast').Root} */ (
+    const tree = /** @type {import("hast").Root} */ (
         await processor.run(processor.parse(body), body)
     );
 
     const title = typeof frontmatter.title === "string" ? frontmatter.title : null;
-    const html = renderEnvelope(/** @type {import('hast').Element[]} */ (tree.children), title);
+    const html = renderEnvelope(/** @type {import("hast").Element[]} */ (tree.children), title);
 
     return { html, frontmatter };
 }

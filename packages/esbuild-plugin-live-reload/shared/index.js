@@ -5,8 +5,8 @@
 /**
  * The subset of the console API this plugin logs through.
  *
- * Declared here rather than borrowed from a logging package so that neither the
- * plugin nor its published types require one: any `console` will do.
+ * Declared here rather than borrowed from a logging package so that neither the plugin nor its
+ * published types require one: any `console` will do.
  *
  * @typedef {object} ConsoleLike
  * @property {typeof console.info} info
@@ -20,6 +20,7 @@
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
+ *
  * @returns {ConsoleLike}
  */
 export function createLogger(prefix = "[Build Observer]") {

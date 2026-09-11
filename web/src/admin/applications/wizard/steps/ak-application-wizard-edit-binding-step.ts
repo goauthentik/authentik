@@ -16,10 +16,10 @@ import {
 } from "#common/policies/utils";
 import { groupBy } from "#common/utils";
 
-import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
-import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-import { withQuery } from "#elements/forms/SearchSelect/utils";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
+import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
+import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
+import { withQuery } from "#elements/forms/SearchSelect/utils";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
@@ -32,7 +32,7 @@ import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {

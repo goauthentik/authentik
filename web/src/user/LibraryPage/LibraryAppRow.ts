@@ -31,9 +31,9 @@ export interface LibraryAppRowProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * A single application rendered as a wide row for the library list view.
  *
- * Shows the full application name without truncation, plus secondary metadata
- * (description, publisher, slug, group) on the same row to support
- * search-by-substring use cases like "AWS account ID alongside account name".
+ * Shows the full application name without truncation, plus secondary metadata (description,
+ * publisher, slug, group) on the same row to support search-by-substring use cases like "AWS
+ * account ID alongside account name".
  */
 export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
     application,
@@ -83,11 +83,13 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
         ></ak-app-icon>
         <div part="row-text" class="row-text">
             <div id=${titleID} part="row-title" class="row-title">${application.name}</div>
-            ${metaParts.length
-                ? html`<div id=${metaID} part="row-meta" class="row-meta">
-                      ${metaParts.join(" · ")}
-                  </div>`
-                : nothing}
+            ${
+                metaParts.length
+                    ? html`<div id=${metaID} part="row-meta" class="row-meta">
+                          ${metaParts.join(" · ")}
+                      </div>`
+                    : nothing
+            }
         </div>
     `;
 

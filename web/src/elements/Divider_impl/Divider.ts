@@ -84,9 +84,8 @@ export type DividerProps = ElementRest & {
 };
 
 /**
- * @summary Helper function to create a Divider component programmatically
- *
  * @returns {TemplateResult} A Lit template result containing the configured ak-divider element
+ * @summary Helper function to create a Divider component programmatically
  *
  * @see {@link Divider} - The underlying web component
  */

@@ -1,11 +1,11 @@
+import "#admin/endpoints/devices/BoundDeviceUsersList";
+import "#admin/endpoints/devices/DeviceEvents";
+import "#admin/endpoints/devices/facts/DeviceGroupTable";
+import "#admin/endpoints/devices/facts/DeviceProcessTable";
+import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
+import "#admin/endpoints/devices/facts/DeviceUserTable";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
-import "#admin/endpoints/devices/BoundDeviceUsersList";
-import "#admin/endpoints/devices/facts/DeviceProcessTable";
-import "#admin/endpoints/devices/facts/DeviceUserTable";
-import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
-import "#admin/endpoints/devices/facts/DeviceGroupTable";
-import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/Tabs";
 
 import { aki } from "#common/api/client";
@@ -15,8 +15,8 @@ import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { Timestamp } from "#elements/table/shared";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
 import { getSize, osFamilyToLabel, trySortNumerical } from "#admin/endpoints/devices/utils";
@@ -201,9 +201,11 @@ export class DeviceViewPage extends AKElement {
                                         ${this.agentVersion(conn) ?? "-"}
                                     </div>
                                     <div class="pf-c-description-list__text">
-                                        ${conn.latestSnapshot?.created
-                                            ? Timestamp(conn.latestSnapshot.created)
-                                            : nothing}
+                                        ${
+                                            conn.latestSnapshot?.created
+                                                ? Timestamp(conn.latestSnapshot.created)
+                                                : nothing
+                                        }
                                     </div>`,
                             ];
                         }) as DescriptionPair[],

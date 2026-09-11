@@ -1,12 +1,12 @@
-import styles from "./styles.module.css";
 import { formatTag } from "./utils";
 
 import clsx from "clsx";
 import React from "react";
 
+import styles from "./styles.module.css";
+
 /**
- * Tag-based navigation for categorized view.
- * Shows all available tags and highlights selected ones.
+ * Tag-based navigation for categorized view. Shows all available tags and highlights selected ones.
  */
 export interface SectionNavProps {
     availableTags: string[];

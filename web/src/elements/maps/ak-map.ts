@@ -1,4 +1,3 @@
-import Styles from "./ak-map.css";
 import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "./basemap-style.js";
 import { buildHexworldStyle, wedgeColors } from "./hexworld-style.js";
 import { binAtLocation, buildEventFeatures, type EventFeatureCollection } from "./wedges.js";
@@ -12,6 +11,7 @@ import { Protocol } from "pmtiles";
 import { LitElement, type PropertyValues, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import Styles from "./ak-map.css";
 import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
@@ -63,8 +63,8 @@ export class AKMap extends LitElement {
     ];
 
     /**
-     * URL of a conventional PMTiles basemap archive (Protomaps schema).
-     * Empty triggers hexworld mode with `hexworldURL` — the zero-config default.
+     * URL of a conventional PMTiles basemap archive (Protomaps schema). Empty triggers hexworld
+     * mode with `hexworldURL` — the zero-config default.
      */
     @property({ type: String, attribute: "pmtiles-url" })
     public pmtilesURL: string | null = null;
@@ -324,11 +324,10 @@ export class AKMap extends LitElement {
     }
 
     /**
-     * The event bin whose cell lies under a screen point, if it holds events.
-     * Resolved via unproject + H3 math: fill-extrusion features are not
-     * hit-testable under the globe projection (queryRenderedFeatures returns
-     * nothing for them, observed on MapLibre 5.24), so the clickable area is
-     * the column's ground footprint.
+     * The event bin whose cell lies under a screen point, if it holds events. Resolved via
+     * unproject + H3 math: fill-extrusion features are not hit-testable under the globe projection
+     * (queryRenderedFeatures returns nothing for them, observed on MapLibre 5.24), so the clickable
+     * area is the column's ground footprint.
      */
     protected binPointsAt(point: maplibregl.Point): { cell: string; points: MapMarker[] } | null {
         if (!this.map || !this.map.getLayer(AKMap.EVENTS_LAYER)) {
@@ -429,10 +428,9 @@ export class AKMap extends LitElement {
     }
 
     /**
-     * Grow columns from the ground instead of popping in at full height.
-     * `fill-extrusion-height` is data-driven, so MapLibre's paint transitions
-     * cannot interpolate it; drive a scale factor through the expression by
-     * hand instead.
+     * Grow columns from the ground instead of popping in at full height. `fill-extrusion-height` is
+     * data-driven, so MapLibre's paint transitions cannot interpolate it; drive a scale factor
+     * through the expression by hand instead.
      */
     protected animateColumns(
         from: number,
@@ -563,9 +561,8 @@ export class AKMap extends LitElement {
     #markerSignature = "";
 
     /**
-     * Consumers tend to rebuild the markers array on every render (e.g. a
-     * table refresh), which would re-run the camera fit each time. Only a
-     * semantic change to the set is worth acting on.
+     * Consumers tend to rebuild the markers array on every render (e.g. a table refresh), which
+     * would re-run the camera fit each time. Only a semantic change to the set is worth acting on.
      */
     protected markersChanged(): boolean {
         const signature = this.markers

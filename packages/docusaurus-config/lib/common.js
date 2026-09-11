@@ -1,8 +1,10 @@
 /**
+ * @import {Config} from "@docusaurus/types"
+ * @import {
+ *   UserThemeConfig,
+ *   UserThemeConfigExtra
+ * } from "./theme.js"
  * @file Common Docusaurus configuration utilities.
- *
- * @import { Config } from "@docusaurus/types"
- * @import { UserThemeConfig, UserThemeConfigExtra } from "./theme.js"
  */
 
 import { createThemeConfig } from "./theme.js";
@@ -14,28 +16,26 @@ import { deepmerge } from "deepmerge-ts";
 /**
  * @typedef {Omit<Config, 'themeConfig'>} DocusaurusConfigBase
  *
- * Represents the base configuration for Docusaurus, excluding the theme configuration.
+ *   Represents the base configuration for Docusaurus, excluding the theme configuration.
  */
 
 /**
  * @typedef DocusaurusConfigBaseTheme
  * @property {UserThemeConfig & UserThemeConfigExtra} themeConfig The theme configuration.
  *
- * Represents a configuration object, only including the theme configuration.
+ *   Represents a configuration object, only including the theme configuration.
  */
 
 /**
+ * @remarks
+ *   This type is intentionally loose: it references the theme config we care about but keeps the
+ *   remaining fields as a plain index signature rather than `Partial<Config>`. Consumers (the
+ *   website site configs) resolve their own copy of `@docusaurus/types`, and comparing two
+ *   peer-resolved `Config` instances structurally overflows the type checker (TS2321). Keeping this
+ *   type free of `Config` avoids that cross-package comparison at the call boundary.
  * @typedef {Partial<DocusaurusConfigBaseTheme> & Record<string, unknown>} DocusaurusConfigInit
  *
- * The initial configuration for Docusaurus.
- *
- * @remarks
- * This type is intentionally loose: it references the theme config we care about
- * but keeps the remaining fields as a plain index signature rather than
- * `Partial<Config>`. Consumers (the website site configs) resolve their own copy
- * of `@docusaurus/types`, and comparing two peer-resolved `Config` instances
- * structurally overflows the type checker (TS2321). Keeping this type free of
- * `Config` avoids that cross-package comparison at the call boundary.
+ *   The initial configuration for Docusaurus.
  */
 
 //#endregion
@@ -97,6 +97,7 @@ export function createDefaultDocusaurusConfig() {
  * Create a Docusaurus configuration.
  *
  * @param {DocusaurusConfigInit} overrides The options to override.
+ *
  * @returns {Config}
  */
 export function createDocusaurusConfig({ themeConfig, ...overrides }) {
@@ -119,8 +120,8 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
             innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "WebSite",
-                name: "authentik",
-                url: `${merged.url}${merged.baseUrl}`,
+                "name": "authentik",
+                "url": `${merged.url}${merged.baseUrl}`,
             }),
         },
     ];

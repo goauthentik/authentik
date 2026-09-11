@@ -50,22 +50,24 @@ export class DeviceAddHowTo extends ModalButton {
                 <h1 class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
             </div>
             <div class="pf-c-modal-box__body">
-                ${this.connectors.length === 0
-                    ? this.renderNone()
-                    : html` <ak-tabs part="tabs" vertical>
-                          ${this.connectors.map((c) => {
-                              return html`<div
-                                  role="tabpanel"
-                                  tabindex="0"
-                                  slot="page-${c.connectorUuid}"
-                                  id="page-${c.connectorUuid}"
-                                  aria-label="${c.verboseName} ${c.name}"
-                                  class="pf-c-page__main-section pf-m-no-padding-mobile"
-                              >
-                                  ${this.renderSetup(c)}
-                              </div>`;
-                          })}
-                      </ak-tabs>`}
+                ${
+                    this.connectors.length === 0
+                        ? this.renderNone()
+                        : html` <ak-tabs part="tabs" vertical>
+                              ${this.connectors.map((c) => {
+                                  return html`<div
+                                      role="tabpanel"
+                                      tabindex="0"
+                                      slot="page-${c.connectorUuid}"
+                                      id="page-${c.connectorUuid}"
+                                      aria-label="${c.verboseName} ${c.name}"
+                                      class="pf-c-page__main-section pf-m-no-padding-mobile"
+                                  >
+                                      ${this.renderSetup(c)}
+                                  </div>`;
+                              })}
+                          </ak-tabs>`
+                }
             </div>
             <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>

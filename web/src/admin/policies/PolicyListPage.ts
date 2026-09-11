@@ -15,15 +15,15 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
+import { PFColor } from "#elements/Label";
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 import { PolicyTestForm } from "#admin/policies/PolicyTestForm";
+import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 
 import { ModelEnum, PoliciesApi, Policy } from "@goauthentik/api";
 
@@ -62,13 +62,15 @@ export class PolicyListPage extends TablePage<Policy> {
     protected override row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Assigned to ${item.boundTo} object(s).`)}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Warning: Policy is not assigned.")}
-                      </ak-label>`}`,
+                ${
+                    (item.boundTo || 0) > 0
+                        ? html`<ak-label color=${PFColor.Green} compact>
+                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Warning: Policy is not assigned.")}
+                          </ak-label>`
+                }`,
             html`${item.verboseName}`,
             Timestamp(item.lastUpdated),
             html`<div class="ak-c-table__actions">

@@ -1,6 +1,6 @@
+import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-text-input";
-import "#components/ak-number-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";

@@ -233,9 +233,9 @@ export class ModalForm extends ModalButton {
     }
 
     protected override renderModalInner(): TemplateResult {
-        return html`${this.loading
-                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
-                : nothing}
+        return html`${
+                this.loading ? html`<ak-loading-overlay topmost></ak-loading-overlay>` : nothing
+            }
             ${this.renderHeading()}
             <slot name="above-form"></slot>
             <div class="pf-c-modal-box__body" @scroll=${this.scrollListener}>${this.formSlot}</div>

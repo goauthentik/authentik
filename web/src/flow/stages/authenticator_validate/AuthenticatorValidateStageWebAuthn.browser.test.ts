@@ -32,9 +32,9 @@ function challengeOf(
 /**
  * A minimal stand-in for the credential an authenticator would hand back.
  *
- * The stage narrows the result with `instanceof PublicKeyCredential`, whose constructor is
- * not callable, so the stand-in borrows the real prototype. Own properties are declared
- * first, shadowing the prototype's getter-only accessors.
+ * The stage narrows the result with `instanceof PublicKeyCredential`, whose constructor is not
+ * callable, so the stand-in borrows the real prototype. Own properties are declared first,
+ * shadowing the prototype's getter-only accessors.
  */
 function assertionOf(): PublicKeyCredential {
     const bytes = () => Uint8Array.from([1, 2, 3]).buffer;

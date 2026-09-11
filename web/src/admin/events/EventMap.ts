@@ -17,10 +17,8 @@ import { customElement, property } from "lit/decorators.js";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 /**
- *
  * @event {select-events} - Fired when an event column is selected on the map. The ids of the
  *      column's events are contained in the `detail.eventIds` field.
- *
  */
 @customElement("ak-events-map")
 export class EventMap extends WithBrandConfig(AKElement) {

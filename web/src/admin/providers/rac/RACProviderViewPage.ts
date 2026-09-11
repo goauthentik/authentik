@@ -1,3 +1,4 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/providers/rac/EndpointForm";
@@ -5,7 +6,6 @@ import "#admin/providers/rac/EndpointList";
 import "#admin/providers/rac/RACProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
@@ -138,16 +138,20 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return null;
         }
-        return html`${this.provider?.assignedApplicationName
-                ? null
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by any Outpost.")}
-                  </div>`
-                : null}
+        return html`${
+                this.provider?.assignedApplicationName
+                    ? null
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
+            ${
+                this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by any Outpost.")}
+                      </div>`
+                    : null
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">

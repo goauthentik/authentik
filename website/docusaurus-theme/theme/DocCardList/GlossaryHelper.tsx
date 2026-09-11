@@ -1,13 +1,14 @@
 import AlphaNav from "../../components/Glossary/AlphaNav";
 import FilterInput from "../../components/Glossary/FilterInput";
 import SectionNav from "../../components/Glossary/SectionNav";
-import styles from "../../components/Glossary/styles.module.css";
 import ViewToggle from "../../components/Glossary/ViewToggle";
 import type { GlossaryHelperTerm } from "../utils/glossaryUtils";
 import { useGlossaryFilter, type ViewMode } from "./useGlossaryFilter";
 
 import clsx from "clsx";
 import type { ReactNode } from "react";
+
+import styles from "../../components/Glossary/styles.module.css";
 
 /**
  * Props for GlossaryHelper component
@@ -37,8 +38,8 @@ function NoResults() {
 }
 
 /**
- * GlossaryHelper provides search, filtering, and view toggle functionality for glossary terms.
- * It uses a render prop pattern to allow flexible rendering while managing state and interactions.
+ * GlossaryHelper provides search, filtering, and view toggle functionality for glossary terms. It
+ * uses a render prop pattern to allow flexible rendering while managing state and interactions.
  */
 export function GlossaryHelper({ terms, children, className }: GlossaryHelperProps): ReactNode {
     const {

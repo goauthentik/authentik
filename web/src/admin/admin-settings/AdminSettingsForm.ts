@@ -1,6 +1,7 @@
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#elements/Alert";
 import "#elements/ak-array-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -8,7 +9,6 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
-import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 

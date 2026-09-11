@@ -5,8 +5,8 @@
 import type { AstNode, Rule } from "./plugin-types.js";
 
 /**
- * Statement node types that require a preceding blank line: `return` plus all "block-like" statements (matching
- * ESLint's `block-like` selector).
+ * Statement node types that require a preceding blank line: `return` plus all "block-like"
+ * statements (matching ESLint's `block-like` selector).
  */
 const PADDED_STATEMENT_TYPES = [
     "ReturnStatement",

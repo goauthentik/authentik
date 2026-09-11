@@ -82,30 +82,32 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
 
     protected renderResult(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal>
-            ${this.result?.successful
-                ? html`${AKLabel(
-                          {
-                              slot: "label",
-                              className: "pf-c-form__group-label",
-                              htmlFor: "result",
-                          },
-                          msg("Result"),
-                      )}
+            ${
+                this.result?.successful
+                    ? html`${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "result",
+                              },
+                              msg("Result"),
+                          )}
 
-                      <ak-codemirror
-                          id="result"
-                          mode="javascript"
-                          readonly
-                          value="${ifDefined(this.result?.result)}"
-                      >
-                      </ak-codemirror>`
-                : html`<div class="pf-c-form__group-label">
-                      <div class="c-form__horizontal-group">
-                          <span class="pf-c-form__label-text">
-                              <pre>${this.result?.result}</pre>
-                          </span>
-                      </div>
-                  </div>`}
+                          <ak-codemirror
+                              id="result"
+                              mode="javascript"
+                              readonly
+                              value="${ifDefined(this.result?.result)}"
+                          >
+                          </ak-codemirror>`
+                    : html`<div class="pf-c-form__group-label">
+                          <div class="c-form__horizontal-group">
+                              <span class="pf-c-form__label-text">
+                                  <pre>${this.result?.result}</pre>
+                              </span>
+                          </div>
+                      </div>`
+            }
         </ak-form-element-horizontal>`;
     }
 

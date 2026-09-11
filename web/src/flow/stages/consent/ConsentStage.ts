@@ -57,16 +57,18 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge?.headerText ?? ""}
                 </h3>
-                ${this.challenge?.permissions.length
-                    ? html`
-                          <p class="pf-u-mb-md">
-                              ${msg("Application requires following permissions:")}
-                          </p>
-                          <ul class="pf-c-list" id="permissions">
-                              ${this.renderPermissions(this.challenge.permissions)}
-                          </ul>
-                      `
-                    : nothing}
+                ${
+                    this.challenge?.permissions.length
+                        ? html`
+                              <p class="pf-u-mb-md">
+                                  ${msg("Application requires following permissions:")}
+                              </p>
+                              <ul class="pf-c-list" id="permissions">
+                                  ${this.renderPermissions(this.challenge.permissions)}
+                              </ul>
+                          `
+                        : nothing
+                }
             </div>
         `;
     }
@@ -77,28 +79,32 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge?.headerText ?? ""}
                 </h3>
-                ${this.challenge?.permissions.length
-                    ? html`
-                          <p class="pf-u-mb-md">
-                              ${msg("Application already has access to the following permissions:")}
-                          </p>
-                          <ul class="pf-c-list" id="permissions">
-                              ${this.renderPermissions(this.challenge.permissions)}
-                          </ul>
-                      `
-                    : nothing}
+                ${
+                    this.challenge?.permissions.length
+                        ? html`
+                              <p class="pf-u-mb-md">
+                                  ${msg("Application already has access to the following permissions:")}
+                              </p>
+                              <ul class="pf-c-list" id="permissions">
+                                  ${this.renderPermissions(this.challenge.permissions)}
+                              </ul>
+                          `
+                        : nothing
+                }
             </div>
             <div class="pf-c-form__group">
-                ${this.challenge?.additionalPermissions.length
-                    ? html`
-                          <p class="pf-u-font-weight-bold pf-u-mb-md">
-                              ${msg("Application requires following new permissions:")}
-                          </p>
-                          <ul class="pf-c-list" id="permissions">
-                              ${this.renderPermissions(this.challenge.additionalPermissions)}
-                          </ul>
-                      `
-                    : nothing}
+                ${
+                    this.challenge?.additionalPermissions.length
+                        ? html`
+                              <p class="pf-u-font-weight-bold pf-u-mb-md">
+                                  ${msg("Application requires following new permissions:")}
+                              </p>
+                              <ul class="pf-c-list" id="permissions">
+                                  ${this.renderPermissions(this.challenge.additionalPermissions)}
+                              </ul>
+                          `
+                        : nothing
+                }
             </div>
         `;
     }
@@ -122,9 +128,11 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                 }}
             >
                 ${FlowUserDetails({ challenge: this.challenge })}
-                ${this.challenge?.additionalPermissions.length
-                    ? this.renderAdditional()
-                    : this.renderNoPrevious()}
+                ${
+                    this.challenge?.additionalPermissions.length
+                        ? this.renderAdditional()
+                        : this.renderNoPrevious()
+                }
 
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>

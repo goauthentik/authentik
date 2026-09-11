@@ -96,7 +96,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -110,11 +110,11 @@ export class ListSelect extends AKElement implements IListSelect {
     #options!: GroupedOptions;
 
     /**
-     * The keys of the options that are rendered but cannot be chosen. Such options stay
-     * focusable — they are marked `aria-disabled` rather than `disabled` — so that the reason
-     * they are unavailable, carried in their description, remains reachable by keyboard.
+     * The keys of the options that are rendered but cannot be chosen. Such options stay focusable —
+     * they are marked `aria-disabled` rather than `disabled` — so that the reason they are
+     * unavailable, carried in their description, remains reachable by keyboard.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set disabledOptions(values: string[]) {
@@ -131,7 +131,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * The current value of the menu.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string | null = null;
@@ -140,17 +140,17 @@ export class ListSelect extends AKElement implements IListSelect {
      * The string representation that means an empty option. If not present, no empty option is
      * possible.
      *
-     * @prop
+     * @property
      */
     @property()
     public emptyOption?: string;
 
     /**
-     * An optional label for a pinned action item rendered at the end of the menu, e.g.
-     * "Create new...". Activating it fires an `ak-select-action` event instead of
-     * changing the selection. If not present, no action item is rendered.
+     * An optional label for a pinned action item rendered at the end of the menu, e.g. "Create
+     * new...". Activating it fires an `ak-select-action` event instead of changing the selection.
+     * If not present, no action item is rendered.
      *
-     * @prop
+     * @property
      */
     @property()
     public actionLabel?: string;
@@ -225,9 +225,8 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * Highlight the currently focused item.
      *
-     * @todo
-     * This doesn't quite work as intended, but this component will likely
-     * be refined after the PatternFly upgrade.
+     * @todo This doesn't quite work as intended, but this component will likely be refined after
+     *   the PatternFly upgrade.
      */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
@@ -401,15 +400,17 @@ export class ListSelect extends AKElement implements IListSelect {
                             ${label}
                         </div>
                     </button>
-                    ${desc
-                        ? html`<div
-                              id=${ifDefined(descId)}
-                              class="pf-c-dropdown__menu-item-description"
-                              part="ak-list-select-desc"
-                          >
-                              ${desc}
-                          </div>`
-                        : nothing}
+                    ${
+                        desc
+                            ? html`<div
+                                  id=${ifDefined(descId)}
+                                  class="pf-c-dropdown__menu-item-description"
+                                  part="ak-list-select-desc"
+                              >
+                                  ${desc}
+                              </div>`
+                            : nothing
+                    }
                 </li>
             `;
         });
@@ -443,9 +444,11 @@ export class ListSelect extends AKElement implements IListSelect {
                 part="ak-list-select"
             >
                 ${this.emptyOption ? this.renderEmptyMenuItem() : nothing}
-                ${this.#options.grouped
-                    ? this.renderMenuGroups(this.#options.options)
-                    : this.renderMenuItems(this.#options.options)}
+                ${
+                    this.#options.grouped
+                        ? this.renderMenuGroups(this.#options.options)
+                        : this.renderMenuItems(this.#options.options)
+                }
                 ${this.actionLabel ? this.renderActionMenuItem() : nothing}
             </menu>
         </div> `;

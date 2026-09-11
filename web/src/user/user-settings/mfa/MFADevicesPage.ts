@@ -144,13 +144,15 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
-                ${item.extraDescription
-                    ? html`
-                          <pf-tooltip position="top" content=${item.externalId || ""}>
-                              <small>${item.extraDescription}</small>
-                          </pf-tooltip>
-                      `
-                    : nothing} `,
+                ${
+                    item.extraDescription
+                        ? html`
+                              <pf-tooltip position="top" content=${item.externalId || ""}>
+                                  <small>${item.extraDescription}</small>
+                              </pf-tooltip>
+                          `
+                        : nothing
+                } `,
             Timestamp(item.created),
             Timestamp(item.lastUsed),
             html`

@@ -22,7 +22,7 @@ export interface IEmptyState {
     /** Font Awesome icon class (e.g., "fa-user", "fa-folder") to display */
     icon?: string;
 
-    /** When true, will automatically show the loading spinner.  Overrides `icon`. */
+    /** When true, will automatically show the loading spinner. Overrides `icon`. */
     loading?: boolean;
 
     /**
@@ -36,18 +36,14 @@ export interface IEmptyState {
 }
 
 /**
+ * @class EmptyState A component for displaying empty states with optional icons, headings, body
+ *   text, and actions. Follows PatternFly design patterns for empty state presentations.
+ *
+ *   ## Slots
  * @element ak-empty-state
- * @class EmptyState
- *
- * A component for displaying empty states with optional icons, headings, body text, and actions.
- * Follows PatternFly design patterns for empty state presentations.
- *
- * ## Slots
- *
  * @slot - The main heading text for the empty state
  * @slot body - Descriptive text explaining the empty state or what the user can do
  * @slot primary - Primary action buttons or other interactive elements
- *
  */
 @customElement("ak-empty-state")
 export class EmptyState extends AKElement implements IEmptyState {
@@ -101,31 +97,44 @@ export class EmptyState extends AKElement implements IEmptyState {
 
         return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
             <div class="pf-c-empty-state__content">
-                ${loading
-                    ? html`<div part="spinner" class="pf-c-empty-state__icon">
-                          <ak-spinner size=${PFSize.XLarge}></ak-spinner>
-                      </div>`
-                    : html`<i
-                          part="icon"
-                          class="pf-icon fa ${this.icon ||
-                          "fa-question-circle"} pf-c-empty-state__icon"
-                          aria-hidden="true"
-                      ></i>`}
-                ${hasHeading
-                    ? html` <h1 part="heading" class="pf-c-title pf-m-lg" id="empty-state-heading">
-                          <slot></slot>
-                      </h1>`
-                    : nothing}
-                ${this.findSlotted("body")
-                    ? html` <div part="body" class="pf-c-empty-state__body">
-                          <slot name="body"></slot>
-                      </div>`
-                    : nothing}
-                ${this.findSlotted("primary")
-                    ? html` <div part="primary" class="pf-c-empty-state__primary">
-                          <slot name="primary"></slot>
-                      </div>`
-                    : nothing}
+                ${
+                    loading
+                        ? html`<div part="spinner" class="pf-c-empty-state__icon">
+                              <ak-spinner size=${PFSize.XLarge}></ak-spinner>
+                          </div>`
+                        : html`<i
+                              part="icon"
+                              class="pf-icon fa ${
+                                  this.icon || "fa-question-circle"
+                              } pf-c-empty-state__icon"
+                              aria-hidden="true"
+                          ></i>`
+                }
+                ${
+                    hasHeading
+                        ? html` <h1
+                              part="heading"
+                              class="pf-c-title pf-m-lg"
+                              id="empty-state-heading"
+                          >
+                              <slot></slot>
+                          </h1>`
+                        : nothing
+                }
+                ${
+                    this.findSlotted("body")
+                        ? html` <div part="body" class="pf-c-empty-state__body">
+                              <slot name="body"></slot>
+                          </div>`
+                        : nothing
+                }
+                ${
+                    this.findSlotted("primary")
+                        ? html` <div part="primary" class="pf-c-empty-state__primary">
+                              <slot name="primary"></slot>
+                          </div>`
+                        : nothing
+                }
             </div>
         </div>`;
     }
@@ -142,10 +151,10 @@ type ContentValue = SlottedTemplateResult | undefined;
 /**
  * Generate `<ak-empty-state>` programmatically
  *
- * @param properties - properties to apply to the component.
- * @param content - strings or TemplateResults for the slots in `<ak-empty-state>`
- * @returns TemplateResult for the ak-empty-state element
+ * @param properties - Properties to apply to the component.
+ * @param content - Strings or TemplateResults for the slots in `<ak-empty-state>`
  *
+ * @returns TemplateResult for the ak-empty-state element
  */
 export function akEmptyState(properties: IEmptyState = {}, content: IEmptyStateContent = {}) {
     // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete

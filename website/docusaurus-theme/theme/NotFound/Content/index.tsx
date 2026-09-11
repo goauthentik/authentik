@@ -1,18 +1,18 @@
 import "./styles.css";
 
-import styles from "./styles.module.css";
-
 import { pluckPathnameAffixes, useRedirectEntries } from "#theme/NotFound/Content/utils.ts";
 
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
 
-import { Redirect } from "@docusaurus/router";
 import Translate from "@docusaurus/Translate";
+import { Redirect } from "@docusaurus/router";
 import useIsBrowser from "@docusaurus/useIsBrowser";
 import Heading from "@theme/Heading";
 import type { Props } from "@theme/NotFound/Content";
 import clsx from "clsx";
 import React, { memo, useEffect } from "react";
+
+import styles from "./styles.module.css";
 
 const NotFound: React.FC<Props> = ({ className }) => {
     return (

@@ -23,9 +23,9 @@ export const MonoRepoRoot = /** @type {MonoRepoRoot} */ (
  * @param {string} packageName
  * @param {ImportMeta} [meta] The `import.meta` object of the module.
  *
- * @runtime node
  * @returns {string} The resolved path to the package.
  * @throws {Error} If the package cannot be resolved.
+ * @runtime node
  */
 export function resolvePackage(packageName, meta) {
     const require = createRequire(meta ? meta.url : import.meta.url);

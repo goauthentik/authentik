@@ -28,8 +28,8 @@ export class SearchSelectMenuController implements ReactiveController {
     }
 
     /**
-     * Reconcile the popover's actual open state with the host's `open` state.
-     * Called after the host updates so the menu has rendered.
+     * Reconcile the popover's actual open state with the host's `open` state. Called after the host
+     * updates so the menu has rendered.
      */
     public hostUpdated() {
         const menu = this.getMenu();
@@ -88,11 +88,10 @@ export class SearchSelectMenuController implements ReactiveController {
     };
 
     /**
-     * Forward wheel scrolling to the input's nearest scrollable ancestor once the
-     * menu itself can't scroll any further in that direction. The menu is a
-     * top-layer, fixed-position popover, so the browser chains its overscroll to the
-     * viewport rather than to the (e.g. modal dialog) container behind it — meaning
-     * scrolling over the menu would otherwise appear stuck.
+     * Forward wheel scrolling to the input's nearest scrollable ancestor once the menu itself can't
+     * scroll any further in that direction. The menu is a top-layer, fixed-position popover, so the
+     * browser chains its overscroll to the viewport rather than to the (e.g. modal dialog)
+     * container behind it — meaning scrolling over the menu would otherwise appear stuck.
      */
     public readonly handleMenuWheel = (event: WheelEvent) => {
         const menu = this.getMenu();

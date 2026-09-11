@@ -1,5 +1,5 @@
-import "#elements/LicenseNotice";
 import "#elements/Alert";
+import "#elements/LicenseNotice";
 import "#elements/forms/FormGroup";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -160,26 +160,30 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     this.#selectDispatch(type);
                 }}
             >
-                ${type.iconUrl
-                    ? html`<div role="presentation" class="pf-c-card__header">
-                          <div role="presentation" class="pf-c-card__header-main">
-                              <img
-                                  aria-hidden="true"
-                                  src=${type.iconUrl}
-                                  alt=${msg(str`${type.name} Icon`)}
-                              />
-                          </div>
-                      </div>`
-                    : null}
+                ${
+                    type.iconUrl
+                        ? html`<div role="presentation" class="pf-c-card__header">
+                              <div role="presentation" class="pf-c-card__header-main">
+                                  <img
+                                      aria-hidden="true"
+                                      src=${type.iconUrl}
+                                      alt=${msg(str`${type.name} Icon`)}
+                                  />
+                              </div>
+                          </div>`
+                        : null
+                }
                 <div role="heading" aria-level="2" class="pf-c-card__title">${type.name}</div>
                 <div class="pf-c-card__body" id=${`${inputID}-description`}>
                     ${type.description}
                 </div>
-                ${disabled
-                    ? html`<div class="pf-c-card__footer">
-                          <ak-license-notice></ak-license-notice>
-                      </div> `
-                    : null}
+                ${
+                    disabled
+                        ? html`<div class="pf-c-card__footer">
+                              <ak-license-notice></ak-license-notice>
+                          </div> `
+                        : null
+                }
             </div>`;
         });
     }
@@ -241,11 +245,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 <span id="${inputID}-description" class="pf-c-radio__description"
                     >${type.description}
                     ${disabled ? html`<ak-license-notice></ak-license-notice>` : null}
-                    ${type.deprecated
-                        ? html`<ak-alert class="pf-c-radio__description" inline plain>
-                              ${msg("This type is deprecated.")}
-                          </ak-alert>`
-                        : null}
+                    ${
+                        type.deprecated
+                            ? html`<ak-alert class="pf-c-radio__description" inline plain>
+                                  ${msg("This type is deprecated.")}
+                              </ak-alert>`
+                            : null
+                    }
                 </span>
             </label>`;
         });

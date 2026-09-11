@@ -1,10 +1,9 @@
 /**
- * @file Live reload plugin for ESBuild.
- *
  * @import { ListenOptions } from "node:net";
  * @import { Server as HTTPServer } from "node:http";
  * @import { Server as HTTPSServer } from "node:https";
  * @import { ConsoleLike } from "@goauthentik/esbuild-plugin-live-reload/shared";
+ * @file Live reload plugin for ESBuild.
  */
 
 import * as http from "node:http";
@@ -15,13 +14,15 @@ import { createLogger as createConsoleLogger } from "@goauthentik/esbuild-plugin
 import { findFreePorts } from "find-free-ports";
 
 /**
- * authentik's logger, when the optional `@goauthentik/logger-js` peer is present.
+ * Authentik's logger, when the optional `@goauthentik/logger-js` peer is present.
  *
- * It's optional so that consumers outside the monorepo aren't made to install a
- * logging package to use an esbuild plugin; without it, log output falls back to
- * the console-backed logger this package already ships.
+ * It's optional so that consumers outside the monorepo aren't made to install a logging package to
+ * use an esbuild plugin; without it, log output falls back to the console-backed logger this
+ * package already ships.
  *
- * @type {(prefix?: string) => import("@goauthentik/esbuild-plugin-live-reload/shared").ConsoleLike}
+ * @type {(
+ *     prefix?: string,
+ * ) => import("@goauthentik/esbuild-plugin-live-reload/shared").ConsoleLike}
  */
 const createLogger = await import("@goauthentik/logger-js")
     .then((module) => module.createLogger)
@@ -30,11 +31,11 @@ const createLogger = await import("@goauthentik/logger-js")
 /**
  * Serializes a custom event to a text stream.
  *
- * @param {Event} event
- * @returns {string}
- *
- * @category Server API
  * @ignore
+ * @category Server API
+ * @param {Event} event
+ *
+ * @returns {string}
  * @internal
  * @runtime node
  */
@@ -52,6 +53,7 @@ const MAX_PORT = 65535;
 
 /**
  * Find a random port that is not in use, sufficiently far from the default port.
+ *
  * @returns {Promise<number>}
  */
 async function findDisparatePort() {
@@ -73,30 +75,27 @@ async function findDisparatePort() {
 /**
  * Event server initialization options.
  *
+ * @category Server API
  * @typedef {Object} EventServerInit
- *
  * @property {string} pathname
  * @property {EventTarget} dispatcher
  * @property {ConsoleLike} [logger]
- *
- * @category Server API
  * @runtime node
  */
 
 /**
- * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
- *
  * @category Server API
+ * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
  * @runtime node
  */
 
 /**
  * Create an event request handler.
  *
- * @param {EventServerInit} options
- * @returns {RequestHandler}
- *
  * @category Server API
+ * @param {EventServerInit} options
+ *
+ * @returns {RequestHandler}
  * @runtime node
  */
 export function createRequestHandler({ pathname, dispatcher, logger = createLogger() }) {
@@ -161,22 +160,24 @@ export function createRequestHandler({ pathname, dispatcher, logger = createLogg
  * Options for the build observer plugin.
  *
  * @category Plugin API
- * @runtime node
- *
  * @typedef {object} LiveReloadPluginOptions
- *
- * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
+ * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new
+ *   server will be created.
  * @property {ListenOptions} [listenOptions] Options for the server's listen method.
- * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
+ * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be
+ *   used.
  * @property {ConsoleLike} [logger] A console-like logger.
- * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
+ * @property {string} [relativeRoot] A relative path to the root of the project. This is used to
+ *   resolve build errors, line numbers, and file paths.
+ * @runtime node
  */
 
 /**
  * Creates a plugin that listens for build events and sends them to a server-sent event stream.
  *
  * @param {LiveReloadPluginOptions} [options]
- * @returns {import('esbuild').Plugin}
+ *
+ * @returns {import("esbuild").Plugin}
  */
 export function liveReloadPlugin(options = {}) {
     return {

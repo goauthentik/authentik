@@ -1,8 +1,8 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/users/UserChart";
 import "#admin/users/UserInfoCard";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
-import "#admin/events/ObjectChangelog";
 
 import { AKElement } from "#elements/Base";
 

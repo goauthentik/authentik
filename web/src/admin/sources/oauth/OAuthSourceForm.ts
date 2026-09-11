@@ -3,8 +3,8 @@ import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
-import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -137,9 +137,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 >
                     <input
                         type="text"
-                        value="${this.instance?.authorizationUrl ??
-                        this.providerType.authorizationUrl ??
-                        ""}"
+                        value="${
+                            this.instance?.authorizationUrl ??
+                            this.providerType.authorizationUrl ??
+                            ""
+                        }"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -151,9 +153,9 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="url"
-                        value="${this.instance?.accessTokenUrl ??
-                        this.providerType.accessTokenUrl ??
-                        ""}"
+                        value="${
+                            this.instance?.accessTokenUrl ?? this.providerType.accessTokenUrl ?? ""
+                        }"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -174,76 +176,86 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         ${msg("URL used by authentik to get user information.")}
                     </p>
                 </ak-form-element-horizontal>
-                ${this.providerType.requestTokenUrl
-                    ? html`<ak-form-element-horizontal
-                          label=${msg("Request token URL")}
-                          name="requestTokenUrl"
-                      >
-                          <input
-                              type="url"
-                              value="${this.instance?.requestTokenUrl ?? ""}"
-                              class="pf-c-form-control pf-m-monospace"
-                              autocomplete="off"
-                          />
-                          <p class="pf-c-form__helper-text">
-                              ${msg(
-                                  "URL used to request the initial token. This URL is only required for OAuth 1.",
-                              )}
-                          </p>
-                      </ak-form-element-horizontal> `
-                    : nothing}
-                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
-                this.providerType.oidcWellKnownUrl !== ""
-                    ? html`<ak-form-element-horizontal
-                          label=${msg("OIDC Well-known URL")}
-                          name="oidcWellKnownUrl"
-                      >
-                          <input
-                              type="url"
-                              value="${this.instance?.oidcWellKnownUrl ??
-                              this.providerType.oidcWellKnownUrl ??
-                              ""}"
-                              class="pf-c-form-control pf-m-monospace"
-                              autocomplete="off"
-                              spellcheck="false"
-                          />
-                          <p class="pf-c-form__helper-text">
-                              ${msg(
-                                  "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
-                              )}
-                          </p>
-                      </ak-form-element-horizontal>`
-                    : nothing}
-                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
-                this.providerType.oidcJwksUrl !== ""
-                    ? html`<ak-form-element-horizontal
-                              label=${msg("OIDC JWKS URL")}
-                              name="oidcJwksUrl"
+                ${
+                    this.providerType.requestTokenUrl
+                        ? html`<ak-form-element-horizontal
+                              label=${msg("Request token URL")}
+                              name="requestTokenUrl"
                           >
                               <input
                                   type="url"
-                                  value="${this.instance?.oidcJwksUrl ??
-                                  this.providerType.oidcJwksUrl ??
-                                  ""}"
+                                  value="${this.instance?.requestTokenUrl ?? ""}"
+                                  class="pf-c-form-control pf-m-monospace"
+                                  autocomplete="off"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "URL used to request the initial token. This URL is only required for OAuth 1.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal> `
+                        : nothing
+                }
+                ${
+                    this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                    this.providerType.oidcWellKnownUrl !== ""
+                        ? html`<ak-form-element-horizontal
+                              label=${msg("OIDC Well-known URL")}
+                              name="oidcWellKnownUrl"
+                          >
+                              <input
+                                  type="url"
+                                  value="${
+                                      this.instance?.oidcWellKnownUrl ??
+                                      this.providerType.oidcWellKnownUrl ??
+                                      ""
+                                  }"
                                   class="pf-c-form-control pf-m-monospace"
                                   autocomplete="off"
                                   spellcheck="false"
                               />
                               <p class="pf-c-form__helper-text">
                                   ${msg(
-                                      "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.",
+                                      "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
                                   )}
                               </p>
-                          </ak-form-element-horizontal>
-                          <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
-                              <ak-codemirror
-                                  mode="javascript"
-                                  value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
-                              >
-                              </ak-codemirror>
-                              <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
-                    : nothing}
+                        : nothing
+                }
+                ${
+                    this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                    this.providerType.oidcJwksUrl !== ""
+                        ? html`<ak-form-element-horizontal
+                                  label=${msg("OIDC JWKS URL")}
+                                  name="oidcJwksUrl"
+                              >
+                                  <input
+                                      type="url"
+                                      value="${
+                                          this.instance?.oidcJwksUrl ??
+                                          this.providerType.oidcJwksUrl ??
+                                          ""
+                                      }"
+                                      class="pf-c-form-control pf-m-monospace"
+                                      autocomplete="off"
+                                      spellcheck="false"
+                                  />
+                                  <p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.",
+                                      )}
+                                  </p>
+                              </ak-form-element-horizontal>
+                              <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
+                                  <ak-codemirror
+                                      mode="javascript"
+                                      value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
+                                  >
+                                  </ak-codemirror>
+                                  <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
+                              </ak-form-element-horizontal>`
+                        : nothing
+                }
                 <ak-radio-input
                     label=${msg("PKCE Method")}
                     name="pkce"
@@ -253,19 +265,21 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     help=${msg("Configure Proof Key for Code Exchange for this source.")}
                 >
                 </ak-radio-input>
-                ${this.providerType.name === ProviderTypeEnum.Openidconnect
-                    ? html`<ak-radio-input
-                          label=${msg("Authorization code authentication method")}
-                          name="authorizationCodeAuthMethod"
-                          required
-                          .options=${authorizationCodeAuthMethodOptions}
-                          .value=${this.instance?.authorizationCodeAuthMethod}
-                          help=${msg(
-                              "How to perform authentication during an authorization_code token request flow",
-                          )}
-                      >
-                      </ak-radio-input>`
-                    : nothing}
+                ${
+                    this.providerType.name === ProviderTypeEnum.Openidconnect
+                        ? html`<ak-radio-input
+                              label=${msg("Authorization code authentication method")}
+                              name="authorizationCodeAuthMethod"
+                              required
+                              .options=${authorizationCodeAuthMethodOptions}
+                              .value=${this.instance?.authorizationCodeAuthMethod}
+                              help=${msg(
+                                  "How to perform authentication during an authorization_code token request flow",
+                              )}
+                          >
+                          </ak-radio-input>`
+                        : nothing
+                }
             </div>
         </ak-form-group>`;
     }
@@ -307,36 +321,41 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -350,22 +369,25 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameLink}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameLink}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameLink
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameDeny}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameDeny}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameDeny
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>

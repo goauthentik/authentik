@@ -13,7 +13,8 @@ import { html } from "lit-html";
  * A helper function to render a button that opens a modal for editing permissions.
  *
  * @param itemName An optional name of the item to include in the button's aria-label and tooltip.
- * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
+ * @param modalProps Properties to pass to the custom element constructor when the factory is a
+ *   constructor.
  * @param options Initialization options for the modal dialog.
  */
 export function IconPermissionButton(

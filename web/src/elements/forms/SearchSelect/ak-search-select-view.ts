@@ -3,8 +3,8 @@ import "#elements/ak-list-select/ak-list-select";
 import { SearchSelectMenuController } from "./SearchSelectMenuController.js";
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
-import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
+import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import Styles from "#elements/forms/SearchSelect/ak-search-select-view.css";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -47,9 +47,9 @@ export interface ISearchSelectView {
  * - @attr open (boolean): if the menu dropdown is visible
  * - @attr blankable (boolean): if true, the component is blankable and can return `undefined`
  * - @attr managed (boolean): if true, the options and search are managed by a higher-level
-     component.
+ * component.
  * - @attr caseSensitive (boolean): if `managed`, local searches will be case sensitive. False by
-     default.
+ * default.
  * - @attr name? (string): The name of the component, for forms
  * - @attr placeholder (string): What to show when the input is empty
  * - @attr emptyOption (string): What to show in the menu to indicate "leave this undefined". Only
@@ -66,11 +66,10 @@ export interface ISearchSelectView {
  *
  * Note that this is more on the HTML / Web Component side of the operational line: the keys which
  * represent the values we pass back to clients are always strings here. This component is strictly
- * for *rendering* and *interacting* with the items as the user sees them.  If the host client is
+ * for _rendering_ and _interacting_ with the items as the user sees them.  If the host client is
  * not using strings for the values it ultimately keeps inside, it must map them forward to the
- * string-based keys we use here (along with the label and description), and map them *back* to
+ * string-based keys we use here (along with the label and description), and map them _back_ to
  * the object that key references when extracting the value for use.
- *
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
@@ -88,7 +87,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
      * the `./types.ts` file for variants and how to use them.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -110,15 +109,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * The keys of the options that are shown but cannot be chosen. Forwarded to the menu, which
      * renders them grayed out.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public disabledOptions: string[] = [];
 
     /**
-     * The current value.  Must be one of the keys in the options group above.
+     * The current value. Must be one of the keys in the options group above.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string;
@@ -149,8 +148,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public readOnly = false;
 
     /**
-     * If not managed, make the matcher case-sensitive during interaction.  If managed,
-     * the manager must handle this.
+     * If not managed, make the matcher case-sensitive during interaction. If managed, the manager
+     * must handle this.
      *
      * @attr
      */
@@ -184,6 +183,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -194,7 +194,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * list of options sent downstream will be filtered by the contents of the `<input>` field
      * locally.
      *
-     *@attr
+     * @attr
      */
     @property({ type: Boolean })
     public managed = false;
@@ -209,9 +209,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public emptyOption: string | null = null;
 
     /**
-     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
-     * "Create new...". Activating it closes the menu and fires an
-     * `ak-search-select-action` event instead of changing the selection.
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g. "Create
+     * new...". Activating it closes the menu and fires an `ak-search-select-action` event instead
+     * of changing the selection.
      *
      * @attr
      */
@@ -507,25 +507,27 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                     </div>
                 </div>
             </div>
-            ${hasMenuContent
-                ? html`<ak-list-select
-                      popover="auto"
-                      id="menu-${this.getAttribute("data-ouia-component-id")}"
-                      ${ref(this.#menuRef)}
-                      .options=${this.managedOptions}
-                      .disabledOptions=${this.disabledOptions}
-                      value=${ifDefined(this.value)}
-                      @change=${this.#changeListener}
-                      @blur=${this.#blurListener}
-                      @toggle=${this.#menuController.handleMenuToggle}
-                      @wheel=${this.#menuController.handleMenuWheel}
-                      emptyOption=${ifPresent(emptyOption)}
-                      actionLabel=${ifPresent(this.actionLabel)}
-                      @ak-select-action=${this.#actionListener}
-                      @keydown=${this.#listKeydownListener}
-                      @keyup=${this.#listKeyupListener}
-                  ></ak-list-select>`
-                : nothing}`;
+            ${
+                hasMenuContent
+                    ? html`<ak-list-select
+                          popover="auto"
+                          id="menu-${this.getAttribute("data-ouia-component-id")}"
+                          ${ref(this.#menuRef)}
+                          .options=${this.managedOptions}
+                          .disabledOptions=${this.disabledOptions}
+                          value=${ifDefined(this.value)}
+                          @change=${this.#changeListener}
+                          @blur=${this.#blurListener}
+                          @toggle=${this.#menuController.handleMenuToggle}
+                          @wheel=${this.#menuController.handleMenuWheel}
+                          emptyOption=${ifPresent(emptyOption)}
+                          actionLabel=${ifPresent(this.actionLabel)}
+                          @ak-select-action=${this.#actionListener}
+                          @keydown=${this.#listKeydownListener}
+                          @keyup=${this.#listKeyupListener}
+                      ></ak-list-select>`
+                    : nothing
+            }`;
     }
 
     //#endregion

@@ -89,18 +89,20 @@ export class AuthenticatorEmailStage extends BaseStage<
             ${FlowUserDetails({ challenge: this.challenge })}
 
             <p>
-                ${email
-                    ? msg(
-                          str`A verification token has been sent to your configured email address: ${email}`,
-                          {
-                              id: "stage.authenticator.email.sent-to-address",
-                              desc: "Displayed when a verification token has been sent to the user's configured email address.",
-                          },
-                      )
-                    : msg("A verification token has been sent to your email address.", {
-                          id: "stage.authenticator.email.sent",
-                          desc: "Displayed when a verification token has been sent to the user's email address.",
-                      })}
+                ${
+                    email
+                        ? msg(
+                              str`A verification token has been sent to your configured email address: ${email}`,
+                              {
+                                  id: "stage.authenticator.email.sent-to-address",
+                                  desc: "Displayed when a verification token has been sent to the user's configured email address.",
+                              },
+                          )
+                        : msg("A verification token has been sent to your email address.", {
+                              id: "stage.authenticator.email.sent",
+                              desc: "Displayed when a verification token has been sent to the user's email address.",
+                          })
+                }
             </p>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">

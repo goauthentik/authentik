@@ -1,10 +1,9 @@
 /**
- * @file Docusaurus config.
- *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
- * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+ *
+ * @import {AKReleasesPluginOptions} from "@goauthentik/docusaurus-theme/releases/common"
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
+ * @file Docusaurus config.
  */
 
 import { cp } from "node:fs/promises";
@@ -137,7 +136,7 @@ const config = createDocusaurusConfig({
                 id: "open-api-docs",
                 docsPluginId: "docs",
                 config: {
-                    authentik: /** @type {OpenApiPlugin.Options} */ ({
+                    authentik: /** @type {import("docusaurus-plugin-openapi-docs").Options} */ ({
                         specPath: resolve("..", "..", "schema.yml"),
                         outputDir: "./reference",
                         hideSendButton: true,

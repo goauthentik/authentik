@@ -18,8 +18,7 @@ export interface IAggregateCard {
 }
 
 /**
- * class AggregateCard
- * element ak-aggregate-card
+ * Class AggregateCard element ak-aggregate-card
  *
  * @slot - The main content of the card
  *
@@ -102,19 +101,23 @@ export class AggregateCard extends AKElement implements IAggregateCard {
             >
                 <h1 part="card-title" class="pf-c-card__title" id="card-title">
                     ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
-                    ${this.tooltip
-                        ? html`<pf-tooltip position="top" content=${this.tooltip}
-                              ><span>${this.label || nothing}</span></pf-tooltip
-                          >`
-                        : html`<span>${this.label || nothing}</span>`}
+                    ${
+                        this.tooltip
+                            ? html`<pf-tooltip position="top" content=${this.tooltip}
+                                  ><span>${this.label || nothing}</span></pf-tooltip
+                              >`
+                            : html`<span>${this.label || nothing}</span>`
+                    }
                     ${this.renderHeaderLink()}
                 </h1>
             </header>
             <div part="card-body" class="pf-c-card__body">
                 ${this.renderInner()}
-                ${this.subtext
-                    ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
-                    : nothing}
+                ${
+                    this.subtext
+                        ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
+                        : nothing
+                }
             </div>
             <div class="pf-c-card__footer"></div>
         </section>`;

@@ -1,7 +1,7 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/oauth/OAuthSourceDiagram";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -126,13 +126,17 @@ export class OAuthSourceViewPage extends AKElement {
                                     [msg("Access Key"), html`${this.source.consumerKey}`],
                                     [
                                         msg("Authorization URL"),
-                                        html`${this.source.type?.authorizationUrl ||
-                                        this.source.authorizationUrl}`,
+                                        html`${
+                                            this.source.type?.authorizationUrl ||
+                                            this.source.authorizationUrl
+                                        }`,
                                     ],
                                     [
                                         msg("Token URL"),
-                                        html`${this.source.type?.accessTokenUrl ||
-                                        this.source.accessTokenUrl}`,
+                                        html`${
+                                            this.source.type?.accessTokenUrl ||
+                                            this.source.accessTokenUrl
+                                        }`,
                                     ],
                                     [
                                         msg("Related actions"),

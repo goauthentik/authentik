@@ -1,12 +1,10 @@
 /**
- * @file Console logger for browser environments.
- *
  * @remarks
- * The repetition of log levels and method signatures is intentional to give
- * IDEs and type checkers a mapping of log methods to their documentation.
- *
- * Additionally, no wrapper functions are used to avoid the browser's console
- * reported call site being the wrapper instead of the actual caller.
+ *   The repetition of log levels and method signatures is intentional to give IDEs and type
+ *   checkers a mapping of log methods to their documentation. Additionally, no wrapper functions
+ *   are used to avoid the browser's console reported call site being the wrapper instead of the
+ *   actual caller.
+ * @file Console logger for browser environments.
  */
 
 /* eslint-disable no-console */
@@ -56,8 +54,8 @@ export type LoggerFactory = (prefix?: string | null, ...args: string[][]) => Log
  *
  * @remarks
  *
- * The colors are derived from Carbon Design System's palette to ensure
- * sufficient contrast and accessibility across light and dark themes.
+ *   The colors are derived from Carbon Design System's palette to ensure sufficient contrast and
+ *   accessibility across light and dark themes.
  */
 const LogLevelColors = {
     info: `light-dark(#0043CE, #4589FF)`,
@@ -69,8 +67,8 @@ const LogLevelColors = {
 } as const satisfies Record<Level, string>;
 
 /**
- * Aliases a log level to the matching console method, falling back to
- * {@linkcode console.log} for levels the console doesn't implement.
+ * Aliases a log level to the matching console method, falling back to {@linkcode console.log} for
+ * levels the console doesn't implement.
  */
 function consoleMethod(level: Level): (...args: unknown[]) => void {
     return level in console
@@ -143,8 +141,8 @@ export const customLoggerMethods: CustomLoggerMethods = {
 };
 
 /**
- * Creates a lightweight logger that mimics the Pino API but falls back to
- * console methods when Pino is not available.
+ * Creates a lightweight logger that mimics the Pino API but falls back to console methods when Pino
+ * is not available.
  */
 export function pinoLight(options: LoggerOptions<never, false>): IConsoleLogger {
     const baseLogger = createConsoleLogger(options.name);

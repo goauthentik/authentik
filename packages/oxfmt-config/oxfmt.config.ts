@@ -6,9 +6,5 @@ import { authentikOxfmtConfig, DefaultIgnorePatterns } from "@goauthentik/oxfmt-
 
 export default {
     ...authentikOxfmtConfig,
-    ignorePatterns: [
-        ...DefaultIgnorePatterns,
-        "docs/**",
-        "**/fixtures/**",
-    ],
+    ignorePatterns: [...DefaultIgnorePatterns, "docs/**", "**/fixtures/**"],
 };

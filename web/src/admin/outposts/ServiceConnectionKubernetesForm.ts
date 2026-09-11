@@ -1,6 +1,6 @@
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 

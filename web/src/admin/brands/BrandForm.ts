@@ -1,15 +1,15 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#elements/CodeMirror";
+import "#components/ak-file-search-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/Alert";
+import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
-import "#components/ak-switch-input";
-import "#components/ak-file-search-input";
 
 import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
@@ -372,13 +372,15 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
                             )}
                         </p>
-                        ${this.lockdownWarningVisible
-                            ? html`<ak-alert inline>
-                                  ${msg(
-                                      "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
-                                  )}
-                              </ak-alert>`
-                            : null}
+                        ${
+                            this.lockdownWarningVisible
+                                ? html`<ak-alert inline>
+                                      ${msg(
+                                          "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
+                                      )}
+                                  </ak-alert>`
+                                : null
+                        }
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
                         <ak-flow-search

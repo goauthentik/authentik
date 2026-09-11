@@ -1,13 +1,10 @@
 /**
- * @file Console logger for browser environments.
- *
  * @remarks
- * The repetition of log levels, typedefs, and method signatures is intentional
- * to give IDEs and type checkers a mapping of log methods to the TypeScript
- * provided JSDoc comments.
- *
- * Additionally, no wrapper functions are used to avoid the browser's console
- * reported call site being the wrapper instead of the actual caller.
+ *   The repetition of log levels, typedefs, and method signatures is intentional to give IDEs and
+ *   type checkers a mapping of log methods to the TypeScript provided JSDoc comments. Additionally,
+ *   no wrapper functions are used to avoid the browser's console reported call site being the
+ *   wrapper instead of the actual caller.
+ * @file Console logger for browser environments.
  */
 
 /* eslint-disable no-console */
@@ -48,8 +45,8 @@ const LogLevels = /** @type {LogLevel[]} */ (Object.keys(LogLevelLabel));
  *
  * @remarks
  *
- * The colors are derived from Carbon Design System's palette to ensure
- * sufficient contrast and accessibility across light and dark themes.
+ *   The colors are derived from Carbon Design System's palette to ensure sufficient contrast and
+ *   accessibility across light and dark themes.
  */
 const LogLevelColors = /** @type {const} */ ({
     info: `light-dark(#0043CE, #4589FF)`,
@@ -64,8 +61,8 @@ const LogLevelColors = /** @type {const} */ ({
  *
  * @param {string} [prefix]
  * @param {...string[]} args
- * @returns {Logger}
  *
+ * @returns {Logger}
  */
 export function createLogger(prefix, ...args) {
     const suffix = prefix ? `(${prefix}):` : ":";
@@ -97,7 +94,7 @@ export function createLogger(prefix, ...args) {
 //#region Console Logger
 
 /**
- * @typedef {Logger & {prefix: (logPrefix: string) => Logger}} IConsoleLogger
+ * @typedef {Logger & { prefix: (logPrefix: string) => Logger }} IConsoleLogger
  */
 
 /**
@@ -127,6 +124,7 @@ export class ConsoleLogger {
 
     /**
      * Creates a logger with the given prefix.
+     *
      * @param {string} logPrefix
      */
     static prefix(logPrefix) {

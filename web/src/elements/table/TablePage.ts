@@ -29,18 +29,21 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     /**
      * The title of the page.
+     *
      * @abstract
      */
     public abstract pageTitle: string;
 
     /**
      * The description of the page.
+     *
      * @abstract
      */
     public abstract pageDescription: string;
 
     /**
      * The icon to display in the page header.
+     *
      * @abstract
      */
     public abstract pageIcon: string;
@@ -61,24 +64,28 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     /**
      * Render content before the sidebar.
+     *
      * @abstract
      */
     protected renderSidebarBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the sidebar.
+     *
      * @abstract
      */
     protected renderSidebarAfter?(): SlottedTemplateResult;
 
     /**
      * Render content before the main section.
+     *
      * @abstract
      */
     protected renderSectionBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the main section.
+     *
      * @abstract
      */
     protected renderSectionAfter?(): SlottedTemplateResult;
@@ -92,17 +99,19 @@ export abstract class TablePage<T extends object> extends Table<T> {
      */
     protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${this.formatEmptyStateMessage()}</span>
-                      <div slot="body">
-                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
-                      </div>
-                      <div slot="primary" class="empty-state-primary">
-                          ${this.renderObjectCreate()}
-                      </div>
-                  </ak-empty-state>`}
+            ${
+                inner
+                    ? inner
+                    : html`<ak-empty-state icon=${this.pageIcon}
+                          ><span>${this.formatEmptyStateMessage()}</span>
+                          <div slot="body">
+                              ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                          </div>
+                          <div slot="primary" class="empty-state-primary">
+                              ${this.renderObjectCreate()}
+                          </div>
+                      </ak-empty-state>`
+            }
         `);
     }
 

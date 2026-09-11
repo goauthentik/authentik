@@ -51,22 +51,24 @@ export class AkDrawer extends LitElement {
                         </div>
                     </div>
                     <div class="ak-v2-c-drawer__panel" part="drawer-panel">
-                        ${this.resizable
-                            ? html` <div
-                                  class="ak-v2-c-drawer__splitter"
-                                  part="drawer-splitter"
-                                  @mousedown=${this.resize.handleMouseDown}
-                                  @keydown=${this.resize.handleKeyDown}
-                                  @touchstart=${this.resize.handleTouchStart}
-                                  role="separator"
-                                  tabindex="0"
-                              >
-                                  <div
-                                      class="ak-v2-c-drawer__splitter-handle"
-                                      aria-hidden="true"
-                                  ></div>
-                              </div>`
-                            : nothing}
+                        ${
+                            this.resizable
+                                ? html` <div
+                                      class="ak-v2-c-drawer__splitter"
+                                      part="drawer-splitter"
+                                      @mousedown=${this.resize.handleMouseDown}
+                                      @keydown=${this.resize.handleKeyDown}
+                                      @touchstart=${this.resize.handleTouchStart}
+                                      role="separator"
+                                      tabindex="0"
+                                  >
+                                      <div
+                                          class="ak-v2-c-drawer__splitter-handle"
+                                          aria-hidden="true"
+                                      ></div>
+                                  </div>`
+                                : nothing
+                        }
                         <div class="ak-v2-c-drawer__panel-main" part="drawer-panel-main">
                             <slot name="panel"></slot>
                         </div>

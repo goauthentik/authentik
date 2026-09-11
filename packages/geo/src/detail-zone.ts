@@ -22,15 +22,14 @@ export interface DetailZone {
 }
 
 /**
- * Compute the "populated area" detail zone from a set of place labels. Every
- * locality above `minPop` seeds a `gridDisk(ring)` around its containing
- * res-4 cell; the union is the zone. The corresponding res-5 cells are the
- * seven-child expansion of each res-4 zone cell.
+ * Compute the "populated area" detail zone from a set of place labels. Every locality above
+ * `minPop` seeds a `gridDisk(ring)` around its containing res-4 cell; the union is the zone. The
+ * corresponding res-5 cells are the seven-child expansion of each res-4 zone cell.
  *
- * The zone intentionally sits at res-4 rather than res-5 so mixing math is
- * simple: at z7-8 the archive carries res-4 cells outside the zone as the
- * base fill, and res-5 zone children on top. Both are exact parents of the
- * other in area (7×res-5 = res-4), even though their vertices interlock.
+ * The zone intentionally sits at res-4 rather than res-5 so mixing math is simple: at z7-8 the
+ * archive carries res-4 cells outside the zone as the base fill, and res-5 zone children on top.
+ * Both are exact parents of the other in area (7×res-5 = res-4), even though their vertices
+ * interlock.
  */
 export function computeDetailZone(
     labels: Iterable<PlaceLabel>,
@@ -68,9 +67,9 @@ export function computeDetailZone(
 }
 
 /**
- * Intersect a set of res-5 land cells with the detail zone. The generator
- * emits only these cells as the res-5 overlay at z7-8; everything else in
- * the world stays covered by the res-4 base underneath.
+ * Intersect a set of res-5 land cells with the detail zone. The generator emits only these cells as
+ * the res-5 overlay at z7-8; everything else in the world stays covered by the res-4 base
+ * underneath.
  */
 export function detailCellsForRes5(landRes5: Iterable<string>, zone: DetailZone): Set<string> {
     const out = new Set<string>();

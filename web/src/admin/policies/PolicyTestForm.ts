@@ -108,15 +108,17 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
-                            ${(this.result?.messages || []).length > 0
-                                ? this.result?.messages?.map((m) => {
-                                      return html`<li>
-                                          <span class="pf-c-form__label-text">${m}</span>
-                                      </li>`;
-                                  })
-                                : html`<li>
-                                      <span class="pf-c-form__label-text">-</span>
-                                  </li>`}
+                            ${
+                                (this.result?.messages || []).length > 0
+                                    ? this.result?.messages?.map((m) => {
+                                          return html`<li>
+                                              <span class="pf-c-form__label-text">${m}</span>
+                                          </li>`;
+                                      })
+                                    : html`<li>
+                                          <span class="pf-c-form__label-text">-</span>
+                                      </li>`
+                            }
                         </ul>
                     </div>
                 </div>

@@ -9,8 +9,8 @@ import { builtinModules } from "node:module";
 /**
  * Reserved package-name suffixes mapped to their target runtime.
  *
- * A package whose final name segment matches one of these signals that runtime, and imports across incompatible runtime
- * boundaries become lint errors.
+ * A package whose final name segment matches one of these signals that runtime, and imports across
+ * incompatible runtime boundaries become lint errors.
  */
 export const RuntimePackageNamesRecord = {
     browser: ["client", "browser"],
@@ -57,8 +57,8 @@ export interface RestrictedPath {
 }
 
 /**
- * Unprefixed Node built-ins (e.g. `fs`), each nudging toward the `node:` prefix. Used by browser- and node-runtime
- * files where the bare form is ambiguous.
+ * Unprefixed Node built-ins (e.g. `fs`), each nudging toward the `node:` prefix. Used by browser-
+ * and node-runtime files where the bare form is ambiguous.
  */
 export function ambiguousNodeBuiltinPaths(): RestrictedPath[] {
     return NODE_BUILTINS_NO_PREFIX.map((name) => ({
@@ -68,8 +68,8 @@ export function ambiguousNodeBuiltinPaths(): RestrictedPath[] {
 }
 
 /**
- * Every Node built-in (prefixed and unprefixed), each carrying the given message. Used by agnostic-runtime files, which
- * must not assume a Node runtime at all.
+ * Every Node built-in (prefixed and unprefixed), each carrying the given message. Used by
+ * agnostic-runtime files, which must not assume a Node runtime at all.
  */
 export function allNodeBuiltinPaths(message: string): RestrictedPath[] {
     return [...NODE_BUILTINS_NO_PREFIX, ...NODE_BUILTINS_PREFIXED].map((name) => ({
@@ -83,8 +83,8 @@ export function allNodeBuiltinPaths(message: string): RestrictedPath[] {
 //#region Browser globals
 
 /**
- * Browser globals whose bare use is ambiguous (they collide with common identifiers). Browser- and node-runtime files
- * warn on these, nudging toward an explicit `window.` access.
+ * Browser globals whose bare use is ambiguous (they collide with common identifiers). Browser- and
+ * node-runtime files warn on these, nudging toward an explicit `window.` access.
  */
 const BROWSER_GLOBALS = [
     "addEventListener",
@@ -174,8 +174,8 @@ interface RestrictedPattern {
 }
 
 /**
- * Builds the `patterns` entries forbidding a runtime from importing packages of incompatible runtimes, each with a
- * tailored message.
+ * Builds the `patterns` entries forbidding a runtime from importing packages of incompatible
+ * runtimes, each with a tailored message.
  */
 function crossRuntimePatterns(
     packageNamespace: string,
@@ -195,11 +195,12 @@ function crossRuntimePatterns(
 }
 
 /**
- * Generates the per-runtime overrides enforcing platform layering. One override is emitted for each browser-, node-,
- * and agnostic-runtime package name (matching the original ESLint config — worker files are a restricted _target_ but
- * have no override of their own).
+ * Generates the per-runtime overrides enforcing platform layering. One override is emitted for each
+ * browser-, node-, and agnostic-runtime package name (matching the original ESLint config — worker
+ * files are a restricted _target_ but have no override of their own).
  *
- * @param packageNamespace The namespace whose packages are subject to the rules, e.g. `@goauthentik`.
+ * @param packageNamespace The namespace whose packages are subject to the rules, e.g.
+ *   `@goauthentik`.
  *
  * @returns An array of oxlint `overrides` entries.
  */

@@ -26,13 +26,17 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
         }
 
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.challenge.loadingOverlay
-                ? html`<ak-empty-state loading
-                      >${this.challenge.loadingText
-                          ? html`<span>${this.challenge.loadingText}</span>`
-                          : nothing}
-                  </ak-empty-state>`
-                : nothing}
+            ${
+                this.challenge.loadingOverlay
+                    ? html`<ak-empty-state loading
+                          >${
+                              this.challenge.loadingText
+                                  ? html`<span>${this.challenge.loadingText}</span>`
+                                  : nothing
+                          }
+                      </ak-empty-state>`
+                    : nothing
+            }
             <iframe
                 style=${this.challenge.loadingOverlay ? "width:0;height:0;position:absolute;" : ""}
                 src=${this.challenge.url}

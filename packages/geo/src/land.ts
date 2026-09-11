@@ -40,9 +40,8 @@ function intersectAtMeridian(a: Position, b: Position, meridian: number): Positi
 }
 
 /**
- * Sutherland–Hodgman clip of a closed ring against a vertical half-plane at
- * `meridian`. `side` = +1 keeps lng >= meridian, -1 keeps lng <= meridian.
- * Callers close the returned ring themselves.
+ * Sutherland–Hodgman clip of a closed ring against a vertical half-plane at `meridian`. `side` = +1
+ * keeps lng >= meridian, -1 keeps lng <= meridian. Callers close the returned ring themselves.
  */
 function clipRingAtMeridian(ring: Position[], meridian: number, side: 1 | -1): Position[] {
     const test = (p: Position) => (side === 1 ? p[0]! >= meridian : p[0]! <= meridian);
@@ -97,10 +96,10 @@ function closeRing(ring: Position[]): Position[] {
 }
 
 /**
- * Preprocess a GeoJSON polygon (outer + holes) into one or more polygons that
- * h3's polygonToCells can handle: latitudes clamped to the web-mercator range,
- * and any ring wider than 180 deg longitude split at SPLIT_MERIDIANS. Even a
- * -180..180 polygon (Antarctica in NE 50m) yields sub-180 slices this way.
+ * Preprocess a GeoJSON polygon (outer + holes) into one or more polygons that h3's polygonToCells
+ * can handle: latitudes clamped to the web-mercator range, and any ring wider than 180 deg
+ * longitude split at SPLIT_MERIDIANS. Even a -180..180 polygon (Antarctica in NE 50m) yields
+ * sub-180 slices this way.
  */
 function normalizePolygon(polygon: Position[][]): Position[][][] {
     const clamped = polygon.map((ring) =>

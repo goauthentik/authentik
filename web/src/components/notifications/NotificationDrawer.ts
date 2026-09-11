@@ -97,18 +97,20 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                 <h2 class="pf-c-notification-drawer__list-item-header-title">${label}</h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
-                ${item.event &&
-                html`
-                    <a
-                        class="pf-c-dropdown__toggle pf-m-plain"
-                        href=${toAdminInterface(`events/log/${item.event?.pk}`)}
-                        aria-label=${msg(str`View details for ${label}`)}
-                    >
-                        <pf-tooltip position="top" content=${msg("Show details")}>
-                            <i class="fas fa-share-square" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </a>
-                `}
+                ${
+                    item.event &&
+                    html`
+                        <a
+                            class="pf-c-dropdown__toggle pf-m-plain"
+                            href=${toAdminInterface(`events/log/${item.event?.pk}`)}
+                            aria-label=${msg(str`View details for ${label}`)}
+                        >
+                            <pf-tooltip position="top" content=${msg("Show details")}>
+                                <i class="fas fa-share-square" aria-hidden="true"></i>
+                            </pf-tooltip>
+                        </a>
+                    `
+                }
                 <button
                     class="pf-c-dropdown__toggle pf-m-plain"
                     type="button"
@@ -118,11 +120,14 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            ${code && item.event?.context
-                ? html`<pre class="pf-c-notification-drawer__list-item-description">
-${JSON.stringify(item.event.context, null, 2)}</pre
-                  >`
-                : html`<p class="pf-c-notification-drawer__list-item-description">${item.body}</p>`}
+            ${
+                code && item.event?.context
+                    ? html`<pre class="pf-c-notification-drawer__list-item-description">
+${JSON.stringify(item.event.context, null, 2)}</pre>`
+                    : html`<p class="pf-c-notification-drawer__list-item-description">
+                          ${item.body}
+                      </p>`
+            }
             <small class="pf-c-notification-drawer__list-item-timestamp"
                 ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
                     ${formatElapsedTime(item.created!)}

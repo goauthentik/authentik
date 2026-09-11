@@ -1,10 +1,10 @@
-import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-secret-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/Alert";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/Alert";
 
 import { aki } from "#common/api/client";
 
@@ -77,8 +77,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     /**
-     * Handle provider dropdown selection change.
-     * Updates the preset, which triggers a re-render with new default values.
+     * Handle provider dropdown selection change. Updates the preset, which triggers a re-render
+     * with new default values.
      */
     #providerChangeListener(e: Event): void {
         const select = e.target as HTMLSelectElement;
@@ -151,34 +151,36 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 const providerLink =
                     formatAPISource && keyURL
                         ? html`<ak-alert level=${Level.Info} icon="fa-key">
-                              ${this.selectedProvider === "cap"
-                                  ? msg(
-                                        html`Use the
-                                        ${html`<a
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            href=${keyURL}
-                                            >${formatAPISource()}</a
-                                        >`}
-                                        to self-host Cap and configure the endpoint.`,
-                                        {
-                                            id: "captcha.provider-link.cap",
-                                            desc: "Supplementary help text with link to Cap documentation.",
-                                        },
-                                    )
-                                  : msg(
-                                        html`API keys can be obtained from the
-                                        ${html`<a
+                              ${
+                                  this.selectedProvider === "cap"
+                                      ? msg(
+                                            html`Use the
+                                            ${html`<a
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 href=${keyURL}
                                                 >${formatAPISource()}</a
-                                            >.`}`,
-                                        {
-                                            id: "captcha.provider-link",
-                                            desc: "Supplementary help text with link to provider dashboard.",
-                                        },
-                                    )}
+                                            >`}
+                                            to self-host Cap and configure the endpoint.`,
+                                            {
+                                                id: "captcha.provider-link.cap",
+                                                desc: "Supplementary help text with link to Cap documentation.",
+                                            },
+                                        )
+                                      : msg(
+                                            html`API keys can be obtained from the
+                                            ${html`<a
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    href=${keyURL}
+                                                    >${formatAPISource()}</a
+                                                >.`}`,
+                                            {
+                                                id: "captcha.provider-link",
+                                                desc: "Supplementary help text with link to provider dashboard.",
+                                            },
+                                        )
+                              }
                           </ak-alert>`
                         : null;
 
@@ -299,13 +301,15 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.jsUrl)}"
                     required
-                    help=${this.selectedProvider === "cap"
-                        ? msg(
-                              "For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.",
-                          )
-                        : msg(
-                              "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
-                          )}
+                    help=${
+                        this.selectedProvider === "cap"
+                            ? msg(
+                                  "For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.",
+                              )
+                            : msg(
+                                  "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
+                              )
+                    }
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("API Verification URL")}
@@ -313,13 +317,15 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.apiUrl)}"
                     required
-                    help=${this.selectedProvider === "cap"
-                        ? msg(
-                              "Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.",
-                          )
-                        : msg(
-                              "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
-                          )}
+                    help=${
+                        this.selectedProvider === "cap"
+                            ? msg(
+                                  "Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.",
+                              )
+                            : msg(
+                                  "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
+                              )
+                    }
                 ></ak-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Request Content Type")}

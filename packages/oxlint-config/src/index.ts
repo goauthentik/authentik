@@ -50,8 +50,8 @@ export const DefaultIgnorePatterns = [
  * Consumers use it directly from an `oxlint.config.ts`:
  *
  * ```ts
- * import { createOxlintConfig } from "@goauthentik/oxlint-config"
- * export default createOxlintConfig()
+ * import { createOxlintConfig } from "@goauthentik/oxlint-config";
+ * export default createOxlintConfig();
  * ```
  *
  * @param options Configuration options.

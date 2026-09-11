@@ -1,5 +1,5 @@
-import "#elements/CodeMirror/ak-codemirror";
 import "#components/ak-text-input";
+import "#elements/CodeMirror/ak-codemirror";
 
 import { docLink } from "#common/global";
 

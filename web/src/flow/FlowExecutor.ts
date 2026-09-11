@@ -7,7 +7,6 @@ import "#flow/tabs/broadcast";
 
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
-import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -21,12 +20,12 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
+import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import {
     AKFlowAdvanceEvent,
     AKFlowSubmitRequest,
     AKFlowUpdateChallengeRequest,
 } from "#flow/events";
-import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
@@ -53,6 +52,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
+import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -65,9 +65,8 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 /**
  * An executor for authentik flows.
  *
+ * @property {ChallengeTypes | null} challenge - The current challenge to render.
  * @attr {string} slug - The slug of the flow to execute.
- * @prop {ChallengeTypes | null} challenge - The current challenge to render.
- *
  * @part main - The main container for the flow content.
  * @part content - The container for the stage content.
  * @part content-iframe - The iframe element when using a frame background layout.
@@ -407,9 +406,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 aria-label=${msg("Site footer")}
                 name="site-footer"
                 part="footer"
-                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
-                    ? "pf-m-dark"
-                    : ""}"
+                class="pf-c-login__footer ${
+                    this.layout === FlowLayoutEnum.Stacked ? "pf-m-dark" : ""
+                }"
             >
                 <slot name="footer"></slot>
             </footer>`;

@@ -1,10 +1,8 @@
 /**
- * @file Dummy entry point for the `core` package.
- *
- * This exists to make TypeScript's module resolution more predictable.
- *
- * @internal
  * @ignore
+ * @file Dummy entry point for the `core` package. This exists to make TypeScript's module
+ *   resolution more predictable.
+ * @internal
  */
 
 export default {};

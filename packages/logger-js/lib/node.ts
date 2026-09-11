@@ -26,10 +26,10 @@ const { pino } = await import("pino").catch(() => {
 //#region Constants
 
 /**
- * Pino spawns the transport in a worker thread and resolves this target as a
- * path, so it has to name the file that exists alongside *this* module: the
- * TypeScript source when Node is stripping types, the emitted JavaScript
- * otherwise. Unlike an import specifier, nothing rewrites it on emit.
+ * Pino spawns the transport in a worker thread and resolves this target as a path, so it has to
+ * name the file that exists alongside _this_ module: the TypeScript source when Node is stripping
+ * types, the emitted JavaScript otherwise. Unlike an import specifier, nothing rewrites it on
+ * emit.
  */
 const TRANSPORT_TARGET = import.meta.filename.endsWith(".ts") ? "./transport.ts" : "./transport.js";
 

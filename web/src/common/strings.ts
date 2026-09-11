@@ -28,7 +28,6 @@ export function truncate(input?: string | null, maxLength = 10): string {
  * Truncate a string based on maximum word count.
  *
  * @see {@linkcode truncate}
- *
  */
 export function truncateWords(input?: string | null, maxLength = 10): string {
     const trimmed = input?.trim() ?? "";

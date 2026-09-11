@@ -1,15 +1,12 @@
 /**
- * @file Pure path helpers for path-routed tabs.
- *
- * A tab panel is a slotted child named `page-<segment>`; its URL is the tab
- * group's mount path plus that segment (`/if/user/settings` + `sessions` →
- * `/if/user/settings/sessions`). These functions map between the two and pick
- * the active tab from a location. No DOM, no globals — unit-testable in Node.
+ * @file Pure path helpers for path-routed tabs. A tab panel is a slotted child named
+ *   `page-<segment>`; its URL is the tab group's mount path plus that segment (`/if/user/settings` +
+ *   `sessions` → `/if/user/settings/sessions`). These functions map between the two and pick the
+ *   active tab from a location. No DOM, no globals — unit-testable in Node.
  */
 
 /**
- * The `slot` prefix every tab panel carries. The URL segment is the slot name
- * with this removed.
+ * The `slot` prefix every tab panel carries. The URL segment is the slot name with this removed.
  */
 export const SLOT_PREFIX = "page-";
 
@@ -19,9 +16,9 @@ export const segmentToSlot = (segment: string): string => `${SLOT_PREFIX}${segme
 /**
  * The active tab slot for a location, or `null` when the group has no tabs.
  *
- * The first tab is the default: the bare base (and any path outside the group's
- * subtree) resolves to it. A path whose first segment past the base names a
- * known tab selects that tab; an unknown segment falls back to the first.
+ * The first tab is the default: the bare base (and any path outside the group's subtree) resolves
+ * to it. A path whose first segment past the base names a known tab selects that tab; an unknown
+ * segment falls back to the first.
  *
  * @param base The group's mount path, e.g. `/if/user/settings`.
  * @param pathname The current `location.pathname`.
@@ -52,9 +49,9 @@ export function activeSlotForPath(
 }
 
 /**
- * The URL a tab links to: the bare `base` for the first (default) tab,
- * `base/segment` otherwise. Keeping the default at the bare base mirrors the
- * legacy behavior of omitting the first tab's parameter.
+ * The URL a tab links to: the bare `base` for the first (default) tab, `base/segment` otherwise.
+ * Keeping the default at the bare base mirrors the legacy behavior of omitting the first tab's
+ * parameter.
  *
  * @param base The group's mount path.
  * @param slotName The tab's slot name.

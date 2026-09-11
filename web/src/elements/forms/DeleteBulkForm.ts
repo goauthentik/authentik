@@ -93,20 +93,24 @@ export class DeleteBulkForm<T> extends ModalButton {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">
-                        ${this.submitLabel
-                            ? this.submitLabel
-                            : msg(str`Delete ${this.objectLabel}`)}
+                        ${
+                            this.submitLabel
+                                ? this.submitLabel
+                                : msg(str`Delete ${this.objectLabel}`)
+                        }
                     </h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
-                        ${this.actionSubtext
-                            ? this.actionSubtext
-                            : msg(
-                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
-                              )}
+                        ${
+                            this.actionSubtext
+                                ? this.actionSubtext
+                                : msg(
+                                      str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
+                                  )
+                        }
                     </p>
                     <slot name="notice"></slot>
                 </form>

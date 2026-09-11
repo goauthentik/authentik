@@ -1,8 +1,8 @@
-import "#elements/Tabs";
+import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
+import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
-import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
+import "#elements/Tabs";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";

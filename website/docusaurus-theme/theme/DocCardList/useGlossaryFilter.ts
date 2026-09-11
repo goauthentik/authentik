@@ -35,8 +35,8 @@ export interface UseGlossaryFilterResult {
 }
 
 /**
- * Custom hook that manages glossary filtering state and logic.
- * Handles text search, tag filtering, and view mode switching.
+ * Custom hook that manages glossary filtering state and logic. Handles text search, tag filtering,
+ * and view mode switching.
  */
 export function useGlossaryFilter(terms: GlossaryHelperTerm[]): UseGlossaryFilterResult {
     const [filter, setFilter] = useState("");

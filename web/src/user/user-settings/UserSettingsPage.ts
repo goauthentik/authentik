@@ -11,8 +11,8 @@ import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { startAccountLockdown } from "#common/users";
 
-import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
@@ -148,11 +148,13 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                 <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
-                                ${pwStage.length > 0
-                                    ? html`<ak-user-settings-password
-                                          configureUrl=${ifDefined(pwStage[0].configureUrl)}
-                                      ></ak-user-settings-password>`
-                                    : nothing}
+                                ${
+                                    pwStage.length > 0
+                                        ? html`<ak-user-settings-password
+                                              configureUrl=${ifDefined(pwStage[0].configureUrl)}
+                                          ></ak-user-settings-password>`
+                                        : nothing
+                                }
                             </div>
                         </div>
                     </div>

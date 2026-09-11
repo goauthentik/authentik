@@ -1,9 +1,9 @@
-import "#elements/Tabs";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
-import "#elements/forms/ModalForm";
 import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/telegram/TelegramSourceForm";
+import "#elements/Tabs";
+import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
 

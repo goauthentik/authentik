@@ -1,7 +1,7 @@
-import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
 import "#admin/endpoints/DeviceAccessGroupForm";
 import "#admin/policies/BoundPoliciesList";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";

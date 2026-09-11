@@ -16,8 +16,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
  *
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
- * @todo Listen for custom events from its children about 'invalidation' events, and
- * trigger the `expanded` property as needed.
+ * @todo Listen for custom events from its children about 'invalidation' events, and trigger the
+ *   `expanded` property as needed.
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
@@ -43,8 +43,8 @@ export class AKFormGroup extends AKElement {
     /**
      * Explore within the form group for invalid inputs, revealing the first
      *
-     * Note that this occurs **after** client-side validation, typically when
-     * server-side updates the `errorMessages` property.
+     * Note that this occurs **after** client-side validation, typically when server-side updates
+     * the `errorMessages` property.
      */
     #explore = (mutations: MutationRecord[]) => {
         for (const mutation of mutations) {
@@ -152,28 +152,34 @@ export class AKFormGroup extends AKElement {
                             role="heading"
                             aria-level="3"
                         >
-                            ${this.label || !headerSlotted
-                                ? html`<div part="label">
-                                      ${this.label ||
-                                      (!headerSlotted
-                                          ? msg("Details", {
-                                                id: "form-group.default-label",
-                                            })
-                                          : null)}
-                                  </div>`
-                                : null}
+                            ${
+                                this.label || !headerSlotted
+                                    ? html`<div part="label">
+                                          ${
+                                              this.label ||
+                                              (!headerSlotted
+                                                  ? msg("Details", {
+                                                        id: "form-group.default-label",
+                                                    })
+                                                  : null)
+                                          }
+                                      </div>`
+                                    : null
+                            }
                             ${headerSlotted ? this.headerSlot : null}
                         </div>
                     </header>
-                    ${this.description || descriptionSlotted
-                        ? html`<div
-                              class="pf-c-form__field-group-header-description"
-                              data-test-id="form-group-header-description"
-                              id="form-group-expandable-content-description"
-                          >
-                              ${this.description} ${this.descriptionSlot}
-                          </div>`
-                        : null}
+                    ${
+                        this.description || descriptionSlotted
+                            ? html`<div
+                                  class="pf-c-form__field-group-header-description"
+                                  data-test-id="form-group-header-description"
+                                  id="form-group-expandable-content-description"
+                              >
+                                  ${this.description} ${this.descriptionSlot}
+                              </div>`
+                            : null
+                    }
                 </div>
             </summary>
             ${this.defaultSlot}
@@ -186,10 +192,11 @@ export class AKFormGroup extends AKElement {
 //#region Utilities
 
 /**
- * Deeply report the validity of the form, expanding collapsed groups as needed
- * to reveal invalid inputs.
+ * Deeply report the validity of the form, expanding collapsed groups as needed to reveal invalid
+ * inputs.
  *
  * @param form The form element to check.
+ *
  * @returns Whether the form is valid.
  */
 export function reportValidityDeep(
