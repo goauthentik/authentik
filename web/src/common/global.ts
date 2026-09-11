@@ -1,10 +1,8 @@
 /**
- * @file Reader for the values the server injects into the interface documents.
- *
- * The server renders them as data — two `json_script` blocks and a handful of
- * `<meta>` tags — rather than as an executable `window.authentik` assignment,
- * so the interface pages can eventually be served under a strict CSP. See
- * `authentik/core/templates/base/header_js.html`.
+ * @file Reader for the values the server injects into the interface documents. The server renders
+ *   them as data — two `json_script` blocks and a handful of `<meta>` tags — rather than as an
+ *   executable `window.authentik` assignment, so the interface pages can eventually be served under
+ *   a strict CSP. See `authentik/core/templates/base/header_js.html`.
  */
 
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
@@ -48,8 +46,8 @@ function readMeta(name: string): string | null {
 /**
  * Parse a server-injected `json_script` block, if the document carries one.
  *
- * A malformed block is treated as absent: the interface still boots on the
- * fallbacks below, which is strictly better than failing to render at all.
+ * A malformed block is treated as absent: the interface still boots on the fallbacks below, which
+ * is strictly better than failing to render at all.
  */
 function readJSONScript(id: string): unknown {
     const element = document.getElementById(id);
@@ -99,8 +97,8 @@ let serverContext: GlobalAuthentik | null = null;
 /**
  * Re-read the server context from the document, replacing the memoized value.
  *
- * Only useful to tests that swap the injected markup; the values are static for
- * the lifetime of a document.
+ * Only useful to tests that swap the injected markup; the values are static for the lifetime of a
+ * document.
  */
 export function refreshServerContext(): GlobalAuthentik {
     serverContext = readServerContext();
@@ -111,8 +109,8 @@ export function refreshServerContext(): GlobalAuthentik {
 /**
  * The values the server injected into this document.
  *
- * Memoized rather than evaluated at import, so this module stays importable
- * without a document — Node unit tests included.
+ * Memoized rather than evaluated at import, so this module stays importable without a document —
+ * Node unit tests included.
  */
 export function globalAK(): GlobalAuthentik {
     return (serverContext ??= readServerContext());

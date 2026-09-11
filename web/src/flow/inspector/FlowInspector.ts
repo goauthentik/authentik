@@ -161,15 +161,16 @@ export class FlowInspector extends AKElement {
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">
-                                ${isCompleted
-                                    ? html`<div class="pf-c-description-list__text">
-                                          ${msg("This flow is completed.")}
-                                      </div>`
-                                    : html`<ak-expand>
-                                          <pre class="pf-c-description-list__text">
-${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
-                                          >
-                                      </ak-expand>`}
+                                ${
+                                    isCompleted
+                                        ? html`<div class="pf-c-description-list__text">
+                                              ${msg("This flow is completed.")}
+                                          </div>`
+                                        : html`<ak-expand>
+                                              <pre class="pf-c-description-list__text">
+${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre>
+                                          </ak-expand>`
+                                }
                             </dd>
                         </div>
                     </dl>
@@ -205,41 +206,47 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
                                 </div>
                             </li> `;
                         })}
-                        ${currentPlan?.currentStage && !isCompleted
-                            ? html`<li class="pf-c-progress-stepper__step pf-m-current pf-m-info">
-                                  <div class="pf-c-progress-stepper__step-connector">
-                                      <span class="pf-c-progress-stepper__step-icon">
-                                          <i
-                                              class="pficon pf-icon-resources-full"
-                                              aria-hidden="true"
-                                          ></i>
-                                      </span>
-                                  </div>
-                                  <div class="pf-c-progress-stepper__step-main">
-                                      <div class="pf-c-progress-stepper__step-title">
-                                          ${currentPlan?.currentStage?.stageObj?.name}
+                        ${
+                            currentPlan?.currentStage && !isCompleted
+                                ? html`<li
+                                      class="pf-c-progress-stepper__step pf-m-current pf-m-info"
+                                  >
+                                      <div class="pf-c-progress-stepper__step-connector">
+                                          <span class="pf-c-progress-stepper__step-icon">
+                                              <i
+                                                  class="pficon pf-icon-resources-full"
+                                                  aria-hidden="true"
+                                              ></i>
+                                          </span>
                                       </div>
-                                      <div class="pf-c-progress-stepper__step-description">
-                                          ${currentPlan?.currentStage?.stageObj?.verboseName}
+                                      <div class="pf-c-progress-stepper__step-main">
+                                          <div class="pf-c-progress-stepper__step-title">
+                                              ${currentPlan?.currentStage?.stageObj?.name}
+                                          </div>
+                                          <div class="pf-c-progress-stepper__step-description">
+                                              ${currentPlan?.currentStage?.stageObj?.verboseName}
+                                          </div>
                                       </div>
-                                  </div>
-                              </li>`
-                            : nothing}
-                        ${currentPlan?.nextPlannedStage && !isCompleted
-                            ? html`<li class="pf-c-progress-stepper__step pf-m-pending">
-                                  <div class="pf-c-progress-stepper__step-connector">
-                                      <span class="pf-c-progress-stepper__step-icon"></span>
-                                  </div>
-                                  <div class="pf-c-progress-stepper__step-main">
-                                      <div class="pf-c-progress-stepper__step-title">
-                                          ${currentPlan.nextPlannedStage.stageObj?.name}
+                                  </li>`
+                                : nothing
+                        }
+                        ${
+                            currentPlan?.nextPlannedStage && !isCompleted
+                                ? html`<li class="pf-c-progress-stepper__step pf-m-pending">
+                                      <div class="pf-c-progress-stepper__step-connector">
+                                          <span class="pf-c-progress-stepper__step-icon"></span>
                                       </div>
-                                      <div class="pf-c-progress-stepper__step-description">
-                                          ${currentPlan?.nextPlannedStage?.stageObj?.verboseName}
+                                      <div class="pf-c-progress-stepper__step-main">
+                                          <div class="pf-c-progress-stepper__step-title">
+                                              ${currentPlan.nextPlannedStage.stageObj?.name}
+                                          </div>
+                                          <div class="pf-c-progress-stepper__step-description">
+                                              ${currentPlan?.nextPlannedStage?.stageObj?.verboseName}
+                                          </div>
                                       </div>
-                                  </div>
-                              </li>`
-                            : nothing}
+                                  </li>`
+                                : nothing
+                        }
                     </ol>
                 </div>
             </fieldset>

@@ -1,8 +1,8 @@
 import "#elements/a11y/ak-skip-to-content";
 import "#user/agents/UserAgentList";
 
-import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#user/user-settings/styles.css";

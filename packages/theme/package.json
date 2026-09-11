@@ -8,29 +8,10 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/theme"
     },
-    "scripts": {
-        "build": "wireit",
-        "build:assets": "node ./build.mjs",
-        "build:demo": "node ./build-demo.mjs",
-        "build:dtcg": "styleframe dtcg export --config styleframe.config.ts --output dist/dtcg --collection authentik",
-        "build:format": "oxfmt --write ./dist",
-        "build:src": "tsgo -p .",
-        "check": "run-s lint-check lint-output",
-        "clean": "rimraf ./public",
-        "demo": "run-s build build:demo demo:run",
-        "demo:run": "http-server ./public -p 8001 -i",
-        "lint": "run-s lint:oxlint",
-        "lint:oxlint": "oxlint",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "fix:oxlint": "oxlint --fix",
-        "fix:oxfmt": "oxfmt --write .",
-        "lint-check": "run-s lint-check:oxlint",
-        "lint-check:oxlint": "oxlint --max-warnings=0",
-        "lint:css": "stylelint \"dist/*.css\"",
-        "lint-output": "run-s build:src build:assets lint:css",
-        "watch": "tsgo -p . --watch"
-    },
+    "files": [
+        "src/**/*",
+        "dist/**/*"
+    ],
     "type": "module",
     "types": "./src/index.ts",
     "exports": {
@@ -77,66 +58,8 @@
             "default": "./dist/node.js"
         }
     },
-    "dependencies": {
-        "@goauthentik/fonts": "link:../fonts",
-        "@styleframe/core": "^3.5.0",
-        "@styleframe/dtcg": "^1.1.0",
-        "@styleframe/theme": "^3.7.0",
-        "@styleframe/transpiler": "^3.3.0",
-        "http-server": "^14.1.1",
-        "rimraf": "^6.1.3",
-        "styleframe": "^3.7.0"
-    },
-    "devDependencies": {
-        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
-        "@goauthentik/oxlint-config": "link:../oxlint-config",
-        "@goauthentik/tsconfig": "link:../tsconfig",
-        "@styleframe/cli": "^4.0.0",
-        "@types/culori": "^4.0.1",
-        "@types/node": "catalog:",
-        "@typescript/native-preview": "7.0.0-dev.20260707.2",
-        "culori": "^4.0.2",
-        "npm-run-all": "^4.1.5",
-        "oxfmt": "catalog:",
-        "oxlint": "catalog:",
-        "stylelint": "^17.14.1",
-        "stylelint-config-recommended": "^18.0.0",
-        "typescript": "catalog:",
-        "wireit": "^0.14.13"
-    },
-    "files": [
-        "src/**/*",
-        "dist/**/*"
-    ],
-    "wireit": {
-        "build": {
-            "command": "run-s build:src build:assets build:dtcg build:format",
-            "files": [
-                "src/**/*.ts",
-                "build.mjs",
-                "styleframe.config.ts",
-                "tsconfig.json",
-                "package.json"
-            ],
-            "output": [
-                "dist/**"
-            ]
-        }
-    },
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "version": ">=24.20",
-            "onFail": "error"
-        }
-    },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "publishConfig": {
-        "access": "public",
+        "types": "./dist/index.d.ts",
         "exports": {
             ".": {
                 "types": "./dist/index.d.ts",
@@ -171,8 +94,85 @@
                 "import": "./dist/node.js"
             }
         },
-        "types": "./dist/index.d.ts"
+        "access": "public"
     },
+    "scripts": {
+        "build": "wireit",
+        "build:assets": "node ./build.mjs",
+        "build:demo": "node ./build-demo.mjs",
+        "build:dtcg": "styleframe dtcg export --config styleframe.config.ts --output dist/dtcg --collection authentik",
+        "build:format": "oxfmt --write ./dist",
+        "build:src": "tsgo -p .",
+        "check": "run-s lint-check lint-output",
+        "clean": "rimraf ./public",
+        "demo": "run-s build build:demo demo:run",
+        "demo:run": "http-server ./public -p 8001 -i",
+        "lint": "run-s lint:oxlint lint:css lint:oxfmt",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint lint:css lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
+        "lint:css": "stylelint \"dist/*.css\"",
+        "lint-output": "run-s build:src build:assets lint:css",
+        "watch": "tsgo -p . --watch"
+    },
+    "wireit": {
+        "build": {
+            "command": "run-s build:src build:assets build:dtcg build:format",
+            "files": [
+                "src/**/*.ts",
+                "build.mjs",
+                "styleframe.config.ts",
+                "tsconfig.json",
+                "package.json"
+            ],
+            "output": [
+                "dist/**"
+            ]
+        }
+    },
+    "dependencies": {
+        "@goauthentik/fonts": "link:../fonts",
+        "@styleframe/core": "^3.5.0",
+        "@styleframe/dtcg": "^1.1.0",
+        "@styleframe/theme": "^3.7.0",
+        "@styleframe/transpiler": "^3.3.0",
+        "http-server": "^14.1.1",
+        "rimraf": "^6.1.3",
+        "styleframe": "^3.7.0"
+    },
+    "devDependencies": {
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@styleframe/cli": "^4.0.0",
+        "@types/culori": "^4.0.1",
+        "@types/node": "catalog:",
+        "@typescript/native-preview": "7.0.0-dev.20260707.2",
+        "culori": "^4.0.2",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "stylelint": "^17.14.1",
+        "stylelint-config-recommended": "^18.0.0",
+        "typescript": "catalog:",
+        "wireit": "^0.14.13"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "#exports-comment": [
         "The TypeScript entry points resolve to src/ for tooling that can read",
         "TypeScript directly — tsc via `types`, node via jiti/tsgo, and bundlers",

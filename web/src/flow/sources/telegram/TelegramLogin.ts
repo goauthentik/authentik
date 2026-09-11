@@ -1,5 +1,5 @@
-import "#flow/components/ak-flow-card";
 import "#elements/Divider";
+import "#flow/components/ak-flow-card";
 
 import { loadTelegramWidget, TelegramUserResponse } from "./utils";
 

@@ -1,6 +1,6 @@
-import "@patternfly/patternfly/components/Login/login.css";
-import "#stories/flow-interface";
 import "#flow/stages/dummy/DummyStage";
+import "#stories/flow-interface";
+import "@patternfly/patternfly/components/Login/login.css";
 
 import { flowFactory } from "#stories/flow-interface";
 

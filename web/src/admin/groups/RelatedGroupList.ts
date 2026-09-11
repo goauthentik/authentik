@@ -173,14 +173,16 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-            ${this.targetUser
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
-                  >
-                      ${msg("Add to existing group")}
-                  </button>`
-                : nothing}
+            ${
+                this.targetUser
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                      >
+                          ${msg("Add to existing group")}
+                      </button>`
+                    : nothing
+            }
             <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
                 ${msg("Add new group")}
             </button>

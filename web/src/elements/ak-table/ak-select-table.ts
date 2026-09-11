@@ -16,77 +16,63 @@ export interface ISelectTable extends ISimpleTable {
 }
 
 /**
- * @element ak-select-table
- * @class SelectTable
+ * @class SelectTable Extends the SimpleTable with a select column, emitting a `change` event
+ *   whenever the selected table updates. The `multiple` keyword creates a multi-select table.
+ *   Sorting behavior resembles that of `SimpleTable`. Aside from overriding the `renderRow()` and
+ *   `renderColumnHeaders()` methods to add the room for the checkbox, this is entirely an additive
+ *   feature; the logic of `ak-simple-table` is otherwise completely preserved. Note that this
+ *   implementation caches any values that it may have seen prior, but are not currently visible on
+ *   the page. This preserves the selection collection in case the client wishes to implement
+ *   pagination.
  *
- * Extends the SimpleTable with a select column, emitting a `change` event whenever the selected
- * table updates. The `multiple` keyword creates a multi-select table. Sorting behavior resembles
- * that of `SimpleTable`.
+ *   ## Properties
  *
- * Aside from overriding the `renderRow()` and `renderColumnHeaders()` methods to add the room
- * for the checkbox, this is entirely an additive feature; the logic of `ak-simple-table` is
- * otherwise completely preserved.
+ *   - @prop content (see types): The content to show. The simplest content is just `string[][]`, but
+ *     see the types.
+ *   - @prop columns (see types): The column headers for the table. Can be just a `string[]`, but see
+ *     the types.
+ *   - @attr (string, optional): The current column to order the content by. By convention, prefix
+ *     with a `-` to indicate a reverse sort order. (See "Does not handle sorting" above).
+ *   - @attr multiple (boolean): If true, this table is "multi-select" and a 'select all' checkbox
+ *     will be available.
+ *   - @attr value (string): If set, will set the value of the component. For multi-select, will split
+ *     on the `valueSep` (see next entry). Get is the reverse: either the value of the component, or
+ *     for multi-select, the value of the component `.join()`ed with the `valueSep`
+ *   - @attr valueSep (string): For multi-select only, the (ideally one) characters which will
+ *     separate values.
+ *   - @prop selected (string[]): The values selected. Always an array, even for mult-select. When not
+ *     multi-select, will have zero or one items only.
  *
- * Note that this implementation caches any values that it may have seen prior, but are not
- * currently visible on the page. This preserves the selection collection in case the client wishes
- * to implement pagination.
+ *   ## Messages
  *
- * ## Properties
+ *   - `clear()`: Sets the `selected` collection to empty, erasing all values.
  *
- * - @prop content (see types): The content to show. The simplest content is just `string[][]`, but
- *   see the types.
+ *   ## Events
  *
- * - @prop columns (see types): The column headers for the table.  Can be just a `string[]`, but see
- *   the types.
+ *   - @fires tablesort (Custom): A table header has been clicked, requesting a sort event. See "Does
+ *     not handle sorting" above.
  *
- * - @attr (string, optional): The current column to order the content by.  By convention, prefix
- *   with a `-` to indicate a reverse sort order.  (See "Does not handle sorting" above).
+ *   ## CSS Customizations
  *
- * - @attr multiple (boolean): If true, this table is "multi-select" and a 'select all' checkbox will
- *   be available.
- *
- * - @attr value (string): If set, will set the value of the component. For multi-select, will split
- *   on the `valueSep` (see next entry).  Get is the reverse: either the value of the component,
- *   or for multi-select, the value of the component `.join()`ed with the `valueSep`
- *
- * - @attr valueSep (string): For multi-select only, the (ideally one) characters which will separate
- *   values.
- *
- * - @prop selected (string[]): The values selected. Always an array, even for mult-select. When not
- *   multi-select, will have zero or one items only.
- *
- * ## Messages
- *
- * - `clear()`: Sets the `selected` collection to empty, erasing all values.
- *
- * ## Events
- *
- * - @fires tablesort (Custom): A table header has been clicked, requesting a sort event. See "Does
- *   not handle sorting" above.
- *
- * ## CSS Customizations
- *
- * - @part table: the `<table>` element
- * - @part column-header: the `<thead>` element for the column headers themselves
- * - @part column-row: The `<tr>` element for the column headers
- * - @part column-item: The `<th>` element for each column header
- * - @part column-text: The text `<span>` of the column header
- * - @part column-sort: The sort indicator `<span>` of a column header, if activated
- * - @part group-header: The `<thead>` element for a group header
- * - @part group-row: The `<tr>` element for a group header
- * - @part group-head: The `<th>` element for a group header
- * - @part row: The `<tr>` element for a standard row
- * - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
- *   which is zero-indexed
- * - @part select-all-header: The `<th>` element for the select-all checkbox, when _multiple_
- * - @part select-all-input: The `<input>` element for the select-all checkbox, when _multiple_
- * - @part select-cell: The `<td>` element for a select checkbox
- * - @part select-input: The `<input> element for a select checkbox
- *
- * NOTE: The select-cell is *not* indexed. The `::part(cell-{idx})` remains indexed by zero; you
- * cannot access the select-cell via `cell-0`; that would be the first data column. This is due to a
- * limitation on the `part::` semantics.
- *
+ *   - @part table: the `<table>` element
+ *   - @part column-header: the `<thead>` element for the column headers themselves
+ *   - @part column-row: The `<tr>` element for the column headers
+ *   - @part column-item: The `<th>` element for each column header
+ *   - @part column-text: The text `<span>` of the column header
+ *   - @part column-sort: The sort indicator `<span>` of a column header, if activated
+ *   - @part group-header: The `<thead>` element for a group header
+ *   - @part group-row: The `<tr>` element for a group header
+ *   - @part group-head: The `<th>` element for a group header
+ *   - @part row: The `<tr>` element for a standard row
+ *   - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
+ *     which is zero-indexed
+ *   - @part select-all-header: The `<th>` element for the select-all checkbox, when _multiple_
+ *   - @part select-all-input: The `<input>` element for the select-all checkbox, when _multiple_
+ *   - @part select-cell: The `<td>` element for a select checkbox
+ *   - @part select-input: The `<input> element for a select checkbox NOTE: The select-cell is *not*
+ *     indexed. The `::part(cell-{idx})`remains indexed by zero; you cannot access the select-cell
+ *     via`cell-0`; that would be the first data column. This is due to a limitation on the `part::`
+ *     semantics. @element ak-select-table
  */
 
 @customElement("ak-select-table")

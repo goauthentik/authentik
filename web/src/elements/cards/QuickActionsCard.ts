@@ -20,19 +20,20 @@ export interface IQuickActionsCard {
 function renderItem([label, url, external]: QuickAction) {
     return html` <li>
         <a class="pf-u-mb-xl" href=${url} target=${ifDefined(external ? "_blank" : undefined)}
-            >${label}${external
-                ? html`&nbsp;<i
-                          aria-hidden="true"
-                          class="fas fa-external-link-alt ak-external-link"
-                      ></i>`
-                : nothing}
+            >${label}${
+                external
+                    ? html`&nbsp;<i
+                              aria-hidden="true"
+                              class="fas fa-external-link-alt ak-external-link"
+                          ></i>`
+                    : nothing
+            }
         </a>
     </li>`;
 }
 
 /**
- * class QuickActionsCard
- * element ak-quick-actions-card
+ * Class QuickActionsCard element ak-quick-actions-card
  *
  * Specialized card for navigation.
  */
@@ -49,8 +50,8 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
     title = msg("Quick actions");
 
     /**
-     * Card contents. An array of [label, url, isExternal].  External links will
-     * be rendered with an external link icon and will always open in a new tab.
+     * Card contents. An array of [label, url, isExternal]. External links will be rendered with an
+     * external link icon and will always open in a new tab.
      *
      * @attr
      */

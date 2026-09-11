@@ -1,12 +1,11 @@
 /// <reference types="node" />
 
 /**
- * @file Pseudo-localization script.
- *
- * @import { ConfigFile } from "@lit/localize-tools/lib/types/config.js"
+ * @import {ConfigFile} from "@lit/localize-tools/lib/types/config.js"
+ * @import {ProgramMessage} from "@lit/localize-tools/src/messages.js"
+ * @import {Locale} from "@lit/localize-tools/src/types/locale.js"
  * @import { Config } from '@lit/localize-tools/lib/types/config.js';
- * @import { ProgramMessage } from "@lit/localize-tools/src/messages.js"
- * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
+ * @file Pseudo-localization script.
  */
 
 import { readFileSync } from "node:fs";
@@ -52,8 +51,8 @@ const config = {
 };
 
 /**
- *
  * @param {ProgramMessage} message
+ *
  * @returns
  */
 const pseudoMessagify = (message) => ({

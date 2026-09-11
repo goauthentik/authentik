@@ -1,7 +1,6 @@
 /**
- * @file Minimal ESLint-compatible plugin types shared by the bundled oxlint JS plugins.
- *
- * Kept local to avoid coupling to oxlint's alpha internal type surface, which is not subject to semver.
+ * @file Minimal ESLint-compatible plugin types shared by the bundled oxlint JS plugins. Kept local
+ *   to avoid coupling to oxlint's alpha internal type surface, which is not subject to semver.
  */
 
 export interface Comment {

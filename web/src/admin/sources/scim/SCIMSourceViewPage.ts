@@ -1,8 +1,8 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/scim/SCIMSourceGroups";
 import "#admin/sources/scim/SCIMSourceUsers";
-import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";

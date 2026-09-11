@@ -132,11 +132,13 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 tooltip = msg("Object permission");
             }
             baseRow.push(
-                html`${tooltip
-                    ? html`<pf-tooltip position="top" content=${tooltip}
-                          ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
-                      ></pf-tooltip>`
-                    : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`} `,
+                html`${
+                    tooltip
+                        ? html`<pf-tooltip position="top" content=${tooltip}
+                              ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
+                          ></pf-tooltip>`
+                        : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`
+                } `,
             );
         });
         return baseRow;

@@ -3,8 +3,6 @@ import "#flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
-import Styles from "./AuthenticatorValidateStage.css";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
@@ -30,6 +28,7 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
+import Styles from "./AuthenticatorValidateStage.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -335,9 +334,11 @@ export class AuthenticatorValidateStage
 
     protected override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.selectedDeviceChallenge
-                ? this.renderDeviceChallenge()
-                : this.renderAuthenticatorSelection()}
+            ${
+                this.selectedDeviceChallenge
+                    ? this.renderDeviceChallenge()
+                    : this.renderAuthenticatorSelection()
+            }
         </ak-flow-card>`;
     }
 }

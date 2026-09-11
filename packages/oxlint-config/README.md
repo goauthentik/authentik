@@ -16,11 +16,11 @@ header plugin via Node).
 Create an `oxlint.config.ts` (oxlint auto-discovers it):
 
 ```ts
-import { createOxlintConfig } from "@goauthentik/oxlint-config"
+import { createOxlintConfig } from "@goauthentik/oxlint-config";
 
 export default createOxlintConfig({
     // per-repo tweaks, e.g. ignorePatterns
-})
+});
 ```
 
 ### Platform layering
@@ -35,4 +35,3 @@ Files are matched by their final name segment, and cross-runtime imports are fla
 
 A `*-client` file importing a `*-server` package (or vice versa) is an error; `*-shared`/`*-common`
 files may not import Node built-ins at all.
-

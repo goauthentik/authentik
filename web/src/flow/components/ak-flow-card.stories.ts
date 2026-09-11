@@ -1,6 +1,6 @@
-import "@patternfly/patternfly/components/Login/login.css";
 import "../../stories/flow-interface.js";
 import "./ak-flow-card.js";
+import "@patternfly/patternfly/components/Login/login.css";
 
 import { ContextualFlowInfoLayoutEnum, DummyChallenge, UiThemeEnum } from "@goauthentik/api";
 

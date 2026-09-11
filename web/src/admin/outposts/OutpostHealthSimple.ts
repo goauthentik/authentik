@@ -4,8 +4,8 @@ import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
-import { listen } from "#elements/decorators/listen";
 import { PFColor } from "#elements/Label";
+import { listen } from "#elements/decorators/listen";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import { SlottedTemplateResult } from "#elements/types";
 import { dateProperty } from "#elements/utils/properties";

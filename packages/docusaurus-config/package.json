@@ -8,17 +8,12 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/docusaurus-config"
     },
-    "scripts": {
-        "build": "tsc -p .",
-        "lint": "run-s lint:oxlint",
-        "lint:oxlint": "oxlint",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "fix:oxlint": "oxlint --fix",
-        "fix:oxfmt": "oxfmt --write .",
-        "lint-check": "run-s lint-check:oxlint",
-        "lint-check:oxlint": "oxlint --max-warnings=0"
-    },
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "css/**/*",
+        "out/**/*"
+    ],
     "type": "module",
     "types": "./out/index.d.ts",
     "exports": {
@@ -28,6 +23,20 @@
             "import": "./index.js"
         },
         "./css/*.css": "./css/*.css"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0"
     },
     "dependencies": {
         "deepmerge-ts": "^8.0.0",
@@ -53,28 +62,6 @@
         "react": ">=19",
         "react-dom": ">=19"
     },
-    "optionalDependencies": {
-        "react": "^19.2.8",
-        "react-dom": "^19.2.8"
-    },
-    "files": [
-        "./index.js",
-        "lib/**/*",
-        "css/**/*",
-        "out/**/*"
-    ],
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "version": ">=24.20",
-            "onFail": "error"
-        }
-    },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "peerDependenciesMeta": {
         "@docusaurus/theme-search-algolia": {
             "optional": true
@@ -86,7 +73,20 @@
             "optional": true
         }
     },
-    "publishConfig": {
-        "access": "public"
-    }
+    "optionalDependencies": {
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

@@ -1,6 +1,7 @@
 import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import {
     CommandPaletteState,
     PaletteCommandAction,
@@ -9,7 +10,6 @@ import {
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { getSearchParams, updateSearchParams } from "#elements/router/core/search-params";
-import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { routedTabBaseContext } from "#elements/tabs/tab-context";
 import { activeSlotForPath, tabHref } from "#elements/tabs/tab-path";
 import { ifPresent } from "#elements/utils/attributes";
@@ -32,27 +32,25 @@ export class Tabs extends AKElement {
     static styles: CSSResult[] = [Styles];
 
     /**
-     * Opt into path routing: the active tab becomes a path segment
-     * (`/if/user/settings/sessions`) and switching tabs navigates the router.
-     * The base comes from {@linkcode routedTabBaseContext} — provided by the
-     * router outlet for the page, then refined by each nested group — so no
-     * page wiring is needed. Without this (and without {@linkcode base}), the
-     * group falls back to the legacy `?page=` search parameter.
+     * Opt into path routing: the active tab becomes a path segment (`/if/user/settings/sessions`)
+     * and switching tabs navigates the router. The base comes from {@linkcode routedTabBaseContext}
+     * — provided by the router outlet for the page, then refined by each nested group — so no page
+     * wiring is needed. Without this (and without {@linkcode base}), the group falls back to the
+     * legacy `?page=` search parameter.
      */
     @property({ type: Boolean })
     public routed = false;
 
     /**
-     * An explicit mount path override, e.g. `/if/user/settings`. Rarely needed:
-     * prefer {@linkcode routed} and let the context supply the base. Setting it
-     * implies {@linkcode routed}.
+     * An explicit mount path override, e.g. `/if/user/settings`. Rarely needed: prefer
+     * {@linkcode routed} and let the context supply the base. Setting it implies {@linkcode routed}.
      */
     @property({ type: String })
     public base = "";
 
     /**
-     * The search parameter used to persist the active tab in the legacy
-     * (non-{@linkcode base}) mode.
+     * The search parameter used to persist the active tab in the legacy (non-{@linkcode base})
+     * mode.
      */
     @property({ type: String })
     public pageIdentifier = "page";
@@ -79,8 +77,8 @@ export class Tabs extends AKElement {
     //#region Routed base
 
     /**
-     * The base supplied by the nearest routed ancestor (the outlet, or a parent
-     * tab group), consumed reactively.
+     * The base supplied by the nearest routed ancestor (the outlet, or a parent tab group),
+     * consumed reactively.
      */
     #baseConsumer = new ContextConsumer(this, {
         context: routedTabBaseContext,
@@ -94,8 +92,8 @@ export class Tabs extends AKElement {
     });
 
     /**
-     * Provides this group's active-panel path to its subtree, so a nested
-     * `<ak-tabs routed>` derives its base with no wiring.
+     * Provides this group's active-panel path to its subtree, so a nested `<ak-tabs routed>`
+     * derives its base with no wiring.
      */
     #childBaseProvider = new ContextProvider(this, {
         context: routedTabBaseContext,
@@ -109,16 +107,15 @@ export class Tabs extends AKElement {
     }
 
     /**
-     * The mount path this group tracks against: an explicit {@linkcode base}
-     * wins, else the context value from the nearest routed ancestor.
+     * The mount path this group tracks against: an explicit {@linkcode base} wins, else the context
+     * value from the nearest routed ancestor.
      */
     get #effectiveBase(): string {
         return this.base || this.#baseConsumer.value || "";
     }
 
     /**
-     * Whether the active tab is tracked as a path segment rather than a search
-     * parameter.
+     * Whether the active tab is tracked as a path segment rather than a search parameter.
      */
     get #pathMode(): boolean {
         return this.routed || Boolean(this.base);
@@ -173,8 +170,8 @@ export class Tabs extends AKElement {
     //#region Navigation
 
     /**
-     * The active slot for the current location, or `null` when the tabs are not
-     * yet known. Falls back to the first tab when the path names no known tab.
+     * The active slot for the current location, or `null` when the tabs are not yet known. Falls
+     * back to the first tab when the path names no known tab.
      */
     #slotFromLocation(): string | null {
         return activeSlotForPath(this.#effectiveBase, window.location.pathname, [

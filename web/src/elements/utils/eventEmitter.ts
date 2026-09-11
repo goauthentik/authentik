@@ -66,8 +66,8 @@ export interface CustomEventTarget<EventType extends string = string> {
 /**
  * A mixin that enables Lit Elements to handle custom events in a more straightforward manner.
  *
- * @todo Can we lean on the native `EventTarget` class for this?
  * @category Mixin
+ * @todo Can we lean on the native `EventTarget` class for this?
  */
 export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClass }) => {
     return class ListenerElementHandler extends SuperClass implements CustomEventTarget {

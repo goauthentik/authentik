@@ -59,16 +59,18 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             <span slot="title">${msg("Authenticating with Apple...")}</span>
             <form class="pf-c-form">
                 <ak-empty-state loading></ak-empty-state>
-                ${!this.isModalShown
-                    ? html`<button
-                          class="pf-c-button pf-m-primary pf-m-block"
-                          @click=${() => {
-                              AppleID.auth.signIn();
-                          }}
-                      >
-                          ${msg("Retry")}
-                      </button>`
-                    : nothing}
+                ${
+                    !this.isModalShown
+                        ? html`<button
+                              class="pf-c-button pf-m-primary pf-m-block"
+                              @click=${() => {
+                                  AppleID.auth.signIn();
+                              }}
+                          >
+                              ${msg("Retry")}
+                          </button>`
+                        : nothing
+                }
             </form>
         </ak-flow-card>`;
     }

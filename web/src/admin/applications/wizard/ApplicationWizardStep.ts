@@ -1,12 +1,12 @@
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { serializeForm } from "#elements/forms/serialization";
 
+import { WizardStep } from "#components/ak-wizard/WizardStep";
 import {
     NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "#components/ak-wizard/events";
-import { WizardStep } from "#components/ak-wizard/WizardStep";
 
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
@@ -26,9 +26,10 @@ export interface ApplicationDispatchInit {
 }
 
 /**
- * Base class for application wizard steps. Provides common functionality such as form handling and wizard state management.
+ * Base class for application wizard steps. Provides common functionality such as form handling and
+ * wizard state management.
  *
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
     static styles = [...WizardStep.styles, ...ApplicationWizardStyles];
@@ -48,8 +49,8 @@ export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> ext
     }
 
     /**
-     * @todo This defaults to true when the form is not yet available
-     * to ease the migration of existing wizards. This behavior should be removed.
+     * @todo This defaults to true when the form is not yet available to ease the migration of
+     *   existing wizards. This behavior should be removed.
      */
     public reportValidity(): boolean {
         const { form } = this;
@@ -60,8 +61,8 @@ export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> ext
     }
 
     /**
-     * @todo This defaults to true when the form is not yet available
-     * to ease the migration of existing wizards. This behavior should be removed.
+     * @todo This defaults to true when the form is not yet available to ease the migration of
+     *   existing wizards. This behavior should be removed.
      */
     public checkValidity(): boolean {
         const { form } = this;

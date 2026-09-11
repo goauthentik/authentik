@@ -84,12 +84,16 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
                   (uri) =>
                       html`<li>
                           ${uri.url}
-                          (${uri.matchingMode === MatchingModeEnum.Strict
-                              ? msg("strict")
-                              : msg("regexp")},
-                          ${uri.redirectUriType === RedirectURITypeEnum.Logout
-                              ? msg("post logout")
-                              : msg("authorization")})
+                          (${
+                              uri.matchingMode === MatchingModeEnum.Strict
+                                  ? msg("strict")
+                                  : msg("regexp")
+                          },
+                          ${
+                              uri.redirectUriType === RedirectURITypeEnum.Logout
+                                  ? msg("post logout")
+                                  : msg("authorization")
+                          })
                       </li>`,
               )}
           </ul>`

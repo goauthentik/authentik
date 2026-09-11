@@ -5,8 +5,8 @@ export interface HexBand {
 }
 
 /**
- * Canonical zoom→H3-resolution mapping, shared by the generator and the runtime overlay.
- * Changing a band invalidates published archives.
+ * Canonical zoom→H3-resolution mapping, shared by the generator and the runtime overlay. Changing a
+ * band invalidates published archives.
  */
 export const HEX_BANDS: readonly HexBand[] = [
     { res: 3, minzoom: 0, maxzoom: 2 },

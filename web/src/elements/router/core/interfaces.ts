@@ -1,11 +1,8 @@
 /**
- * @file Cross-interface href builders.
- *
- * The only sanctioned channel for referencing another interface: these return
- * full, base-path-aware URL strings for use with plain `<a href>` /
- * `location.assign`. Crossing interfaces is a real page load (a different
- * bundle). Fixes the hardcoded `/if/user/` literals that break under a
- * non-root `web.path`.
+ * @file Cross-interface href builders. The only sanctioned channel for referencing another
+ *   interface: these return full, base-path-aware URL strings for use with plain `<a href>` /
+ *   `location.assign`. Crossing interfaces is a real page load (a different bundle). Fixes the
+ *   hardcoded `/if/user/` literals that break under a non-root `web.path`.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
@@ -22,8 +19,8 @@ function stripLeadingSlash(value: string): string {
 /**
  * Build the pathname prefix owned by an interface, e.g. `/auth/if/admin/`.
  *
- * The single source of truth for prefix construction — the href builders,
- * click interceptor, and hash shim must all agree byte-for-byte.
+ * The single source of truth for prefix construction — the href builders, click interceptor, and
+ * hash shim must all agree byte-for-byte.
  */
 export function formatInterfacePrefix(base: string, interfaceName: string): string {
     return `${ensureTrailingSlash(base)}if/${interfaceName}/`;
@@ -72,8 +69,8 @@ export function toUserInterface(path?: string, params?: RouterParameterInit): st
 /**
  * Build a URL into the currently-configured interface.
  *
- * For interface-agnostic shared components (sidebar, navbar) that link within
- * whichever interface booted the router, rather than a fixed target.
+ * For interface-agnostic shared components (sidebar, navbar) that link within whichever interface
+ * booted the router, rather than a fixed target.
  */
 export function toCurrentInterface(path?: string, params?: RouterParameterInit): string {
     return formatInterfaceURL(getRouterConfig().interfaceName, path, params);
@@ -82,8 +79,7 @@ export function toCurrentInterface(path?: string, params?: RouterParameterInit):
 /**
  * Build a URL into the flow interface for a given flow slug.
  *
- * The flow interface keeps its server-driven, trailing-slashed URL space
- * (`/if/flow/<slug>/`).
+ * The flow interface keeps its server-driven, trailing-slashed URL space (`/if/flow/<slug>/`).
  */
 export function toFlowInterface(slug: string, params?: RouterParameterInit): string {
     return formatInterfaceURL("flow", ensureTrailingSlash(slug), params);

@@ -1,6 +1,6 @@
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
 
@@ -15,9 +15,10 @@ import {
     UserLDAPSourceConnection,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-user-form")

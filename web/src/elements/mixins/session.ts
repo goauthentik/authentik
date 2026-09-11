@@ -55,7 +55,6 @@ export interface SessionMixin {
     readonly session: APIResult<SessionUser>;
 
     /**
-     *
      * The current user of the session.
      *
      * If this user is impersonating another user, this will be the impersonated user.

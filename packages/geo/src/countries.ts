@@ -81,22 +81,20 @@ function buildIndex(collection: FeatureCollection, codeKeys: readonly string[]):
 }
 
 /**
- * Build a searchable index of countries from a Natural Earth admin-0
- * FeatureCollection. Each entry keeps the country's ISO code, its
- * pre-computed bounding box (for fast rejection), and its polygon rings.
- * Both Polygon and MultiPolygon geometries are supported; anything else is
- * skipped silently.
+ * Build a searchable index of countries from a Natural Earth admin-0 FeatureCollection. Each entry
+ * keeps the country's ISO code, its pre-computed bounding box (for fast rejection), and its polygon
+ * rings. Both Polygon and MultiPolygon geometries are supported; anything else is skipped
+ * silently.
  */
 export function buildCountryIndex(collection: FeatureCollection): CountryIndex {
     return buildIndex(collection, COUNTRY_CODE_KEYS);
 }
 
 /**
- * Build a searchable index of admin-1 regions (states, provinces) from a
- * Natural Earth admin-1 FeatureCollection. Prefers ISO 3166-2 codes with a
- * fallback to Natural Earth's `adm1_code` or the HASC identifier — the 50m
- * dataset covers only nine countries, so use `ne_10m_admin_1_states_provinces`
- * as input for global coverage.
+ * Build a searchable index of admin-1 regions (states, provinces) from a Natural Earth admin-1
+ * FeatureCollection. Prefers ISO 3166-2 codes with a fallback to Natural Earth's `adm1_code` or the
+ * HASC identifier — the 50m dataset covers only nine countries, so use
+ * `ne_10m_admin_1_states_provinces` as input for global coverage.
  */
 export function buildRegionIndex(collection: FeatureCollection): RegionIndex {
     return buildIndex(collection, REGION_CODE_KEYS);
@@ -147,9 +145,9 @@ function assignBy(cells: Iterable<string>, index: AdminIndex): Map<string, strin
 }
 
 /**
- * Assign every H3 cell in `cells` to a country by point-in-polygon on the
- * cell centroid. Cells whose centroid falls in no polygon are omitted from
- * the result — the caller treats them as ocean or antarctic ice.
+ * Assign every H3 cell in `cells` to a country by point-in-polygon on the cell centroid. Cells
+ * whose centroid falls in no polygon are omitted from the result — the caller treats them as ocean
+ * or antarctic ice.
  */
 export function assignCountries(cells: Iterable<string>, index: CountryIndex): Map<string, string> {
     return assignBy(cells, index);

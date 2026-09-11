@@ -1,10 +1,10 @@
+import "#admin/common/ak-crypto-certificate-search";
 import "#components/ak-hidden-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-crypto-certificate-search";
 
 import { aki } from "#common/api/client";
 

@@ -36,8 +36,8 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 // Fixes horizontal rule <hr> warning in select dropdowns.
 
 /**
- * @prop {PromptChallenge} challenge - The challenge provided to this stage.
- * @prop {StageHost} host - The host managing this stage.
+ * @property {PromptChallenge} challenge - The challenge provided to this stage.
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
@@ -112,8 +112,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                 >
-${prompt.initialValue}</textarea
-                >`;
+${prompt.initialValue}</textarea>`;
             case PromptTypeEnum.TextReadOnly:
                 return html`<input
                     type="text"
@@ -132,8 +131,7 @@ ${prompt.initialValue}</textarea
                     class="pf-c-form-control"
                     readonly
                 >
-${prompt.initialValue}</textarea
-                >`;
+${prompt.initialValue}</textarea>`;
             case PromptTypeEnum.Username:
                 return html`<input
                     type="text"
@@ -297,9 +295,11 @@ ${prompt.initialValue}</textarea
                     ?required=${prompt.required}
                 />
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
-                ${prompt.required
-                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : null}
+                ${
+                    prompt.required
+                        ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
+                        : null
+                }
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }

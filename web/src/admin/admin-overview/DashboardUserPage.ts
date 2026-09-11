@@ -1,6 +1,6 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
-import "#elements/cards/AggregateCard";
 import "#elements/Divider";
+import "#elements/cards/AggregateCard";
 
 import { AKElement } from "#elements/Base";
 
@@ -43,10 +43,12 @@ export class DashboardUserPage extends AKElement {
                     >
                         <ak-aggregate-card label=${msg("Users created per day in the last month")}>
                             <ak-charts-admin-model-per-day
-                                .query=${{
-                                    contextModelApp: "authentik_core",
-                                    contextModelName: "user",
-                                } as EventsEventsVolumeListRequest}
+                                .query=${
+                                    {
+                                        contextModelApp: "authentik_core",
+                                        contextModelName: "user",
+                                    } as EventsEventsVolumeListRequest
+                                }
                                 label=${msg("Users created")}
                             >
                             </ak-charts-admin-model-per-day>

@@ -29,8 +29,8 @@ export interface InvitationEnrollmentFlowFormData {
 }
 
 /**
- * A form which imports the minimal enrollment-flow blueprint, creating an
- * enrollment flow with an invitation stage bound to it.
+ * A form which imports the minimal enrollment-flow blueprint, creating an enrollment flow with an
+ * invitation stage bound to it.
  *
  * Resolves with the created {@linkcode Flow} on success.
  */
@@ -102,23 +102,25 @@ export class InvitationEnrollmentFlowForm extends Form<InvitationEnrollmentFlowF
             <ak-radio-input
                 label=${msg("User type")}
                 name="userType"
-                .options=${[
-                    {
-                        label: msg("External"),
-                        default: true,
-                        value: "external",
-                        description: msg(
-                            "Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.",
-                        ),
-                    },
-                    {
-                        label: msg("Internal"),
-                        value: "internal",
-                        description: msg(
-                            "Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.",
-                        ),
-                    },
-                ] satisfies RadioOption<UserTypeEnum>[]}
+                .options=${
+                    [
+                        {
+                            label: msg("External"),
+                            default: true,
+                            value: "external",
+                            description: msg(
+                                "Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.",
+                            ),
+                        },
+                        {
+                            label: msg("Internal"),
+                            value: "internal",
+                            description: msg(
+                                "Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.",
+                            ),
+                        },
+                    ] satisfies RadioOption<UserTypeEnum>[]
+                }
             ></ak-radio-input>
             <ak-switch-input
                 label=${msg("Continue flow without invitation")}

@@ -75,9 +75,11 @@ export class UserReputationList extends Table<Reputation> {
     row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

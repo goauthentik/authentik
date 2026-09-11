@@ -1,5 +1,5 @@
-import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 

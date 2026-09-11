@@ -2,27 +2,29 @@
     "name": "@goauthentik/esbuild-plugin-live-reload",
     "version": "3.0.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
+    "keywords": [
+        "authentik",
+        "browser",
+        "esbuild",
+        "live-reload",
+        "refresh",
+        "reload"
+    ],
     "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/esbuild-plugin-live-reload"
     },
-    "scripts": {
-        "build": "npm run build:types && npm run build:docs",
-        "build:docs": "typedoc",
-        "build:types": "tsc -p .",
-        "lint": "run-s lint:oxlint",
-        "lint:oxlint": "oxlint",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "fix:oxlint": "oxlint --fix",
-        "fix:oxfmt": "oxfmt --write .",
-        "lint-check": "run-s lint-check:oxlint",
-        "lint-check:oxlint": "oxlint --max-warnings=0"
-    },
-    "main": "index.js",
+    "files": [
+        "./index.js",
+        "client/**/*",
+        "plugin/**/*",
+        "shared/**/*",
+        "out/**/*"
+    ],
     "type": "module",
+    "main": "index.js",
     "types": "./out/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
@@ -44,6 +46,22 @@
             "import": "./plugin/index.js"
         }
     },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "npm run build:types && npm run build:docs",
+        "build:docs": "typedoc",
+        "build:types": "tsc -p .",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0"
+    },
     "dependencies": {
         "find-free-ports": "^3.1.1"
     },
@@ -64,16 +82,10 @@
         "@goauthentik/logger-js": "^3.0.0",
         "esbuild": "^0.28.1"
     },
-    "files": [
-        "./index.js",
-        "client/**/*",
-        "plugin/**/*",
-        "shared/**/*",
-        "out/**/*"
-    ],
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
+    "peerDependenciesMeta": {
+        "@goauthentik/logger-js": {
+            "optional": true
+        }
     },
     "devEngines": {
         "runtime": {
@@ -82,21 +94,9 @@
             "onFail": "error"
         }
     },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "keywords": [
-        "esbuild",
-        "live-reload",
-        "browser",
-        "refresh",
-        "reload",
-        "authentik"
-    ],
-    "peerDependenciesMeta": {
-        "@goauthentik/logger-js": {
-            "optional": true
-        }
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
-    "publishConfig": {
-        "access": "public"
-    }
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

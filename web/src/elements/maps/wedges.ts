@@ -40,8 +40,8 @@ export function pointsInCell<T extends EventPoint>(points: T[], zoom: number, ce
 }
 
 /**
- * The cell containing a location at the zoom band's resolution, and the
- * points binned into it (empty when the cell holds no events).
+ * The cell containing a location at the zoom band's resolution, and the points binned into it
+ * (empty when the cell holds no events).
  */
 export function binAtLocation<T extends EventPoint>(
     points: T[],
@@ -95,8 +95,8 @@ function bearingOf(x: number, y: number): number {
 }
 
 /**
- * Intersection of the ray from the origin at `bearing` with the convex
- * perimeter (local coords). The center is inside, so exactly one edge hits.
+ * Intersection of the ray from the origin at `bearing` with the convex perimeter (local coords).
+ * The center is inside, so exactly one edge hits.
  */
 function perimeterPoint(verts: Position[], bearing: number): Position {
     const dx = Math.sin(bearing);

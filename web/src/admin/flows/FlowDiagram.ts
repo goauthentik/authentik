@@ -3,8 +3,8 @@ import "#elements/EmptyState";
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
 
-import { listen } from "#elements/decorators/listen";
 import { Diagram } from "#elements/Diagram/ak-diagram";
+import { listen } from "#elements/decorators/listen";
 
 import { diagramToolbar } from "#admin/flows/FlowDiagramToolbar";
 import { buildFlowGraph, isEditableNode, resolveNodeID } from "#admin/flows/FlowGraph";

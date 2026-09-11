@@ -1,13 +1,16 @@
 /**
+ * @import {
+ *   LLMSCrossLink,
+ *   LLMSDocInfo
+ * } from "./common.mjs"
  * @file Assemble llms.txt / llms-full.txt / per-page .md output strings.
- *
- * @import { LLMSDocInfo, LLMSCrossLink } from "./common.mjs"
  */
 
 import { trimTrailingSlashes } from "./common.mjs";
 
 /**
  * @param {string} url
+ *
  * @returns {string}
  */
 export function applyMdExtension(url) {
@@ -25,6 +28,7 @@ export function applyMdExtension(url) {
 
 /**
  * @param {string} description
+ *
  * @returns {string}
  */
 function oneLine(description) {
@@ -38,6 +42,7 @@ function oneLine(description) {
  * @param {string} description
  * @param {string} intro
  * @param {LLMSCrossLink[]} [crossLinks]
+ *
  * @returns {string}
  */
 export function buildHeader(title, description, intro, crossLinks = []) {
@@ -54,6 +59,7 @@ export function buildHeader(title, description, intro, crossLinks = []) {
 
 /**
  * @param {LLMSDocInfo} doc
+ *
  * @returns {string}
  */
 function tocLine(doc) {
@@ -62,10 +68,11 @@ function tocLine(doc) {
 }
 
 /**
- * Strip a single leading top-level `# Heading` line so embedded page content
- * doesn't inject a competing H1 when inlined under another section.
+ * Strip a single leading top-level `# Heading` line so embedded page content doesn't inject a
+ * competing H1 when inlined under another section.
  *
  * @param {string} md
+ *
  * @returns {string}
  */
 function stripLeadingH1(md) {
@@ -76,7 +83,14 @@ function stripLeadingH1(md) {
  * Generate the grouped links index (llms.txt).
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string, overview?: LLMSDocInfo[] }} opts
+ * @param {{
+ *     title: string;
+ *     description: string;
+ *     crossLinks?: LLMSCrossLink[];
+ *     intro?: string;
+ *     overview?: LLMSDocInfo[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function generateIndex(docs, opts) {
@@ -126,7 +140,8 @@ export function generateIndex(docs, opts) {
  * Generate the concatenated full-text file (llms-full.txt).
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[] }} opts
+ * @param {{ title: string; description: string; crossLinks?: LLMSCrossLink[] }} opts
+ *
  * @returns {string}
  */
 export function generateFullText(docs, opts) {
@@ -144,6 +159,7 @@ export function generateFullText(docs, opts) {
  * Render a single page's .md payload.
  *
  * @param {LLMSDocInfo} doc
+ *
  * @returns {string}
  */
 export function renderPagePayload(doc) {
@@ -155,8 +171,9 @@ export function renderPagePayload(doc) {
  * Generate a per-group (topic/category) index for the third level.
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, parentUrl: string }} opts
- * @returns {Map<string, string>} group dir -> llms.txt contents
+ * @param {{ title: string; description: string; parentUrl: string }} opts
+ *
+ * @returns {Map<string, string>} Group dir -> llms.txt contents
  */
 export function generatePerGroupIndexes(docs, opts) {
     /** @type {Map<string, LLMSDocInfo[]>} */

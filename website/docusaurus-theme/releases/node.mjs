@@ -1,8 +1,10 @@
 /**
+ * @import {SidebarItemConfig} from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
+ * @import {
+ *   AKReleaseFile,
+ *   AKReleasesPluginEnvironment
+ * } from "./common.mjs"
  * @file Docusaurus release utils.
- *
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
- * @import { AKReleaseFile, AKReleasesPluginEnvironment } from "./common.mjs"
  */
 
 import { readFileSync } from "node:fs";
@@ -56,6 +58,7 @@ function parseRelease(releasesParentDirectory, release, index) {
  * Collect all Markdown files from the releases directory.
  *
  * @param {string} releasesParentDirectory
+ *
  * @returns {AKReleaseFile[]}
  */
 export function collectReleaseFiles(releasesParentDirectory) {
@@ -93,7 +96,6 @@ export function collectReleaseFiles(releasesParentDirectory) {
 }
 
 /**
- *
  * @param {AKReleaseFile[]} releaseFiles
  */
 export function createReleaseSidebarEntries(releaseFiles) {

@@ -1,12 +1,12 @@
 /**
- * @file Docusaurus plugin that keeps site content on `.mdx`.
- *
- * All three sites are MDX-only. Docusaurus builds a `.md` page just fine, so the
- * mistake surfaces later as prose that renders differently than the author expected
- * — directives, JSX, and the shared remark plugins all behave differently. Fail the
- * build up front instead, naming the files to rename.
- *
- * @import { LoadContext, Plugin } from "@docusaurus/types"
+ * @import {
+ *   LoadContext,
+ *   Plugin
+ * } from "@docusaurus/types"
+ * @file Docusaurus plugin that keeps site content on `.mdx`. All three sites are MDX-only.
+ *   Docusaurus builds a `.md` page just fine, so the mistake surfaces later as prose that renders
+ *   differently than the author expected — directives, JSX, and the shared remark plugins all
+ *   behave differently. Fail the build up front instead, naming the files to rename.
  */
 
 import { relative, resolve } from "node:path";
@@ -23,6 +23,7 @@ const PLUGIN_NAME = "ak-mdx-only-plugin";
 /**
  * @param {LoadContext} loadContext
  * @param {AKMDXOnlyPluginOptions} [options]
+ *
  * @returns {Plugin<void>}
  */
 function akMDXOnlyPlugin({ siteDir }, { ignore = [] } = {}) {

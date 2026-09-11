@@ -8,13 +8,13 @@ export type FlavorName = "light" | "dark" | "grayscale" | "black";
 
 export interface BuildStyleOptions {
     /**
-     * URL of a single PMTiles archive (preferred). May be absolute or
-     * root-relative; the `pmtiles://` protocol is added automatically.
+     * URL of a single PMTiles archive (preferred). May be absolute or root-relative; the
+     * `pmtiles://` protocol is added automatically.
      */
     pmtilesURL?: string | null;
     /**
-     * Legacy XYZ tile template (e.g. served by a tile server). Used only when
-     * `pmtilesURL` is not given.
+     * Legacy XYZ tile template (e.g. served by a tile server). Used only when `pmtilesURL` is not
+     * given.
      */
     tileURL?: string;
     theme?: BasemapTheme;
@@ -43,9 +43,8 @@ export function flavorForTheme(theme: BasemapTheme): Flavor {
 }
 
 /**
- * Atmosphere for the globe projection: a soft halo where the sphere meets the
- * backdrop, fading out entirely once the view is close enough that the horizon
- * leaves the frame.
+ * Atmosphere for the globe projection: a soft halo where the sphere meets the backdrop, fading out
+ * entirely once the view is close enough that the horizon leaves the frame.
  */
 export function buildSky(theme: BasemapTheme): SkySpecification {
     const colors =

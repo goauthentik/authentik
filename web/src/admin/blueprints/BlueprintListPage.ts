@@ -3,15 +3,15 @@
  */
 
 import "#admin/blueprints/BlueprintForm";
+import "#admin/blueprints/BlueprintImportForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#admin/blueprints/BlueprintImportForm";
+import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#elements/ak-mdx/ak-mdx";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -34,11 +34,11 @@ import {
     ModelEnum,
 } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
 import { match, P } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -139,9 +139,11 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
         return [
             html`<div>${item.name}</div>
-                ${description
-                    ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
-                    : nothing}`,
+                ${
+                    description
+                        ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
+                        : nothing
+                }`,
             BlueprintStatus(item),
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,

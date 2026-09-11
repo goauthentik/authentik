@@ -1,12 +1,12 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#elements/forms/ConfirmationForm";
+import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/dialogs/ak-modal";
+import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/dialogs/ak-modal";
-import "#admin/applications/ApplicationForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
@@ -145,18 +145,20 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(ApplicationForm, item.slug)}
-                ${item.launchUrl
-                    ? html`<a
-                          href=${item.launchUrl}
-                          target="_blank"
-                          class="pf-c-button pf-m-plain"
-                          aria-label=${msg(str`Open "${item.name}"`)}
-                      >
-                          <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </a>`
-                    : nothing}
+                ${
+                    item.launchUrl
+                        ? html`<a
+                              href=${item.launchUrl}
+                              target="_blank"
+                              class="pf-c-button pf-m-plain"
+                              aria-label=${msg(str`Open "${item.name}"`)}
+                          >
+                              <pf-tooltip position="top" content=${msg("Open")}>
+                                  <i class="fas fa-share-square" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </a>`
+                        : nothing
+                }
             </div>`,
         ];
     }

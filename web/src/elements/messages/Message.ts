@@ -110,11 +110,13 @@ export class Message extends AKElement {
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>
                 </p>
-                ${description
-                    ? html`<div class="pf-c-alert__description" id="message-description">
-                          <p>${description}</p>
-                      </div>`
-                    : nothing}
+                ${
+                    description
+                        ? html`<div class="pf-c-alert__description" id="message-description">
+                              <p>${description}</p>
+                          </div>`
+                        : nothing
+                }
                 <div class="pf-c-alert__action">
                     <button
                         aria-label=${msg("Dismiss")}

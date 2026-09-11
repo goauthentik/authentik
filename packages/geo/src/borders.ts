@@ -8,10 +8,9 @@ export interface BorderProperties {
     a: string;
     b: string;
     /**
-     * H3 cell ids of the two endpoints, sorted so `aCell < bCell` matches
-     * the `(a, b)` code ordering. Kept on the in-memory feature for
-     * downstream zone filtering; the generator strips them before tippecanoe
-     * sees the geojsonl so shipped tiles stay small.
+     * H3 cell ids of the two endpoints, sorted so `aCell < bCell` matches the `(a, b)` code
+     * ordering. Kept on the in-memory feature for downstream zone filtering; the generator strips
+     * them before tippecanoe sees the geojsonl so shipped tiles stay small.
      */
     aCell?: string;
     bCell?: string;
@@ -21,14 +20,15 @@ export type BorderFeature = Feature<LineString, BorderProperties>;
 
 export interface BorderAssignments {
     country: Map<string, string>;
-    /** Optional admin-1 assignment. Region-level borders only emit where both
-     *  cells carry a region code, and only where the country codes match. */
+    /**
+     * Optional admin-1 assignment. Region-level borders only emit where both cells carry a region
+     * code, and only where the country codes match.
+     */
     region?: Map<string, string>;
     /**
-     * Optional full land-cell set at this resolution. When provided, every
-     * land cell whose neighbor is not a land cell gets a level-0 coastal edge
-     * against the neighbor. Deduped alongside country-vs-country segments so
-     * no cell pair produces two features.
+     * Optional full land-cell set at this resolution. When provided, every land cell whose neighbor
+     * is not a land cell gets a level-0 coastal edge against the neighbor. Deduped alongside
+     * country-vs-country segments so no cell pair produces two features.
      */
     land?: Set<string>;
 }
@@ -66,13 +66,12 @@ function pushBorder(
 }
 
 /**
- * Extract hex-aligned border segments. Walks every land cell, checks the six
- * neighbors, and emits the shared H3 edge whenever the neighbor differs at
- * the strongest applicable level: country (level 0) first, region (level 1)
- * only when countries match. When `land` is provided, land cells whose
- * neighbor is not a land cell also emit a level-0 coastal edge so every
- * country is fully enclosed against water. Each unordered cell pair produces
- * at most one feature — canonicalized on lexical order of the two cell ids.
+ * Extract hex-aligned border segments. Walks every land cell, checks the six neighbors, and emits
+ * the shared H3 edge whenever the neighbor differs at the strongest applicable level: country
+ * (level 0) first, region (level 1) only when countries match. When `land` is provided, land cells
+ * whose neighbor is not a land cell also emit a level-0 coastal edge so every country is fully
+ * enclosed against water. Each unordered cell pair produces at most one feature — canonicalized on
+ * lexical order of the two cell ids.
  */
 export function borderEdges(assignments: BorderAssignments): BorderFeature[] {
     const { country, region, land } = assignments;

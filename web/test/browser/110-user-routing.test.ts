@@ -6,9 +6,9 @@ const LIBRARY_PATHNAME = "/if/user/library";
 const SETTINGS_PATHNAME = "/if/user/settings";
 
 /**
- * Pathname of the document-level navigation entry — the URL of the last full
- * document load, unaffected by pushState/replaceState. Distinguishes
- * same-document (SPA) navigations from full page loads.
+ * Pathname of the document-level navigation entry — the URL of the last full document load,
+ * unaffected by pushState/replaceState. Distinguishes same-document (SPA) navigations from full
+ * page loads.
  */
 const documentLoadPathname = (page: Page): Promise<string> =>
     page.evaluate(() => {

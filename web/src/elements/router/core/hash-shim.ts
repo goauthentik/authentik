@@ -1,13 +1,10 @@
 /**
- * @file Legacy hash-route redirect shim (temporary).
- *
- * Translates legacy `#/path;<params>` URLs — both the JSON-blob encoding and
- * the `URLSearchParams` encoding — into path-based URLs, and applies the
- * translation via `history.replaceState` at boot.
- *
- * @remarks REMOVAL TARGET: delete this file two releases after the admin
- * interface ships on path routing (final step of the client-side routing
- * rollout).
+ * @remarks
+ *   REMOVAL TARGET: delete this file two releases after the admin interface ships on path routing
+ *   (final step of the client-side routing rollout).
+ * @file Legacy hash-route redirect shim (temporary). Translates legacy `#/path;<params>` URLs —
+ *   both the JSON-blob encoding and the `URLSearchParams` encoding — into path-based URLs, and
+ *   applies the translation via `history.replaceState` at boot.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
@@ -26,8 +23,8 @@ const LEGACY_PARAM_SEPARATOR = ";";
 /**
  * Search-parameter key a bare legacy tab token decodes to.
  *
- * Mirrors the default `pageIdentifier` of `ak-tabs`, which is what the bare
- * form (`#/settings;page-sources`) always selected.
+ * Mirrors the default `pageIdentifier` of `ak-tabs`, which is what the bare form
+ * (`#/settings;page-sources`) always selected.
  */
 const LEGACY_TAB_KEY = "page";
 
@@ -39,9 +36,9 @@ export interface HashRouteScope {
 /**
  * Decode the serialized-parameter tail of a legacy hash route.
  *
- * Handles the JSON-blob encoding (`{"page":2}`, possibly percent-encoded), the
- * `URLSearchParams` encoding (`a=1&b=true`), and the bare tab token
- * (`page-sources`), which the legacy router treated as a tab selector.
+ * Handles the JSON-blob encoding (`{"page":2}`, possibly percent-encoded), the `URLSearchParams`
+ * encoding (`a=1&b=true`), and the bare tab token (`page-sources`), which the legacy router treated
+ * as a tab selector.
  */
 function decodeLegacyParams(serialized: string | undefined): RouteParameterRecord {
     if (!serialized) return {};
@@ -71,8 +68,9 @@ function decodeLegacyParams(serialized: string | undefined): RouteParameterRecor
  *
  * @param hash The `location.hash` value (including the leading `#`).
  * @param scope The deployment base and target interface.
- * @returns The translated path + search string, or `null` when `hash` is not a
- * legacy route (does not begin with `#/`).
+ *
+ * @returns The translated path + search string, or `null` when `hash` is not a legacy route (does
+ *   not begin with `#/`).
  */
 export function translateHashRoute(hash: string, scope: HashRouteScope): string | null {
     if (!hash.startsWith("#/")) return null;
@@ -95,10 +93,11 @@ export function translateHashRoute(hash: string, scope: HashRouteScope): string 
 /**
  * Apply the hash-route redirect at boot, if the current URL is a legacy route.
  *
+ * @remarks
+ *   REMOVAL TARGET: delete with {@linkcode translateHashRoute}.
  * @param target The window whose location/history to read and rewrite.
- * @returns `true` when a redirect was applied.
  *
- * @remarks REMOVAL TARGET: delete with {@linkcode translateHashRoute}.
+ * @returns `true` when a redirect was applied.
  */
 export function applyHashRedirect(target: Window = window): boolean {
     const translated = translateHashRoute(target.location.hash, getRouterConfig());

@@ -64,9 +64,9 @@ export class NavTabs extends AKElement {
                 ${this.items.map((item) => {
                     return html`<li class="pf-c-nav__item">
                         <a
-                            class="pf-c-nav__link ${item.link === this.currentItem?.link
-                                ? "pf-m-current"
-                                : ""}"
+                            class="pf-c-nav__link ${
+                                item.link === this.currentItem?.link ? "pf-m-current" : ""
+                            }"
                             href=${item.link}
                             >${item.label}</a
                         >

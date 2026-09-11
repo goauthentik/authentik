@@ -1,9 +1,9 @@
 import "#components/ak-event-info";
 import "#elements/Tabs";
-import "#elements/timestamp/ak-timestamp";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/timestamp/ak-timestamp";
 
 import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
 import { SimpleEventTable } from "#admin/events/SimpleEventTable";

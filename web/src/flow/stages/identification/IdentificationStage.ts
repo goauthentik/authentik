@@ -33,10 +33,10 @@ import {
 } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
+import { ref } from "lit-html/directives/ref.js";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
-import { ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -469,19 +469,25 @@ export class IdentificationStage extends BaseStage<
             class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
-            ${enrollUrl
-                ? html`<div class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>
-                  </div>`
-                : nothing}
-            ${recoveryUrl
-                ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" data-ouia-component-id="recovery"
-                          >${msg("Forgot username or password?")}</a
-                      >
-                  </div>`
-                : nothing}
+            ${
+                enrollUrl
+                    ? html`<div class="pf-c-login__main-footer-band-item">
+                          ${msg("Need an account?")}
+                          <a href="${enrollUrl}" data-ouia-component-id="enroll"
+                              >${msg("Sign up.")}</a
+                          >
+                      </div>`
+                    : nothing
+            }
+            ${
+                recoveryUrl
+                    ? html`<div class="pf-c-login__main-footer-band-item">
+                          <a href="${recoveryUrl}" data-ouia-component-id="recovery"
+                              >${msg("Forgot username or password?")}</a
+                          >
+                      </div>`
+                    : nothing
+            }
         </fieldset>`;
     }
 

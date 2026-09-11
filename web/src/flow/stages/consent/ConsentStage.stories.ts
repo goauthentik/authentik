@@ -1,5 +1,5 @@
-import "@patternfly/patternfly/components/Login/login.css";
 import "./ConsentStage.js";
+import "@patternfly/patternfly/components/Login/login.css";
 
 import { flowFactory } from "#stories/flow-interface";
 

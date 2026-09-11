@@ -1,10 +1,10 @@
 import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#components/tasks/TaskList";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/TaskList";
-import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -84,9 +84,11 @@ export class DataExportListPage extends TablePage<DataExport> {
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
-            html`${item.completed
-                ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
-                : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`}`,
+            html`${
+                item.completed
+                    ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
+                    : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`
+            }`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">

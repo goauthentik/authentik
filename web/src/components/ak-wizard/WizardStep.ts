@@ -1,3 +1,4 @@
+import { wizardStepContext } from "./WizardContexts.js";
 import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
 import {
     ButtonKindClassnameRecord,
@@ -8,7 +9,6 @@ import {
     WizardStepLabel,
     WizardStepState,
 } from "./shared.js";
-import { wizardStepContext } from "./WizardContexts.js";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -30,21 +30,17 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 /**
- * @class WizardStep
+ * @fires WizardNavigationEvent - Request ak-wizard-steps to move to another step
+ * @class WizardStep Superclass for a single step in the wizard. Contains all of the styling for the
+ *   Patternfly wizard pattern. Child classes must:
  *
- * Superclass for a single step in the wizard.  Contains all of the styling for the Patternfly
- * wizard pattern.  Child classes must:
- *
- * - Specify the *Wizard* title, optional description, and if to show the cancel icon in the upper
- *   right hand corner. Ideally, this is the same for all child classes, so for simplicity these
- *   could be overridden
- * - Specify what goes into the main content for this step.
- * - Specify what buttons to render for this step, and to what step(s) the navigable button(s) must go.
- * - Specify what validation must be done before the 'next' button can be honored.
- *
- * Events
- *
- * @fires WizardNavigationEvent - request ak-wizard-steps to move to another step
+ *   - Specify the _Wizard_ title, optional description, and if to show the cancel icon in the upper
+ *     right hand corner. Ideally, this is the same for all child classes, so for simplicity these
+ *     could be overridden
+ *   - Specify what goes into the main content for this step.
+ *   - Specify what buttons to render for this step, and to what step(s) the navigable button(s) must
+ *     go.
+ *   - Specify what validation must be done before the 'next' button can be honored. Events
  */
 export abstract class WizardStep extends AKElement {
     public static styles = [
@@ -125,7 +121,7 @@ export abstract class WizardStep extends AKElement {
     declare public id: string;
 
     /**
-     *The label of the current step.  Displayed in the navigation bar.
+     * *The label of the current step. Displayed in the navigation bar.
      */
     public label: string = "--unset--";
 
@@ -148,7 +144,8 @@ export abstract class WizardStep extends AKElement {
     protected abstract buttons: WizardButton[];
 
     /**
-     * Render the main content of the step. This is where the form or other content for the step should be rendered.
+     * Render the main content of the step. This is where the form or other content for the step
+     * should be rendered.
      *
      * @abstract
      */

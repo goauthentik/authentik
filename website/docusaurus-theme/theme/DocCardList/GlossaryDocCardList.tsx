@@ -1,4 +1,3 @@
-import glossaryStyles from "../../components/Glossary/styles.module.css";
 import { formatTag, groupByFirstLetter, groupByTag } from "../../components/Glossary/utils";
 import {
     type GlossaryHelperTerm,
@@ -8,12 +7,14 @@ import {
 } from "../utils/glossaryUtils";
 import ErrorBoundary from "./ErrorBoundary";
 import GlossaryHelper from "./GlossaryHelper";
-import sharedStyles from "./shared.module.css";
-import styles from "./styles.module.css";
 
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
 import clsx from "clsx";
 import React, { ReactNode, useCallback, useMemo } from "react";
+
+import glossaryStyles from "../../components/Glossary/styles.module.css";
+import sharedStyles from "./shared.module.css";
+import styles from "./styles.module.css";
 
 type SidebarDocLike = Extract<PropSidebarItem, { type: "link" }>;
 

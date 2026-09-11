@@ -7,8 +7,8 @@ import { adoptStyles as adoptStyleSheetsShim, css, CSSResultOrNative, ReactiveEl
 /**
  * Element-like objects containing adoptable stylesheets.
  *
- * Note that while these all possess the `adoptedStyleSheets` property,
- * browser differences and polyfills may make them not actually adoptable.
+ * Note that while these all possess the `adoptedStyleSheets` property, browser differences and
+ * polyfills may make them not actually adoptable.
  *
  * This type exists to normalize the different ways of accessing the property.
  */
@@ -40,18 +40,14 @@ export function isStyleRoot(input: StyleRoot): input is ShadowRoot {
 }
 
 /**
- * Create a lazy-loaded `CSSResult` compatible with Lit's
- * element lifecycle.
- *
- * @throw {@linkcode TypeError} if the input cannot be converted to a `CSSStyleSheet`
+ * Create a lazy-loaded `CSSResult` compatible with Lit's element lifecycle.
  *
  * @remarks
  *
- * Storybook's `build` does not currently have a coherent way of importing
- * CSS-as-text into CSSStyleSheet.
- *
- * It works well when Storybook is running in `dev`, but in `build` it fails.
- * Storied components will have to map their textual CSS imports.
+ *   Storybook's `build` does not currently have a coherent way of importing CSS-as-text into
+ *   CSSStyleSheet. It works well when Storybook is running in `dev`, but in `build` it fails.
+ *   Storied components will have to map their textual CSS imports.
+ * @throw {@linkcode TypeError} if the input cannot be converted to a `CSSStyleSheet`
  *
  * @see {@linkcode createStyleSheetUnsafe} to create a `CSSStyleSheet` from the given input.
  */
@@ -103,18 +99,13 @@ export type StyleSheetsAction =
  * ```
  *
  * @remarks
- * Replacing `adoptedStyleSheets` more than once in the same frame may result in
- * the `currentStyleSheets` parameter being out of sync with the actual sheets.
- *
- * A style root's `adoptedStyleSheets` is a proxy object that only updates when
- * DOM is repainted. We can't easily cache the previous entries since the style root
- * may polyfilled via ShadyDOM.
- *
- * Short of using {@linkcode requestAnimationFrame} to sequence the adoption,
- * and a visibility toggle to avoid a flash of styles between renders,
- * we can't reliably cache the previous entries.
- *
- * In the meantime, we should try to apply all the sheets in a single frame.
+ *   Replacing `adoptedStyleSheets` more than once in the same frame may result in the
+ *   `currentStyleSheets` parameter being out of sync with the actual sheets. A style root's
+ *   `adoptedStyleSheets` is a proxy object that only updates when DOM is repainted. We can't easily
+ *   cache the previous entries since the style root may polyfilled via ShadyDOM. Short of using
+ *   {@linkcode requestAnimationFrame} to sequence the adoption, and a visibility toggle to avoid a
+ *   flash of styles between renders, we can't reliably cache the previous entries. In the meantime,
+ *   we should try to apply all the sheets in a single frame.
  */
 export function setAdoptedStyleSheets(styleRoot: StyleRoot, styleSheets: StyleSheetsAction): void {
     let changed = false;

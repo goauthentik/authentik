@@ -48,8 +48,8 @@ export abstract class CaptchaController implements ReactiveController {
     protected static logPrefix = "controller";
 
     /**
-     * Given a source of {@linkcode CaptchaControllerConstructor}s, return those
-     * whose global is present in `window`.
+     * Given a source of {@linkcode CaptchaControllerConstructor}s, return those whose global is
+     * present in `window`.
      */
     public static discover(
         controllerConstructors: Iterable<CaptchaControllerConstructor>,

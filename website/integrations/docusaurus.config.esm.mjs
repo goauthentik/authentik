@@ -1,7 +1,6 @@
 /**
- * @file Docusaurus Integrations config.
- *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
+ * @file Docusaurus Integrations config.
  */
 
 import { resolve } from "node:path";

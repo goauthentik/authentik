@@ -7,8 +7,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
-import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { IconEditButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -91,15 +91,17 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
-                ${(item.config.authentik_host ?? "") === ""
-                    ? html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg(
-                              "Warning: authentik Domain is not configured, authentication will not work.",
-                          )}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Logging in via ${item.config.authentik_host}.`)}
-                      </ak-label>`}</a
+                ${
+                    (item.config.authentik_host ?? "") === ""
+                        ? html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg(
+                                  "Warning: authentik Domain is not configured, authentication will not work.",
+                              )}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Green} compact>
+                              ${msg(str`Logging in via ${item.config.authentik_host}.`)}
+                          </ak-label>`
+                }</a
             >`,
             html`${outpostTypeToLabel(item.type)}`,
             this.renderItemProviders(item),

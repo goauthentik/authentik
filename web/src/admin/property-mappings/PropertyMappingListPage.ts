@@ -18,21 +18,21 @@ import "#admin/property-mappings/ak-property-mapping-wizard";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
-import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKPropertyMappingWizard } from "#admin/property-mappings/ak-property-mapping-wizard";
 import { PropertyMappingTestForm } from "#admin/property-mappings/PropertyMappingTestForm";
+import { AKPropertyMappingWizard } from "#admin/property-mappings/ak-property-mapping-wizard";
 
 import { ModelEnum, PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 

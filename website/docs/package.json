@@ -1,8 +1,8 @@
 {
     "name": "@goauthentik/docs-topics",
     "version": "0.0.0",
-    "license": "MIT",
     "private": true,
+    "license": "MIT",
     "scripts": {
         "build": "docusaurus build && cp -r ./build/ ../build/",
         "build:copy": "cp -r ./build/ ../build/",

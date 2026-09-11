@@ -2,9 +2,9 @@
  * @file Display details for a SCIM provider: Overview, Changelog, Permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/StreamTable";
-import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
@@ -141,9 +141,11 @@ export class SSFProviderViewPage extends AKElement {
                                 readonly
                                 type="text"
                                 value=${this.provider.ssfUrl || ""}
-                                placeholder=${this.provider.ssfUrl
-                                    ? msg("SSF URL")
-                                    : msg("No assigned application")}
+                                placeholder=${
+                                    this.provider.ssfUrl
+                                        ? msg("SSF URL")
+                                        : msg("No assigned application")
+                                }
                             />`,
                         ],
                         [

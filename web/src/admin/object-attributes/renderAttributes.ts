@@ -1,8 +1,8 @@
-import "#components/ak-text-input";
-import "#components/ak-switch-input";
 import "#components/ak-number-input";
-import "#elements/forms/FormGroup";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror/ak-codemirror";
+import "#elements/forms/FormGroup";
 
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
@@ -30,7 +30,8 @@ export type AttributesMixin = {
 };
 
 /**
- * Given a path of tokens with a separator, walk through a nested object to return whatever is at that path, or a default value if the path doesn't exist
+ * Given a path of tokens with a separator, walk through a nested object to return whatever is at
+ * that path, or a default value if the path doesn't exist
  */
 export function getValueAtPath(
     path: string,
@@ -52,8 +53,8 @@ export function getValueAtPath(
 /**
  * Renders a single attribute based on its definition and the provided values.
  *
- * @param values the current values of the attributes.
- * @param def the definition of the attribute to render.
+ * @param values The current values of the attributes.
+ * @param def The definition of the attribute to render.
  */
 function renderSingleAttribute(
     values: Record<string, unknown>,

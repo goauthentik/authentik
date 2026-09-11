@@ -73,8 +73,8 @@ export function safeBooleanExtract(value: unknown, fallback: boolean = false): b
 }
 
 /**
- * Extracts all available tags from a collection of terms.
- * Terms without tags are treated as having "General" tag.
+ * Extracts all available tags from a collection of terms. Terms without tags are treated as having
+ * "General" tag.
  */
 export const extractAvailableTags = (terms: readonly GlossaryHelperTerm[]): string[] =>
     Array.from(new Set(terms.flatMap((t) => t.tags ?? ["General"]))).toSorted();

@@ -60,6 +60,7 @@ export class AkProviderInput extends AKElement {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -103,9 +104,11 @@ export class AkProviderInput extends AKElement {
                 },
                 this.label,
             )}
-            ${readOnlyValue
-                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
-                : nothing}
+            ${
+                readOnlyValue
+                    ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                    : nothing
+            }
             <ak-search-select
                 label=${ifPresent(this.label)}
                 .fieldID=${this.fieldID}

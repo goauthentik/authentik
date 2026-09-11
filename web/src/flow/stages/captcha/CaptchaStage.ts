@@ -12,12 +12,12 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
-import { CapController, isCapWidgetURL } from "#flow/stages/captcha/controllers/cap";
 import {
     CaptchaController,
     CaptchaControllerConstructor,
     CaptchaHandlerHost,
 } from "#flow/stages/captcha/controllers/CaptchaController";
+import { CapController, isCapWidgetURL } from "#flow/stages/captcha/controllers/cap";
 import { GReCaptchaController } from "#flow/stages/captcha/controllers/grecaptcha";
 import { HCaptchaController } from "#flow/stages/captcha/controllers/hcaptcha";
 import { TurnstileController } from "#flow/stages/captcha/controllers/turnstile";
@@ -125,8 +125,8 @@ export class CaptchaStage
     protected activeController: CaptchaController | null = null;
 
     /**
-     * The desired source URL of the iframe. Note that this may differ from the actual
-     * `src` attribute of the iframe element for certain captcha providers.
+     * The desired source URL of the iframe. Note that this may differ from the actual `src`
+     * attribute of the iframe element for certain captcha providers.
      */
     #iframeSource = "about:blank";
     /**
@@ -371,8 +371,8 @@ export class CaptchaStage
     #resizeObserver?: ResizeObserver;
 
     /**
-     * An event listener that is called through the iframe's `postMessage` API
-     * when the iframe has loaded its content.
+     * An event listener that is called through the iframe's `postMessage` API when the iframe has
+     * loaded its content.
      */
     #loadListener = () => {
         this.#mutationObserver?.disconnect();
@@ -468,8 +468,8 @@ export class CaptchaStage
     //#region Loading
 
     /**
-     * An event listener that is called when the captcha provider's script has loaded,
-     * attempting to initialize each available controller in order.
+     * An event listener that is called when the captcha provider's script has loaded, attempting to
+     * initialize each available controller in order.
      */
     #scriptLoadListener = async (event?: Event): Promise<void> => {
         const scriptElement = event?.currentTarget as HTMLScriptElement | null;

@@ -1,9 +1,7 @@
 /**
- * @file Search-parameter accessors for path-based routing.
- *
- * Drop-in replacements for the legacy hash-suffix `getURLParams`/`getURLParam`/
- * `updateURLParams` (`#elements/router/RouteMatch`), reading and writing real
- * `?` search parameters instead of the `#;{json}` suffix.
+ * @file Search-parameter accessors for path-based routing. Drop-in replacements for the legacy
+ *   hash-suffix `getURLParams`/`getURLParam`/ `updateURLParams` (`#elements/router/RouteMatch`),
+ *   reading and writing real `?` search parameters instead of the `#;{json}` suffix.
  */
 
 import { navigate } from "#elements/router/core/navigation";
@@ -32,8 +30,8 @@ export function getSearchParam<T>(key: string, fallback: T): T {
 }
 
 /**
- * Merge `partial` into the current search parameters and write via
- * `history.replaceState`. Keys set to null/false/""/undefined are dropped.
+ * Merge `partial` into the current search parameters and write via `history.replaceState`. Keys set
+ * to null/false/""/undefined are dropped.
  */
 export function updateSearchParams(partial: RouteParameterRecord): void {
     const url = new URL(window.location.href);

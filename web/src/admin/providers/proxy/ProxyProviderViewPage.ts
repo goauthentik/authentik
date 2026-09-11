@@ -1,8 +1,8 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
@@ -12,8 +12,8 @@ import "#elements/buttons/SpinnerButton/index";
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
-import type { Replacer } from "#elements/ak-mdx/index";
 import { AKElement } from "#elements/Base";
+import type { Replacer } from "#elements/ak-mdx/index";
 import { getSearchParam } from "#elements/router/core/search-params";
 import { formatSlug } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
@@ -279,16 +279,20 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html`${this.provider?.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by any Outpost.")}
-                  </div>`
-                : nothing}
+        return html`${
+                this.provider?.assignedApplicationName
+                    ? nothing
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
+            ${
+                this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by any Outpost.")}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -415,9 +419,11 @@ export class ProxyProviderViewPage extends AKElement {
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${msg("Setup")}</div>
                     <div class="pf-c-card__body">
-                        ${isForward(this.provider?.mode || ProxyMode.Proxy)
-                            ? html` ${this.renderConfig()} `
-                            : html` <p>${msg("No additional setup is required.")}</p> `}
+                        ${
+                            isForward(this.provider?.mode || ProxyMode.Proxy)
+                                ? html` ${this.renderConfig()} `
+                                : html` <p>${msg("No additional setup is required.")}</p> `
+                        }
                     </div>
                 </div>
             </div>`;

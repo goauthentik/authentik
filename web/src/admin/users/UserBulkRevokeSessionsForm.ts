@@ -57,9 +57,11 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,
-            html`${sessionCount !== undefined
-                ? sessionCount
-                : html`<ak-spinner size="sm"></ak-spinner>`}`,
+            html`${
+                sessionCount !== undefined
+                    ? sessionCount
+                    : html`<ak-spinner size="sm"></ak-spinner>`
+            }`,
         ];
     }
 }

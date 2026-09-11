@@ -91,11 +91,14 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
-            html`${item.destinationGroupObj
-                ? html`<a href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
-                      >${item.destinationGroupObj.name}</a
-                  >`
-                : msg("-")}`,
+            html`${
+                item.destinationGroupObj
+                    ? html`<a
+                          href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
+                          >${item.destinationGroupObj.name}</a
+                      >`
+                    : msg("-")
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RuleForm, item.pk, item.name)}
 

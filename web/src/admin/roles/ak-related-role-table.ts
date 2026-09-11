@@ -234,13 +234,15 @@ export class RelatedRoleTable extends Table<Role> {
         const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 >${item.name}</a
             >
-            ${inherited
-                ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
-                      <span class="pf-c-label pf-m-outline pf-m-cyan">
-                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
-                      </span>
-                  </pf-tooltip>`
-                : nothing}`;
+            ${
+                inherited
+                    ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                          <span class="pf-c-label pf-m-outline pf-m-cyan">
+                              <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
+                          </span>
+                      </pf-tooltip>`
+                    : nothing
+            }`;
 
         // Hide actions in showInherited mode (view-only)
         if (this.showInherited) {

@@ -1,13 +1,9 @@
 /**
- * @file Initializes Sentry as an import side effect.
- *
- * Imported first from each interface entrypoint so reporting is live before the
- * element modules evaluate and custom elements register — errors thrown during
- * that window used to escape, because initialization ran in an element
- * constructor.
- *
- * The enable/disable policy is {@linkcode isSentryEnabled}, which is a pure
- * function so it can be tested without a browser.
+ * @file Initializes Sentry as an import side effect. Imported first from each interface entrypoint
+ *   so reporting is live before the element modules evaluate and custom elements register — errors
+ *   thrown during that window used to escape, because initialization ran in an element constructor.
+ *   The enable/disable policy is {@linkcode isSentryEnabled}, which is a pure function so it can be
+ *   tested without a browser.
  */
 
 import { globalAK } from "#common/global";

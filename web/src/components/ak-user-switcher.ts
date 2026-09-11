@@ -70,13 +70,15 @@ export class UserSwitcher extends WithSession(AKElement) {
                         <span part="name">${label}</span>
                         ${description ? html`<span part="description">${description}</span>` : null}
                     </span>
-                    ${user.isCurrent
-                        ? html`<i
-                              class="fas fa-check"
-                              part="current-indicator"
-                              aria-hidden="true"
-                          ></i>`
-                        : null}
+                    ${
+                        user.isCurrent
+                            ? html`<i
+                                  class="fas fa-check"
+                                  part="current-indicator"
+                                  aria-hidden="true"
+                              ></i>`
+                            : null
+                    }
                 </span>
             </button>
         </li>`;
@@ -122,22 +124,24 @@ export class UserSwitcher extends WithSession(AKElement) {
             >
                 ${users.map((user) => this.#renderUser(user))}
                 ${users.length ? html` <li class="pf-c-divider" role="separator"></li> ` : null}
-                ${enabled
-                    ? html`<li role="presentation">
-                          <button
-                              class="pf-c-dropdown__menu-item"
-                              part="menu-item"
-                              role="menuitem"
-                              type="button"
-                              @click=${() => this.#startSwitch()}
-                          >
-                              <i class="fas fa-plus" aria-hidden="true"></i>
-                              ${msg("Add another user", {
-                                  id: "user-switcher.actions.add-user.label",
-                              })}
-                          </button>
-                      </li>`
-                    : null}
+                ${
+                    enabled
+                        ? html`<li role="presentation">
+                              <button
+                                  class="pf-c-dropdown__menu-item"
+                                  part="menu-item"
+                                  role="menuitem"
+                                  type="button"
+                                  @click=${() => this.#startSwitch()}
+                              >
+                                  <i class="fas fa-plus" aria-hidden="true"></i>
+                                  ${msg("Add another user", {
+                                      id: "user-switcher.actions.add-user.label",
+                                  })}
+                              </button>
+                          </li>`
+                        : null
+                }
                 <li role="presentation">
                     <a
                         class="pf-c-dropdown__menu-item"

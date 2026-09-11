@@ -1,44 +1,42 @@
 /**
- * @file Import organization for oxfmt, ported from the `@goauthentik/prettier-config` import plugin.
- *
- * oxfmt sorts imports with a perfectionist-style algorithm (selectors, modifiers, and ordered
- * `customGroups`) rather than the ordered regex `groupRules` the old `format-imports` plugin used.
- * The configuration below reproduces the previous grouping: side-effect imports first, then Node
- * built-ins, relative paths, each web alias in turn, the remaining internal/`@goauthentik` imports,
- * third-party packages, and finally Lit.
+ * @file Import organization for oxfmt, ported from the `@goauthentik/prettier-config` import
+ *   plugin. oxfmt sorts imports with a perfectionist-style algorithm (selectors, modifiers, and
+ *   ordered `customGroups`) rather than the ordered regex `groupRules` the old `format-imports`
+ *   plugin used. The configuration below reproduces the previous grouping: side-effect imports
+ *   first, then Node built-ins, relative paths, each web alias in turn, the remaining
+ *   internal/`@goauthentik` imports, third-party packages, and finally Lit.
  */
 
 import type { CustomGroupItemConfig, SortGroupItemConfig, SortImportsConfig } from "oxfmt";
 
 /**
- * authentik web import-path aliases that each get their own import group, in display order.
+ * Authentik web import-path aliases that each get their own import group, in display order.
  *
- * Mirrors the `webSubmodules` list in the former `@goauthentik/prettier-config`; an import is matched
- * in either its `#<alias>/…` (package `imports`) or `@goauthentik/<alias>/…` form.
+ * Mirrors the `webSubmodules` list in the former `@goauthentik/prettier-config`; an import is
+ * matched in either its `#<alias>/…` (package `imports`) or `@goauthentik/<alias>/…` form.
  */
 export const WebSubmodules = ["common", "elements", "components", "user", "admin", "flow"] as const;
 
 /**
  * Ordered custom groups. The first definition that matches an import wins, and any custom group
  * outranks every predefined selector — so the side-effect group must come first to keep bare
- * `import "#elements/…"` statements together at the top instead of being pulled into an alias group.
+ * `import "#elements/…"` statements together at the top instead of being pulled into an alias
+ * group.
  */
 const customGroups: CustomGroupItemConfig[] = [
     // Side-effect imports (`import "x"`) stay together at the top, regardless of their target.
     { groupName: "side-effect", modifiers: ["side_effect"] },
 
     // One group per web alias, matching both the `#alias/…` and `@goauthentik/alias/…` forms.
-    ...WebSubmodules.map(
-        (submodule): CustomGroupItemConfig => ({
-            groupName: submodule,
-            elementNamePattern: [
-                `#${submodule}`,
-                `#${submodule}/**`,
-                `@goauthentik/${submodule}`,
-                `@goauthentik/${submodule}/**`,
-            ],
-        }),
-    ),
+    ...WebSubmodules.map((submodule): CustomGroupItemConfig => ({
+        groupName: submodule,
+        elementNamePattern: [
+            `#${submodule}`,
+            `#${submodule}/**`,
+            `@goauthentik/${submodule}`,
+            `@goauthentik/${submodule}/**`,
+        ],
+    })),
 
     // Any other internal subpath import, e.g. `#logger/browser`.
     { groupName: "ak-internal", elementNamePattern: ["#*", "#*/**"] },
@@ -69,16 +67,14 @@ const groups: SortGroupItemConfig[] = [
 ];
 
 /**
- * authentik's oxfmt import-sorting configuration.
+ * Authentik's oxfmt import-sorting configuration.
  *
  * @remarks
- * `sortSideEffects` is `true` because the former `format-imports` plugin sorted side-effect imports
- * too — every checked-in side-effect block is already in sorted order, and leaving it `false` both
- * deviates from that and makes oxfmt drop the blank line that separates the block from the imports
- * below it.
- *
- * `ignoreCase` is `false` to match the previous case-sensitive collation, which sorts
- * `#elements/CodeMirror` before `#elements/ak-dual-select`.
+ *   `sortSideEffects` is `true` because the former `format-imports` plugin sorted side-effect
+ *   imports too — every checked-in side-effect block is already in sorted order, and leaving it
+ *   `false` both deviates from that and makes oxfmt drop the blank line that separates the block
+ *   from the imports below it. `ignoreCase` is `false` to match the previous case-sensitive
+ *   collation, which sorts `#elements/CodeMirror` before `#elements/ak-dual-select`.
  */
 export const authentikSortImportsConfig: SortImportsConfig = {
     groups,

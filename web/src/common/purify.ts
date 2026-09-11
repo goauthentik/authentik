@@ -8,9 +8,8 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 /**
  * Trusted types policy that escapes HTML content in place.
  *
- * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
- *
  * @returns {TrustedHTML} All HTML content, escaped.
+ * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
  */
 export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
     createHTML: (untrustedHTML: string) => {
@@ -22,7 +21,6 @@ export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
 
 /**
  * Trusted types policy that removes all HTML content.
- *
  *
  * @returns {TrustedHTML} All remaining text content.
  */
@@ -51,26 +49,22 @@ export const SanitizedTrustPolicy = trustedTypes.createPolicy("authentik-sanitiz
 });
 
 /**
- * Trusted types policy for HTML produced by our build-time markdown
- * pipeline (`mdx-plugin`) and stamped into `<ak-mdx>` in URL mode.
+ * Trusted types policy for HTML produced by our build-time markdown pipeline (`mdx-plugin`) and
+ * stamped into `<ak-mdx>` in URL mode.
  *
- * The compiled HTML originates from source we own, but `<ak-mdx>` exposes
- * a `replacers` hook that lets consumers splice dynamic — and sometimes
- * admin-controlled — values into it before render (e.g. a proxy
- * provider's `externalHost` in `ProxyProviderViewPage`). Once a replacer
- * has run, "we own every byte" no longer holds, so we re-sanitize here
- * rather than passing the string through untouched.
+ * The compiled HTML originates from source we own, but `<ak-mdx>` exposes a `replacers` hook that
+ * lets consumers splice dynamic — and sometimes admin-controlled — values into it before render
+ * (e.g. a proxy provider's `externalHost` in `ProxyProviderViewPage`). Once a replacer has run, "we
+ * own every byte" no longer holds, so we re-sanitize here rather than passing the string through
+ * untouched.
  *
- * DOMPurify's default tag list would strip the custom elements our
- * pipeline emits (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`) along with
- * the `part`/`level` attributes they rely on, so those are explicitly
- * allowed. `target` is allowed for the same reason: `rehypeAnchors` opens
- * external and cross-doc links in a new tab, and without it the attribute
- * is dropped while the paired `rel` survives. Every browser we support
- * implies `rel="noopener"` for `target="_blank"` regardless, so a replacer
- * that injects a bare `target` cannot reach the opener. Everything else —
- * script handlers, unknown elements, unsafe URLs injected via a replacer —
- * is still removed.
+ * DOMPurify's default tag list would strip the custom elements our pipeline emits (`<ak-alert>`,
+ * `<ak-md-a>`, `<ak-diagram>`) along with the `part`/`level` attributes they rely on, so those are
+ * explicitly allowed. `target` is allowed for the same reason: `rehypeAnchors` opens external and
+ * cross-doc links in a new tab, and without it the attribute is dropped while the paired `rel`
+ * survives. Every browser we support implies `rel="noopener"` for `target="_blank"` regardless, so
+ * a replacer that injects a bare `target` cannot reach the opener. Everything else — script
+ * handlers, unknown elements, unsafe URLs injected via a replacer — is still removed.
  */
 export const CompiledMarkdownSanitizePolicy = trustedTypes.createPolicy("authentik-markdown", {
     createHTML: (untrustedHTML: string) => {
@@ -83,8 +77,8 @@ export const CompiledMarkdownSanitizePolicy = trustedTypes.createPolicy("authent
 });
 
 /**
- * Trusted types policy, allowing a minimal set of _safe_ HTML tags supplied by
- * a trusted source, such as the brand API.
+ * Trusted types policy, allowing a minimal set of _safe_ HTML tags supplied by a trusted source,
+ * such as the brand API.
  */
 export const BrandedHTMLPolicy = trustedTypes.createPolicy("authentik-restrict", {
     createHTML: (untrustedHTML: string) => {

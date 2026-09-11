@@ -1,21 +1,21 @@
 packages:
-  - "packages/*"
-  # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
-  # a workspace member makes pnpm treat an out-of-root path as an importer, which
-  # it cannot represent in this lockfile. Link it as an external local package
-  # instead (see web + sfe package.json).
-  - "!packages/client-ts"
-  # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
-  # materializing their targets — and `oxfmt-config`'s own linked
-  # `tsconfig` — under web/packages/ when it regenerates this workspace's
-  # lockfile. Without these exclusions the `packages/*` glob then swallows
-  # them as workspace importers, committing phantom entries that every local
-  # `pnpm install` prunes right back out.
-  - "!packages/fonts"
-  - "!packages/oxlint-config"
-  - "!packages/oxfmt-config"
-  - "!packages/theme"
-  - "!packages/tsconfig"
+    - "packages/*"
+    # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
+    # a workspace member makes pnpm treat an out-of-root path as an importer, which
+    # it cannot represent in this lockfile. Link it as an external local package
+    # instead (see web + sfe package.json).
+    - "!packages/client-ts"
+    # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
+    # materializing their targets — and `oxfmt-config`'s own linked
+    # `tsconfig` — under web/packages/ when it regenerates this workspace's
+    # lockfile. Without these exclusions the `packages/*` glob then swallows
+    # them as workspace importers, committing phantom entries that every local
+    # `pnpm install` prunes right back out.
+    - "!packages/fonts"
+    - "!packages/oxlint-config"
+    - "!packages/oxfmt-config"
+    - "!packages/theme"
+    - "!packages/tsconfig"
 
 # pnpm's default isolated linker exposes packages strictly — only declared
 # dependencies are visible. The web bundle relies on a handful of phantom
@@ -29,25 +29,25 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  "@playwright/test": "^1.62.1"
-  "@types/node": "^26.1.2"
-  "@vitest/browser": "^4.1.10"
-  "@vitest/browser-playwright": "^4.1.10"
-  esbuild: "^0.28.1"
-  oxfmt: "0.67.0"
-  oxlint: "^1.82.0"
-  playwright: "^1.62.1"
-  typescript: "^6.0.3"
-  vite: "^8.2.0"
-  vitest: "^4.1.10"
+    "@playwright/test": "^1.62.1"
+    "@types/node": "^26.1.2"
+    "@vitest/browser": "^4.1.10"
+    "@vitest/browser-playwright": "^4.1.10"
+    esbuild: "^0.28.1"
+    oxfmt: "0.67.0"
+    oxlint: "^1.82.0"
+    playwright: "^1.62.1"
+    typescript: "^6.0.3"
+    vite: "^8.2.0"
+    vitest: "^4.1.10"
 
 overrides:
-  "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
-  "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
-  "@mrmarble/djangoql-completion>lex": "workspace:*"
-  "@mrmarble/djangoql-completion>lodash": "^4.18.1"
-  "node-fetch-commonjs>node-domexception": "workspace:*"
-  "rapidoc>@apitools/openapi-parser": "0.0.37"
+    "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
+    "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
+    "@mrmarble/djangoql-completion>lex": "workspace:*"
+    "@mrmarble/djangoql-completion>lodash": "^4.18.1"
+    "node-fetch-commonjs>node-domexception": "workspace:*"
+    "rapidoc>@apitools/openapi-parser": "0.0.37"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
@@ -55,27 +55,27 @@ overrides:
 # is audited at review time — adding a package here grants it arbitrary code
 # execution at install.
 onlyBuiltDependencies:
-  - chromedriver
-  - esbuild
-  - tree-sitter
-  - tree-sitter-json
-  - "@tree-sitter-grammars/tree-sitter-yaml"
+    - chromedriver
+    - esbuild
+    - tree-sitter
+    - tree-sitter-json
+    - "@tree-sitter-grammars/tree-sitter-yaml"
 
 # Explicit approval map for pnpm 11+. `true` = allowed (mirror
 # onlyBuiltDependencies); `false` = explicitly declined to silence the
 # "pending approval" prompt without running the install script.
 allowBuilds:
-  "@scarf/scarf": false
-  "@swc/core": false
-  "@tree-sitter-grammars/tree-sitter-yaml": true
-  chromedriver: true
-  core-js: false
-  core-js-pure: false
-  esbuild: true
-  tree-sitter: true
-  tree-sitter-json: true
+    "@scarf/scarf": false
+    "@swc/core": false
+    "@tree-sitter-grammars/tree-sitter-yaml": true
+    chromedriver: true
+    core-js: false
+    core-js-pure: false
+    esbuild: true
+    tree-sitter: true
+    tree-sitter-json: true
 
 minimumReleaseAgeExclude:
-  - '@playwright/test@1.62.1'
-  - playwright-core@1.62.1
-  - playwright@1.62.1
+    - "@playwright/test@1.62.1"
+    - playwright-core@1.62.1
+    - playwright@1.62.1

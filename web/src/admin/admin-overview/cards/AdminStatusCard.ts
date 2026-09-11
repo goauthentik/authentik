@@ -72,7 +72,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Lit lifecycle method: Determine if component should update
      *
      * @param changed - Map of changed properties
-     * @returns boolean indicating if update should proceed
+     *
+     * @returns Boolean indicating if update should proceed
      */
     shouldUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && this.value !== undefined) {
@@ -106,6 +107,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Render status state
      *
      * @param status - AdminStatus object containing icon and message
+     *
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
@@ -121,6 +123,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Render error state
      *
      * @param error - Error message to display
+     *
      * @returns TemplateResult for error display
      */
     private renderError(error: string): SlottedTemplateResult {

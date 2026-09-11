@@ -12,7 +12,7 @@ export type ClipboardItemSource = string | ClipboardItemData | ClipboardItem;
  * Helper function to convert a string into a ClipboardItem for writing to the clipboard.
  *
  * @remarks
- * This requires either a secure context (HTTPS) or localhost.
+ *   This requires either a secure context (HTTPS) or localhost.
  */
 function castToClipboardItem(source: ClipboardItemSource, mimeType = "text/plain"): ClipboardItem {
     if (source instanceof ClipboardItem) {
@@ -30,7 +30,7 @@ function castToClipboardItem(source: ClipboardItemSource, mimeType = "text/plain
  * Writes data to the clipboard using the Clipboard API.
  *
  * @remarks
- * This requires either a secure context (HTTPS) or localhost.
+ *   This requires either a secure context (HTTPS) or localhost.
  */
 export async function doWriteToClipboard(...data: ClipboardItemSource[]): Promise<void> {
     return navigator.clipboard.write(data.map((item) => castToClipboardItem(item)));
@@ -43,7 +43,7 @@ export async function doWriteToClipboard(...data: ClipboardItemSource[]): Promis
  * @param entityLabel Localized label for the copied entity, used in success message.
  * @param description Optional description for the success message.
  *
- * @return A promise resolving to `true` on success, `false` on failure.
+ * @returns A promise resolving to `true` on success, `false` on failure.
  */
 export function writeToClipboard(
     data?: ClipboardItemSource | ClipboardItemSource[] | null,

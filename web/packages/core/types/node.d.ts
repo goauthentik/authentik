@@ -34,28 +34,28 @@ declare module "process" {
                 COMPOSE_PORT_HTTPS?: string;
 
                 /**
-                 * An environment variable used to determine
-                 * whether Node.js is running in production mode.
+                 * An environment variable used to determine whether Node.js is running in
+                 * production mode.
                  *
-                 * @see {@link https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production | The difference between development and production}
                  * @runtime node
+                 * @see {@link https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production | The difference between development and production}
                  */
                 readonly NODE_ENV?: "development" | "production";
 
                 /**
                  * The SHA hash of the current git commit.
                  *
-                 * If you're developing locally and using a Dockerized development environment,
-                 * Set this environment variable to `dev` to hint that the container
-                 * should prefer pre-release versioning over its own.
+                 * If you're developing locally and using a Dockerized development environment, Set
+                 * this environment variable to `dev` to hint that the container should prefer
+                 * pre-release versioning over its own.
                  */
                 readonly GIT_BUILD_HASH?: string;
 
                 /**
-                 * @todo Determine where this is used and if it is needed,
-                 * give it a better name.
                  * @deprecated
                  * @runtime node
+                 * @todo Determine where this is used and if it is needed,
+                 * give it a better name.
                  */
                 readonly AK_API_BASE_PATH?: string;
             }

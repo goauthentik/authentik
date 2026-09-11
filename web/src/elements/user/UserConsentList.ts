@@ -78,13 +78,15 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`${item.permissions
-                ? html`<ak-chip-group>
-                      ${item.permissions.split(" ").map((perm) => {
-                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
-                      })}
-                  </ak-chip-group>`
-                : html`-`}`,
+            html`${
+                item.permissions
+                    ? html`<ak-chip-group>
+                          ${item.permissions.split(" ").map((perm) => {
+                              return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                          })}
+                      </ak-chip-group>`
+                    : html`-`
+            }`,
         ];
     }
 }
