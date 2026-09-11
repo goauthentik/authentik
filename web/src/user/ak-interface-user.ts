@@ -51,6 +51,13 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 type Feature = keyof UIConfig["enabledFeatures"];
 
+interface UserNavItem {
+    label: string;
+    link: string;
+    feature?: Feature;
+    capability?: CapabilitiesEnum;
+}
+
 @customElement("ak-interface-user")
 class UserInterface extends WithLicenseSummary(
     WithBrandConfig(WithSession(WithCapabilitiesConfig(AuthenticatedInterface))),
@@ -126,26 +133,22 @@ class UserInterface extends WithLicenseSummary(
         });
     }
 
-    protected licenseCan(feature: Feature, capability: CapabilitiesEnum, label: string) {
-        const L = LicenseSummaryStatusEnum;
-        // Matches `authentik/enterprise/models.py
-        const licensed: LicenseSummaryStatusEnum[] = [L.Valid, L.ExpirySoon];
+    protected canUseNavItem = ({ feature, capability }: UserNavItem) => {
+        if (!feature && !capability) {
+            return true;
+        }
 
-        const can =
-            this.licenseSummary?.status &&
-            licensed.includes(this.licenseSummary.status) &&
-            this.uiConfig.enabledFeatures[feature] &&
-            this.can(capability);
+        const LE = LicenseSummaryStatusEnum;
+        const licensed: ReadonlySet<LicenseSummaryStatusEnum> = new Set([LE.Valid, LE.ExpirySoon]);
+        const { status } = this.licenseSummary ?? {};
 
-        // This currently only works by coincidence: `feature` and the target address are the same,
-        // "agent" goes to "/if/user/agents" and "requests" goes to "/if/user/requests"; if these
-        // cease to coincide, we may have to do something else
-
-        // The return type is meant to make building the array of labels easier using spread
-        // operators.
-
-        return can ? [{ label, link: toUserInterface(feature) }] : [];
-    }
+        return (
+            status &&
+            licensed.has(status) &&
+            (!feature || this.uiConfig.enabledFeatures[feature]) &&
+            (!capability || this.can(capability))
+        );
+    };
 
     protected render() {
         const { currentUser } = this;
@@ -171,11 +174,22 @@ class UserInterface extends WithLicenseSummary(
         // We can't easily check if this user actually has something they can request,
         // that is a semi-expensive request
 
-        const navItems = [
+        const CE = CapabilitiesEnum;
+        const navItems: UserNavItem[] = [
             { label: msg("Applications"), link: toUserInterface("library") },
-            ...this.licenseCan("requests", CapabilitiesEnum.CanRequest, msg("Discover")),
-            ...this.licenseCan("agents", CapabilitiesEnum.CanAgentSelfService, msg("Agents")),
-        ];
+            {
+                label: msg("Discover"),
+                link: toUserInterface("requests"),
+                feature: "requests" as Feature,
+                capability: CE.CanRequest,
+            },
+            {
+                label: msg("Agents"),
+                link: toUserInterface("agents"),
+                feature: "agents" as Feature,
+                capability: CE.CanAgentSelfService,
+            },
+        ].filter(this.canUseNavItem);
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
