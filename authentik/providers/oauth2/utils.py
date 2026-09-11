@@ -44,7 +44,7 @@ class TokenResponse(JsonResponse):
 def cors_allow(
     request: HttpRequest,
     response: HttpResponse,
-    allowed_origins: RedirectURI | str,
+    allowed_origins: list[RedirectURI | str],
 ):
     """Add headers to permit CORS requests from allowed_origins, with or without credentials,
     with any headers.
