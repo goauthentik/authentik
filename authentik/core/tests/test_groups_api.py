@@ -4,7 +4,7 @@ from django.urls.base import reverse
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from authentik.core.api.groups import GroupSerializer, GroupViewSet
+from authentik.core.api.groups import GroupSerializer, GroupViewSet, PartialUserSerializer
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
@@ -87,6 +87,70 @@ class TestGroupsAPI(APITestCase):
         for group_data in data:
             self.assertCountEqual(group_data["users"], user_pks)
             self.assertIsNone(group_data["users_obj"])
+
+    def test_list_with_users_serializes_each_member_once(self):
+        """users_obj is built from exactly two queries per page"""
+        users = [create_test_user() for _ in range(3)]
+        groups = [Group.objects.create(name=generate_id()) for _ in range(4)]
+        for group in groups:
+            group.users.add(*users)
+        groups = list(
+            Group.objects.filter(pk__in=[group.pk for group in groups])
+            .prefetch_related("roles", "parents", "children")
+            .order_by("name")
+        )
+
+        view = GroupViewSet()
+        view.request = Request(APIRequestFactory().get("/", {"include_users": "true"}))
+        view.format_kwarg = None
+        view.action = "list"
+
+        with self.assertNumQueries(1):
+            memberships = view._load_memberships(groups)
+        with self.assertNumQueries(1):
+            view._attach_user_pk_lists(groups, memberships)
+            view._attach_users_obj(groups, memberships)
+        with self.assertNumQueries(0):
+            data = GroupSerializer(groups, many=True, context={"request": view.request}).data
+
+        expected_users = [user.pk for user in users]
+        expected_users_obj = [PartialUserSerializer(user).data for user in users]
+        for group_data in data:
+            self.assertEqual(group_data["users"], expected_users)
+            self.assertEqual(group_data["users_obj"], expected_users_obj)
+
+    def test_list_with_users_shares_one_representation_per_member(self):
+        """A member shared between groups is only serialized once"""
+        group1 = Group.objects.create(name=generate_id())
+        group2 = Group.objects.create(name=generate_id())
+        group1.users.add(self.user)
+        group2.users.add(self.user)
+
+        view = GroupViewSet()
+        view.request = Request(APIRequestFactory().get("/", {"include_users": "true"}))
+        view.format_kwarg = None
+        view.action = "list"
+        memberships = view._load_memberships([group1, group2])
+        view._attach_users_obj([group1, group2], memberships)
+
+        self.assertIs(group1._users_obj[0], group2._users_obj[0])
+
+    def test_list_with_users_matches_direct_serialization(self):
+        """The batched payload is identical to what the plain serializer produces."""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.client.force_login(create_test_admin_user())
+
+        response = self.client.get(
+            reverse("authentik_api:group-list"),
+            {"include_users": "true", "name": group.name},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["results"][0]["users_obj"],
+            [PartialUserSerializer(self.user).data],
+        )
 
     def test_retrieve_with_users(self):
         """Test retrieve with users"""
