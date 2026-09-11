@@ -5814,6 +5814,43 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/{connector_uuid}/apply_blueprint/:
+    post:
+      operationId: endpoints_agents_connectors_apply_blueprint_create
+      description: |-
+        Validate and apply a proposed Blueprint as the bounded Agent apply
+        identity — never as the requesting user, and never via the stored-instance
+        apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC
+        is enforced by the Agent's client-side validator.
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Agent Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentBlueprintApplyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentBlueprintApplyResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/{connector_uuid}/mdm_config/:
     post:
       operationId: endpoints_agents_connectors_mdm_config_create
@@ -35790,6 +35827,30 @@ components:
           type: string
       required:
       - url
+    AgentBlueprintApplyRequest:
+      type: object
+      description: A proposed Blueprint for the Agent to validate and apply.
+      properties:
+        content:
+          type: string
+          minLength: 1
+      required:
+      - content
+    AgentBlueprintApplyResult:
+      type: object
+      description: Result of an Agent Blueprint apply.
+      properties:
+        success:
+          type: boolean
+          readOnly: true
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - logs
+      - success
     AgentConfig:
       type: object
       description: Base serializer class which doesn't implement create/update methods

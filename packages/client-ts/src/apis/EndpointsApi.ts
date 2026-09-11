@@ -16,6 +16,14 @@ import {
     type AgentAuthenticationResponse,
     AgentAuthenticationResponseFromJSON,
 } from "../models/AgentAuthenticationResponse";
+import {
+    type AgentBlueprintApplyRequest,
+    AgentBlueprintApplyRequestToJSON,
+} from "../models/AgentBlueprintApplyRequest";
+import {
+    type AgentBlueprintApplyResult,
+    AgentBlueprintApplyResultFromJSON,
+} from "../models/AgentBlueprintApplyResult";
 import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig";
 import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector";
 import {
@@ -159,6 +167,17 @@ import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf";
 import * as runtime from "../runtime";
+
+export interface EndpointsAgentsConnectorsApplyBlueprintCreateRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
+    connectorUuid: string;
+    /**
+     *
+     */
+    agentBlueprintApplyRequest: AgentBlueprintApplyRequest;
+}
 
 export interface EndpointsAgentsConnectorsAuthFedCreateRequest {
     /**
@@ -922,6 +941,86 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AgentConfig> {
         const response = await this.endpointsAgentsConnectorsAgentConfigRetrieveRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsConnectorsApplyBlueprintCreate without sending the request
+     */
+    async endpointsAgentsConnectorsApplyBlueprintCreateRequestOpts(
+        requestParameters: EndpointsAgentsConnectorsApplyBlueprintCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsAgentsConnectorsApplyBlueprintCreate().',
+            );
+        }
+
+        if (requestParameters["agentBlueprintApplyRequest"] == null) {
+            throw new runtime.RequiredError(
+                "agentBlueprintApplyRequest",
+                'Required parameter "agentBlueprintApplyRequest" was null or undefined when calling endpointsAgentsConnectorsApplyBlueprintCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/connectors/{connector_uuid}/apply_blueprint/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AgentBlueprintApplyRequestToJSON(requestParameters["agentBlueprintApplyRequest"]),
+        };
+    }
+
+    /**
+     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC is enforced by the Agent\'s client-side validator.
+     */
+    async endpointsAgentsConnectorsApplyBlueprintCreateRaw(
+        requestParameters: EndpointsAgentsConnectorsApplyBlueprintCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AgentBlueprintApplyResult>> {
+        const requestOptions =
+            await this.endpointsAgentsConnectorsApplyBlueprintCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AgentBlueprintApplyResultFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Validate and apply a proposed Blueprint as the bounded Agent apply identity — never as the requesting user, and never via the stored-instance apply that bypasses RBAC. Content policy beyond per-model, per-action RBAC is enforced by the Agent\'s client-side validator.
+     */
+    async endpointsAgentsConnectorsApplyBlueprintCreate(
+        requestParameters: EndpointsAgentsConnectorsApplyBlueprintCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AgentBlueprintApplyResult> {
+        const response = await this.endpointsAgentsConnectorsApplyBlueprintCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
