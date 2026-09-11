@@ -1,8 +1,8 @@
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -26,6 +26,8 @@ import { RadioOption } from "#elements/forms/Radio";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
+
+import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     ClientTypeEnum,
@@ -233,15 +235,20 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="clientSecret"
-                    autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${provider.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.clientSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
+                    plaintext
+                    ?revealed=${!provider.pk}
                     ?hidden=${!showClientSecret}
                 >
-                </ak-hidden-text-input>
+                </ak-secret-text-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
                     <ak-checkbox-group
                         name="users"
@@ -324,6 +331,7 @@ export function renderForm({
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
                         certificate=${ifPresent(provider.signingKey)}
+                        .allowedKeyTypes=${JWTSigningKeyTypes}
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
@@ -446,6 +454,7 @@ export function renderForm({
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
                         certificate=${ifPresent(provider.encryptionKey)}
+                        .allowedKeyTypes=${JWEEncryptionKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

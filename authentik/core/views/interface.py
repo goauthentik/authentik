@@ -1,6 +1,5 @@
 """Interface views"""
 
-from json import dumps
 from typing import Any
 
 from django.contrib.auth.mixins import AccessMixin
@@ -56,9 +55,10 @@ class InterfaceView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         brand = CurrentBrandSerializer(self.request.brand, context={"request": self.request})
-        kwargs["config_json"] = dumps(ConfigView.get_config(self.request).data)
+        # Rendered by `json_script`, which serializes and escapes on its own.
+        kwargs["config_json"] = ConfigView.get_config(self.request).data
         kwargs["ui_theme"] = brand.data["ui_theme"]
-        kwargs["brand_json"] = dumps(brand.data)
+        kwargs["brand_json"] = brand.data
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
         kwargs["build"] = authentik_build_hash()

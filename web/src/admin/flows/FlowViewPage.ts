@@ -77,7 +77,7 @@ export class FlowViewPage extends AKElement {
             return nothing;
         }
         return html`<main part="main">
-            <ak-tabs exportparts="container:tabs">
+            <ak-tabs routed exportparts="container:tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"

@@ -7,7 +7,7 @@ import "#elements/dialogs/ak-modal";
 import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
-import { RouteChangeEvent } from "#elements/router/events";
+import { RouterNavigateEvent } from "#elements/router/core/navigation";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { html, render } from "lit";
@@ -127,7 +127,12 @@ export function renderDialog(
         eventAbortController.abort();
     };
 
-    window.addEventListener(RouteChangeEvent.eventName, dispose, {
+    window.addEventListener(RouterNavigateEvent.eventName, dispose, {
+        passive: true,
+        once: true,
+        signal: eventAbortController.signal,
+    });
+    window.addEventListener("popstate", dispose, {
         passive: true,
         once: true,
         signal: eventAbortController.signal,

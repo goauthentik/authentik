@@ -9,6 +9,7 @@ import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -157,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`identity/groups/${item.pk}`)}>${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<button
                 class="pf-c-button pf-m-plain"
