@@ -87,7 +87,7 @@ class TestCorsAllow(TestCase):
 
     def test_regex_full_redirect_uri_does_not_match_bare_origin(self):
         """A regex written for the full redirect URI (including a mandatory path) will
-        not match a bare Origin header. This is the documented behaviour: users wanting
+        not match a bare Origin header. This is the documented behavior: users wanting
         regex CORS support should write ``host(/path)?`` or add a separate origin entry."""
         request = self.factory.post("/", HTTP_ORIGIN="https://app-abc.example.com")
         response = cors_allow(
@@ -128,13 +128,13 @@ class TestCorsAllow(TestCase):
 
     def test_options_request_allowed_without_match(self):
         """Pre-flight OPTIONS requests are allowed through without an entry match
-        (regression: existing behaviour)."""
+        (regression: existing behavior)."""
         request = self.factory.options(
             "/",
             HTTP_ORIGIN="https://anywhere.example.com",
             HTTP_ACCESS_CONTROL_REQUEST_HEADERS="content-type",
         )
-        response = cors_allow(request, HttpResponse())
+        response = cors_allow(request, HttpResponse(), [])
         self.assertEqual(response["Access-Control-Allow-Origin"], "https://anywhere.example.com")
 
     def test_bare_string_treated_as_strict(self):
