@@ -1,6 +1,7 @@
 """GeoIP policy"""
 
 from itertools import chain
+from math import isfinite
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -18,6 +19,37 @@ from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 MAX_DISTANCE_HOUR_KM = 1000
+MIN_LATITUDE = -90
+MAX_LATITUDE = 90
+MIN_LONGITUDE = -180
+MAX_LONGITUDE = 180
+
+
+def valid_coordinates(geoip_data: object) -> tuple[float, float] | None:
+    """Return valid latitude and longitude from GeoIP data."""
+    if not isinstance(geoip_data, dict):
+        return None
+    latitude = geoip_data.get("lat")
+    longitude = geoip_data.get("long")
+    if (
+        isinstance(latitude, bool)
+        or not isinstance(latitude, int | float)
+        or isinstance(longitude, bool)
+        or not isinstance(longitude, int | float)
+    ):
+        return None
+    try:
+        latitude = float(latitude)
+        longitude = float(longitude)
+    except OverflowError:
+        return None
+    if not isfinite(latitude) or not isfinite(longitude):
+        return None
+    if not MIN_LATITUDE <= latitude <= MAX_LATITUDE or not (
+        MIN_LONGITUDE <= longitude <= MAX_LONGITUDE
+    ):
+        return None
+    return latitude, longitude
 
 
 class GeoIPPolicy(Policy):
@@ -75,6 +107,10 @@ class GeoIPPolicy(Policy):
 
         result = PolicyResult(passing, *messages)
         result.source_results = list(chain(static_results, dynamic_results))
+        for source_result in dynamic_results:
+            if source_result.raw_result is not None:
+                result.raw_result = source_result.raw_result
+                break
 
         return result
 
@@ -113,45 +149,55 @@ class GeoIPPolicy(Policy):
     def passes_distance(self, request: PolicyRequest) -> PolicyResult:
         """Check if current policy execution is out of distance range compared
         to previous authentication requests"""
-        # Get previous login event and GeoIP data
         previous_logins = Event.objects.filter(
             action=EventAction.LOGIN,
-            user__pk=request.user.pk,  # context__geo__isnull=False
+            user__pk=request.user.pk,
         ).order_by("-created")[: self.history_login_count]
-        _now = now()
-        geoip_data: GeoIPDict | None = request.context.get("geoip")
-        if not geoip_data:
-            return PolicyResult(False)
-        if not previous_logins.exists():
+        current_coordinates = valid_coordinates(request.context.get("geoip"))
+        if current_coordinates is None:
             return PolicyResult(True)
-        result = False
+        current_time = now()
         for previous_login in previous_logins:
-            if "geo" not in previous_login.context:
+            previous_coordinates = valid_coordinates(previous_login.context.get("geo"))
+            if previous_coordinates is None:
                 continue
-            previous_login_geoip: GeoIPDict = previous_login.context["geo"]
 
-            # Figure out distance
-            dist = distance.geodesic(
-                (previous_login_geoip["lat"], previous_login_geoip["long"]),
-                (geoip_data["lat"], geoip_data["long"]),
-            )
+            dist = distance.geodesic(previous_coordinates, current_coordinates)
             if self.check_history_distance and dist.km >= (
                 self.history_max_distance_km + self.distance_tolerance_km
             ):
                 return PolicyResult(
                     False, _("Distance from previous authentication is larger than threshold.")
                 )
-            # Check if distance between `previous_login` and now is more
-            # than max distance per hour times the amount of hours since the previous login
-            # (round down to the lowest closest time of hours)
-            # clamped to be at least 1 hour
-            rel_time_hours = max(int((_now - previous_login.created).total_seconds() / 3600), 1)
-            if self.check_impossible_travel and dist.km >= (
-                (MAX_DISTANCE_HOUR_KM * rel_time_hours) + self.distance_tolerance_km
-            ):
-                return PolicyResult(False, _("Distance is further than possible."))
-            result = True
-        return PolicyResult(result)
+            elapsed_hours = max(
+                (current_time - previous_login.created).total_seconds() / 3600,
+                1.0,
+            )
+            allowed_distance_km = (
+                MAX_DISTANCE_HOUR_KM * elapsed_hours
+            ) + self.impossible_tolerance_km
+            if self.check_impossible_travel and dist.km >= allowed_distance_km:
+                result = PolicyResult(False, _("Distance is further than possible."))
+                result.raw_result = {
+                    "reason": "impossible_travel_threshold_exceeded",
+                    "distance_km": dist.km,
+                    "allowed_distance_km": allowed_distance_km,
+                    "elapsed_hours": elapsed_hours,
+                    "max_speed_km_per_hour": MAX_DISTANCE_HOUR_KM,
+                    "impossible_tolerance_km": self.impossible_tolerance_km,
+                    "previous_login_at": previous_login.created,
+                    "previous_login_event": previous_login.event_uuid,
+                    "current_geo": {
+                        "lat": current_coordinates[0],
+                        "long": current_coordinates[1],
+                    },
+                    "previous_geo": {
+                        "lat": previous_coordinates[0],
+                        "long": previous_coordinates[1],
+                    },
+                }
+                return result
+        return PolicyResult(True)
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("GeoIP Policy")
