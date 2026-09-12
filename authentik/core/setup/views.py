@@ -12,6 +12,8 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.core.apps import Setup
+from authentik.core.setup.utils import SETUP_FLOW_SLUG, setup_complete
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
@@ -34,15 +36,15 @@ def read_static(path: str) -> str | None:
 
 class SetupView(View):
 
-    setup_flow_slug = "initial-setup"
+    setup_flow_slug = SETUP_FLOW_SLUG
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
-        if request.method != HTTPMethod.HEAD and Setup.get():
+        if request.method != HTTPMethod.HEAD and setup_complete():
             return redirect(reverse("authentik_core:root-redirect"))
         return super().dispatch(request, *args, **kwargs)
 
     def head(self, request: HttpRequest, *args, **kwargs):
-        if Setup.get():
+        if setup_complete():
             return HttpResponse(status=HTTPStatus.SERVICE_UNAVAILABLE)
         if not Flow.objects.filter(slug=self.setup_flow_slug).exists():
             return HttpResponse(status=HTTPStatus.SERVICE_UNAVAILABLE)
@@ -57,7 +59,14 @@ class SetupView(View):
                 status=HTTPStatus.SERVICE_UNAVAILABLE,
             )
         planner = FlowPlanner(flow)
-        plan = planner.plan(request, {FLOW_CONTEXT_START_BY: "setup"})
+        try:
+            plan = planner.plan(request, {FLOW_CONTEXT_START_BY: "setup"})
+        except FlowNonApplicableException:
+            # The setup flow cannot run, but setup_complete() did not recognize this
+            # instance as set up. Send the visitor somewhere usable rather than
+            # rendering an error at the root of the instance.
+            LOGGER.warning("Setup flow is not applicable, redirecting to authentication")
+            return redirect(reverse("authentik_flows:default-authentication"))
         plan.append_stage(in_memory_stage(PostSetupStageView))
         return plan.to_redirect(request, flow)
 
@@ -86,7 +95,7 @@ class PostSetupStageView(StageView):
                 **{"metadata__labels__blueprints.goauthentik.io/system-oobe": "true"}
             ).update(enabled=False)
             # Make flow inaccessible
-            Flow.objects.filter(slug="initial-setup").update(
+            Flow.objects.filter(slug=SETUP_FLOW_SLUG).update(
                 authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER
             )
         return self.executor.stage_ok()
