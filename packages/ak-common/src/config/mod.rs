@@ -525,19 +525,18 @@ mod tests {
         assert!(!config.debug);
     }
 
-    // See https://github.com/rust-cli/config-rs/issues/443
-    // #[test]
-    // fn env_list_empty() {
-    //     #[expect(unsafe_code, reason = "testing")]
-    //     // SAFETY: testing
-    //     unsafe {
-    //         env::set_var("AUTHENTIK_LISTEN__HTTP", "");
-    //     }
-    //
-    //     let (config, _) = super::Config::load(&[], None).expect("failed to load config");
-    //
-    //     assert_eq!(config.listen.http, []);
-    // }
+    #[test]
+    fn env_list_empty() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_LISTEN__HTTP", "");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.listen.http, []);
+    }
 
     #[test]
     fn env_list_one_element() {

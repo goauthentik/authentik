@@ -1,4 +1,7 @@
-use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize, path::PathBuf};
+use std::{
+    collections::HashMap, fmt::Display, net::SocketAddr, num::NonZeroUsize,
+    path::PathBuf, str::FromStr,
+};
 
 use ipnet::IpNet;
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
@@ -10,6 +13,22 @@ pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 5] = [
     "listen.trusted_proxy_cidrs",
     "log.http_headers",
 ];
+
+/// Deserialize a list, ignoring empty entries.
+///
+/// The environment source splits values on `,`, so an empty variable
+/// yields a single empty entry rather than an empty list.
+fn deserialize_list<'de, D, T>(deserializer: D) -> Result<Vec<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr<Err: Display>,
+{
+    Vec::<String>::deserialize(deserializer)?
+        .iter()
+        .filter(|entry| !entry.is_empty())
+        .map(|entry| entry.parse().map_err(D::Error::custom))
+        .collect()
+}
 
 fn deserialize_optional_u64<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
 where
@@ -182,15 +201,20 @@ pub struct PostgreSQLConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListenConfig {
+    #[serde(deserialize_with = "deserialize_list")]
     pub http: Vec<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
     pub https: Vec<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
     pub metrics: Vec<SocketAddr>,
     pub debug_tokio: Option<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
     pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogConfig {
+    #[serde(deserialize_with = "deserialize_list")]
     pub http_headers: Vec<String>,
     pub rust_log: HashMap<String, String>,
 }
