@@ -58,8 +58,21 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 raise ValidationError("Missing intent")
         else:
             attrs.setdefault("user", request.user)
-        attrs.setdefault("intent", TokenIntents.INTENT_API)
-        if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
+        allowed_create_intents = [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]
+        if self.instance:
+            attrs.setdefault("intent", self.instance.intent)
+        else:
+            attrs.setdefault("intent", TokenIntents.INTENT_API)
+
+        # API tokens and app-passwords are user-managed token types.
+        # Other token types (for example recovery/verification) can be updated,
+        # but only with their existing intent.
+        if self.instance and self.instance.intent not in allowed_create_intents:
+            allowed_intents = [self.instance.intent]
+        else:
+            allowed_intents = allowed_create_intents
+
+        if attrs.get("intent") not in allowed_intents:
             raise ValidationError({"intent": f"Invalid intent {attrs.get('intent')}"})
 
         if attrs.get("intent") == TokenIntents.INTENT_APP_PASSWORD:
