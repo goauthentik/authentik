@@ -6,6 +6,7 @@ import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network"
 import {
     Assertion,
     assertWebAuthnSupported,
+    isWebAuthnInvalidStateError,
     isWebAuthnNotAllowedError,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
@@ -73,6 +74,15 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 return credential as PublicKeyCredential;
             })
             .catch((cause) => {
+                if (isWebAuthnInvalidStateError(cause)) {
+                    throw new Error(
+                        msg(
+                            "This security key is already registered on your account. Touch a different key to add it.",
+                        ),
+                        { cause },
+                    );
+                }
+
                 if (isWebAuthnNotAllowedError(cause)) {
                     throw new Error(
                         msg("Registration was cancelled or timed out. Please try again."),

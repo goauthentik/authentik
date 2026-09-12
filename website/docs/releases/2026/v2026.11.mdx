@@ -10,6 +10,10 @@ draft: true
 
 ## New features and improvements
 
+### Duplicate WebAuthn enrollment prevented by the authenticator
+
+The [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) now sends the user's already-enrolled credentials in the `excludeCredentials` registration parameter. An authenticator that already holds a credential for the account refuses to create another one, so the same security key can no longer be enrolled twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
+
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
