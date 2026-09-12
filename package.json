@@ -7,7 +7,8 @@
         "lint": "run-s check-types lint:runtime lint:catalogs lint:spellcheck",
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
-        "lint:spellcheck": "cspell . --config cspell.config.jsonc"
+        "lint:spellcheck": "cspell . --config cspell.config.jsonc",
+        "build:lint-config": "pnpm --filter @goauthentik/oxlint-config --filter @goauthentik/oxfmt-config run build"
     },
     "type": "module",
     "imports": {
@@ -21,6 +22,8 @@
         "@goauthentik/docusaurus-config": "workspace:*",
         "@goauthentik/eslint-config": "workspace:*",
         "@goauthentik/logger-js": "workspace:*",
+        "@goauthentik/oxfmt-config": "workspace:*",
+        "@goauthentik/oxlint-config": "workspace:*",
         "@goauthentik/prettier-config": "workspace:*",
         "@goauthentik/tsconfig": "workspace:*",
         "@types/node": "catalog:",
@@ -47,5 +50,9 @@
         }
     },
     "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "@goauthentik/prettier-config"
+    "prettier": "@goauthentik/prettier-config",
+    "devDependencies": {
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:"
+    }
 }
