@@ -84,6 +84,8 @@ jobs:
             deps: node
           - job: catalogs
             deps: node
+          - job: oxlint-fixtures
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff
