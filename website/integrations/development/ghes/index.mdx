@@ -48,7 +48,7 @@ Create a SAML application/provider pair. To add SCIM provisioning, also create a
         - **Audience**: `https://github.company`
         - Under **Advanced protocol settings**:
             - Select a **Signing certificate** and download the certificate for use in GitHub Enterprise Server.
-            - Set **Property mappings** to `authentik default SAML Mapping: Username` and `authentik default SAML Mapping: Email`.
+            - Set **Property mappings** to `authentik default SAML Mapping: Username`, `authentik default SAML Mapping: Email`, and `authentik default SAML Mapping: Name`.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
     - **Configure Bindings**:
         - For SAML without SCIM, bindings are optional and control who can access the application.
@@ -131,7 +131,10 @@ Complete this section if you want to use SCIM provisioning. This mapping sends t
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider.
     - **Verification certificate**: upload the signing certificate that you downloaded from authentik.
     - If you plan to use SCIM, select **Allow creation of accounts with built-in authentication** and **Disable administrator demotion/promotion**. These settings let you create the required setup user before SCIM manages accounts.
-    - In **User attributes**, leave the username attribute empty so that GitHub Enterprise Server matches the SAML `NameID` to the SCIM `userName`. If you set a custom username attribute, it must return the same value as `request.user.username` in the SCIM mapping.
+    - Under **User attributes**, configure the following SAML attribute names:
+        - **Username**: `http://schemas.goauthentik.io/2021/02/saml/username`
+        - **Full name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+        - **Emails**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 4. Click **Save settings** and wait for the changes to apply.
 
 ![Populated GitHub Enterprise Server SAML settings](ghes_saml_settings.png)
@@ -212,6 +215,7 @@ This message does not prove that the connection failed. Check both systems at th
 ## Resources
 
 - [GitHub Enterprise Server: configuring SAML single sign-on for your enterprise](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/using-saml-for-enterprise-iam/configuring-saml-single-sign-on-for-your-enterprise)
+- [GitHub Enterprise Server: SAML configuration reference](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/iam-configuration-reference/saml-configuration-reference#saml-attributes)
 - [GitHub Enterprise Server: configuring SCIM provisioning to manage users](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/provisioning-user-accounts-with-scim/configuring-scim-provisioning-for-users)
 - [GitHub Enterprise Server: provisioning users and groups with SCIM using the REST API](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/provisioning-user-accounts-with-scim/provisioning-users-and-groups-with-scim-using-the-rest-api)
 - [GitHub Enterprise Server: REST API endpoints for SCIM](https://docs.github.com/en/enterprise-server@latest/rest/enterprise-admin/scim)
