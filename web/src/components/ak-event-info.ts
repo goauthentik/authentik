@@ -303,8 +303,7 @@ export class EventInfo extends AKElement {
                                     newCol = html`${msg("Cleared")}`;
                                 } else {
                                     newCol = html`<pre>
-${JSON.stringify(value.new_value, null, 4)}</pre
-                                    >`;
+${JSON.stringify(value.new_value, null, 4)}</pre>`;
                                 }
                                 return html` <tr>
                                     <td><pre>${key}</pre></td>

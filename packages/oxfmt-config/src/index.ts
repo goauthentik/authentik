@@ -1,10 +1,10 @@
 /**
- * @file oxfmt configuration for authentik projects.
+ * @file Oxfmt configuration for authentik projects.
  */
 
-import { OxfmtConfig } from "oxfmt";
-
 import { authentikSortImportsConfig } from "./imports.js";
+
+import { OxfmtConfig } from "oxfmt";
 
 export * from "./imports.js";
 
@@ -12,8 +12,8 @@ export * from "./imports.js";
  * Default ignore patterns for generated and build output.
  *
  * @remarks
- * `poly.ts`-style files whose import order is load-bearing belong here too: `sortImports` will
- * happily reorder a side-effect-adjacent import and break the runtime.
+ *   `poly.ts`-style files whose import order is load-bearing belong here too: `sortImports` will
+ *   happily reorder a side-effect-adjacent import and break the runtime.
  */
 export const DefaultIgnorePatterns = [
     "**/out",
@@ -36,11 +36,11 @@ export const DefaultIgnorePatterns = [
 ];
 
 /**
- * authentik's oxfmt configuration.
+ * Authentik's oxfmt configuration.
  *
  * ```ts
- * import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config"
- * export default { ...authentikOxfmtConfig }
+ * import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
+ * export default { ...authentikOxfmtConfig };
  * ```
  */
 export const authentikOxfmtConfig: OxfmtConfig = {

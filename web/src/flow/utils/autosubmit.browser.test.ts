@@ -8,11 +8,11 @@ afterEach(() => {
 });
 
 it("submits an autosubmit challenge using a native form", () => {
-    const submit = vi.spyOn(HTMLFormElement.prototype, "submit").mockImplementation(function submit(
-        this: HTMLFormElement,
-    ) {
-        this.dataset.testAutosubmit = "true";
-    });
+    const submit = vi
+        .spyOn(HTMLFormElement.prototype, "submit")
+        .mockImplementation(function submit(this: HTMLFormElement) {
+            this.dataset.testAutosubmit = "true";
+        });
 
     submitAutosubmitChallenge({
         component: "ak-stage-autosubmit",

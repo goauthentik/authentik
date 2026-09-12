@@ -1,8 +1,8 @@
 import "#components/ak-status-label";
+import "#components/tasks/TaskStatus";
 import "#elements/EmptyState";
 import "#elements/buttons/ActionButton/index";
 import "#elements/events/LogViewer";
-import "#components/tasks/TaskStatus";
 
 import { formatElapsedTime } from "#common/temporal";
 
@@ -58,9 +58,11 @@ export class SyncStatusCard extends AKElement {
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">
-                            ${this.syncState?.isRunning
-                                ? html`${msg("Sync is currently running.")}`
-                                : html`${msg("Sync is not currently running.")}`}
+                            ${
+                                this.syncState?.isRunning
+                                    ? html`${msg("Sync is currently running.")}`
+                                    : html`${msg("Sync is not currently running.")}`
+                            }
                         </div>
                     </dd>
                 </div>
@@ -72,9 +74,11 @@ export class SyncStatusCard extends AKElement {
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">
-                            ${this.syncState?.lastSuccessfulSync
-                                ? html`${formatElapsedTime(this.syncState?.lastSuccessfulSync)}`
-                                : html`${msg("No successful sync found.")}`}
+                            ${
+                                this.syncState?.lastSuccessfulSync
+                                    ? html`${formatElapsedTime(this.syncState?.lastSuccessfulSync)}`
+                                    : html`${msg("No successful sync found.")}`
+                            }
                         </div>
                     </dd>
                 </div>

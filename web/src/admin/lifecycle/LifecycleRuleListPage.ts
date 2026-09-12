@@ -1,12 +1,12 @@
-import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/lifecycle/LifecyclePreviewBanner";
+import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
+import "#components/tasks/TaskList";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";

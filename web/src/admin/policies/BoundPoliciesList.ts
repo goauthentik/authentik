@@ -19,9 +19,9 @@ import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { GroupForm } from "#admin/groups/ak-group-form";
-import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 import { UserForm } from "#admin/users/UserForm";
 
 import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
@@ -240,11 +240,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`${this.findSlotted("description")
-                ? html`<p class="policy-desc">
-                      <slot name="description"></slot>
-                  </p>`
-                : nothing}
+        return html`${
+                this.findSlotted("description")
+                    ? html`<p class="policy-desc">
+                          <slot name="description"></slot>
+                      </p>`
+                    : nothing
+            }
             <p class="policy-desc">
                 ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
                 ${policyEngineMode.description}

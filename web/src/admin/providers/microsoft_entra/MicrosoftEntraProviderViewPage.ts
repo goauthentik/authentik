@@ -1,18 +1,19 @@
 /**
- * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users,
+ *   provisioned groups, and permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#components/sync/SyncStatusCard";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
-import "#components/sync/SyncStatusCard";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -160,13 +161,15 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             return nothing;
         }
 
-        return html`${!this.provider?.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
-                      )}
-                  </div>`
-                : nothing}
+        return html`${
+                !this.provider?.assignedBackchannelApplicationName
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: Provider is not assigned to an application as backchannel provider.",
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"

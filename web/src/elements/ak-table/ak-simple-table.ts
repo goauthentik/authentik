@@ -78,7 +78,6 @@ export interface ISimpleTable {
  * - @part row: The `<tr>` element for a standard row
  * - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
  *   which is zero-indexed
- *
  */
 @customElement("ak-simple-table")
 export class SimpleTable

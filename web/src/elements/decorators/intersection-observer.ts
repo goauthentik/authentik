@@ -18,37 +18,38 @@ export interface LitElementWithDisplayBox extends LitElement {
 
 export interface IntersectionObserverDecoratorInit extends IntersectionObserverInit {
     /**
-     * Whether to ascend the DOM tree to find a parent with a layout box (i.e. non "display: contents") and use that as the target for intersection checking.
+     * Whether to ascend the DOM tree to find a parent with a layout box (i.e. non "display:
+     * contents") and use that as the target for intersection checking.
      */
     useAncestorBox?: boolean;
 }
 
 /**
- * A decorator that applies an IntersectionObserver to the element.
- * This is useful for lazy-loading elements that are not visible on the screen.
+ * A decorator that applies an IntersectionObserver to the element. This is useful for lazy-loading
+ * elements that are not visible on the screen.
  *
  * @param init Configuration options for the IntersectionObserver
  *
- * ```ts
- * class MyElement extends LitElement {
- *     \@intersectionObserver()
- *     protected visible!: boolean;
+ *   ```ts
+ *   class MyElement extends LitElement {
+ *       \@intersectionObserver()
+ *       protected visible!: boolean;
  *
- *     \@intersectionObserver({ threshold: 0.5, rootMargin: '50px' })
- *     protected halfVisible!: boolean;
+ *       \@intersectionObserver({ threshold: 0.5, rootMargin: '50px' })
+ *       protected halfVisible!: boolean;
  *
- *     render() {
- *         if (!this.visible) return nothing;
+ *       render() {
+ *           if (!this.visible) return nothing;
  *
- *         return html`
- *             <div>
- *                 Content is visible!
- *                 ${this.halfVisible ? html`<p>More than 50% visible</p>` : ''}
- *             </div>
- *         `;
- *     }
- * }
- * ```
+ *           return html`
+ *               <div>
+ *                   Content is visible!
+ *                   ${this.halfVisible ? html`<p>More than 50% visible</p>` : ''}
+ *               </div>
+ *           `;
+ *       }
+ *   }
+ *   ```
  *
  * @attr display-box If set to "contents", the element will be considered intersecting.
  */
@@ -114,7 +115,8 @@ export function intersectionObserver({
         };
 
         /**
-         * Applies the necessary lifecycle callback with access to protected properties of the target class.
+         * Applies the necessary lifecycle callback with access to protected properties of the
+         * target class.
          */
         function applyLifecycleCallbacks(this: T) {
             const { connectedCallback, disconnectedCallback, updated } = this;

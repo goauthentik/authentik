@@ -57,7 +57,8 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * The name attribute for the form element
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String, reflect: true })
@@ -65,14 +66,15 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * The label for the input control
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String })
     label: string | null = null;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: false })
@@ -89,7 +91,8 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * Help text to display below the form element. Optional
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ reflect: false })
@@ -97,13 +100,14 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
+     *
      * @property
      */
     @property({ type: Object })
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean })
@@ -116,7 +120,7 @@ export abstract class HorizontalLightComponent<T>
     }
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
@@ -136,8 +140,10 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * Input hint.
-     *   - `code`: uses a monospace font and disables spellcheck & autocomplete
-     * @property
+     *
+     * - `code`: uses a monospace font and disables spellcheck & autocomplete
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "input-hint" })
@@ -149,6 +155,7 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })

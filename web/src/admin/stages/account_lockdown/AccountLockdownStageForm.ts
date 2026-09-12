@@ -1,7 +1,7 @@
-import "#elements/forms/HorizontalFormElement";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 

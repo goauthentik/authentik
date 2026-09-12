@@ -38,14 +38,15 @@ function formatValue(value: unknown): TemplateResult | string {
 /**
  * A reusable card component to display custom attributes for objects like User, Group, or Device.
  *
- * This component filters out system attributes (keys starting with `goauthentik.io/`)
- * and optionally excludes the `notes` attribute (since it's typically displayed separately).
+ * This component filters out system attributes (keys starting with `goauthentik.io/`) and
+ * optionally excludes the `notes` attribute (since it's typically displayed separately).
  *
  * Value types are rendered appropriately:
- * - string/number: Plain text
- * - boolean: ak-status-label component
- * - simple arrays: Comma-separated list
- * - objects/complex arrays: Formatted JSON in code block
+ *
+ * - String/number: Plain text
+ * - Boolean: ak-status-label component
+ * - Simple arrays: Comma-separated list
+ * - Objects/complex arrays: Formatted JSON in code block
  */
 @customElement("ak-object-attributes-card")
 export class ObjectAttributesCard extends AKElement {
@@ -58,8 +59,8 @@ export class ObjectAttributesCard extends AKElement {
     excludeNotes = true;
 
     /**
-     * Filters the attributes to only include custom (non-system) attributes.
-     * Excludes keys starting with "goauthentik.io/" and optionally the "notes" key.
+     * Filters the attributes to only include custom (non-system) attributes. Excludes keys starting
+     * with "goauthentik.io/" and optionally the "notes" key.
      */
     private get customAttributes(): Array<[string, unknown]> {
         return Object.entries(this.objectAttributes || {}).filter(([key]) => {
@@ -75,15 +76,17 @@ export class ObjectAttributesCard extends AKElement {
         return html`
             <div class="pf-c-card__title">${msg("Custom Attributes")}</div>
             <div class="pf-c-card__body">
-                ${attrs.length > 0
-                    ? renderDescriptionList(
-                          attrs.map(([key, value]) => [
-                              key,
-                              formatValue(value),
-                          ]) as DescriptionPair[],
-                          { horizontal: true },
-                      )
-                    : html`<p>${msg("No custom attributes defined.")}</p>`}
+                ${
+                    attrs.length > 0
+                        ? renderDescriptionList(
+                              attrs.map(([key, value]) => [
+                                  key,
+                                  formatValue(value),
+                              ]) as DescriptionPair[],
+                              { horizontal: true },
+                          )
+                        : html`<p>${msg("No custom attributes defined.")}</p>`
+                }
             </div>
         `;
     }

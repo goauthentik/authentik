@@ -56,8 +56,8 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     /**
      * The autocomplete attribute to use for the password field.
      *
-     * Defaults to "off" to **suggest** that the password is not stored in the browser.
-     * However, the browser may not necessarily respect this setting.
+     * Defaults to "off" to **suggest** that the password is not stored in the browser. However, the
+     * browser may not necessarily respect this setting.
      *
      * Still, we can at least hint at our preferred behavior...
      */
@@ -86,26 +86,30 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     //#region Render
 
     protected override renderForm(): TemplateResult {
-        return html`${this.username
-                ? html`<input
-                      hidden
-                      readonly
-                      autocomplete="username"
-                      type="text"
-                      name="username"
-                      value=${this.username}
-                  />`
-                : nothing}
-            ${this.email
-                ? html`<input
-                      hidden
-                      autocomplete="email"
-                      readonly
-                      type="email"
-                      name="email"
-                      value=${this.email}
-                  />`
-                : nothing}
+        return html`${
+                this.username
+                    ? html`<input
+                          hidden
+                          readonly
+                          autocomplete="username"
+                          type="text"
+                          name="username"
+                          value=${this.username}
+                      />`
+                    : nothing
+            }
+            ${
+                this.email
+                    ? html`<input
+                          hidden
+                          autocomplete="email"
+                          readonly
+                          type="email"
+                          name="email"
+                          value=${this.email}
+                      />`
+                    : nothing
+            }
 
             <ak-form-element-horizontal required name="password">
                 ${AKLabel(

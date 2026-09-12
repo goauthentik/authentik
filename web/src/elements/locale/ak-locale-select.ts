@@ -11,9 +11,10 @@ import { WithLocale } from "#elements/mixins/locale";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -67,9 +68,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     };
 
     /**
-     * An event listener which only reacts to the locale being ready.
-     * This is used to delay showing the select until the locale is loaded,
-     * preventing a flash of unlocalized content and avoiding expensive localization operations during initial render.
+     * An event listener which only reacts to the locale being ready. This is used to delay showing
+     * the select until the locale is loaded, preventing a flash of unlocalized content and avoiding
+     * expensive localization operations during initial render.
      */
     protected localeReadyStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status !== "ready") {
@@ -109,9 +110,8 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
      *
      * @remarks
      *
-     * This avoids showing the select before the locale is initialized,
-     * preventing a flash of unlocalized content and avoiding expensive localization
-     * operations during initial render.
+     *   This avoids showing the select before the locale is initialized, preventing a flash of
+     *   unlocalized content and avoiding expensive localization operations during initial render.
      */
     @state()
     protected ready = false;

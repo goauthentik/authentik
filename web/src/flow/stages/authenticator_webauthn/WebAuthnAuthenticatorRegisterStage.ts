@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
-import "#flow/components/ak-flow-card";
 import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
 
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
@@ -145,27 +145,33 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
                 <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
                     <span
-                        >${this.registerRunning
-                            ? msg("Registering...")
-                            : this.errorMessage || msg("Failed to register")}
+                        >${
+                            this.registerRunning
+                                ? msg("Registering...")
+                                : this.errorMessage || msg("Failed to register")
+                        }
                     </span>
                 </ak-empty-state>
-                ${this.challenge?.responseErrors
-                    ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
-                    : nothing}
+                ${
+                    this.challenge?.responseErrors
+                        ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
+                        : nothing
+                }
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
-                    ${!this.registerRunning
-                        ? html` <button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  this.tryRegister();
-                              }}
-                              type="button"
-                          >
-                              ${msg("Retry registration")}
-                          </button>`
-                        : nothing}
+                    ${
+                        !this.registerRunning
+                            ? html` <button
+                                  class="pf-c-button pf-m-primary pf-m-block"
+                                  @click=${() => {
+                                      this.tryRegister();
+                                  }}
+                                  type="button"
+                              >
+                                  ${msg("Retry registration")}
+                              </button>`
+                            : nothing
+                    }
                 </fieldset>
             </form>
         </ak-flow-card>`;

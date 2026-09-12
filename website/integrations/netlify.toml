@@ -1,30 +1,30 @@
 [[plugins]]
-  package = "netlify-plugin-cache"
+package = "netlify-plugin-cache"
 
 [plugins.inputs]
-  paths = [".docusaurus", ".cache", 'node_modules/.cache']
+paths = [".docusaurus", ".cache", 'node_modules/.cache']
 
 [[plugins]]
-  package = "netlify-plugin-debug-cache"
+package = "netlify-plugin-debug-cache"
 
 [build]
-  base    = "website"
-  package = "integrations"
-  command = "pnpm --dir .. install --frozen-lockfile && pnpm install --frozen-lockfile && pnpm run build:integrations"
-  publish = "integrations/build"
-  ignore  = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- website/integrations website/docusaurus-theme website/package.json website/pnpm-lock.yaml pnpm-lock.yaml"
+base = "website"
+package = "integrations"
+command = "pnpm --dir .. install --frozen-lockfile && pnpm install --frozen-lockfile && pnpm run build:integrations"
+publish = "integrations/build"
+ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- website/integrations website/docusaurus-theme website/package.json website/pnpm-lock.yaml pnpm-lock.yaml"
 
 [dev]
-  command    = "pnpm start"
-  targetPort = 3000
+command = "pnpm start"
+targetPort = 3000
 
 [context.production.environment]
-  NODE_ENV = "production"
+NODE_ENV = "production"
 
 [context.dev.environment]
-  NODE_ENV = "development"
+NODE_ENV = "development"
 
 [[headers]]
-  for = "/*"
+for = "/*"
 [headers.values]
-  X-Frame-Options = "DENY"
+X-Frame-Options = "DENY"

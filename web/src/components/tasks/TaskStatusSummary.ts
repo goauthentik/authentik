@@ -1,5 +1,5 @@
-import "#elements/cards/AggregateCard";
 import "#elements/Spinner";
+import "#elements/cards/AggregateCard";
 
 import { AKElement } from "#elements/Base";
 

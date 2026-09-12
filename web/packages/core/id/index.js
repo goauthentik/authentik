@@ -5,10 +5,9 @@
 /**
  * A global ID generator.
  *
+ * @category IDs
  * @singleton
  * @runtime common
- *
- * @category IDs
  */
 export class IDGenerator {
     static #sequenceIndex = 0;
@@ -17,8 +16,8 @@ export class IDGenerator {
     /**
      * Create a new ID for an HTML element.
      *
-     * This ID will be unique for the lifetime of the page and will not be
-     * exposed on the `window` object.
+     * This ID will be unique for the lifetime of the page and will not be exposed on the `window`
+     * object.
      *
      * @param {string | number} [name] An optional name to use for the element.
      */

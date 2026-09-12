@@ -1,13 +1,10 @@
 /**
- * @file Typography tokens — font families, sizes, line heights, weights.
- *
- * The semantic family tokens (body/heading/code) alias the concrete brand
- * stacks declared in `./fonts.ts` (`--ak-font-family-sans-serif/display/
- * monospace`), so the package resolves fonts on its own. Sizes follow a
- * modular xs..4xl scale. `semi-bold` is deliberately omitted from the public
- * surface because
- * PatternFly's `--pf-global--FontWeight--semi-bold` collapses to 700 (same as
- * bold) unless the Overpass font scale is active.
+ * @file Typography tokens — font families, sizes, line heights, weights. The semantic family tokens
+ *   (body/heading/code) alias the concrete brand stacks declared in `./fonts.ts`
+ *   (`--ak-font-family-sans-serif/display/ monospace`), so the package resolves fonts on its own.
+ *   Sizes follow a modular xs..4xl scale. `semi-bold` is deliberately omitted from the public
+ *   surface because PatternFly's `--pf-global--FontWeight--semi-bold` collapses to 700 (same as
+ *   bold) unless the Overpass font scale is active.
  */
 
 import { instance, variable } from "../shared.js";

@@ -14,7 +14,6 @@ import { customElement, property } from "lit/decorators.js";
  * Form page for OAuth2 Dynamic Client Registration configuration
  *
  * @element ak-provider-oauth2-dcr-form
- *
  */
 @customElement("ak-provider-oauth2-dcr-form")
 export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, string> {
@@ -23,8 +22,8 @@ export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, st
     public static override createLabel = msg("Create");
 
     /**
-     * The provider this configuration is (or will be) attached to.
-     * Only used when creating a new configuration.
+     * The provider this configuration is (or will be) attached to. Only used when creating a new
+     * configuration.
      */
     @property({ type: Number })
     public providerID: number | null = null;

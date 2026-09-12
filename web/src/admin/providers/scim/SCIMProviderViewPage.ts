@@ -1,20 +1,21 @@
 /**
- * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned
+ *   groups, and permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#components/sync/SyncStatusCard";
 import "#elements/timestamp/ak-timestamp";
 
 import { aki } from "#common/api/client";
@@ -210,13 +211,15 @@ export class SCIMProviderViewPage extends AKElement {
             return nothing;
         }
 
-        return html` ${!this.provider?.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
-                      )}
-                  </div>`
-                : nothing}
+        return html` ${
+                !this.provider?.assignedBackchannelApplicationName
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: Provider is not assigned to an application as backchannel provider.",
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
@@ -268,45 +271,54 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
-                    ${this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
-                        ? html`
-                              <div class="pf-c-card">
-                                  <div class="pf-c-card__body">
-                                      ${renderDescriptionList(
-                                          [
+                    ${
+                        this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
+                            ? html`
+                                  <div class="pf-c-card">
+                                      <div class="pf-c-card__body">
+                                          ${renderDescriptionList(
                                               [
-                                                  msg("OAuth Status"),
-                                                  html`<ak-status-label
-                                                          ?good=${this.provider
-                                                              .authOauthTokenLastUpdated !== null}
-                                                          good-label=${msg("Authenticated")}
-                                                          bad-label=${msg("No token saved")}
-                                                      ></ak-status-label>
-                                                      <a
-                                                          class="pf-c-button pf-m-primary"
-                                                          href=${this.provider?.authOauthUrlStart ||
-                                                          ""}
-                                                          target="_blank"
-                                                          >${msg("(Re-)authenticate")}</a
-                                                      >`,
+                                                  [
+                                                      msg("OAuth Status"),
+                                                      html`<ak-status-label
+                                                              ?good=${
+                                                                  this.provider
+                                                                      .authOauthTokenLastUpdated !==
+                                                                  null
+                                                              }
+                                                              good-label=${msg("Authenticated")}
+                                                              bad-label=${msg("No token saved")}
+                                                          ></ak-status-label>
+                                                          <a
+                                                              class="pf-c-button pf-m-primary"
+                                                              href=${
+                                                                  this.provider
+                                                                      ?.authOauthUrlStart || ""
+                                                              }
+                                                              target="_blank"
+                                                              >${msg("(Re-)authenticate")}</a
+                                                          >`,
+                                                  ],
+                                                  [
+                                                      msg("OAuth Callback URL"),
+                                                      html`<input
+                                                          class="pf-c-form-control"
+                                                          readonly
+                                                          type="text"
+                                                          value="${
+                                                              this.provider.authOauthUrlCallback ||
+                                                              ""
+                                                          }"
+                                                      />`,
+                                                  ],
                                               ],
-                                              [
-                                                  msg("OAuth Callback URL"),
-                                                  html`<input
-                                                      class="pf-c-form-control"
-                                                      readonly
-                                                      type="text"
-                                                      value="${this.provider.authOauthUrlCallback ||
-                                                      ""}"
-                                                  />`,
-                                              ],
-                                          ],
-                                          { horizontal: true },
-                                      )}
+                                              { horizontal: true },
+                                          )}
+                                      </div>
                                   </div>
-                              </div>
-                          `
-                        : nothing}
+                              `
+                            : nothing
+                    }
                     <ak-sync-status-card
                         .fetch=${() => {
                             return aki(ProvidersApi).providersScimSyncStatusRetrieve({

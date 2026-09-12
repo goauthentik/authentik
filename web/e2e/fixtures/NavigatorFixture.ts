@@ -18,12 +18,11 @@ export class NavigatorFixture extends PageFixture {
     /**
      * Wait for the current page to navigate to the given pathname.
      *
-     * This method is useful to verify that a navigation has completed after an action
-     * automatically updates the URL, such as form submissions or link clicks.
-     *
-     * @see {@linkcode navigate} for navigation.
+     * This method is useful to verify that a navigation has completed after an action automatically
+     * updates the URL, such as form submissions or link clicks.
      *
      * @param to The pathname or URL to wait for.
+     * @see {@linkcode navigate} for navigation.
      */
     public waitForPathname = async (
         to: string | URL,
@@ -41,14 +40,12 @@ export class NavigatorFixture extends PageFixture {
     /**
      * Wait for the current page to navigate away from the given pathname.
      *
-     * Use this when the destination isn't known ahead of time, such as a login whose
-     * post-submit redirect lands on whichever interface the user defaults to. Waiting
-     * on a known pathname would match the page we're already on and resolve before the
-     * navigation lands.
-     *
-     * @see {@linkcode waitForPathname} when the destination is known.
+     * Use this when the destination isn't known ahead of time, such as a login whose post-submit
+     * redirect lands on whichever interface the user defaults to. Waiting on a known pathname would
+     * match the page we're already on and resolve before the navigation lands.
      *
      * @param from The pathname or URL to wait for the page to leave.
+     * @see {@linkcode waitForPathname} when the destination is known.
      */
     public waitForPathnameChange = async (
         from: string | URL,

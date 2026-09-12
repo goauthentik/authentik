@@ -1,9 +1,9 @@
 /**
- * @file Docusaurus theme configuration for the authentik website.
- *
  * @import { UserThemeConfig as UserThemeConfigCommon } from "@docusaurus/theme-common";
  * @import { UserThemeConfig as UserThemeConfigAlgolia } from "@docusaurus/theme-search-algolia";
- * @import { NavbarItemOverrides } from "./navbar.js"
+ *
+ * @import {NavbarItemOverrides} from "./navbar.js"
+ * @file Docusaurus theme configuration for the authentik website.
  */
 
 import { createNavbarItems } from "./navbar.js";
@@ -16,14 +16,12 @@ import { themes as prismThemes } from "prism-react-renderer";
 /**
  * @typedef {Object} UserThemeConfigExtra
  * @property {Partial<NavbarItemOverrides>} [navbarReplacements] The replacements for the navbar.
- *
  */
 
 /**
  * Combined theme configuration for Docusaurus, Algolia, and our own configuration.
  *
  * @typedef {UserThemeConfigCommon & UserThemeConfigAlgolia} UserThemeConfig
- *
  */
 
 //#endregion
@@ -40,7 +38,9 @@ export function formatCopyright() {
 /**
  * Creates a Prisma configuration for Docusaurus.
  *
- * @param {Partial<UserThemeConfigCommon['prism']>} overrides - Overrides for the default Prisma configuration.
+ * @param {Partial<UserThemeConfigCommon['prism']>} overrides - Overrides for the default Prisma
+ *   configuration.
+ *
  * @returns {UserThemeConfigCommon['prism']}
  */
 export function createPrismConfig(overrides = {}) {
@@ -69,7 +69,9 @@ export function createPrismConfig(overrides = {}) {
 /**
  * Creates a theme configuration for Docusaurus.
  *
- * @param {Partial<UserThemeConfig & UserThemeConfigExtra>} overrides - Overrides for the default theme configuration.
+ * @param {Partial<UserThemeConfig & UserThemeConfigExtra>} overrides - Overrides for the default
+ *   theme configuration.
+ *
  * @returns {UserThemeConfig}
  */
 export function createThemeConfig({ prism, navbarReplacements, ...overrides } = {}) {

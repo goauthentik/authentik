@@ -1,5 +1,5 @@
-import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
+import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";

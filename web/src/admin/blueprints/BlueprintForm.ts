@@ -1,7 +1,7 @@
-import "#components/ak-text-input";
-import "#elements/ToggleGroup";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
+import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -9,8 +9,8 @@ import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
-import { ModelForm } from "#elements/forms/ModelForm";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -107,77 +107,88 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     </ak-toggle-group>
                 </div>
                 <div class="pf-c-card__footer">
-                    ${this.source === BlueprintSource.File
-                        ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
-                              <ak-search-select
-                                  .fetchObjects=${async (
-                                      query?: string,
-                                  ): Promise<BlueprintFile[]> => {
-                                      const items =
-                                          await aki(ManagedApi).managedBlueprintsAvailableList();
-                                      return items.filter((item) =>
-                                          query ? item.path.includes(query) : true,
-                                      );
-                                  }}
-                                  .renderElement=${(item: BlueprintFile): string => {
-                                      const name = item.path;
-                                      if (item.meta && item.meta.name) {
-                                          return `${name} (${item.meta.name})`;
-                                      }
-                                      return name;
-                                  }}
-                                  .value=${(item: BlueprintFile | null) => {
-                                      return item?.path;
-                                  }}
-                                  .selected=${(item: BlueprintFile): boolean => {
-                                      return this.instance?.path === item.path;
-                                  }}
-                                  blankable
+                    ${
+                        this.source === BlueprintSource.File
+                            ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
+                                  <ak-search-select
+                                      .fetchObjects=${async (
+                                          query?: string,
+                                      ): Promise<BlueprintFile[]> => {
+                                          const items =
+                                              await aki(
+                                                  ManagedApi,
+                                              ).managedBlueprintsAvailableList();
+                                          return items.filter((item) =>
+                                              query ? item.path.includes(query) : true,
+                                          );
+                                      }}
+                                      .renderElement=${(item: BlueprintFile): string => {
+                                          const name = item.path;
+                                          if (item.meta && item.meta.name) {
+                                              return `${name} (${item.meta.name})`;
+                                          }
+                                          return name;
+                                      }}
+                                      .value=${(item: BlueprintFile | null) => {
+                                          return item?.path;
+                                      }}
+                                      .selected=${(item: BlueprintFile): boolean => {
+                                          return this.instance?.path === item.path;
+                                      }}
+                                      blankable
+                                  >
+                                  </ak-search-select>
+                              </ak-form-element-horizontal>`
+                            : nothing
+                    }
+                    ${
+                        this.source === BlueprintSource.OCI
+                            ? html`<ak-text-input
+                                  name="path"
+                                  label=${msg("OCI URL")}
+                                  input-hint="code"
+                                  required
+                                  placeholder="oci://..."
+                                  value="${ifDefined(this.instance?.path)}"
+                                  .bighelp=${html`<p class="pf-c-form__helper-text">
+                                          ${msg(
+                                              html` A valid OCI manifest URL, prefixed with the
+                                                  protocol e.g.&nbsp;<code
+                                                      >oci://registry.domain.tld/path/to/manifest</code
+                                                  >`,
+                                          )}
+                                      </p>
+                                      <p class="pf-c-form__helper-text">
+                                          <span>
+                                              ${msg("Read more about")}&nbsp;
+                                              <a
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  href=${docLink(
+                                                      "/customize/blueprints/#storage---oci",
+                                                  )}
+                                                  >${msg("OCI Support")}</a
+                                              >.
+                                          </span>
+                                      </p> `}
                               >
-                              </ak-search-select>
-                          </ak-form-element-horizontal>`
-                        : nothing}
-                    ${this.source === BlueprintSource.OCI
-                        ? html`<ak-text-input
-                              name="path"
-                              label=${msg("OCI URL")}
-                              input-hint="code"
-                              required
-                              placeholder="oci://..."
-                              value="${ifDefined(this.instance?.path)}"
-                              .bighelp=${html`<p class="pf-c-form__helper-text">
-                                      ${msg(
-                                          html` A valid OCI manifest URL, prefixed with the protocol
-                                              e.g.&nbsp;<code
-                                                  >oci://registry.domain.tld/path/to/manifest</code
-                                              >`,
-                                      )}
-                                  </p>
-                                  <p class="pf-c-form__helper-text">
-                                      <span>
-                                          ${msg("Read more about")}&nbsp;
-                                          <a
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              href=${docLink(
-                                                  "/customize/blueprints/#storage---oci",
-                                              )}
-                                              >${msg("OCI Support")}</a
-                                          >.
-                                      </span>
-                                  </p> `}
-                          >
-                          </ak-text-input>`
-                        : nothing}
-                    ${this.source === BlueprintSource.Internal
-                        ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
-                              <ak-codemirror
-                                  mode="yaml"
-                                  raw
-                                  value="${ifDefined(this.instance?.content)}"
-                              ></ak-codemirror>
-                          </ak-form-element-horizontal>`
-                        : nothing}
+                              </ak-text-input>`
+                            : nothing
+                    }
+                    ${
+                        this.source === BlueprintSource.Internal
+                            ? html`<ak-form-element-horizontal
+                                  label=${msg("Blueprint")}
+                                  name="content"
+                              >
+                                  <ak-codemirror
+                                      mode="yaml"
+                                      raw
+                                      value="${ifDefined(this.instance?.content)}"
+                                  ></ak-codemirror>
+                              </ak-form-element-horizontal>`
+                            : nothing
+                    }
                 </div>
             </div>
 

@@ -8,8 +8,7 @@ export type FormWizardPageActiveCallback<S extends WizardPageState> = (
 ) => void | Promise<void>;
 
 /**
- * This Wizard page is used for proxy forms with the older-style
- * wizards
+ * This Wizard page is used for proxy forms with the older-style wizards
  */
 @customElement("ak-wizard-page-form")
 export class FormWizardPage<S extends WizardPageState = WizardPageState> extends WizardPage<S> {

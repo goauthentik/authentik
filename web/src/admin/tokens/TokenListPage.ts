@@ -89,9 +89,11 @@ export class TokenListPage extends TablePage<Token> {
     protected override row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
-                ${item.managed
-                    ? html`<small>${msg("Token is managed by authentik.")}</small>`
-                    : nothing}`,
+                ${
+                    item.managed
+                        ? html`<small>${msg("Token is managed by authentik.")}</small>`
+                        : nothing
+                }`,
             html`<a href=${toAdminInterface(`identity/users/${item.userObj?.pk}`)}
                 >${item.userObj?.username}</a
             >`,
@@ -99,16 +101,18 @@ export class TokenListPage extends TablePage<Token> {
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
             html`<div class="ak-c-table__actions">
-                ${!item.managed
-                    ? IconEditButton(TokenForm, item.identifier, item.identifier)
-                    : html`<button class="pf-c-button pf-m-plain" disabled type="button">
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Editing is disabled for managed tokens")}
-                          >
-                              <i class="fas fa-edit" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </button>`}
+                ${
+                    !item.managed
+                        ? IconEditButton(TokenForm, item.identifier, item.identifier)
+                        : html`<button class="pf-c-button pf-m-plain" disabled type="button">
+                              <pf-tooltip
+                                  position="top"
+                                  content=${msg("Editing is disabled for managed tokens")}
+                              >
+                                  <i class="fas fa-edit" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </button>`
+                }
                 ${IconPermissionButton(item.identifier, {
                     model: ModelEnum.AuthentikCoreToken,
                     objectPk: item.pk,

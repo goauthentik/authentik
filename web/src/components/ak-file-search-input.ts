@@ -1,16 +1,14 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import HostStyles from "./ak-file-search-input.css";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { renderModal } from "#elements/dialogs";
-import { AKFormSubmittedEvent } from "#elements/forms/events";
 import SearchSelect from "#elements/forms/SearchSelect/index";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -28,6 +26,7 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
+import HostStyles from "./ak-file-search-input.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
@@ -37,8 +36,8 @@ const renderValue = (item?: FileList | null) => item?.name;
 /**
  * File Search Input Component
  *
- * Search/select dropdown for files from authentik.admin.files storage.
- * Supports uploaded files, static files, and external URLs/Font Awesome icons via PassthroughBackend.
+ * Search/select dropdown for files from authentik.admin.files storage. Supports uploaded files,
+ * static files, and external URLs/Font Awesome icons via PassthroughBackend.
  */
 @customElement("ak-file-search-input")
 export class AKFileSearchInput extends AKElement {
@@ -198,11 +197,13 @@ export class AKFileSearchInput extends AKElement {
                 </button>
             </div>
             <p class="pf-c-form__helper-text">
-                ${this.help
-                    ? this.help
-                    : msg("Choose an existing file, or enter a URL or Font Awesome icon.", {
-                          id: "file-picker.value.description",
-                      })}
+                ${
+                    this.help
+                        ? this.help
+                        : msg("Choose an existing file, or enter a URL or Font Awesome icon.", {
+                              id: "file-picker.value.description",
+                          })
+                }
                 <a
                     class="ak-file-search-input__documentation"
                     target="_blank"

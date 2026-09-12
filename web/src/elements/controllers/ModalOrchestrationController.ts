@@ -30,19 +30,17 @@ declare global {
 const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVisibility();
 
 /**
- * A top-level controller that listens for requests from modals to be added to
- * the management list, such that the *topmost* modal will be closed (and all
- * references to it eliminated) whenever the user presses the Escape key.
- * Can also take ModalHideEvent requests and automatically close the modal
- * sending the event.
+ * A top-level controller that listens for requests from modals to be added to the management list,
+ * such that the _topmost_ modal will be closed (and all references to it eliminated) whenever the
+ * user presses the Escape key. Can also take ModalHideEvent requests and automatically close the
+ * modal sending the event.
  *
- * Both events that this responds to expect a reference to the modal to be part
- * of the event payload.
+ * Both events that this responds to expect a reference to the modal to be part of the event
+ * payload.
  *
- * If the `.closeModal()` method on the target modal returns `false`
- * *explicitly*, it will abort cleanup and the stack will keep the record that
- * the modal is still open. This allows `.closeModal()` to return `undefined`
- * and still behave correctly.
+ * If the `.closeModal()` method on the target modal returns `false` _explicitly_, it will abort
+ * cleanup and the stack will keep the record that the modal is still open. This allows
+ * `.closeModal()` to return `undefined` and still behave correctly.
  */
 
 export class ModalOrchestrationController implements ReactiveController {

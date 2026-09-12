@@ -1,11 +1,9 @@
 /**
- * @file lit-html and Web Component lint rules, sourced from `eslint-plugin-lit` and
- * `eslint-plugin-wc`.
- *
- * oxlint's JS-plugin host is ESLint v9-compatible, so it loads these ESLint plugins directly via
- * `jsPlugins` — authentik consumes them unmodified rather than re-implementing the rules. The
- * enabled set mirrors each plugin's `flat/recommended` config, which is the exact set the former
- * `@goauthentik/eslint-config` applied.
+ * @file Lit-html and Web Component lint rules, sourced from `eslint-plugin-lit` and
+ *   `eslint-plugin-wc`. oxlint's JS-plugin host is ESLint v9-compatible, so it loads these ESLint
+ *   plugins directly via `jsPlugins` — authentik consumes them unmodified rather than
+ *   re-implementing the rules. The enabled set mirrors each plugin's `flat/recommended` config,
+ *   which is the exact set the former `@goauthentik/eslint-config` applied.
  */
 
 import { fileURLToPath } from "node:url";
@@ -20,11 +18,10 @@ export interface JsPluginAlias {
  * Resolves a plugin to an absolute path.
  *
  * @remarks
- * oxlint resolves a bare `jsPlugins` specifier relative to the consuming `oxlint.config.ts`, not to
- * this package. Both plugins are dependencies of *this* package, so resolving them here means a
- * consumer never has to re-declare them, and resolution does not depend on the consumer's
- * `node_modules` layout.
- *
+ *   Oxlint resolves a bare `jsPlugins` specifier relative to the consuming `oxlint.config.ts`, not
+ *   to this package. Both plugins are dependencies of _this_ package, so resolving them here means
+ *   a consumer never has to re-declare them, and resolution does not depend on the consumer's
+ *   `node_modules` layout.
  * @param specifier The plugin's package name.
  *
  * @returns An absolute path to the plugin's entry point.
@@ -44,7 +41,8 @@ export const WebComponentJsPlugins: JsPluginAlias[] = [
 
 /**
  * The `flat/recommended` rules of `eslint-plugin-wc` and `eslint-plugin-lit`. These cover
- * web-component class pitfalls and lit-html template correctness that oxlint's built-in rules do not.
+ * web-component class pitfalls and lit-html template correctness that oxlint's built-in rules do
+ * not.
  */
 export const WebComponentRules: Record<string, string> = {
     // eslint-plugin-wc — flat/recommended

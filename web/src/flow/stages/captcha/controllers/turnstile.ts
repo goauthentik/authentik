@@ -31,7 +31,8 @@ export class TurnstileController extends CaptchaController {
     };
 
     /**
-     * See {@link https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/ Turnstile Client-Side Error Codes}
+     * See
+     * {@link https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/ Turnstile Client-Side Error Codes}
      */
     #delegateError = (errorCode: string) => {
         this.host.error = `Turnstile error: ${errorCode}`;
@@ -40,14 +41,12 @@ export class TurnstileController extends CaptchaController {
     /**
      * Renders the Turnstile captcha frame.
      *
-     * Uses explicit rendering to avoid Turnstile's self-upgrade mechanism
-     * (every ~3 hours) from calling `implicitRenderAll()` and duplicating widgets.
+     * Uses explicit rendering to avoid Turnstile's self-upgrade mechanism (every ~3 hours) from
+     * calling `implicitRenderAll()` and duplicating widgets.
      *
      * @remarks
      *
-     * Turnstile will log a warning if the `language` option
-     * is not in lower-case format.
-     *
+     *   Turnstile will log a warning if the `language` option is not in lower-case format.
      * @see {@link https://developers.cloudflare.com/turnstile/reference/supported-languages/ Turnstile Supported Languages}
      */
     public interactive = () => {

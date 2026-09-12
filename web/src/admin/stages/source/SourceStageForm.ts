@@ -1,5 +1,5 @@
-import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-text-input";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";

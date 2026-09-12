@@ -112,8 +112,8 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
     }
 
     protected getNamedElements(): (HTMLInputElement & AKControlElement<T>)[] {
-        return Array.from(this.inputGroups ?? []).map(
-            (group) => group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")!,
+        return Array.from(this.inputGroups ?? []).map((group) =>
+            group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")!,
         );
     }
 

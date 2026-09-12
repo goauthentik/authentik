@@ -1,11 +1,7 @@
 /**
- * @file Minimal typings for jQuery.
- *
- * This file provides a small subset of the jQuery typings used in authentik's
- * Simplified Flow Executor.
- *
- * Unlike the `@types/jquery` package, this package does not expose `$` as a global
- * which causes issues with WebdriverIO.
+ * @file Minimal typings for jQuery. This file provides a small subset of the jQuery typings used in
+ *   authentik's Simplified Flow Executor. Unlike the `@types/jquery` package, this package does not
+ *   expose `$` as a global which causes issues with WebdriverIO.
  */
 
 declare module "jquery" {

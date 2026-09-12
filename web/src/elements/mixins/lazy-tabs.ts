@@ -11,8 +11,8 @@ export interface LazyTabsMixin {
     /**
      * The slot names of the tabs that have been activated at least once.
      *
-     * Override the initial value to pre-activate a tab (e.g. the default one)
-     * so its content renders on first paint.
+     * Override the initial value to pre-activate a tab (e.g. the default one) so its content
+     * renders on first paint.
      */
     activatedTabs: Set<string>;
 
@@ -32,9 +32,9 @@ export interface LazyTabsMixin {
 /**
  * A mixin that defers rendering each `<ak-tabs>` panel until it is first activated.
  *
- * `<ak-tabs>` keeps every panel in the light DOM, so without gating, every tab's
- * contents — and the API calls they trigger — would render up front. This holds
- * each panel back until its `@activate` event fires, then keeps it rendered.
+ * `<ak-tabs>` keeps every panel in the light DOM, so without gating, every tab's contents — and the
+ * API calls they trigger — would render up front. This holds each panel back until its `@activate`
+ * event fires, then keeps it rendered.
  *
  * Usage:
  *

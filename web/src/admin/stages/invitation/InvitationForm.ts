@@ -1,7 +1,7 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/stages/invitation/InvitationListLink";
-import "#components/ak-switch-input";
 import "#components/ak-slug-input";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -11,8 +11,8 @@ import { PFSize } from "#common/enums";
 import { dateTimeLocal } from "#common/temporal";
 
 import { renderDialog, renderModal } from "#elements/dialogs";
-import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 
 import type { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
 import { InvitationEnrollmentFlowForm } from "#admin/stages/invitation/InvitationEnrollmentFlowForm";
@@ -49,10 +49,9 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     /**
-     * The native `required` attribute inside the flow search cannot participate in the
-     * outer form's validity across the shadow boundary, and the API accepts a null
-     * flow — so enforce the selection here. An invitation without a flow produces a
-     * link that cannot be used.
+     * The native `required` attribute inside the flow search cannot participate in the outer form's
+     * validity across the shadow boundary, and the API accepts a null flow — so enforce the
+     * selection here. An invitation without a flow produces a link that cannot be used.
      */
     public override reportValidity(): boolean {
         const valid = super.reportValidity();
@@ -72,8 +71,8 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     /**
-     * Open a stacked modal to create a new enrollment flow with an invitation
-     * stage bound to it, without losing the current form state.
+     * Open a stacked modal to create a new enrollment flow with an invitation stage bound to it,
+     * without losing the current form state.
      *
      * Once created, the flow search refreshes its options and selects the new flow.
      */

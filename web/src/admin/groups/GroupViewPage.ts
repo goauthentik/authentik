@@ -1,15 +1,15 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/groups/RelatedUserList";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/roles/ak-related-role-table";
 import "#components/ak-object-attributes-card";
-import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
+import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/ak-mdx/ak-mdx";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,8 +20,8 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { GroupForm } from "#admin/groups/ak-group-form";
 
@@ -110,23 +110,13 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                     ],
                                     [
                                         msg("Roles"),
-                                        html`${this.group.rolesObj.length +
-                                            (this.group.inheritedRolesObj ?? []).length <
-                                        1
-                                            ? html`-`
-                                            : html`<ul class="pf-c-list">
-                                                  ${this.group.rolesObj.map((role) => {
-                                                      return html`<li>
-                                                          <a
-                                                              href=${toAdminInterface(
-                                                                  `identity/roles/${role.pk}`,
-                                                              )}
-                                                              >${role.name}
-                                                          </a>
-                                                      </li>`;
-                                                  })}
-                                                  ${(this.group.inheritedRolesObj ?? []).map(
-                                                      (role) => {
+                                        html`${
+                                            this.group.rolesObj.length +
+                                                (this.group.inheritedRolesObj ?? []).length <
+                                            1
+                                                ? html`-`
+                                                : html`<ul class="pf-c-list">
+                                                      ${this.group.rolesObj.map((role) => {
                                                           return html`<li>
                                                               <a
                                                                   href=${toAdminInterface(
@@ -134,26 +124,38 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                                   )}
                                                                   >${role.name}
                                                               </a>
-                                                              <pf-tooltip
-                                                                  position="top"
-                                                                  content=${msg(
-                                                                      "Inherited from parent group",
-                                                                  )}
-                                                              >
-                                                                  <span
-                                                                      class="pf-c-label pf-m-outline pf-m-cyan"
-                                                                      style="margin-left: 0.5rem;"
+                                                          </li>`;
+                                                      })}
+                                                      ${(this.group.inheritedRolesObj ?? []).map(
+                                                          (role) => {
+                                                              return html`<li>
+                                                                  <a
+                                                                      href=${toAdminInterface(
+                                                                          `identity/roles/${role.pk}`,
+                                                                      )}
+                                                                      >${role.name}
+                                                                  </a>
+                                                                  <pf-tooltip
+                                                                      position="top"
+                                                                      content=${msg(
+                                                                          "Inherited from parent group",
+                                                                      )}
                                                                   >
                                                                       <span
-                                                                          class="pf-c-label__content"
-                                                                          >${msg("Inherited")}</span
+                                                                          class="pf-c-label pf-m-outline pf-m-cyan"
+                                                                          style="margin-left: 0.5rem;"
                                                                       >
-                                                                  </span>
-                                                              </pf-tooltip>
-                                                          </li>`;
-                                                      },
-                                                  )}
-                                              </ul>`} `,
+                                                                          <span
+                                                                              class="pf-c-label__content"
+                                                                              >${msg("Inherited")}</span
+                                                                          >
+                                                                      </span>
+                                                                  </pf-tooltip>
+                                                              </li>`;
+                                                          },
+                                                      )}
+                                                  </ul>`
+                                        } `,
                                     ],
                                     [
                                         msg("Related actions"),
@@ -174,17 +176,19 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                         >
                             <div class="pf-c-card__title">${msg("Notes")}</div>
                             <div class="pf-c-card__body">
-                                ${this.group?.attributes?.notes
-                                    ? html`<ak-mdx
-                                          .content=${this.group.attributes.notes}
-                                      ></ak-mdx>`
-                                    : html`
-                                          <p>
-                                              ${msg(
-                                                  "Edit the notes attribute of this group to add notes here.",
-                                              )}
-                                          </p>
-                                      `}
+                                ${
+                                    this.group?.attributes?.notes
+                                        ? html`<ak-mdx
+                                              .content=${this.group.attributes.notes}
+                                          ></ak-mdx>`
+                                        : html`
+                                              <p>
+                                                  ${msg(
+                                                      "Edit the notes attribute of this group to add notes here.",
+                                                  )}
+                                              </p>
+                                          `
+                                }
                             </div>
                         </div>
                         <div
@@ -234,17 +238,19 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     model=${ModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.hasEnterpriseLicense
-                    ? html`<ak-object-lifecycle-page
-                          role="tabpanel"
-                          tabindex="0"
-                          slot="page-lifecycle"
-                          id="page-lifecycle"
-                          aria-label="${msg("Lifecycle")}"
-                          model=${ContentTypeEnum.AuthentikCoreGroup}
-                          object-pk=${this.group.pk}
-                      ></ak-object-lifecycle-page>`
-                    : nothing}
+                ${
+                    this.hasEnterpriseLicense
+                        ? html`<ak-object-lifecycle-page
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-lifecycle"
+                              id="page-lifecycle"
+                              aria-label="${msg("Lifecycle")}"
+                              model=${ContentTypeEnum.AuthentikCoreGroup}
+                              object-pk=${this.group.pk}
+                          ></ak-object-lifecycle-page>`
+                        : nothing
+                }
             </ak-tabs>
         </main>`;
     }

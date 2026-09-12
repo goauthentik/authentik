@@ -10,9 +10,9 @@ import { renderModal } from "#elements/dialogs";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
-import Styles from "#user/LibraryPage/ak-library-impl.css";
 import { AKLibraryApplicationList } from "#user/LibraryPage/ApplicationList";
 import AKLibraryApplicationListStyles from "#user/LibraryPage/ApplicationList.css";
+import Styles from "#user/LibraryPage/ak-library-impl.css";
 import { ViewMode } from "#user/LibraryPage/types";
 
 import { Application, CoreApi, RequestsApi } from "@goauthentik/api";

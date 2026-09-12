@@ -9,8 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
-import { ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -178,15 +178,17 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         >
                             ${msg("Download Certificate")}
                         </a>
-                        ${item.privateKeyAvailable
-                            ? html`<a
-                                  class="pf-c-button pf-m-secondary"
-                                  target="_blank"
-                                  href=${item.privateKeyDownloadUrl}
-                              >
-                                  ${msg("Download Private key")}
-                              </a>`
-                            : nothing}
+                        ${
+                            item.privateKeyAvailable
+                                ? html`<a
+                                      class="pf-c-button pf-m-secondary"
+                                      target="_blank"
+                                      href=${item.privateKeyDownloadUrl}
+                                  >
+                                      ${msg("Download Private key")}
+                                  </a>`
+                                : nothing
+                        }
                     </div>
                 </dd>
             </div>

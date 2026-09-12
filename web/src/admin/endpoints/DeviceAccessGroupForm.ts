@@ -23,7 +23,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Device Access Group Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-device-access-groups-form")
 export class DeviceAccessGroupForm extends WithBrandConfig(

@@ -19,9 +19,9 @@ const HEADER = `/*
 
 /**
  * @typedef {object} Category
- * @property {string} name      Slug used for the output filename.
- * @property {string[]} prefixes
- *   Token-name prefixes (after the `--ak-` strip) that belong to this category.
+ * @property {string} name Slug used for the output filename.
+ * @property {string[]} prefixes Token-name prefixes (after the `--ak-` strip) that belong to this
+ *   category.
  */
 
 /** @type {Category[]} */
@@ -44,8 +44,8 @@ const CATEGORIES = [
 ];
 
 /**
- * One emitted block within the styleframe CSS output. `header` is the line
- * that opens the block (`:root {`, `@media (...) {`, `html[data-theme="..."] {`).
+ * One emitted block within the styleframe CSS output. `header` is the line that opens the block
+ * (`:root {`, `@media (...) {`, `html[data-theme="..."] {`).
  *
  * @typedef {object} ParsedBlock
  * @property {string} header
@@ -55,15 +55,15 @@ const CATEGORIES = [
 /**
  * Split the styleframe CSS output into top-level blocks. Each block is one of:
  *
- *   :root { … }
- *   html[data-theme="…"] { … }
- *   @media (…) { :root { … } }
+ * :root { … } html[data-theme="…"] { … }
+ *
+ * @param {string} css
+ *
+ * @returns {ParsedBlock[]}
+ * @media (…) { :root { … } }
  *
  * Nested `:root` inside `@media` is preserved as part of the block — the
  * inner declarations are kept as a flat list and re-wrapped on emit.
- *
- * @param {string} css
- * @returns {ParsedBlock[]}
  */
 function parseBlocks(css) {
     /** @type {ParsedBlock[]} */
@@ -110,10 +110,11 @@ function parseBlocks(css) {
 }
 
 /**
- * Extract every `--ak-*: …;` declaration from a flat list of lines (which may
- * include a nested `:root { … }` wrapper from an `@media` block).
+ * Extract every `--ak-*: …;` declaration from a flat list of lines (which may include a nested
+ * `:root { … }` wrapper from an `@media` block).
  *
  * @param {string[]} lines
+ *
  * @returns {string[]}
  */
 function flattenDeclarations(lines) {
@@ -121,12 +122,12 @@ function flattenDeclarations(lines) {
 }
 
 /**
- * Build the CSS for one category by filtering each parsed block to that
- * category's declarations and re-wrapping them. Returns null when no token in
- * the tree matches the category.
+ * Build the CSS for one category by filtering each parsed block to that category's declarations and
+ * re-wrapping them. Returns null when no token in the tree matches the category.
  *
  * @param {Category} category
  * @param {ParsedBlock[]} blocks
+ *
  * @returns {string | null}
  */
 function buildCategoryFile(category, blocks) {

@@ -1,7 +1,5 @@
-import "rapidoc";
 import "#types/rapi-doc";
-
-import styles from "./index.entrypoint.css";
+import "rapidoc";
 
 import { CSRFHeaderName } from "#common/api/middleware";
 import { createUIThemeEffect } from "#common/theme";
@@ -15,6 +13,8 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import styles from "./index.entrypoint.css";
 
 export const BEFORE_TRY_EVENT = "before-try";
 

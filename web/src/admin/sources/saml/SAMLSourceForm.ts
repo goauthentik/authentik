@@ -2,8 +2,8 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
-import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -119,36 +119,41 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -162,22 +167,25 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameLink}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameLink}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameLink
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameDeny}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameDeny}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameDeny
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>
@@ -310,36 +318,46 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent
+                                }
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress
+                                }
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName
+                                }
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName
+                                }
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient
+                                }
                             >
                                 ${msg("Transient")}
                             </option>
@@ -348,8 +366,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${
+                                this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                            }"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

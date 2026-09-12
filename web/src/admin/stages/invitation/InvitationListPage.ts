@@ -7,8 +7,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
-import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { IconEditButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -107,15 +107,17 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${!item.flowObj && this.multipleEnrollmentFlows
-                    ? html`
-                          <ak-label color=${PFColor.Orange}>
-                              ${msg(
-                                  "Invitation not limited to any flow, and can be used with any enrollment flow.",
-                              )}
-                          </ak-label>
-                      `
-                    : null}`,
+                ${
+                    !item.flowObj && this.multipleEnrollmentFlows
+                        ? html`
+                              <ak-label color=${PFColor.Orange}>
+                                  ${msg(
+                                      "Invitation not limited to any flow, and can be used with any enrollment flow.",
+                                  )}
+                              </ak-label>
+                          `
+                        : null
+                }`,
             html`<div>
                     <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}
                         >${item.createdBy.username}</a
@@ -150,15 +152,17 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override render(): SlottedTemplateResult {
-        return html`${this.invitationStageExists
-                ? null
-                : html`
-                      <div class="pf-c-banner pf-m-warning">
-                          ${msg(
-                              "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
-                          )}
-                      </div>
-                  `}
+        return html`${
+                this.invitationStageExists
+                    ? null
+                    : html`
+                          <div class="pf-c-banner pf-m-warning">
+                              ${msg(
+                                  "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
+                              )}
+                          </div>
+                      `
+            }
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;

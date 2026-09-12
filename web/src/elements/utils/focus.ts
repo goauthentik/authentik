@@ -1,5 +1,5 @@
 /**
- * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
+ * @file Utilities for DOM element interaction, focus management, and event handling.
  */
 
 import { isInteractiveElement, isInteractiveTextElement } from "#elements/utils/interactivity";
@@ -71,9 +71,8 @@ export function isActiveElement(
 /**
  * Type predicate to check if an element is focusable.
  *
- * @param target The element to check.
- *
  * @category DOM
+ * @param target The element to check.
  */
 export function isFocusable<T extends Element | null | undefined>(
     target: T,
@@ -124,8 +123,8 @@ export class FocusTarget<T extends HTMLElement = HTMLElement> {
 }
 
 /**
- * Given a collection of potentially focusable inputs, find the first which is
- * blank and shaped like an interactive text field.
+ * Given a collection of potentially focusable inputs, find the first which is blank and shaped like
+ * an interactive text field.
  */
 export function findEmptyFocusCandidate<T extends HTMLInputElement | null | undefined>(
     ...inputs: T[]

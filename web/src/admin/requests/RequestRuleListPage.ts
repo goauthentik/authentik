@@ -1,8 +1,8 @@
+import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/requests/RequestRuleForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/policies/BoundPoliciesList";
 
 import { aki } from "#common/api/client";
 

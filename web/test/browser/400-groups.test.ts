@@ -20,9 +20,9 @@ interface CreateUserContext {
 /**
  * Create an internal user through the admin UI and leave the browser on the users list.
  *
- * Both tests below need a user they own: they assert on a group's member list or on a
- * user's related group list, and reaching for `akadmin` makes them read shared state that
- * every other worker — and every previous run — has been writing to.
+ * Both tests below need a user they own: they assert on a group's member list or on a user's
+ * related group list, and reaching for `akadmin` makes them read shared state that every other
+ * worker — and every previous run — has been writing to.
  */
 async function createInternalUser(
     { navigator, form, pointer, page }: CreateUserContext,

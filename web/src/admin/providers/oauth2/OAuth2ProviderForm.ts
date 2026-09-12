@@ -54,7 +54,6 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
  * Form page for OAuth2 Authentication Method
  *
  * @element ak-provider-oauth2-form
- *
  */
 
 @customElement("ak-provider-oauth2-form")

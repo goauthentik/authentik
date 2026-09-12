@@ -1,9 +1,6 @@
 /**
- * @file Type definitions for form-associated elements.
- *
- * While these types are part of the HTML standard, they're not yet defined
- * in the TypeScript standard library, so we define them here.
- *
+ * @file Type definitions for form-associated elements. While these types are part of the HTML
+ *   standard, they're not yet defined in the TypeScript standard library, so we define them here.
  * @expires 2026-01-01
  */
 

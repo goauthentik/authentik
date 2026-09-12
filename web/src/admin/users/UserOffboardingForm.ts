@@ -1,6 +1,6 @@
-import "#elements/forms/HorizontalFormElement";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
@@ -26,7 +26,7 @@ const DEFAULT_OFFSET = 24 * 60 * 60 * 1000;
 /**
  * Schedule the deactivation or deletion of a single user at an absolute time.
  *
- * @prop {number} userId - The primary key of the user to offboard.
+ * @property {number} userId - The primary key of the user to offboard.
  */
 @customElement("ak-user-offboarding-form")
 export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {

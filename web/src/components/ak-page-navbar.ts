@@ -53,12 +53,11 @@ export interface PageHeaderInit {
 /**
  * A global navbar component at the top of the page.
  *
- * Internally, this component listens for the `ak-page-header` event, which is
- * dispatched by the `ak-page-header` component.
+ * Internally, this component listens for the `ak-page-header` event, which is dispatched by the
+ * `ak-page-header` component.
  *
  * @event ak-page-nav-menu-toggle
  * @event ak-page-details-update
- *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -203,22 +202,28 @@ export class AKPageNavbar
 
                 <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
                     <h1 aria-labelledby="page-navbar-heading" class="page-title">
-                        ${this.hasIcon
-                            ? html`<slot aria-hidden="true" name="icon">${this.renderIcon()}</slot>`
-                            : nothing}
+                        ${
+                            this.hasIcon
+                                ? html`<slot aria-hidden="true" name="icon"
+                                      >${this.renderIcon()}</slot
+                                  >`
+                                : nothing
+                        }
                         <span id="page-navbar-heading">${this.header}</span>
                     </h1>
                 </div>
-                ${this.description
-                    ? html`<div
-                          role="heading"
-                          aria-level="2"
-                          aria-label="${this.description}"
-                          class="items page-description pf-c-content"
-                      >
-                          <p>${this.description}</p>
-                      </div>`
-                    : nothing}
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label="${this.description}"
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : nothing
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">

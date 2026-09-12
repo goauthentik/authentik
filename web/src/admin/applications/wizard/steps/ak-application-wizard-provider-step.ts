@@ -37,7 +37,7 @@ const providerToTag = {
 type ProviderModel = keyof typeof providerToTag;
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {

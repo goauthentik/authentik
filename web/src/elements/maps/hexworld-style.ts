@@ -21,9 +21,8 @@ export interface HexworldStyleOptions {
     glyphsURL?: string;
     attribution?: string;
     /**
-     * Highest zoom at which the archive carries hex and border geometry.
-     * Defaults to the last entry in HEX_BANDS, which is what the shipped
-     * archive is built from.
+     * Highest zoom at which the archive carries hex and border geometry. Defaults to the last entry
+     * in HEX_BANDS, which is what the shipped archive is built from.
      */
     maxzoom?: number;
 }
@@ -91,12 +90,11 @@ export function wedgeColors(theme: BasemapTheme = "light"): EventActionsRecord {
 export const BAND_FADE_WINDOW = 0.9;
 
 /**
- * Data-driven opacity that cross-fades the hex bands instead of letting the
- * grid pop when the tile zoom crosses a band boundary. The archive carries
- * res-3 geometry one tile zoom into the res-4 band (`hex-r3-fade`), so both
- * grids coexist in the fade window; at z7 the res-5 overlay fades in over the
- * res-4 base, which persists (it backs the overlay outside the detail zone).
- * Features without a `res` property (older archives) keep the base opacity.
+ * Data-driven opacity that cross-fades the hex bands instead of letting the grid pop when the tile
+ * zoom crosses a band boundary. The archive carries res-3 geometry one tile zoom into the res-4
+ * band (`hex-r3-fade`), so both grids coexist in the fade window; at z7 the res-5 overlay fades in
+ * over the res-4 base, which persists (it backs the overlay outside the detail zone). Features
+ * without a `res` property (older archives) keep the base opacity.
  */
 export function bandFadeOpacity(base: number): ExpressionSpecification {
     const [coarse, mid, detail] = HEX_BANDS;

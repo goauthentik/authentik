@@ -1,9 +1,12 @@
 {
     "name": "@goauthentik/api-docs",
     "version": "0.0.0",
+    "private": true,
     "description": "API Documentation",
     "license": "MIT",
-    "private": true,
+    "imports": {
+        "#reference/sidebar": "./reference/sidebar.ts"
+    },
     "scripts": {
         "build": "docusaurus gen-api-docs all && docusaurus build",
         "build:docusaurus": "docusaurus build",
@@ -15,9 +18,6 @@
         "serve": "docusaurus serve",
         "start": "docusaurus start",
         "swizzle": "docusaurus swizzle"
-    },
-    "imports": {
-        "#reference/sidebar": "./reference/sidebar.ts"
     },
     "dependencies": {
         "@docusaurus/core": "catalog:",

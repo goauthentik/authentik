@@ -29,8 +29,8 @@ export const ScrollbarClassName = {
 export type ScrollbarClassName = (typeof ScrollbarClassName)[keyof typeof ScrollbarClassName];
 
 /**
- * Applies the appropriate scrollbar class to the given container element
- * based on whether the browser uses visible or overlay scrollbars.
+ * Applies the appropriate scrollbar class to the given container element based on whether the
+ * browser uses visible or overlay scrollbars.
  *
  * @param ownerDocument The document to apply the scrollbar class to.
  */

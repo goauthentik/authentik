@@ -2,12 +2,12 @@
  * @file Display details for an Outpost: Overview, Changelog, Tasks, Permissions
  */
 
-import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#elements/Tabs";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
 
 import { aki } from "#common/api/client";
@@ -17,8 +17,8 @@ import { AKElement } from "#elements/Base";
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
@@ -27,10 +27,11 @@ import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/util
 
 import { ModelEnum, Outpost, OutpostHealth, OutpostsApi, OutpostTypeEnum } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -138,21 +139,28 @@ export class OutpostViewPage extends AKElement {
                     aria-valuemax=${totalCount}
                     aria-valuenow=${totalCount}
                 >
-                    ${healthyPct
-                        ? html`
-                              <div class="pf-c-progress__indicator" style="width: ${healthyPct}%;">
-                                  <span class="pf-c-progress__measure">${healthyPct}%</span>
-                              </div>
-                          `
-                        : null}
-                    ${unhealthyPct
-                        ? html`<div
-                              class="pf-c-progress__indicator pf-m-success"
-                              style="width: ${unhealthyPct}%; margin-left: ${healthyPct}%; background-color: var(--pf-c-progress--m-warning__bar--BackgroundColor);"
-                          >
-                              <span class="pf-c-progress__measure">${unhealthyPct}%</span>
-                          </div>`
-                        : null}
+                    ${
+                        healthyPct
+                            ? html`
+                                  <div
+                                      class="pf-c-progress__indicator"
+                                      style="width: ${healthyPct}%;"
+                                  >
+                                      <span class="pf-c-progress__measure">${healthyPct}%</span>
+                                  </div>
+                              `
+                            : null
+                    }
+                    ${
+                        unhealthyPct
+                            ? html`<div
+                                  class="pf-c-progress__indicator pf-m-success"
+                                  style="width: ${unhealthyPct}%; margin-left: ${healthyPct}%; background-color: var(--pf-c-progress--m-warning__bar--BackgroundColor);"
+                              >
+                                  <span class="pf-c-progress__measure">${unhealthyPct}%</span>
+                              </div>`
+                            : null
+                    }
                 </div>
             </div>`;
         });
@@ -160,13 +168,15 @@ export class OutpostViewPage extends AKElement {
 
     protected renderTabOverview(): SlottedTemplateResult {
         return html`
-            ${(this.outpost?.config.authentik_host ?? "") === ""
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: authentik Domain is not configured, authentication will not work.",
-                      )}
-                  </div>`
-                : null}
+            ${
+                (this.outpost?.config.authentik_host ?? "") === ""
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: authentik Domain is not configured, authentication will not work.",
+                          )}
+                      </div>`
+                    : null
+            }
             <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
@@ -261,28 +271,30 @@ export class OutpostViewPage extends AKElement {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
-                    ${this.outpost?.type === OutpostTypeEnum.Proxy
-                        ? html`
-                              <h3>
-                                  ${msg(
-                                      "If your authentik_host setting does not match the URL you want to login with, add this setting.",
-                                  )}
-                              </h3>
-                              <div class="pf-c-form__group">
-                                  <label class="pf-c-form__label">
-                                      <span class="pf-c-form__label-text"
-                                          >AUTHENTIK_HOST_BROWSER</span
-                                      >
-                                  </label>
-                                  <input
-                                      class="pf-c-form-control"
-                                      readonly
-                                      type="text"
-                                      value="${document.location.origin}"
-                                  />
-                              </div>
-                          `
-                        : null}
+                    ${
+                        this.outpost?.type === OutpostTypeEnum.Proxy
+                            ? html`
+                                  <h3>
+                                      ${msg(
+                                          "If your authentik_host setting does not match the URL you want to login with, add this setting.",
+                                      )}
+                                  </h3>
+                                  <div class="pf-c-form__group">
+                                      <label class="pf-c-form__label">
+                                          <span class="pf-c-form__label-text"
+                                              >AUTHENTIK_HOST_BROWSER</span
+                                          >
+                                      </label>
+                                      <input
+                                          class="pf-c-form-control"
+                                          readonly
+                                          type="text"
+                                          value="${document.location.origin}"
+                                      />
+                                  </div>
+                              `
+                            : null
+                    }
                 </form>
             </div>
         </div>`;

@@ -8,9 +8,9 @@ import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
+import "#elements/Divider";
 import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
-import "#elements/Divider";
 
 import { formatUserDisplayName } from "#common/users";
 
@@ -156,11 +156,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
             <div class=${classMap(classes)}>
                 <ak-admin-status-card-workers> </ak-admin-status-card-workers>
             </div>
-            ${isEnterprise
-                ? html` <div class=${classMap(classes)}>
-                      <ak-admin-fips-status-system> </ak-admin-fips-status-system>
-                  </div>`
-                : nothing} `;
+            ${
+                isEnterprise
+                    ? html` <div class=${classMap(classes)}>
+                          <ak-admin-fips-status-system> </ak-admin-fips-status-system>
+                      </div>`
+                    : nothing
+            } `;
     }
 
     updated(changed: PropertyValues<this>) {

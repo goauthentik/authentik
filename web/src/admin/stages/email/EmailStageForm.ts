@@ -1,9 +1,9 @@
 import "#components/ak-secret-text-input";
+import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 

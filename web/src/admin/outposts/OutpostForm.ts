@@ -1,9 +1,9 @@
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";

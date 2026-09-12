@@ -1,7 +1,5 @@
 import "#elements/LoadingOverlay";
 
-import Styles from "./index.entrypoint.css";
-
 import { writeToClipboard } from "#common/clipboard";
 
 import { Interface } from "#elements/Interface";
@@ -13,6 +11,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import Styles from "./index.entrypoint.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 

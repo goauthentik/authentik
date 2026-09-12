@@ -1,7 +1,6 @@
 /**
+ * @import {LLMSDocInfo} from "./common.mjs"
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
- *
- * @import { LLMSDocInfo } from "./common.mjs"
  */
 
 import { readFileSync } from "node:fs";
@@ -16,6 +15,7 @@ import FastGlob from "fast-glob";
  * Convert OS path separators to POSIX.
  *
  * @param {string} p
+ *
  * @returns {string}
  */
 export function normalizePath(p) {
@@ -27,6 +27,7 @@ export function normalizePath(p) {
  *
  * @param {string} absDir Absolute directory to scan.
  * @param {string[]} [ignoreFiles] Extra glob patterns to exclude.
+ *
  * @returns {string[]} Absolute file paths.
  */
 export function collectDocFiles(absDir, ignoreFiles = []) {
@@ -53,6 +54,7 @@ export function collectDocFiles(absDir, ignoreFiles = []) {
  * @param {Record<string, any>} frontMatter
  * @param {string} body
  * @param {string} relPathNoExt
+ *
  * @returns {string}
  */
 function extractTitle(frontMatter, body, relPathNoExt) {
@@ -68,13 +70,14 @@ function extractTitle(frontMatter, body, relPathNoExt) {
 }
 
 /**
- * Normalize a description for use in an index line: strip blockquote markers,
- * `-- <source>` attribution lines, list bullets, and inline Markdown (links,
- * emphasis, code, images) down to their text, then collapse to a single line.
- * Integration pages often open with a blockquote citation, and other pages lead
- * with linked, bolded prose; both should read as plain text in the index.
+ * Normalize a description for use in an index line: strip blockquote markers, `-- <source>`
+ * attribution lines, list bullets, and inline Markdown (links, emphasis, code, images) down to
+ * their text, then collapse to a single line. Integration pages often open with a blockquote
+ * citation, and other pages lead with linked, bolded prose; both should read as plain text in the
+ * index.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function cleanDescriptionText(text) {
@@ -92,12 +95,13 @@ function cleanDescriptionText(text) {
 }
 
 /**
- * Truncate cleaned prose to its first sentence so an extracted description is a
- * single clause rather than a long run-on. A terminal `.`/`!`/`?` must be
- * followed by whitespace or end-of-string, so decimals and abbreviations mid-word
- * don't split. Returns the input unchanged when no sentence terminator is found.
+ * Truncate cleaned prose to its first sentence so an extracted description is a single clause
+ * rather than a long run-on. A terminal `.`/`!`/`?` must be followed by whitespace or
+ * end-of-string, so decimals and abbreviations mid-word don't split. Returns the input unchanged
+ * when no sentence terminator is found.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function firstSentence(text) {
@@ -106,10 +110,11 @@ function firstSentence(text) {
 }
 
 /**
- * True when every non-empty line of a block is a list item. Such blocks are
- * prerequisite or feature enumerations, not a usable one-line description.
+ * True when every non-empty line of a block is a list item. Such blocks are prerequisite or feature
+ * enumerations, not a usable one-line description.
  *
  * @param {string} block
+ *
  * @returns {boolean}
  */
 function isListBlock(block) {
@@ -121,13 +126,14 @@ function isListBlock(block) {
 }
 
 /**
- * Extract a short description: frontmatter, else the first usable prose
- * paragraph. Headings, MDX imports/exports, admonitions, JSX/HTML, CVE reporter
- * attributions, and bullet lists (prerequisites/feature enumerations) are
- * skipped so the description is a clean sentence, not a flattened block.
+ * Extract a short description: frontmatter, else the first usable prose paragraph. Headings, MDX
+ * imports/exports, admonitions, JSX/HTML, CVE reporter attributions, and bullet lists
+ * (prerequisites/feature enumerations) are skipped so the description is a clean sentence, not a
+ * flattened block.
  *
  * @param {Record<string, any>} frontMatter
  * @param {string} body
+ *
  * @returns {string}
  */
 function extractDescription(frontMatter, body) {
@@ -148,15 +154,16 @@ function extractDescription(frontMatter, body) {
 }
 
 /**
- * Title-case a slug for display (e.g. "endpoint-devices" -> "Endpoint Devices").
- * A configured label (see {@link groupLabel}) overrides this for slugs whose
- * words need real expansion (e.g. "sys-mgmt" -> "System Management").
+ * Title-case a slug for display (e.g. "endpoint-devices" -> "Endpoint Devices"). A configured label
+ * (see {@link groupLabel}) overrides this for slugs whose words need real expansion (e.g.
+ * "sys-mgmt" -> "System Management").
  *
- * Word boundaries come from any run of non-alphanumeric characters (`-`, `_`,
- * `/`, spaces), and accents are folded to ASCII so an accented directory name
- * degrades to letters rather than dropping them.
+ * Word boundaries come from any run of non-alphanumeric characters (`-`, `_`, `/`, spaces), and
+ * accents are folded to ASCII so an accented directory name degrades to letters rather than
+ * dropping them.
  *
  * @param {string} slug
+ *
  * @returns {string}
  */
 function humanizeSlug(slug) {
@@ -176,6 +183,7 @@ function humanizeSlug(slug) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
+ *
  * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
@@ -204,6 +212,7 @@ export function parseDocFile(filePath, baseDir) {
 /**
  * @param {string[]} routesPaths
  * @param {string} tail
+ *
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
@@ -221,6 +230,7 @@ function findMatchingRoute(routesPaths, tail) {
 
 /**
  * @param {string} urlPath
+ *
  * @returns {string}
  */
 function collapseMatchingTrailingSegment(urlPath) {
@@ -237,6 +247,7 @@ function collapseMatchingTrailingSegment(urlPath) {
 
 /**
  * @param {string} pathStr
+ *
  * @returns {string}
  */
 function removeNumberedPrefixes(pathStr) {
@@ -247,14 +258,17 @@ function removeNumberedPrefixes(pathStr) {
 }
 
 /**
- * Determine a doc's grouping key. Normally the directory slug (first path
- * segment); `regroup` lets a subtree split into its own group — e.g.
- * `["core/glossary", "glossary"]` pulls the glossary out of `## Core Concepts`
- * into its own `## Glossary` section.
+ * Determine a doc's grouping key. Normally the directory slug (first path segment); `regroup` lets
+ * a subtree split into its own group — e.g. `["core/glossary", "glossary"]` pulls the glossary out
+ * of `## Core Concepts` into its own `## Glossary` section.
  *
  * @param {{ path: string }} doc
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[],
- *   regroup?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ *     regroup?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function assignGroup(doc, opts) {
@@ -267,11 +281,15 @@ export function assignGroup(doc, opts) {
 }
 
 /**
- * Resolve the human-readable display label for a group slug: a configured
- * `categories` label if present, otherwise a title-cased form of the slug.
+ * Resolve the human-readable display label for a group slug: a configured `categories` label if
+ * present, otherwise a title-cased form of the slug.
  *
  * @param {string} group The group slug.
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function groupLabel(group, opts) {
@@ -282,6 +300,7 @@ export function groupLabel(group, opts) {
 
 /**
  * @param {string} routeBasePath
+ *
  * @returns {string}
  */
 function normalizeRouteBasePath(routeBasePath) {
@@ -303,6 +322,7 @@ function normalizeRouteBasePath(routeBasePath) {
 
 /**
  * @param {string} routePath
+ *
  * @returns {string}
  */
 function normalizeRoutePath(routePath) {
@@ -314,11 +334,12 @@ function normalizeRoutePath(routePath) {
 }
 
 /**
- * Resolve a route from source metadata when Docusaurus' final route list is not
- * available, such as during the dev server's content loading phase.
+ * Resolve a route from source metadata when Docusaurus' final route list is not available, such as
+ * during the dev server's content loading phase.
  *
  * @param {LLMSDocInfo} doc
  * @param {string} routeBasePath
+ *
  * @returns {string}
  */
 export function resolveDocumentUrlFromSource(doc, routeBasePath) {
@@ -339,13 +360,14 @@ export function resolveDocumentUrlFromSource(doc, routeBasePath) {
 /**
  * Resolve a document to its rendered route URL.
  *
- * Prefer the route declared by the document's source metadata, including a
- * frontmatter slug override. Fall back to matching the source path for routes
- * transformed by Docusaurus conventions such as numbered prefixes.
+ * Prefer the route declared by the document's source metadata, including a frontmatter slug
+ * override. Fall back to matching the source path for routes transformed by Docusaurus conventions
+ * such as numbered prefixes.
  *
  * @param {LLMSDocInfo} doc
  * @param {string} routeBasePath
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ *
  * @returns {string | undefined}
  */
 export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {

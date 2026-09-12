@@ -1,21 +1,21 @@
 {
     "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "license": "MIT",
     "private": true,
+    "license": "MIT",
     "scripts": {
         "build": "pnpm --filter \"./docs\" run build",
         "build:api": "pnpm --filter \"./api\" run build",
         "build:integrations": "pnpm --filter \"./integrations\" run build",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "lint": "run-s lint:oxlint",
+        "lint": "run-s lint:oxlint lint:oxfmt",
         "lint:oxlint": "oxlint",
         "lint:oxfmt": "oxfmt --check .",
         "lint:fix": "run-s fix:oxlint fix:oxfmt",
         "fix:oxlint": "oxlint --fix",
         "fix:oxfmt": "oxfmt --write .",
-        "lint-check": "run-s lint-check:oxlint",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
         "lint-check:oxlint": "oxlint --max-warnings=0",
         "start": "pnpm --filter \"./docs\" run start",
         "test": "node --test"
@@ -51,16 +51,16 @@
         "lightningcss-linux-arm64-gnu": "1.33.0",
         "lightningcss-linux-x64-gnu": "1.33.0"
     },
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
-    },
     "devEngines": {
         "runtime": {
             "name": "node",
             "version": ">=24.20",
             "onFail": "error"
         }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
     "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

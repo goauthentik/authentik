@@ -101,27 +101,33 @@ export class NativeLogoutStage extends BaseStage<
                     method="post"
                     ${ref(this.#formRef)}
                 >
-                    ${this.challenge.samlRequest
-                        ? html`<input
-                              type="hidden"
-                              name="SAMLRequest"
-                              value="${this.challenge.samlRequest}"
-                          />`
-                        : nothing}
-                    ${this.challenge.samlResponse
-                        ? html`<input
-                              type="hidden"
-                              name="SAMLResponse"
-                              value="${this.challenge.samlResponse}"
-                          />`
-                        : nothing}
-                    ${this.challenge.samlRelayState
-                        ? html`<input
-                              type="hidden"
-                              name="RelayState"
-                              value="${this.challenge.samlRelayState}"
-                          />`
-                        : nothing}
+                    ${
+                        this.challenge.samlRequest
+                            ? html`<input
+                                  type="hidden"
+                                  name="SAMLRequest"
+                                  value="${this.challenge.samlRequest}"
+                              />`
+                            : nothing
+                    }
+                    ${
+                        this.challenge.samlResponse
+                            ? html`<input
+                                  type="hidden"
+                                  name="SAMLResponse"
+                                  value="${this.challenge.samlResponse}"
+                              />`
+                            : nothing
+                    }
+                    ${
+                        this.challenge.samlRelayState
+                            ? html`<input
+                                  type="hidden"
+                                  name="RelayState"
+                                  value="${this.challenge.samlRelayState}"
+                              />`
+                            : nothing
+                    }
                 </form>
             </ak-flow-card>`;
         }

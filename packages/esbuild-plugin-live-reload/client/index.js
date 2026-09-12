@@ -1,8 +1,7 @@
 /**
- * @file Client-side observer for ESBuild events.
- *
  * @import { ConsoleLike } from "@goauthentik/esbuild-plugin-live-reload/shared";
  * @import { Message as ESBuildMessage } from "esbuild";
+ * @file Client-side observer for ESBuild events.
  */
 
 /// <reference types="./types.js" />
@@ -28,18 +27,19 @@ const disposeSymbol = Symbol.dispose || Symbol.for("dispose");
 /**
  * A client-side watcher for ESBuild.
  *
- * Note that this should be conditionally imported in your code, so that
- * ESBuild may tree-shake it out of production builds.
+ * Note that this should be conditionally imported in your code, so that ESBuild may tree-shake it
+ * out of production builds.
  *
  * ```ts
  * if (process.env.NODE_ENV === "development") {
- *   await import("@goauthentik/esbuild-plugin-live-reload")
- *     .catch(() => console.warn("Failed to import watcher"))
+ *     await import("@goauthentik/esbuild-plugin-live-reload").catch(() =>
+ *         console.warn("Failed to import watcher"),
+ *     );
  * }
  * ```
  *
- * @implements {Disposable}
  * @category Plugin
+ * @implements {Disposable}
  * @runtime browser
  */
 export class ESBuildObserver extends EventSource {
@@ -81,6 +81,7 @@ export class ESBuildObserver extends EventSource {
 
     /**
      * The interval for the keep-alive check.
+     *
      * @type {ReturnType<typeof setInterval> | undefined}
      */
     #keepAliveInterval;
@@ -171,6 +172,7 @@ export class ESBuildObserver extends EventSource {
      *
      * @param {string | URL} [url]
      * @param {ConsoleLike} [logger]
+     *
      * @returns {ESBuildObserver}
      */
     static initialize = (url, logger) => {
@@ -180,7 +182,6 @@ export class ESBuildObserver extends EventSource {
     };
 
     /**
-     *
      * @param {string | URL} [url]
      * @param {ConsoleLike} [logger]
      */

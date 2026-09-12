@@ -26,8 +26,8 @@ export interface ThemedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
     src: string;
     theme: ResolvedUITheme;
     /**
-     * Pre-resolved URLs for each theme variant from backend.
-     * When provided, these are used instead of src.
+     * Pre-resolved URLs for each theme variant from backend. When provided, these are used instead
+     * of src.
      */
     themedUrls?: ThemedUrls | null;
 }

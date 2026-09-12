@@ -23,8 +23,8 @@ export function isAdmonitionType(value: string): value is AdmonitionType {
 }
 
 /**
- * `caution` and `tip` are not first-class PatternFly alert levels — map
- * them to the closest equivalent so PFAlert styles render correctly.
+ * `caution` and `tip` are not first-class PatternFly alert levels — map them to the closest
+ * equivalent so PFAlert styles render correctly.
  */
 const ADMONITION_LEVEL = {
     info: "pf-m-info",
@@ -36,10 +36,9 @@ const ADMONITION_LEVEL = {
 } as const satisfies Record<AdmonitionType, string>;
 
 /**
- * Remark plugin to convert `:::info` / `:::warning` / etc. directives
- * to `<ak-alert>` elements. The first child paragraph carrying the
- * `directiveLabel` flag (i.e. `:::info[Title]` syntax) is promoted to
- * a `<strong>` so the title renders inside the admonition slot.
+ * Remark plugin to convert `:::info` / `:::warning` / etc. directives to `<ak-alert>` elements. The
+ * first child paragraph carrying the `directiveLabel` flag (i.e. `:::info[Title]` syntax) is
+ * promoted to a `<strong>` so the title renders inside the admonition slot.
  */
 export const remarkAdmonition: Plugin<[], Root, VFile> = () => {
     return function transformer(tree) {
@@ -83,12 +82,11 @@ export const remarkAdmonition: Plugin<[], Root, VFile> = () => {
 /**
  * Match a Docusaurus-style admonition opening line:
  *
- * ```
  *     :::info Title
- *```
- * `remark-directive` only understands the spec form `:::name[label]{attrs}`,
- * so a bare-space label silently falls through as plain text. Rewrite
- * the source so the directive parser sees the bracketed form.
+ *
+ * `remark-directive` only understands the spec form `:::name[label]{attrs}`, so a bare-space label
+ * silently falls through as plain text. Rewrite the source so the directive parser sees the
+ * bracketed form.
  */
 const ADMONITION_BARE_LABEL_RE = new RegExp(
     `^(:::(?:${[...ADMONITION_TYPES].join("|")}))[ \\t]+(.+?)[ \\t]*$`,

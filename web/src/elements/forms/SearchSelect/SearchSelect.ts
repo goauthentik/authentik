@@ -45,8 +45,7 @@ export abstract class SearchSelectBase<T>
     //#region Properties
 
     /**
-     * A function which takes the query state object (accepting that it may be empty)
-     * and returns a
+     * A function which takes the query state object (accepting that it may be empty) and returns a
      * new collection of objects.
      */
     public abstract fetchObjects: (query?: string) => Promise<T[]>;
@@ -91,7 +90,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the dropdown component can be left blank
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -99,7 +99,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the component allows creating custom values not in the list
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -107,15 +108,17 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Prevent user interaction while still rendering the current value.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean, attribute: "readonly" })
     public readOnly = false;
 
     /**
-     * An initial string to filter the search contents,
-     * and the value of the input which further serves to restrict the search.
+     * An initial string to filter the search contents, and the value of the input which further
+     * serves to restrict the search.
+     *
      * @property
      */
     @property({ type: String })
@@ -127,6 +130,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * The currently selected object.
+     *
      * @property
      */
     @property({ attribute: false })
@@ -134,6 +138,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the name of the object
+     *
      * @property
      */
     @property({ type: String })
@@ -141,6 +146,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -148,6 +154,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the input label.
+     *
      * @property
      */
     @property()
@@ -157,7 +164,8 @@ export abstract class SearchSelectBase<T>
      * The textual placeholder for the search's <input> object, if currently empty.
      *
      * Used as the native <input> object's `placeholder` field.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: String })
@@ -173,11 +181,11 @@ export abstract class SearchSelectBase<T>
     public emptyOption?: string = "---------";
 
     /**
-     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
-     * "Create new...". Activating it fires an `ak-search-select-action` event
-     * instead of changing the selection.
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g. "Create
+     * new...". Activating it fires an `ak-search-select-action` event instead of changing the
+     * selection.
      *
-     * @property
+     * @property *
      * @attr
      */
     @property({ type: String, attribute: "action-label" })

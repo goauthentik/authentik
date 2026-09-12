@@ -1,10 +1,10 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
-import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-text-input";
-import "#components/ak-radio-input";
-import "#components/ak-number-input";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 
@@ -21,9 +21,10 @@ import {
     RequestsApi,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
 function createNotificationModeOptions(): RadioOption<NotificationModeEnum>[] {

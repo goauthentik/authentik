@@ -1,8 +1,8 @@
 import "#admin/applications/ak-provider-table";
-import "#elements/forms/HorizontalFormElement";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/Form";
+import "#elements/forms/HorizontalFormElement";
 
 import { AKElement } from "#elements/Base";
 import { renderModal } from "#elements/dialogs";

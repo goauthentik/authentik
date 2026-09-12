@@ -1,7 +1,7 @@
+import "#elements/ak-table/ak-simple-table";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/entities/UsedByTable";
 import "#elements/forms/FormGroup";
-import "#elements/ak-table/ak-simple-table";
 
 import { plural } from "#common/ui/locale/plurals";
 
@@ -21,7 +21,8 @@ import { guard } from "lit/directives/guard.js";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 /**
- * A generic form for confirming the deletion of an object, with an optional list of objects that use the object being deleted.
+ * A generic form for confirming the deletion of an object, with an optional list of objects that
+ * use the object being deleted.
  */
 @customElement("ak-destructive-model-form")
 export class DestructiveModelForm<T extends object = object> extends ModelForm<T> {

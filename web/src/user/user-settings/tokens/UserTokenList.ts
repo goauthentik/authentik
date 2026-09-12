@@ -115,14 +115,16 @@ export class UserTokenList extends Table<Token> {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${item.expiring
-                            ? html`<pf-tooltip
-                                  position="top"
-                                  .content=${item.expires?.toLocaleString()}
-                              >
-                                  ${formatElapsedTime(item.expires!)}
-                              </pf-tooltip>`
-                            : msg("-")}
+                        ${
+                            item.expiring
+                                ? html`<pf-tooltip
+                                      position="top"
+                                      .content=${item.expires?.toLocaleString()}
+                                  >
+                                      ${formatElapsedTime(item.expires!)}
+                                  </pf-tooltip>`
+                                : msg("-")
+                        }
                     </div>
                 </dd>
             </div>

@@ -1,8 +1,8 @@
-import "#components/ak-text-input";
-import "#components/ak-radio-input";
-import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -196,24 +196,26 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                ${hasSigningKp
-                    ? html`<ak-switch-input
-                              name="signAssertion"
-                              label=${msg("Sign assertions")}
-                              ?checked=${provider.signAssertion ?? true}
-                              help=${msg(
-                                  "When enabled, the assertion element of the SAML response will be signed.",
-                              )}
-                          >
-                          </ak-switch-input>
-                          <ak-switch-input
-                              name="signLogoutRequest"
-                              label=${msg("Sign logout requests")}
-                              ?checked=${provider.signLogoutRequest ?? false}
-                              help=${msg("When enabled, SAML logout requests will be signed.")}
-                          >
-                          </ak-switch-input>`
-                    : nothing}
+                ${
+                    hasSigningKp
+                        ? html`<ak-switch-input
+                                  name="signAssertion"
+                                  label=${msg("Sign assertions")}
+                                  ?checked=${provider.signAssertion ?? true}
+                                  help=${msg(
+                                      "When enabled, the assertion element of the SAML response will be signed.",
+                                  )}
+                              >
+                              </ak-switch-input>
+                              <ak-switch-input
+                                  name="signLogoutRequest"
+                                  label=${msg("Sign logout requests")}
+                                  ?checked=${provider.signLogoutRequest ?? false}
+                                  help=${msg("When enabled, SAML logout requests will be signed.")}
+                              >
+                              </ak-switch-input>`
+                        : nothing
+                }
 
                 <ak-form-element-horizontal
                     label=${msg("Encryption Certificate")}
@@ -336,8 +338,10 @@ export function renderForm({
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.digestAlgorithm === opt.value ||
-                                    (!provider?.digestAlgorithm && opt.default)}
+                                    ?selected=${
+                                        provider?.digestAlgorithm === opt.value ||
+                                        (!provider?.digestAlgorithm && opt.default)
+                                    }
                                 >
                                     ${opt.label}
                                 </option>
@@ -365,9 +369,11 @@ export function renderForm({
                             return html`
                                 <option
                                     value=${algorithmValue}
-                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable &&
-                                        hash === DEFAULT_HASH_ALGORITHM)}
+                                    ?selected=${
+                                        provider?.signatureAlgorithm === algorithmValue ||
+                                        (!isCurrentAlgorithmAvailable &&
+                                            hash === DEFAULT_HASH_ALGORITHM)
+                                    }
                                 >
                                     ${hash}
                                 </option>

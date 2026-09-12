@@ -59,7 +59,6 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  * but overriding onSuccess() or onFailure() means that you must either call `onComplete` if you
  * want to preserve the TaskButton's "reset after completion" semantics, or inside `onSuccess` and
  * `onFailure` call their `super.` equivalents.
- *
  */
 
 export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(AKElement) {

@@ -1,7 +1,7 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ldap/LDAPProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";

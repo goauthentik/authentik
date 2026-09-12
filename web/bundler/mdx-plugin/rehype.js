@@ -7,13 +7,13 @@ import { CurrentReleaseDocsURL } from "@goauthentik/core/version/node";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
- * Resolve a relative `href` against the docs base URL. Same logic the old
- * runtime `MDXAnchor` used: take a `./...` href relative to the file's
- * `publicDirectory`, drop trailing `index`/`.md`/`.mdx`, and absolutize
- * against {@linkcode CurrentReleaseDocsURL}.
+ * Resolve a relative `href` against the docs base URL. Same logic the old runtime `MDXAnchor` used:
+ * take a `./...` href relative to the file's `publicDirectory`, drop trailing `index`/`.md`/`.mdx`,
+ * and absolutize against {@linkcode CurrentReleaseDocsURL}.
  *
  * @param {string} href
  * @param {string} publicDirectory
+ *
  * @returns {string}
  */
 function resolveDocsHref(href, publicDirectory) {
@@ -29,22 +29,19 @@ function resolveDocsHref(href, publicDirectory) {
 }
 
 /**
- * Rehype plugin: resolve relative anchors at build time and wrap every
- * `<a>` in an `<ak-md-a>` light-DOM custom element. The wrapper attaches
- * the fragment-link click interceptor at runtime so clicks on
- * `<a href="#section">` scroll within the host shadow tree rather than
- * overwriting `location.hash` (which would yank the hash-routed SPA off
- * its current page).
+ * Rehype plugin: resolve relative anchors at build time and wrap every `<a>` in an `<ak-md-a>`
+ * light-DOM custom element. The wrapper attaches the fragment-link click interceptor at runtime so
+ * clicks on `<a href="#section">` scroll within the host shadow tree rather than overwriting
+ * `location.hash` (which would yank the hash-routed SPA off its current page).
  *
- * Wrapping (rather than replacing) keeps the real `<a>` element inside
- * `<ak-mdx>`'s shadow tree where the existing PatternFly link CSS in
- * `styles.css` applies. The wrapper itself uses `display: contents` so
- * it does not perturb inline-flow layout.
+ * Wrapping (rather than replacing) keeps the real `<a>` element inside `<ak-mdx>`'s shadow tree
+ * where the existing PatternFly link CSS in `styles.css` applies. The wrapper itself uses `display:
+ * contents` so it does not perturb inline-flow layout.
  *
  * @param {{ publicDirectory: string }} options
  */
 export function rehypeAnchors({ publicDirectory }) {
-    return (/** @type {import('hast').Root} */ tree) => {
+    return (/** @type {import("hast").Root} */ tree) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "a") return;
 
@@ -69,7 +66,7 @@ export function rehypeAnchors({ publicDirectory }) {
             // the visitor from descending into the freshly-stamped
             // child anchor (which would re-match this filter and
             // recurse forever).
-            /** @type {import('hast').Element} */
+            /** @type {import("hast").Element} */
             const original = {
                 type: "element",
                 tagName: "a",
@@ -87,13 +84,12 @@ export function rehypeAnchors({ publicDirectory }) {
 }
 
 /**
- * Rehype plugin: replace `language-mermaid` code blocks with
- * `<ak-diagram>` elements carrying the mermaid source as text content.
- * `<ak-diagram>` reads its own `textContent` and renders the SVG, so no
- * wrapper element is needed.
+ * Rehype plugin: replace `language-mermaid` code blocks with `<ak-diagram>` elements carrying the
+ * mermaid source as text content. `<ak-diagram>` reads its own `textContent` and renders the SVG,
+ * so no wrapper element is needed.
  */
 export function rehypeMermaid() {
-    return (/** @type {import('hast').Root} */ tree) => {
+    return (/** @type {import("hast").Root} */ tree) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "pre") return;
             const child = node.children?.[0];

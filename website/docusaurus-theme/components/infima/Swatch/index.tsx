@@ -1,5 +1,3 @@
-import styles from "./styles.module.css";
-
 import {
     ColorEntry,
     ColorGroupProp,
@@ -11,6 +9,8 @@ import {
 
 import { useColorMode } from "@docusaurus/theme-common";
 import { useMemo, useState } from "react";
+
+import styles from "./styles.module.css";
 
 interface ColorSwatchProps extends ComputedColor {
     showVar?: boolean;

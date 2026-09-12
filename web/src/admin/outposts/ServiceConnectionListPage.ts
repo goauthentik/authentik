@@ -14,9 +14,9 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
+import { PFColor } from "#elements/Label";
 import { IconEditButtonByTagName } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -93,9 +93,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             item.name,
             item.verboseName,
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
-            html`${itemState?.healthy
-                ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
-                : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
+            html`${
+                itemState?.healthy
+                    ? html`<ak-label color=${PFColor.Green}
+                          >${ifDefined(itemState.version)}</ak-label
+                      >`
+                    : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
                 ${IconPermissionButton(item.name, {

@@ -1,8 +1,7 @@
 /**
- * @file Shadow tokens — sm..xl drop shadows and an inset variant.
- *
- * Dark theme uses higher opacity to read against the deeper backgrounds. The
- * inset shadow uses a near-solid color in dark mode rather than a faded rgba.
+ * @file Shadow tokens — sm..xl drop shadows and an inset variant. Dark theme uses higher opacity to
+ *   read against the deeper backgrounds. The inset shadow uses a near-solid color in dark mode
+ *   rather than a faded rgba.
  */
 
 import { instance, theme } from "../shared.js";

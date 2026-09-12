@@ -26,11 +26,13 @@ export class OutpostHealthList extends StaticTable<OutpostHealth> {
         }
         return [
             html`${item.hostname}`,
-            html`${item.versionOutdated
-                ? html`<ak-label color=${PFColor.Red} compact
-                      >${msg(str`${item.version}, should be ${item.versionShould}`)}
-                  </ak-label>`
-                : html`<ak-label color=${PFColor.Green} compact>${versionString} </ak-label>`}`,
+            html`${
+                item.versionOutdated
+                    ? html`<ak-label color=${PFColor.Red} compact
+                          >${msg(str`${item.version}, should be ${item.versionShould}`)}
+                      </ak-label>`
+                    : html`<ak-label color=${PFColor.Green} compact>${versionString} </ak-label>`
+            }`,
             html`<ak-label color=${PFColor.Green} compact>
                 ${msg(
                     str`${formatElapsedTime(item.lastSeen)} (${item.lastSeen?.toLocaleTimeString()})`,

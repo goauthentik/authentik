@@ -14,8 +14,8 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 /**
- * Non-dismissible sticky admin banner shown when no base URL has been configured,
- * prompting an administrator to set it in the system settings
+ * Non-dismissible sticky admin banner shown when no base URL has been configured, prompting an
+ * administrator to set it in the system settings
  */
 @customElement("ak-base-url-banner")
 export class BaseURLBanner extends AKElement {

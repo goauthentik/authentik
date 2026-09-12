@@ -1,9 +1,9 @@
 import "#components/ak-nav-buttons";
-import "#elements/banner/EnterpriseStatusBanner";
+import "#components/ak-nav-tabs";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
+import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/router/core/RouterView";
-import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
 import { isGuest } from "#common/users";
@@ -27,8 +27,8 @@ import {
     renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
-import Styles from "#user/ak-interface-user.css";
 import { DEFAULT_PATH, ROUTES } from "#user/Routes";
+import Styles from "#user/ak-interface-user.css";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -165,9 +165,11 @@ class UserInterface extends WithLicenseSummary(
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
-                    ${!backgroundStyles
-                        ? html`<div part="background-default-slant"></div>`
-                        : nothing}
+                    ${
+                        !backgroundStyles
+                            ? html`<div part="background-default-slant"></div>`
+                            : nothing
+                    }
                 </div>
                 <header
                     role="banner"
@@ -186,19 +188,23 @@ class UserInterface extends WithLicenseSummary(
                             })}
                         </a>
                     </div>
-                    ${navItems.length > 1
-                        ? html`<ak-nav-tabs
-                              class="pf-c-page__header-nav"
-                              .items=${navItems}
-                          ></ak-nav-tabs>`
-                        : nothing}
+                    ${
+                        navItems.length > 1
+                            ? html`<ak-nav-tabs
+                                  class="pf-c-page__header-nav"
+                                  .items=${navItems}
+                              ></ak-nav-tabs>`
+                            : nothing
+                    }
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">
                     <div
-                        class="pf-c-drawer ${this.drawer.notifications || this.drawer.api
-                            ? "pf-m-expanded"
-                            : "pf-m-collapsed"}"
+                        class="pf-c-drawer ${
+                            this.drawer.notifications || this.drawer.api
+                                ? "pf-m-expanded"
+                                : "pf-m-collapsed"
+                        }"
                     >
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">

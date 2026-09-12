@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 /**
+ * @import {
+ *   LoadContext,
+ *   Plugin,
+ *   Props
+ * } from "@docusaurus/types"
+ * @import {
+ *   LLMSDocInfo,
+ *   LLMSPluginOptions
+ * } from "./common.mjs"
  * @file Docusaurus llms.txt plugin (postBuild).
- *
- * @import { LoadContext, Plugin, Props } from "@docusaurus/types"
- * @import { LLMSPluginOptions, LLMSDocInfo } from "./common.mjs"
  */
 
 import * as fs from "node:fs/promises";
@@ -42,15 +48,15 @@ export { assignGroup, groupLabel };
  */
 
 /**
- * Resolve the base URL for generated links. In a Netlify deploy preview or
- * branch deploy the canonical site URL (e.g. docs.goauthentik.io) is wrong —
- * the built copy is served from `DEPLOY_PRIME_URL` — so links must point at the
- * deploy origin instead of hardcoding the production subdomain. Precedence:
- * an explicit `siteUrl` option, then the deploy-preview origin, then the
- * configured site URL.
+ * Resolve the base URL for generated links. In a Netlify deploy preview or branch deploy the
+ * canonical site URL (e.g. docs.goauthentik.io) is wrong — the built copy is served from
+ * `DEPLOY_PRIME_URL` — so links must point at the deploy origin instead of hardcoding the
+ * production subdomain. Precedence: an explicit `siteUrl` option, then the deploy-preview origin,
+ * then the configured site URL.
  *
  * @param {{ siteUrl?: string }} options
  * @param {{ url: string }} siteConfig
+ *
  * @returns {string}
  */
 export function resolveSiteUrl(options, siteConfig) {
@@ -66,8 +72,16 @@ export function resolveSiteUrl(options, siteConfig) {
 /**
  * Build every output file's contents, keyed by build-relative path.
  *
- * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
+ * @param {{
+ *     siteDir: string;
+ *     outDir: string;
+ *     siteUrl: string;
+ *     title: string;
+ *     description: string;
+ *     routesPaths: string[];
+ *     options: LLMSPluginOptions;
+ * }} ctx
+ *
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLLMSOutputs(ctx) {
@@ -155,6 +169,7 @@ export async function buildLLMSOutputs(ctx) {
 /**
  * @param {string} outDir
  * @param {Map<string, string>} outputs
+ *
  * @returns {Promise<void>}
  */
 async function writeLLMSOutputs(outDir, outputs) {
@@ -170,6 +185,7 @@ async function writeLLMSOutputs(outDir, outputs) {
 /**
  * @param {LoadContext} loadContext
  * @param {LLMSPluginOptions} options
+ *
  * @returns {Plugin<LLMSPluginContent>}
  */
 function akLLMSPlugin(loadContext, options) {

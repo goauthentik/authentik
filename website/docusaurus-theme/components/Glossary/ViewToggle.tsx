@@ -1,7 +1,7 @@
-import styles from "./styles.module.css";
-
 import clsx from "clsx";
 import React from "react";
+
+import styles from "./styles.module.css";
 
 /**
  * Toggle between categorized and A–Z views in the glossary.

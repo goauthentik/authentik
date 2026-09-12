@@ -5,9 +5,9 @@ import "#elements/ak-mdx/components/ak-md-a";
 import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy, CompiledMarkdownSanitizePolicy, sanitizeHTML } from "#common/purify";
 
+import { AKElement } from "#elements/Base";
 import { compileRuntimeMarkdown } from "#elements/ak-mdx/markdown";
 import Styles from "#elements/ak-mdx/styles.css";
-import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
@@ -21,9 +21,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 /**
- * The JSON envelope our build-time `mdx-plugin` emits for every imported
- * `.md` / `.mdx` file: the `content` field is **pre-rendered HTML**, not
- * raw markdown source.
+ * The JSON envelope our build-time `mdx-plugin` emits for every imported `.md` / `.mdx` file: the
+ * `content` field is **pre-rendered HTML**, not raw markdown source.
  */
 interface MarkdownModule {
     content: string;
@@ -39,21 +38,18 @@ async function fetchMarkdownModule(url: string | URL): Promise<MarkdownModule> {
 }
 
 /**
- * A replacer applied to the compiled HTML before it is stamped into the
- * shadow DOM. Used by callers who need to substitute `{placeholder}`-style
- * tokens (e.g. proxy-provider sample configs).
+ * A replacer applied to the compiled HTML before it is stamped into the shadow DOM. Used by callers
+ * who need to substitute `{placeholder}`-style tokens (e.g. proxy-provider sample configs).
  */
 export type Replacer = (input: string) => string;
 
 /**
- * Renders markdown into shadow DOM with no client-side JavaScript
- * evaluation. Two modes:
+ * Renders markdown into shadow DOM with no client-side JavaScript evaluation. Two modes:
  *
- * - `url`: resolves to a JSON envelope produced by the build-time
- *   `mdx-plugin`. The envelope's `content` is already HTML.
- * - `content`: an admin-supplied markdown string. Compiled in-browser
- *   through a pure `unified` / remark / rehype pipeline (no `eval`,
- *   no `Function`), then sanitized via `BrandedHTMLPolicy`.
+ * - `url`: resolves to a JSON envelope produced by the build-time `mdx-plugin`. The envelope's
+ *   `content` is already HTML.
+ * - `content`: an admin-supplied markdown string. Compiled in-browser through a pure `unified` /
+ *   remark / rehype pipeline (no `eval`, no `Function`), then sanitized via `BrandedHTMLPolicy`.
  */
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
@@ -88,13 +84,11 @@ export class AKMDX extends AKElement {
     }
 
     /**
-     * URL mode: HTML comes from our build-time pipeline. `replacers` may
-     * splice dynamic, sometimes admin-controlled, values into it (see
-     * `ProxyProviderViewPage`), so the post-replacer string is routed
-     * through {@linkcode CompiledMarkdownSanitizePolicy} — a DOMPurify
-     * policy that preserves the custom elements our pipeline emits
-     * (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`) while stripping anything
-     * a replacer could have injected.
+     * URL mode: HTML comes from our build-time pipeline. `replacers` may splice dynamic, sometimes
+     * admin-controlled, values into it (see `ProxyProviderViewPage`), so the post-replacer string
+     * is routed through {@linkcode CompiledMarkdownSanitizePolicy} — a DOMPurify policy that
+     * preserves the custom elements our pipeline emits (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`)
+     * while stripping anything a replacer could have injected.
      */
     async #hydrateFromURL(url: string): Promise<SlottedTemplateResult> {
         const { relBase } = globalAK().api;
@@ -118,9 +112,8 @@ export class AKMDX extends AKElement {
     }
 
     /**
-     * Content mode: admin-supplied markdown compiled in-browser through
-     * a pure `unified` / remark / rehype pipeline (no `eval`, no
-     * `Function`), then sanitized via `BrandedHTMLPolicy`.
+     * Content mode: admin-supplied markdown compiled in-browser through a pure `unified` / remark /
+     * rehype pipeline (no `eval`, no `Function`), then sanitized via `BrandedHTMLPolicy`.
      */
     async #hydrateFromContent(source: string): Promise<SlottedTemplateResult> {
         const html = this.#applyReplacers(await compileRuntimeMarkdown(source));
@@ -128,8 +121,8 @@ export class AKMDX extends AKElement {
     }
 
     /**
-     * Resolve `url` or `content` into a template result and stash it on
-     * reactive state. After this completes, Lit's render takes over.
+     * Resolve `url` or `content` into a template result and stash it on reactive state. After this
+     * completes, Lit's render takes over.
      */
     protected async hydrate(): Promise<void> {
         this.compiledTemplate = this.url

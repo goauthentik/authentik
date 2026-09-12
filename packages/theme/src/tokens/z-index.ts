@@ -1,9 +1,7 @@
 /**
- * @file Z-index tokens — xs..2xl tiers matching PatternFly 4's scale.
- *
- * Spelled out as `z-index.*` rather than `z.*` so the emitted CSS
- * (`--ak-z-index-md`) is unambiguous in brand custom CSS and IDE
- * autocomplete.
+ * @file Z-index tokens — xs..2xl tiers matching PatternFly 4's scale. Spelled out as `z-index.*`
+ *   rather than `z.*` so the emitted CSS (`--ak-z-index-md`) is unambiguous in brand custom CSS and
+ *   IDE autocomplete.
  */
 
 import { instance } from "../shared.js";

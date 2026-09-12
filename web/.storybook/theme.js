@@ -36,6 +36,7 @@ const themes = {
 
 /**
  * @param {ResolvedUITheme | ThemeVars} base
+ *
  * @returns {ThemeVars}
  */
 export function extendStorybookTheme(base) {

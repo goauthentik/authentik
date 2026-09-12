@@ -1,18 +1,19 @@
 /**
- * @file Display details for a Google Workspace provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ * @file Display details for a Google Workspace provider: Overview, changelog, provisioned users,
+ *   provisioned groups, and permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#components/sync/SyncStatusCard";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -156,13 +157,15 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     }
 
     renderTabOverview(provider: GoogleWorkspaceProvider): SlottedTemplateResult {
-        return html`${!provider.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
-                      )}
-                  </div>`
-                : nothing}
+        return html`${
+                !provider.assignedBackchannelApplicationName
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: Provider is not assigned to an application as backchannel provider.",
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
