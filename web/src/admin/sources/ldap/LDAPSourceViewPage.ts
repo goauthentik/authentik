@@ -1,12 +1,13 @@
 /**
- * @file Display details for a federated LDAP Identity Source: Overview, Synced Users, Synced Groups, Changelog, Permissions
+ * @file Display details for a federated LDAP Identity Source: Overview, Synced Users, Synced
+ *   Groups, Changelog, Permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
-import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
-import "#admin/events/ObjectChangelog";
+import "#admin/sources/ldap/LDAPSourceUserList";
 import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
@@ -47,7 +48,7 @@ export class LDAPSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesLdapRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;

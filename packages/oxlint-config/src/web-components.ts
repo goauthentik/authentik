@@ -8,6 +8,8 @@
  * `@goauthentik/eslint-config` applied.
  */
 
+import { fileURLToPath } from "node:url";
+
 /** A `jsPlugins` entry aliasing an ESLint plugin so its rules resolve under a short namespace. */
 export interface JsPluginAlias {
     name: string;
@@ -15,12 +17,29 @@ export interface JsPluginAlias {
 }
 
 /**
+ * Resolves a plugin to an absolute path.
+ *
+ * @remarks
+ * oxlint resolves a bare `jsPlugins` specifier relative to the consuming `oxlint.config.ts`, not to
+ * this package. Both plugins are dependencies of *this* package, so resolving them here means a
+ * consumer never has to re-declare them, and resolution does not depend on the consumer's
+ * `node_modules` layout.
+ *
+ * @param specifier The plugin's package name.
+ *
+ * @returns An absolute path to the plugin's entry point.
+ */
+function resolvePlugin(specifier: string): string {
+    return fileURLToPath(import.meta.resolve(specifier));
+}
+
+/**
  * `jsPlugins` entries that load the ESLint web-component plugins. Aliased to `wc`/`lit` so the rule
  * names match each plugin's published rule namespace.
  */
 export const WebComponentJsPlugins: JsPluginAlias[] = [
-    { name: "wc", specifier: "eslint-plugin-wc" },
-    { name: "lit", specifier: "eslint-plugin-lit" },
+    { name: "wc", specifier: resolvePlugin("eslint-plugin-wc") },
+    { name: "lit", specifier: resolvePlugin("eslint-plugin-lit") },
 ];
 
 /**

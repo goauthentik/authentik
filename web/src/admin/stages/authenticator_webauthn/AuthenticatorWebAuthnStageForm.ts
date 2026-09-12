@@ -10,8 +10,8 @@ import { aki } from "#common/api/client";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { RenderFlowOption } from "#admin/flows/utils";
-import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
+import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 
 import {
     AuthenticatorAttachmentEnum,
@@ -227,8 +227,8 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
                                 return aki(StagesApi)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
+                                        page,
+                                        search,
                                     })
                                     .then((results) => {
                                         return {

@@ -46,11 +46,11 @@ npx vitest run path/to/file.test.ts
 ### Linting & Formatting
 
 ```bash
-npm run lint           # ESLint with --fix
-npm run lint-check     # ESLint, no fixes (CI mode, max-warnings: 0)
+npm run lint           # oxlint + oxfmt --check
+npm run lint:fix       # oxlint --fix + oxfmt --write
+npm run lint-check     # oxlint, no fixes (CI mode, max-warnings: 0)
 npm run lint:types     # TypeScript type checking (tsc --noEmit)
-npm run prettier       # Format all files
-npm run format         # Combined prettier + lint
+npm run format         # oxfmt --write
 npm run precommit      # Full pre-commit check (format, lint, types, etc.)
 ```
 
@@ -105,16 +105,16 @@ In no case are you to use Fetch, Axios, or other methods.
 
 ## Tech Stack
 
-| Concern            | Library                                   |
-| ------------------ | ----------------------------------------- |
-| UI components      | Lit 3.x + Web Components                  |
-| Design system      | PatternFly 4                              |
-| Build              | ESBuild + Vite 7                          |
-| Tests              | Vitest 4 + Playwright                     |
-| i18n               | Lit Localize (runtime mode, 18 languages) |
-| API client         | `@goauthentik/api` (generated)            |
-| Linting            | ESLint 9 + `@goauthentik/eslint-config`   |
-| Task orchestration | Wireit                                    |
+| Concern            | Library                                                                    |
+| ------------------ | -------------------------------------------------------------------------- |
+| UI components      | Lit 3.x + Web Components                                                   |
+| Design system      | PatternFly 4                                                               |
+| Build              | ESBuild + Vite 7                                                           |
+| Tests              | Vitest 4 + Playwright                                                      |
+| i18n               | Lit Localize (runtime mode, 18 languages)                                  |
+| API client         | `@goauthentik/api` (generated)                                             |
+| Lint / format      | oxlint + oxfmt (`@goauthentik/oxlint-config`, `@goauthentik/oxfmt-config`) |
+| Task orchestration | Wireit                                                                     |
 
 ## TypeScript Notes
 

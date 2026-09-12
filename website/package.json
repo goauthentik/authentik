@@ -9,32 +9,33 @@
         "build:integrations": "pnpm --filter \"./integrations\" run build",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check .",
+        "lint": "run-s lint:oxlint",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
         "start": "pnpm --filter \"./docs\" run start",
         "test": "node --test"
     },
     "dependencies": {
-        "@eslint/js": "catalog:",
         "@goauthentik/brand-assets": "^2.0.0",
         "@goauthentik/docusaurus-theme": "workspace:*",
-        "@goauthentik/eslint-config": "link:../packages/eslint-config",
-        "@goauthentik/prettier-config": "link:../packages/prettier-config",
+        "@goauthentik/oxfmt-config": "link:../packages/oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../packages/oxlint-config",
         "@goauthentik/tsconfig": "link:../packages/tsconfig",
         "@types/node": "catalog:",
         "deepmerge-ts": "^7.1.5",
         "escape-string-regexp": "^5.0.0",
-        "eslint": "catalog:",
         "netlify-plugin-cache": "^1.0.3",
         "netlify-redirect-parser": "^14.4.0",
         "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "postman-code-generators": "2.1.1",
-        "prettier": "catalog:",
-        "prettier-plugin-packagejson": "catalog:",
-        "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "typescript": "catalog:"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "2.2.2",
@@ -61,6 +62,5 @@
             "onFail": "error"
         }
     },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "@goauthentik/prettier-config"
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

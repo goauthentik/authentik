@@ -27,7 +27,6 @@ const logger = ConsoleLogger.prefix("messages");
  *
  * @param message The message to display.
  * @param unique Whether to only display the message if the title is unique.
- *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
 export function showMessage(message: APIMessage | null, unique: boolean = false): boolean {
@@ -97,7 +96,7 @@ export function showAPIErrorMessage(error: unknown, unique = false): Promise<voi
             showMessage(
                 {
                     level: MessageLevel.error,
-                    message: message,
+                    message,
                 },
                 unique,
             );

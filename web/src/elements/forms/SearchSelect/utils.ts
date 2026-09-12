@@ -13,7 +13,7 @@ const isGroupedOptionsCollection = (v: unknown): v is SelectGrouped =>
     v !== null && typeof v === "object" && "grouped" in v && v.grouped === true;
 
 export const groupOptions = (options: SelectOptions): GroupedOptions =>
-    isSelectOptionsArray(options) ? { grouped: false, options: options } : options;
+    isSelectOptionsArray(options) ? { grouped: false, options } : options;
 
 export function optionsToFlat(groupedOptions: GroupedOptions): Pair[] {
     return isGroupedOptionsCollection(groupedOptions)
