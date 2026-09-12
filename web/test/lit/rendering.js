@@ -1,11 +1,13 @@
 /**
+ * @import {RenderOptions as LitRenderOptions} from "lit"
+ * @import {
+ *   LocatorSelectors,
+ *   PrettyDOMOptions
+ * } from "vitest/browser"
  * @file Vitest browser utilities for Lit.
- *
- * @import { LocatorSelectors, PrettyDOMOptions } from '@vitest/browser/context'
- * @import { RenderOptions as LitRenderOptions } from 'lit'
  */
 
-import { utils } from "@vitest/browser/context";
+import { utils } from "vitest/browser";
 
 import { render as renderLit } from "lit";
 
