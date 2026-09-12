@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,10 +14,10 @@
 import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
-import type { RequestableTarget } from "./RequestableTarget";
-import { RequestableTargetFromJSON } from "./RequestableTarget";
 import type { RequestStatus } from "./RequestStatus";
 import { RequestStatusFromJSON } from "./RequestStatus";
+import type { RequestableTarget } from "./RequestableTarget";
+import { RequestableTargetFromJSON } from "./RequestableTarget";
 
 /**
  * Mixin to validate that a valid enterprise license

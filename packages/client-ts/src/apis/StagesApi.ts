@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,6 +19,7 @@ import {
     type AccountLockdownStageRequest,
     AccountLockdownStageRequestToJSON,
 } from "../models/AccountLockdownStageRequest";
+import { type AuthTypeEnum } from "../models/AuthTypeEnum";
 import { type AuthenticatorAttachmentEnum } from "../models/AuthenticatorAttachmentEnum";
 import {
     type AuthenticatorDuoStage,
@@ -93,7 +93,6 @@ import {
     type AuthenticatorWebAuthnStageRequest,
     AuthenticatorWebAuthnStageRequestToJSON,
 } from "../models/AuthenticatorWebAuthnStageRequest";
-import { type AuthTypeEnum } from "../models/AuthTypeEnum";
 import { type CaptchaStage, CaptchaStageFromJSON } from "../models/CaptchaStage";
 import { type CaptchaStageRequest, CaptchaStageRequestToJSON } from "../models/CaptchaStageRequest";
 import { type CertAttributeEnum } from "../models/CertAttributeEnum";

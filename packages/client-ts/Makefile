@@ -15,4 +15,8 @@ build:
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	rm -rf "${PWD}/.openapi-generator"
-	npx prettier --write -u "${PWD}"
+	node scripts/prepare-generated.mjs
+	# Twice: the first pass leaves imports that only become unused once others are removed.
+	npx oxlint --fix --fix-suggestions . && npx oxlint --fix --fix-suggestions .
+	# Also twice: oxfmt does not always settle in one pass.
+	npx oxfmt --write . && npx oxfmt --write .
