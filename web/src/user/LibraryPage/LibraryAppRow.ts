@@ -1,4 +1,5 @@
 import "#elements/AppIcon";
+import "#user/LibraryApplication/ApplicationLinks";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
@@ -121,5 +122,10 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
             descriptionID,
             editURL,
         })}
+        <ak-library-app-links
+            .config=${application.applicationLinks}
+            app-name=${application.name}
+            launch-url=${ifPresent(application.launchUrl)}
+        ></ak-library-app-links>
     </li>`;
 };

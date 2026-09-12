@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationLinksRequest } from "./ApplicationLinksRequest";
+import {
+    ApplicationLinksRequestFromJSON,
+    ApplicationLinksRequestToJSON,
+} from "./ApplicationLinksRequest";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
@@ -69,6 +74,10 @@ export interface ApplicationRequest {
      * Hide this application from the user's My applications page.
      */
     metaHide?: boolean;
+    /**
+     *
+     */
+    applicationLinks?: ApplicationLinksRequest;
 }
 
 /**
@@ -113,6 +122,10 @@ export function ApplicationRequestFromJSONTyped(
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         group: json["group"] == null ? undefined : json["group"],
         metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
+        applicationLinks:
+            json["application_links"] == null
+                ? undefined
+                : ApplicationLinksRequestFromJSON(json["application_links"]),
     };
 }
 
@@ -141,5 +154,6 @@ export function ApplicationRequestToJSONTyped(
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         group: value["group"],
         meta_hide: value["metaHide"],
+        application_links: ApplicationLinksRequestToJSON(value["applicationLinks"]),
     };
 }

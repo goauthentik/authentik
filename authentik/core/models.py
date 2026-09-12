@@ -767,6 +767,15 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
         default=False, help_text=_("Hide this application from the user's My applications page.")
     )
 
+    application_links = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=_(
+            "Additional links shown on the application card, as a list of "
+            "objects with a label, a URL and an optional icon."
+        ),
+    )
+
     objects = ApplicationQuerySet.as_manager()
 
     # Reserved slugs that would clash with OAuth2 provider endpoints

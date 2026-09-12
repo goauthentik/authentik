@@ -6645,6 +6645,71 @@
                     "title": "Meta hide",
                     "description": "Hide this application from the user's My applications page."
                 },
+                "application_links": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "title": "Enabled",
+                            "description": "Show the additional links under this application's card."
+                        },
+                        "address": {
+                            "type": "boolean",
+                            "title": "Address",
+                            "description": "Show a button that copies the application's address, derived from its launch URL."
+                        },
+                        "title": {
+                            "type": "string",
+                            "maxLength": 150,
+                            "title": "Title",
+                            "description": "Optional heading shown above the row. Left out when blank."
+                        },
+                        "align": {
+                            "type": "string",
+                            "enum": [
+                                "left",
+                                "center",
+                                "right"
+                            ],
+                            "title": "Align",
+                            "description": "Horizontal alignment of the heading above the row."
+                        },
+                        "links": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "maxLength": 150,
+                                        "minLength": 1,
+                                        "title": "Label",
+                                        "description": "Shown as the link's tooltip and accessible name."
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "minLength": 1,
+                                        "title": "Url"
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "title": "Icon",
+                                        "description": "Optional. Same convention as an application icon: an uploaded file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph."
+                                    }
+                                },
+                                "required": [
+                                    "label",
+                                    "url"
+                                ]
+                            },
+                            "title": "Links",
+                            "description": "Additional links shown on the application card."
+                        }
+                    },
+                    "title": "Application links"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,

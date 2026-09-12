@@ -47,6 +47,16 @@ export class Radio<T extends Jsonifiable = never> extends FormAssociatedElement<
     @property({ attribute: false })
     public options!: RadioOption<T>[] | (() => RadioOption<T>[]);
 
+    /**
+     * Lay the options out in a row instead of a column.
+     *
+     * For short, self-evident choices — three alignments, two sizes — where a
+     * stack costs several times the height for no added clarity. PatternFly
+     * already ships the modifier; this only selects it.
+     */
+    @property({ type: Boolean })
+    public inline = false;
+
     #value: T | null = null;
 
     @property()
@@ -220,7 +230,7 @@ export class Radio<T extends Jsonifiable = never> extends FormAssociatedElement<
         const options = this.readOptions();
 
         return html`<div
-            class="pf-c-form__group-control pf-m-stack"
+            class="pf-c-form__group-control ${this.inline ? "pf-m-inline" : "pf-m-stack"}"
             ${ref(this.anchorRef)}
             part="control"
         >
