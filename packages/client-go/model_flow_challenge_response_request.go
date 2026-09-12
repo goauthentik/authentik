@@ -35,6 +35,7 @@ type FlowChallengeResponseRequest struct {
 	FrameChallengeResponseRequest                   *FrameChallengeResponseRequest
 	IdentificationChallengeResponseRequest          *IdentificationChallengeResponseRequest
 	IframeLogoutChallengeResponseRequest            *IframeLogoutChallengeResponseRequest
+	MessageChallengeResponseRequest                 *MessageChallengeResponseRequest
 	NativeLogoutChallengeResponseRequest            *NativeLogoutChallengeResponseRequest
 	OAuthDeviceCodeChallengeResponseRequest         *OAuthDeviceCodeChallengeResponseRequest
 	OAuthDeviceCodeFinishChallengeResponseRequest   *OAuthDeviceCodeFinishChallengeResponseRequest
@@ -162,6 +163,13 @@ func IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(v *Ide
 func IframeLogoutChallengeResponseRequestAsFlowChallengeResponseRequest(v *IframeLogoutChallengeResponseRequest) FlowChallengeResponseRequest {
 	return FlowChallengeResponseRequest{
 		IframeLogoutChallengeResponseRequest: v,
+	}
+}
+
+// MessageChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns MessageChallengeResponseRequest wrapped in FlowChallengeResponseRequest
+func MessageChallengeResponseRequestAsFlowChallengeResponseRequest(v *MessageChallengeResponseRequest) FlowChallengeResponseRequest {
+	return FlowChallengeResponseRequest{
+		MessageChallengeResponseRequest: v,
 	}
 }
 
@@ -490,6 +498,18 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-message'
+	if jsonDict["component"] == "ak-stage-message" {
+		// try to unmarshal JSON data into MessageChallengeResponseRequest
+		err = json.Unmarshal(data, &dst.MessageChallengeResponseRequest)
+		if err == nil {
+			return nil // data stored in dst.MessageChallengeResponseRequest, return on the first match
+		} else {
+			dst.MessageChallengeResponseRequest = nil
+			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as MessageChallengeResponseRequest: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallengeResponseRequest
@@ -623,6 +643,10 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.IframeLogoutChallengeResponseRequest)
 	}
 
+	if src.MessageChallengeResponseRequest != nil {
+		return json.Marshal(&src.MessageChallengeResponseRequest)
+	}
+
 	if src.NativeLogoutChallengeResponseRequest != nil {
 		return json.Marshal(&src.NativeLogoutChallengeResponseRequest)
 	}
@@ -735,6 +759,10 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.IframeLogoutChallengeResponseRequest
 	}
 
+	if obj.MessageChallengeResponseRequest != nil {
+		return obj.MessageChallengeResponseRequest
+	}
+
 	if obj.NativeLogoutChallengeResponseRequest != nil {
 		return obj.NativeLogoutChallengeResponseRequest
 	}
@@ -843,6 +871,10 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.IframeLogoutChallengeResponseRequest != nil {
 		return *obj.IframeLogoutChallengeResponseRequest
+	}
+
+	if obj.MessageChallengeResponseRequest != nil {
+		return *obj.MessageChallengeResponseRequest
 	}
 
 	if obj.NativeLogoutChallengeResponseRequest != nil {

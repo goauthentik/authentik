@@ -97,6 +97,11 @@ import {
     IframeLogoutChallengeResponseRequestFromJSONTyped,
     IframeLogoutChallengeResponseRequestToJSON,
 } from "./IframeLogoutChallengeResponseRequest";
+import type { MessageChallengeResponseRequest } from "./MessageChallengeResponseRequest";
+import {
+    MessageChallengeResponseRequestFromJSONTyped,
+    MessageChallengeResponseRequestToJSON,
+} from "./MessageChallengeResponseRequest";
 import type { NativeLogoutChallengeResponseRequest } from "./NativeLogoutChallengeResponseRequest";
 import {
     NativeLogoutChallengeResponseRequestFromJSONTyped,
@@ -176,6 +181,7 @@ export type FlowChallengeResponseRequest =
     | ({ component: "ak-stage-email" } & EmailChallengeResponseRequest)
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallengeResponseRequest)
     | ({ component: "ak-stage-identification" } & IdentificationChallengeResponseRequest)
+    | ({ component: "ak-stage-message" } & MessageChallengeResponseRequest)
     | ({ component: "ak-stage-password" } & PasswordChallengeResponseRequest)
     | ({ component: "ak-stage-prompt" } & PromptChallengeResponseRequest)
     | ({ component: "ak-stage-user-login" } & UserLoginChallengeResponseRequest)
@@ -306,6 +312,10 @@ export function FlowChallengeResponseRequestFromJSONTyped(
                 IdentificationChallengeResponseRequestFromJSONTyped(json, true),
                 { component: "ak-stage-identification" } as const,
             );
+        case "ak-stage-message":
+            return Object.assign({}, MessageChallengeResponseRequestFromJSONTyped(json, true), {
+                component: "ak-stage-message",
+            } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "ak-stage-password",
@@ -426,6 +436,10 @@ export function FlowChallengeResponseRequestToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeResponseRequestToJSON(value), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-message":
+            return Object.assign({}, MessageChallengeResponseRequestToJSON(value), {
+                component: "ak-stage-message",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestToJSON(value), {
