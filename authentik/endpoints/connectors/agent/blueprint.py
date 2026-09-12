@@ -110,7 +110,7 @@ def _plain_scalar(node: Node | None) -> str | None:
 
 
 def _duration_seconds(node: Node | None) -> int | None:
-    """Resolve a token-validity value to seconds, or None if unparseable.
+    """Resolve a token-validity value to seconds, or None if unparsable.
 
     Accepts an integer (seconds) or an authentik timedelta string such as
     "hours=1;minutes=30". Any unknown unit or malformed part rejects the whole
@@ -130,8 +130,8 @@ def _duration_seconds(node: Node | None) -> int | None:
         return int(text)
     total = 0
     parsed = False
-    for part in text.split(";"):
-        part = part.strip()
+    for raw_part in text.split(";"):
+        part = raw_part.strip()
         if not part:
             continue
         unit, sep, amount = part.partition("=")
@@ -178,12 +178,12 @@ def _check_tags(node: Node, entry_ids: set[str], errors: list[str]) -> None:
             _check_tags(value, entry_ids, errors)
 
 
-def check_agent_apply_content(content: str) -> list[str]:
+def check_agent_apply_content(content: str) -> list[str]:  # noqa: PLR0912
     """Return policy violations for content accepted by the bounded apply API."""
     try:
         documents = list(compose_all(content))
-    except YAMLError as exc:
-        return [f"Invalid YAML: {exc}"]
+    except YAMLError:
+        return ["Invalid YAML"]
     if len(documents) != 1 or documents[0] is None:
         return ["Blueprint must contain exactly one YAML document"]
     root = documents[0]

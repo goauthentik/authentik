@@ -151,8 +151,8 @@ class AgentConnectorViewSet(
             raise ValidationError(_("Agent apply identity is not provisioned"))
         try:
             importer = Importer.from_string(data.validated_data["content"])
-        except EntryInvalidError as exc:
-            raise ValidationError(_("Invalid blueprint: {exc}".format(exc=str(exc)))) from None
+        except EntryInvalidError:
+            raise ValidationError(_("Invalid blueprint")) from None
         check_agent_apply_perms(importer.blueprint, identity)
         valid, logs = importer.validate()
         success = importer.apply() if valid else False

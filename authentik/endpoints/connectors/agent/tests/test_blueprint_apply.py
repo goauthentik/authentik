@@ -126,6 +126,7 @@ class TestAgentBlueprintApply(APITestCase):
         self._provision_identity()
         res = self._apply("this: is: not: a: blueprint")
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["content"], ["Invalid YAML"])
 
 
 class TestAgentApplyContentPolicy(TestCase):
