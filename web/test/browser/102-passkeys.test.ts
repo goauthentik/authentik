@@ -6,7 +6,7 @@ import { series } from "@goauthentik/core/promises";
 
 import { snakeCase } from "change-case";
 
-const CREDENTIALS_SETTINGS = `/if/user/#/settings;${JSON.stringify({ page: "page-credentials" })}`;
+const CREDENTIALS_SETTINGS = `/if/user/#/settings;%7B"page"%3A"page-credentials"%2C"ak-user-settings-mfa-page"%3A0%7D`;
 
 test.describe("Passkeys", () => {
     const usernames = new Map<string, string>();
@@ -160,8 +160,10 @@ test.describe("Passkeys", () => {
 
             await assertionSubmitted;
 
+            const signOutLink = page.getByRole("link", { name: "Sign out" });
+
             await expect(
-                page.getByRole("button", { name: "Switch user" }),
+                signOutLink,
                 "Enrollee is authenticated after the passkey challenge",
             ).toBeVisible();
         });
