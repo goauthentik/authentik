@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -242,15 +241,16 @@ import {
     type SCIMProviderUserRequest,
     SCIMProviderUserRequestToJSON,
 } from "../models/SCIMProviderUserRequest";
-import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
 import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider";
 import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest";
+import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
 import { type SubModeEnum } from "../models/SubModeEnum";
 import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest";
 import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult";
 import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
 import {
     type WSFederationProvider,
     WSFederationProviderFromJSON,
@@ -259,7 +259,6 @@ import {
     type WSFederationProviderRequest,
     WSFederationProviderRequestToJSON,
 } from "../models/WSFederationProviderRequest";
-import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
 import * as runtime from "../runtime";
 
 export interface ProvidersAllDestroyRequest {

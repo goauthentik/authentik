@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -65,12 +64,12 @@ import {
     type EndpointDeviceRequest,
     EndpointDeviceRequestToJSON,
 } from "../models/EndpointDeviceRequest";
+import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest";
 import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken";
 import {
     type EnrollmentTokenRequest,
     EnrollmentTokenRequestToJSON,
 } from "../models/EnrollmentTokenRequest";
-import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest";
 import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector";
 import {
     type FleetConnectorRequest,

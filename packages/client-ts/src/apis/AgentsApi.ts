@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,8 +12,8 @@
  */
 
 import { type Agent, AgentFromJSON } from "../models/Agent";
-import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
 import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest";
+import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
 import { type AgentRequest, AgentRequestToJSON } from "../models/AgentRequest";
 import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/PaginatedAgentList";
 import { type PatchedAgentRequest, PatchedAgentRequestToJSON } from "../models/PatchedAgentRequest";
