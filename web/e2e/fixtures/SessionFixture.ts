@@ -152,9 +152,11 @@ export class SessionFixture extends PageFixture {
     public async signOut(page: Page = this.page): Promise<void> {
         this.logger.info("Signing out...");
 
-        await page.getByRole("button", { name: "Switch user" }).click();
+        const signOutLink = page.getByRole("link", { name: "Sign out" });
 
-        await page.getByRole("menuitem", { name: "Sign out current user" }).click();
+        await expect(signOutLink, "Sign out link is visible").toBeVisible();
+
+        await signOutLink.click();
 
         await this.$identificationStage.waitFor({ state: "visible" });
     }
