@@ -48,10 +48,10 @@ Create a SAML application/provider pair. To add SCIM provisioning, also create a
         - **Audience**: `https://github.company`
         - Under **Advanced protocol settings**:
             - Select a **Signing certificate** and download the certificate for use in GitHub Enterprise Server.
+            - Set **Property mappings** to `authentik default SAML Mapping: Username` and `authentik default SAML Mapping: Email`.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
     - **Configure Bindings**:
         - For SAML without SCIM, bindings are optional and control who can access the application.
-        - Set Property mappings to **authentik default SAML Mapping: Username**, **authentik default SAML Mapping: Email**, and **authentik default SAML Mapping: Username**
         - For SCIM, add at least one user, group, or policy binding that selects every user who should be provisioned. If the application has no bindings, authentik includes all users in the provisioning scope.
 3. Click **Submit**.
 
