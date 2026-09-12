@@ -6,13 +6,15 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import ChoiceField
+from rest_framework.fields import BooleanField, CharField, ChoiceField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.blueprints.v1.common import EntryInvalidError
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.api.connectors import ConnectorSerializer
@@ -28,6 +30,11 @@ from authentik.endpoints.connectors.agent.auth import (
     agent_auth_issue_token,
     check_device_policies,
 )
+from authentik.endpoints.connectors.agent.blueprint import (
+    check_agent_apply_content,
+    check_agent_apply_perms,
+    get_agent_apply_identity,
+)
 from authentik.endpoints.connectors.agent.controller import MDMConfigResponseSerializer
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
@@ -37,6 +44,7 @@ from authentik.endpoints.connectors.agent.models import (
 )
 from authentik.endpoints.facts import DeviceFacts, OSFamily
 from authentik.endpoints.models import Device
+from authentik.events.logs import LogEventSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.reflection import ConditionalInheritance
@@ -80,6 +88,19 @@ class MDMConfigSerializer(PassiveSerializer):
         return token
 
 
+class AgentBlueprintApplySerializer(PassiveSerializer):
+    """A proposed Blueprint for the Agent to validate and apply."""
+
+    content = CharField(trim_whitespace=False)
+
+
+class AgentBlueprintApplyResultSerializer(PassiveSerializer):
+    """Result of an Agent Blueprint apply."""
+
+    success = BooleanField(read_only=True)
+    logs = LogEventSerializer(many=True, read_only=True)
+
+
 class AgentConnectorViewSet(
     ConditionalInheritance(
         "authentik.enterprise.endpoints.connectors.agent.api.connectors.AgentConnectorViewSetMixin"
@@ -109,6 +130,40 @@ class AgentConnectorViewSet(
         ctrl = connector.controller(connector)
         payload = ctrl.generate_mdm_config(data.validated_data["platform"], request, token)
         return Response(payload.validated_data)
+
+    @extend_schema(
+        request=AgentBlueprintApplySerializer(),
+        responses={200: AgentBlueprintApplyResultSerializer()},
+    )
+    @action(methods=["POST"], detail=True)
+    def apply_blueprint(self, request: Request, pk: str) -> Response:
+        """Validate and apply a proposed Blueprint as the bounded Agent apply
+        identity — never as the requesting user, and never via the stored-instance
+        apply that bypasses RBAC. The server independently enforces a strict
+        allow-list of models, attributes, tags, and external references."""
+        self.get_object()
+        data = AgentBlueprintApplySerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        if errors := check_agent_apply_content(data.validated_data["content"]):
+            raise ValidationError({"content": errors})
+        identity = get_agent_apply_identity()
+        if identity is None:
+            raise ValidationError(_("Agent apply identity is not provisioned"))
+        try:
+            importer = Importer.from_string(data.validated_data["content"])
+        except EntryInvalidError:
+            raise ValidationError(_("Invalid blueprint")) from None
+        check_agent_apply_perms(importer.blueprint, identity)
+        valid, logs = importer.validate()
+        success = importer.apply() if valid else False
+        return Response(
+            AgentBlueprintApplyResultSerializer(
+                {
+                    "success": success,
+                    "logs": logs,
+                }
+            ).data
+        )
 
     @extend_schema(
         request=EnrollSerializer(),
