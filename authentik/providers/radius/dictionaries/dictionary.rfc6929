@@ -1,0 +1,40 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 6929
+#	http://www.ietf.org/rfc/rfc6929.txt
+
+#
+#  These attributes in this dictionary are "place-holder".  They
+#  should NEVER be used by name.  The "extended" data type should
+#  NEVER be used in any other dictionary.
+#
+#
+ATTRIBUTE	Extended-Attribute-1			241	tlv extended
+ATTRIBUTE	Extended-Attribute-2			242	tlv extended
+ATTRIBUTE	Extended-Attribute-3			243	tlv extended
+ATTRIBUTE	Extended-Attribute-4			244	tlv extended
+ATTRIBUTE	Extended-Attribute-5			245	tlv long_extended
+ATTRIBUTE	Extended-Attribute-6			246	tlv long_extended
+
+ATTRIBUTE	Extended-Vendor-Specific-1		241.26	vsa
+ATTRIBUTE	Extended-Vendor-Specific-2		242.26	vsa
+ATTRIBUTE	Extended-Vendor-Specific-3		243.26	vsa
+ATTRIBUTE	Extended-Vendor-Specific-4		244.26	vsa
+ATTRIBUTE	Extended-Vendor-Specific-5		245.26	vsa
+ATTRIBUTE	Extended-Vendor-Specific-6		246.26	vsa
+
+#
+#  Each "Extended-Vendor-Specific-*" attribute defines its own VSA space.
+#
+#  An example of a vendor dictionary is given below (commented out).
+#
+#  In this case, the "Cisco-Foo-Bar" attribute has OID 241.26.9.1
+#
+#BEGIN-VENDOR Cisco format=Extended-Vendor-Specific-1
+#ATTRIBUTE Cisco-Foo-Bar 1 integer
+#ATTRIBUTE Cisco-Bar-Baz 2 integer
+#...
+#END-VENDOR Cisco

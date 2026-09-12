@@ -1,0 +1,13 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 6930
+#	http://www.ietf.org/rfc/rfc6930.txt
+#
+
+ATTRIBUTE	IPv6-6rd-Configuration			173	tlv
+ATTRIBUTE	IPv6-6rd-IPv4MaskLen			.1	integer
+ATTRIBUTE	IPv6-6rd-Prefix				.2	ipv6prefix
+ATTRIBUTE	IPv6-6rd-BR-IPv4-Address		.3	ipaddr

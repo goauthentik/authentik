@@ -1,0 +1,13 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#        Attributes and values defined in RFC 7055
+#        http://www.ietf.org/rfc/rfc7055.txt
+#
+
+ATTRIBUTE	GSS-Acceptor-Service-Name		164	string
+ATTRIBUTE	GSS-Acceptor-Host-Name			165	string
+ATTRIBUTE	GSS-Acceptor-Service-Specifics		166	string
+ATTRIBUTE	GSS-Acceptor-Realm-Name			167	string

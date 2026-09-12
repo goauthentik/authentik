@@ -1,0 +1,13 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#        Attributes and values defined in RFC 7930
+#        http://www.ietf.org/rfc/rfc7930.txt
+#
+
+ATTRIBUTE	Response-Length				241.3	integer
+ATTRIBUTE	Original-Packet-Code			241.4	integer enum=@.Packet-Type
+
+VALUE	Error-Cause			Response-Too-Big	601
