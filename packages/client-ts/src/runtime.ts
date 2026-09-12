@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -279,7 +278,7 @@ function isFormData(value: any): value is FormData {
 }
 
 export class ResponseError extends Error {
-    override name: "ResponseError" = "ResponseError";
+    override name = "ResponseError" as const;
     constructor(
         public response: Response,
         msg?: string,
@@ -295,7 +294,7 @@ export class ResponseError extends Error {
 }
 
 export class FetchError extends Error {
-    override name: "FetchError" = "FetchError";
+    override name = "FetchError" as const;
     constructor(
         public cause: Error,
         msg?: string,
@@ -311,7 +310,7 @@ export class FetchError extends Error {
 }
 
 export class RequiredError extends Error {
-    override name: "RequiredError" = "RequiredError";
+    override name = "RequiredError" as const;
     constructor(
         public field: string,
         msg?: string,
