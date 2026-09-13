@@ -1,3 +1,7 @@
+/**
+ * @file aki(): function to instantiate authentik OpenAPI connectors with configuration details
+ */
+
 import {
     CSRFMiddleware,
     DevRepeatedRequestsMiddleware,
@@ -11,6 +15,11 @@ import { SentryMiddleware } from "#common/sentry/middleware";
 import { CapabilitiesEnum, Configuration } from "@goauthentik/api";
 
 type APIConstructor<T> = new (config: Configuration) => T;
+
+/*
+ * Neither the Configuration or any APIConstructor has internal state. We cache them because re-use
+ * is safe and performant.
+ */
 
 let configuration: Configuration | null = null;
 
@@ -45,3 +54,5 @@ export function aki<T>(APIClass: APIConstructor<T>): T {
     }
     return endpoint;
 }
+
+console.debug(`authentik(early): version ${import.meta.env.AK_VERSION}`);

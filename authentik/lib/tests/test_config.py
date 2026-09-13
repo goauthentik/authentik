@@ -10,12 +10,16 @@ from django.conf import ImproperlyConfigured
 from django.test import TestCase
 
 from authentik.lib.config import (
+    DIRECT_DB_ALIAS,
     ENV_PREFIX,
     UNSET,
     Attr,
     AttrEncoder,
     ConfigLoader,
+    advisory_lock_db_alias,
     django_db_config,
+    postgresql_direct_connection_kwargs,
+    postgresql_direct_db_enabled,
 )
 
 
@@ -606,20 +610,161 @@ class TestConfig(TestCase):
     #                 "NAME": "foo",
     #                 "OPTIONS": {
     #                     "pool": {
-    #                         "max_size": 15,
-    #                     },
-    #                     "sslcert": None,
-    #                     "sslkey": None,
-    #                     "sslmode": None,
-    #                     "sslrootcert": None,
+    #                     "max_size": 15,
     #                 },
-    #                 "PASSWORD": "foo",
-    #                 "PORT": "foo",
-    #                 "TEST": {"NAME": "foo"},
-    #                 "USER": "foo",
-    #                 "CONN_MAX_AGE": 0,
-    #                 "CONN_HEALTH_CHECKS": False,
-    #                 "DISABLE_SERVER_SIDE_CURSORS": False,
-    #             }
-    #         },
-    #     )
+    #                 "sslcert": None,
+    #                 "sslkey": None,
+    #                 "sslmode": None,
+    #                 "sslrootcert": None,
+    #             },
+    #             "PASSWORD": "foo",
+    #             "PORT": "foo",
+    #             "TEST": {"NAME": "foo"},
+    #             "USER": "foo",
+    #             "CONN_MAX_AGE": 0,
+    #             "CONN_HEALTH_CHECKS": False,
+    #             "DISABLE_SERVER_SIDE_CURSORS": False,
+    #         }
+    #     },
+    # )
+
+    # --- Session-mode PostgreSQL endpoint ---
+
+    def _set_main_postgres(self, config: ConfigLoader) -> None:
+        config.set("postgresql.host", "main-host")
+        config.set("postgresql.name", "main-db")
+        config.set("postgresql.user", "main-user")
+        config.set("postgresql.password", "main-pass")
+        config.set("postgresql.port", 6432)
+        config.set("postgresql.sslmode", "require")
+        config.set("postgresql.sslrootcert", "main-ca.pem")
+        config.set("postgresql.sslcert", "main-client.pem")
+        config.set("postgresql.sslkey", "main-client.key")
+        config.set("postgresql.test.name", "test_main")
+
+    def test_postgresql_direct_db_disabled_by_default(self):
+        """With no postgresql.direct.* keys, the direct alias is not added."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        self.assertFalse(postgresql_direct_db_enabled(config))
+        conf = django_db_config(config)
+        self.assertNotIn(DIRECT_DB_ALIAS, conf)
+
+    def test_postgresql_direct_kwargs_fallback(self):
+        """Without overrides, direct connection kwargs mirror the main params."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        kwargs = postgresql_direct_connection_kwargs(config)
+        self.assertEqual(
+            kwargs,
+            {
+                "host": "main-host",
+                "port": 6432,
+                "dbname": "main-db",
+                "user": "main-user",
+                "password": "main-pass",
+                "sslmode": "require",
+                "sslrootcert": "main-ca.pem",
+                "sslcert": "main-client.pem",
+                "sslkey": "main-client.key",
+            },
+        )
+
+    def test_postgresql_direct_kwargs_override(self):
+        """Direct keys override the corresponding main keys; others fall through."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        # Operator scenario: transaction-pool pgbouncer on 6432 + direct PG on 5432.
+        config.set("postgresql.direct.host", "direct-pg")
+        config.set("postgresql.direct.port", 5432)
+        kwargs = postgresql_direct_connection_kwargs(config)
+        self.assertEqual(kwargs["host"], "direct-pg")
+        self.assertEqual(kwargs["port"], 5432)
+        self.assertEqual(kwargs["dbname"], "main-db")
+        self.assertEqual(kwargs["user"], "main-user")
+        self.assertEqual(kwargs["password"], "main-pass")
+        self.assertEqual(kwargs["sslmode"], "require")
+
+    def test_postgresql_direct_kwargs_strips_none(self):
+        """None values are stripped so libpq applies defaults — without this,
+        ``psycopg.connect(sslmode=None)`` would raise."""
+        config = ConfigLoader()
+        config.set("postgresql.host", "main-host")
+        config.set("postgresql.name", "main-db")
+        config.set("postgresql.user", "main-user")
+        config.set("postgresql.password", "main-pass")
+        config.set("postgresql.port", 5432)
+        config.set("postgresql.sslmode", None)
+        config.set("postgresql.sslrootcert", None)
+        config.set("postgresql.sslcert", None)
+        config.set("postgresql.sslkey", None)
+        kwargs = postgresql_direct_connection_kwargs(config)
+        for ssl_key in ("sslmode", "sslrootcert", "sslcert", "sslkey"):
+            self.assertNotIn(ssl_key, kwargs)
+
+    def test_postgresql_direct_db_adds_alias(self):
+        """Setting any postgresql.direct.* key adds the direct Django alias."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        config.set("postgresql.direct.host", "direct-pg")
+        config.set("postgresql.direct.port", 5432)
+        self.assertTrue(postgresql_direct_db_enabled(config))
+        conf = django_db_config(config)
+        self.assertIn(DIRECT_DB_ALIAS, conf)
+        direct = conf[DIRECT_DB_ALIAS]
+        self.assertEqual(direct["HOST"], "direct-pg")
+        self.assertEqual(direct["PORT"], 5432)
+        self.assertEqual(direct["NAME"], "main-db")
+        self.assertEqual(direct["USER"], "main-user")
+        self.assertEqual(direct["PASSWORD"], "main-pass")
+        # Managed manually by broker / channel layer
+        self.assertIsNone(direct["CONN_MAX_AGE"])
+        self.assertFalse(direct["CONN_HEALTH_CHECKS"])
+        # Default alias unaffected
+        self.assertEqual(conf["default"]["HOST"], "main-host")
+        self.assertEqual(conf["default"]["PORT"], 6432)
+
+    def test_postgresql_direct_db_with_replicas(self):
+        """The direct alias is added alongside read replicas without conflict."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        config.set("postgresql.read_replicas.0.host", "replica-0")
+        config.set("postgresql.direct.host", "direct-pg")
+        conf = django_db_config(config)
+        self.assertIn("default", conf)
+        self.assertIn("replica_0", conf)
+        self.assertIn(DIRECT_DB_ALIAS, conf)
+        self.assertEqual(conf[DIRECT_DB_ALIAS]["HOST"], "direct-pg")
+        self.assertEqual(conf["replica_0"]["HOST"], "replica-0")
+
+    def test_postgresql_direct_kwargs_merges_conn_options(self):
+        """postgresql.direct.conn_options takes precedence over postgresql.conn_options."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        config.set(
+            "postgresql.conn_options",
+            base64.b64encode(
+                dumps({"application_name": "authentik", "keepalives": 1}).encode()
+            ).decode(),
+        )
+        config.set(
+            "postgresql.direct.conn_options",
+            base64.b64encode(dumps({"application_name": "authentik-direct"}).encode()).decode(),
+        )
+        kwargs = postgresql_direct_connection_kwargs(config)
+        self.assertEqual(kwargs["application_name"], "authentik-direct")
+        self.assertEqual(kwargs["keepalives"], 1)
+
+    def test_advisory_lock_db_alias_defaults_to_default(self):
+        """Without postgresql.direct.*, advisory locks stay on the default alias."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        self.assertEqual(advisory_lock_db_alias(config), "default")
+
+    def test_advisory_lock_db_alias_uses_direct_when_enabled(self):
+        """With a direct endpoint configured, advisory locks route through it
+        so they survive a transaction-mode pooler in front of ``postgresql.host``."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        config.set("postgresql.direct.host", "direct-pg")
+        self.assertEqual(advisory_lock_db_alias(config), DIRECT_DB_ALIAS)

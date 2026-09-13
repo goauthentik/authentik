@@ -36,23 +36,19 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
 
 @customElement("ak-property-mapping-provider-rac-form")
 export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACPropertyMapping> {
-    loadInstance(pk: string): Promise<RACPropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsProviderRacRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsProviderRacUpdate({
-                pmUuid: this.instance.pk,
-                rACPropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsProviderRacCreate({
-            rACPropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacRetrieve({ pmUuid: pk }),
+        create: (rACPropertyMappingRequest: RACPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacCreate({
+                rACPropertyMappingRequest,
+            }),
+        update: (pk: string, rACPropertyMappingRequest: RACPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRacUpdate({
+                pmUuid: pk,
+                rACPropertyMappingRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`

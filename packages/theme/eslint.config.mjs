@@ -1,0 +1,49 @@
+/**
+ * @file ESLint Configuration
+ *
+ * @import { Config } from "eslint/config";
+ */
+
+import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
+
+// @ts-check
+
+/**
+ * @type {Config[]}
+ */
+const eslintConfig = defineConfig(
+    // Global ignores: compiled output is generated, not linted.
+    { ignores: ["dist/**"] },
+    {
+        extends: [js.configs.recommended, tseslint.configs.recommended],
+        rules: {
+            "@typescript-eslint/ban-ts-comment": [
+                "error",
+                {
+                    "ts-expect-error": "allow-with-description",
+                    "ts-ignore": true,
+                    "ts-nocheck": "allow-with-description",
+                    "ts-check": false,
+                    "minimumDescriptionLength": 5,
+                },
+            ],
+            "no-use-before-define": "off",
+            "@typescript-eslint/no-use-before-define": "error",
+            "no-invalid-this": "off",
+            "no-unused-vars": "off",
+            "@typescript-eslint/no-namespace": "off",
+            "@typescript-eslint/no-unused-vars": [
+                "warn",
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    caughtErrorsIgnorePattern: "^_",
+                },
+            ],
+        },
+    },
+);
+
+export default eslintConfig;

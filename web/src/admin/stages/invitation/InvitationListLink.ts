@@ -27,15 +27,6 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    /**
-     * When true, the "Send via Email" button dispatches the
-     * `ak-invitation-send-email-inline` event instead of opening the nested
-     * email modal. Used by the invitation wizard's success step so the email
-     * form can be rendered as its own wizard step.
-     */
-    @property({ type: Boolean, attribute: "inline-send-email" })
-    inlineSendEmail = false;
-
     static styles: CSSResult[] = [
         PFForm,
         PFFormControl,
@@ -146,32 +137,18 @@ export class InvitationListLink extends AKElement {
                         >
                             ${msg("Copy Link")}
                         </button>
-                        ${this.inlineSendEmail
-                            ? html`<button
-                                  class="pf-c-button pf-m-secondary"
-                                  @click=${() => {
-                                      this.dispatchEvent(
-                                          new CustomEvent("ak-invitation-send-email-inline", {
-                                              bubbles: true,
-                                              composed: true,
-                                          }),
-                                      );
-                                  }}
-                              >
-                                  ${msg("Send via Email")}
-                              </button>`
-                            : html`<ak-forms-modal>
-                                  <span slot="submit">${msg("Send")}</span>
-                                  <span slot="header">${msg("Send Invitation via Email")}</span>
-                                  <ak-invitation-send-email-form
-                                      slot="form"
-                                      .invitation=${this.invitation}
-                                  >
-                                  </ak-invitation-send-email-form>
-                                  <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                      ${msg("Send via Email")}
-                                  </button>
-                              </ak-forms-modal>`}
+                        <ak-forms-modal>
+                            <span slot="submit">${msg("Send")}</span>
+                            <span slot="header">${msg("Send Invitation via Email")}</span>
+                            <ak-invitation-send-email-form
+                                slot="form"
+                                .invitation=${this.invitation}
+                            >
+                            </ak-invitation-send-email-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Send via Email")}
+                            </button>
+                        </ak-forms-modal>
                     </div>
                 </dd>
             </div>

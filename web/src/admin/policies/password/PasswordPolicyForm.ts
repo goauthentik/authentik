@@ -195,26 +195,40 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${msg("0: Too guessable: risky password. (guesses &lt; 10^3)")}
+                            ${msg("0: Too guessable: risky password. (guesses < 10^3)", {
+                                id: "policy.password.score-threshold.description.too-guessable",
+                            })}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)",
+                                "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)",
+                                {
+                                    id: "policy.password.score-threshold.description.very-guessable",
+                                },
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)",
+                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)",
+                                {
+                                    id: "policy.password.score-threshold.description.somewhat-guessable",
+                                },
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)",
+                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)",
+                                {
+                                    id: "policy.password.score-threshold.description.safely-unguessable",
+                                },
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)",
+                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)",
+                                {
+                                    id: "policy.password.score-threshold.description.very-unguessable",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>

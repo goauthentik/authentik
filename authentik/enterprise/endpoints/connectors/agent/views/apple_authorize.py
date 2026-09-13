@@ -1,8 +1,6 @@
 from datetime import timedelta
-from uuid import UUID
 
 from django.http import (
-    Http404,
     HttpRequest,
     HttpResponse,
     HttpResponseBadRequest,
@@ -10,7 +8,6 @@ from django.http import (
 )
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from django.views import View
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
@@ -37,6 +34,7 @@ _ALLOWED_REDIRECT_URIS = {"com.apple.PlatformSSO://callback"}
 
 connector_id = "759c519c-92f5-4f7e-8547-10b44274a157"
 device_id = "1e5baefa-e6fd-4074-a06b-69b9107ae537"
+
 
 class PSSORedirect(HttpResponseRedirect):
     allowed_schemes = ["com.apple.platformsso", "com.apple.PlatformSSO"]

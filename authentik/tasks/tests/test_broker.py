@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from django.test import SimpleTestCase
-from django_dramatiq_postgres.broker import PostgresBroker
+from django_dramatiq_postgres.broker import CONSUMABLE_TASK_STATES, PostgresBroker
 from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import MessageProxy
 from dramatiq.message import Message
@@ -93,3 +93,24 @@ class TestPostgresConsumer(SimpleTestCase):
             {first_message.message_id, second_message.message_id},
         )
         self.assertNotIn(first_message.message_id, consumer.in_processing)
+
+    def test_fetch_pending_messages_filters_consumable_states(self):
+        consumer = self._consumer()
+        consumer.queue_name = "default"
+        consumer.timeout = 30
+        query_set = consumer.query_set
+        queue_query = query_set.exclude.return_value.filter.return_value
+        pending_query = queue_query.filter.return_value
+        values_list = pending_query.exclude.return_value.order_by.return_value.values_list
+        values_list.return_value = ["00000000-0000-0000-0000-000000000001"]
+
+        pending = consumer._fetch_pending_messages()
+
+        query_set.exclude.assert_called_once_with(message_id__in=consumer.in_processing)
+        query_set.exclude.return_value.filter.assert_called_once_with(
+            queue_name=consumer.queue_name,
+        )
+        queue_query.filter.assert_called_once_with(
+            state__in=CONSUMABLE_TASK_STATES,
+        )
+        self.assertEqual(pending, {"00000000-0000-0000-0000-000000000001"})

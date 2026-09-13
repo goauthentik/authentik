@@ -1,7 +1,5 @@
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from datetime import timezone as dt_timezone
 from typing import Any
-from urllib.parse import parse_qs, parse_qsl, urlparse
 from uuid import UUID
 
 from cryptography import x509
@@ -55,6 +53,15 @@ class TokenView(View):
     device_connection: AgentDeviceConnection
     connector: AgentConnector
 
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # This is a plain Django View, so DRF's exception handler never runs and a
+        # ValidationError raised below would surface as a 500 instead of a 400.
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except ValidationError as exc:
+            LOGGER.warning("Invalid Platform SSO token request", exc=exc)
+            return HttpResponse(status=400)
+
     def post(self, request: HttpRequest) -> HttpResponse:
         assertion = request.POST.get("assertion", request.POST.get("request"))
         if not assertion:
@@ -65,9 +72,16 @@ class TokenView(View):
         except PyJWTError as exc:
             LOGGER.warning("failed to parse JWT", exc=exc)
             raise ValidationError("Invalid request") from exc
+        if self.jwt_request is None:
+            return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
-        LOGGER.debug("token request", version=version, grant_type=grant_type, post_keys=list(request.POST.keys()))
+        LOGGER.debug(
+            "token request",
+            version=version,
+            grant_type=grant_type,
+            post_keys=list(request.POST.keys()),
+        )
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
             .replace("+", "_")
@@ -81,10 +95,12 @@ class TokenView(View):
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler()
 
-    def validate_request_token(self, assertion: str) -> dict[str, Any]:
+    def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
-        LOGGER.debug("token header", typ=header.get("typ"), kid=header.get("kid"), alg=header.get("alg"))
+        LOGGER.debug(
+            "token header", typ=header.get("typ"), kid=header.get("kid"), alg=header.get("alg")
+        )
         expected_kid = header["kid"]
 
         self.device_connection = (
@@ -92,6 +108,9 @@ class TokenView(View):
             .select_related("device")
             .first()
         )
+        if not self.device_connection:
+            LOGGER.warning("No device connection found for key ID", kid=expected_kid)
+            return None
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 
@@ -226,10 +245,14 @@ class TokenView(View):
         }
         scope = self.jwt_request.get("scope", "")
         if "urn:apple:platformsso:auth:unlock" in scope:
-            unlock_key = AppleUnlockKey.objects.filter(
-                device_user__user=user.user,
-                device_user__target=self.device_connection.device,
-            ).order_by("-expires").first()
+            unlock_key = (
+                AppleUnlockKey.objects.filter(
+                    device_user__user=user.user,
+                    device_user__target=self.device_connection.device,
+                )
+                .order_by("-expires")
+                .first()
+            )
             if unlock_key and self.device_connection.apple_key_exchange_key:
                 try:
                     cert_private_key = serialization.load_pem_private_key(
@@ -262,7 +285,9 @@ class TokenView(View):
 
     def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
         request_type = self.jwt_request.get("request_type")
-        LOGGER.debug("v2 request", request_type=request_type, jwt_keys=list(self.jwt_request.keys()))
+        LOGGER.debug(
+            "v2 request", request_type=request_type, jwt_keys=list(self.jwt_request.keys())
+        )
         if request_type == "key_request":
             return self._handle_key_request()
         if request_type == "key_exchange":
@@ -294,7 +319,11 @@ class TokenView(View):
             jwt_keys=list(self.jwt_request.keys()),
             has_other_publickey="other_publickey" in self.jwt_request,
             key_purpose=self.jwt_request.get("key_purpose"),
-            jwe_crypto_keys=list(self.jwt_request.get("jwe_crypto", {}).keys()) if self.jwt_request.get("jwe_crypto") else None,
+            jwe_crypto_keys=(
+                list(self.jwt_request.get("jwe_crypto", {}).keys())
+                if self.jwt_request.get("jwe_crypto")
+                else None
+            ),
         )
         device_user = AgentDeviceUserBinding.objects.filter(
             target=self.device_connection.device,
@@ -322,9 +351,7 @@ class TokenView(View):
             LOGGER.debug("Reusing existing unlock key", device=device_user.target)
         else:
             private_key = generate_private_key(SECP256R1())
-            subject = x509.Name(
-                [x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)]
-            )
+            subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)])
             cert = (
                 x509.CertificateBuilder()
                 .subject_name(subject)

@@ -2,6 +2,7 @@
 
 from collections import OrderedDict, defaultdict
 from collections.abc import Generator
+from decimal import Decimal
 
 from django.db import connection
 from django.db.models import Model, Q
@@ -14,6 +15,17 @@ class JSONSearchField(StrField):
     """JSON field for DjangoQL"""
 
     model: Model
+
+    value_types = [str, bool, int, float, Decimal]
+    value_types_description = "strings, booleans or numbers"
+
+    def get_lookup_value(self, value):
+        value = super().get_lookup_value(value)
+        if isinstance(value, list):
+            return [float(item) if isinstance(item, Decimal) else item for item in value]
+        if isinstance(value, Decimal):
+            return float(value)
+        return value
 
     def __init__(
         self,

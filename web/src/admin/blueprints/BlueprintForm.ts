@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
@@ -10,6 +10,7 @@ import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -96,8 +97,8 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div class="pf-c-card__body">
                     <ak-toggle-group
                         value=${this.source}
-                        @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
-                            this.source = ev.detail.value;
+                        @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
+                            this.source = ev.value;
                         }}
                     >
                         <option value=${BlueprintSource.File}>${msg("Local path")}</option>

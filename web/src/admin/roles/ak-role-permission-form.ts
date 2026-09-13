@@ -1,5 +1,5 @@
 import "#admin/rbac/ak-rbac-permission-table";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";

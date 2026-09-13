@@ -2,6 +2,8 @@
  * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
  */
 
+import { isInteractiveElement, isInteractiveTextElement } from "#elements/utils/interactivity";
+
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 export interface FocusErrorOptions extends ErrorOptions {
@@ -73,7 +75,9 @@ export function isActiveElement(
  *
  * @category DOM
  */
-export function isFocusable(target: Element | null | undefined): target is HTMLElement {
+export function isFocusable<T extends Element | null | undefined>(
+    target: T,
+): target is NonNullable<T> & HTMLElement {
     try {
         assertFocusable(target);
         return true;
@@ -117,4 +121,29 @@ export class FocusTarget<T extends HTMLElement = HTMLElement> {
     public toEventListener(options?: FocusOptions) {
         return () => this.focus(options);
     }
+}
+
+/**
+ * Given a collection of potentially focusable inputs, find the first which is
+ * blank and shaped like an interactive text field.
+ */
+export function findEmptyFocusCandidate<T extends HTMLInputElement | null | undefined>(
+    ...inputs: T[]
+): T | null {
+    const { activeElement } = document;
+    const candidates = inputs.filter(isFocusable);
+
+    if (activeElement !== document.body && isInteractiveElement(activeElement)) {
+        const activeElementIndex = candidates.findIndex((element) => element === activeElement);
+
+        if (activeElementIndex !== -1 && isInteractiveTextElement(activeElement)) {
+            return null;
+        }
+    }
+
+    const blankElements = candidates.filter((element) => !element.value && element.required);
+
+    const [focusTarget] = blankElements;
+
+    return focusTarget || null;
 }

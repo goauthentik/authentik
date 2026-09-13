@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -39,6 +40,13 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         validators=[timedelta_string_validator],
     )
 
+    discovery_enabled = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, authentik will attempt to discover existing resources "
+            "in the remote system."
+        ),
+    )
     dry_run = models.BooleanField(
         default=False,
         help_text=_(
@@ -91,6 +99,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
             lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     @property

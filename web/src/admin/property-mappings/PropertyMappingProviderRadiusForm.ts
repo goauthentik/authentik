@@ -11,23 +11,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-radius-form")
 export class PropertyMappingProviderRadiusForm extends BasePropertyMappingForm<RadiusProviderPropertyMapping> {
-    loadInstance(pk: string): Promise<RadiusProviderPropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsProviderRadiusRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: RadiusProviderPropertyMapping): Promise<RadiusProviderPropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsProviderRadiusUpdate({
-                pmUuid: this.instance.pk,
-                radiusProviderPropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsProviderRadiusCreate({
-            radiusProviderPropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderRadiusRetrieve({ pmUuid: pk }),
+        create: (radiusProviderPropertyMappingRequest: RadiusProviderPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRadiusCreate({
+                radiusProviderPropertyMappingRequest,
+            }),
+        update: (pk: string, radiusProviderPropertyMappingRequest: RadiusProviderPropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderRadiusUpdate({
+                pmUuid: pk,
+                radiusProviderPropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

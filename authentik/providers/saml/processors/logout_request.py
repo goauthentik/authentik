@@ -39,7 +39,7 @@ class LogoutRequestProcessor:
     _issue_instant: str
     _request_id: str
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, PLR0917
         self,
         provider: SAMLProvider,
         user: User | None,

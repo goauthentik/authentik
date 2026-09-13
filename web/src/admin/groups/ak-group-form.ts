@@ -1,21 +1,20 @@
 import "#admin/groups/ak-group-member-table";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
-import { ModelForm } from "#elements/forms/ModelForm";
 
-import { CoreApi, Group, RbacApi, RelatedGroup, Role } from "@goauthentik/api";
+import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
 
-import YAML from "yaml";
+import { CoreApi, Group, ModelEnum, RbacApi, RelatedGroup, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -30,7 +29,8 @@ export function rbacRolePair(item: Role): DualSelectPair {
 }
 
 @customElement("ak-group-form")
-export class GroupForm extends ModelForm<Group, string> {
+export class GroupForm extends ObjectAttributeModelForm<Group, string> {
+    public model = ModelEnum.AuthentikCoreGroup;
     static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -144,16 +144,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(this.instance?.attributes ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${this.renderObjectAttributes(this.objAttributes, this.instance)}`;
     }
 }
 

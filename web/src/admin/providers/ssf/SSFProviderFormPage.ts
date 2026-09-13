@@ -12,6 +12,7 @@ import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -34,24 +35,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-ssf-form")
 export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
-    async loadInstance(pk: number): Promise<SSFProvider> {
-        const provider = await aki(ProvidersApi).providersSsfRetrieve({
-            id: pk,
-        });
-        return provider;
-    }
-
-    async send(data: SSFProvider): Promise<SSFProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersSsfUpdate({
-                id: this.instance.pk,
-                sSFProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersSsfCreate({
-            sSFProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersSsfRetrieve({ id }),
+        create: (sSFProviderRequest: SSFProvider) =>
+            aki(ProvidersApi).providersSsfCreate({ sSFProviderRequest }),
+        update: (id: number, sSFProviderRequest: SSFProvider) =>
+            aki(ProvidersApi).providersSsfUpdate({ id, sSFProviderRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         const provider = this.instance;
@@ -73,6 +63,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                     >
                         <ak-crypto-certificate-search
                             certificate=${ifPresent(provider?.signingKey)}
+                            .allowedKeyTypes=${JWTSigningKeyTypes}
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>

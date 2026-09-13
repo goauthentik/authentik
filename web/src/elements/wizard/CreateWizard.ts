@@ -360,7 +360,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         const props = this.assembleFormProps?.(type) ?? {};
 
         const slotName = formatTypeCreateStepID(type);
-        const entityLabel = selectedType?.name ?? this.verboseName ?? msg("Entity");
+        const entityLabel = selectedType?.name ?? this.verboseName ?? msg("Object");
 
         const label = msg(str`${entityLabel} Details`, {
             id: "wizard.step.details",

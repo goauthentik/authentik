@@ -5,7 +5,6 @@ from uuid import UUID
 
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_der_x509_certificate
-from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext as __
@@ -55,7 +54,6 @@ PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/at
 @dataclass
 class VerifiedRegistrationData:
     registration: VerifiedRegistration
-    exists_query: Q
     attest_cert: str | None = None
     attest_cert_fingerprint: str | None = None
 
@@ -89,12 +87,11 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             )
         except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
-            raise ValidationError(f"Registration failed. Error: {exc}") from None
+            raise ValidationError(
+                "Registration failed. Please contact your administrator."
+            ) from None
 
-        registration_data = VerifiedRegistrationData(
-            registration,
-            exists_query=Q(credential_id=bytes_to_base64url(registration.credential_id)),
-        )
+        registration_data = VerifiedRegistrationData(registration)
         stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
@@ -109,13 +106,10 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 encoding=Encoding.PEM,
             ).decode("utf-8")
             registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
-            if stage.prevent_duplicate_devices:
-                registration_data.exists_query |= Q(
-                    attestation_certificate_fingerprint=registration_data.attest_cert_fingerprint
-                )
 
-        credential_id_exists = WebAuthnDevice.objects.filter(registration_data.exists_query).first()
-        if credential_id_exists:
+        if WebAuthnDevice.objects.filter(
+            credential_id=bytes_to_base64url(registration.credential_id)
+        ).exists():
             raise ValidationError("Credential ID already exists.")
 
         aaguid = registration.aaguid
@@ -225,28 +219,22 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
         webauthn_credential: VerifiedRegistrationData = response.validated_data["response"]
-        existing_device = WebAuthnDevice.objects.filter(webauthn_credential.exists_query).first()
-        if not existing_device:
-            name = "WebAuthn Device"
-            device_type = WebAuthnDeviceType.objects.filter(
-                aaguid=webauthn_credential.registration.aaguid
-            ).first()
-            if device_type and device_type.description:
-                name = device_type.description
-            WebAuthnDevice.objects.create(
-                name=name,
-                user=self.get_pending_user(),
-                public_key=bytes_to_base64url(
-                    webauthn_credential.registration.credential_public_key
-                ),
-                credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
-                sign_count=webauthn_credential.registration.sign_count,
-                rp_id=get_rp_id(self.request),
-                device_type=device_type,
-                aaguid=webauthn_credential.registration.aaguid,
-                attestation_certificate_pem=webauthn_credential.attest_cert,
-                attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
-            )
-        else:
-            return self.executor.stage_invalid("Device with Credential ID already exists.")
+        name = "WebAuthn Device"
+        device_type = WebAuthnDeviceType.objects.filter(
+            aaguid=webauthn_credential.registration.aaguid
+        ).first()
+        if device_type and device_type.description:
+            name = device_type.description
+        WebAuthnDevice.objects.create(
+            name=name,
+            user=self.get_pending_user(),
+            public_key=bytes_to_base64url(webauthn_credential.registration.credential_public_key),
+            credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
+            sign_count=webauthn_credential.registration.sign_count,
+            rp_id=get_rp_id(self.request),
+            device_type=device_type,
+            aaguid=webauthn_credential.registration.aaguid,
+            attestation_certificate_pem=webauthn_credential.attest_cert,
+            attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
+        )
         return self.executor.stage_ok()

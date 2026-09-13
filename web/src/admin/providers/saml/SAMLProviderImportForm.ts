@@ -1,7 +1,7 @@
 import { renderForm } from "./SAMLProviderImportFormForm.js";
 
 import { aki } from "#common/api/client";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { Form } from "#elements/forms/Form";
 

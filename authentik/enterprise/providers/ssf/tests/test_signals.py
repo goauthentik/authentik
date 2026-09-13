@@ -4,7 +4,8 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application, Group
+from authentik.core.models import Application, AuthenticatedSession, Group
+from authentik.core.signals import admin_authenticated_session_deleted
 from authentik.core.tests.utils import (
     create_test_cert,
     create_test_user,
@@ -70,9 +71,11 @@ class TestSignals(APITestCase):
 
     def test_signal_logout(self):
         """Test user logout"""
+        AuthenticatedSession.objects.all().delete()
         user = create_test_user()
         self.client.force_login(user)
-        self.client.logout()
+        session = AuthenticatedSession.objects.first()
+        admin_authenticated_session_deleted.send(self, instance=session, request=None)
 
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)

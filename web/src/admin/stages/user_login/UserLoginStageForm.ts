@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#elements/forms/Radio";
 import "#components/ak-switch-input";
 import "#elements/Alert";
@@ -17,34 +18,28 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
-    loadInstance(pk: string): Promise<UserLoginStage> {
-        return aki(StagesApi).stagesUserLoginRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserLoginStage): Promise<UserLoginStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesUserLoginUpdate({
-                stageUuid: this.instance.pk || "",
-                userLoginStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesUserLoginCreate({
-            userLoginStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserLoginRetrieve({ stageUuid }),
+        create: (userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginCreate({ userLoginStageRequest }),
+        update: (stageUuid: string, userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginUpdate({ stageUuid, userLoginStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal

@@ -23,14 +23,8 @@ ak-stage-captcha[theme="dark"].style-scope {
 }
 
 .ak-interactive-challenge {
-    /**
-     * We use & here to hint to the ShadyDOM polyfill that this rule is meant
-     * for the iframe itself, not the contents of the iframe.
-     */
-    & {
-        width: 100%;
-        min-height: 65px;
-    }
+    width: 100%;
+    min-height: 65px;
 
     &[data-ready="loading"] {
         background-color: var(--captcha-background-from);

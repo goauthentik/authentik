@@ -26,6 +26,9 @@ const buttonStyles = [
         #spinner-button.working {
             pointer-events: none;
         }
+        #spinner-button.pf-m-in-progress.pf-m-plain slot::slotted(*) {
+            visibility: hidden;
+        }
 
         .pf-c-button {
             &.pf-m-primary.pf-m-success {

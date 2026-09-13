@@ -2,8 +2,8 @@ import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -67,7 +67,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
         if (!this.connector) {
             return nothing;
         }
-        return html`<ak-tabs>
+        return html`<ak-tabs routed>
             <div
                 role="tabpanel"
                 tabindex="0"

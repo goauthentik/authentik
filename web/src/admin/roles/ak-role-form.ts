@@ -23,28 +23,26 @@ export class RoleForm extends ModelForm<Role, string> {
 
     public override size = PFSize.Medium;
 
-    loadInstance(pk: string): Promise<Role> {
-        return aki(RbacApi).rbacRolesRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(RbacApi).rbacRolesRetrieve({
+                uuid,
+            }),
+        create: (roleRequest: Role) =>
+            aki(RbacApi).rbacRolesCreate({
+                roleRequest,
+            }),
+        update: (uuid: string, patchedRoleRequest: Role) =>
+            aki(RbacApi).rbacRolesPartialUpdate({
+                uuid,
+                patchedRoleRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated role.")
             : msg("Successfully created role.");
-    }
-
-    async send(data: Role): Promise<Role> {
-        if (this.instance?.pk) {
-            return aki(RbacApi).rbacRolesPartialUpdate({
-                uuid: this.instance.pk,
-                patchedRoleRequest: data,
-            });
-        }
-        return aki(RbacApi).rbacRolesCreate({
-            roleRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

@@ -7,10 +7,12 @@ from os import environ, system
 from pathlib import Path
 from typing import Any
 
+from packaging.version import Version
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG, django_db_config
+from authentik import authentik_version, authentik_version_family_previous
+from authentik.lib.config import CONFIG, django_db_config, postgresql_direct_connection_kwargs
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -73,25 +75,64 @@ def release_lock(conn: Connection, cursor: Cursor):
     LOCKED = False
 
 
+def ensure_allowed_version(cursor: Cursor) -> None:
+    """During an upgrade, ensure that major (i.e. semver-minor) versions were not skipped."""
+    if CONFIG.get_bool("migrations.dangerously_allow_multiple_major_version_upgrades"):
+        LOGGER.warning("Omitting version check before migrations")
+        return
+
+    cursor.execute(
+        "SELECT * FROM information_schema.tables WHERE table_name = 'authentik_version_history';"
+    )
+    if not cursor.rowcount:
+        return
+    cursor.execute("SELECT version FROM authentik_version_history ORDER BY timestamp DESC LIMIT 1")
+    if not cursor.rowcount:
+        return
+
+    db_version = Version(cursor.fetchone()[0])
+    previous_code_version_family = authentik_version_family_previous()
+    lowest_acceptable_version = Version(f"{previous_code_version_family}.0")
+    current_code_version = Version(authentik_version())
+
+    # Downgrades are not supported, but we don't stop them (for now)
+    if db_version > current_code_version:
+        LOGGER.warning(
+            "Unsupported downgrade detected",
+            downgrading_from=db_version,
+            downgrading_to=current_code_version,
+        )
+
+    if (
+        db_version.major == lowest_acceptable_version.major
+        and db_version.minor == lowest_acceptable_version.minor
+    ) or (
+        db_version.major == current_code_version.major
+        and db_version.minor == current_code_version.minor
+    ):
+        return
+
+    message = f"Major version skips are not allowed. See: https://docs.goauthentik.io/install-config/upgrade/?from={db_version}&to={current_code_version}"
+    LOGGER.error(
+        message,
+        from_version=db_version,
+        to_version=current_code_version,
+    )
+    raise RuntimeError(message)
+
+
 def run_migrations():
     if CONFIG.get_bool("skip_migrations", False):
         return
-    conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
-    conn = connect(
-        dbname=CONFIG.get("postgresql.name"),
-        user=CONFIG.get("postgresql.user"),
-        password=CONFIG.get("postgresql.password"),
-        host=CONFIG.get("postgresql.host"),
-        port=CONFIG.get_int("postgresql.port"),
-        sslmode=CONFIG.get("postgresql.sslmode"),
-        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
-        sslcert=CONFIG.get("postgresql.sslcert"),
-        sslkey=CONFIG.get("postgresql.sslkey"),
-        **conn_opts,
-    )
+    # `wait_for_lock` issues `pg_advisory_lock(1000)` and holds it for the full
+    # migrate + check pass. Open this against the direct endpoint when
+    # configured, otherwise a transaction-pooling pooler in front of
+    # ``postgresql.host`` would make the session-scoped lock unreachable.
+    conn = connect(**postgresql_direct_connection_kwargs(CONFIG))
     curr = conn.cursor()
     try:
         wait_for_lock(conn, curr)
+        ensure_allowed_version(curr)
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):

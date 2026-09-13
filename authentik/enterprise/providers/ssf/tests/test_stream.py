@@ -1,10 +1,13 @@
+import json
+from dataclasses import asdict
 from uuid import uuid4
 
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_cert
+from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
 from authentik.enterprise.providers.ssf.models import (
     SSFEventStatus,
     SSFProvider,
@@ -13,6 +16,8 @@ from authentik.enterprise.providers.ssf.models import (
     StreamStatus,
 )
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 
 class TestStream(APITestCase):
@@ -248,3 +253,159 @@ class TestStream(APITestCase):
                 "status": str(stream.status),
             },
         )
+
+
+class TestStreamAuthorization(APITestCase):
+    """Stream management endpoints require the add_stream permission on the provider.
+    A user authenticated with an ordinary access token issued by the backchannel
+    application's provider does not hold that permission and must be rejected."""
+
+    def setUp(self):
+        self.application = Application.objects.create(name=generate_id(), slug=generate_id())
+        self.provider = SSFProvider.objects.create(
+            name=generate_id(),
+            signing_key=create_test_cert(),
+            backchannel_application=self.application,
+        )
+        self.oauth_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+        )
+        self.application.provider = self.oauth_provider
+        self.application.save()
+        self.user = create_test_user()
+        self.token = AccessToken.objects.create(
+            provider=self.oauth_provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(asdict(IDToken("foo", "bar"))),
+        )
+
+    def test_stream_get(self):
+        """get stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertNotIn(str(stream.pk), res.content.decode())
+
+    def test_stream_patch(self):
+        """patch stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider, aud=["https://one.example.com"])
+        res = self.client.patch(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "aud": ["https://two.example.com"],
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        stream.refresh_from_db()
+        self.assertEqual(stream.aud, ["https://one.example.com"])
+
+    def test_stream_put(self):
+        """put stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider, aud=["https://one.example.com"])
+        res = self.client.put(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "aud": ["https://two.example.com"],
+                "delivery": {
+                    "method": "https://schemas.openid.net/secevent/risc/delivery-method/push",
+                    "endpoint_url": "https://two.example.com",
+                },
+                "events_requested": [
+                    "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
+                ],
+                "format": "iss_sub",
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        stream.refresh_from_db()
+        self.assertEqual(stream.aud, ["https://one.example.com"])
+
+    def test_stream_delete(self):
+        """delete stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.delete(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        stream.refresh_from_db()
+        self.assertEqual(stream.status, StreamStatus.ENABLED)
+
+    def test_stream_verify(self):
+        """verify stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.post(
+            reverse(
+                "authentik_providers_ssf:stream-verify",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertFalse(StreamEvent.objects.filter(stream=stream).exists())
+
+    def test_stream_status(self):
+        """get stream status without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream-status",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_stream_status_update(self):
+        """update stream status without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.post(
+            reverse(
+                "authentik_providers_ssf:stream-status",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(stream.pk),
+                "status": StreamStatus.DISABLED,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        stream.refresh_from_db()
+        self.assertEqual(stream.status, StreamStatus.ENABLED)

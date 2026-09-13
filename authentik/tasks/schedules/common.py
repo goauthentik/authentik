@@ -46,18 +46,23 @@ class ScheduleSpec:
 
         from authentik.tasks.schedules.models import Schedule
 
+        paused = self.paused
         update_values = {
             "_uid": self.uid,
-            "paused": self.paused,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),
             "options": self.get_options(),
         }
+        # If the schedule should be paused, then pause it when updating.
+        # Otherwise, leave the previous value.
+        if paused:
+            update_values["paused"] = paused
         if self.rel_obj is not None:
             update_values["rel_obj_content_type"] = ContentType.objects.get_for_model(self.rel_obj)
             update_values["rel_obj_id"] = str(self.rel_obj.pk)
         create_values = {
             **update_values,
+            "paused": paused,
             "crontab": self.crontab,
         }
 

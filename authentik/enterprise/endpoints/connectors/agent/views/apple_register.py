@@ -119,6 +119,12 @@ class RegisterUserView(APIView):
         ).first()
         if not user_token:
             raise ValidationError("Invalid user authentication")
+        # These fields must be set on create as well as update; update_or_create() returns
+        # immediately when it creates, so anything only in `defaults` is never applied.
+        enclave_keys = {
+            "apple_secure_enclave_key": body.validated_data["user_secure_enclave_key"],
+            "apple_enclave_key_id": body.validated_data["enclave_key_id"],
+        }
         AgentDeviceUserBinding.objects.update_or_create(
             target=conn.device,
             user=user_token.user,
@@ -126,11 +132,9 @@ class RegisterUserView(APIView):
             create_defaults={
                 "is_primary": True,
                 "order": 0,
+                **enclave_keys,
             },
-            defaults={
-                "apple_secure_enclave_key": body.validated_data["user_secure_enclave_key"],
-                "apple_enclave_key_id": body.validated_data["enclave_key_id"],
-            },
+            defaults=enclave_keys,
         )
         return Response(
             UserSelfSerializer(instance=user_token.user, context={"request": request}).data

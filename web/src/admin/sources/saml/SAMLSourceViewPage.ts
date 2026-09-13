@@ -62,7 +62,7 @@ export class SAMLSourceViewPage extends AKElement {
             return nothing;
         }
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -119,7 +119,7 @@ export class SAMLSourceViewPage extends AKElement {
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
-                                                ${this.source.issuer}
+                                                ${this.source.urlIssuer}
                                             </div>
                                         </dd>
                                     </div>

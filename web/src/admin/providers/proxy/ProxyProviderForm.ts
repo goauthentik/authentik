@@ -60,7 +60,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
 
     renderForm() {
         const onSetMode: SetMode = (ev) => {
-            this.mode = ev.detail.value;
+            this.mode = ev.value;
         };
 
         const onSetShowHttpBasic: SetShowHttpBasic = (ev: Event) => {

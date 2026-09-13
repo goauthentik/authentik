@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceLdapRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceLdapUpdate({
-                pmUuid: this.instance.pk,
-                lDAPSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceLdapCreate({
-            lDAPSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapRetrieve({ pmUuid: pk }),
+        create: (lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapCreate({
+                lDAPSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapUpdate({
+                pmUuid: pk,
+                lDAPSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

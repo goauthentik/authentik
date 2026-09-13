@@ -16,12 +16,14 @@ export interface RecoveryButtonsProps {
     user: User;
     brandHasRecoveryFlow: boolean;
     buttonClasses?: string;
+    emptyClasses?: string;
 }
 
 export const RecoveryButtons: LitFC<RecoveryButtonsProps> = ({
     user,
     brandHasRecoveryFlow,
     buttonClasses,
+    emptyClasses,
 }: RecoveryButtonsProps) => {
     const recoveryModals = brandHasRecoveryFlow
         ? [
@@ -40,12 +42,26 @@ export const RecoveryButtons: LitFC<RecoveryButtonsProps> = ({
                         ${msg("Email recovery link")}
                     </button>`
                   : html`<p>
-                        ${msg("To email a recovery link, set an email address for this user.")}
+                        <span class=${emptyClasses || ""}>
+                            ${msg(
+                                "This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.",
+                                {
+                                    id: "users.recovery.no-email.description",
+                                },
+                            )}
+                        </span>
                     </p>`,
           ]
         : [
               html`<p>
-                  ${msg("To create a recovery link, set a recovery flow for the current brand.")}
+                  <span class=${emptyClasses || ""}>
+                      ${msg(
+                          "This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.",
+                          {
+                              id: "users.recovery.no-brand-flow.description",
+                          },
+                      )}
+                  </span>
               </p>`,
           ];
 

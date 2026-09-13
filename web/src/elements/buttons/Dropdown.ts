@@ -41,7 +41,7 @@ export class DropdownButton extends AKElement {
         const button = event.currentTarget as HTMLButtonElement;
 
         this.menu.hidden = !this.menu.hidden;
-        button.ariaExpanded = this.menu.hidden.toString();
+        button.ariaExpanded = (!this.menu.hidden).toString();
 
         event.stopPropagation();
     };

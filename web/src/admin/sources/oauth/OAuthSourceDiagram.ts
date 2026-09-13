@@ -18,9 +18,7 @@ export class OAuthSourceDiagram extends Diagram {
         const graph = [
             "graph LR",
             `source[${msg(str`OAuth Source ${this.source.name}`)}]`,
-            `source --> flow_manager["${UserMatchingModeToLabel(
-                this.source.userMatchingMode || UserMatchingModeEnum.Identifier,
-            )}"]`,
+            `source --> flow_manager["${UserMatchingModeToLabel(this.source.userMatchingMode || UserMatchingModeEnum.Identifier)}"]`,
         ];
 
         if (this.source.enrollmentFlow) {

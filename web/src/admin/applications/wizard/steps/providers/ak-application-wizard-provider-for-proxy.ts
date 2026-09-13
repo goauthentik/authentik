@@ -1,9 +1,10 @@
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { WizardValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
 import {
-    ProxyModeValue,
     renderForm,
     type SetMode,
     type SetShowHttpBasic,
@@ -23,10 +24,8 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
     showHttpBasic = true;
 
     protected renderForm(provider: ProxyProvider, errors: WizardValidationRecord = {}) {
-        const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {
-            this.dispatchEvent(
-                new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.detail.value }),
-            );
+        const onSetMode: SetMode = (ev: ToggleGroupEvent<ProxyMode>) => {
+            this.dispatchEvent(new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.value }));
             // We deliberately chose not to make the forms "controlled," but we do need this form to
             // respond immediately to a state change in the wizard.
             window.setTimeout(() => this.requestUpdate(), 0);

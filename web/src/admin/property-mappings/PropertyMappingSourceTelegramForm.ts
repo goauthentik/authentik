@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceTelegramForm extends BasePropertyMappingForm<TelegramSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<TelegramSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceTelegramRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: TelegramSourcePropertyMapping): Promise<TelegramSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceTelegramUpdate({
-                pmUuid: this.instance.pk,
-                telegramSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceTelegramCreate({
-            telegramSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramRetrieve({ pmUuid: pk }),
+        create: (telegramSourcePropertyMappingRequest: TelegramSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramCreate({
+                telegramSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, telegramSourcePropertyMappingRequest: TelegramSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramUpdate({
+                pmUuid: pk,
+                telegramSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

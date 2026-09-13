@@ -13,6 +13,7 @@ from dramatiq import Worker, get_broker
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+from authentik.lib.debug import start_debug_server, start_pyroscope
 
 LOGGER = get_logger()
 INITIAL_WORKER_ID = 1000
@@ -146,6 +147,9 @@ if __name__ == "__main__":
     import django
 
     django.setup()
+
+    start_debug_server(port_offset=worker_id - INITIAL_WORKER_ID + 1)
+    start_pyroscope("worker", worker_id=str(worker_id))
 
     if worker_id == INITIAL_WORKER_ID:
         from lifecycle.migrate import run_migrations

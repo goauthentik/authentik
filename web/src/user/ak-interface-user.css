@@ -15,6 +15,16 @@
     }
 }
 
+@media screen and (992px <= width < 1200px) {
+    .pf-c-page__header-nav {
+        --pf-c-page__header-nav--PaddingRight: var(--pf-global--spacer--lg);
+        --pf-c-page__header-nav--PaddingLeft: var(--pf-global--spacer--lg);
+
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+    }
+}
+
 .pf-c-brand {
     min-height: 2rem;
     height: 2rem;

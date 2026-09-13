@@ -8,15 +8,15 @@ import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 
 ## What is Wekan?
 
-> Wekan is an open-source kanban board which allows a card-based task and to-do management.
+> Wekan is an open-source Kanban board application for organizing tasks with boards, lists, and cards.
 >
-> -- https://github.com/wekan/wekan/wiki
+> -- https://wekan.fi/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `wekan.company` is the FQDN of the wekan installation.
+- `wekan.company` is the FQDN of the Wekan installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -27,72 +27,84 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of Wekan with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Wekan with authentik, you need to create an application/provider pair in authentik. If you want Wekan administrator access to be managed from authentik, also create a custom scope mapping.
 
-### Create an application and provider in authentik
+### Create a scope mapping _(optional)_
+
+Wekan can promote users to Wekan administrators from OIDC group names. This mapping sends application entitlements from authentik as Wekan-specific OIDC group values.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Create Scope Mapping**:
+        - **Name**: `Wekan groups`
+        - **Scope name**: `wekan`
+        - **Expression**:
+
+            ```python
+            wekan_groups = [
+                {"displayName": entitlement.name}
+                for entitlement in request.user.app_entitlements(provider.application)
+            ]
+
+            return {
+                "wekanGroups": wekan_groups,
+            }
+            ```
+
+3. Click **Finish**.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://wekan.company/_oauth/oidc`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://wekan.company/_oauth/oidc`.
+        - Select any available signing key.
+        - If you created the `Wekan groups` scope mapping, add it to **Selected Scopes** under **Advanced protocol settings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
+If you created the `Wekan groups` scope mapping, open the new application, click the **Application entitlements** tab, and create the entitlements that Wekan should receive as OIDC group names. Bind the appropriate users or groups to each entitlement.
+
 ## Wekan configuration
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+Add the following required environment variables to your Wekan deployment:
 
-<Tabs
-  defaultValue="docker"
-  values={[
-    {label: 'Docker', value: 'docker'},
-    {label: 'Standalone', value: 'standalone'},
-  ]}>
-  <TabItem value="docker">
-If your Wekan is running in docker, add the following environment variables for authentik
-
-```yaml
-environment: OAUTH2_ENABLED=true
-    OAUTH2_LOGIN_STYLE=redirect
-    OAUTH2_CLIENT_ID=<Client ID from above>
-    OAUTH2_SERVER_URL=https://authentik.company
-    OAUTH2_AUTH_ENDPOINT=/application/o/authorize/
-    OAUTH2_USERINFO_ENDPOINT=/application/o/userinfo/
-    OAUTH2_TOKEN_ENDPOINT=/application/o/token/
-    OAUTH2_SECRET=<Client Secret from above>
-    OAUTH2_ID_MAP=sub
-    OAUTH2_USERNAME_MAP=email
-    OAUTH2_FULLNAME_MAP=given_name
-    OAUTH2_EMAIL_MAP=email
+```env title=".env"
+OAUTH2_ENABLED=true
+OAUTH2_CLIENT_ID=<Client ID from authentik>
+OAUTH2_SECRET=<Client Secret from authentik>
+OAUTH2_SERVER_URL=https://authentik.company
+OAUTH2_AUTH_ENDPOINT=/application/o/authorize/
+OAUTH2_USERINFO_ENDPOINT=/application/o/userinfo/
+OAUTH2_TOKEN_ENDPOINT=/application/o/token/
+OAUTH2_ID_MAP=sub
+OAUTH2_USERNAME_MAP=preferred_username
+OAUTH2_FULLNAME_MAP=name
+OAUTH2_EMAIL_MAP=email
 ```
 
-  </TabItem>
-  <TabItem value="standalone">
+For Snap deployments, use Wekan's lower-case, dash-separated equivalents for these settings.
 
-edit `.env` and add the following:
+If you created the `Wekan groups` scope mapping, add the custom scope to Wekan's requested permissions and list the entitlement names that should grant Wekan administrator access:
 
-```ini
-     # authentik OAUTH Config
-      OAUTH2_ENABLED='true'
-      OAUTH2_LOGIN_STYLE='redirect'
-      OAUTH2_CLIENT_ID='<Client ID from above>'
-      OAUTH2_SERVER_URL='https://authentik.company'
-      OAUTH2_AUTH_ENDPOINT='/application/o/authorize/'
-      OAUTH2_USERINFO_ENDPOINT='/application/o/userinfo/'
-      OAUTH2_TOKEN_ENDPOINT='/application/o/token/'
-      OAUTH2_SECRET='<Client Secret from above>'
-      OAUTH2_ID_MAP='sub'
-      OAUTH2_USERNAME_MAP='email'
-      OAUTH2_FULLNAME_MAP='given_name'
-      OAUTH2_EMAIL_MAP='email'
+```env title=".env"
+OAUTH2_REQUEST_PERMISSIONS=openid profile email wekan
+OAUTH2_ADMIN_GROUPS=wekan-admin
 ```
 
-  </TabItem>
-</Tabs>
+Restart Wekan after applying the environment variable changes.
+
+## Configuration verification
+
+To verify the integration with Wekan, open Wekan, log out if necessary, and log in using the OIDC login button. You should be redirected to authentik and then returned to Wekan.
+
+## Resources
+
+- [Wekan OAuth2 providers documentation](https://github.com/wekan/wekan/blob/main/docs/Login/OAuth2.md)
+- [Wekan Docker Compose OAuth2 configuration example](https://github.com/wekan/wekan/blob/main/docker-compose.yml)

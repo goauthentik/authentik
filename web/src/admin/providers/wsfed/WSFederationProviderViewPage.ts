@@ -210,7 +210,7 @@ export class WSFederationProviderViewPage extends AKElement {
             return nothing;
         }
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -329,6 +329,19 @@ export class WSFederationProviderViewPage extends AKElement {
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.wtrealm)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${msg("Issuer")}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlIssuer)}"
                                           />
                                       </div>
                                   </form>

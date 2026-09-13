@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -180,3 +180,87 @@ class TestEndpointsAPI(APITestCase):
                 ],
             },
         )
+
+    def test_list_settings_visibility(self):
+        """settings can carry connection credentials and is only returned to users
+        who can manage the endpoint/provider, not to users listing it to launch."""
+        endpoint_secret = generate_id()
+        provider_secret = generate_id()
+        self.provider.settings = {"password": provider_secret}
+        self.provider.save()
+        endpoint = Endpoint.objects.create(
+            name=f"c-{generate_id()}",
+            host=generate_id(),
+            protocol=Protocols.RDP,
+            auth_mode="static",
+            settings={"username": "user", "password": endpoint_secret},
+            provider=self.provider,
+        )
+
+        # A user who can manage the endpoint receives the stored settings.
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        result = next(r for r in response.json()["results"] if r["pk"] == str(endpoint.pk))
+        self.assertEqual(result["settings"], {"username": "user", "password": endpoint_secret})
+        self.assertEqual(result["provider_obj"]["settings"], {"password": provider_secret})
+
+        # A user without the view permission does not, even though the endpoint is
+        # otherwise listed for them.
+        user = create_test_user()
+        self.assertFalse(user.has_perm("authentik_providers_rac.view_endpoint"))
+        self.assertFalse(user.has_perm("authentik_providers_rac.view_racprovider"))
+        self.client.force_login(user)
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        result = next(r for r in response.json()["results"] if r["pk"] == str(endpoint.pk))
+        self.assertEqual(result["settings"], {})
+        self.assertEqual(result["provider_obj"]["settings"], {})
+        self.assertNotIn(endpoint_secret, response.content.decode())
+        self.assertNotIn(provider_secret, response.content.decode())
+
+    def test_list_regular_user_denied_application(self):
+        """A user without object permissions who is denied an endpoint's
+        application must not receive that endpoint from the list, even when the
+        endpoint itself has no policy bindings."""
+        # Gate the application so this user has no path to it.
+        PolicyBinding.objects.create(
+            target=self.app,
+            policy=DummyPolicy.objects.create(
+                name=f"deny-{generate_id()}", result=False, wait_min=1, wait_max=2
+            ),
+            order=0,
+        )
+        endpoint = Endpoint.objects.create(
+            name=f"c-{generate_id()}",
+            host=generate_id(),
+            protocol=Protocols.RDP,
+            auth_mode="static",
+            settings={"username": "user", "password": generate_id()},
+            provider=self.provider,
+        )
+        user = create_test_user()
+        self.assertFalse(user.has_perm("authentik_providers_rac.view_endpoint"))
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [result["pk"] for result in response.json()["results"]]
+        self.assertNotIn(str(endpoint.pk), pks)
+
+    def test_list_regular_user_allowed_application(self):
+        """A user who passes an application's policies receives its endpoints
+        from the list without needing the view_endpoint permission (this is the
+        end-user launch picker)."""
+        endpoint = Endpoint.objects.create(
+            name=f"c-{generate_id()}",
+            host=generate_id(),
+            protocol=Protocols.RDP,
+            provider=self.provider,
+        )
+        user = create_test_user()
+        self.assertFalse(user.has_perm("authentik_providers_rac.view_endpoint"))
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [result["pk"] for result in response.json()["results"]]
+        self.assertIn(str(endpoint.pk), pks)

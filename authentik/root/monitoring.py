@@ -5,25 +5,17 @@ from django.db.utils import OperationalError
 from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
-from django_prometheus.exports import ExportToDjangoView
 
 monitoring_set = Signal()
 
 
 class MetricsView(View):
-    """Wrapper around ExportToDjangoView with authentication, accessed by the authentik router"""
+    """View for metrics monitoring_set signal, accessed by the authentik router"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
         monitoring_set.send_robust(self)
-        return ExportToDjangoView(request)
-
-
-class LiveView(View):
-    """View for liveness probe, always returns Http 200"""
-
-    def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=200)
+        return HttpResponse(status=204)
 
 
 class ReadyView(View):

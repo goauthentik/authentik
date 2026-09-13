@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
@@ -9,27 +10,16 @@ import { StagesApi, UserDeleteStage } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
-    loadInstance(pk: string): Promise<UserDeleteStage> {
-        return aki(StagesApi).stagesUserDeleteRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserDeleteStage): Promise<UserDeleteStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesUserDeleteUpdate({
-                stageUuid: this.instance.pk || "",
-                userDeleteStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesUserDeleteCreate({
-            userDeleteStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserDeleteRetrieve({ stageUuid }),
+        create: (userDeleteStageRequest: UserDeleteStage) =>
+            aki(StagesApi).stagesUserDeleteCreate({ userDeleteStageRequest }),
+        update: (stageUuid: string, userDeleteStageRequest: UserDeleteStage) =>
+            aki(StagesApi).stagesUserDeleteUpdate({ stageUuid, userDeleteStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -37,14 +27,18 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
                     "Delete the currently pending user. CAUTION, this stage does not ask for confirmation. Use a consent stage to ensure the user is aware of their actions.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>`;
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>`;
     }
 }
 

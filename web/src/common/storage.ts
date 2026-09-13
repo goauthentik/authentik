@@ -48,6 +48,8 @@ export class StorageAccessor {
      *
      * @returns The stored value, or `null` if the key does not exist or an error occurs.
      */
+    public read<T extends string>(fallback: T): T;
+    public read<T extends string>(fallback?: T): T | null;
     public read<T extends string>(fallback?: T): T | null {
         try {
             const value = this.storage.getItem(this.key);

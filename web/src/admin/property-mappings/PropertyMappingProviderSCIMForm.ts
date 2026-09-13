@@ -11,23 +11,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-scim-form")
 export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
-    loadInstance(pk: string): Promise<SCIMMapping> {
-        return aki(PropertymappingsApi).propertymappingsProviderScimRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SCIMMapping): Promise<SCIMMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsProviderScimUpdate({
-                pmUuid: this.instance.pk,
-                sCIMMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsProviderScimCreate({
-            sCIMMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimRetrieve({ pmUuid: pk }),
+        create: (sCIMMappingRequest: SCIMMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimCreate({ sCIMMappingRequest }),
+        update: (pk: string, sCIMMappingRequest: SCIMMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimUpdate({
+                pmUuid: pk,
+                sCIMMappingRequest,
+            }),
+    };
 }
 
 declare global {

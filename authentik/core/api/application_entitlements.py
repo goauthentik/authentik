@@ -6,15 +6,17 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import (
     Application,
     ApplicationEntitlement,
 )
+from authentik.lib.utils.reflection import ConditionalInheritance
 
 
-class ApplicationEntitlementSerializer(ModelSerializer):
+class ApplicationEntitlementSerializer(AttributesMixinSerializer, ModelSerializer):
     """ApplicationEntitlement Serializer"""
 
     def validate_app(self, app: Application) -> Application:
@@ -39,7 +41,13 @@ class ApplicationEntitlementSerializer(ModelSerializer):
         ]
 
 
-class ApplicationEntitlementViewSet(UsedByMixin, ModelViewSet):
+class ApplicationEntitlementViewSet(
+    ConditionalInheritance(
+        "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
+    ),
+    UsedByMixin,
+    ModelViewSet,
+):
     """ApplicationEntitlement Viewset"""
 
     queryset = ApplicationEntitlement.objects.all()

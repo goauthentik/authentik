@@ -24,8 +24,10 @@ const IntentLabelRecord: Record<IntentEnum, MessageFormatter<string>> = {
     [IntentEnum.UnknownDefaultOpenApi]: () => msg("Unknown intent"),
 };
 
-export function formatIntentLabel(intent: IntentEnum = IntentEnum.Api): string {
-    return IntentLabelRecord[intent]();
+const defaultIntent = IntentLabelRecord[IntentEnum.Api];
+export function formatIntentLabel(intent: IntentEnum | string | null | undefined): string {
+    const label = IntentLabelRecord[intent as IntentEnum];
+    return label?.() ?? intent ?? defaultIntent();
 }
 
 export const EventActionLabelRecord: Record<EventActions, MessageFormatter<string>> = {
@@ -33,6 +35,7 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.LoginFailed]: () => msg("Failed login"),
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
+    [EventActions.UserOffboarded]: () => msg("User was offboarded"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
     [EventActions.SecretView]: () => msg("Secret was viewed"),
@@ -63,14 +66,17 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.ReviewOverdue]: () => msg("Review overdue"),
     [EventActions.ReviewAttested]: () => msg("Review attested"),
     [EventActions.ReviewCompleted]: () => msg("Review completed"),
+    [EventActions.AccessRequestCreated]: () => msg("Access request created"),
+    [EventActions.AccessRequestApproved]: () => msg("Access request approved"),
+    [EventActions.AccessRequestDenied]: () => msg("Access request denied"),
+    [EventActions.AccessRequestRevoked]: () => msg("Access request revoked"),
     [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
-export function actionToLabel(action?: EventActions): string {
-    const formatter = action ? EventActionLabelRecord[action] : null;
-
-    return formatter?.() || "";
+export function actionToLabel(action?: string): string {
+    const formatter = action ? EventActionLabelRecord[action as EventActions] : null;
+    return formatter?.() ?? action ?? "";
 }
 
 const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {
@@ -80,10 +86,11 @@ const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = 
     [SeverityEnum.UnknownDefaultOpenApi]: () => msg("Unknown severity"),
 };
 
-export function severityToLabel(severity: SeverityEnum | null | undefined): string {
-    const formatter = SeverityEnumLabelRecord[severity ?? SeverityEnum.UnknownDefaultOpenApi];
+const defaultSeverityLabel = SeverityEnumLabelRecord[SeverityEnum.UnknownDefaultOpenApi];
 
-    return formatter();
+export function severityToLabel(severity: SeverityEnum | null | undefined): string {
+    const formatter = severity ? SeverityEnumLabelRecord[severity] : null;
+    return formatter?.() ?? severity ?? defaultSeverityLabel();
 }
 
 export function severityToLevel(severity?: SeverityEnum | null): string {
@@ -136,8 +143,9 @@ const UserTypeLabelRecord: Record<UserTypeEnum, MessageFormatter<string>> = {
     [UserTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown user type"),
 };
 
+const defaultUserTypeLabel = UserTypeLabelRecord[UserTypeEnum.UnknownDefaultOpenApi];
+
 export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
-
-    return formatter?.() || "";
+    return formatter?.() ?? type ?? defaultUserTypeLabel();
 }

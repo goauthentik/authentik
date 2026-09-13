@@ -1,6 +1,6 @@
 import MermaidStyles from "./mermaid.css";
 
-import { DOM_PURIFY_STRICT } from "#common/purify";
+import { DOM_PURIFY_RELAXED } from "#common/purify";
 import { ResolvedUITheme } from "#common/theme";
 
 import { MermaidThemeAdapter } from "#elements/mermaid/theme";
@@ -23,7 +23,7 @@ export const DefaultMermaidConfig: Readonly<MermaidConfig> = {
     },
     theme: "base",
     securityLevel: "strict",
-    dompurifyConfig: DOM_PURIFY_STRICT,
+    dompurifyConfig: DOM_PURIFY_RELAXED,
 };
 
 let lastActiveTheme: ResolvedUITheme | null = null;
