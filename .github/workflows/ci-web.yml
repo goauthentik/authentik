@@ -84,12 +84,7 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: read
-      # Required so the "Comment Playwright result on PR" step can update its
-      # marker comment via the gh CLI / REST API.
-      pull-requests: write
-      # Required so the optional "Upload HTML report to S3" step can mint OIDC
-      # credentials with aws-actions/configure-aws-credentials. Harmless when
-      # the upload is gated off.
+      # Required so the codecov upload below can mint an OIDC token.
       id-token: write
     env:
       # Drives blueprints/system/bootstrap.yaml at startup: creates akadmin with
@@ -210,8 +205,8 @@ jobs:
         run: pnpm run test:e2e
       # Reporting / upload steps below intentionally use `!cancelled()` rather
       # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
-      # not a real result and shouldn't produce reviewer-facing artifacts or
-      # comments. `if-no-files-found: ignore` keeps the "passed" case quiet.
+      # not a real result and shouldn't be reported. `if-no-files-found: ignore`
+      # keeps the "passed" case quiet.
       - name: Upload Playwright HTML report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -236,112 +231,15 @@ jobs:
           path: /tmp/ak-logs/
           retention-days: 14
           if-no-files-found: ignore
-      - name: Parse Playwright results
-        id: playwright-results
+      # Test analytics only — no coverage is collected for the browser suite.
+      - name: Upload Playwright results to codecov
         if: ${{ !cancelled() }}
-        run: | # shell
-          set -euo pipefail
-          report=web/playwright-report/results.json
-          if [ ! -f "$report" ]; then
-            {
-              echo "available=false"
-              echo "passed=0"
-              echo "failed=0"
-              echo "flaky=0"
-              echo "skipped=0"
-            } >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          {
-            echo "available=true"
-            echo "passed=$(jq -r '.stats.expected // 0' "$report")"
-            echo "failed=$(jq -r '.stats.unexpected // 0' "$report")"
-            echo "flaky=$(jq -r '.stats.flaky // 0' "$report")"
-            echo "skipped=$(jq -r '.stats.skipped // 0' "$report")"
-          } >> "$GITHUB_OUTPUT"
-      # The S3 publishing pair below is intentionally gated off until the
-      # `authentik-playwright-artifacts` bucket is provisioned by infra. Flip
-      # the repo variable `PLAYWRIGHT_S3_ENABLED=true` to turn it on; the URL
-      # baked into the PR comment below already points at the eventual key.
-      - name: Configure AWS credentials for HTML report upload
-        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && vars.PLAYWRIGHT_S3_ENABLED == 'true' }}
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
         with:
-          role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
-          aws-region: eu-central-1
-      - name: Upload HTML report to S3
-        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && vars.PLAYWRIGHT_S3_ENABLED == 'true' }}
-        env:
-          S3_BUCKET: authentik-playwright-artifacts
-          S3_KEY_PREFIX: pr-${{ github.event.pull_request.number }}/run-${{ github.run_id }}/attempt-${{ github.run_attempt }}
-        run: | # shell
-          set -euo pipefail
-          if [ ! -d web/playwright-report ]; then
-            echo "No playwright-report/ produced; skipping S3 upload"
-            exit 0
-          fi
-          # Reports are stamped with run_id + attempt in S3_KEY_PREFIX, so a given
-          # key is immutable once written — safe to cache aggressively. 30 days
-          # matches the retention-days on the GHA artifact upload above.
-          aws s3 cp \
-            --recursive \
-            --acl=public-read \
-            --cache-control "public, max-age=2592000, immutable" \
-            web/playwright-report/ \
-            "s3://${S3_BUCKET}/${S3_KEY_PREFIX}/"
-      # Same-repo guard: fork PRs run with a read-only GITHUB_TOKEN (even after
-      # maintainer approval), so the comment + edit calls would 403. Skip cleanly
-      # rather than failing the job on every fork PR run.
-      - name: Comment Playwright result on PR
-        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          AVAILABLE: ${{ steps.playwright-results.outputs.available }}
-          PASSED: ${{ steps.playwright-results.outputs.passed }}
-          FAILED: ${{ steps.playwright-results.outputs.failed }}
-          FLAKY: ${{ steps.playwright-results.outputs.flaky }}
-          SKIPPED: ${{ steps.playwright-results.outputs.skipped }}
-          S3_ENABLED: ${{ vars.PLAYWRIGHT_S3_ENABLED }}
-          REPORT_URL: https://authentik-playwright-artifacts.s3.amazonaws.com/pr-${{ github.event.pull_request.number }}/run-${{ github.run_id }}/attempt-${{ github.run_attempt }}/index.html
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}
-        run: | # shell
-          set -euo pipefail
-          marker='<!-- playwright-result -->'
-
-          if [ "$AVAILABLE" = "true" ]; then
-            if [ "$FAILED" -gt 0 ]; then
-              status='❌ Failed'
-            elif [ "$FLAKY" -gt 0 ]; then
-              status='⚠️ Passed with flakes'
-            else
-              status='✅ Passed'
-            fi
-            stats=$(printf '| Result | Count |\n|---|---|\n| ✅ Passed | %s |\n| ❌ Failed | %s |\n| ⚠️ Flaky | %s |\n| ⏭️ Skipped | %s |\n' "$PASSED" "$FAILED" "$FLAKY" "$SKIPPED")
-          else
-            status='⚠️ No results produced'
-            stats='The job did not produce `playwright-report/results.json`. The suite likely crashed before the JSON reporter wrote its output — see the workflow run for setup-step failures.'
-          fi
-
-          if [ "$S3_ENABLED" = "true" ]; then
-            report_line=$(printf '[HTML report](%s) · [Workflow run](%s)' "$REPORT_URL" "$RUN_URL")
-          else
-            report_line=$(printf '[Workflow run](%s) · _HTML report hosting is gated off until the `authentik-playwright-artifacts` S3 bucket is provisioned (`vars.PLAYWRIGHT_S3_ENABLED`). Until then, download the `playwright-report` artifact from the run page._' "$RUN_URL")
-          fi
-
-          body=$(printf '%s\n## Playwright e2e — %s\n\n%s\n\n%s\n' "$marker" "$status" "$stats" "$report_line")
-
-          existing=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
-            --paginate \
-            --jq "[.[] | select(.body != null and (.body | startswith(\"$marker\")))] | .[0].id // empty")
-
-          if [ -n "$existing" ]; then
-            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -f body="$body" > /dev/null
-            echo "Updated existing comment ${existing}"
-          else
-            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -f body="$body" > /dev/null
-            echo "Created new playwright-result comment"
-          fi
+          files: web/playwright-report/results.xml
+          flags: e2e-web
+          use_oidc: true
+          report_type: test_results
   ci-web-mark:
     if: always()
     needs:
