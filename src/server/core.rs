@@ -479,9 +479,13 @@ mod websockets {
             while let Some(msg) = client_receiver.next().await {
                 let msg = msg?;
                 match msg {
-                    Message::Close(_) => {
+                    Message::Close(frame) => {
                         if !client_closed {
-                            upstream_sender.send(Message::Close(None)).await?;
+                            // Relay the peer's close frame verbatim (status code
+                            // and reason) instead of a code-less close, so the
+                            // other side sees the real close reason rather than
+                            // a "no status received" (1005) close.
+                            upstream_sender.send(Message::Close(frame)).await?;
                             let _ = close_tx.send(()).await;
                             client_closed = true;
                             break;
@@ -510,9 +514,15 @@ mod websockets {
             while let Some(msg) = upstream_receiver.next().await {
                 let msg = msg?;
                 match msg {
-                    Message::Close(_) => {
+                    Message::Close(frame) => {
                         if !upstream_closed {
-                            client_sender.send(Message::Close(None)).await?;
+                            // Relay the upstream's close frame verbatim (status
+                            // code and reason). uvicorn closes outpost websockets
+                            // with 1012 (service restart) when a web worker is
+                            // recycled; forwarding a code-less close here made the
+                            // outpost see a "no status received" (1005) close and
+                            // log every routine recycle as an error.
+                            client_sender.send(Message::Close(frame)).await?;
                             let _ = close_tx_upstream.send(()).await;
                             upstream_closed = true;
                             break;
