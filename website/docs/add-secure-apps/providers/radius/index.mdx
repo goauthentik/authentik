@@ -5,13 +5,13 @@ sidebar_label: "RADIUS Provider"
 
 import { HashSupport } from "./HashSupport";
 
-The RADIUS provider allows applications and network devices to authenticate users through authentik using RADIUS. It supports password-based authentication with PAP and certificate-based authentication with EAP-TLS in authentik Enterprise. Only authentication requests are supported; accounting requests are not supported.
+The RADIUS provider allows applications and network devices to authenticate users through authentik using RADIUS. It supports password-based authentication with PAP and certificate-based authentication with EAP-TLS in authentik Enterprise. It does not support accounting requests.
 
 Refer to [Create a RADIUS provider](./create-radius-provider.mdx) for instructions on creating, deploying, and testing the provider.
 
 ## Authentication flow
 
-Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
+The RADIUS server processes authentication requests by running a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
 
 The following stages are supported:
 
@@ -29,7 +29,7 @@ Include a user login stage to complete authentication. After authentication, aut
 
 For PAP authentication, the provider supports appending a TOTP or static code to the password when **Code-based MFA Support** is enabled and the authentication flow includes an authenticator validation stage.
 
-Separate the password and code with a semicolon. For example, for the password `example-password` and the MFA code `123456`, enter `example-password;123456`.
+Separate the password and code with a semicolon. For example, if the password is `example-password` and the MFA code is `123456`, enter `example-password;123456`.
 
 :::warning Passwords containing semicolons
 When **Code-based MFA Support** is enabled, the outpost splits the password at the last semicolon if it is followed by a value. This can cause a password containing a semicolon to be rejected when the user does not append an MFA code. Disable this setting if you do not use the appended-code format.
@@ -43,7 +43,7 @@ The authenticator validation stage supports Duo, TOTP, and static authenticators
 
 The RADIUS provider supports PAP (Password Authentication Protocol) for password-based authentication. authentik Enterprise adds support for [EAP-TLS](#eap) for certificate-based authentication.
 
-The compatibility matrix below describes password-hash compatibility with RADIUS authentication protocols. It does not mean that authentik implements every protocol listed: hash compatibility alone does not establish protocol support in the RADIUS provider.
+The matrix below shows which password hashes are compatible with each RADIUS authentication protocol. Hash compatibility alone does not mean that the RADIUS provider supports a protocol.
 
 <details>
   <summary>RADIUS password-hash compatibility matrix</summary>
@@ -60,18 +60,18 @@ EAP-TLS uses certificates to authenticate the server and client. Before configur
     - Under **Certificate authorities**, select the CA certificates that should be trusted to issue client certificates.
     - Configure **Certificate attribute** and **User attribute** so that the certificate identifies an existing authentik user.
 2. Add a user login stage after the mutual TLS stage to complete authentication.
-3. In the RADIUS provider, set **Authentication Flow** to this flow and select the server certificate under **Protocol settings** > **Certificate**. The certificate must have its private key available to the outpost.
+3. In the RADIUS provider, set **Authentication Flow** to this flow and select the server certificate under **Protocol settings** > **Certificate**. The certificate's private key must be available to the outpost.
 4. Configure the end-user devices to use their client certificates and validate the RADIUS server certificate, including the expected server name and trusted issuing CA.
 
 :::warning Limit trust for client certificates
-Use a private CA whose client-certificate issuance you control. The mutual TLS stage validates the certificate against its configured CAs and matches a certificate attribute to an existing user; trusting a CA alone does not authorize every certificate holder. Ensure that certificate holders cannot obtain certificates identifying other users, and use application bindings or additional policies to restrict access as needed.
+Use a private CA and control which client certificates it issues. The mutual TLS stage validates the certificate against its configured CAs and matches a certificate attribute to an existing user. Trusting a CA alone does not authorize every certificate holder. Ensure that certificate holders cannot obtain certificates identifying other users, and use application bindings or additional policies to restrict access as needed.
 
 The CAs trusted by the mutual TLS stage for client authentication are separate from the CA that end-user devices trust for the RADIUS server certificate.
 :::
 
 ## RADIUS property mappings {#radius-attributes}
 
-RADIUS provider property mappings add attributes to successful authentication responses. A single mapping can assign multiple attributes. Follow the instructions to [create a custom provider property mapping](../property-mappings/index.mdx#create-a-custom-provider-property-mapping), selecting the RADIUS provider property mapping type. Then select the mapping under **Protocol settings** > **Property mappings** on the RADIUS provider.
+RADIUS provider property mappings add attributes to successful authentication responses. A single mapping can assign multiple attributes. Follow the instructions to [create a custom provider property mapping](../property-mappings/index.mdx#create-a-custom-provider-property-mapping) and select the RADIUS provider property mapping type. Then select the mapping under **Protocol settings** > **Property mappings** on the RADIUS provider.
 
 ### Mapping context
 
@@ -79,7 +79,7 @@ Mappings run after authentication and application authorization succeed. They su
 
 The mapping receives:
 
-- `user`: the authenticated user, through which you can access user attributes and group memberships.
+- `user`: the authenticated user, whose attributes and group memberships you can access.
 - `packet`: a mutable packet used to build additional response attributes. It is not the incoming `Access-Request` or the final `Access-Accept`; the outpost copies its attributes into the successful response.
 
 Incoming RADIUS attributes are not forwarded into the mapping context. The HTTP request available to the expression is the outpost's access-check request to authentik, not the incoming RADIUS packet.
@@ -109,7 +109,7 @@ You can instead assign these values to `packet` directly and omit the return sta
 
 After assigning the mapping to the provider, authenticate and inspect the decoded `Access-Accept`. Confirm that all three values appear as standard attribute codes `27` (`Session-Timeout`), `18` (`Reply-Message`), and `25` (`Class`), not as vendor-specific attributes. The `Class` bytes should represent the literal text `authentik-radius`.
 
-An attribute appearing in a vendor dictionary does not guarantee that it is present in authentik's bundled dictionary. The Python value must also match the attribute's dictionary type.
+An attribute listed in a vendor dictionary is not necessarily included in authentik's bundled dictionary. Its Python value must also match the attribute's dictionary type.
 
 ### Vendor-specific attributes
 
@@ -141,9 +141,9 @@ return {
 | `attribute_code` | The attribute number from the vendor's RADIUS dictionary     |
 | `attribute_type` | The dictionary value type, such as `string` or `integer`     |
 
-Use codes and types from authoritative vendor documentation. The registered lookup name is `<vendor_name>-<attribute_name>`. Definitions are shared by mappings for the current access check but do not permanently change the bundled dictionary. If that lookup name already exists, the helper leaves its definition unchanged.
+Use codes and types from authoritative vendor documentation. The registered lookup name is `<vendor_name>-<attribute_name>`. Mappings share these definitions during the current access check, but the definitions do not permanently change the bundled dictionary. If that lookup name already exists, the helper leaves its definition unchanged.
 
-For an in-place mapping, call `define_attribute()` before assigning the value to `packet`. `define_attribute()` accepts the same arguments as `vendor_attribute()` and also returns the registered lookup name:
+To modify `packet` directly, call `define_attribute()` before assigning the attribute's value. `define_attribute()` accepts the same arguments as `vendor_attribute()` and also returns the registered lookup name:
 
 ```python
 attribute = define_attribute(
@@ -158,11 +158,11 @@ packet[attribute] = "shell:priv-lvl=15"
 
 You can register multiple attributes in one mapping. Each definition and value must be valid. If a mapping fails, authentik continues to evaluate later mappings, as described in [Troubleshoot a failed mapping](#troubleshoot-a-failed-mapping).
 
-Do not assign a vendor name to a standard RFC attribute: a nonempty `vendor_name` produces a Vendor-Specific attribute, even if `vendor_code` is `0`.
+Do not assign a vendor name to a standard RFC attribute. A nonempty `vendor_name` produces a vendor-specific attribute, even if `vendor_code` is `0`.
 
 ### Attribute value types
 
-Common dictionary types accept the following values. Encoding is handled by [pyrad](https://github.com/wichert/pyrad/blob/2.5.4/pyrad/tools.py), the RADIUS library used by authentik.
+Common dictionary types accept the following values. authentik uses the RADIUS library [pyrad](https://github.com/wichert/pyrad/blob/2.5.4/pyrad/tools.py) to encode them.
 
 | Dictionary type | Example Python value | Notes                                                                                            |
 | --------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
@@ -175,7 +175,7 @@ For `octets`, pyrad treats strings containing only decimal digits as integers to
 
 ### Dynamic VLAN assignment
 
-The bundled dictionaries do not define `Tunnel-Type`, `Tunnel-Medium-Type`, or `Tunnel-Private-Group-Id`, so these names cannot be assigned directly using the standard-attribute example above. This dictionary limitation does not by itself establish whether the underlying encoder can represent those attributes.
+The bundled dictionaries do not define `Tunnel-Type`, `Tunnel-Medium-Type`, or `Tunnel-Private-Group-Id`, so you cannot assign these attributes by name as in the standard-attribute example above. Their absence from the dictionaries does not tell you whether the underlying encoder can represent them.
 
 Dynamic VLAN configuration also requires the correct attribute types and tunnel-tag encoding. Do not substitute similarly named vendor-specific attributes for standard tunnel attributes unless the client explicitly expects them. See [#16879](https://github.com/goauthentik/authentik/issues/16879) and [#25324](https://github.com/goauthentik/authentik/issues/25324) for related discussion.
 
