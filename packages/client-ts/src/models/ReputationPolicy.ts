@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Reputation Policy Serializer
  * @export
@@ -50,6 +52,14 @@ export interface ReputationPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
+    /**
+     *
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
     /**
      *
      */
@@ -99,6 +109,14 @@ export function instanceOfReputationPolicy(value: object): value is ReputationPo
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -122,6 +140,11 @@ export function ReputationPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
         checkUsername: json["check_username"] == null ? undefined : json["check_username"],
         threshold: json["threshold"] == null ? undefined : json["threshold"],
@@ -135,7 +158,14 @@ export function ReputationPolicyToJSON(json: any): ReputationPolicy {
 export function ReputationPolicyToJSONTyped(
     value?: Omit<
         ReputationPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

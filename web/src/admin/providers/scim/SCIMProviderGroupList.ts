@@ -5,6 +5,7 @@ import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -84,7 +85,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
 
     row(item: SCIMProviderGroup): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href=${toAdminInterface(`identity/groups/${item.groupObj.pk}`)}>
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.id}`,

@@ -1,7 +1,5 @@
-import { ROUTE_SEPARATOR } from "#common/constants";
-
 import { AKElement } from "#elements/Base";
-import { listen } from "#elements/decorators/listen";
+import { RouterNavigateEvent } from "#elements/router/core/navigation";
 
 import { css } from "lit";
 import { html } from "lit-html";
@@ -38,19 +36,26 @@ export class NavTabs extends AKElement {
     @state()
     currentItem?: NavItem;
 
-    @listen("hashchange", { target: window })
     public synchronize = (): void => {
-        const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
-        const currents = this.items.filter((item) => {
-            const ourPath = item.link.split(";")[0];
-            return ourPath === activePath;
-        });
-        this.currentItem = currents.length > 0 ? currents[0] : undefined;
+        const activePath = window.location.pathname;
+
+        this.currentItem = this.items.find((item) => item.link === activePath);
     };
 
     public override connectedCallback(): void {
         super.connectedCallback();
+
+        window.addEventListener(RouterNavigateEvent.eventName, this.synchronize);
+        window.addEventListener("popstate", this.synchronize);
+
         this.synchronize();
+    }
+
+    public override disconnectedCallback(): void {
+        window.removeEventListener(RouterNavigateEvent.eventName, this.synchronize);
+        window.removeEventListener("popstate", this.synchronize);
+
+        super.disconnectedCallback();
     }
 
     render() {
@@ -62,7 +67,7 @@ export class NavTabs extends AKElement {
                             class="pf-c-nav__link ${item.link === this.currentItem?.link
                                 ? "pf-m-current"
                                 : ""}"
-                            href="#${item.link}"
+                            href=${item.link}
                             >${item.label}</a
                         >
                     </li>`;

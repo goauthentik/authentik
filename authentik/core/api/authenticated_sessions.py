@@ -156,7 +156,7 @@ class AuthenticatedSessionViewSet(
         user_pks = query.validated_data.get("user_pks", [])
         count = 0
         for session in chunked_queryset(AuthenticatedSession.objects.filter(user_id__in=user_pks)):
-            admin_authenticated_session_deleted.send(self, session=session, request=request)
+            admin_authenticated_session_deleted.send(self, instance=session, request=request)
             session.delete()
             count += 1
 

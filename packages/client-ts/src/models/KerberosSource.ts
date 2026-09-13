@@ -146,10 +146,6 @@ export interface KerberosSource {
      */
     syncPrincipal?: string;
     /**
-     * Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
-     */
-    syncCcache?: string;
-    /**
      * Get cached source connectivity
      */
     readonly connectivity: { [key: string]: string } | null;
@@ -157,10 +153,6 @@ export interface KerberosSource {
      * Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
      */
     spnegoServerName?: string;
-    /**
-     * Credential cache to use for SPNEGO in form type:residual
-     */
-    spnegoCcache?: string;
     /**
      * If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
      */
@@ -283,11 +275,9 @@ export function KerberosSourceFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncPrincipal: json["sync_principal"] == null ? undefined : json["sync_principal"],
-        syncCcache: json["sync_ccache"] == null ? undefined : json["sync_ccache"],
         connectivity: json["connectivity"],
         spnegoServerName:
             json["spnego_server_name"] == null ? undefined : json["spnego_server_name"],
-        spnegoCcache: json["spnego_ccache"] == null ? undefined : json["spnego_ccache"],
         passwordLoginUpdateInternalPassword:
             json["password_login_update_internal_password"] == null
                 ? undefined
@@ -342,9 +332,7 @@ export function KerberosSourceToJSONTyped(
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_principal: value["syncPrincipal"],
-        sync_ccache: value["syncCcache"],
         spnego_server_name: value["spnegoServerName"],
-        spnego_ccache: value["spnegoCcache"],
         password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],

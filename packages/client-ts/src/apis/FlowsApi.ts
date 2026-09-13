@@ -1300,7 +1300,7 @@ export class FlowsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Return diagram for flow with slug `slug`, in the format used by flowchart.js
+     * Return the graph of flow with slug `slug`, for the client to render
      */
     async flowsInstancesDiagramRetrieveRaw(
         requestParameters: FlowsInstancesDiagramRetrieveRequest,
@@ -1314,7 +1314,7 @@ export class FlowsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Return diagram for flow with slug `slug`, in the format used by flowchart.js
+     * Return the graph of flow with slug `slug`, for the client to render
      */
     async flowsInstancesDiagramRetrieve(
         requestParameters: FlowsInstancesDiagramRetrieveRequest,

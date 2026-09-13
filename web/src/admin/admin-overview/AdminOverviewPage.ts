@@ -18,7 +18,7 @@ import { AKElement } from "#elements/Base";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
@@ -60,10 +60,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
     ];
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
-        [msg("Check the logs"), paramURL("/events/log")],
+        [
+            msg("Create a new application"),
+            toAdminInterface("core/applications", { "create-wizard": "application" }),
+        ],
+        [msg("Check the logs"), toAdminInterface("events/log")],
         [msg("Explore integrations"), "https://integrations.goauthentik.io/", true],
-        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Manage users"), toAdminInterface("identity/users")],
         [msg("Check the release notes"), import.meta.env.AK_DOCS_RELEASE_NOTES_URL, true],
     ];
 
@@ -82,7 +85,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-zone"
                             label=${msg("Outpost status")}
-                            headerLink="#/outpost/outposts"
+                            headerLink=${toAdminInterface("outpost/outposts")}
                         >
                             <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                         </ak-aggregate-card>

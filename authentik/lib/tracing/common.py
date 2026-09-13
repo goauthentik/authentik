@@ -1,6 +1,8 @@
 """Shared tracer protocol and no-op fallback"""
 
+from collections.abc import Callable
 from contextlib import contextmanager
+from functools import wraps
 from typing import Any, Protocol
 
 # Set by lifecycle/gunicorn.conf.py before the app is preloaded, to tell
@@ -48,3 +50,20 @@ class Tracer:
     @contextmanager
     def start_span(self, op: str, name: str | None = None):
         yield NoOpSpan()
+
+    def instrument(self, arg_annotate: list[str] | None = None):
+        """Decorator to trace a function"""
+
+        def wrapper_outer(func: Callable):
+
+            @wraps(func)
+            def wrapper(*args, **kwargs) -> Any:
+                with self.start_span(f"{func.__module__}.{func.__qualname__}") as span:
+                    if arg_annotate:
+                        for arg in arg_annotate:
+                            span.set_data(arg, kwargs.get(arg))
+                    return func(*args, **kwargs)
+
+            return wrapper
+
+        return wrapper_outer
