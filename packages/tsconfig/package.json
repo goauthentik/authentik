@@ -14,18 +14,12 @@
     "main": "tsconfig.json",
     "type": "module",
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24",
-            "onFail": "warn"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "version": ">=24.20",
             "onFail": "warn"
         }
     },

@@ -2,8 +2,9 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceGroupForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -29,7 +30,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
             object-label=${msg("LDAP Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GroupLDAPSourceConnection) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapDestroy({
+                return aki(SourcesApi).sourcesGroupConnectionsLdapDestroy({
                     id: item.pk,
                 });
             }}
@@ -52,7 +53,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GroupLDAPSourceConnection>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapList({
+        return aki(SourcesApi).sourcesGroupConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.source?.slug,
         });
@@ -72,7 +73,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
 
     row(item: GroupLDAPSourceConnection): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href=${toAdminInterface(`identity/groups/${item.groupObj.pk}`)}>
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`<code>${item.identifier}</code>`,

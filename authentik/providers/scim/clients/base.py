@@ -1,11 +1,12 @@
 """SCIM Client"""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from msgspec.json import Encoder as JSONEncoder
 from pydantic import ValidationError
-from requests import RequestException, Session
+from requests import JSONDecodeError, RequestException, Session
 
 from authentik.lib.sync.outgoing import (
     HTTP_CONFLICT,
@@ -40,8 +41,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     _session: Session
     _config: ServiceProviderConfiguration
 
+    can_discover = True
+
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
+        self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider
@@ -84,7 +88,14 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             raise SCIMRequestException(response)
         if response.status_code == HTTP_NO_CONTENT:
             return {}
-        return response.json()
+        try:
+            return response.json()
+        except JSONDecodeError as exc:
+            raise SCIMRequestException(message="Failed to decode SCIM response") from exc
+
+    def lower_case_keys(self, raw: dict[str, Any]) -> dict[str, Any]:
+        """Lowercase all keys in the dict to ignore casing"""
+        return {k.lower(): v for k, v in raw.items()}
 
     def get_service_provider_config(self):
         """Get Service provider config"""
@@ -97,7 +108,10 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if cached_config is not None:
             return cached_config
 
-        if self.provider.compatibility_mode == SCIMCompatibilityMode.VCENTER:
+        if self.provider.compatibility_mode in [
+            SCIMCompatibilityMode.GITLAB,
+            SCIMCompatibilityMode.VCENTER,
+        ]:
             return default_config
 
         # Attempt to fetch from remote
@@ -124,3 +138,22 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         else:
             cache.delete(cache_key)
         return config
+
+    def paginate_resources(self, path: str):
+        start_index = 1
+        while True:
+            response: dict[str, Any] = self.lower_case_keys(
+                self._request(
+                    "GET",
+                    path,
+                    params={"count": self.provider.sync_page_size, "startIndex": start_index},
+                )
+            )
+            total_items = int(response["totalresults"])
+            start_index += int(response["itemsperpage"])
+            resources = response.get("resources", [])
+            if not resources:
+                break
+            yield from response["resources"]
+            if start_index >= total_items:
+                break

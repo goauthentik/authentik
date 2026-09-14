@@ -1,6 +1,6 @@
 import "#elements/forms/ConfirmationForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
@@ -113,10 +113,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const statuses = [
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersScimList();
+                    return aki(ProvidersApi).providersScimList();
                 },
                 (element) => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersScimSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -124,12 +124,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceList();
+                    return aki(ProvidersApi).providersGoogleWorkspaceList();
                 },
                 (element) => {
-                    return new ProvidersApi(
-                        DEFAULT_CONFIG,
-                    ).providersGoogleWorkspaceSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersGoogleWorkspaceSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -137,12 +135,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraList();
+                    return aki(ProvidersApi).providersMicrosoftEntraList();
                 },
                 (element) => {
-                    return new ProvidersApi(
-                        DEFAULT_CONFIG,
-                    ).providersMicrosoftEntraSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersMicrosoftEntraSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -150,10 +146,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapList();
+                    return aki(SourcesApi).sourcesLdapList();
                 },
                 (element) => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
+                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                         slug: element.slug,
                     });
                 },
@@ -161,10 +157,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosList();
+                    return aki(SourcesApi).sourcesKerberosList();
                 },
                 (element) => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
+                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                         slug: element.slug,
                     });
                 },

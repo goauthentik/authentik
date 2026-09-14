@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -13,9 +13,7 @@ export const defaultScopes = [
 const mappingToSelect = (s: ScopeMapping) => [s.pk, s.name, s.name, s];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderScopeList({
+    const propertyMappings = await aki(PropertymappingsApi).propertymappingsProviderScopeList({
         ordering: "scope_name",
         pageSize: 20,
         search: search.trim(),
@@ -37,7 +35,7 @@ export function propertyMappingsSelector(instanceMappings?: string[]) {
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderScopeRetrieve({ pmUuid: instanceId }),

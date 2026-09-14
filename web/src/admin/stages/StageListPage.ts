@@ -4,10 +4,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -36,7 +37,7 @@ export class StageListPage extends TablePage<Stage> {
     public override searchPlaceholder = msg("Search for a stage name, type, or flow...");
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
+        return aki(StagesApi).stagesAllList(await this.defaultEndpointConfig());
     }
 
     protected override columns: TableColumn[] = [
@@ -52,12 +53,12 @@ export class StageListPage extends TablePage<Stage> {
             object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
+                return aki(StagesApi).stagesAllUsedByList({
                     stageUuid: item.pk,
                 });
             }}
             .delete=${(item: Stage) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesAllDestroy({
+                return aki(StagesApi).stagesAllDestroy({
                     stageUuid: item.pk,
                 });
             }}
@@ -90,7 +91,7 @@ export class StageListPage extends TablePage<Stage> {
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>
-                        <a href="#/flow/flows/${flow.slug}">
+                        <a href=${toAdminInterface(`flow/flows/${flow.slug}`)}>
                             <code>${flow.slug}</code>
                         </a>
                     </li>`;

@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -44,25 +44,24 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/logger-js": "../logger-js",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.7.0",
-        "esbuild": "^0.27.4",
-        "eslint": "^9.39.3",
-        "pino": "^10.3.1",
-        "prettier": "^3.8.3",
-        "prettier-plugin-packagejson": "^3.0.2",
-        "typedoc": "^0.28.18",
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/logger-js": "link:../logger-js",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "catalog:",
+        "esbuild": "catalog:",
+        "eslint": "catalog:",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "typedoc": "^0.28.20",
         "typedoc-plugin-markdown": "^4.11.0",
-        "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.3"
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "@goauthentik/logger-js": "^1.0.1",
-        "esbuild": "^0.27.4"
+        "@goauthentik/logger-js": "^3.0.0",
+        "esbuild": "^0.28.1"
     },
     "files": [
         "./index.js",
@@ -73,20 +72,16 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.14.1"
+        "pnpm": ">=12.4.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
-            "onFail": "warn"
+            "version": ">=24.20",
+            "onFail": "error"
         }
     },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
     "prettier": "@goauthentik/prettier-config",
     "keywords": [
         "esbuild",
@@ -96,20 +91,6 @@
         "reload",
         "authentik"
     ],
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "peerDependenciesMeta": {
         "@goauthentik/logger-js": {
             "optional": true

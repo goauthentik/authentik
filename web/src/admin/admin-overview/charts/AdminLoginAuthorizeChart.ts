@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { EventChart } from "#elements/charts/EventChart";
 
@@ -12,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-charts-admin-login-authorization")
 export class AdminLoginAuthorizeChart extends EventChart {
     async apiRequest(): Promise<EventVolume[]> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
+        return aki(EventsApi).eventsEventsVolumeList({
             actions: [
                 EventActions.AuthorizeApplication,
                 EventActions.Login,

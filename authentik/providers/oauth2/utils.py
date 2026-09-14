@@ -20,7 +20,12 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 
 LOGGER = get_logger()
 
@@ -36,9 +41,18 @@ class TokenResponse(JsonResponse):
         self["Pragma"] = "no-cache"
 
 
-def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
+def cors_allow(
+    request: HttpRequest,
+    response: HttpResponse,
+    allowed_origins: list[RedirectURI | str],
+):
     """Add headers to permit CORS requests from allowed_origins, with or without credentials,
-    with any headers."""
+    with any headers.
+
+    Each entry may be a ``RedirectURI`` (honouring its ``matching_mode``) or a bare string
+    (treated as ``STRICT`` for backwards compatibility). Regex entries are matched against
+    the request's Origin header via ``re.fullmatch``; malformed regexes are logged and
+    skipped rather than raising."""
     origin = request.META.get("HTTP_ORIGIN")
     if not origin:
         return response
@@ -48,14 +62,33 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     # so for options requests we allow the calling origin without checking
     allowed = request.method == "OPTIONS"
     received_origin = urlparse(origin)
-    for allowed_origin in allowed_origins:
-        url = urlparse(allowed_origin)
-        if (
-            received_origin.scheme == url.scheme
-            and received_origin.hostname == url.hostname
-            and received_origin.port == url.port
-        ):
-            allowed = True
+    for raw_entry in allowed_origins:
+        entry = (
+            RedirectURI(RedirectURIMatchingMode.STRICT, raw_entry)
+            if isinstance(raw_entry, str)
+            else raw_entry
+        )
+        if entry.matching_mode == RedirectURIMatchingMode.STRICT:
+            url = urlparse(entry.url)
+            if (
+                received_origin.scheme == url.scheme
+                and received_origin.hostname == url.hostname
+                and received_origin.port == url.port
+            ):
+                allowed = True
+                break
+        elif entry.matching_mode == RedirectURIMatchingMode.REGEX:
+            try:
+                if re.fullmatch(entry.url, origin):
+                    allowed = True
+                    break
+            except re.error as exc:
+                LOGGER.warning(
+                    "CORS: Failed to parse regular expression",
+                    exc=exc,
+                    url=entry.url,
+                )
+                continue
     if not allowed:
         LOGGER.warning(
             "CORS: Origin is not an allowed origin",
@@ -296,3 +329,13 @@ def build_frontchannel_logout_url(
 
     parsed_url = parsed_url._replace(query=urlencode(query_params))
     return urlunparse(parsed_url)
+
+
+VSCHAR_START = 0x20
+VSCHAR_END = 0x7E
+
+
+def is_all_vschar(s: str) -> bool:
+    """Ensure a string is fully VSCHAR, defined by the OAuth2 RFC
+    https://datatracker.ietf.org/doc/html/rfc6749#appendix-A"""
+    return all(VSCHAR_START <= ord(c) <= VSCHAR_END for c in s)

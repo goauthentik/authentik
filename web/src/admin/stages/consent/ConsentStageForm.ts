@@ -1,8 +1,9 @@
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -16,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     loadInstance(pk: string): Promise<ConsentStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesConsentRetrieve({
                 stageUuid: pk,
             })
@@ -31,12 +32,12 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
+            return aki(StagesApi).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
                 consentStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
+        return aki(StagesApi).stagesConsentCreate({
             consentStageRequest: data,
         });
     }
@@ -47,14 +48,18 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">

@@ -3,6 +3,8 @@ import { PFSize } from "#common/enums";
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
 
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
+
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -17,6 +19,7 @@ import PFProgress from "@patternfly/patternfly/components/Progress/progress.css"
 export class ProgressBar extends AKElement {
     static styles = [
         PFProgress,
+        AKFadeIn,
         css`
             .pf-c-progress {
                 overflow: hidden;

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -7,9 +7,7 @@ import { PropertymappingsApi, SAMLPropertyMapping } from "@goauthentik/api";
 const mappingToSelect = (m: SAMLPropertyMapping) => [m.pk, m.name, m.name, m];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderSamlList({
+    const propertyMappings = await aki(PropertymappingsApi).propertymappingsProviderSamlList({
         ordering: "saml_name",
         pageSize: 20,
         search: search.trim(),
@@ -30,7 +28,7 @@ export function propertyMappingsSelector(instanceMappings?: string[]) {
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderSamlRetrieve({ pmUuid: instanceId }),

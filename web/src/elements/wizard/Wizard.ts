@@ -77,7 +77,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatARIALabel(verboseName = this.verboseName): string {
         return verboseName
             ? msg(str`New ${verboseName} Wizard`, {
-                  id: "wizard.ariaLabel.entity-singular",
+                  id: "wizard.ariaLabel.verbose-name.one",
                   desc: "ARIA label for the creation wizard, where the entity singular is interpolated.",
               })
             : msg("Wizard", {
@@ -92,7 +92,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
             return msg(str`Create New ${verboseName}`, {
-                id: "wizard.header.entity-singular",
+                id: "wizard.header.verbose-name.one",
                 desc: "Header for the creation wizard, where the entity singular is interpolated.",
             });
         }
@@ -130,7 +130,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -146,7 +146,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     /**
      * Optional plural label for the type of entity this wizard creates, used in messages and the like.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public verboseNamePlural: string | null = null;
 
     /**

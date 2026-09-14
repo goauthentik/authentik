@@ -6,10 +6,10 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -38,9 +38,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     protected override searchEnabled = true;
 
     protected async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(LifecycleApi).lifecycleRulesList(await this.defaultEndpointConfig());
     }
 
     protected override renderSectionBefore(): SlottedTemplateResult {
@@ -62,7 +60,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
             .objects=${this.selectedElements}
             .delete=${(item: LifecycleRule) => {
                 if (item.id)
-                    return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesDestroy({
+                    return aki(LifecycleApi).lifecycleRulesDestroy({
                         id: item.id,
                     });
             }}

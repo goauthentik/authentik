@@ -1,7 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -24,7 +24,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     public override clearOnRefresh = true;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+        return aki(RbacApi).rbacPermissionsRolesList({
             ...(await this.defaultEndpointConfig()),
             uuid: this.roleUUID || "",
         });
@@ -57,9 +57,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                 ];
             }}
             .delete=${(item: ExtraRoleObjectPermission) => {
-                return new RbacApi(
-                    DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: this.roleUUID || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],

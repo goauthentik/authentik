@@ -1,6 +1,6 @@
-import "#elements/ak-progress-bar";
+import "#elements/Progress";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
 
 import { asInvoker } from "#elements/dialogs";
@@ -80,7 +80,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
 
     public static open = asInvoker(AboutModal);
 
-    #api = new AdminApi(DEFAULT_CONFIG);
+    #api = aki(AdminApi);
 
     protected canDebug = globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug);
 
@@ -165,12 +165,11 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     protected renderLoadingBar(): SlottedTemplateResult {
         return until(
             this.refreshPromise?.then(() => null),
-            html`<ak-progress-bar
-                part="loading-bar"
-                indeterminate
-                ?inert=${!!this.systemInfo && !!this.version}
+            html`<ak-progress
+                part="loading"
+                variant="indeterminate"
                 label=${msg("Loading")}
-            ></ak-progress-bar>`,
+            ></ak-progress>`,
         );
     }
 

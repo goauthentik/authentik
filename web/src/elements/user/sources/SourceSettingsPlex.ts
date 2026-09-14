@@ -1,6 +1,6 @@
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
@@ -19,7 +19,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {
     protected disconnectSource(): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesUserConnectionsPlexDestroy({
                 id: this.connectionPk,
             })
@@ -54,7 +54,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
 
         PlexAPIClient.pinPoll(this.configureURL || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
-            new SourcesApi(DEFAULT_CONFIG).sourcesPlexRedeemTokenAuthenticatedCreate({
+            aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
                 plexTokenRedeemRequest: {
                     plexToken: token,
                 },

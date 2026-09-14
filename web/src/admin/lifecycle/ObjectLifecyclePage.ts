@@ -1,7 +1,7 @@
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#admin/lifecycle/ObjectReviewIteration";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
 
@@ -66,7 +66,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
         if (!this.model || !this.objectPk) {
             return Promise.resolve();
         }
-        return new LifecycleApi(DEFAULT_CONFIG)
+        return aki(LifecycleApi)
             .lifecycleIterationsListLatest({
                 contentType: this.model,
                 objectId: String(this.objectPk),

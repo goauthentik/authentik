@@ -8,6 +8,7 @@ from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
+from authentik.core.api.object_attributes import ObjectAttributeViewSet
 from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import (
@@ -26,10 +27,10 @@ from authentik.core.views.interface import (
     InterfaceView,
     RootRedirectView,
 )
+from authentik.events.consumer import ClientConsumer
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
-from authentik.root.ws.consumer import MessageConsumer
 from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
@@ -51,9 +52,19 @@ urlpatterns = [
         name="if-admin",
     ),
     path(
+        "if/admin/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
+        name="if-admin-path",
+    ),
+    path(
         "if/user/",
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
+    ),
+    path(
+        "if/user/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/user.html"),
+        name="if-user-path",
     ),
     path(
         "if/flow/<slug:flow_slug>/",
@@ -87,6 +98,7 @@ api_urlpatterns = [
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
+    ("core/object_attributes", ObjectAttributeViewSet),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
     ("sources/group_connections/all", GroupSourceConnectionViewSet),
@@ -104,7 +116,7 @@ websocket_urlpatterns = [
     path(
         "ws/client/",
         ChannelsLoggingMiddleware(
-            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
+            TenantsAwareMiddleware(AuthMiddlewareStack(ClientConsumer.as_asgi()))
         ),
     ),
 ]

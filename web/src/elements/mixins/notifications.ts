@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { MessageLevel } from "#common/messages";
 
@@ -117,7 +117,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
             ): Promise<void> => {
                 this.#logger.debug(`Marking notification ${notificationID} as read...`);
 
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsNotificationsPartialUpdate(
                         {
                             uuid: notificationID || "",
@@ -131,7 +131,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
             };
 
             public clearNotifications = (): Promise<void> => {
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsNotificationsMarkAllSeenCreate()
                     .then(() => {
                         showMessage({

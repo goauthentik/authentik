@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvider, DualSelectPair, DualSelectPairSource } from "#elements/ak-dual-select/types";
 
@@ -12,7 +12,7 @@ const transportToSelect = (transport: NotificationTransport): TransportSelect =>
 ];
 
 export const eventTransportsProvider: DataProvider = async (page = 1, search = "") => {
-    const eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+    const eventTransports = await aki(EventsApi).eventsTransportsList({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),
@@ -36,7 +36,7 @@ export function eventTransportsSelector(
     }
 
     return (async () => {
-        const transportsApi = new EventsApi(DEFAULT_CONFIG);
+        const transportsApi = aki(EventsApi);
         const transports = await Promise.allSettled(
             instanceTransports.map((instanceId) =>
                 transportsApi.eventsTransportsRetrieve({ uuid: instanceId }),

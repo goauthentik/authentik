@@ -1,13 +1,14 @@
 import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -69,7 +70,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
             }
             data.file = file;
         }
-        const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate(data);
+        const result = await aki(ManagedApi).managedBlueprintsImportCreate(data);
         if (!result.success) {
             this.result = result;
             throw new PreventFormSubmit("Failed to import blueprint");
@@ -97,9 +98,9 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
     protected override renderForm(): TemplateResult {
         return html` <ak-toggle-group
                 value=${this.source}
-                @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
+                @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
                     this.reset();
-                    this.source = ev.detail.value;
+                    this.source = ev.value;
                 }}
             >
                 <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
@@ -152,9 +153,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                       <ak-search-select
                           placeholder=${msg("Select a blueprint...")}
                           .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
-                              const items = await new ManagedApi(
-                                  DEFAULT_CONFIG,
-                              ).managedBlueprintsAvailableList();
+                              const items = await aki(ManagedApi).managedBlueprintsAvailableList();
                               return items.filter((item) =>
                                   query ? item.path.includes(query) : true,
                               );

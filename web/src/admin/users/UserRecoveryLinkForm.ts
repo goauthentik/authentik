@@ -1,6 +1,6 @@
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
 
 import { Form } from "#elements/forms/Form";
@@ -13,7 +13,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-recovery-link-form")
 export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     @property({ attribute: false })
     public user!: User;

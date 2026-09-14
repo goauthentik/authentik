@@ -67,7 +67,7 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
     client_class = OpenIDConnectClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", None)
+        return str(info.get("sub") or info.get("id"))
 
 
 @registry.register()

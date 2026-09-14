@@ -65,6 +65,7 @@ class SCIMRedirectCallback(SCIMOAuthViewMixin, OAuthCallback):
                 "access_token": self.token.get("access_token"),
                 "refresh_token": self.token.get("refresh_token"),
                 "expires": now() + timedelta(seconds=expires_in),
+                "last_updated": now(),
             },
         )
         return redirect("authentik_core:if-admin")

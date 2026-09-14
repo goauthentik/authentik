@@ -2,7 +2,7 @@ import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/forms/SearchSelect/index";
 import "#admin/endpoints/connectors/agent/ConfigModal";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -122,9 +122,8 @@ export class AgentConnectorSetup extends AKElement {
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const token = await new EndpointsApi(
-                                DEFAULT_CONFIG,
-                            ).endpointsAgentsEnrollmentTokensList(args);
+                            const token =
+                                await aki(EndpointsApi).endpointsAgentsEnrollmentTokensList(args);
                             return token.results;
                         }}
                         .renderElement=${(token: EnrollmentToken): string => {

@@ -2,6 +2,7 @@ import "#elements/Alert";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
@@ -9,7 +10,7 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
-export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
+export class AKLicenseNotice extends WithLicenseSummary(AKElement) {
     public static styles = [
         css`
             ::part(container) {
@@ -34,7 +35,7 @@ export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
                 <a
                     aria-label="${this.label}"
                     aria-description="${this.description}"
-                    href="#/enterprise/licenses"
+                    href=${toAdminInterface("enterprise/licenses")}
                     >${this.label}</a
                 >
             </ak-alert>
@@ -44,6 +45,6 @@ export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-license-notice": AKLicenceNotice;
+        "ak-license-notice": AKLicenseNotice;
     }
 }

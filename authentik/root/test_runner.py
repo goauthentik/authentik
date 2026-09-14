@@ -1,6 +1,7 @@
 """Integrate ./manage.py test with pytest"""
 
 import os
+import re
 from argparse import ArgumentParser
 from unittest import TestCase
 from unittest.mock import patch
@@ -15,7 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
-from authentik.lib.sentry import sentry_init
+from authentik.lib.tracing import init as tracing_init
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.test import use_test_broker
 
@@ -30,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
@@ -87,7 +88,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         ASN_CONTEXT_PROCESSOR.load()
         GEOIP_CONTEXT_PROCESSOR.load()
 
-        sentry_init()
+        tracing_init()
         self.logger.debug("Test environment configured")
 
         self.task_broker = use_test_broker()

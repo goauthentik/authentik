@@ -7,10 +7,11 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -30,7 +31,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     public static override verboseName = msg("Role");
     public static override verboseNamePlural = msg("Roles");
 
-    #api = new RbacApi(DEFAULT_CONFIG);
+    #api = aki(RbacApi);
 
     @property({ attribute: false })
     public user: User | null = null;
@@ -113,7 +114,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
 
 @customElement("ak-related-role-table")
 export class RelatedRoleTable extends Table<Role> {
-    #api = new RbacApi(DEFAULT_CONFIG);
+    #api = aki(RbacApi);
 
     checkbox = true;
     clearOnRefresh = true;
@@ -230,7 +231,10 @@ export class RelatedRoleTable extends Table<Role> {
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
-        const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
+        const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
+                >${item.name}</a
+            >
+            ${inherited
                 ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
                       <span class="pf-c-label pf-m-outline pf-m-cyan">
                           <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>

@@ -5,10 +5,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -25,6 +26,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     public static override verboseName = msg("Group");
     public static override submitVerb = msg("Add");
+    public static override submittingVerb = msg("Adding");
     public static override createLabel = msg("Add");
 
     @property({ attribute: false })
@@ -40,7 +42,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                return aki(CoreApi).coreGroupsAddUserCreate({
                     groupUuid: group,
                     userAccountRequest: {
                         pk: this.user?.pk || 0,
@@ -115,7 +117,7 @@ export class RelatedGroupList extends Table<Group> {
     targetUser?: User;
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+        return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             membersByPk: this.targetUser ? [this.targetUser.pk] : [],
             includeUsers: false,
@@ -140,7 +142,7 @@ export class RelatedGroupList extends Table<Group> {
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                return aki(CoreApi).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {
                         pk: this.targetUser?.pk || 0,
@@ -156,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`identity/groups/${item.pk}`)}>${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<button
                 class="pf-c-button pf-m-plain"

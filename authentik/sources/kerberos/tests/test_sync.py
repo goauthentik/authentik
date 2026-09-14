@@ -1,7 +1,8 @@
 """Kerberos Source sync tests"""
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import User
+from authentik.core.models import Session, User
+from authentik.core.tests.utils import create_test_session
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
 from authentik.sources.kerberos.sync import KerberosSync
@@ -40,6 +41,21 @@ class TestKerberosSync(KerberosTestCase):
         self.assertFalse(
             User.objects.filter(username=self.realm.nfs_princ.rsplit("@", 1)[0]).exists()
         )
+
+    def test_sync_deactivate_expired_principal(self):
+        """Test that a user whose principal expired is deactivated and their sessions deleted"""
+        KerberosSync(self.source, Task()).sync()
+
+        user = User.objects.get(username=self.realm.user_princ.rsplit("@", 1)[0])
+        self.assertTrue(user.is_active)
+        session = create_test_session(user)
+
+        self.realm.run_kadminl(f'modprinc -expire "yesterday" {self.realm.user_princ}')
+        KerberosSync(self.source, Task()).sync()
+
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
 
     def test_sync_mapping(self):
         """Test property mappings"""

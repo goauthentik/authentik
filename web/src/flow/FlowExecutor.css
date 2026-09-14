@@ -1,10 +1,10 @@
-@import "../styles/authentik/components/Login/login.css";
+@import "#styles/authentik/components/Login/login-layout.css";
+@import "#styles/authentik/login.css";
 
-:host,
-ak-flow-executor.style-scope {
+:host {
     display: flex;
+    min-width: 100%;
     min-height: 100dvh;
-    flex-flow: column nowrap;
 }
 
 ak-flow-inspector-button {

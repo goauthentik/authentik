@@ -1,4 +1,5 @@
 import "#flow/components/ak-flow-card";
+import "#elements/Divider";
 
 import { loadTelegramWidget, TelegramUserResponse } from "./utils";
 
@@ -12,7 +13,6 @@ import { customElement } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -30,7 +30,6 @@ export class TelegramLogin extends BaseStage<
         PFFormControl,
         PFButton,
         PFTitle,
-        PFDivider,
     ];
 
     btnRef = createRef();
@@ -63,7 +62,7 @@ export class TelegramLogin extends BaseStage<
         return html` <ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Telegram...")}</span>
             <form class="pf-c-form">
-                <hr class="pf-c-divider" />
+                <ak-divider></ak-divider>
                 <p>${msg("Click the button below to start.")}</p>
 
                 <div ${ref(this.btnRef)}></div>

@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceTelegramForm extends BasePropertyMappingForm<TelegramSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<TelegramSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: TelegramSourcePropertyMapping): Promise<TelegramSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramUpdate({
-                pmUuid: this.instance.pk,
-                telegramSourcePropertyMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramCreate({
-            telegramSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramRetrieve({ pmUuid: pk }),
+        create: (telegramSourcePropertyMappingRequest: TelegramSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramCreate({
+                telegramSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, telegramSourcePropertyMappingRequest: TelegramSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceTelegramUpdate({
+                pmUuid: pk,
+                telegramSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

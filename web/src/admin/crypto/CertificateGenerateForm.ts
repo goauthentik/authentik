@@ -3,7 +3,7 @@ import "#components/ak-number-input";
 import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
 
@@ -30,7 +30,7 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
     }
 
     async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({
+        return aki(CryptoApi).cryptoCertificatekeypairsGenerateCreate({
             certificateGenerationRequest: data,
         });
     }

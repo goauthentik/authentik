@@ -2,7 +2,7 @@ import "#elements/forms/FormGroup";
 
 import { renderForm } from "./WSFederationProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import AkCryptoCertificateSearch from "#admin/common/ak-crypto-certificate-search";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
@@ -21,7 +21,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<WSFederationProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersWsfedRetrieve({
+        const provider = await aki(ProvidersApi).providersWsfedRetrieve({
             id: pk,
         });
         this.hasSigningKp = !!provider.signingKp;
@@ -30,12 +30,12 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
 
     async send(data: WSFederationProvider): Promise<WSFederationProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersWsfedUpdate({
+            return aki(ProvidersApi).providersWsfedUpdate({
                 id: this.instance.pk,
                 wSFederationProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersWsfedCreate({
+        return aki(ProvidersApi).providersWsfedCreate({
             wSFederationProviderRequest: data,
         });
     }

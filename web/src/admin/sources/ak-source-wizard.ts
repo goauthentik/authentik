@@ -8,7 +8,7 @@ import "#admin/sources/telegram/TelegramSourceForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/Wizard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { LitPropertyRecord } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
@@ -23,7 +23,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 
 @customElement("ak-source-wizard")
 export class AKSourceWizard extends CreateWizard {
-    #api = new SourcesApi(DEFAULT_CONFIG);
+    #api = aki(SourcesApi);
 
     public static override verboseName = msg("Source");
     public static override verboseNamePlural = msg("Sources");

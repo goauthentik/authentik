@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -16,23 +16,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-dummy-form")
 export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
-    loadInstance(pk: string): Promise<DummyPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: DummyPolicy): Promise<DummyPolicy> {
-        if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
-                policyUuid: this.instance.pk || "",
-                dummyPolicyRequest: data,
-            });
-        }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-            dummyPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesDummyRetrieve({
+                policyUuid,
+            }),
+        create: (dummyPolicyRequest: DummyPolicy) =>
+            aki(PoliciesApi).policiesDummyCreate({
+                dummyPolicyRequest,
+            }),
+        update: (policyUuid: string, dummyPolicyRequest: DummyPolicy) =>
+            aki(PoliciesApi).policiesDummyUpdate({
+                policyUuid,
+                dummyPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<span>

@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -61,18 +61,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
+            return aki(StagesApi).stagesPromptPromptsUpdate({
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+        return aki(StagesApi).stagesPromptPromptsCreate({
             promptRequest: data,
         });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
-        const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
+        const prompt = await aki(StagesApi).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
         await this.refreshPreview(prompt);
@@ -86,7 +86,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             return;
         }
 
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesPromptPromptsPreviewCreate({
                 promptRequest,
             })

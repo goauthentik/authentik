@@ -10,13 +10,17 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import (
+    PLAN_CONTEXT_SOURCE_MATCH_FAILURE,
+    PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG,
     SESSION_KEY_OVERRIDE_FLOW_TOKEN,
     SESSION_KEY_SOURCE_FLOW_CONTEXT,
     SESSION_KEY_SOURCE_FLOW_STAGES,
+    MatchFailureConfig,
+    clear_source_flow_session,
 )
 from authentik.core.types import UILoginButton
 from authentik.enterprise.stages.source.models import SourceStage
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import Challenge, ChallengeResponse, HttpChallengeResponse
 from authentik.flows.models import FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_REDIRECTED, PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView, StageView
@@ -46,11 +50,23 @@ class SourceStageView(ChallengeStageView):
         restore_token = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED)
         override_token = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
         if restore_token and override_token and restore_token.pk == override_token.pk:
-            del self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN]
+            clear_source_flow_session(self.request)
+            self.executor.plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG, None)
             return self.executor.stage_ok()
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        current_stage: SourceStage = self.executor.current_stage
+        self.executor.plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE, None)
+        self.executor.plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG, None)
+        if current_stage.resume_on_match_failures:
+            self.executor.plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG] = (
+                MatchFailureConfig(
+                    reasons=current_stage.resume_on_match_failures,
+                    source_pk=str(current_stage.source_id),
+                    stage_pk=str(current_stage.pk),
+                )
+            )
         resume_token = self.create_flow_token()
         self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
         self.request.session[SESSION_KEY_SOURCE_FLOW_STAGES] = [in_memory_stage(SourceStageFinal)]
@@ -84,7 +100,8 @@ class SourceStageView(ChallengeStageView):
         return token
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        return self.executor.stage_ok()
+        # Completion happens via dispatch(), not here.
+        return HttpChallengeResponse(self._get_challenge())
 
 
 class SourceStageFinal(StageView):
@@ -95,9 +112,22 @@ class SourceStageFinal(StageView):
 
     def dispatch(self, *args, **kwargs):
         token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        if not token:
+            clear_source_flow_session(self.request)
+            return self.executor.stage_invalid("Flow token is invalid or expired")
+        try:
+            token.refresh_from_db()
+        except FlowToken.DoesNotExist:
+            clear_source_flow_session(self.request)
+            return self.executor.stage_invalid("Flow token is invalid or expired")
+        if token.is_expired:
+            token.expire_action()
+            clear_source_flow_session(self.request)
+            return self.executor.stage_invalid("Flow token is invalid or expired")
         self.logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
         plan = token.plan
         plan.context.update(self.executor.plan.context)
+        plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG, None)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         response = plan.to_redirect(self.request, token.flow)
         token.delete()

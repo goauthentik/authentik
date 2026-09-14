@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a SCIM provider: Overview, Changelog, Permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
@@ -7,16 +11,17 @@ import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/tasks/TaskList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { SSFProviderFormPage } from "#admin/providers/ssf/SSFProviderFormPage";
 
@@ -35,11 +40,13 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+const PROVIDER_MODEL = ModelEnum.AuthentikProvidersSsfSsfprovider;
+
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersSsfRetrieve({
                 id: value,
             })
@@ -76,7 +83,7 @@ export class SSFProviderViewPage extends AKElement {
             return nothing;
         }
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -119,7 +126,7 @@ export class SSFProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -146,7 +153,11 @@ export class SSFProviderViewPage extends AKElement {
                                       ${this.provider.oidcAuthProvidersObj.map((provider) => {
                                           return html`
                                               <li>
-                                                  <a href="#/core/providers/${provider.pk}">
+                                                  <a
+                                                      href=${toAdminInterface(
+                                                          `core/providers/${provider.pk}`,
+                                                      )}
+                                                  >
                                                       ${provider.name}
                                                   </a>
                                               </li>
@@ -174,13 +185,8 @@ export class SSFProviderViewPage extends AKElement {
                 <ak-provider-ssf-stream-list .providerId=${this.providerID}>
                 </ak-provider-ssf-stream-list>
             </div>
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
-                <div class="pf-c-card__title">${msg("Tasks")}</div>
-                <ak-task-list
-                    .relObjAppLabel=${appLabel}
-                    .relObjModel=${modelName}
-                    .relObjId="${this.provider.pk}"
-                ></ak-task-list>
+            <div class="pf-l-grid__item pf-m-12-col-on-2xl">
+                ${taskCard(PROVIDER_MODEL, this.provider.pk)}
             </div>
         </div>`;
     }

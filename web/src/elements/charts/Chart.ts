@@ -41,8 +41,8 @@ Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
 Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
-export const FONT_COLOUR_DARK_MODE = "#fafafa";
-export const FONT_COLOUR_LIGHT_MODE = "#151515";
+export const FONT_COLOR_DARK_MODE = "#fafafa";
+export const FONT_COLOR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
     public role = "figure";
@@ -59,7 +59,7 @@ export abstract class AKChart<T> extends AKElement {
     @property()
     centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    fontColor = FONT_COLOR_LIGHT_MODE;
 
     static styles: CSSResult[] = [
         css`
@@ -91,9 +91,9 @@ export abstract class AKChart<T> extends AKElement {
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
         this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+                this.fontColor = FONT_COLOR_LIGHT_MODE;
             } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
+                this.fontColor = FONT_COLOR_DARK_MODE;
             }
             this.chart?.update();
         }) as EventListener);

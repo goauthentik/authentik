@@ -32,14 +32,14 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 		if oldSb, ok := oldBinder.(*SessionBinder); ok {
 			sb.DirectBinder = oldSb.DirectBinder
 			sb.sessions = oldSb.sessions
-			sb.log.Debug("re-initialised session binder")
+			sb.log.Debug("re-initialized session binder")
 			return sb
 		}
 	}
 	sb.sessions = ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]())
 	sb.DirectBinder = *direct.NewDirectBinder(si)
 	go sb.sessions.Start()
-	sb.log.Debug("initialised session binder")
+	sb.log.Debug("initialized session binder")
 	return sb
 }
 

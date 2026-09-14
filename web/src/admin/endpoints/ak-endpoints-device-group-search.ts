@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -21,7 +21,7 @@ async function fetchObjects(query?: string): Promise<DeviceAccessGroup[]> {
     if (query !== undefined) {
         args.search = query;
     }
-    const groups = await new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsList(args);
+    const groups = await aki(EndpointsApi).endpointsDeviceAccessGroupsList(args);
     return groups.results;
 }
 

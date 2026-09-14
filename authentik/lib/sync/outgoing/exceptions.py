@@ -1,9 +1,9 @@
 from json import JSONDecodeError
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
-class BaseSyncException(SentryIgnoredException):
+class BaseSyncException(TracingIgnoredException):
     """Base class for all sync exceptions"""
 
     error_prefix = "Sync error"

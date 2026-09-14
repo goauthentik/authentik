@@ -1,9 +1,10 @@
 import "#components/ak-event-info";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -26,7 +27,7 @@ export abstract class SimpleEventTable extends Table<Event> {
     expandable = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
             ...(await this.apiParameters()),
@@ -46,7 +47,11 @@ export abstract class SimpleEventTable extends Table<Event> {
 
     row(item: EventWithContext): RowType[] {
         return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
+            html`<div>
+                    <a href=${toAdminInterface(`events/log/${item.pk}`)}
+                        >${actionToLabel(item.action)}</a
+                    >
+                </div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
             [Timestamp(item.created), { style: "white-space: nowrap;" }],

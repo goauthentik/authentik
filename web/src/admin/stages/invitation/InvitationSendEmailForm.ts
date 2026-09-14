@@ -1,7 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#components/ak-textarea-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
@@ -21,7 +21,7 @@ interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
     ccAddresses?: string;
     bccAddresses?: string;
-    template?: TypeCreate;
+    template?: string;
 }
 
 @customElement("ak-invitation-send-email-form")
@@ -41,9 +41,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
     fetchAvailableTemplates = async (): Promise<void> => {
         try {
-            this.availableTemplates = await new StagesApi(
-                DEFAULT_CONFIG,
-            ).stagesEmailTemplatesList();
+            this.availableTemplates = await aki(StagesApi).stagesEmailTemplatesList();
         } catch (error) {
             console.error("Failed to fetch email templates:", error);
         }
@@ -80,13 +78,13 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
         }
 
         try {
-            await new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsSendEmailCreate({
+            await aki(StagesApi).stagesInvitationInvitationsSendEmailCreate({
                 inviteUuid: this.invitation?.pk || "",
                 invitationSendEmailRequest: {
                     emailAddresses: addresses,
                     ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
                     bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
-                    template: data.template?.name,
+                    template: data.template,
                 },
             });
 

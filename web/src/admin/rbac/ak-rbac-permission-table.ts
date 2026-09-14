@@ -1,6 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -22,7 +22,7 @@ export class RBACPermissionTable extends Table<Permission> {
     public override order = "content_type__app_label,content_type__model";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
+        return aki(RbacApi).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
     protected override groupBy(items: Permission[]): [string, Permission[]][] {

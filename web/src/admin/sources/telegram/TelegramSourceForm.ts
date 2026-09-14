@@ -8,7 +8,7 @@ import "#components/ak-switch-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -29,27 +29,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
-    async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
-            slug: pk,
-        });
-        return source;
-    }
-
-    async send(data: TelegramSource): Promise<TelegramSource> {
-        let source: TelegramSource;
-        if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramPartialUpdate({
-                slug: this.instance.slug,
-                patchedTelegramSourceRequest: data,
-            });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramCreate({
-                telegramSourceRequest: data as unknown as TelegramSourceRequest,
-            });
-        }
-        return source;
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesTelegramRetrieve({ slug }),
+        create: (telegramSource: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramCreate({
+                telegramSourceRequest: telegramSource as unknown as TelegramSourceRequest,
+            }),
+        update: (slug: string, patchedTelegramSourceRequest: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramPartialUpdate({ slug, patchedTelegramSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
@@ -134,6 +122,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}

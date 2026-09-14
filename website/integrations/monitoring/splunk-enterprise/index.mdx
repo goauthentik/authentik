@@ -4,6 +4,7 @@ sidebar_label: Splunk Enterprise
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -18,19 +19,21 @@ import Tabs from "@theme/Tabs";
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `splunk.company` is the FQDN of the Splunk Enterprise instance.
+- `splunk.company` is the browser-facing FQDN of the Splunk Enterprise instance.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 :::warning Lockout
-Errors in the Splunk SAML configuration can lock users out of Splunk Enterprise. Keep a local Splunk administrator account available while configuring SAML. You can reach the local login page at `https://splunk.company:8000/en-US/account/login?loginType=Splunk`.
+Errors in the Splunk SAML configuration can lock users out of Splunk Enterprise. Keep a local Splunk administrator account available while configuring SAML. You can reach the local login page at `https://splunk.company/en-US/account/login?loginType=Splunk`.
 :::
 
 ## authentik configuration
 
 To support the integration of Splunk Enterprise with authentik, you need to create and import a self-signed certificate, create SAML property mappings, create an application/provider pair, and create application entitlements for the Splunk roles users should receive.
+
+To forward authentik events to Splunk Enterprise, see [Forward events to Splunk Enterprise](/log-forwarding/splunk-enterprise/).
 
 ### Create and import a self-signed certificate
 
@@ -107,14 +110,16 @@ Splunk expects the SAML assertion to include user role, email, and display name 
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set the **ACS URL** to `https://splunk.company:8000/saml/acs`.
-        - Set the **Audience** to `https://splunk.company:8000`.
-        - Set the **SLS URL** to `https://splunk.company:8000/saml/logout`.
+        - Set the **ACS URL** to `https://splunk.company/saml/acs`.
+        - Set the **Audience** to `https://splunk.company`.
+        - Set the **SLS URL** to `https://splunk.company/saml/logout`.
         - Under **Advanced protocol settings**:
             - Set **Signing Certificate** to the self-signed certificate that you imported earlier.
             - Enable **Sign assertions** and **Sign responses**.
@@ -153,10 +158,13 @@ For this integration, each entitlement name must exactly match the Splunk SAML g
 4. Click **SAML Configuration**.
 5. Configure the SAML settings:
     - Upload the metadata file from authentik by dragging it into the drop zone, or paste the metadata contents into the **Metadata contents** text area.
-    - Set **Entity ID** to `https://splunk.company:8000`. This value must match the **Audience** value in authentik.
+    - Set **Entity ID** to `https://splunk.company`. This value must match the **Audience** value in authentik.
     - If Splunk does not populate the certificate from metadata, copy the contents of the authentik signing certificate, starting with `-----BEGIN CERTIFICATE-----`, into **IdP certificate chains**.
-    - Under **Advanced Settings**, set **FQDN - Host Name or IP address of the load balancer** to `https://splunk.company`.
+    - Under **Advanced Settings**, set **FQDN - Host Name or IP address of the load balancer** to `splunk.company`.
+    - Under **Advanced Settings**, set **Redirect port - load balancer port** to the browser-facing HTTPS port, usually `443`.
 6. Click **Save**.
+
+Use the same browser-facing Splunk Enterprise URL in authentik and Splunk Enterprise. Do not use an internal backend URL or IP address for the SAML **ACS URL**, **Audience**, **Entity ID**, or load balancer settings unless users open Splunk Enterprise through that same URL.
 
 ### Configure group mappings
 
@@ -165,24 +173,25 @@ Splunk maps values from the SAML `role` attribute to Splunk roles. The authentik
 1. Log in to Splunk Enterprise with a local administrator account.
 2. In the Splunk bar, navigate to **Settings** > **Users and authentication** > **Authentication methods**.
 3. Click **Configure Splunk to use SAML**.
-4. In the top right, click **New Group**.
-5. Configure the mapping:
+4. If the **SAML Configuration** dialog opens, click **Cancel** to return to the SAML groups page.
+5. Click **New Group**.
+6. Configure the mapping:
     - **Group name**: enter the authentik application entitlement name, for example `splunk-user`.
     - **Splunk roles**: select the Splunk role or roles to assign, for example `user`.
-6. Click **Save**.
-7. Repeat these steps for each Splunk role entitlement.
+7. Click **Save**.
+8. Repeat these steps for each Splunk role entitlement.
 
-:::note
+:::note Auto-mapped roles
 Splunk can auto-map SAML role values to local Splunk roles with the same name. Explicit group mappings are recommended because they make authorization easier to review and avoid accidentally granting roles when an entitlement name matches a Splunk role.
 :::
 
 ## Configuration verification
 
-To verify the integration of authentik with Splunk Enterprise, navigate to the authentik User interface and click the Splunk Enterprise application to initiate a Single Sign-On login. Upon successful login, you should be redirected to Splunk Enterprise and have the appropriate permissions set by your application entitlements.
+To verify SAML login, navigate to the authentik User interface and click the Splunk Enterprise application to initiate a Single Sign-On login. Upon successful login, you should be redirected to Splunk Enterprise and have the appropriate permissions set by your application entitlements.
 
 ## Resources
 
-- [Splunk Enterprise Documentation - Configure SSO with Okta as your identity provider](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-sso-with-okta-as-your-identity-provider)
-- [Splunk Enterprise Documentation - Configure SAML SSO for other IdPs](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-saml-sso-for-other-idps)
-- [Splunk Enterprise Documentation - Map groups on a SAML identity provider to Splunk roles](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/map-groups-on-a-saml-identity-provider-to-splunk-roles)
-- [Splunk Enterprise Documentation - Troubleshoot SAML SSO](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/troubleshoot-saml-sso)
+- [Splunk Enterprise Documentation - Configure single sign-on with SAML](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-single-sign-on-with-saml)
+- [Splunk Enterprise Documentation - Configure SAML SSO for other IdPs](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-saml-sso-for-other-idps)
+- [Splunk Enterprise Documentation - Map groups on a SAML identity provider to Splunk roles](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/map-groups-on-a-saml-identity-provider-to-splunk-roles)
+- [Splunk Enterprise Documentation - Troubleshoot SAML SSO](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/troubleshoot-saml-sso)

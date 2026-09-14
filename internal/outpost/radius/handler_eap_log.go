@@ -1,6 +1,9 @@
 package radius
 
 import (
+	"fmt"
+	"strconv"
+
 	"beryju.io/radius-eap/protocol"
 	"github.com/sirupsen/logrus"
 )
@@ -38,9 +41,28 @@ func (i *iter) At() (k string, v any) {
 
 	if i.i+1 == len(i.f) {
 		// Non even number of elements, add empty string.
-		return i.f[i.i].(string), ""
+		return toString(i.f[i.i]), ""
 	}
-	return i.f[i.i].(string), i.f[i.i+1]
+	return toString(i.f[i.i]), i.f[i.i+1]
+}
+
+func toString(v any) string {
+	switch t := v.(type) {
+	case string:
+		return t
+	case *string:
+		return *t
+	case bool:
+		return strconv.FormatBool(t)
+	case float32:
+		return strconv.FormatFloat(float64(t), 'f', -1, 64)
+	case float64:
+		return strconv.FormatFloat(t, 'f', -1, 64)
+	case int:
+		return strconv.FormatInt(int64(t), 10)
+	default:
+		return fmt.Sprintf("%s", t)
+	}
 }
 
 type logrusAdapter struct {

@@ -3,12 +3,14 @@
 from time import sleep
 from unittest.mock import patch
 
+from django.conf import settings
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import AuthenticatedSession, Session
+from authentik.core import user_switching
+from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
@@ -56,6 +58,37 @@ class TestUserLoginStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
+    def test_stale_user_switching_cookie_is_replaced(self):
+        """A signed cookie without a switching session does not break login."""
+        stale_token = generate_id(user_switching.TOKEN_LENGTH)
+        self.client.cookies[settings.USER_SWITCHING_COOKIE_NAME] = user_switching.encode_cookie(
+            stale_token
+        )
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex,
+            bindings=[self.binding],
+            markers=[StageMarker()],
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        switching_session = UserSwitchingSession.objects.get(authenticated_sessions__user=self.user)
+        self.assertNotEqual(switching_session.token, stale_token)
+        self.assertEqual(
+            user_switching.decode_cookie(
+                self.client.cookies[settings.USER_SWITCHING_COOKIE_NAME].value
+            ),
+            switching_session.token,
+        )
+
     def test_valid_post(self):
         """Test with a valid pending user and backend"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -70,6 +103,43 @@ class TestUserLoginStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_session_fixation_key_rotated_on_login(self):
+        """Security regression (CWE-384): the session key must rotate on login
+        so a pre-login session identifier known to an attacker can't be reused.
+        Django's ``login()`` provides this via ``cycle_key()``; pinned here
+        end-to-end through the flow executor and custom session backend."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        pre_login_key = session.session_key
+        self.assertIsNotNone(pre_login_key)
+        # Unauthenticated session persisted before login...
+        self.assertTrue(Session.objects.filter(session_key=pre_login_key).exists())
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        post_login_key = self.client.session.session_key
+        # ...the identifier must change on authentication...
+        self.assertIsNotNone(post_login_key)
+        self.assertNotEqual(pre_login_key, post_login_key)
+        # ...the pre-login key must no longer exist...
+        self.assertFalse(Session.objects.filter(session_key=pre_login_key).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=pre_login_key).exists()
+        )
+        # ...and only the rotated key may be bound to the authenticated user.
+        self.assertTrue(
+            AuthenticatedSession.objects.filter(
+                session__session_key=post_login_key, user=self.user
+            ).exists()
+        )
 
     def test_terminate_other_sessions(self):
         """Test terminate_other_sessions"""
@@ -98,6 +168,60 @@ class TestUserLoginStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertFalse(AuthenticatedSession.objects.filter(session__session_key=key))
         self.assertFalse(Session.objects.filter(session_key=key).exists())
+
+    def test_second_login_replaces_existing_session(self):
+        """Test ordinary cross-user login keeps Django's session replacement behavior."""
+        other_user = create_test_user()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        first_session_key = self.client.session.session_key
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = other_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        second_session_key = self.client.session.session_key
+        self.assertNotEqual(first_session_key, second_session_key)
+        second = AuthenticatedSession.objects.get(session__session_key=second_session_key)
+        self.assertEqual(second.user, other_user)
+        self.assertTrue(second.is_current)
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=first_session_key).exists()
+        )
+        self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
+
+    def test_relogin_same_user_keeps_single_session(self):
+        """Test re-logging in as the same user doesn't accumulate sessions"""
+        for _ in range(2):
+            plan = FlowPlan(
+                flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+            )
+            plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+            session = self.client.session
+            session[SESSION_KEY_PLAN] = plan
+            session.save()
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            )
+            self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(AuthenticatedSession.objects.filter(user=self.user).count(), 1)
+        self.assertIsNotNone(
+            AuthenticatedSession.objects.get(user=self.user).user_switching_session_id
+        )
 
     def test_expiry(self):
         """Test with expiry"""
@@ -221,6 +345,21 @@ class TestUserLoginStage(FlowTestCase):
             error_message="Flow does not apply to current user.",
         )
 
+    def test_unsaved_pending_user(self):
+        """Test that a pending user with no pk (unsaved) causes stage_invalid."""
+        unsaved = User()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = unsaved
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
+
     def test_binding_net_break_log(self):
         """Test logout_extra with exception"""
         # IPs from https://github.com/maxmind/MaxMind-DB/blob/main/source-data/GeoLite2-ASN-Test.json
@@ -286,7 +425,7 @@ class TestUserLoginStage(FlowTestCase):
             reverse(
                 "authentik_flows:default-authentication",
             )
-            + f"?{NEXT_ARG_NAME}={reverse("authentik_api:user-me")}",
+            + f"?{NEXT_ARG_NAME}={reverse('authentik_api:user-me')}",
         )
         event = Event.objects.filter(action=EventAction.LOGOUT).first()
         self.assertEqual(event.user, get_user(self.user))

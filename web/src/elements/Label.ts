@@ -14,7 +14,7 @@ export enum PFColor {
     Orange = "pf-m-orange",
     Red = "pf-m-red",
     Blue = "pf-m-blue",
-    Grey = "",
+    Gray = "",
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
@@ -26,7 +26,7 @@ const chromeList: Chrome[] = [
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
     ["success", PFColor.Green, "pf-m-green", "fa-check"],
     ["running", PFColor.Blue, "pf-m-blue", "fa-clock"],
-    ["info", PFColor.Grey, "pf-m-grey", "fa-info-circle"],
+    ["info", PFColor.Gray, "pf-m-grey", "fa-info-circle"],
 ];
 
 export interface ILabel {
@@ -38,7 +38,7 @@ export interface ILabel {
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
     @property()
-    color: PFColor = PFColor.Grey;
+    color: PFColor = PFColor.Gray;
 
     @property()
     icon?: string;

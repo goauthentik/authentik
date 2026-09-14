@@ -2,7 +2,7 @@ import { checkObjectShallowEquality } from "#common/collections";
 
 import { AKElement } from "#elements/Base";
 import { asInvoker, type ModalTemplate } from "#elements/dialogs/invokers";
-import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
 import { ElementConstructorBoundary } from "#elements/errors/boundaries";
 import type { LitPropertyRecord } from "#elements/types";
 import { isAKElementConstructor, StrictUnsafe } from "#elements/utils/unsafe";
@@ -101,13 +101,13 @@ export class ModalInvokerDirective extends Directive {
 
 export type ModalInvokerDirectiveResult = DirectiveResult<typeof ModalInvokerDirective>;
 
-export type ModalInvoker = <T extends ModalTemplate | TransclusionElementConstructor>(
+export type ModalInvoker = <T extends ModalTemplate | NamedEntityElementConstructor>(
     factory: T,
     /**
      * Optional props to pass to the custom element constructor when the factory is a constructor.
      * Ignored if the factory is a ModalTemplate function.
      */
-    props?: T extends TransclusionElementConstructor
+    props?: T extends NamedEntityElementConstructor
         ? LitPropertyRecord<InstanceType<T>> | null
         : null,
     options?: DialogInit,

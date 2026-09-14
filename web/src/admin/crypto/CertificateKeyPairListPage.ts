@@ -7,7 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
@@ -46,7 +46,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+        return aki(CryptoApi).cryptoCertificatekeypairsList({
             ...(await this.defaultEndpointConfig()),
         });
     }
@@ -71,12 +71,12 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 ];
             }}
             .usedBy=${(item: CertificateKeyPair) => {
-                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsUsedByList({
+                return aki(CryptoApi).cryptoCertificatekeypairsUsedByList({
                     kpUuid: item.pk,
                 });
             }}
             .delete=${(item: CertificateKeyPair) => {
-                return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDestroy({
+                return aki(CryptoApi).cryptoCertificatekeypairsDestroy({
                     kpUuid: item.pk,
                 });
             }}

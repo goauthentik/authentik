@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthUpdate({
-                pmUuid: this.instance.pk,
-                oAuthSourcePropertyMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
-            oAuthSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthRetrieve({ pmUuid: pk }),
+        create: (oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthCreate({
+                oAuthSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthUpdate({
+                pmUuid: pk,
+                oAuthSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

@@ -3,10 +3,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
 import { ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -46,13 +47,13 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         if (!this.objectPk || !this.model) {
             return createPaginatedResponse([]);
         }
-        const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
+        const perms = await aki(RbacApi).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             model: this.model,
             objectPk: this.objectPk.toString(),
         });
         const [appLabel, modelName] = this.model.split(".");
-        const modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+        const modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -92,9 +93,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 return [{ key: msg("Permission"), value: item.name }];
             }}
             .delete=${(item: RoleAssignedObjectPermission) => {
-                return new RbacApi(
-                    DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: item.rolePk,
                     patchedPermissionAssignRequest: {
                         objectPk: this.objectPk?.toString(),
@@ -113,7 +112,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     protected override row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
-        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
+        const baseRow = [
+            html` <a href=${toAdminInterface(`identity/roles/${item.rolePk}`)}>${item.name}</a>`,
+        ];
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,

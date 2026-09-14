@@ -1,8 +1,9 @@
 import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -23,7 +24,7 @@ export class UserApplicationTable extends Table<Application> {
     static styles: CSSResult[] = [...super.styles, applicationListStyle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             forUser: this.user?.pk,
         });
@@ -40,14 +41,18 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIconUrl)}></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifPresent(item.metaIconUrl)}
+                .iconThemedUrls=${item.metaIconThemedUrls}
+            ></ak-app-icon>`,
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             html`${item.group || msg("-")}`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,

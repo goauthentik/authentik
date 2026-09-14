@@ -5,9 +5,10 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -40,7 +41,7 @@ export class GroupListPage extends TablePage<Group> {
     public order = "name";
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+        return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
@@ -59,12 +60,12 @@ export class GroupListPage extends TablePage<Group> {
             object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
+                return aki(CoreApi).coreGroupsUsedByList({
                     groupUuid: item.pk,
                 });
             }}
             .delete=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
+                return aki(CoreApi).coreGroupsDestroy({
                     groupUuid: item.pk,
                 });
             }}
@@ -78,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
     protected row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/groups/${item.pk}"
+                href=${toAdminInterface(`identity/groups/${item.pk}`)}
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,

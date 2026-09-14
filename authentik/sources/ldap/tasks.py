@@ -21,7 +21,10 @@ from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
 from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import (
+    GroupHierarchyLDAPSynchronizer,
+    MembershipLDAPSynchronizer,
+)
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
@@ -31,6 +34,7 @@ SYNC_CLASSES: list[type[BaseLDAPSynchronizer]] = [
     UserLDAPSynchronizer,
     GroupLDAPSynchronizer,
     MembershipLDAPSynchronizer,
+    GroupHierarchyLDAPSynchronizer,
 ]
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
@@ -71,7 +75,10 @@ def ldap_sync(source_pk: str):
             + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
         )
 
-        membership_tasks = group(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
+        membership_tasks = group(
+            ldap_sync_paginator(task, source, MembershipLDAPSynchronizer)
+            + ldap_sync_paginator(task, source, GroupHierarchyLDAPSynchronizer)
+        )
 
         deletion_tasks = group(
             ldap_sync_paginator(task, source, UserLDAPForwardDeletion)

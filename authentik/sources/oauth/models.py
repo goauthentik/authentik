@@ -37,28 +37,24 @@ class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
-    request_token_url = models.CharField(
+    request_token_url = models.TextField(
         null=True,
-        max_length=255,
         verbose_name=_("Request Token URL"),
         help_text=_(
             "URL used to request the initial token. This URL is only required for OAuth 1."
         ),
     )
-    authorization_url = models.CharField(
-        max_length=255,
+    authorization_url = models.TextField(
         null=True,
         verbose_name=_("Authorization URL"),
         help_text=_("URL the user is redirect to to conest the flow."),
     )
-    access_token_url = models.CharField(
-        max_length=255,
+    access_token_url = models.TextField(
         null=True,
         verbose_name=_("Access Token URL"),
         help_text=_("URL used by authentik to retrieve tokens."),
     )
-    profile_url = models.CharField(
-        max_length=255,
+    profile_url = models.TextField(
         null=True,
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
@@ -251,17 +247,6 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
-class AzureADOAuthSource(CreatableType, OAuthSource):
-    """(Deprecated) Social Login using Azure AD."""
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Azure AD OAuth Source")
-        verbose_name_plural = _("Azure AD OAuth Sources")
-
-
-# TODO: When removing this, add a migration for OAuthSource that sets
-# provider_type to `entraid` if it is currently `azuread`
 class EntraIDOAuthSource(CreatableType, OAuthSource):
     """Social Login using Entra ID."""
 

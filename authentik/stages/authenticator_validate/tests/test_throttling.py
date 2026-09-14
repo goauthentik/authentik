@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
+from freezegun import freeze_time
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -222,19 +223,20 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
         # Server generated and stored the token - grab it from DB.
         device.refresh_from_db()
         token = device.token
-        # First attempt: bad code - must increment the DB counter.
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": "000000"},
-        )
-        device.refresh_from_db()
-        self.assertEqual(device.throttling_failure_count, 1)
-        self.assertEqual(device.token, token)
-        # Second attempt with the correct token - still blocked.
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": token},
-        )
+        with freeze_time():
+            # First attempt: bad code - must increment the DB counter.
+            self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                {"component": "ak-stage-authenticator-validate", "code": "000000"},
+            )
+            device.refresh_from_db()
+            self.assertEqual(device.throttling_failure_count, 1)
+            self.assertEqual(device.token, token)
+            # Second attempt with the correct token - still blocked.
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                {"component": "ak-stage-authenticator-validate", "code": token},
+            )
         self.assertStageResponse(
             response,
             flow=self.flow,
