@@ -2,6 +2,7 @@
 
 from collections.abc import Iterator
 from copy import copy
+from re import compile as re_compile
 
 from django.core.cache import cache
 from django.db.models import Case, QuerySet
@@ -13,7 +14,14 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    ListField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -24,7 +32,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
@@ -49,6 +57,148 @@ def user_app_cache_key(
     return key
 
 
+#: Only these schemes are accepted for administrator-supplied link URLs.
+#: Anything else — `javascript:` in particular — would be stored XSS on an
+#: identity provider.
+ALLOWED_LINK_SCHEMES = ("http://", "https://")
+
+#: A URI scheme at the start of a value, as RFC 3986 defines one. Used to tell a
+#: value that omits its scheme from one that carries a scheme we refuse: the
+#: first is completed, the second is rejected.
+SCHEME_PREFIX = re_compile(r"^[a-zA-Z][a-zA-Z0-9+.\-]*:")
+
+
+class ApplicationLinkSerializer(PassiveSerializer):
+    """A single additional link shown on an application card."""
+
+    label = CharField(
+        max_length=150,
+        help_text=_("Shown as the link's tooltip and accessible name."),
+    )
+    url = CharField(max_length=500)
+    icon = CharField(
+        max_length=500,
+        required=False,
+        allow_blank=True,
+        default="",
+        help_text=_(
+            "Optional. Same convention as an application icon: an uploaded "
+            "file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph."
+        ),
+    )
+
+    def validate_url(self, url: str) -> str:
+        """Default a scheme-less URL to HTTPS, then reject anything but HTTP(S).
+
+        An administrator types `example.com` far more readily than
+        `https://example.com`, and refusing that is a papercut with nothing behind
+        it: the value is unambiguous, and HTTPS is the only sane default to read
+        into it.
+
+        A value that already carries a scheme is never rewritten. That is what
+        keeps this from becoming a hole: `javascript:alert(1)` is rejected rather
+        than quietly turned into `https://javascript:alert(1)`.
+        """
+        url = url.strip()
+        if url and not SCHEME_PREFIX.match(url):
+            # `//example.com` means "same scheme as the page", which has no
+            # meaning stored in a database. Treated as scheme-less.
+            url = f"https://{url.removeprefix('//')}"
+        if not url.lower().startswith(ALLOWED_LINK_SCHEMES):
+            raise ValidationError(_("Link URLs must start with http:// or https://."))
+        return url
+
+
+#: Horizontal alignment of the heading above the row.
+#:
+#: Physical rather than logical on purpose. An administrator sets this once and
+#: every user sees the result, whatever their locale: with logical values a
+#: reader in a right-to-left language would get the mirror of what was chosen,
+#: so the setting would not mean the same thing to everyone.
+LINK_ALIGNMENTS = ("left", "center", "right")
+
+#: Shape a bare list is read as. The historical value carried links only, and an
+#: administrator who had entered links meant them to show.
+LEGACY_DEFAULTS = {"enabled": True, "address": False, "title": "", "align": "center"}
+
+
+# Everything this block needs lives in the single `application_links` JSON column:
+# the two switches, the row heading and the links themselves. Separate columns
+# would each cost a migration for settings that are only ever read and written
+# together, and that no query ever filters on.
+#
+# Kept as a comment rather than a docstring on purpose: a serializer docstring is
+# published verbatim in the OpenAPI schema, where implementation rationale does
+# not belong.
+class ApplicationLinksSerializer(PassiveSerializer):
+    """Additional links shown under an application card, with their display settings."""
+
+    enabled = BooleanField(
+        required=False,
+        default=False,
+        help_text=_("Show the additional links under this application's card."),
+    )
+    address = BooleanField(
+        required=False,
+        default=False,
+        help_text=_(
+            "Show a button that copies the application's address, derived from its launch URL."
+        ),
+    )
+    title = CharField(
+        max_length=150,
+        required=False,
+        allow_blank=True,
+        default="",
+        help_text=_("Optional heading shown above the row. Left out when blank."),
+    )
+    align = ChoiceField(
+        choices=LINK_ALIGNMENTS,
+        required=False,
+        default="center",
+        help_text=_("Horizontal alignment of the heading above the row."),
+    )
+    links = ListField(
+        child=ApplicationLinkSerializer(),
+        required=False,
+        default=list,
+        help_text=_("Additional links shown on the application card."),
+    )
+
+    def validate_links(self, links: list[dict]) -> list[dict]:
+        """Validate each link on its own, independently of the request being partial.
+
+        A nested serializer resolves `partial` from the root serializer, so during a
+        PATCH every key missing from a link is skipped instead of validated: an item
+        without a label would be stored as-is and then raise on the next read. The
+        list is replaced wholesale either way, so each item is re-validated here with
+        its own serializer, which keeps PUT and PATCH under the same rules and fills
+        in the icon default.
+        """
+        validated = []
+        errors = {}
+        for index, link in enumerate(links):
+            serializer = ApplicationLinkSerializer(data=link)
+            if serializer.is_valid():
+                validated.append(dict(serializer.validated_data))
+            else:
+                errors[index] = serializer.errors
+        if errors:
+            raise ValidationError(errors)
+        return validated
+
+    def to_representation(self, instance):
+        """Read the historical bare-list shape as well as the current object.
+
+        Applications configured before the block gained switches and a heading still
+        hold a plain list in the column. Normalising on read keeps those cards working
+        without a data migration; the next save rewrites them in the current shape.
+        """
+        if isinstance(instance, list):
+            instance = {**LEGACY_DEFAULTS, "enabled": bool(instance), "links": instance}
+        return super().to_representation(instance)
+
+
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
@@ -67,6 +217,46 @@ class ApplicationSerializer(ModelSerializer):
     meta_icon_themed_urls = ThemedUrlsSerializer(
         source="get_meta_icon_themed_urls", read_only=True, allow_null=True
     )
+
+    application_links = ApplicationLinksSerializer(required=False)
+
+    def validate_application_links(self, block: dict) -> dict:
+        """Re-validate the block through a serializer of its own.
+
+        A nested serializer reads `partial` from the ROOT, not from itself, so during
+        a PATCH every key absent from the payload is skipped rather than defaulted:
+        a block sent as `{"enabled": true}` was stored as `{"enabled": true}`, with
+        no links, no alignment and no address flag. The column holds one object that
+        is replaced wholesale, so partial semantics inside it mean nothing.
+
+        A serializer instantiated here is its own root and is never partial, so its
+        defaults apply. Same reasoning as `validate_links`, one level up.
+        """
+        serializer = ApplicationLinksSerializer(data=block)
+        serializer.is_valid(raise_exception=True)
+        return dict(serializer.validated_data)
+
+    def _write_application_links(self, instance: Application, block) -> Application:
+        """Persist the links block after the model serializer has done its part.
+
+        `ModelSerializer.create` and `.update` refuse any writable nested serializer
+        outright — `raise_errors_on_nested_writes` asserts on it, without looking at
+        whether the target is a relation or, as here, a plain JSON column. The block
+        is therefore set aside before delegating and written back afterwards.
+        """
+        if block is None:
+            return instance
+        instance.application_links = dict(block)
+        instance.save(update_fields=["application_links"])
+        return instance
+
+    def create(self, validated_data):
+        block = validated_data.pop("application_links", None)
+        return self._write_application_links(super().create(validated_data), block)
+
+    def update(self, instance, validated_data):
+        block = validated_data.pop("application_links", None)
+        return self._write_application_links(super().update(instance, validated_data), block)
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -123,6 +313,7 @@ class ApplicationSerializer(ModelSerializer):
             "policy_engine_mode",
             "group",
             "meta_hide",
+            "application_links",
         ]
         extra_kwargs = {
             "pbm_uuid": {"read_only": True},

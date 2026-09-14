@@ -20,6 +20,10 @@ export class AkRadioInput<T extends Jsonifiable> extends HorizontalLightComponen
     @property({ attribute: false })
     public options: RadioOption<T>[] | (() => RadioOption<T>[]) = [];
 
+    /** Lay the options out in a row instead of a column. See `ak-radio`. */
+    @property({ type: Boolean })
+    public inline = false;
+
     handleInput(ev: CustomEvent<RadioChangeEventDetail<T>>): void {
         if ("detail" in ev) {
             this.value = ev.detail.value;
@@ -40,6 +44,7 @@ export class AkRadioInput<T extends Jsonifiable> extends HorizontalLightComponen
                 : null}<ak-radio
                 .options=${this.options}
                 .value=${this.value}
+                ?inline=${this.inline}
                 @input=${this.handleInput}
                 aria-describedby=${this.help ? this.helpID : nothing}
                 part="radio"
