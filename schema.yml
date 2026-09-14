@@ -47064,7 +47064,6 @@ components:
       - name
       - pk
       - provider_type
-      - secret
       - slug
       - type
       - verbose_name
@@ -47242,7 +47241,6 @@ components:
       - consumer_key
       - name
       - provider_type
-      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -55012,7 +55010,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55163,7 +55160,6 @@ components:
           minLength: 1
       required:
       - name
-      - secret
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -60501,7 +60497,6 @@ components:
       - name
       - pk
       - pre_authentication_flow
-      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60647,7 +60642,6 @@ components:
       - bot_username
       - name
       - pre_authentication_flow
-      - secret
       - slug
     Tenant:
       type: object

@@ -156,7 +156,7 @@ export interface OAuthSource {
     /**
      *
      */
-    secret: string;
+    secret?: string;
     /**
      * Get OAuth Callback URL
      */
@@ -245,7 +245,6 @@ export function instanceOfOAuthSource(value: object): value is OAuthSource {
             (value as Record<string, any>)["consumer_key"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("callbackUrl" in (value as Record<string, any>)) &&
             !("callback_url" in (value as Record<string, any>))) ||
@@ -336,7 +335,7 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         callbackUrl: json["callback_url"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         type: SourceTypeFromJSON(json["type"]),
