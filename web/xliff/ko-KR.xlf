@@ -871,7 +871,7 @@
   <target>다른 오브젝트에서 사용하지 않습니다.</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
+  <source><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
 </trans-unit>
 <trans-unit id="sdc673e73b5c13aea">
   <source>Delete</source>
@@ -11687,6 +11687,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf0f541e1ea73d4c8">
   <source>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</source>
+</trans-unit>
+<trans-unit id="sbfa75b6f146142d8">
+  <source>Primary user</source>
 </trans-unit>
 </body>
 </file>
