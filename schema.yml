@@ -37274,13 +37274,15 @@ components:
         secret:
           type: string
           format: uuid
+        credentials:
+          type: object
+          additionalProperties: {}
       required:
       - component
       - flow_set
       - meta_model_name
       - name
       - pk
-      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorEndpointGDTCStageRequest:
@@ -37301,9 +37303,12 @@ components:
         secret:
           type: string
           format: uuid
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
       required:
       - name
-      - secret
     AuthenticatorSMSChallenge:
       type: object
       description: SMS Setup challenge
@@ -41645,7 +41650,6 @@ components:
       - component
       - meta_model_name
       - name
-      - secret
       - url
       - verbose_name
       - verbose_name_plural
@@ -41680,9 +41684,12 @@ components:
           type: boolean
         map_teams_access_group:
           type: boolean
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
       required:
       - name
-      - secret
       - url
     Flow:
       type: object
@@ -42440,12 +42447,14 @@ components:
           nullable: true
           description: Full URL to be used in Google Workspace configuration
           readOnly: true
+        credentials:
+          type: object
+          additionalProperties: {}
       required:
       - chrome_url
       - component
       - meta_model_name
       - name
-      - secret
       - verbose_name
       - verbose_name_plural
     GoogleChromeConnectorRequest:
@@ -42463,9 +42472,12 @@ components:
         secret:
           type: string
           format: uuid
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
       required:
       - name
-      - secret
     GoogleEndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -51001,6 +51013,10 @@ components:
         secret:
           type: string
           format: uuid
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -51773,6 +51789,10 @@ components:
           type: boolean
         map_teams_access_group:
           type: boolean
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -51902,6 +51922,10 @@ components:
         secret:
           type: string
           format: uuid
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices

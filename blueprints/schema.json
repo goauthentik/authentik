@@ -8673,6 +8673,11 @@
                 "map_teams_access_group": {
                     "type": "boolean",
                     "title": "Map teams access group"
+                },
+                "token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Token"
                 }
             },
             "required": []
@@ -8724,6 +8729,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Secret"
+                },
+                "credentials": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Credentials"
                 }
             },
             "required": []
@@ -10057,6 +10067,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Secret"
+                },
+                "credentials": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Credentials"
                 }
             },
             "required": []

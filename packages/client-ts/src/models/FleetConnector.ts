@@ -53,7 +53,7 @@ export interface FleetConnector {
     /**
      *
      */
-    secret: string;
+    secret?: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
      */
@@ -96,7 +96,6 @@ export function instanceOfFleetConnector(value: object): value is FleetConnector
     )
         return false;
     if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -120,7 +119,7 @@ export function FleetConnectorFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         url: json["url"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         headersMapping:
             json["headers_mapping"] === undefined
                 ? undefined

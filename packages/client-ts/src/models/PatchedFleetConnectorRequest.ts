@@ -50,6 +50,10 @@ export interface PatchedFleetConnectorRequest {
      *
      */
     mapTeamsAccessGroup?: boolean;
+    /**
+     *
+     */
+    token?: string;
 }
 
 /**
@@ -87,6 +91,7 @@ export function PatchedFleetConnectorRequestFromJSONTyped(
         mapUsers: json["map_users"] == null ? undefined : json["map_users"],
         mapTeamsAccessGroup:
             json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],
+        token: json["token"] == null ? undefined : json["token"],
     };
 }
 
@@ -111,5 +116,6 @@ export function PatchedFleetConnectorRequestToJSONTyped(
         headers_mapping: value["headersMapping"],
         map_users: value["mapUsers"],
         map_teams_access_group: value["mapTeamsAccessGroup"],
+        token: value["token"],
     };
 }
