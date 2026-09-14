@@ -86,7 +86,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 				fe.Answers[flow.StageIdentification] = ident
 				fe.DelegateClientIP(utils.GetIP(ctx.Packet().RemoteAddr))
 				fe.Params.Add("goauthentik.io/outpost/radius", "true")
-				fe.AddHeader("X-Authentik-Outpost-Certificate", url.QueryEscape(string(pem)))
+				fe.AddHeader(flow.HeaderAuthentikOutpostCertificate, url.QueryEscape(string(pem)))
 
 				passed, err := fe.Execute()
 				if err != nil {
