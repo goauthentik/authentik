@@ -78,10 +78,9 @@ Then create a custom profile scope mapping:
 
         ```python
         return {
-            "preferred_username": ak_obj_attr(
-                request.user,
+            "preferred_username": request.user.attributes.get(
                 "synology_username",
-                "username",
+                request.user.username,
             ),
         }
         ```
