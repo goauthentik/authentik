@@ -1,0 +1,17 @@
+---
+title: Easypanel installation
+sidebar_position: 4
+---
+
+[Easypanel](https://easypanel.io/) is a server control panel that can deploy authentik with one click using its official template, without needing to manually run Docker commands.
+
+### Installation
+
+1. Open your Easypanel dashboard and create (or open) a project
+2. Click **+ Add Service** and choose **Templates**
+3. Search for **Authentik** and select it
+4. Click **Create** to deploy the service
+
+Easypanel provisions the required PostgreSQL and Redis services automatically and runs the authentik server and worker containers for you.
+
+See the [official authentik template on Easypanel](https://easypanel.io/templates/authentik) for more details.
