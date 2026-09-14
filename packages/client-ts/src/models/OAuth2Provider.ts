@@ -162,6 +162,10 @@ export interface OAuth2Provider {
      *
      */
     jwtFederationProviders?: Array<number>;
+    /**
+     *
+     */
+    clientSecret?: string;
 }
 
 /**
@@ -325,6 +329,7 @@ export function OAuth2ProviderFromJSONTyped(
             json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
     };
 }
 
@@ -378,5 +383,6 @@ export function OAuth2ProviderToJSONTyped(
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
         jwt_federation_sources: value["jwtFederationSources"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        client_secret: value["clientSecret"],
     };
 }

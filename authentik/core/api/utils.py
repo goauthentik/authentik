@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
@@ -21,6 +21,7 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+from authentik.crypto.secrets.legacy_api import LegacySecretCompatibility
 from authentik.lib.models import SimpleThroughModel
 
 
@@ -46,7 +47,7 @@ class JSONExtension(OpenApiSerializerFieldExtension):
         return build_basic_type(OpenApiTypes.OBJECT)
 
 
-class ModelSerializer(BaseModelSerializer):
+class ModelSerializer(LegacySecretCompatibility, BaseModelSerializer):
 
     # By default, JSON fields we have are used to store dictionaries
     serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
@@ -66,7 +67,10 @@ class ModelSerializer(BaseModelSerializer):
             data.pop(field_name, None)
         return data
 
+    # GETTING REMOVED WHEN FRONTEND IS DONE: save literal credentials atomically.
+    @transaction.atomic
     def update(self, instance: Model, validated_data):
+        validated_data = self.prepare_legacy_credentials(instance, validated_data)
         raise_errors_on_nested_writes("update", self, validated_data)
         info = model_meta.get_field_info(instance)
 
