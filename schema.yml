@@ -53530,6 +53530,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          minLength: 1
     PatchedRedirectStageRequest:
       type: object
       description: RedirectStage Serializer
@@ -54038,6 +54041,9 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        token:
+          type: string
+          writeOnly: true
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -56506,6 +56512,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -56636,6 +56644,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        shared_secret:
+          type: string
+          minLength: 1
       required:
       - authorization_flow
       - invalidation_flow
@@ -58576,6 +58587,9 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        token:
+          type: string
+          writeOnly: true
       required:
       - name
       - url

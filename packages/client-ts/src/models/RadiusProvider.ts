@@ -94,6 +94,10 @@ export interface RadiusProvider {
      *
      */
     certificate?: string | null;
+    /**
+     *
+     */
+    sharedSecret?: string;
 }
 
 /**
@@ -222,6 +226,7 @@ export function RadiusProviderFromJSONTyped(
                 : json["certificate"] === null
                   ? null
                   : json["certificate"],
+        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
     };
 }
 
@@ -259,5 +264,6 @@ export function RadiusProviderToJSONTyped(
         secret: value["secret"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
+        shared_secret: value["sharedSecret"],
     };
 }
