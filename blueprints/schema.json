@@ -9189,6 +9189,11 @@
                     "type": "boolean",
                     "title": "Discovery enabled",
                     "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
+                },
+                "credentials": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Credentials"
                 }
             },
             "required": []
@@ -9360,6 +9365,11 @@
                     "type": "boolean",
                     "title": "Dry run",
                     "description": "When enabled, provider will not modify or create objects in the remote system."
+                },
+                "client_secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client secret"
                 }
             },
             "required": []

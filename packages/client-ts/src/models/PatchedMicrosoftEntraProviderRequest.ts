@@ -80,6 +80,10 @@ export interface PatchedMicrosoftEntraProviderRequest {
      * When enabled, provider will not modify or create objects in the remote system.
      */
     dryRun?: boolean;
+    /**
+     *
+     */
+    clientSecret?: string;
 }
 
 /**
@@ -134,6 +138,7 @@ export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
     };
 }
 
@@ -166,5 +171,6 @@ export function PatchedMicrosoftEntraProviderRequestToJSONTyped(
         discovery_enabled: value["discoveryEnabled"],
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
+        client_secret: value["clientSecret"],
     };
 }

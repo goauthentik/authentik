@@ -43,7 +43,7 @@ export interface GoogleWorkspaceProviderRequest {
     /**
      *
      */
-    secret: string;
+    secret?: string;
     /**
      *
      */
@@ -84,6 +84,10 @@ export interface GoogleWorkspaceProviderRequest {
      * When enabled, authentik will attempt to discover existing resources in the remote system.
      */
     discoveryEnabled?: boolean;
+    /**
+     *
+     */
+    credentials?: { [key: string]: any };
 }
 
 /**
@@ -100,7 +104,6 @@ export function instanceOfGoogleWorkspaceProviderRequest(
             (value as Record<string, any>)["delegated_subject"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
             !("default_group_email_domain" in (value as Record<string, any>))) ||
@@ -128,7 +131,7 @@ export function GoogleWorkspaceProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         delegatedSubject: json["delegated_subject"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         scopes: json["scopes"] == null ? undefined : json["scopes"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -153,6 +156,7 @@ export function GoogleWorkspaceProviderRequestFromJSONTyped(
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
+        credentials: json["credentials"] == null ? undefined : json["credentials"],
     };
 }
 
@@ -184,5 +188,6 @@ export function GoogleWorkspaceProviderRequestToJSONTyped(
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
         discovery_enabled: value["discoveryEnabled"],
+        credentials: value["credentials"],
     };
 }

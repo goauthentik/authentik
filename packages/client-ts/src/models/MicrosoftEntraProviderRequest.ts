@@ -43,7 +43,7 @@ export interface MicrosoftEntraProviderRequest {
     /**
      *
      */
-    secret: string;
+    secret?: string;
     /**
      *
      */
@@ -80,6 +80,10 @@ export interface MicrosoftEntraProviderRequest {
      * When enabled, provider will not modify or create objects in the remote system.
      */
     dryRun?: boolean;
+    /**
+     *
+     */
+    clientSecret?: string;
 }
 
 /**
@@ -96,7 +100,6 @@ export function instanceOfMicrosoftEntraProviderRequest(
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("tenantId" in (value as Record<string, any>)) &&
             !("tenant_id" in (value as Record<string, any>))) ||
@@ -124,7 +127,7 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         clientId: json["client_id"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         tenantId: json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -148,6 +151,7 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
     };
 }
 
@@ -178,5 +182,6 @@ export function MicrosoftEntraProviderRequestToJSONTyped(
         discovery_enabled: value["discoveryEnabled"],
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
+        client_secret: value["clientSecret"],
     };
 }

@@ -42574,6 +42574,9 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
+        credentials:
+          type: object
+          additionalProperties: {}
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -42583,7 +42586,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - secret
       - verbose_name
       - verbose_name_plural
     GoogleWorkspaceProviderGroup:
@@ -42758,11 +42760,14 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
       required:
       - default_group_email_domain
       - delegated_subject
       - name
-      - secret
     GoogleWorkspaceProviderUser:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -45712,7 +45717,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - secret
       - tenant_id
       - verbose_name
       - verbose_name_plural
@@ -45884,10 +45888,13 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
       required:
       - client_id
       - name
-      - secret
       - tenant_id
     MicrosoftEntraProviderUser:
       type: object
@@ -51981,6 +51988,10 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
+        credentials:
+          type: object
+          additionalProperties: {}
+          minLength: 1
     PatchedGrantRequestFulfillRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -52732,6 +52743,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer

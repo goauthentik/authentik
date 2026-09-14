@@ -84,6 +84,10 @@ export interface PatchedGoogleWorkspaceProviderRequest {
      * When enabled, authentik will attempt to discover existing resources in the remote system.
      */
     discoveryEnabled?: boolean;
+    /**
+     *
+     */
+    credentials?: { [key: string]: any };
 }
 
 /**
@@ -142,6 +146,7 @@ export function PatchedGoogleWorkspaceProviderRequestFromJSONTyped(
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
+        credentials: json["credentials"] == null ? undefined : json["credentials"],
     };
 }
 
@@ -175,5 +180,6 @@ export function PatchedGoogleWorkspaceProviderRequestToJSONTyped(
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
         discovery_enabled: value["discoveryEnabled"],
+        credentials: value["credentials"],
     };
 }
