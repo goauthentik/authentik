@@ -120,7 +120,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["secret"], str(self.secret.pk))
-        self.assertEqual(body["plex_token"], self.secret.value)
+        self.assertEqual(body["kubeconfig"], self.kubeconfig)
 
     def test_connection_create(self):
         """Test connection create (role has global add permission, but no change permission)"""

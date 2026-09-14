@@ -10579,6 +10579,10 @@
                     "type": "boolean",
                     "title": "Send once",
                     "description": "Only send notification once, for example when sending a webhook into a chat channel."
+                },
+                "webhook_url": {
+                    "type": "string",
+                    "title": "Webhook url"
                 }
             },
             "required": []
@@ -10931,6 +10935,10 @@
                     "type": "boolean",
                     "title": "Verify ssl",
                     "description": "Verify SSL Certificates of the Kubernetes API endpoint"
+                },
+                "kubeconfig": {
+                    "type": "string",
+                    "title": "Kubeconfig"
                 }
             },
             "required": []

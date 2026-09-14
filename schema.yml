@@ -44340,6 +44340,9 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
+        kubeconfig:
+          type: object
+          additionalProperties: {}
       required:
       - component
       - meta_model_name
@@ -44365,6 +44368,9 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
+        kubeconfig:
+          type: object
+          additionalProperties: {}
       required:
       - name
     LDAPAPIAccessMode:
@@ -46449,6 +46455,8 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
+        webhook_url:
+          type: string
       required:
       - mode_verbose
       - name
@@ -46494,6 +46502,8 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
+        webhook_url:
+          type: string
       required:
       - name
     NotificationTransportTest:
@@ -52361,6 +52371,9 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
+        kubeconfig:
+          type: object
+          additionalProperties: {}
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -52822,6 +52835,8 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
+        webhook_url:
+          type: string
     PatchedNotificationWebhookMappingRequest:
       type: object
       description: NotificationWebhookMapping Serializer

@@ -34,6 +34,10 @@ export interface PatchedKubernetesServiceConnectionRequest {
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
     verifySsl?: boolean;
+    /**
+     *
+     */
+    kubeconfig?: { [key: string]: any };
 }
 
 /**
@@ -68,6 +72,7 @@ export function PatchedKubernetesServiceConnectionRequestFromJSONTyped(
                   ? null
                   : json["secret"],
         verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
+        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
     };
 }
 
@@ -90,5 +95,6 @@ export function PatchedKubernetesServiceConnectionRequestToJSONTyped(
         local: value["local"],
         secret: value["secret"],
         verify_ssl: value["verifySsl"],
+        kubeconfig: value["kubeconfig"],
     };
 }
