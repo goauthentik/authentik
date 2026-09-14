@@ -18,12 +18,18 @@ entries:
     id: default-authentication-login
     model: authentik_stages_user_login.userloginstage
   - identifiers:
+      name: default-authentication-flow-captcha private key
+    id: default-authentication-flow-captcha-private-key
+    model: authentik_secrets.secret
+    attrs:
+      value: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+  - identifiers:
       name: default-authentication-flow-captcha
     id: default-authentication-flow-captcha
     model: authentik_stages_captcha.captchastage
     attrs:
       public_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
-      private_key: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+      secret: !KeyOf default-authentication-flow-captcha-private-key
   - identifiers:
       name: default-authentication-identification
     id: default-authentication-identification

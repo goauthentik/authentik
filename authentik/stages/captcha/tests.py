@@ -4,6 +4,7 @@ from django.urls import reverse
 from requests_mock import Mocker
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
@@ -32,9 +33,20 @@ class TestCaptchaStage(FlowTestCase):
         self.stage: CaptchaStage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+
+    def test_api_requires_secret(self):
+        """Creating a stage without a secret reference must fail, matching the
+        previously-required private_key"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:captchastage-list"),
+            data={"name": generate_id(), "public_key": RECAPTCHA_PUBLIC_KEY},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("secret", response.json())
 
     @Mocker()
     def test_valid(self, mock: Mocker):
@@ -93,7 +105,7 @@ class TestCaptchaStage(FlowTestCase):
     @Mocker()
     def test_valid_override(self, mock: Mocker):
         """Test valid captcha"""
-        self.stage.private_key = generate_id()
+        self.stage.secret.replace_value(generate_id())
         self.stage.public_key = generate_id()
         mock.post(
             "https://www.recaptcha.net/recaptcha/api/siteverify",

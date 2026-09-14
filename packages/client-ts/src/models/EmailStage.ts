@@ -68,6 +68,10 @@ export interface EmailStage {
     /**
      *
      */
+    secret?: string | null;
+    /**
+     *
+     */
     useTls?: boolean;
     /**
      *
@@ -166,6 +170,12 @@ export function EmailStageFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         host: json["host"] == null ? undefined : json["host"],
         port: json["port"] == null ? undefined : json["port"],
         username: json["username"] == null ? undefined : json["username"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         useTls: json["use_tls"] == null ? undefined : json["use_tls"],
         useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
@@ -203,6 +213,7 @@ export function EmailStageToJSONTyped(
         host: value["host"],
         port: value["port"],
         username: value["username"],
+        secret: value["secret"],
         use_tls: value["useTls"],
         use_ssl: value["useSsl"],
         timeout: value["timeout"],
