@@ -2,7 +2,7 @@
  * @file Router configuration injected by each entrypoint at boot.
  *
  * The router core never reads globals. Each entrypoint calls {@linkcode initRouter}
- * once at boot with the deployment base path (read from `window.authentik.api.relBase`
+ * once at boot with the deployment base path (read from the injected `ak-base-url-rel`
  * **at the entrypoint**) and the interface name. The core only ever receives values.
  */
 

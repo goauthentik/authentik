@@ -12,6 +12,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -81,7 +82,7 @@ export class SourceListPage extends TablePage<Source> {
         }
 
         return [
-            html`<a href="#/core/sources/${item.slug}">
+            html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.enabled
                     ? nothing

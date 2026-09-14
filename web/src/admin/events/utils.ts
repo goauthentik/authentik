@@ -1,6 +1,7 @@
 import { EventUser, EventWithContext } from "#common/events";
 import { truncate } from "#common/strings";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
@@ -37,7 +38,7 @@ export function renderEventUser(
 
     const linkOrSpan = (inner: TemplateResult, evu: EventUser) => {
         return html`${evu.pk && !evu.is_anonymous
-            ? html`<a href="#/identity/users/${evu.pk}">${inner}</a>`
+            ? html`<a href=${toAdminInterface(`identity/users/${evu.pk}`)}>${inner}</a>`
             : html`<span>${inner}</span>`}`;
     };
 
@@ -75,7 +76,11 @@ export function renderEventUser(
     }
     if (event.context.device) {
         return html`${body}<small>
-                <a href="#/endpoints/devices/${formatUUID(event.context.device.pk)}">
+                <a
+                    href=${toAdminInterface(
+                        `endpoints/devices/${formatUUID(event.context.device.pk)}`,
+                    )}
+                >
                     ${msg(str`Via ${event.context.device.name}`)}
                 </a>
             </small>`;

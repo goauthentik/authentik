@@ -8,6 +8,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -78,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
     protected row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/groups/${item.pk}"
+                href=${toAdminInterface(`identity/groups/${item.pk}`)}
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,

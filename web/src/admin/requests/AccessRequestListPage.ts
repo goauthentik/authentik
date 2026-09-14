@@ -6,6 +6,7 @@ import { PaginatedResponse } from "#common/api/responses";
 import { renderTargetSummary } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { RowType, Timestamp } from "#elements/table/Table";
 import { TableColumn } from "#elements/table/TableColumn";
 import { TablePage } from "#elements/table/TablePage";
@@ -121,7 +122,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
 
     protected row(item: GrantRequest): RowType[] {
         return [
-            html`<a href="#/identity/users/${item.createdBy.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}>
                 <div>${item.createdBy.username}</div>
                 <small>${item.createdBy.name}</small>
             </a>`,

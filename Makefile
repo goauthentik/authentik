@@ -88,8 +88,11 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
+
+lint-check-types:  ## Type-check the repository's Node.js scripts.
+	pnpm run check-types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
@@ -237,7 +240,7 @@ gen-dev-config:  ## Generate a local development config file
 # grants it arbitrary code execution at install — audit at review time.
 
 node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
-	node ./scripts/node/lint-runtime.mjs
+	node ./scripts/node/lint-runtime.ts
 
 node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
 	pnpm install --frozen-lockfile
@@ -288,7 +291,7 @@ docs-lint-fix: lint-spellcheck
 	pnpm --dir website run prettier
 
 docs-build:
-	node ./scripts/node/lint-runtime.mjs website
+	node ./scripts/node/lint-runtime.ts website
 	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation
@@ -365,6 +368,9 @@ ci-lint-clippy: ci--meta-debug
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-check-types: ci--meta-debug
+	pnpm run check-types
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

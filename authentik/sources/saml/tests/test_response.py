@@ -1,6 +1,7 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 from freezegun import freeze_time
@@ -24,7 +25,14 @@ from authentik.sources.saml.models import (
 )
 from authentik.sources.saml.processors.response import ResponseProcessor
 
+DEMO_ACS_URL = "http://sp.example.com/demo1/index.php?acs"
+GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
+KEYCLOAK_ACS_URL = "http://localhost:9000/source/saml/keycloak/acs/"
+SHIBBOLETH_ACS_URL = "https://sp.example.org:9443/source/saml/shibboleth-post/acs/"
+SHIBBOLETH_TRANSIENT_ACS_URL = "https://sp.example.org:10443/Shibboleth.sso/SAML2/POST"
 
+
+@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=DEMO_ACS_URL))
 class TestResponseProcessor(TestCase):
     """Test ResponseProcessor"""
 
@@ -71,7 +79,8 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        parser.parse()
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+            parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(
             sfm.user_properties,
@@ -98,7 +107,8 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        parser.parse()
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+            parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
 
@@ -139,7 +149,8 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        parser.parse()
+        with patch.object(SAMLSource, "build_full_url", return_value=KEYCLOAK_ACS_URL):
+            parser.parse()
 
     def test_encrypted_incorrect_key(self):
         """Test encrypted"""
@@ -564,7 +575,8 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        parser.parse()
+        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_ACS_URL):
+            parser.parse()
 
     @freeze_time("2026-01-21T14:23")
     def test_transient(self):
@@ -587,5 +599,20 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        parser.parse()
+        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_TRANSIENT_ACS_URL):
+            parser.parse()
         parser.prepare_flow_manager()
+
+    def test_doctype(self):
+        """Test that a Response with a document type declaration is refused"""
+        response = load_fixture("fixtures/response_success.xml").replace(
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE saml2p:Response>',
+        )
+        request = self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(response.encode()).decode()},
+        )
+
+        with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ResponseProcessor(self.source, request).parse()

@@ -154,12 +154,8 @@ def check_blueprint_perms(blueprint: Blueprint, user: User, explicit_action: str
             if not user.has_perm(perm):
                 raise PermissionDenied(
                     {
-                        entry.id: _(
-                            "User lacks permission to create {model}".format_map(
-                                {
-                                    "model": full_model,
-                                }
-                            )
+                        entry.id: _("User lacks permission to create {model}").format(
+                            model=full_model
                         )
                     }
                 )

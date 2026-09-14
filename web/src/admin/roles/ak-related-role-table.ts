@@ -11,6 +11,7 @@ import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -230,7 +231,10 @@ export class RelatedRoleTable extends Table<Role> {
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
-        const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
+        const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
+                >${item.name}</a
+            >
+            ${inherited
                 ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
                       <span class="pf-c-label pf-m-outline pf-m-cyan">
                           <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>

@@ -887,7 +887,7 @@
   <target>Не используется никаким другим объектом.</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
+  <source><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
   <target>
         <x id="0" equiv-text="${ub.name}"/>(
         <x id="1" equiv-text="${consequence}"/>)</target>
@@ -8529,11 +8529,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
 </trans-unit>
-<trans-unit id="h30bbf18fbf87fa57">
-  <source>To create a data export, navigate to
-                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
-                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -10082,11 +10077,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdccd8f78d52d3a87">
   <source>Copy to clipboard</source>
 </trans-unit>
-<trans-unit id="s757a4c2248c0b9da">
-  <source>Entity</source>
-</trans-unit>
 <trans-unit id="entity.edit.named">
-  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
+  <source>Edit "<x id="0" equiv-text="${label}"/>" <x id="1" equiv-text="${noun}"/></source>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
@@ -11761,6 +11753,53 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdcfef055f5b959f5">
   <source>The returned assertion was not a PublicKeyCredential</source>
+</trans-unit>
+<trans-unit id="s6c3d02133d321ac4">
+  <source>End of the flow</source>
+</trans-unit>
+<trans-unit id="sdfea8f885f8806d9">
+  <source>Pre-flow policies</source>
+</trans-unit>
+<trans-unit id="s2f47ae5526f68b0c">
+  <source>Flow authentication requirement</source>
+</trans-unit>
+<trans-unit id="s518b3c50e3e3d981">
+  <source>Policy passed</source>
+</trans-unit>
+<trans-unit id="se5545f49172651fe">
+  <source>Policy denied</source>
+</trans-unit>
+<trans-unit id="s4997ad214a64187e">
+  <source>Requirement met</source>
+</trans-unit>
+<trans-unit id="s624a3fe29b50b0b2">
+  <source>Binding: <x id="0" equiv-text="${order}"/></source>
+</trans-unit>
+<trans-unit id="s19d7851880801278">
+  <source>Use the username and password below to authenticate.</source>
+</trans-unit>
+<trans-unit id="s4a71427ffe9a1b4a">
+  <source>You can retrieve the password from the user's Credentials/Tokens tab or from Directory &gt; Tokens and App Passwords.</source>
+</trans-unit>
+<trans-unit id="router.view.error.heading">
+  <source>This page failed to load.</source>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.missing-private-key.description">
+  <source>This certificate is not a valid option here: it has no private key.</source>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.unsupported-key-type.description">
+  <source>This certificate is not a valid option here: unsupported key type.</source>
+</trans-unit>
+<trans-unit id="h36fac547ff79f28c">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;identity/users&quot;)}&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or
+                            to <x id="2" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sf0f541e1ea73d4c8">
+  <source>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</source>
+</trans-unit>
+<trans-unit id="sbfa75b6f146142d8">
+  <source>Primary user</source>
 </trans-unit>
 </body>
 </file>
