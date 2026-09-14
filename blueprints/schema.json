@@ -504,6 +504,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_crypto.certificatekeypairring"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypairring_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypairring"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypairring"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "id": {
@@ -6343,6 +6383,42 @@
                 }
             }
         },
+        "model_authentik_crypto.certificatekeypairring": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_crypto.certificatekeypairring_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_certificatekeypairring",
+                            "change_certificatekeypairring",
+                            "delete_certificatekeypairring",
+                            "view_certificatekeypairring"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_endpoints_connectors_agent.agentconnector": {
             "type": "object",
             "properties": {
@@ -9716,6 +9792,7 @@
                         "authentik_core.objectattribute",
                         "authentik_core.actor",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_crypto.certificatekeypairring",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",

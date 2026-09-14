@@ -27,6 +27,10 @@ export interface CertificateSourceInit {
      * Only keypairs with these key algorithms can be chosen. Others are listed but cannot be.
      */
     allowedKeyTypes?: KeyTypeEnum[];
+    /**
+     * Keypairs with these primary keys are left out of the list, e.g. ones already in a keyring.
+     */
+    excludeKeypairs?: string[];
 }
 
 /**
@@ -67,13 +71,15 @@ const certificateSources = new Map<string, SearchSelectSource<CertificateKeyPair
 export function certificateSource(
     init: CertificateSourceInit = {},
 ): SearchSelectSource<CertificateKeyPair> {
-    const { noKey = false, singleton = false, allowedKeyTypes = [] } = init;
-    const cacheKey = `${noKey}:${singleton}:${allowedKeyTypes.join(",")}`;
+    const { noKey = false, singleton = false, allowedKeyTypes = [], excludeKeypairs = [] } = init;
+    const excluded = new Set(excludeKeypairs.map(String));
+    const cacheKey = `${noKey}:${singleton}:${allowedKeyTypes.join(",")}:${[...excluded].sort().join(",")}`;
     const cached = certificateSources.get(cacheKey);
 
     if (cached) return cached;
 
     const isUsable = (keypair: CertificateKeyPair) => formatUnusableReason(keypair, init) === null;
+    const isListed = (keypair: CertificateKeyPair) => !excluded.has(String(keypair.pk));
 
     const restrictions: CryptoCertificatekeypairsListRequest = {
         ...(noKey ? {} : { hasKey: true }),
@@ -87,7 +93,7 @@ export function certificateSource(
         if (Object.keys(restrictions).length === 0) {
             const { results } = await api.cryptoCertificatekeypairsList(args);
 
-            return results;
+            return results.filter(isListed);
         }
 
         // The API returns one page, so ask for the usable keypairs directly. Otherwise a page
@@ -106,7 +112,7 @@ export function certificateSource(
         const usable =
             usableResult.status === "fulfilled" ? usableResult.value.results : all.filter(isUsable);
 
-        return [...usable, ...all.filter((keypair) => !isUsable(keypair))];
+        return [...usable, ...all.filter((keypair) => !isUsable(keypair))].filter(isListed);
     };
 
     const source: SearchSelectSource<CertificateKeyPair> = {
@@ -139,11 +145,12 @@ export const AKCertificateSearch: LitFC<CertificateSearchProps> = ({
     noKey,
     singleton,
     allowedKeyTypes,
+    excludeKeypairs,
     ...props
 }) =>
     AKSearchSelect({
         label: msg("Certificate"),
         placeholder: msg("Select a certificate..."),
         ...props,
-        source: certificateSource({ noKey, singleton, allowedKeyTypes }),
+        source: certificateSource({ noKey, singleton, allowedKeyTypes, excludeKeypairs }),
     });

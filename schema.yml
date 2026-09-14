@@ -5432,6 +5432,255 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/:
+    get:
+      operationId: crypto_certificatekeypairrings_list
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: keypairs
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCertificateKeyPairRingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: crypto_certificatekeypairrings_create
+      description: CRUD for key rings + one action to replace membership list.
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/:
+    get:
+      operationId: crypto_certificatekeypairrings_retrieve
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: crypto_certificatekeypairrings_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: crypto_certificatekeypairrings_partial_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: crypto_certificatekeypairrings_destroy
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/set-bindings/:
+    put:
+      operationId: crypto_certificatekeypairrings_set_bindings_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingBindingsReplaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/used_by/:
+    get:
+      operationId: crypto_certificatekeypairrings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -39166,6 +39415,60 @@ components:
       required:
       - certificate_data
       - name
+    CertificateKeyPairRing:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        ring_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        bindings:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - bindings
+      - ring_uuid
+    CertificateKeyPairRingBindingWriteRequest:
+      type: object
+      description: Binding list item used for ring membership replacement (full replace).
+      properties:
+        keypair:
+          type: string
+          format: uuid
+        order:
+          type: integer
+          minimum: 0
+      required:
+      - keypair
+      - order
+    CertificateKeyPairRingBindingsReplaceRequest:
+      type: object
+      description: Payload for full replacement of ring membership.
+      properties:
+        bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPairRingBindingWriteRequest'
+      required:
+      - bindings
+    CertificateKeyPairRingRequest:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        name:
+          type: string
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -46398,6 +46701,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
+      - authentik_crypto.certificatekeypairring
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -48445,6 +48749,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedCertificateKeyPairRingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPairRing'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -51805,6 +52124,15 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+    PatchedCertificateKeyPairRingRequest:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        name:
+          type: string
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
