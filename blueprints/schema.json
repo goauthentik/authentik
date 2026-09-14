@@ -14817,6 +14817,26 @@
                     ],
                     "title": "Sync outgoing trigger mode",
                     "description": "When to trigger sync for outgoing providers"
+                },
+                "sync_password": {
+                    "type": "string",
+                    "title": "Sync password"
+                },
+                "sync_keytab": {
+                    "type": "string",
+                    "title": "Sync keytab"
+                },
+                "sync_ccache": {
+                    "type": "string",
+                    "title": "Sync ccache"
+                },
+                "spnego_keytab": {
+                    "type": "string",
+                    "title": "Spnego keytab"
+                },
+                "spnego_ccache": {
+                    "type": "string",
+                    "title": "Spnego ccache"
                 }
             },
             "required": []
@@ -15189,6 +15209,10 @@
                     "type": "boolean",
                     "title": "Sync group hierarchy",
                     "description": "Sync group parentage/hierarchy from LDAP directories."
+                },
+                "bind_password": {
+                    "type": "string",
+                    "title": "Bind password"
                 }
             },
             "required": []

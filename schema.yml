@@ -44240,6 +44240,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_password:
+          type: string
+          writeOnly: true
+        sync_keytab:
+          type: string
+          writeOnly: true
+        sync_ccache:
+          type: string
+          writeOnly: true
+        spnego_keytab:
+          type: string
+          writeOnly: true
+        spnego_ccache:
+          type: string
+          writeOnly: true
       required:
       - name
       - realm
@@ -45009,6 +45024,9 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
+        bind_password:
+          type: string
+          writeOnly: true
       required:
       - base_dn
       - name
@@ -52240,6 +52258,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_password:
+          type: string
+          writeOnly: true
+        sync_keytab:
+          type: string
+          writeOnly: true
+        sync_ccache:
+          type: string
+          writeOnly: true
+        spnego_keytab:
+          type: string
+          writeOnly: true
+        spnego_ccache:
+          type: string
+          writeOnly: true
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -52483,6 +52516,9 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
+        bind_password:
+          type: string
+          writeOnly: true
     PatchedLicenseRequest:
       type: object
       description: License Serializer

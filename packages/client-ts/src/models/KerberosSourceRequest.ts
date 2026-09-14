@@ -143,6 +143,26 @@ export interface KerberosSourceRequest {
      * When to trigger sync for outgoing providers
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
+    /**
+     *
+     */
+    syncPassword?: string;
+    /**
+     *
+     */
+    syncKeytab?: string;
+    /**
+     *
+     */
+    syncCcache?: string;
+    /**
+     *
+     */
+    spnegoKeytab?: string;
+    /**
+     *
+     */
+    spnegoCcache?: string;
 }
 
 /**
@@ -250,6 +270,11 @@ export function KerberosSourceRequestFromJSONTyped(
             json["sync_outgoing_trigger_mode"] == null
                 ? undefined
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
+        syncPassword: json["sync_password"] == null ? undefined : json["sync_password"],
+        syncKeytab: json["sync_keytab"] == null ? undefined : json["sync_keytab"],
+        syncCcache: json["sync_ccache"] == null ? undefined : json["sync_ccache"],
+        spnegoKeytab: json["spnego_keytab"] == null ? undefined : json["spnego_keytab"],
+        spnegoCcache: json["spnego_ccache"] == null ? undefined : json["spnego_ccache"],
     };
 }
 
@@ -295,5 +320,10 @@ export function KerberosSourceRequestToJSONTyped(
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],
         ),
+        sync_password: value["syncPassword"],
+        sync_keytab: value["syncKeytab"],
+        sync_ccache: value["syncCcache"],
+        spnego_keytab: value["spnegoKeytab"],
+        spnego_ccache: value["spnegoCcache"],
     };
 }
