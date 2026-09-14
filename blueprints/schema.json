@@ -16802,6 +16802,15 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Admin secret key"
+                },
+                "client_secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client secret"
+                },
+                "admin_secret_key": {
+                    "type": "string",
+                    "title": "Admin secret key"
                 }
             },
             "required": []
@@ -17082,6 +17091,15 @@
                     "format": "uuid",
                     "title": "Mapping",
                     "description": "Optionally modify the payload being sent to custom providers."
+                },
+                "auth": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Auth"
+                },
+                "auth_password": {
+                    "type": "string",
+                    "title": "Auth password"
                 }
             },
             "required": []

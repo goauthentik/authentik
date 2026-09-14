@@ -50,6 +50,14 @@ export interface AuthenticatorDuoStageRequest {
      *
      */
     adminSecret?: string | null;
+    /**
+     *
+     */
+    clientSecret?: string;
+    /**
+     *
+     */
+    adminSecretKey?: string;
 }
 
 /**
@@ -108,6 +116,8 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
                 : json["admin_secret"] === null
                   ? null
                   : json["admin_secret"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
     };
 }
 
@@ -132,5 +142,7 @@ export function AuthenticatorDuoStageRequestToJSONTyped(
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
         admin_secret: value["adminSecret"],
+        client_secret: value["clientSecret"],
+        admin_secret_key: value["adminSecretKey"],
     };
 }

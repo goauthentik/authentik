@@ -37047,6 +37047,13 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        admin_secret_key:
+          type: string
+          writeOnly: true
       required:
       - api_hostname
       - client_id
@@ -37464,6 +37471,13 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
+        auth:
+          type: string
+          writeOnly: true
+          minLength: 1
+        auth_password:
+          type: string
+          writeOnly: true
       required:
       - account_sid
       - auth_secret
@@ -50863,6 +50877,13 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        admin_secret_key:
+          type: string
+          writeOnly: true
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50979,6 +51000,13 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
+        auth:
+          type: string
+          writeOnly: true
+          minLength: 1
+        auth_password:
+          type: string
+          writeOnly: true
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer

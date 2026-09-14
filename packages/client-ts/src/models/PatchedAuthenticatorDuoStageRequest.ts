@@ -50,6 +50,14 @@ export interface PatchedAuthenticatorDuoStageRequest {
      *
      */
     adminSecret?: string | null;
+    /**
+     *
+     */
+    clientSecret?: string;
+    /**
+     *
+     */
+    adminSecretKey?: string;
 }
 
 /**
@@ -94,6 +102,8 @@ export function PatchedAuthenticatorDuoStageRequestFromJSONTyped(
                 : json["admin_secret"] === null
                   ? null
                   : json["admin_secret"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
     };
 }
 
@@ -120,5 +130,7 @@ export function PatchedAuthenticatorDuoStageRequestToJSONTyped(
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
         admin_secret: value["adminSecret"],
+        client_secret: value["clientSecret"],
+        admin_secret_key: value["adminSecretKey"],
     };
 }

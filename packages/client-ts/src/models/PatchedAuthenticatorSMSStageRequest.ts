@@ -67,6 +67,14 @@ export interface PatchedAuthenticatorSMSStageRequest {
      * Optionally modify the payload being sent to custom providers.
      */
     mapping?: string | null;
+    /**
+     *
+     */
+    auth?: string;
+    /**
+     *
+     */
+    authPassword?: string;
 }
 
 /**
@@ -118,6 +126,8 @@ export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
                 : json["mapping"] === null
                   ? null
                   : json["mapping"],
+        auth: json["auth"] == null ? undefined : json["auth"],
+        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
     };
 }
 
@@ -147,5 +157,7 @@ export function PatchedAuthenticatorSMSStageRequestToJSONTyped(
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],
+        auth: value["auth"],
+        auth_password: value["authPassword"],
     };
 }
