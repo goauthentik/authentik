@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.events.models import Event, EventAction
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestSecretsAPI(APITestCase):
@@ -143,3 +144,17 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(self.secret.name, "renamed")
         self.assertEqual(self.secret.value, previous)
         self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+
+    def test_oauth_consumer_requires_ascii_value(self):
+        self.client.force_login(self.admin)
+        secret = Secret.objects.create(name="oauth", value="ascii")
+        OAuth2Provider.objects.create(name="provider", secret=secret)
+
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+            {"value": "non-ascii-ú"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "ascii")

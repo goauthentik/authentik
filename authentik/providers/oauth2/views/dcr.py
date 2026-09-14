@@ -28,7 +28,6 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
-    generate_client_secret,
 )
 
 LOGGER = get_logger()
@@ -141,7 +140,6 @@ class DynamicClientRegistrationView(View):
         provider = OAuth2Provider(
             name=client_name or generate_id(),
             client_id=generate_id(),
-            client_secret=generate_client_secret(),
             client_type=client_type,
             grant_types=grant_types,
             authorization_flow=self.dcr.override_authorization_flow
@@ -206,7 +204,7 @@ class DynamicClientRegistrationView(View):
         }
 
         if client_type == ClientType.CONFIDENTIAL:
-            response_data["client_secret"] = provider.client_secret
+            response_data["client_secret"] = provider.secret.value
             response_data["client_secret_expires_at"] = 0
 
         if client_name:
