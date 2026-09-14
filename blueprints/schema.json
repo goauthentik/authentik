@@ -9125,10 +9125,10 @@
                     "minLength": 1,
                     "title": "Delegated subject"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 },
                 "scopes": {
                     "type": "string",
@@ -9301,10 +9301,10 @@
                     "minLength": 1,
                     "title": "Client id"
                 },
-                "client_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Client secret"
+                    "format": "uuid",
+                    "title": "Client Secret"
                 },
                 "tenant_id": {
                     "type": "string",
