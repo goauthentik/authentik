@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.events.models import Event, EventAction
+from authentik.outposts.models import KubernetesServiceConnection
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -158,3 +159,21 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         secret.refresh_from_db()
         self.assertEqual(secret.value, "ascii")
+
+    def test_kubernetes_consumer_requires_structured_value(self):
+        self.client.force_login(self.admin)
+        secret = Secret.objects.create(name="kubernetes", type=SecretType.MULTILINE, value="{}")
+        KubernetesServiceConnection.objects.create(name="kubernetes", secret=secret)
+        for value, status, expected in [
+            ("[]", 400, "{}"),
+            ("invalid: [", 400, "{}"),
+            ("clusters: []", 200, "clusters: []"),
+        ]:
+            with self.subTest(value=value):
+                response = self.client.patch(
+                    reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+                    {"value": value},
+                )
+                self.assertEqual(response.status_code, status, response.content)
+                secret.refresh_from_db()
+                self.assertEqual(secret.value, expected)
