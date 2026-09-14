@@ -5,8 +5,47 @@ from datetime import UTC, datetime
 from enum import IntFlag
 from typing import Any
 
+from django.utils.timezone import now
+
 from authentik.core.models import User
+from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.sources.ldap.models import flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+
+FILETIME_EPOCH = datetime(1601, 1, 1, tzinfo=UTC)
+FILETIME_NEVER = 9223372036854775807
+
+
+def account_expired(value: Any) -> bool:
+    """Interpret accountExpires with or without ldap3's schema-aware formatting."""
+    value = flatten(value)
+    if value is None:
+        return False
+    current_time = now()
+    if isinstance(value, datetime):
+        # ldap3 formats zero as the FILETIME epoch and the maximum integer as datetime.max.
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=UTC)
+        else:
+            value = value.astimezone(UTC)
+        if value in (FILETIME_EPOCH, datetime.max.replace(tzinfo=UTC)):
+            return False
+        return value <= current_time
+    if isinstance(value, bool) or not isinstance(value, int | str | bytes):
+        raise ValueError("Invalid accountExpires: expected an AD timestamp")
+    try:
+        timestamp = int(value)
+    except ValueError as exc:
+        raise ValueError("Invalid accountExpires: expected an AD timestamp") from exc
+    if not 0 <= timestamp <= FILETIME_NEVER:
+        raise ValueError("Invalid accountExpires: timestamp is outside the AD range")
+    if timestamp in (0, FILETIME_NEVER):
+        return False
+    # Compare integers to avoid floating-point rounding and datetime overflow.
+    elapsed = current_time - FILETIME_EPOCH
+    current_timestamp = (elapsed.days * 86400 + elapsed.seconds) * 10000000
+    current_timestamp += elapsed.microseconds * 10
+    return timestamp <= current_timestamp
 
 
 class UserAccountControl(IntFlag):
@@ -51,7 +90,6 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
         self.ms_check_pwd_last_set(attributes, user, created)
-        self.ms_check_uac(attributes, user)
 
     def ms_check_pwd_last_set(self, attributes: dict[str, Any], user: User, created: bool):
         """Check pwdLastSet"""
@@ -70,17 +108,18 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
             user.set_unusable_password()
             user.save()
 
-    def ms_check_uac(self, attributes: dict[str, Any], user: User):
-        """Check userAccountControl"""
-        if "userAccountControl" not in attributes:
-            return
-        # Default from https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity
-        #   /useraccountcontrol-manipulate-account-properties
-        uac_bit = attributes.get("userAccountControl", 512)
-        uac = UserAccountControl(uac_bit)
-        is_active = (
+    def get_account_active(self, attributes: dict[str, Any]) -> bool | None:
+        """Combine AD restrictions before saving, preserving state when UAC is unavailable."""
+        try:
+            expired = account_expired(attributes.get("accountExpires"))
+        except ValueError as exc:
+            raise StopSync(exc) from exc
+        if expired:
+            return False
+        uac_bit = flatten(attributes.get("userAccountControl"))
+        if uac_bit is None:
+            return None
+        uac = UserAccountControl(int(uac_bit))
+        return (
             UserAccountControl.ACCOUNTDISABLE not in uac and UserAccountControl.LOCKOUT not in uac
         )
-        if is_active != user.is_active:
-            user.is_active = is_active
-            user.save()

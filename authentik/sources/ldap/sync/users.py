@@ -89,6 +89,14 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         ldap=attributes,
                     ).items()
                 }
+                # Combine directory restrictions before saving so no handler can reactivate
+                # an account disabled by another, even temporarily.
+                if account_states := [
+                    state
+                    for syncer in (ms_ad_syncer, freeipa_syncer)
+                    if (state := syncer.get_account_active(attributes)) is not None
+                ]:
+                    defaults["is_active"] = all(account_states)
                 self._logger.debug("Writing user with attributes", attributes=defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
