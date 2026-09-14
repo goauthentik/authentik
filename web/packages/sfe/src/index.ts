@@ -27,6 +27,10 @@ import { html, nothing, render, TemplateResult } from "lit-html";
 interface GlobalAuthentik {
     brand: {
         branding_logo: string;
+        branding_logo_themed_urls?: {
+            light?: string | null;
+            dark?: string | null;
+        } | null;
     };
     api: {
         base: string;
@@ -39,6 +43,12 @@ function ak(): GlobalAuthentik {
             authentik: GlobalAuthentik;
         }
     ).authentik;
+}
+
+// The SFE is rendered without dark mode support, so always use the light variant.
+function brandLogo(): string {
+    const brand = ak().brand;
+    return brand.branding_logo_themed_urls?.light ?? brand.branding_logo;
 }
 
 class SimpleFlowExecutor {
@@ -191,7 +201,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${this.challenge.applicationPre
                     ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
@@ -239,7 +249,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3">
                     <input
@@ -276,7 +286,7 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
     render() {
         this.html(
             html`<form id="autosubmit-form" action="${this.challenge.url}" method="post">
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {
                     return html`<input type="hidden" name="${key}" value="${value}" />`;
@@ -418,7 +428,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         );
         this.html(
             html`<form id="picker-form">
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${challenges.length > 0
                     ? html`<p>Select an authentication method.</p>`
@@ -466,7 +476,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input
@@ -488,7 +498,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     renderWebauthn() {
         this.html(html`
             <form id="totp-form">
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
@@ -534,7 +544,7 @@ class AccessDeniedStage extends Stage<AccessDeniedChallenge> {
     render() {
         this.html(
             html`<form id="access-denied">
-                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <p>${this.challenge.errorMessage ?? "Access denied."}</p>
             </form>`,
