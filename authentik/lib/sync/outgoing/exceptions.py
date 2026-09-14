@@ -36,6 +36,13 @@ class TransientSyncException(BaseSyncException):
     error_default = "Network error communicating with remote system"
 
 
+class ObjectLockTimeout(TransientSyncException):
+    """Timed out waiting to synchronize another change to the same object."""
+
+    error_prefix = "Object lock timeout"
+    error_default = "Timed out waiting to synchronize object"
+
+
 class NotFoundSyncException(BaseSyncException):
     """Exception when an object was not found in the remote system"""
 
