@@ -63,8 +63,9 @@ LEGACY_FIELDS = {
 class LegacySecretField(CharField):
     """Translate a literal credential to a new, unsaved secret."""
 
-    def __init__(self, *args, secret_type=None, **kwargs):
+    def __init__(self, *args, secret_type=None, requires_credential=False, **kwargs):
         self.secret_type = secret_type
+        self.requires_credential = requires_credential
         super().__init__(*args, **kwargs)
 
     def run_validation(self, data=empty):
@@ -139,10 +140,22 @@ class LegacySecretCompatibility:
                 trim_whitespace=False,
                 max_length=old_field.max_length,
                 secret_type=secret_type,
+                requires_credential=fields[new].required,
             )
-            if name in getattr(self, "initial_data", {}):
-                fields[new].required = False
+            fields[new].required = False
         return fields
+
+    def to_internal_value(self, data):
+        attrs = super().to_internal_value(data)
+        if not self.partial:
+            for field in self.fields.values():
+                if (
+                    isinstance(field, LegacySecretField)
+                    and field.requires_credential
+                    and field.source not in attrs
+                ):
+                    raise ValidationError({field.source: field.error_messages["required"]})
+        return attrs
 
     def prepare_legacy_credentials(self, instance, validated_data):
         from authentik.crypto.secrets.models import Secret, create_named_secret
