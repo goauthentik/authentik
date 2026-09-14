@@ -26,38 +26,26 @@ import { ApplicationFromJSON } from "./Application";
 export interface RequestableTarget {
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly label: string;
     /**
      *
-     * @type {Application}
-     * @memberof RequestableTarget
      */
     readonly parent: Application | null;
 }

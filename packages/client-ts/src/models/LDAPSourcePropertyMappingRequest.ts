@@ -20,20 +20,14 @@
 export interface LDAPSourcePropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof LDAPSourcePropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourcePropertyMappingRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourcePropertyMappingRequest
      */
     expression: string;
 }

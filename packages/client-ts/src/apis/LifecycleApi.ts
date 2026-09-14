@@ -50,78 +50,180 @@ import {
 import * as runtime from "../runtime";
 
 export interface LifecycleIterationsCreateRequest {
+    /**
+     *
+     */
     lifecycleIterationRequest: LifecycleIterationRequest;
 }
 
 export interface LifecycleIterationsListLatestRequest {
+    /**
+     *
+     */
     contentType: string;
+    /**
+     *
+     */
     objectId: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userIsReviewer?: boolean;
 }
 
 export interface LifecycleIterationsListOpenRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userIsReviewer?: boolean;
 }
 
 export interface LifecycleReviewsCreateRequest {
+    /**
+     *
+     */
     reviewRequest: ReviewRequest;
 }
 
 export interface LifecycleRulesCreateRequest {
+    /**
+     *
+     */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
 export interface LifecycleRulesDestroyRequest {
+    /**
+     * A UUID string identifying this lifecycle rule.
+     */
     id: string;
 }
 
 export interface LifecycleRulesListRequest {
+    /**
+     *
+     */
     contentTypeModel?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface LifecycleRulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this lifecycle rule.
+     */
     id: string;
+    /**
+     *
+     */
     patchedLifecycleRuleRequest?: PatchedLifecycleRuleRequest;
 }
 
 export interface LifecycleRulesRetrieveRequest {
+    /**
+     * A UUID string identifying this lifecycle rule.
+     */
     id: string;
 }
 
 export interface LifecycleRulesUpdateRequest {
+    /**
+     * A UUID string identifying this lifecycle rule.
+     */
     id: string;
+    /**
+     *
+     */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
 export interface LifecycleUserOffboardingCreateRequest {
+    /**
+     *
+     */
     userOffboardingRequest: UserOffboardingRequest;
 }
 
 export interface LifecycleUserOffboardingDestroyRequest {
+    /**
+     * A UUID string identifying this User Offboarding.
+     */
     id: string;
 }
 
 export interface LifecycleUserOffboardingListRequest {
+    /**
+     *
+     */
     action?: OffboardingActionEnum;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     status?: OffboardingStatusEnum;
+    /**
+     *
+     */
     userUuid?: string;
 }
 
 export interface LifecycleUserOffboardingRetrieveRequest {
+    /**
+     * A UUID string identifying this User Offboarding.
+     */
     id: string;
 }
 

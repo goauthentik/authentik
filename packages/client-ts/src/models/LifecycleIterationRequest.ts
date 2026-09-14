@@ -24,8 +24,6 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
 export interface LifecycleIterationRequest {
     /**
      *
-     * @type {ContentTypeEnum}
-     * @memberof LifecycleIterationRequest
      */
     contentType: ContentTypeEnum;
 }

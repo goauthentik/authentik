@@ -255,572 +255,1292 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface PropertymappingsAllDestroyRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsAllListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsAllRetrieveRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsAllTestCreateRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     formatResult?: boolean;
+    /**
+     *
+     */
     propertyMappingTestRequest?: PropertyMappingTestRequest;
 }
 
 export interface PropertymappingsAllUsedByListRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsNotificationCreateRequest {
+    /**
+     *
+     */
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
 }
 
 export interface PropertymappingsNotificationDestroyRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsNotificationListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsNotificationPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedNotificationWebhookMappingRequest?: PatchedNotificationWebhookMappingRequest;
 }
 
 export interface PropertymappingsNotificationRetrieveRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsNotificationUpdateRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
 }
 
 export interface PropertymappingsNotificationUsedByListRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceCreateRequest {
+    /**
+     *
+     */
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceListRequest {
+    /**
+     *
+     */
     expression?: string;
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     pmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspacePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedGoogleWorkspaceProviderMappingRequest?: PatchedGoogleWorkspaceProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceUpdateRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraCreateRequest {
+    /**
+     *
+     */
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraListRequest {
+    /**
+     *
+     */
     expression?: string;
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     pmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedMicrosoftEntraProviderMappingRequest?: PatchedMicrosoftEntraProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraUpdateRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRacCreateRequest {
+    /**
+     *
+     */
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRacDestroyRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRacListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderRacPartialUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedRACPropertyMappingRequest?: PatchedRACPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRacRetrieveRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRacUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRacUsedByListRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRadiusCreateRequest {
+    /**
+     *
+     */
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRadiusDestroyRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRadiusListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderRadiusPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedRadiusProviderPropertyMappingRequest?: PatchedRadiusProviderPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRadiusRetrieveRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRadiusUpdateRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRadiusUsedByListRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderSamlCreateRequest {
+    /**
+     *
+     */
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderSamlDestroyRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderSamlListRequest {
+    /**
+     *
+     */
     friendlyName?: string;
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     samlName?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderSamlPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedSAMLPropertyMappingRequest?: PatchedSAMLPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderSamlRetrieveRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderSamlUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderSamlUsedByListRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScimCreateRequest {
+    /**
+     *
+     */
     sCIMMappingRequest: SCIMMappingRequest;
 }
 
 export interface PropertymappingsProviderScimDestroyRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScimListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderScimPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedSCIMMappingRequest?: PatchedSCIMMappingRequest;
 }
 
 export interface PropertymappingsProviderScimRetrieveRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScimUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     sCIMMappingRequest: SCIMMappingRequest;
 }
 
 export interface PropertymappingsProviderScimUsedByListRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScopeCreateRequest {
+    /**
+     *
+     */
     scopeMappingRequest: ScopeMappingRequest;
 }
 
 export interface PropertymappingsProviderScopeDestroyRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScopeListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     scopeName?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderScopePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedScopeMappingRequest?: PatchedScopeMappingRequest;
 }
 
 export interface PropertymappingsProviderScopeRetrieveRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScopeUpdateRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     scopeMappingRequest: ScopeMappingRequest;
 }
 
 export interface PropertymappingsProviderScopeUsedByListRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceKerberosCreateRequest {
+    /**
+     *
+     */
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceKerberosDestroyRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceKerberosListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceKerberosPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedKerberosSourcePropertyMappingRequest?: PatchedKerberosSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceKerberosRetrieveRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceKerberosUpdateRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceKerberosUsedByListRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceLdapCreateRequest {
+    /**
+     *
+     */
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceLdapDestroyRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceLdapListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceLdapPartialUpdateRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedLDAPSourcePropertyMappingRequest?: PatchedLDAPSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceLdapRetrieveRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceLdapUpdateRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceLdapUsedByListRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceOauthCreateRequest {
+    /**
+     *
+     */
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceOauthDestroyRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceOauthListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceOauthPartialUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedOAuthSourcePropertyMappingRequest?: PatchedOAuthSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceOauthRetrieveRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceOauthUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceOauthUsedByListRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourcePlexCreateRequest {
+    /**
+     *
+     */
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourcePlexDestroyRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourcePlexListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourcePlexPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedPlexSourcePropertyMappingRequest?: PatchedPlexSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourcePlexRetrieveRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourcePlexUpdateRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourcePlexUsedByListRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceSamlCreateRequest {
+    /**
+     *
+     */
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceSamlDestroyRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceSamlListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceSamlPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedSAMLSourcePropertyMappingRequest?: PatchedSAMLSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceSamlRetrieveRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceSamlUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceSamlUsedByListRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceScimCreateRequest {
+    /**
+     *
+     */
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceScimDestroyRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceScimListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceScimPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedSCIMSourcePropertyMappingRequest?: PatchedSCIMSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceScimRetrieveRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceScimUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceScimUsedByListRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceTelegramCreateRequest {
+    /**
+     *
+     */
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceTelegramDestroyRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceTelegramListRequest {
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceTelegramPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     patchedTelegramSourcePropertyMappingRequest?: PatchedTelegramSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceTelegramRetrieveRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceTelegramUpdateRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
+    /**
+     *
+     */
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceTelegramUsedByListRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 

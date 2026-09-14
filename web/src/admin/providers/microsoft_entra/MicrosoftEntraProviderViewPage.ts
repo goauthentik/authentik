@@ -88,7 +88,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             return nothing;
         }
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"

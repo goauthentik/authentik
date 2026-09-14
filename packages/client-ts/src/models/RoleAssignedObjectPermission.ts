@@ -25,26 +25,18 @@ import { RoleObjectPermissionFromJSON, RoleObjectPermissionToJSON } from "./Role
 export interface RoleAssignedObjectPermission {
     /**
      *
-     * @type {string}
-     * @memberof RoleAssignedObjectPermission
      */
     readonly rolePk: string;
     /**
      *
-     * @type {string}
-     * @memberof RoleAssignedObjectPermission
      */
     readonly name: string;
     /**
      *
-     * @type {Array<RoleObjectPermission>}
-     * @memberof RoleAssignedObjectPermission
      */
     objectPermissions: Array<RoleObjectPermission>;
     /**
      *
-     * @type {Array<RoleModelPermission>}
-     * @memberof RoleAssignedObjectPermission
      */
     modelPermissions: Array<RoleModelPermission>;
 }

@@ -36,26 +36,18 @@ import {
 export interface AuthenticatedSessionUserAgent {
     /**
      *
-     * @type {AuthenticatedSessionUserAgentDevice}
-     * @memberof AuthenticatedSessionUserAgent
      */
     device: AuthenticatedSessionUserAgentDevice;
     /**
      *
-     * @type {AuthenticatedSessionUserAgentOs}
-     * @memberof AuthenticatedSessionUserAgent
      */
     os: AuthenticatedSessionUserAgentOs;
     /**
      *
-     * @type {AuthenticatedSessionUserAgentUserAgent}
-     * @memberof AuthenticatedSessionUserAgent
      */
     userAgent: AuthenticatedSessionUserAgentUserAgent;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgent
      */
     string: string;
 }

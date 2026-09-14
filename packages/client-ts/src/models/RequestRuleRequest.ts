@@ -26,50 +26,34 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface RequestRuleRequest {
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleRequest
      */
     uuid?: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof RequestRuleRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleRequest
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RequestRuleRequest
      */
     notificationTransports?: Array<string>;
     /**
      *
-     * @type {NotificationModeEnum}
-     * @memberof RequestRuleRequest
      */
     notificationMode?: NotificationModeEnum;
     /**
      *
-     * @type {number}
-     * @memberof RequestRuleRequest
      */
     minReviewers?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof RequestRuleRequest
      */
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleRequest
      */
     requestFlow?: string | null;
 }

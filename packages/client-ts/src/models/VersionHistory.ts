@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
+
 /**
  * VersionHistory Serializer
  * @export
@@ -20,26 +22,18 @@
 export interface VersionHistory {
     /**
      *
-     * @type {number}
-     * @memberof VersionHistory
      */
     readonly id: number;
     /**
      *
-     * @type {Date}
-     * @memberof VersionHistory
      */
     timestamp: Date;
     /**
      *
-     * @type {string}
-     * @memberof VersionHistory
      */
     version: string;
     /**
      *
-     * @type {string}
-     * @memberof VersionHistory
      */
     build: string;
 }
@@ -68,7 +62,7 @@ export function VersionHistoryFromJSONTyped(
     }
     return {
         id: json["id"],
-        timestamp: new Date(json["timestamp"]),
+        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
         version: json["version"],
         build: json["build"],
     };
@@ -87,7 +81,8 @@ export function VersionHistoryToJSONTyped(
     }
 
     return {
-        timestamp: value["timestamp"].toISOString(),
+        timestamp:
+            value["timestamp"] == null ? value["timestamp"] : serializeDateTime(value["timestamp"]),
         version: value["version"],
         build: value["build"],
     };

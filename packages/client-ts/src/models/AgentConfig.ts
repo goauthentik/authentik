@@ -25,62 +25,42 @@ import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum";
 export interface AgentConfig {
     /**
      *
-     * @type {string}
-     * @memberof AgentConfig
      */
     readonly deviceId: string;
     /**
      *
-     * @type {number}
-     * @memberof AgentConfig
      */
     readonly refreshInterval: number;
     /**
      *
-     * @type {string}
-     * @memberof AgentConfig
      */
     readonly authorizationFlow: string | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AgentConfig
      */
     readonly jwksAuth: { [key: string]: any };
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AgentConfig
      */
     readonly jwksChallenge: { [key: string]: any } | null;
     /**
      *
-     * @type {number}
-     * @memberof AgentConfig
      */
     nssUidOffset: number;
     /**
      *
-     * @type {number}
-     * @memberof AgentConfig
      */
     nssGidOffset: number;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConfig
      */
     authTerminateSessionOnExpiry: boolean;
     /**
      *
-     * @type {Config}
-     * @memberof AgentConfig
      */
     readonly systemConfig: Config;
     /**
      *
-     * @type {LicenseStatusEnum}
-     * @memberof AgentConfig
      */
     readonly licenseStatus: LicenseStatusEnum | null;
 }

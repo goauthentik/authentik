@@ -20,14 +20,10 @@
 export interface UserKerberosSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserKerberosSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserKerberosSourceConnectionRequest
      */
     identifier: string;
 }

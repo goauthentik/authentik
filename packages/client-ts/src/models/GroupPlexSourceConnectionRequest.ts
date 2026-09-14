@@ -20,14 +20,10 @@
 export interface GroupPlexSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupPlexSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupPlexSourceConnectionRequest
      */
     identifier: string;
 }

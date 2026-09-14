@@ -25,20 +25,14 @@ import { UserLogoutStageFromJSON, UserLogoutStageToJSON } from "./UserLogoutStag
 export interface PaginatedUserLogoutStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserLogoutStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserLogoutStage>}
-     * @memberof PaginatedUserLogoutStageList
      */
     results: Array<UserLogoutStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserLogoutStageList
      */
     autocomplete: { [key: string]: any };
 }

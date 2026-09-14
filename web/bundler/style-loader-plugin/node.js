@@ -114,6 +114,31 @@ export function styleLoaderPlugin({
             });
 
             /**
+             * Handle plain `.css` text imports, i.e. a component's `static styles`.
+             *
+             * These bypass ESBuild's CSS pipeline entirely, so their authored source —
+             * native nesting included — reaches ShadyCSS verbatim. Lower the nesting
+             * here for the same reason the bundled path does.
+             *
+             * @see {@linkcode CSSNamespace.Bundled} for the rationale.
+             */
+            build.onLoad({ filter: /\.css$/, namespace: "file" }, async (args) => {
+                const cssContent = await readFile(args.path, "utf8");
+
+                const { code } = await build.esbuild.transform(cssContent, {
+                    loader: "css",
+                    minify: build.initialOptions.minify || false,
+                    supported: { nesting: false },
+                    logLevel: "silent",
+                });
+
+                return {
+                    contents: code,
+                    loader: "text",
+                };
+            });
+
+            /**
              * Handle `with { type: "bundled-text" }` imports.
              *
              * Bundle the CSS and return as text...

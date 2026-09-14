@@ -20,8 +20,6 @@
 export interface WebAuthnDeviceRequest {
     /**
      *
-     * @type {string}
-     * @memberof WebAuthnDeviceRequest
      */
     name: string;
 }

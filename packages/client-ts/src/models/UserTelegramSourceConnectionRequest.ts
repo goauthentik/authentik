@@ -20,14 +20,10 @@
 export interface UserTelegramSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserTelegramSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserTelegramSourceConnectionRequest
      */
     identifier: string;
 }

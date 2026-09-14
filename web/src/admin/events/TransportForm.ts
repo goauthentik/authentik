@@ -155,6 +155,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             >
                 <ak-crypto-certificate-search
                     .certificate=${this.instance?.webhookCa}
+                    nokey
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(

@@ -1,6 +1,6 @@
 """Test SCIM User"""
 
-from json import dumps
+from json import dumps, loads
 from uuid import uuid4
 
 from django.urls import reverse
@@ -55,6 +55,50 @@ class TestSCIMUsers(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         SCIMUserSchema.model_validate_json(response.content, strict=True)
+
+    def test_user_list_filter(self):
+        """Test user list with a filter"""
+        user = create_test_user()
+        SCIMSourceUser.objects.create(source=self.source, user=user, external_id=str(uuid4()))
+        other_user = create_test_user()
+        SCIMSourceUser.objects.create(source=self.source, user=other_user, external_id=str(uuid4()))
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": f'id eq "{user.uuid}" and userName eq "{user.username}"'},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content)
+        self.assertEqual(body["totalResults"], 1)
+        self.assertEqual(body["Resources"][0]["id"], str(user.uuid))
+
+    def test_user_list_filter_invalid(self):
+        """Test user list with an unparsable filter"""
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": "userName eq"},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "detail": "Invalid filter.",
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+                "scimType": "invalidFilter",
+                "status": 400,
+            },
+        )
 
     def test_user_create(self):
         """Test user create"""

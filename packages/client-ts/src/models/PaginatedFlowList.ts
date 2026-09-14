@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedFlowList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedFlowList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Flow>}
-     * @memberof PaginatedFlowList
      */
     results: Array<Flow>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedFlowList
      */
     autocomplete: { [key: string]: any };
 }

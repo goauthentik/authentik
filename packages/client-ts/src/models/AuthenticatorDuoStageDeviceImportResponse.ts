@@ -20,14 +20,10 @@
 export interface AuthenticatorDuoStageDeviceImportResponse {
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorDuoStageDeviceImportResponse
      */
     readonly count: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageDeviceImportResponse
      */
     readonly error: string;
 }

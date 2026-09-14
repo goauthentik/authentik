@@ -28,92 +28,62 @@ import {
 export interface CaptchaStage {
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof CaptchaStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof CaptchaStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof CaptchaStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof CaptchaStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof CaptchaStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Public key, acquired your captcha Provider.
-     * @type {string}
-     * @memberof CaptchaStage
      */
     publicKey: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStage
      */
     jsUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStage
      */
     apiUrl?: string;
     /**
      *
-     * @type {RequestContentTypeEnum}
-     * @memberof CaptchaStage
      */
     requestContentType?: RequestContentTypeEnum;
     /**
      *
-     * @type {boolean}
-     * @memberof CaptchaStage
      */
     interactive?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof CaptchaStage
      */
     scoreMinThreshold?: number;
     /**
      *
-     * @type {number}
-     * @memberof CaptchaStage
      */
     scoreMaxThreshold?: number;
     /**
      * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-     * @type {boolean}
-     * @memberof CaptchaStage
      */
     errorOnInvalidScore?: boolean;
 }

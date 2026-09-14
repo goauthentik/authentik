@@ -27,32 +27,22 @@ import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttrib
 export interface PatchedMutualTLSStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedMutualTLSStageRequest
      */
     name?: string;
     /**
      *
-     * @type {StageModeEnum}
-     * @memberof PatchedMutualTLSStageRequest
      */
     mode?: StageModeEnum;
     /**
      * Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-     * @type {Array<string>}
-     * @memberof PatchedMutualTLSStageRequest
      */
     certificateAuthorities?: Array<string>;
     /**
      *
-     * @type {CertAttributeEnum}
-     * @memberof PatchedMutualTLSStageRequest
      */
     certAttribute?: CertAttributeEnum;
     /**
      *
-     * @type {UserAttributeEnum}
-     * @memberof PatchedMutualTLSStageRequest
      */
     userAttribute?: UserAttributeEnum;
 }

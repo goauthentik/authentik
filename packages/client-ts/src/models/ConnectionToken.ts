@@ -27,38 +27,26 @@ import { RACProviderFromJSON } from "./RACProvider";
 export interface ConnectionToken {
     /**
      *
-     * @type {string}
-     * @memberof ConnectionToken
      */
     pk?: string;
     /**
      *
-     * @type {number}
-     * @memberof ConnectionToken
      */
     provider: number;
     /**
      *
-     * @type {RACProvider}
-     * @memberof ConnectionToken
      */
     readonly providerObj: RACProvider;
     /**
      *
-     * @type {string}
-     * @memberof ConnectionToken
      */
     endpoint: string;
     /**
      *
-     * @type {Endpoint}
-     * @memberof ConnectionToken
      */
     readonly endpointObj: Endpoint;
     /**
      *
-     * @type {PartialUser}
-     * @memberof ConnectionToken
      */
     readonly user: PartialUser;
 }

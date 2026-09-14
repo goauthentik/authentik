@@ -20,8 +20,6 @@
 export interface DuoDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof DuoDeviceRequest
      */
     name: string;
 }

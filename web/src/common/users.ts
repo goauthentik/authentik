@@ -1,5 +1,6 @@
 import { aki } from "#common/api/client";
 import { isResponseErrorLike } from "#common/errors/network";
+import { globalAK } from "#common/global";
 import { UIConfig, UserDisplay } from "#common/ui/config";
 
 import { CoreApi, SessionUser, UserSelf } from "@goauthentik/api";
@@ -136,15 +137,19 @@ let pendingRedirect = false;
  *
  * @category Session
  */
-export function redirectToAuthFlow(nextPathname = "/flows/-/default/authentication/"): void {
+export function redirectToAuthFlow(nextPathname?: string): void {
     if (pendingRedirect) {
         console.debug("authentik/users: Redirect already pending, ");
         return;
     }
 
+    // Base-path-aware default: `api.base` carries the deployment prefix (e.g.
+    // `/auth/`), so the login flow resolves correctly under a non-root web.path.
+    const flowPathname = nextPathname ?? `${globalAK().api.base}flows/-/default/authentication/`;
+
     const { pathname, search, hash } = window.location;
 
-    const authFlowRedirectURL = new URL(nextPathname, window.location.origin);
+    const authFlowRedirectURL = new URL(flowPathname, window.location.origin);
 
     authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
 

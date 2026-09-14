@@ -20,14 +20,10 @@
 export interface UserSAMLSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserSAMLSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSAMLSourceConnectionRequest
      */
     identifier: string;
 }

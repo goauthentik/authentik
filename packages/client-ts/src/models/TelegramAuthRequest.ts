@@ -20,44 +20,30 @@
 export interface TelegramAuthRequest {
     /**
      *
-     * @type {number}
-     * @memberof TelegramAuthRequest
      */
     id: number;
     /**
      *
-     * @type {string}
-     * @memberof TelegramAuthRequest
      */
     firstName?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramAuthRequest
      */
     lastName?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramAuthRequest
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramAuthRequest
      */
     photoUrl?: string;
     /**
      *
-     * @type {number}
-     * @memberof TelegramAuthRequest
      */
     authDate: number;
     /**
      *
-     * @type {string}
-     * @memberof TelegramAuthRequest
      */
     hash: string;
 }

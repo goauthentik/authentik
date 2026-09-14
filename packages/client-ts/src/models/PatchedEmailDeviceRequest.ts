@@ -20,8 +20,6 @@
 export interface PatchedEmailDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedEmailDeviceRequest
      */
     name?: string;
 }

@@ -25,26 +25,18 @@ import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 export interface DeviceConnection {
     /**
      *
-     * @type {string}
-     * @memberof DeviceConnection
      */
     device: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceConnection
      */
     connector: string;
     /**
      *
-     * @type {Connector}
-     * @memberof DeviceConnection
      */
     readonly connectorObj: Connector;
     /**
      *
-     * @type {DeviceFactSnapshot}
-     * @memberof DeviceConnection
      */
     readonly latestSnapshot: DeviceFactSnapshot | null;
 }

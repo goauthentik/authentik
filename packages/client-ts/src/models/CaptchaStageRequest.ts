@@ -26,62 +26,42 @@ import {
 export interface CaptchaStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStageRequest
      */
     name: string;
     /**
      * Public key, acquired your captcha Provider.
-     * @type {string}
-     * @memberof CaptchaStageRequest
      */
     publicKey: string;
     /**
      * Private key, acquired your captcha Provider.
-     * @type {string}
-     * @memberof CaptchaStageRequest
      */
     privateKey: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStageRequest
      */
     jsUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaStageRequest
      */
     apiUrl?: string;
     /**
      *
-     * @type {RequestContentTypeEnum}
-     * @memberof CaptchaStageRequest
      */
     requestContentType?: RequestContentTypeEnum;
     /**
      *
-     * @type {boolean}
-     * @memberof CaptchaStageRequest
      */
     interactive?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof CaptchaStageRequest
      */
     scoreMinThreshold?: number;
     /**
      *
-     * @type {number}
-     * @memberof CaptchaStageRequest
      */
     scoreMaxThreshold?: number;
     /**
      * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-     * @type {boolean}
-     * @memberof CaptchaStageRequest
      */
     errorOnInvalidScore?: boolean;
 }

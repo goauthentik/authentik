@@ -78,153 +78,345 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface RequestsGrantRequestsAgentCreateRequest {
+    /**
+     *
+     */
     agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsCreateRequest {
+    /**
+     *
+     */
     grantRequestCreateRequest: GrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsDestroyRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
 }
 
 export interface RequestsGrantRequestsListRequest {
+    /**
+     *
+     */
     agentOwner?: number;
+    /**
+     *
+     */
     createdBy?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsPendingReviewListRequest {
+    /**
+     *
+     */
     agentOwner?: number;
+    /**
+     *
+     */
     createdBy?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsRetrieveRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsGrantRequestsRevokeDestroyRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsCreateRequest {
+    /**
+     *
+     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     rule?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     target?: string;
 }
 
 export interface RequestsRuleBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleBindingRequest?: PatchedRequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsCreateRequest {
+    /**
+     *
+     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsListRequest {
+    /**
+     *
+     */
     binding?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     target?: string;
 }
 
 export interface RequestsRuleChildBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleChildBindingRequest?: PatchedRequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesCreateRequest {
+    /**
+     *
+     */
     requestRuleRequest: RequestRuleRequest;
 }
 
 export interface RequestsRulesDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     pbmUuid?: string;
+    /**
+     *
+     */
     requestFlowSlug?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface RequestsRulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleRequest?: PatchedRequestRuleRequest;
 }
 
 export interface RequestsRulesRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleRequest: RequestRuleRequest;
 }
 
 export interface RequestsRulesUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 

@@ -23,38 +23,26 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 export interface SCIMSourceGroup {
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroup
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroup
      */
     externalId: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroup
      */
     group: string;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof SCIMSourceGroup
      */
     readonly groupObj: PartialGroup;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroup
      */
     source: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMSourceGroup
      */
     attributes?: { [key: string]: any };
 }

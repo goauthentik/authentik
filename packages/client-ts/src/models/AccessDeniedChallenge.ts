@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AccessDeniedChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AccessDeniedChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AccessDeniedChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
      */
     errorMessage?: string;
 }

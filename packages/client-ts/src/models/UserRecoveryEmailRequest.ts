@@ -20,14 +20,10 @@
 export interface UserRecoveryEmailRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserRecoveryEmailRequest
      */
     tokenDuration?: string;
     /**
      *
-     * @type {string}
-     * @memberof UserRecoveryEmailRequest
      */
     emailStage: string;
 }

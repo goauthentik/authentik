@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
 import {
     DeviceAccessGroupRequestFromJSON,
@@ -26,44 +27,30 @@ import {
 export interface EndpointDeviceRequest {
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceRequest
      */
     deviceUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceRequest
      */
     accessGroup?: string | null;
     /**
      *
-     * @type {DeviceAccessGroupRequest}
-     * @memberof EndpointDeviceRequest
      */
     accessGroupObj?: DeviceAccessGroupRequest;
     /**
      *
-     * @type {boolean}
-     * @memberof EndpointDeviceRequest
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof EndpointDeviceRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EndpointDeviceRequest
      */
     attributes?: { [key: string]: any };
 }
@@ -106,7 +93,7 @@ export function EndpointDeviceRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
@@ -129,7 +116,7 @@ export function EndpointDeviceRequestToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
     };
 }

@@ -25,32 +25,22 @@ import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./Erro
 export interface Config {
     /**
      *
-     * @type {ErrorReportingConfig}
-     * @memberof Config
      */
     errorReporting: ErrorReportingConfig;
     /**
      *
-     * @type {Array<CapabilitiesEnum>}
-     * @memberof Config
      */
     capabilities: Array<CapabilitiesEnum>;
     /**
      *
-     * @type {number}
-     * @memberof Config
      */
     cacheTimeout: number;
     /**
      *
-     * @type {number}
-     * @memberof Config
      */
     cacheTimeoutFlows: number;
     /**
      *
-     * @type {number}
-     * @memberof Config
      */
     cacheTimeoutPolicies: number;
 }

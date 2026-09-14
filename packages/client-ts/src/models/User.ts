@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Role } from "./Role";
@@ -27,122 +28,82 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 export interface User {
     /**
      *
-     * @type {number}
-     * @memberof User
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof User
      */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof User
      */
     name: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof User
      */
     isActive?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof User
      */
     lastLogin?: Date | null;
     /**
      *
-     * @type {Date}
-     * @memberof User
      */
     readonly dateJoined: Date;
     /**
      *
-     * @type {boolean}
-     * @memberof User
      */
     readonly isSuperuser: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof User
      */
     groups?: Array<string>;
     /**
      *
-     * @type {Array<PartialGroup>}
-     * @memberof User
      */
     readonly groupsObj: Array<PartialGroup> | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof User
      */
     roles?: Array<string>;
     /**
      *
-     * @type {Array<Role>}
-     * @memberof User
      */
     readonly rolesObj: Array<Role> | null;
     /**
      *
-     * @type {string}
-     * @memberof User
      */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
-     * @type {string}
-     * @memberof User
      */
     readonly avatar: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof User
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof User
      */
     readonly uid: string;
     /**
      *
-     * @type {string}
-     * @memberof User
      */
     path?: string;
     /**
      *
-     * @type {UserTypeEnum}
-     * @memberof User
      */
     type?: UserTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof User
      */
     readonly uuid: string;
     /**
      *
-     * @type {Date}
-     * @memberof User
      */
     readonly passwordChangeDate: Date;
     /**
      *
-     * @type {Date}
-     * @memberof User
      */
     readonly lastUpdated: Date;
 }
@@ -220,8 +181,9 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
-        dateJoined: new Date(json["date_joined"]),
+                  : parseDateTime(json["last_login"]),
+        dateJoined:
+            json["date_joined"] == null ? json["date_joined"] : parseDateTime(json["date_joined"]),
         isSuperuser: json["is_superuser"],
         groups: json["groups"] == null ? undefined : json["groups"],
         groupsObj:
@@ -238,8 +200,14 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
         uuid: json["uuid"],
-        passwordChangeDate: new Date(json["password_change_date"]),
-        lastUpdated: new Date(json["last_updated"]),
+        passwordChangeDate:
+            json["password_change_date"] == null
+                ? json["password_change_date"]
+                : parseDateTime(json["password_change_date"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 
@@ -272,7 +240,7 @@ export function UserToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         groups: value["groups"],
         roles: value["roles"],
         email: value["email"],

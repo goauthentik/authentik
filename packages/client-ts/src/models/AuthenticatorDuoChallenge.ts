@@ -24,50 +24,34 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AuthenticatorDuoChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorDuoChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorDuoChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     activationBarcode: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     activationCode: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoChallenge
      */
     stageUuid: string;
 }

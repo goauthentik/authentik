@@ -20,20 +20,14 @@
 export interface SCIMProviderGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof SCIMProviderGroupRequest
      */
     scimId: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProviderGroupRequest
      */
     group: string;
     /**
      *
-     * @type {number}
-     * @memberof SCIMProviderGroupRequest
      */
     provider: number;
 }

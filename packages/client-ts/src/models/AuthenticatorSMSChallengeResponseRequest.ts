@@ -20,20 +20,14 @@
 export interface AuthenticatorSMSChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallengeResponseRequest
      */
     code?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallengeResponseRequest
      */
     phoneNumber?: string;
 }

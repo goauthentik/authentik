@@ -23,20 +23,14 @@ import { FlowInspectorPlanFromJSON, FlowInspectorPlanToJSON } from "./FlowInspec
 export interface FlowInspection {
     /**
      *
-     * @type {Array<FlowInspectorPlan>}
-     * @memberof FlowInspection
      */
     plans: Array<FlowInspectorPlan>;
     /**
      *
-     * @type {FlowInspectorPlan}
-     * @memberof FlowInspection
      */
     currentPlan?: FlowInspectorPlan;
     /**
      *
-     * @type {boolean}
-     * @memberof FlowInspection
      */
     isCompleted: boolean;
 }

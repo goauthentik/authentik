@@ -27,26 +27,18 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
 export interface OperatingSystem {
     /**
      *
-     * @type {DeviceFactsOSFamily}
-     * @memberof OperatingSystem
      */
     family: DeviceFactsOSFamily;
     /**
      * Operating System name, such as 'Server 2022' or 'Ubuntu'
-     * @type {string}
-     * @memberof OperatingSystem
      */
     name?: string;
     /**
      * Operating System version, must always be the version number but may contain build name
-     * @type {string}
-     * @memberof OperatingSystem
      */
     version?: string;
     /**
      *
-     * @type {string}
-     * @memberof OperatingSystem
      */
     arch?: string;
 }

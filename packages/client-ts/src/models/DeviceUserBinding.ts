@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Connector } from "./Connector";
 import { ConnectorFromJSON } from "./Connector";
 import type { PartialGroup } from "./PartialGroup";
@@ -29,110 +30,74 @@ import { PolicyFromJSON } from "./Policy";
 export interface DeviceUserBinding {
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBinding
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBinding
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBinding
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof DeviceUserBinding
      */
     user?: number | null;
     /**
      *
-     * @type {Policy}
-     * @memberof DeviceUserBinding
      */
     readonly policyObj: Policy | null;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof DeviceUserBinding
      */
     readonly groupObj: PartialGroup | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof DeviceUserBinding
      */
     readonly userObj: PartialUser | null;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBinding
      */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof DeviceUserBinding
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof DeviceUserBinding
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DeviceUserBinding
      */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof DeviceUserBinding
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof DeviceUserBinding
      */
     failureResult?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof DeviceUserBinding
      */
     readonly expires: Date | null;
     /**
      *
-     * @type {boolean}
-     * @memberof DeviceUserBinding
      */
     readonly expiring: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof DeviceUserBinding
      */
     isPrimary?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBinding
      */
     readonly connector: string | null;
     /**
      *
-     * @type {Connector}
-     * @memberof DeviceUserBinding
      */
     readonly connectorObj: Connector;
 }
@@ -209,7 +174,7 @@ export function DeviceUserBindingFromJSONTyped(
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
         expiring: json["expiring"],
         isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
         connector: json["connector"],

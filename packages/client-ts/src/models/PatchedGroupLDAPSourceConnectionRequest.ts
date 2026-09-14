@@ -20,14 +20,10 @@
 export interface PatchedGroupLDAPSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
     identifier?: string;
 }

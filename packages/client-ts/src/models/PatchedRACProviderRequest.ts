@@ -20,44 +20,30 @@
 export interface PatchedRACProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedRACProviderRequest
      */
     name?: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof PatchedRACProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof PatchedRACProviderRequest
      */
     authorizationFlow?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedRACProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedRACProviderRequest
      */
     settings?: { [key: string]: any };
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof PatchedRACProviderRequest
      */
     connectionExpiry?: string;
     /**
      * When set to true, connection tokens will be deleted upon disconnect.
-     * @type {boolean}
-     * @memberof PatchedRACProviderRequest
      */
     deleteTokenOnDisconnect?: boolean;
 }

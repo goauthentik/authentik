@@ -25,20 +25,14 @@ import { ReputationPolicyFromJSON, ReputationPolicyToJSON } from "./ReputationPo
 export interface PaginatedReputationPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedReputationPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ReputationPolicy>}
-     * @memberof PaginatedReputationPolicyList
      */
     results: Array<ReputationPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedReputationPolicyList
      */
     autocomplete: { [key: string]: any };
 }

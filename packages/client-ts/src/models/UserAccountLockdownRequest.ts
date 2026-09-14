@@ -20,8 +20,6 @@
 export interface UserAccountLockdownRequest {
     /**
      * User to lock. If omitted, locks the current user (self-service).
-     * @type {number}
-     * @memberof UserAccountLockdownRequest
      */
     user?: number | null;
 }

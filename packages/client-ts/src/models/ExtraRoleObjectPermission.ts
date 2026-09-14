@@ -20,58 +20,40 @@
 export interface ExtraRoleObjectPermission {
     /**
      *
-     * @type {number}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly id: number;
     /**
      *
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly codename: string;
     /**
      *
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly model: string;
     /**
      *
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly appLabel: string;
     /**
      *
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     objectPk: string;
     /**
      *
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly name: string;
     /**
      * Get app label from permission's model
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly appLabelVerbose: string;
     /**
      * Get model label from permission's model
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly modelVerbose: string;
     /**
      * Get model description from attached model. This operation takes at least
      * one additional query, and the description is only shown if the role has the
      * view_ permission on the object
-     * @type {string}
-     * @memberof ExtraRoleObjectPermission
      */
     readonly objectDescription: string | null;
 }

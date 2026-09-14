@@ -20,32 +20,22 @@
 export interface RoleModelPermission {
     /**
      *
-     * @type {number}
-     * @memberof RoleModelPermission
      */
     readonly id: number;
     /**
      *
-     * @type {string}
-     * @memberof RoleModelPermission
      */
     readonly codename: string;
     /**
      *
-     * @type {string}
-     * @memberof RoleModelPermission
      */
     readonly model: string;
     /**
      *
-     * @type {string}
-     * @memberof RoleModelPermission
      */
     readonly appLabel: string;
     /**
      *
-     * @type {string}
-     * @memberof RoleModelPermission
      */
     readonly name: string;
 }

@@ -23,62 +23,42 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface AuthenticatorEndpointGDTCStage {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     friendlyName?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorEndpointGDTCStage
      */
     credentials: { [key: string]: any };
 }

@@ -20,8 +20,6 @@
 export interface AppleChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AppleChallengeResponseRequest
      */
     component?: string;
 }

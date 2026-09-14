@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Application } from "./Application";
 import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
 import type { User } from "./User";
@@ -25,38 +26,26 @@ import { UserFromJSON, UserToJSON } from "./User";
 export interface UserConsent {
     /**
      *
-     * @type {number}
-     * @memberof UserConsent
      */
     readonly pk: number;
     /**
      *
-     * @type {Date}
-     * @memberof UserConsent
      */
     expires?: Date | null;
     /**
      *
-     * @type {boolean}
-     * @memberof UserConsent
      */
     expiring?: boolean;
     /**
      *
-     * @type {User}
-     * @memberof UserConsent
      */
     user: User;
     /**
      *
-     * @type {Application}
-     * @memberof UserConsent
      */
     application: Application;
     /**
      *
-     * @type {string}
-     * @memberof UserConsent
      */
     permissions?: string;
 }
@@ -86,7 +75,7 @@ export function UserConsentFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         user: UserFromJSON(json["user"]),
         application: ApplicationFromJSON(json["application"]),
@@ -107,7 +96,7 @@ export function UserConsentToJSONTyped(
     }
 
     return {
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         expiring: value["expiring"],
         user: UserToJSON(value["user"]),
         application: ApplicationToJSON(value["application"]),

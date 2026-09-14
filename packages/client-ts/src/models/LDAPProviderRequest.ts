@@ -23,80 +23,54 @@ import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAcc
 export interface LDAPProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LDAPProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * DN under which objects are accessible.
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     baseDn?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     certificate?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPProviderRequest
      */
     tlsServerName?: string;
     /**
      * The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
-     * @type {number}
-     * @memberof LDAPProviderRequest
      */
     uidStartNumber?: number;
     /**
      * The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-     * @type {number}
-     * @memberof LDAPProviderRequest
      */
     gidStartNumber?: number;
     /**
      *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPProviderRequest
      */
     searchMode?: LDAPAPIAccessMode;
     /**
      *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPProviderRequest
      */
     bindMode?: LDAPAPIAccessMode;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof LDAPProviderRequest
      */
     mfaSupport?: boolean;
 }

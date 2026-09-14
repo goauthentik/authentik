@@ -23,26 +23,18 @@ import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
 export interface AuthenticatorTOTPStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {DigitsEnum}
-     * @memberof AuthenticatorTOTPStageRequest
      */
     digits: DigitsEnum;
 }

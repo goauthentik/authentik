@@ -20,26 +20,18 @@
 export interface PatchedGoogleChromeConnectorRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGoogleChromeConnectorRequest
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGoogleChromeConnectorRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedGoogleChromeConnectorRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedGoogleChromeConnectorRequest
      */
     credentials?: { [key: string]: any };
 }

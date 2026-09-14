@@ -20,20 +20,14 @@
 export interface EventTopPerUser {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EventTopPerUser
      */
     application: { [key: string]: any };
     /**
      *
-     * @type {number}
-     * @memberof EventTopPerUser
      */
     countedEvents: number;
     /**
      *
-     * @type {number}
-     * @memberof EventTopPerUser
      */
     uniqueUsers: number;
 }

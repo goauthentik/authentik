@@ -17,6 +17,8 @@ import {
     ContextualFlowInfoLayoutEnumFromJSON,
     ContextualFlowInfoLayoutEnumToJSON,
 } from "./ContextualFlowInfoLayoutEnum";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 import type { ThemedUrls } from "./ThemedUrls";
 import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 
@@ -28,34 +30,28 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 export interface ContextualFlowInfo {
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     title?: string;
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     background?: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof ContextualFlowInfo
      */
     backgroundThemedUrls?: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     cancelUrl: string;
     /**
      *
-     * @type {ContextualFlowInfoLayoutEnum}
-     * @memberof ContextualFlowInfo
      */
     layout: ContextualFlowInfoLayoutEnum;
+    /**
+     *
+     */
+    messages?: Array<FlowMessage>;
 }
 
 /**
@@ -95,6 +91,10 @@ export function ContextualFlowInfoFromJSONTyped(
                   : ThemedUrlsFromJSON(json["background_themed_urls"]),
         cancelUrl: json["cancel_url"],
         layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
     };
 }
 
@@ -116,5 +116,9 @@ export function ContextualFlowInfoToJSONTyped(
         background_themed_urls: ThemedUrlsToJSON(value["backgroundThemedUrls"]),
         cancel_url: value["cancelUrl"],
         layout: ContextualFlowInfoLayoutEnumToJSON(value["layout"]),
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
     };
 }

@@ -71,216 +71,579 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EventsEventsCreateRequest {
+    /**
+     *
+     */
     eventRequest: EventRequest;
 }
 
 export interface EventsEventsDestroyRequest {
+    /**
+     * A UUID string identifying this Event.
+     */
     eventUuid: string;
 }
 
 export interface EventsEventsExportCreateRequest {
+    /**
+     *
+     */
     action?: string;
+    /**
+     *
+     */
     actions?: Array<EventActions>;
+    /**
+     * Brand name
+     */
     brandName?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     * Context Authorized application
+     */
     contextAuthorizedApp?: string;
+    /**
+     * Context Device Primary Key
+     */
     contextDevice?: string;
+    /**
+     * Context Model App
+     */
     contextModelApp?: string;
+    /**
+     * Context Model Name
+     */
     contextModelName?: string;
+    /**
+     * Context Model Primary Key
+     */
     contextModelPk?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     * Username
+     */
     username?: string;
 }
 
 export interface EventsEventsListRequest {
+    /**
+     *
+     */
     action?: string;
+    /**
+     *
+     */
     actions?: Array<EventActions>;
+    /**
+     * Brand name
+     */
     brandName?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     * Context Authorized application
+     */
     contextAuthorizedApp?: string;
+    /**
+     * Context Device Primary Key
+     */
     contextDevice?: string;
+    /**
+     * Context Model App
+     */
     contextModelApp?: string;
+    /**
+     * Context Model Name
+     */
     contextModelName?: string;
+    /**
+     * Context Model Primary Key
+     */
     contextModelPk?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     * Username
+     */
     username?: string;
 }
 
 export interface EventsEventsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Event.
+     */
     eventUuid: string;
+    /**
+     *
+     */
     patchedEventRequest?: PatchedEventRequest;
 }
 
 export interface EventsEventsRetrieveRequest {
+    /**
+     * A UUID string identifying this Event.
+     */
     eventUuid: string;
 }
 
 export interface EventsEventsStatsRetrieveRequest {
+    /**
+     * Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'
+     */
     countSteps: Array<string>;
+    /**
+     *
+     */
     action?: string;
+    /**
+     *
+     */
     actions?: Array<EventActions>;
+    /**
+     * Brand name
+     */
     brandName?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     * Context Authorized application
+     */
     contextAuthorizedApp?: string;
+    /**
+     * Context Device Primary Key
+     */
     contextDevice?: string;
+    /**
+     * Context Model App
+     */
     contextModelApp?: string;
+    /**
+     * Context Model Name
+     */
     contextModelName?: string;
+    /**
+     * Context Model Primary Key
+     */
     contextModelPk?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     * Username
+     */
     username?: string;
 }
 
 export interface EventsEventsTopPerUserListRequest {
+    /**
+     *
+     */
     action?: string;
+    /**
+     *
+     */
     actions?: Array<EventActions>;
+    /**
+     * Brand name
+     */
     brandName?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     * Context Authorized application
+     */
     contextAuthorizedApp?: string;
+    /**
+     * Context Device Primary Key
+     */
     contextDevice?: string;
+    /**
+     * Context Model App
+     */
     contextModelApp?: string;
+    /**
+     * Context Model Name
+     */
     contextModelName?: string;
+    /**
+     * Context Model Primary Key
+     */
     contextModelPk?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     topN?: number;
+    /**
+     * Username
+     */
     username?: string;
 }
 
 export interface EventsEventsUpdateRequest {
+    /**
+     * A UUID string identifying this Event.
+     */
     eventUuid: string;
+    /**
+     *
+     */
     eventRequest: EventRequest;
 }
 
 export interface EventsEventsVolumeListRequest {
+    /**
+     *
+     */
     action?: string;
+    /**
+     *
+     */
     actions?: Array<EventActions>;
+    /**
+     * Brand name
+     */
     brandName?: string;
+    /**
+     *
+     */
     clientIp?: string;
+    /**
+     * Context Authorized application
+     */
     contextAuthorizedApp?: string;
+    /**
+     * Context Device Primary Key
+     */
     contextDevice?: string;
+    /**
+     * Context Model App
+     */
     contextModelApp?: string;
+    /**
+     * Context Model Name
+     */
     contextModelName?: string;
+    /**
+     * Context Model Primary Key
+     */
     contextModelPk?: string;
+    /**
+     *
+     */
     historyDays?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     * Username
+     */
     username?: string;
 }
 
 export interface EventsNotificationsDestroyRequest {
+    /**
+     * A UUID string identifying this Notification.
+     */
     uuid: string;
 }
 
 export interface EventsNotificationsListRequest {
+    /**
+     *
+     */
     body?: string;
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     event?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     seen?: boolean;
+    /**
+     *
+     */
     severity?: SeverityEnum;
+    /**
+     *
+     */
     user?: number;
 }
 
 export interface EventsNotificationsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Notification.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedNotificationRequest?: PatchedNotificationRequest;
 }
 
 export interface EventsNotificationsRetrieveRequest {
+    /**
+     * A UUID string identifying this Notification.
+     */
     uuid: string;
 }
 
 export interface EventsNotificationsUpdateRequest {
+    /**
+     * A UUID string identifying this Notification.
+     */
     uuid: string;
+    /**
+     *
+     */
     notificationRequest?: NotificationRequest;
 }
 
 export interface EventsNotificationsUsedByListRequest {
+    /**
+     * A UUID string identifying this Notification.
+     */
     uuid: string;
 }
 
 export interface EventsRulesCreateRequest {
+    /**
+     *
+     */
     notificationRuleRequest: NotificationRuleRequest;
 }
 
 export interface EventsRulesDestroyRequest {
+    /**
+     * A UUID string identifying this Notification Rule.
+     */
     pbmUuid: string;
 }
 
 export interface EventsRulesListRequest {
+    /**
+     *
+     */
     destinationGroupName?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     severity?: SeverityEnum;
 }
 
 export interface EventsRulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Notification Rule.
+     */
     pbmUuid: string;
+    /**
+     *
+     */
     patchedNotificationRuleRequest?: PatchedNotificationRuleRequest;
 }
 
 export interface EventsRulesRetrieveRequest {
+    /**
+     * A UUID string identifying this Notification Rule.
+     */
     pbmUuid: string;
 }
 
 export interface EventsRulesUpdateRequest {
+    /**
+     * A UUID string identifying this Notification Rule.
+     */
     pbmUuid: string;
+    /**
+     *
+     */
     notificationRuleRequest: NotificationRuleRequest;
 }
 
 export interface EventsRulesUsedByListRequest {
+    /**
+     * A UUID string identifying this Notification Rule.
+     */
     pbmUuid: string;
 }
 
 export interface EventsTransportsCreateRequest {
+    /**
+     *
+     */
     notificationTransportRequest: NotificationTransportRequest;
 }
 
 export interface EventsTransportsDestroyRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
 }
 
 export interface EventsTransportsListRequest {
+    /**
+     *
+     */
     mode?: TransportModeEnum;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     sendOnce?: boolean;
+    /**
+     *
+     */
     webhookUrl?: string;
 }
 
 export interface EventsTransportsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedNotificationTransportRequest?: PatchedNotificationTransportRequest;
 }
 
 export interface EventsTransportsRetrieveRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
 }
 
 export interface EventsTransportsTestCreateRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
 }
 
 export interface EventsTransportsUpdateRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
+    /**
+     *
+     */
     notificationTransportRequest: NotificationTransportRequest;
 }
 
 export interface EventsTransportsUsedByListRequest {
+    /**
+     * A UUID string identifying this Notification Transport.
+     */
     uuid: string;
 }
 
@@ -1281,7 +1644,9 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["event"] != null) {

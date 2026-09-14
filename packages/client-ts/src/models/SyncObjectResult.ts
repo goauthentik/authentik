@@ -23,8 +23,6 @@ import { LogEventFromJSON } from "./LogEvent";
 export interface SyncObjectResult {
     /**
      *
-     * @type {Array<LogEvent>}
-     * @memberof SyncObjectResult
      */
     readonly messages: Array<LogEvent>;
 }

@@ -36,194 +36,130 @@ import { SubModeEnumFromJSON, SubModeEnumToJSON } from "./SubModeEnum";
 export interface OAuth2Provider {
     /**
      *
-     * @type {number}
-     * @memberof OAuth2Provider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuth2Provider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     readonly metaModelName: string;
     /**
      * Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-     * @type {ClientTypeEnum}
-     * @memberof OAuth2Provider
      */
     clientType?: ClientTypeEnum;
     /**
      *
-     * @type {Array<GrantTypeEnum>}
-     * @memberof OAuth2Provider
      */
     grantTypes?: Array<GrantTypeEnum>;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     clientId?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     clientSecret?: string;
     /**
      * Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     accessCodeValidity?: string;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     accessTokenValidity?: string;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     refreshTokenValidity?: string;
     /**
      * When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     refreshTokenThreshold?: string;
     /**
      * Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
-     * @type {boolean}
-     * @memberof OAuth2Provider
      */
     includeClaimsInIdToken?: boolean;
     /**
      * Key used to sign the tokens.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     signingKey?: string | null;
     /**
      * Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     encryptionKey?: string | null;
     /**
      *
-     * @type {Array<RedirectURI>}
-     * @memberof OAuth2Provider
      */
     redirectUris: Array<RedirectURI>;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2Provider
      */
     logoutUri?: string;
     /**
      * Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
-     * @type {OAuth2ProviderLogoutMethodEnum}
-     * @memberof OAuth2Provider
      */
     logoutMethod?: OAuth2ProviderLogoutMethodEnum;
     /**
      * Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-     * @type {SubModeEnum}
-     * @memberof OAuth2Provider
      */
     subMode?: SubModeEnum;
     /**
      * Configure how the issuer field of the ID Token should be filled.
-     * @type {IssuerModeEnum}
-     * @memberof OAuth2Provider
      */
     issuerMode?: IssuerModeEnum;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuth2Provider
      */
     jwtFederationSources?: Array<string>;
     /**
      *
-     * @type {Array<number>}
-     * @memberof OAuth2Provider
      */
     jwtFederationProviders?: Array<number>;
 }

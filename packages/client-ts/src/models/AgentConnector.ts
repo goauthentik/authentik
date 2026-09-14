@@ -20,110 +20,74 @@
 export interface AgentConnector {
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnector
      */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof AgentConnector
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AgentConnector
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AgentConnector
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AgentConnector
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     snapshotExpiry?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     authSessionDuration?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnector
      */
     authTerminateSessionOnExpiry?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     refreshInterval?: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     authorizationFlow?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof AgentConnector
      */
     nssUidOffset?: number;
     /**
      *
-     * @type {number}
-     * @memberof AgentConnector
      */
     nssGidOffset?: number;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     challengeKey?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AgentConnector
      */
     challengeIdleTimeout?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentConnector
      */
     challengeTriggerCheckIn?: boolean;
     /**
      *
-     * @type {Array<number>}
-     * @memberof AgentConnector
      */
     jwtFederationProviders?: Array<number>;
 }

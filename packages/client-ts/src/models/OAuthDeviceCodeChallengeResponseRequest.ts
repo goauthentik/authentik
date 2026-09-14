@@ -20,14 +20,10 @@
 export interface OAuthDeviceCodeChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof OAuthDeviceCodeChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthDeviceCodeChallengeResponseRequest
      */
     code: string;
 }

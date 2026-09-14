@@ -20,14 +20,10 @@
 export interface PatchedGroupOAuthSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupOAuthSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupOAuthSourceConnectionRequest
      */
     identifier?: string;
 }

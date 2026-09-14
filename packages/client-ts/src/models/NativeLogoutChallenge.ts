@@ -26,68 +26,46 @@ import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindings
 export interface NativeLogoutChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof NativeLogoutChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof NativeLogoutChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     providerName?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof NativeLogoutChallenge
      */
     isComplete?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     postUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     redirectUrl?: string;
     /**
      *
-     * @type {SAMLBindingsEnum}
-     * @memberof NativeLogoutChallenge
      */
     samlBinding?: SAMLBindingsEnum;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     samlRequest?: string;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     samlResponse?: string;
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallenge
      */
     samlRelayState?: string;
 }

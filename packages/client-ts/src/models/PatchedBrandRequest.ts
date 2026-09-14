@@ -20,128 +20,86 @@
 export interface PatchedBrandRequest {
     /**
      * Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     domain?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedBrandRequest
      */
     _default?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingTitle?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingLogo?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingFavicon?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingCustomCss?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingDefaultFlowBackground?: string;
     /**
      * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     brandingMapTiles?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowAuthentication?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowUserSwitch?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowInvalidation?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowRecovery?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowUnenrollment?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowUserSettings?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowDeviceCode?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowLockdown?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     flowRequest?: string | null;
     /**
      * When set, external users will be redirected to this application after authenticating.
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     defaultApplication?: string | null;
     /**
      * Web Certificate used by the authentik Core webserver.
-     * @type {string}
-     * @memberof PatchedBrandRequest
      */
     webCertificate?: string | null;
     /**
      * Certificates used for client authentication.
-     * @type {Array<string>}
-     * @memberof PatchedBrandRequest
      */
     clientCertificates?: Array<string>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedBrandRequest
      */
     attributes?: { [key: string]: any };
 }

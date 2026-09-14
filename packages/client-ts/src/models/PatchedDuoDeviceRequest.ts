@@ -20,8 +20,6 @@
 export interface PatchedDuoDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedDuoDeviceRequest
      */
     name?: string;
 }

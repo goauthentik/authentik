@@ -25,68 +25,46 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface PasswordStage {
     /**
      *
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof PasswordStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Selection of backends to test the password against.
-     * @type {Array<BackendsEnum>}
-     * @memberof PasswordStage
      */
     backends: Array<BackendsEnum>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PasswordStage
      */
     configureFlow?: string | null;
     /**
      * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
-     * @type {number}
-     * @memberof PasswordStage
      */
     failedAttemptsBeforeCancel?: number;
     /**
      * When enabled, provides a 'show password' button with the password input field.
-     * @type {boolean}
-     * @memberof PasswordStage
      */
     allowShowPassword?: boolean;
 }

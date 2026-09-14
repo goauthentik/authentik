@@ -23,14 +23,10 @@ import { AgentFromJSON } from "./Agent";
 export interface AgentCreated {
     /**
      *
-     * @type {Agent}
-     * @memberof AgentCreated
      */
     readonly agent: Agent;
     /**
      *
-     * @type {string}
-     * @memberof AgentCreated
      */
     readonly token: string;
 }

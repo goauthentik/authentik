@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedOAuth2DynamicClientRegistrationList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedOAuth2DynamicClientRegistrationList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<OAuth2DynamicClientRegistration>}
-     * @memberof PaginatedOAuth2DynamicClientRegistrationList
      */
     results: Array<OAuth2DynamicClientRegistration>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedOAuth2DynamicClientRegistrationList
      */
     autocomplete: { [key: string]: any };
 }

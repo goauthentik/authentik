@@ -25,122 +25,82 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
 export interface IdentificationStage {
     /**
      *
-     * @type {string}
-     * @memberof IdentificationStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof IdentificationStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof IdentificationStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof IdentificationStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof IdentificationStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof IdentificationStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Fields of the user object to match against. (Hold shift to select multiple options)
-     * @type {Array<UserFieldsEnum>}
-     * @memberof IdentificationStage
      */
     userFields?: Array<UserFieldsEnum>;
     /**
      * When set, shows a password field, instead of showing the password field as separate step.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     passwordStage?: string | null;
     /**
      * When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     captchaStage?: string | null;
     /**
      * When enabled, user fields are matched regardless of their casing.
-     * @type {boolean}
-     * @memberof IdentificationStage
      */
     caseInsensitiveMatching?: boolean;
     /**
      * When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
-     * @type {boolean}
-     * @memberof IdentificationStage
      */
     showMatchedUser?: boolean;
     /**
      * Optional enrollment flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     enrollmentFlow?: string | null;
     /**
      * Optional recovery flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     recoveryFlow?: string | null;
     /**
      * Optional passwordless flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     passwordlessFlow?: string | null;
     /**
      * Specify which sources should be shown.
-     * @type {Array<string>}
-     * @memberof IdentificationStage
      */
     sources?: Array<string>;
     /**
      *
-     * @type {boolean}
-     * @memberof IdentificationStage
      */
     showSourceLabels?: boolean;
     /**
      * When enabled, the stage will succeed and continue even when incorrect user info is entered.
-     * @type {boolean}
-     * @memberof IdentificationStage
      */
     pretendUserExists?: boolean;
     /**
      * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
-     * @type {boolean}
-     * @memberof IdentificationStage
      */
     enableRememberMe?: boolean;
     /**
      * When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-     * @type {string}
-     * @memberof IdentificationStage
      */
     webauthnStage?: string | null;
 }

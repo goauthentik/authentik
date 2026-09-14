@@ -20,8 +20,6 @@
 export interface StaticDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof StaticDeviceRequest
      */
     name: string;
 }

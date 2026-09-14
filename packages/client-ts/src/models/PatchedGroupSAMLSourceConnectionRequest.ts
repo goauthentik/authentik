@@ -20,14 +20,10 @@
 export interface PatchedGroupSAMLSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupSAMLSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupSAMLSourceConnectionRequest
      */
     identifier?: string;
 }

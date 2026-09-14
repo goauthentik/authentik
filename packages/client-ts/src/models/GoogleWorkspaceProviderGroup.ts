@@ -23,38 +23,26 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 export interface GoogleWorkspaceProviderGroup {
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     readonly id: string;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     googleId: string;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     group: string;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     readonly groupObj: PartialGroup;
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     provider: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleWorkspaceProviderGroup
      */
     readonly attributes: { [key: string]: any };
 }

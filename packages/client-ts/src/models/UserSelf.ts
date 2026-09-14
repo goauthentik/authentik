@@ -27,86 +27,58 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 export interface UserSelf {
     /**
      *
-     * @type {number}
-     * @memberof UserSelf
      */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof UserSelf
      */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof UserSelf
      */
     name: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof UserSelf
      */
     readonly isActive: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof UserSelf
      */
     readonly isSuperuser: boolean;
     /**
      * Return whether this user owns the current browser session.
-     * @type {boolean}
-     * @memberof UserSelf
      */
     readonly isCurrent: boolean;
     /**
      *
-     * @type {Array<UserSelfGroups>}
-     * @memberof UserSelf
      */
     readonly groups: Array<UserSelfGroups>;
     /**
      *
-     * @type {Array<UserSelfRoles>}
-     * @memberof UserSelf
      */
     readonly roles: Array<UserSelfRoles>;
     /**
      *
-     * @type {string}
-     * @memberof UserSelf
      */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
-     * @type {string}
-     * @memberof UserSelf
      */
     readonly avatar: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSelf
      */
     readonly uid: string;
     /**
      * Get user settings with brand and group settings applied
-     * @type {{ [key: string]: any; }}
-     * @memberof UserSelf
      */
     readonly settings: { [key: string]: any };
     /**
      *
-     * @type {UserTypeEnum}
-     * @memberof UserSelf
      */
     type?: UserTypeEnum;
     /**
      * Get all system permissions assigned to the user
-     * @type {Array<string>}
-     * @memberof UserSelf
      */
     readonly systemPermissions: Array<string>;
 }

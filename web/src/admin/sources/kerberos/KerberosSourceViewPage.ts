@@ -24,7 +24,7 @@ import { scheduleCard } from "#components/tasks/scheduleCard";
 
 import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
-import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
+import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.mdx";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -81,7 +81,7 @@ export class KerberosSourceViewPage extends AKElement {
             return nothing;
         }
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"

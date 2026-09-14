@@ -20,14 +20,10 @@
 export interface AuthenticatorDuoStageManualDeviceImportRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageManualDeviceImportRequest
      */
     duoUserId: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageManualDeviceImportRequest
      */
     username: string;
 }

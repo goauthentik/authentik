@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:150.0-ak-0.50.5
+    image: ghcr.io/goauthentik/selenium:151.0-ak-0.61.0@sha256:41ee5470968ea8d565ae4ea73eda4b271b8b9c51c7ee4bb1c1b9e49119bbf358
     shm_size: 2g
     network_mode: host
     restart: always
@@ -13,7 +13,7 @@ services:
     environment:
       VIDEO_READY_PORT: 9912
   mailpit:
-    image: docker.io/axllent/mailpit:v1.30.7
+    image: docker.io/axllent/mailpit:v1.31.1
     ports:
       - 1025:1025
       - 8025:8025
@@ -21,3 +21,54 @@ services:
       test: ["CMD", "wget", "--spider", "http://localhost:8025"]
       interval: 5s
       start_period: 1s
+
+  # The services below are never started by `docker compose up` (do NOT add the
+  # `pin-only` profile to any CI job's COMPOSE_PROFILES). They exist solely so
+  # Dependabot's docker-compose ecosystem can see and bump these third-party
+  # image references; individual e2e tests read the pinned tag back out of this
+  # file at runtime via DockerTestCase.pinned_image().
+  saml-test-idp:
+    image: ghcr.io/beryju/saml-test-idp:0.11
+    profiles: [pin-only]
+  grafana:
+    image: docker.io/grafana/grafana:7.1.0
+    profiles: [pin-only]
+  oidc-test-client:
+    image: ghcr.io/beryju/oidc-test-client:2.7.1
+    profiles: [pin-only]
+  saml-test-sp:
+    image: ghcr.io/beryju/saml-test-sp:1.1
+    profiles: [pin-only]
+  dex:
+    image: ghcr.io/dexidp/dex:v2.45.1
+    profiles: [pin-only]
+  oauth1-test-server:
+    image: ghcr.io/beryju/oauth1-test-server:v1.1
+    profiles: [pin-only]
+  wsfed-test-sp:
+    image: ghcr.io/beryju/wsfed-test-sp:v0.1.2
+    profiles: [pin-only]
+  scim2-compliance-test-utility:
+    image: ghcr.io/suvera/scim2-compliance-test-utility@sha256:eca913bb73c46892cd1fb2dfd2fef1c5881e6abc5cb0eec7e92fb78c1b933ece
+    profiles: [pin-only]
+  whoami:
+    image: ghcr.io/traefik/whoami:v1.12
+    profiles: [pin-only]
+  test-samba-dc:
+    image: ghcr.io/beryju/test-samba-dc:v1.0
+    profiles: [pin-only]
+  openssh-server:
+    image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
+    profiles: [pin-only]
+  traefik:
+    image: docker.io/library/traefik:v3.7
+    profiles: [pin-only]
+  nginx:
+    image: docker.io/library/nginx:1.31
+    profiles: [pin-only]
+  envoy:
+    image: docker.io/envoyproxy/envoy:v1.39-latest
+    profiles: [pin-only]
+  caddy:
+    image: docker.io/library/caddy:2.11
+    profiles: [pin-only]

@@ -20,32 +20,22 @@
 export interface AppleIndependentSecureEnclaveRequest {
     /**
      *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclaveRequest
      */
     uuid?: string;
     /**
      * The user that this device belongs to.
-     * @type {number}
-     * @memberof AppleIndependentSecureEnclaveRequest
      */
     user: number;
     /**
      *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclaveRequest
      */
     appleSecureEnclaveKey: string;
     /**
      *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclaveRequest
      */
     appleEnclaveKeyId: string;
     /**
      *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclaveRequest
      */
     deviceType: string;
 }

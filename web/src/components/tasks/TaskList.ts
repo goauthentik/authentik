@@ -52,6 +52,9 @@ export class TaskList extends Table<Task> {
     expandable = true;
     clearOnRefresh = true;
 
+    @property({ type: Array })
+    taskIds?: string[];
+
     @property()
     relObjAppLabel?: string;
 
@@ -80,11 +83,13 @@ export class TaskList extends Table<Task> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
-            typeof this.relObjId !== "undefined"
+            typeof this.taskIds !== "undefined"
                 ? undefined
-                : this.showOnlyStandalone
-                  ? true
-                  : undefined;
+                : typeof this.relObjId !== "undefined"
+                  ? undefined
+                  : this.showOnlyStandalone
+                    ? true
+                    : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
                   TaskAggregatedStatusEnum.WaitingForDependencies,
@@ -103,6 +108,7 @@ export class TaskList extends Table<Task> {
         }
         return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
+            messageIdIn: this.taskIds,
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
             relObjId: this.relObjId ? this.relObjId.toString() : undefined,
@@ -134,7 +140,7 @@ export class TaskList extends Table<Task> {
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                ${this.relObjId === undefined
+                ${this.relObjId === undefined && this.taskIds === undefined
                     ? html`<ak-table-filter-select
                           .options=${[
                               { label: msg("Show only standalone tasks"), value: true },

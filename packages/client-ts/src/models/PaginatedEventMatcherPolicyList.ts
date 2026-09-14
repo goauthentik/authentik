@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedEventMatcherPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedEventMatcherPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<EventMatcherPolicy>}
-     * @memberof PaginatedEventMatcherPolicyList
      */
     results: Array<EventMatcherPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedEventMatcherPolicyList
      */
     autocomplete: { [key: string]: any };
 }

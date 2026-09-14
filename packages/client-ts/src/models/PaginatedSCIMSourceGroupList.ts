@@ -25,20 +25,14 @@ import { SCIMSourceGroupFromJSON, SCIMSourceGroupToJSON } from "./SCIMSourceGrou
 export interface PaginatedSCIMSourceGroupList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMSourceGroupList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SCIMSourceGroup>}
-     * @memberof PaginatedSCIMSourceGroupList
      */
     results: Array<SCIMSourceGroup>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMSourceGroupList
      */
     autocomplete: { [key: string]: any };
 }

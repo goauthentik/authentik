@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedEnrollmentTokenList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedEnrollmentTokenList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<EnrollmentToken>}
-     * @memberof PaginatedEnrollmentTokenList
      */
     results: Array<EnrollmentToken>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedEnrollmentTokenList
      */
     autocomplete: { [key: string]: any };
 }

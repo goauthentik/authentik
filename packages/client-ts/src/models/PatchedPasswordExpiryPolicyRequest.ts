@@ -20,26 +20,18 @@
 export interface PatchedPasswordExpiryPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedPasswordExpiryPolicyRequest
      */
     name?: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PatchedPasswordExpiryPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PatchedPasswordExpiryPolicyRequest
      */
     days?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedPasswordExpiryPolicyRequest
      */
     denyOnly?: boolean;
 }

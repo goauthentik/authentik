@@ -32,266 +32,178 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface LDAPSource {
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof LDAPSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof LDAPSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof LDAPSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof LDAPSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LDAPSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LDAPSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof LDAPSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof LDAPSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     readonly iconUrl: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof LDAPSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     serverUri: string;
     /**
      * Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
-     * @type {string}
-     * @memberof LDAPSource
      */
     peerCertificate?: string | null;
     /**
      * Client certificate to authenticate against the LDAP Server's Certificate.
-     * @type {string}
-     * @memberof LDAPSource
      */
     clientCertificate?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     bindCn?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     startTls?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     sni?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     baseDn: string;
     /**
      * Prepended to Base DN for User-queries.
-     * @type {string}
-     * @memberof LDAPSource
      */
     additionalUserDn?: string;
     /**
      * Prepended to Base DN for Group-queries.
-     * @type {string}
-     * @memberof LDAPSource
      */
     additionalGroupDn?: string;
     /**
      * Consider Objects matching this filter to be Users.
-     * @type {string}
-     * @memberof LDAPSource
      */
     userObjectFilter?: string;
     /**
      * Consider Objects matching this filter to be Groups.
-     * @type {string}
-     * @memberof LDAPSource
      */
     groupObjectFilter?: string;
     /**
      * Field which contains members of a group.
-     * @type {string}
-     * @memberof LDAPSource
      */
     groupMembershipField?: string;
     /**
      * Attribute which matches the value of `group_membership_field`.
-     * @type {string}
-     * @memberof LDAPSource
      */
     userMembershipAttribute?: string;
     /**
      * Field which contains a unique Identifier.
-     * @type {string}
-     * @memberof LDAPSource
      */
     objectUniquenessField?: string;
     /**
      * Update internal authentik password when login succeeds with LDAP
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     syncUsers?: boolean;
     /**
      * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     syncUsersPassword?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     syncGroups?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSource
      */
     syncParentGroup?: string | null;
     /**
      * Get cached source connectivity
-     * @type {{ [key: string]: { [key: string]: string; }; }}
-     * @memberof LDAPSource
      */
     readonly connectivity: { [key: string]: { [key: string]: string } } | null;
     /**
      * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     lookupGroupsFromUser?: boolean;
     /**
      * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     deleteNotFoundObjects?: boolean;
     /**
      * When to trigger sync for outgoing providers
-     * @type {SyncOutgoingTriggerModeEnum}
-     * @memberof LDAPSource
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
     /**
      * Sync group parentage/hierarchy from LDAP directories.
-     * @type {boolean}
-     * @memberof LDAPSource
      */
     syncGroupHierarchy?: boolean;
 }

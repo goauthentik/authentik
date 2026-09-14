@@ -25,129 +25,87 @@ import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 export interface ProxyOutpostConfig {
     /**
      *
-     * @type {number}
-     * @memberof ProxyOutpostConfig
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     internalHost?: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     externalHost: string;
     /**
      * Validate SSL Certificates of upstream servers
-     * @type {boolean}
-     * @memberof ProxyOutpostConfig
      */
     internalHostSslValidation?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     clientId?: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     clientSecret?: string;
     /**
      *
-     * @type {OpenIDConnectConfiguration}
-     * @memberof ProxyOutpostConfig
      */
     readonly oidcConfiguration: OpenIDConnectConfiguration;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     cookieSecret?: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     certificate?: string | null;
     /**
      * Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     skipPathRegex?: string;
     /**
      * Set a custom HTTP-Basic Authentication header based on values from authentik.
-     * @type {boolean}
-     * @memberof ProxyOutpostConfig
      */
     basicAuthEnabled?: boolean;
     /**
      * User/Group Attribute used for the password part of the HTTP-Basic Header.
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     basicAuthPasswordAttribute?: string;
     /**
      * User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     basicAuthUserAttribute?: string;
     /**
      * Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-     * @type {ProxyMode}
-     * @memberof ProxyOutpostConfig
      */
     mode?: ProxyMode;
     /**
      *
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     cookieDomain?: string;
     /**
      * Get token validity as second count
-     * @type {number}
-     * @memberof ProxyOutpostConfig
      */
     readonly accessTokenValidity: number | null;
     /**
      * When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-     * @type {boolean}
-     * @memberof ProxyOutpostConfig
      */
     interceptHeaderAuth?: boolean;
     /**
      * Get all the scope names the outpost should request,
      * including custom-defined ones
-     * @type {Array<string>}
-     * @memberof ProxyOutpostConfig
      */
     readonly scopesToRequest: Array<string>;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     readonly assignedApplicationSlug: string;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof ProxyOutpostConfig
      */
     readonly assignedApplicationName: string;
 }

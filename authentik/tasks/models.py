@@ -127,6 +127,7 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
             event = str(event)
             if not event and isinstance(exc, Retry):
                 event = "Task has encountered an error and will be retried"
+
         return LogEvent(
             event,
             logger=logger,

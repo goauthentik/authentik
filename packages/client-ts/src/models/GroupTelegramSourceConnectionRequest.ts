@@ -20,14 +20,10 @@
 export interface GroupTelegramSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupTelegramSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupTelegramSourceConnectionRequest
      */
     identifier: string;
 }

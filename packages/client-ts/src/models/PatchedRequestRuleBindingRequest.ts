@@ -24,38 +24,26 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface PatchedRequestRuleBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     uuid?: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     rule?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     target?: string;
     /**
      * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     expiryPending?: string;
     /**
      * The maximum duration a grant approved against this binding can last.
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     expiryGrantedMax?: string;
 }

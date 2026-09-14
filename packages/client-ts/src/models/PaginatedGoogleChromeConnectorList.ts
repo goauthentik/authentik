@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGoogleChromeConnectorList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGoogleChromeConnectorList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GoogleChromeConnector>}
-     * @memberof PaginatedGoogleChromeConnectorList
      */
     results: Array<GoogleChromeConnector>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGoogleChromeConnectorList
      */
     autocomplete: { [key: string]: any };
 }

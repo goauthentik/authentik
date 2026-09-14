@@ -25,20 +25,14 @@ import { PermissionFromJSON, PermissionToJSON } from "./Permission";
 export interface PaginatedPermissionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPermissionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Permission>}
-     * @memberof PaginatedPermissionList
      */
     results: Array<Permission>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPermissionList
      */
     autocomplete: { [key: string]: any };
 }

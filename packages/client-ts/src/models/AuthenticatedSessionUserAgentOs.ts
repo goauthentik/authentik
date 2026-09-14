@@ -20,32 +20,22 @@
 export interface AuthenticatedSessionUserAgentOs {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentOs
      */
     family: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentOs
      */
     major: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentOs
      */
     minor: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentOs
      */
     patch: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentOs
      */
     patchMinor: string | null;
 }

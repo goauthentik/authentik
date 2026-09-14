@@ -20,26 +20,18 @@
 export interface KubernetesServiceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof KubernetesServiceConnectionRequest
      */
     name: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-     * @type {boolean}
-     * @memberof KubernetesServiceConnectionRequest
      */
     local?: boolean;
     /**
      * Paste your kubeconfig here. authentik will automatically use the currently selected context.
-     * @type {{ [key: string]: any; }}
-     * @memberof KubernetesServiceConnectionRequest
      */
     kubeconfig?: { [key: string]: any };
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
-     * @type {boolean}
-     * @memberof KubernetesServiceConnectionRequest
      */
     verifySsl?: boolean;
 }

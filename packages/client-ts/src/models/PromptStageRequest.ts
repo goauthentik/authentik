@@ -20,20 +20,14 @@
 export interface PromptStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PromptStageRequest
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PromptStageRequest
      */
     fields: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PromptStageRequest
      */
     validationPolicies?: Array<string>;
 }

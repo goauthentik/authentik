@@ -20,8 +20,6 @@
 export interface PatchedUserDeleteStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserDeleteStageRequest
      */
     name?: string;
 }

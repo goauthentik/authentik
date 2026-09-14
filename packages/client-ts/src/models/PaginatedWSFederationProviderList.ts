@@ -25,20 +25,14 @@ import { WSFederationProviderFromJSON, WSFederationProviderToJSON } from "./WSFe
 export interface PaginatedWSFederationProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedWSFederationProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<WSFederationProvider>}
-     * @memberof PaginatedWSFederationProviderList
      */
     results: Array<WSFederationProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedWSFederationProviderList
      */
     autocomplete: { [key: string]: any };
 }

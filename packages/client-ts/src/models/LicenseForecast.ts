@@ -20,26 +20,18 @@
 export interface LicenseForecast {
     /**
      *
-     * @type {number}
-     * @memberof LicenseForecast
      */
     internalUsers: number;
     /**
      *
-     * @type {number}
-     * @memberof LicenseForecast
      */
     externalUsers: number;
     /**
      *
-     * @type {number}
-     * @memberof LicenseForecast
      */
     forecastedInternalUsers: number;
     /**
      *
-     * @type {number}
-     * @memberof LicenseForecast
      */
     forecastedExternalUsers: number;
 }

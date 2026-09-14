@@ -23,14 +23,10 @@ import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestRe
 export interface RadiusCheckAccess {
     /**
      *
-     * @type {string}
-     * @memberof RadiusCheckAccess
      */
     attributes?: string;
     /**
      *
-     * @type {PolicyTestResult}
-     * @memberof RadiusCheckAccess
      */
     access: PolicyTestResult;
 }

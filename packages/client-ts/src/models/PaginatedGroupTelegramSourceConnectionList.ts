@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGroupTelegramSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GroupTelegramSourceConnection>}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
      */
     results: Array<GroupTelegramSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

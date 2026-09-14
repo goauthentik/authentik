@@ -20,56 +20,38 @@
 export interface PatchedPolicyBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedPolicyBindingRequest
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedPolicyBindingRequest
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof PatchedPolicyBindingRequest
      */
     user?: number | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedPolicyBindingRequest
      */
     target?: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PatchedPolicyBindingRequest
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedPolicyBindingRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PatchedPolicyBindingRequest
      */
     order?: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PatchedPolicyBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PatchedPolicyBindingRequest
      */
     failureResult?: boolean;
 }

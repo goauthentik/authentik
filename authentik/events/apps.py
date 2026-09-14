@@ -1,22 +1,9 @@
 """authentik events app"""
 
-from prometheus_client import Gauge, Histogram
-
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG, ENV_PREFIX
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
-
-SYSTEM_TASK_TIME = Histogram(
-    "authentik_system_tasks_time_seconds",
-    "Runtime of system tasks",
-    ["tenant", "task_name", "task_uid"],
-)
-SYSTEM_TASK_STATUS = Gauge(
-    "authentik_system_tasks_status",
-    "System task status",
-    ["tenant", "task_name", "task_uid", "status"],
-)
 
 
 class AuthentikEventsConfig(ManagedAppConfig):
@@ -59,3 +46,17 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 replacement_env=replace_env,
                 message=msg,
             ).save()
+
+    @ManagedAppConfig.reconcile_global
+    def check_db_encoding(self):
+        """Check for deprecated database encoding"""
+        from django.db import connection
+
+        from authentik.events.models import Event
+
+        for message in connection.validation.check():
+            if message.id != "ak.db.W002":
+                continue
+            Event.log_deprecation(
+                "authentik.db.encoding", f"{message.msg} {message.hint}", cause=message.msg
+            )
