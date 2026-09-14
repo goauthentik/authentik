@@ -11791,6 +11791,21 @@
                     "title": "Encryption algorithm",
                     "description": "Block cipher used to encrypt the assertion."
                 },
+                "signing_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing kp ring"
+                },
+                "verification_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Verification kp ring"
+                },
+                "encryption_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption kp ring"
+                },
                 "sign_assertion": {
                     "type": "boolean",
                     "title": "Sign assertion"

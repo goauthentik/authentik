@@ -17,10 +17,10 @@ from authentik.common.saml.constants import (
     SAML_BINDING_POST,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.crypto.keyring import pick_private_key_pem
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
-from authentik.crypto.keyring import pick_private_key_pem
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 
@@ -108,9 +108,7 @@ class RequestProcessor:
 
             ctx = xmlsec.SignatureContext()
 
-            key = xmlsec.Key.from_memory(
-                key_pem, xmlsec.constants.KeyDataFormatPem, None
-            )
+            key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem, None)
             key.load_cert_from_memory(
                 cert_pem,
                 xmlsec.constants.KeyDataFormatCertPem,
@@ -168,9 +166,7 @@ class RequestProcessor:
 
             ctx = xmlsec.SignatureContext()
 
-            key = xmlsec.Key.from_memory(
-                key_pem, xmlsec.constants.KeyDataFormatPem, None
-            )
+            key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem, None)
             key.load_cert_from_memory(
                 cert_pem,
                 xmlsec.constants.KeyDataFormatPem,

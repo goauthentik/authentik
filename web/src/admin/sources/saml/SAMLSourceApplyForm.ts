@@ -1,7 +1,7 @@
 import { renderForm } from "./SAMLSourceApplyFormForm.js";
 
 import { aki } from "#common/api/client";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { Form } from "#elements/forms/Form";
 
@@ -24,11 +24,13 @@ export class SAMLSourceApplyMetadataForm extends Form<SAMLSource> {
         if (!this.sourceId) throw new SentryIgnoredError("No sourceId");
 
         const formEl = this.shadowRoot?.querySelector("form");
+
         const fileInput = formEl?.querySelector(
             'input[type="file"][name="file"]',
         ) as HTMLInputElement | null;
 
         const file = fileInput?.files?.item(0) ?? null;
+
         if (!file) throw new SentryIgnoredError("No form data");
 
         const signingCertificate =
@@ -41,9 +43,11 @@ export class SAMLSourceApplyMetadataForm extends Form<SAMLSource> {
             file,
             createMissingRings: true,
         };
+
         if (signingCertificate && signingCertificate.trim() !== "") {
             payload.signingCertificate = signingCertificate.trim();
         }
+
         return aki(SourcesApi).sourcesSamlImportMetadataCreate(payload);
     }
 

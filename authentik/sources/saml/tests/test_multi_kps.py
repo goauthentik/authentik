@@ -4,6 +4,7 @@ from django.http.request import QueryDict
 from django.test import TestCase
 from guardian.utils import get_anonymous_user
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.crypto.models import (
     CertificateKeyPair,
@@ -16,12 +17,12 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
-from authentik.sources.saml.processors.request import RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 
 class TestSourceProcessorMultiKeyEndToEnd(TestCase):
-    """No-fixture tests: generate signed/encrypted response via AssertionProcessor and parse via ResponseProcessor."""
+    """No-fixture tests: generate a signed/encrypted response via AssertionProcessor and
+    parse it via ResponseProcessor."""
 
     def setUp(self):
         self.request_factory = RequestFactory()
@@ -41,13 +42,15 @@ class TestSourceProcessorMultiKeyEndToEnd(TestCase):
             invalidation_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",
             signing_kp=self.kp_sign_good,
-            verification_kp=self.kp_sign_good,  # used to verify AuthnRequest (not the main topic here)
+            # used to verify AuthnRequest (not the main topic here)
+            verification_kp=self.kp_sign_good,
         )
+        Application.objects.create(name="p1-app", slug="p1-app", provider=self.provider)
 
         # Source (SP side in request direction)
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=create_test_cert(),  # request signing; not critical for these tests
             binding_type=SAMLBindingTypes.POST,
@@ -81,7 +84,8 @@ class TestSourceProcessorMultiKeyEndToEnd(TestCase):
         return parser
 
     def test_verify_response_signature_with_ring(self):
-        """source.verification_kp_ring should accept the provider's signing cert (even if first cert is wrong)."""
+        """source.verification_kp_ring should accept the provider's signing cert
+        (even if the first cert is wrong)."""
         self.provider.sign_response = True
         self.provider.sign_assertion = False
         self.provider.save(update_fields=["sign_response", "sign_assertion"])
@@ -133,7 +137,8 @@ class TestSourceProcessorMultiKeyEndToEnd(TestCase):
             self._parse_on_source(response_xml)
 
     def test_decrypt_encrypted_assertion_with_ring(self):
-        """source.encryption_kp_ring should decrypt even if first key is wrong (multi-private-key trial)."""
+        """source.encryption_kp_ring should decrypt even if the first key is wrong
+        (multi-private-key trial)."""
         # Provider encrypts assertion to SP public cert (certificate only is enough on provider)
         cert_only_for_provider = CertificateKeyPair.objects.create(
             name=generate_id(),
@@ -194,12 +199,16 @@ class TestSourceProcessorMultiKeyEndToEnd(TestCase):
 
         # source rings
         self.source.verification_kp = None
-        self.source.verification_kp_ring = self._make_ring("verify-ring", [self.kp_sign_bad, self.kp_sign_good])
+        self.source.verification_kp_ring = self._make_ring(
+            "verify-ring", [self.kp_sign_bad, self.kp_sign_good]
+        )
         self.source.signed_response = True
         self.source.signed_assertion = False
 
         self.source.encryption_kp = None
-        self.source.encryption_kp_ring = self._make_ring("decrypt-ring", [self.kp_enc_bad, self.kp_enc_good])
+        self.source.encryption_kp_ring = self._make_ring(
+            "decrypt-ring", [self.kp_enc_bad, self.kp_enc_good]
+        )
         self.source.save(
             update_fields=[
                 "verification_kp",

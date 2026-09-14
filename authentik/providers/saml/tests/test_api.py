@@ -6,16 +6,44 @@ from unittest import skipIf
 
 from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
+from lxml import etree  # nosec
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import NS_MAP
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+
+SIGNING_KEY_DESCRIPTORS = "//md:SPSSODescriptor/md:KeyDescriptor[@use='signing']"
+
+
+def cert_body(certificate: str) -> str:
+    """A certificate's base64 body, without PEM armour or whitespace"""
+    return "".join(part for part in certificate.split() if "-----" not in part)
+
+
+def signing_cert_bodies(metadata: str) -> list[str]:
+    """The SP signing certificates listed in `metadata`, in order"""
+    return [
+        cert_body(text)
+        for text in lxml_from_string(metadata.encode()).xpath(
+            f"{SIGNING_KEY_DESCRIPTORS}//ds:X509Certificate/text()", namespaces=NS_MAP
+        )
+    ]
+
+
+def without_first_signing_cert(metadata: str) -> str:
+    """`metadata` after the SP finished its rollover and dropped its first signing certificate"""
+    root = lxml_from_string(metadata.encode())
+    old = root.xpath(SIGNING_KEY_DESCRIPTORS, namespaces=NS_MAP)[0]
+    old.getparent().remove(old)
+    return etree.tostring(root).decode()
 
 
 class TestSAMLProviderAPI(APITestCase):
@@ -226,6 +254,110 @@ class TestSAMLProviderAPI(APITestCase):
         self.assertEqual(body["name"], name)
         self.assertEqual(body["authorization_flow"], str(authorization_flow.pk))
         self.assertEqual(body["invalidation_flow"], str(invalidation_flow.pk))
+
+    def test_import_existing_provider_refreshes_metadata(self):
+        """Test refreshing an existing provider from newer metadata."""
+        authorization_flow = create_test_flow(FlowDesignation.AUTHORIZATION)
+        invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
+        with TemporaryFile() as metadata:
+            metadata.write(load_fixture("fixtures/simple.xml").encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "name": "Initial provider",
+                    "authorization_flow": authorization_flow.pk,
+                    "invalidation_flow": invalidation_flow.pk,
+                },
+                format="multipart",
+            )
+        self.assertEqual(response.status_code, 201)
+        provider = SAMLProvider.objects.get(pk=response.json()["pk"])
+
+        with TemporaryFile() as metadata:
+            metadata.write(load_fixture("fixtures/multi-bindings.xml").encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "provider": provider.pk,
+                    "name": "Refreshed provider",
+                },
+                format="multipart",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        provider.refresh_from_db()
+        self.assertEqual(response.json()["pk"], provider.pk)
+        self.assertEqual(provider.name, "Refreshed provider")
+        self.assertEqual(
+            provider.acs_url,
+            "https://sp-b.example.org:10446/Shibboleth.sso/SAML2/POST",
+        )
+        self.assertEqual(provider.audience, "https://sp-b.example.org/shibboleth")
+        # The SP doesn't sign its requests, so no verification certificate is configured
+        self.assertIsNone(provider.verification_kp_ring)
+        self.assertIsNotNone(provider.encryption_kp_ring)
+        self.assertEqual(provider.encryption_kp_ring.bindings.count(), 1)
+
+    def _import_metadata(self, metadata: str, **data):
+        with TemporaryFile() as file:
+            file.write(metadata.encode())
+            file.seek(0)
+            return self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {"file": file, **data},
+                format="multipart",
+            )
+
+    def test_import_multi_signing_certs_creates_keyrings(self):
+        """Test every signing certificate of an SP mid-rollover is trusted, in metadata order"""
+        metadata = load_fixture("fixtures/multi_signing_certs.xml")
+        response = self._import_metadata(
+            metadata,
+            name=generate_id(),
+            authorization_flow=create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+            invalidation_flow=create_test_flow(FlowDesignation.INVALIDATION).pk,
+        )
+        self.assertEqual(response.status_code, 201)
+        provider = SAMLProvider.objects.get(pk=response.json()["pk"])
+
+        self.assertIsNone(provider.verification_kp)
+        bindings = list(provider.verification_kp_ring.ordered_bindings())
+        self.assertEqual([binding.order for binding in bindings], [0, 1])
+        self.assertEqual(
+            [cert_body(binding.keypair.certificate_data) for binding in bindings],
+            signing_cert_bodies(metadata),
+        )
+        self.assertIsNone(provider.encryption_kp)
+        self.assertEqual(provider.encryption_kp_ring.bindings.count(), 1)
+
+    def test_import_existing_provider_after_rollover(self):
+        """Test re-importing metadata without the old certificate leaves only the new one"""
+        metadata = load_fixture("fixtures/multi_signing_certs.xml")
+        response = self._import_metadata(
+            metadata,
+            name=generate_id(),
+            authorization_flow=create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+            invalidation_flow=create_test_flow(FlowDesignation.INVALIDATION).pk,
+        )
+        provider = SAMLProvider.objects.get(pk=response.json()["pk"])
+        ring = provider.verification_kp_ring
+
+        response = self._import_metadata(
+            without_first_signing_cert(metadata), provider=provider.pk, name=provider.name
+        )
+        self.assertEqual(response.status_code, 200)
+        provider.refresh_from_db()
+
+        self.assertEqual(provider.verification_kp_ring, ring)
+        bindings = list(provider.verification_kp_ring.ordered_bindings())
+        self.assertEqual(
+            [cert_body(binding.keypair.certificate_data) for binding in bindings],
+            signing_cert_bodies(metadata)[1:],
+        )
 
     def test_import_failed(self):
         """Test metadata import (invalid xml)"""

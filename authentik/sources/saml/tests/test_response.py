@@ -14,8 +14,11 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.crypto.models import CertificateKeyPairRing, CertificateKeyPairRingBinding
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import (
+    CertificateKeyPair,
+    CertificateKeyPairRing,
+    CertificateKeyPairRingBinding,
+)
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.exceptions import (
@@ -754,6 +757,7 @@ class TestResponseProcessor(TestCase):
         with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
             ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2022-10-14T14:16:40Z")
     def test_verification_assertion_with_ring(self):
         """Test verifying signature inside assertion via verification_kp_ring."""
         cert_pem = load_fixture("fixtures/signature_cert.pem")
@@ -778,6 +782,7 @@ class TestResponseProcessor(TestCase):
 
         ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2014-07-17T01:02:18Z")
     def test_verification_response_with_ring(self):
         """Test verifying signature inside response via verification_kp_ring."""
         cert_pem = load_fixture("fixtures/signature_cert.pem")
@@ -802,6 +807,7 @@ class TestResponseProcessor(TestCase):
 
         ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2014-07-17T01:02:18Z")
     def test_verification_ring_try_order(self):
         """Ring should try certs in order until one verifies."""
         good = load_fixture("fixtures/signature_cert.pem")
@@ -827,6 +833,7 @@ class TestResponseProcessor(TestCase):
 
         ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2024-08-07T15:48:09.325Z")
     def test_encrypted_correct_with_ring(self):
         """Decrypt using encryption_kp_ring (no encryption_kp)."""
         key_pem = load_fixture("fixtures/encrypted-key.pem")
@@ -851,8 +858,14 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        ResponseProcessor(self.source, request).parse()
+        # The fixture is addressed to this audience
+        self.source.issuer_override = "authentik-saml-encrypt"
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=KEYCLOAK_ACS_URL
+        ):
+            ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2024-08-07T15:48:09.325Z")
     def test_encrypted_ring_try_order(self):
         """Ring should try private keys in order until one decrypts."""
         bad = create_test_cert()  # has a private key but wrong one for this fixture
@@ -877,4 +890,9 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        ResponseProcessor(self.source, request).parse()
+        # The fixture is addressed to this audience
+        self.source.issuer_override = "authentik-saml-encrypt"
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=KEYCLOAK_ACS_URL
+        ):
+            ResponseProcessor(self.source, request).parse()

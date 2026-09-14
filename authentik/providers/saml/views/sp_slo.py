@@ -18,6 +18,7 @@ from authentik.common.saml.parsers.verify import (
     verify_enveloped_signature,
 )
 from authentik.core.models import Application, AuthenticatedSession
+from authentik.crypto.keyring import candidate_cert_pems
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan, FlowPlanner
@@ -289,14 +290,17 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                 relay_state=relay_state or None,
             )
             parser.verify_status(logout_response)
-            if provider.verification_kp:
+            verifier_pems = candidate_cert_pems(
+                kp=provider.verification_kp, ring=provider.verification_kp_ring
+            )
+            if verifier_pems:
                 verify_detached_signature(
                     "SAMLResponse",
                     request.GET[REQUEST_KEY_SAML_RESPONSE],
                     relay_state or None,
                     request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
                     request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
-                    provider.verification_kp,
+                    verifier_pems,
                 )
         except CannotHandleAssertion as exc:
             LOGGER.warning("Failed to verify SAML LogoutResponse", exc=exc, detail=exc.detail)
@@ -318,14 +322,17 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
-            if self.provider.verification_kp:
+            verifier_pems = candidate_cert_pems(
+                kp=self.provider.verification_kp, ring=self.provider.verification_kp_ring
+            )
+            if verifier_pems:
                 verify_detached_signature(
                     "SAMLRequest",
                     self.request.GET[REQUEST_KEY_SAML_REQUEST],
                     self.request.GET.get(REQUEST_KEY_RELAY_STATE),
                     self.request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
                     self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
-                    self.provider.verification_kp,
+                    verifier_pems,
                 )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
@@ -365,10 +372,13 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                 relay_state=relay_state or None,
             )
             parser.verify_status(logout_response)
-            if provider.verification_kp:
+            verifier_pems = candidate_cert_pems(
+                kp=provider.verification_kp, ring=provider.verification_kp_ring
+            )
+            if verifier_pems:
                 verify_enveloped_signature(
                     b64decode(request.POST[REQUEST_KEY_SAML_RESPONSE].encode()),
-                    provider.verification_kp,
+                    verifier_pems,
                     "/samlp:LogoutResponse/ds:Signature",
                 )
         except CannotHandleAssertion as exc:
@@ -392,10 +402,13 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                 payload[REQUEST_KEY_SAML_REQUEST],
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
-            if self.provider.verification_kp:
+            verifier_pems = candidate_cert_pems(
+                kp=self.provider.verification_kp, ring=self.provider.verification_kp_ring
+            )
+            if verifier_pems:
                 verify_enveloped_signature(
                     b64decode(payload[REQUEST_KEY_SAML_REQUEST].encode()),
-                    self.provider.verification_kp,
+                    verifier_pems,
                     "/samlp:LogoutRequest/ds:Signature",
                 )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request

@@ -19,11 +19,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.models import SAMLNameIDPolicy
-from authentik.sources.saml.processors.metadata_parser import (
-    APPLY_POLICY_FORCE,
-    APPLY_POLICY_IF_NOT_DEVIATED,
-    IdentityProviderMetadataParser,
-)
+from authentik.sources.saml.processors.metadata_parser import IdentityProviderMetadataParser
 
 
 def _pem_to_der_b64(pem: str) -> str:

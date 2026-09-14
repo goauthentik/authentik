@@ -14,7 +14,7 @@ from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.lib.xml import lxml_from_string
-from authentik.sources.saml.models import SAMLNameIDPolicy, SAMLSource
+from authentik.sources.saml.models import SAMLSource
 
 SIGNING_KEY_DESCRIPTORS = "//md:IDPSSODescriptor/md:KeyDescriptor[@use='signing']"
 

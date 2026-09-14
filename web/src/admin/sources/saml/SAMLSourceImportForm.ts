@@ -1,7 +1,7 @@
 import { renderForm } from "./SAMLSourceImportFormForm.js";
 
 import { aki } from "#common/api/client";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { Form } from "#elements/forms/Form";
 
@@ -18,12 +18,15 @@ export class SAMLSourceImportForm extends Form<SAMLSource> {
 
     async send(data: SAMLSource): Promise<unknown> {
         const file = this.files().get("file");
+
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
+
         const api = aki(SourcesApi);
+
         const created: SAMLSource = await api.sourcesSamlImportMetadataCreate({
-            file: file,
+            file,
             name: data.name,
             preAuthenticationFlow: data.preAuthenticationFlow || "",
         });

@@ -21,6 +21,7 @@ from authentik.common.saml.parsers.verify import (
     verify_detached_signature,
     verify_enveloped_signature,
 )
+from authentik.crypto.keyring import candidate_cert_pems
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
@@ -108,11 +109,14 @@ class AuthNRequestParser:
             # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
 
-        verifier = self.provider.verification_kp
-        if not verifier:
+        verifier_pems = candidate_cert_pems(
+            kp=self.provider.verification_kp,
+            ring=getattr(self.provider, "verification_kp_ring", None),
+        )
+        if not verifier_pems:
             return self._parse_xml(decoded_xml, relay_state)
 
-        verify_enveloped_signature(decoded_xml, verifier, "/samlp:AuthnRequest/ds:Signature")
+        verify_enveloped_signature(decoded_xml, verifier_pems, "/samlp:AuthnRequest/ds:Signature")
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -130,12 +134,15 @@ class AuthNRequestParser:
             # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
 
-        verifier = self.provider.verification_kp
-        if not verifier:
+        verifier_pems = candidate_cert_pems(
+            kp=self.provider.verification_kp,
+            ring=getattr(self.provider, "verification_kp_ring", None),
+        )
+        if not verifier_pems:
             return self._parse_xml(decoded_xml, relay_state)
 
         verify_detached_signature(
-            "SAMLRequest", saml_request, relay_state, signature, sig_alg, verifier
+            "SAMLRequest", saml_request, relay_state, signature, sig_alg, verifier_pems
         )
         return self._parse_xml(decoded_xml, relay_state)
 
