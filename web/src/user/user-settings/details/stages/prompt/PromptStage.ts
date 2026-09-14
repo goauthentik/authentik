@@ -2,7 +2,8 @@ import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
 
 import { globalAK } from "#common/global";
-import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
+import { applyLocaleChange } from "#common/ui/locale/persist";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -118,16 +119,17 @@ export class UserSettingsPromptStage extends PromptStage {
 
         if (typeof languageTag !== "string") return;
 
-        // Remove the temporary session locale...
-        setSessionLocale(null);
+        const nextLanguageTag = autoDetectLanguage(languageTag);
 
-        if (languageTag !== this.activeLanguageTag) {
+        if (nextLanguageTag !== this.activeLanguageTag) {
             this.logger.info("A prompt stage changed the locale", {
                 languageTag,
                 previousLanguageTag,
             });
 
-            this.activeLanguageTag = autoDetectLanguage(languageTag);
+            // Locale is fixed per page load: persist the choice and reload so
+            // server-rendered strings come back in the new locale too.
+            applyLocaleChange(nextLanguageTag);
         }
     }
 }
