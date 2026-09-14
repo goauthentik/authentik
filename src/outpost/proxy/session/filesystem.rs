@@ -59,6 +59,7 @@ async fn write_atomic(tmp: &Path, target: &Path, json: &[u8]) -> Result<()> {
         .open(tmp)
         .await?;
     file.write_all(json).await?;
+    file.flush().await?;
     drop(file);
     tokio::fs::rename(tmp, target).await?;
     Ok(())
