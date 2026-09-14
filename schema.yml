@@ -37230,6 +37230,9 @@ components:
         template:
           type: string
           minLength: 1
+        password:
+          type: string
+          writeOnly: true
       required:
       - name
     AuthenticatorEndpointGDTCStage:
@@ -38548,7 +38551,6 @@ components:
       - name
       - pk
       - public_key
-      - secret
       - verbose_name
       - verbose_name_plural
     CaptchaStageRequest:
@@ -38589,10 +38591,13 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
+        private_key:
+          type: string
+          writeOnly: true
+          minLength: 1
       required:
       - name
       - public_key
-      - secret
     CertAttributeEnum:
       enum:
       - subject
@@ -40700,6 +40705,9 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
+        password:
+          type: string
+          writeOnly: true
       required:
       - name
     Endpoint:
@@ -50947,6 +50955,9 @@ components:
         template:
           type: string
           minLength: 1
+        password:
+          type: string
+          writeOnly: true
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -51287,6 +51298,10 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
+        private_key:
+          type: string
+          writeOnly: true
+          minLength: 1
     PatchedCertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -51537,6 +51552,9 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
+        password:
+          type: string
+          writeOnly: true
     PatchedEndpointDeviceRequest:
       type: object
       properties:

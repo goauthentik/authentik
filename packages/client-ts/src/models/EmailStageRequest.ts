@@ -82,6 +82,10 @@ export interface EmailStageRequest {
      * The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
      */
     recoveryCacheTimeout?: string;
+    /**
+     *
+     */
+    password?: string;
 }
 
 /**
@@ -129,6 +133,7 @@ export function EmailStageRequestFromJSONTyped(
             json["recovery_max_attempts"] == null ? undefined : json["recovery_max_attempts"],
         recoveryCacheTimeout:
             json["recovery_cache_timeout"] == null ? undefined : json["recovery_cache_timeout"],
+        password: json["password"] == null ? undefined : json["password"],
     };
 }
 
@@ -161,5 +166,6 @@ export function EmailStageRequestToJSONTyped(
         activate_user_on_success: value["activateUserOnSuccess"],
         recovery_max_attempts: value["recoveryMaxAttempts"],
         recovery_cache_timeout: value["recoveryCacheTimeout"],
+        password: value["password"],
     };
 }

@@ -35,7 +35,7 @@ export interface CaptchaStageRequest {
     /**
      * Private key, acquired your captcha Provider.
      */
-    secret: string;
+    secret?: string;
     /**
      *
      */
@@ -64,6 +64,10 @@ export interface CaptchaStageRequest {
      * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
      */
     errorOnInvalidScore?: boolean;
+    /**
+     *
+     */
+    privateKey?: string;
 }
 
 /**
@@ -78,7 +82,6 @@ export function instanceOfCaptchaStageRequest(value: object): value is CaptchaSt
             (value as Record<string, any>)["public_key"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -96,7 +99,7 @@ export function CaptchaStageRequestFromJSONTyped(
     return {
         name: json["name"],
         publicKey: json["public_key"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
         requestContentType:
@@ -110,6 +113,7 @@ export function CaptchaStageRequestFromJSONTyped(
             json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
         errorOnInvalidScore:
             json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
+        privateKey: json["private_key"] == null ? undefined : json["private_key"],
     };
 }
 
@@ -136,5 +140,6 @@ export function CaptchaStageRequestToJSONTyped(
         score_min_threshold: value["scoreMinThreshold"],
         score_max_threshold: value["scoreMaxThreshold"],
         error_on_invalid_score: value["errorOnInvalidScore"],
+        private_key: value["privateKey"],
     };
 }

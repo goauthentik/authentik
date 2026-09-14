@@ -81,3 +81,42 @@ class TestLegacySecretAPI(APITestCase):
             self.client.get(self.url).json()["client_secret"], self.provider.secret.value
         )
         self.assertTrue(Event.objects.filter(action=EventAction.SECRET_VIEW).exists())
+
+
+class TestLegacyCaptchaAPI(APITestCase):
+    def setUp(self):
+        self.client.force_login(create_test_admin_user())
+        self.url = reverse("authentik_api:captchastage-list")
+
+    def test_create_accepts_either_credential_input(self):
+        from authentik.stages.captcha.models import CaptchaStage
+
+        secret = Secret.objects.create(name="captcha", value="reference credential")
+        for credential, expected in [
+            ({"private_key": "literal credential"}, "literal credential"),
+            ({"secret": str(secret.pk)}, secret.value),
+        ]:
+            with self.subTest(credential=credential):
+                response = self.client.post(
+                    self.url,
+                    {"name": expected, "public_key": "public", **credential},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 201, response.content)
+                stage = CaptchaStage.objects.get(pk=response.json()["pk"])
+                self.assertEqual(stage.secret.value, expected)
+                original = stage.secret_id
+                response = self.client.patch(
+                    reverse("authentik_api:captchastage-detail", kwargs={"pk": stage.pk}),
+                    {"public_key": "changed public key"},
+                )
+                self.assertEqual(response.status_code, 200, response.content)
+                stage.refresh_from_db()
+                self.assertEqual(stage.secret_id, original)
+
+    def test_create_requires_credential(self):
+        count = Secret.objects.count()
+        response = self.client.post(self.url, {"name": "missing", "public_key": "public"})
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("secret", response.json())
+        self.assertEqual(Secret.objects.count(), count)

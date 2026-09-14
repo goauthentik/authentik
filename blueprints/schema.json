@@ -16959,6 +16959,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Template"
+                },
+                "password": {
+                    "type": "string",
+                    "title": "Password"
                 }
             },
             "required": []
@@ -17684,6 +17688,11 @@
                     "type": "boolean",
                     "title": "Error on invalid score",
                     "description": "When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions"
+                },
+                "private_key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Private key"
                 }
             },
             "required": []
@@ -17934,6 +17943,10 @@
                     "minLength": 1,
                     "title": "Recovery cache timeout",
                     "description": "The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "password": {
+                    "type": "string",
+                    "title": "Password"
                 }
             },
             "required": []
