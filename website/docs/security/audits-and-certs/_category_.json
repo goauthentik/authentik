@@ -1,4 +1,8 @@
 {
     "label": "Audits and Certificates",
-    "position": 4
+    "position": 4,
+    "link": {
+        "type": "doc",
+        "id": "security/audits-and-certs/index"
+    }
 }
