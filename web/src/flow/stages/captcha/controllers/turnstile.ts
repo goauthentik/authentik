@@ -6,6 +6,8 @@ import { TurnstileObject } from "turnstile-types";
 
 import { html } from "lit";
 
+const TURNSTILE_INITIALIZATION_TIMEOUT_MS = 15_000;
+
 declare global {
     interface Window {
         turnstile: TurnstileObject;
@@ -57,15 +59,43 @@ export class TurnstileController extends CaptchaController {
 
         return html`<div id="ak-container"></div>
             <script>
-                function onTurnstileReady() {
-                    turnstile.render("#ak-container", {
-                        sitekey: "${siteKey}",
-                        theme: "${theme}",
-                        language: "${language}",
-                        size: "flexible",
-                        callback,
+                function reportTurnstileError(error) {
+                    self.parent.postMessage({
+                        message: "error",
+                        source: "goauthentik.io",
+                        context: "flow-executor",
+                        error,
                     });
-                    loadListener();
+                }
+
+                // Avoid leaving the flow on an indefinite loading state if the API never becomes ready.
+                let initializationFailed = false;
+                const initializationTimeout = self.setTimeout(() => {
+                    initializationFailed = true;
+                    reportTurnstileError("Turnstile failed to initialize.");
+                }, ${TURNSTILE_INITIALIZATION_TIMEOUT_MS});
+
+                function onTurnstileReady() {
+                    self.clearTimeout(initializationTimeout);
+                    if (initializationFailed) return;
+
+                    try {
+                        turnstile.render("#ak-container", {
+                            "sitekey": "${siteKey}",
+                            "theme": "${theme}",
+                            "language": "${language}",
+                            "size": "flexible",
+                            callback,
+                            "error-callback": (errorCode) => {
+                                reportTurnstileError("Turnstile error: " + errorCode);
+                            },
+                        });
+                        loadListener();
+                    } catch (error) {
+                        const detail =
+                            error instanceof Error ? error.message : "Turnstile failed to render.";
+                        reportTurnstileError(detail);
+                    }
                 }
             </script>`;
     };
