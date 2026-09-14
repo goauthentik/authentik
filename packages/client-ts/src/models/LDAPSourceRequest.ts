@@ -95,7 +95,7 @@ export interface LDAPSourceRequest {
     /**
      *
      */
-    bindPassword?: string;
+    secret?: string | null;
     /**
      *
      */
@@ -254,7 +254,12 @@ export function LDAPSourceRequestFromJSONTyped(
                   ? null
                   : json["client_certificate"],
         bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
-        bindPassword: json["bind_password"] == null ? undefined : json["bind_password"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
         baseDn: json["base_dn"],
@@ -330,7 +335,7 @@ export function LDAPSourceRequestToJSONTyped(
         peer_certificate: value["peerCertificate"],
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
-        bind_password: value["bindPassword"],
+        secret: value["secret"],
         start_tls: value["startTls"],
         sni: value["sni"],
         base_dn: value["baseDn"],
