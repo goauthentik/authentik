@@ -11,6 +11,7 @@ GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
     ["tenant"],
+    multiprocess_mode="livemostrecent",
 )
 HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(
     "authentik_flows_execution_stage_time",
