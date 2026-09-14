@@ -15,6 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
@@ -114,7 +115,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             access_token_url=f"http://{self.host}:5556/dex/token",
             profile_url=f"http://{self.host}:5556/dex/userinfo",
             consumer_key="example-app",
-            consumer_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])
