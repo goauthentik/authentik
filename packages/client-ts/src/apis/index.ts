@@ -22,6 +22,7 @@ export * from "./ReportsApi";
 export * from "./RequestsApi";
 export * from "./RootApi";
 export * from "./SchemaApi";
+export * from "./SecretsApi";
 export * from "./SourcesApi";
 export * from "./SsfApi";
 export * from "./StagesApi";
