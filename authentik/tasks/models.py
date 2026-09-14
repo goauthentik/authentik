@@ -116,22 +116,20 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
 
     @classmethod
     def _make_log(
-        cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
+        cls, logger: str, log_level: TaskStatus, event: str | Exception, **attributes
     ) -> LogEvent:
-        if isinstance(message, Exception):
-            exc = message
+        if isinstance(event, Exception):
+            exc = event
             attributes = {
                 "exception": exception_to_dict(exc),
                 **attributes,
             }
-            message_prefix = (
-                "Task has encountered an error and will be retried"
-                if isinstance(exc, Retry)
-                else "Task has encountered an error"
-            )
-            message = f"{message_prefix}: {str(exc)}"
+            event = str(event)
+            if not event and isinstance(exc, Retry):
+                event = "Task has encountered an error and will be retried"
+
         return LogEvent(
-            message,
+            event,
             logger=logger,
             log_level=log_level.value,
             attributes=attributes,
@@ -144,7 +142,7 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         self,
         logger: str,
         log_level: TaskStatus,
-        message: str | Exception,
+        event: str | Exception,
         **attributes,
     ) -> None:
         TaskLog.create_from_log_event(
@@ -152,19 +150,19 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
             self._make_log(
                 logger,
                 log_level,
-                message,
+                event,
                 **attributes,
             ),
         )
 
-    def info(self, message: str | Exception, **attributes) -> None:
-        self.log(self.uid, TaskStatus.INFO, message, **attributes)
+    def info(self, event: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.INFO, event, **attributes)
 
-    def warning(self, message: str | Exception, **attributes) -> None:
-        self.log(self.uid, TaskStatus.WARNING, message, **attributes)
+    def warning(self, event: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.WARNING, event, **attributes)
 
-    def error(self, message: str | Exception, **attributes) -> None:
-        self.log(self.uid, TaskStatus.ERROR, message, **attributes)
+    def error(self, event: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.ERROR, event, **attributes)
 
 
 class TaskDependency(InternallyManagedMixin, models.Model):
