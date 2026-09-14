@@ -1,5 +1,7 @@
 ---
-title: FreeIPA
+title: Sync with FreeIPA
+sidebar_label: FreeIPA
+toc_max_heading_level: 4
 ---
 
 ## Preparation
@@ -12,21 +14,33 @@ The following placeholders are used in this guide:
 
 ## FreeIPA setup
 
-1. Log in to FreeIPA.
+1. Log in to FreeIPA as an administrator.
 
-2. Create a user in FreeIPA that matches your naming scheme. Provide a strong password. Example generation methods are `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done, click **Add and Edit**.
+2. Create a user in FreeIPA that matches your naming scheme. Provide a strong password.
 
-    ![](./user_create.png)
+    Use either of the following commands to generate the password:
 
-3. In the user management screen, select the **Roles** tab.
+    ```sh
+    pwgen 64 1
+    ```
 
-    ![](./user_roles.png)
+    ```sh
+    openssl rand 36 | base64 -w 0
+    ```
+
+    After entering the user details, click **Add and Edit**.
+
+    ![Create the FreeIPA bind account](./user_create.png)
+
+3. If you want password writeback, open the bind user's management screen and select the **Roles** tab. Otherwise, skip the remaining FreeIPA setup steps.
+
+    ![Open the Roles tab for the FreeIPA bind account](./user_roles.png)
 
 4. Add a role that has privileges to change user passwords. The default `User Administrators` role is sufficient. This is needed to support password resets from within authentik.
 
-    ![](./add_user_role.png)
+    ![Assign the User Administrators role to the FreeIPA bind account](./add_user_role.png)
 
-5. By default, if an administrator account resets a user's password in FreeIPA, the user's password expires after the first use and must be reset again. This is a security feature to ensure password complexity and history policies are enforced. To bypass this feature for a more seamless experience, make the following modification on each FreeIPA server:
+5. By default, when an administrator resets a user's password in FreeIPA, the password expires after its first use, and the user must reset it again. This security feature ensures that password complexity and history policies are enforced. To prevent the additional password-change prompt after a reset through authentik, apply the following configuration to each FreeIPA server:
 
     ```
     $ ldapmodify -x -D "cn=Directory Manager" -W -h ipa1.freeipa.company -p 389
@@ -43,74 +57,130 @@ For more information, see [22.1.2. Enabling Password Reset Without Prompting for
 
 ## authentik setup
 
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues.
+:::note Settings and defaults
+This guide identifies required and optional settings and notes when to retain default values. For settings not listed here, keep the defaults unless your deployment requires otherwise.
 
-See the [LDAP Source documentation](../../protocols/ldap) for more information on these settings.
+See the [LDAP source documentation](../../protocols/ldap/index.mdx) for more information on these settings.
 :::
 
-To create a new LDAP source in authentik:
+### 1. Create the LDAP source
+
+To integrate authentik with FreeIPA, create an LDAP source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, select **LDAP Source**, and click **Next**.
-3. Configure the following settings:
-    - **Name**: Provide a descriptive name for the LDAP source.
-    - **Slug**: Provide a slug for the LDAP source.
-    - **Update internal password on login**: Enable this if you want users to still be able to log in when FreeIPA is unavailable.
-    - **Delete not found object**: Enable to delete users from authentik when they are deleted in FreeIPA.
+2. Navigate to **Directory** > **Federation and Social login**.
+3. Click **New Source** and select **LDAP Source**.
 
-    - Under **Connection settings**:
-        - **Server URI**: `ldaps://ipa1.freeipa.company`
-          :::tip
-          You can specify multiple server URIs separated by commas (for example, `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`). If you use a DNS record with multiple entries, authentik picks one at random on first connection.
-          :::
-        - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`.
-        - **TLS Verification Certificate**: Optionally select the certificate used to validate the remote certificate.
-        - **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
-        - **Bind Password**: The password for the user account above.
-        - **Base DN**: `dc=freeipa,dc=company`
+### 2. Configure general settings
 
-    - Under **LDAP Attribute mapping**:
-        - **User Property Mappings**: Select all Mappings whose names begin with `authentik default LDAP` and `authentik default OpenLDAP`. Deselect any other Mappings that are selected by default.
-        - **Group Property Mappings**: Select `authentik default OpenLDAP Mapping: cn`
+Configure the top-level settings in the following table. For **Sync Group Hierarchy** and the three membership fields under **Additional settings**, use one complete setup from [Membership configuration](#membership-configuration).
 
-    - Under **Additional settings**:
-        - **Additional Parent Group**: If selected, all synchronized groups will be given this authentik group as a parent.
-        - **User Path**: The path that users will be saved under in authentik.
-        - **Addition User/Group DN**: `cn=users,cn=accounts`
-        - **Addition Group DN**: `cn=groups,cn=accounts`
-        - **User object filter**: `(objectClass=person)`
-        - **Group object filter**: `(objectClass=groupofnames)`
-        - **Group membership field**: `memberOf`
-        - **User membership attribute**: `distinguishedName`
-        - **Lookup using user attribute**: Enabled.
-        - **Object uniqueness field**: `ipaUniqueID`
+| Setting                                     | Value                                                          | Notes                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Name**                                    | A descriptive name                                             | Identifies the LDAP source.                                                                                                                                                                                                                                                                                                                                    |
+| **Slug**                                    | A descriptive slug                                             | Identifies the source in URLs and API requests.                                                                                                                                                                                                                                                                                                                |
+| **Enabled**                                 | Enabled                                                        | Allows authentik to use the source.                                                                                                                                                                                                                                                                                                                            |
+| **Update internal password on login**       | Disabled unless required                                       | Enable only if you want authentik to update a user's stored password after a successful LDAP login. See [Password login](../../protocols/ldap/index.mdx#password-login) for security considerations.                                                                                                                                                           |
+| **Sync users**                              | Enabled                                                        | Imports users from FreeIPA.                                                                                                                                                                                                                                                                                                                                    |
+| **User password writeback**                 | Disabled unless required                                       | This setting is enabled by default. Disable it unless you want password changes made in authentik to be written back to FreeIPA. Only one LDAP source can have writeback enabled, and writeback requires the account permissions described above.                                                                                                              |
+| **Sync groups**                             | Enabled                                                        | Imports groups from FreeIPA.                                                                                                                                                                                                                                                                                                                                   |
+| **Sync Group Hierarchy**:ak-version[2026.8] | [Select a membership configuration](#membership-configuration) | Configure this setting together with **Group membership field**, **User membership attribute**, and **Lookup using user attribute**. This setting requires **Sync groups** to be enabled.                                                                                                                                                                      |
+| **Delete Not Found Objects**                | Disabled unless required                                       | Enable only if you want authentik to delete previously synchronized users and groups that are absent from the source's search results. User deletion requires **Sync users** to be enabled; group deletion requires **Sync groups** to be enabled. Review the [deletion behavior](../../protocols/ldap/index.mdx#delete-not-found-objects) before enabling it. |
 
-    :::caution
-    FreeIPA groups can contain nested groups. The `memberOf` user attribute lists all group memberships, direct and indirect.
+### 3. Configure connection settings
 
-    If you want to sync only direct group memberships, use the following settings:
-    - **Group membership field**: `member`
-    - **User membership attribute**: `distinguishedName`
-    - **Lookup using user attribute**: Disabled.
-      :::
+Under **Connection settings**, configure the following settings:
 
-4. Click **Finish**.
+| Setting                                 | Value                                                          | Notes                                                                                                                                                    |
+| --------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Server URI**                          | `ldaps://ipa1.freeipa.company`                                 | —                                                                                                                                                        |
+| **Enable StartTLS**                     | Disabled                                                       | To use StartTLS instead, use `ldap://` and enable this setting.                                                                                          |
+| **Use Server URI for SNI verification** | Enabled                                                        | Matches the blueprint below.                                                                                                                             |
+| **TLS Verification Certificate**        | Optional                                                       | Select a certificate containing the FreeIPA server's CA chain to validate the remote certificate. Leaving this field empty skips certificate validation. |
+| **Bind CN**                             | `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company` | Enter the service account's user principal name (UPN).                                                                                                   |
+| **Bind Password**                       | The service account password                                   | —                                                                                                                                                        |
+| **Base DN**                             | `dc=freeipa,dc=company`                                        | Defines the search base.                                                                                                                                 |
 
-### Manual synchronization
+:::tip Multiple server URIs
+You can specify multiple server URIs separated by commas. For example, specify `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`. If you use a DNS record with multiple entries, authentik picks one at random on the first connection.
+:::
 
-After saving the source, start a synchronization by opening the source, going to the **Sync** tab, and clicking **Run sync again**.
+### 4. Configure LDAP attribute mappings
 
-Finally, confirm that the **User database + LDAP password** backend is selected in **Flows and Stages** > **Stages** > **Password stage**.
+Under **LDAP Attribute mapping**, configure the following settings:
 
-![](./password_stage.png)
+| Setting                     | Value                                                                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User Property Mappings**  | Select all mappings whose names begin with `authentik default LDAP` and `authentik default OpenLDAP`. Deselect any other mappings that are selected by default. |
+| **Group Property Mappings** | Select only `authentik default OpenLDAP Mapping: cn`. Deselect any other mappings selected by default.                                                          |
 
-### Blueprints
+### 5. Configure additional settings
 
-You can also configure the LDAP source with a blueprint:
+Under **Additional settings**, configure the following settings:
 
-:::note
-You must set the username (dn) and password in the environment variables `FREEIPA_DN` and `FREEIPA_PASSWORD`.
+| Setting                         | Value                                                          | Notes                                                                                                                                                                           |
+| ------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Additional Parent Group**     | Optional                                                       | Select a parent for all imported groups. See [how this interacts with hierarchy synchronization](../../protocols/ldap/index.mdx#synchronize-the-group-hierarchy).               |
+| **User path**                   | Deployment-specific                                            | Base path template for synchronized users, including existing users. See [User path](../../protocols/ldap/index.mdx#user-path) for how property mappings affect the final path. |
+| **Additional User DN**          | `cn=users,cn=accounts`                                         | —                                                                                                                                                                               |
+| **Additional Group DN**         | `cn=groups,cn=accounts`                                        | —                                                                                                                                                                               |
+| **User object filter**          | `(objectClass=person)`                                         | —                                                                                                                                                                               |
+| **Group object filter**         | `(objectClass=groupofnames)`                                   | —                                                                                                                                                                               |
+| **Group membership field**      | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                               |
+| **User membership attribute**   | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                               |
+| **Lookup using user attribute** | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                               |
+| **Object uniqueness field**     | `ipaUniqueID`                                                  | —                                                                                                                                                                               |
+
+### 6. Save the source and enable LDAP password login
+
+1. Click **Create** to save the LDAP source and queue a background synchronization. Open the source's **Overview** tab and review **Sync status**.
+2. Creating the source configures synchronization but does not enable LDAP password authentication in your authentication flow. To enable authentication with LDAP credentials, navigate to **Flows and Stages** > **Stages**, then edit the password stage used by the flow. Under **Stage-specific settings** > **Backends**, select **User database + LDAP password**, then save the stage.
+
+## Membership configuration
+
+authentik can represent nested FreeIPA groups in two ways. It can synchronize direct user and group relationships to reproduce the FreeIPA group hierarchy, or it can use the effective user memberships resolved by FreeIPA. Both approaches can provide effective memberships, but they create different relationships in authentik. Hierarchy synchronization preserves the distinction between direct and inherited membership, while FreeIPA-resolved results are stored as direct memberships.
+
+Choose the approach that matches how you want to use synchronized groups in authentik. Select one complete configuration; do not combine the two sets of settings. **Sync Group Hierarchy** is a top-level setting; the other three fields are under **Additional settings**. For details, see [Group membership and hierarchy](../../protocols/ldap/index.mdx#group-membership-and-hierarchy).
+
+| Configuration                            | Use when                                                           | Result                                                                  |
+| ---------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Let FreeIPA resolve effective membership | You need effective membership but not the FreeIPA group structure. | Direct and indirect memberships become direct memberships in authentik. |
+| Preserve the FreeIPA group hierarchy     | You need authentik to reproduce nested FreeIPA groups.             | Direct and inherited memberships remain distinct.                       |
+
+### Let FreeIPA resolve effective membership
+
+```text
+Sync Group Hierarchy: Disabled
+Group membership field: memberOf
+User membership attribute: distinguishedName
+Lookup using user attribute: Enabled
+```
+
+FreeIPA's raw LDAP `memberOf` values can include both direct and indirect memberships. If Alice belongs directly to `backend` and `backend` is a child of `engineering`, LDAP searches for either group can return Alice. authentik then stores both relationships as direct memberships. Use this setup when you want FreeIPA to resolve effective membership and do not need to preserve the distinction between direct and inherited membership.
+
+### Preserve the FreeIPA group hierarchy
+
+```text
+Sync Group Hierarchy: Enabled
+Group membership field: member
+User membership attribute: distinguishedName
+Lookup using user attribute: Disabled
+```
+
+User DNs in `member` create direct user memberships when they match users in authentik. Matching group DNs create child-group relationships. Include all users and groups needed for the hierarchy in the synchronization scope. For example, authentik stores Alice as a direct member of `backend`, sets `engineering` as the parent of `backend`, and then calculates Alice's effective membership in `engineering`. Use this setup to reproduce FreeIPA's nested group structure while preserving [direct and inherited membership](../../protocols/ldap/index.mdx#group-membership-and-hierarchy).
+
+## Manual synchronization
+
+Use manual synchronization to test changes to directory memberships or property mappings without waiting for the next scheduled run. Manual synchronization applies changes to authentik; it is not a dry run.
+
+See [Run a synchronization](../../protocols/ldap/index.mdx#run-a-synchronization) for instructions.
+
+## Blueprints
+
+You can also configure the LDAP source with a blueprint. This example enables password writeback and deletion of objects no longer found. Complete the writeback preparation in [FreeIPA setup](#freeipa-setup), or set `sync_users_password: false` if you do not want writeback. Internal password updates on LDAP login remain disabled by default.
+
+:::info
+Set the bind account's full DN and password in the `FREEIPA_DN` and `FREEIPA_PASSWORD` environment variables. Ensure that the variables are available to authentik when it applies the blueprint. Before applying the blueprint, import the trusted FreeIPA CA chain into authentik and set the imported certificate's UUID as the `peer_certificate` value under `attrs`. Omitting this reference skips certificate validation.
 :::
 
 ```yaml
@@ -125,6 +195,7 @@ entries:
       identifiers:
           slug: ldap-source-freeipa
       attrs:
+          name: FreeIPA
           enabled: true
           base_dn: dc=freeipa,dc=company
           additional_user_dn: cn=users,cn=accounts
@@ -136,8 +207,11 @@ entries:
           group_object_filter: (objectClass=groupofnames)
           lookup_groups_from_user: true
           object_uniqueness_field: ipaUniqueID
+
           server_uri: ldaps://ipa1.freeipa.company,ldaps://ipa2.freeipa.company
           sni: true
+          start_tls: false
+          sync_group_hierarchy: false
           sync_groups: true
           sync_users: true
           sync_users_password: true
@@ -171,6 +245,22 @@ entries:
                 ]
 ```
 
-:::note
-If using LDAP, prepend the server URI with `ldap://` and include `start_tls: true`.
+The blueprint creates the source, not the password stage. To enable LDAP password login, also configure the **Backends** setting in the password stage as described in [authentik setup](#authentik-setup).
+
+This blueprint lets FreeIPA resolve effective membership and does not synchronize the group hierarchy. To preserve the FreeIPA group hierarchy instead, replace the membership settings with:
+
+```yaml
+group_membership_field: member
+lookup_groups_from_user: false
+sync_group_hierarchy: true
+user_membership_attribute: distinguishedName
+```
+
+:::info
+To use StartTLS instead of LDAPS, use `ldap://` in `server_uri` and set `start_tls: true`.
 :::
+
+## Resources
+
+- [FreeIPA: Why newly set and administratively reset passwords expire](https://www.freeipa.org/page/New_Passwords_Expired)
+- [FreeIPA: LDAP directory layout, TLS, and CA certificate location](https://www.freeipa.org/page/HowTo/LDAP)
