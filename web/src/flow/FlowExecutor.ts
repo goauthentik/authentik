@@ -34,6 +34,7 @@ import {
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
@@ -361,7 +362,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 .exhaustive(),
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        // Forwarded so a stage can project light-DOM content of ours into its own shadow
+        // root. A stage whose shadow root has no matching slot simply renders nothing here.
+        return staticHTML`<${unsafeStatic(tag)} ${props}>
+            <slot name="${unsafeStatic(CAPTCHA_SLOT)}" slot="${unsafeStatic(CAPTCHA_SLOT)}"></slot>
+        </${unsafeStatic(tag)}>`;
     }
 
     protected renderChallengeError(error: unknown): SlottedTemplateResult {
