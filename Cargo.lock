@@ -3054,9 +3054,15 @@ dependencies = [
 
 [[package]]
 name = "rustls"
+<<<<<<< HEAD
 version = "0.23.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef86cd5876211988985292b91c96a8f2d298df24e75989a43a3c73f2d4d8168b"
+=======
+version = "0.23.45"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+>>>>>>> 0bdb759ab (core: bump rustls (#26142))
 dependencies = [
  "aws-lc-rs",
  "log",

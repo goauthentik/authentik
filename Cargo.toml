@@ -66,8 +66,13 @@ reqwest-middleware = { version = "= 0.5.1", features = [
   "query",
   "rustls",
 ] }
+<<<<<<< HEAD
 rustls = { version = "= 0.23.40", features = ["fips"] }
 sentry = { version = "= 0.48.0", default-features = false, features = [
+=======
+rustls = { version = "= 0.23.45", features = ["fips"] }
+sentry = { version = "= 0.49.2", default-features = false, features = [
+>>>>>>> 0bdb759ab (core: bump rustls (#26142))
   "backtrace",
   "contexts",
   "debug-images",
