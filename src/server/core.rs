@@ -479,9 +479,9 @@ mod websockets {
             while let Some(msg) = client_receiver.next().await {
                 let msg = msg?;
                 match msg {
-                    Message::Close(_) => {
+                    Message::Close(frame) => {
                         if !client_closed {
-                            upstream_sender.send(Message::Close(None)).await?;
+                            upstream_sender.send(Message::Close(frame)).await?;
                             let _ = close_tx.send(()).await;
                             client_closed = true;
                             break;
@@ -510,9 +510,9 @@ mod websockets {
             while let Some(msg) = upstream_receiver.next().await {
                 let msg = msg?;
                 match msg {
-                    Message::Close(_) => {
+                    Message::Close(frame) => {
                         if !upstream_closed {
-                            client_sender.send(Message::Close(None)).await?;
+                            client_sender.send(Message::Close(frame)).await?;
                             let _ = close_tx_upstream.send(()).await;
                             upstream_closed = true;
                             break;
