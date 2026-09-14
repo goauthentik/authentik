@@ -1,6 +1,7 @@
 """authentik multi-stage authentication engine"""
 
 from copy import deepcopy
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -64,6 +65,9 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+
+# OIDC login_hint query param, stripped from `next` on cancel so it can't re-prefill
+QS_LOGIN_HINT = "login_hint"
 
 SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_GET = "authentik/flows/get"
@@ -490,6 +494,17 @@ class FlowExecutorView(APIView):
                 del self.request.session[key]
 
 
+def cleanse_url_login_hint(url: str) -> str:
+    """Remove the OIDC `login_hint` query parameter from a (relative) URL, leaving all other
+    parameters untouched."""
+    parts = urlsplit(url)
+    if QS_LOGIN_HINT not in parts.query:
+        return url
+    query = QueryDict(parts.query, mutable=True)
+    query.pop(QS_LOGIN_HINT, None)
+    return urlunsplit(parts._replace(query=urlencode(sorted(query.items()), doseq=True)))
+
+
 class CancelView(View):
     """View which cancels the currently active plan"""
 
@@ -500,7 +515,10 @@ class CancelView(View):
             LOGGER.debug("Canceled current plan")
         next_url = self.request.GET.get(NEXT_ARG_NAME)
         if next_url and not is_url_absolute(next_url):
-            return redirect(next_url)
+            # The user explicitly chose to change identity ("Not you?"), so we must not
+            # re-apply the login_hint carried in `next`, otherwise re-entering the flow
+            # would pre-fill the identifier again and trap the user in a loop (#25476).
+            return redirect(cleanse_url_login_hint(next_url))
         return redirect("authentik_flows:default-invalidation")
 
 
