@@ -26,7 +26,7 @@ docker compose run --rm server hash_password
 For automation, pipe the password through standard input:
 
 ```bash
-echo "$PASSWORD" | docker compose run --rm server hash_password
+printf '%s' "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 ### "Prevent duplicate device" in WebAuthn setup stage removed
@@ -225,7 +225,7 @@ When you upgrade, be aware that the version of the authentik instance and of any
 To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/2026.8/lifecycle/container/compose.yml
+wget -O compose.yml https://goauthentik.io/version/2026.8/lifecycle/container/compose.yml
 docker compose up -d
 ```
 
