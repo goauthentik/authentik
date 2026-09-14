@@ -98,6 +98,9 @@ class WithUserInfoChallenge(Challenge):
     """Challenge base which shows some user info"""
 
     pending_user = CharField(allow_blank=True)
+    # What to show a human. `pending_user` has to stay the username because the
+    # web UI feeds it to a hidden autocomplete input for password managers.
+    pending_user_display = CharField(allow_blank=True, required=False)
     pending_user_avatar = CharField()
 
 
