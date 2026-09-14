@@ -1,5 +1,6 @@
 import { expect, test } from "#e2e";
 import { FormFixture } from "#e2e/fixtures/FormFixture";
+import { LicenseFixture } from "#e2e/fixtures/LicenseFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { SessionFixture } from "#e2e/fixtures/SessionFixture";
 import { randomName } from "#e2e/utils/generators";
@@ -68,6 +69,12 @@ test.describe("Account lockdown", () => {
 
             await test.step("Authenticate", async () =>
                 session.login({ to: "/if/admin/core/brands", page }));
+
+            const licensed = await new LicenseFixture({ page, testName }).isAvailable();
+            if (!licensed) {
+                await context.close();
+            }
+            test.skip(!licensed, "A valid enterprise license is required");
 
             const $brand = await test.step("Find the default brand via search", () =>
                 form.search(DEFAULT_BRAND_DOMAIN, page));
