@@ -29985,14 +29985,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: auth
-        schema:
-          type: string
-      - in: query
-        name: auth_password
-        schema:
-          type: string
-      - in: query
         name: auth_type
         schema:
           $ref: '#/components/schemas/AuthTypeEnum'
@@ -30023,11 +30015,6 @@ paths:
         schema:
           $ref: '#/components/schemas/ProviderEnum'
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: verify_only
         schema:
@@ -36980,10 +36967,19 @@ components:
           type: string
         client_id:
           type: string
+        secret:
+          type: string
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
         admin_integration_key:
           type: string
+        admin_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
@@ -36992,6 +36988,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorDuoStageDeviceImportResponse:
@@ -37036,23 +37033,25 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
-      - client_secret
       - name
+      - secret
     AuthenticatorEmailChallenge:
       type: object
       description: Authenticator Email Setup challenge
@@ -37388,6 +37387,15 @@ components:
           type: string
         account_sid:
           type: string
+        auth_secret:
+          type: string
+          format: uuid
+          title: Auth token
+        auth_password_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37402,6 +37410,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
+      - auth_secret
       - component
       - flow_set
       - from_number
@@ -37434,13 +37443,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_secret:
           type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37455,7 +37466,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
+      - auth_secret
       - from_number
       - name
       - provider
@@ -50838,18 +50849,20 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50945,13 +50958,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_secret:
           type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
