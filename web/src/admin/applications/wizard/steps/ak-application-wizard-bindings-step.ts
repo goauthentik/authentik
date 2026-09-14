@@ -28,6 +28,7 @@ const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
+    [msg("Dry-run", { id: "policies.bindings.dry-run.label" })],
     [msg("Timeout"), "timeout"],
     [msg("Actions"), null, msg("Row Actions")],
 ];
@@ -60,7 +61,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
-            const { order, enabled, timeout } = binding;
+            const { order, enabled, dryRun, timeout } = binding;
 
             const isSet = P.union(P.string.minLength(1), P.number);
             const policy = match(binding)
@@ -75,6 +76,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     order,
                     policy,
                     html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
+                    html`<ak-status-label type="neutral" ?good=${dryRun}></ak-status-label>`,
                     timeout,
                     makeEditButton(msg("Edit"), index, (ev: CustomEvent<number>) =>
                         this.onBindingEvent(ev.detail),

@@ -82,6 +82,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
     user: binding.user,
     negate: binding.negate,
     enabled: binding.enabled,
+    dryRun: binding.dryRun,
     order: binding.order,
     timeout: binding.timeout,
     failureResult: binding.failureResult,

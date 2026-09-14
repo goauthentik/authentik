@@ -304,6 +304,16 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             >
             </ak-switch-input>
             <ak-switch-input
+                name="dryRun"
+                label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                ?checked=${this.instance?.dryRun ?? false}
+                help=${msg(
+                    "Evaluate this binding without including its result or messages in the final policy decision. Policy results remain available in flow context. Policy side effects are not prevented.",
+                    { id: "policies.bindings.dry-run.description" },
+                )}
+            >
+            </ak-switch-input>
+            <ak-switch-input
                 name="negate"
                 label=${msg("Negate Result")}
                 ?checked=${this.instance?.negate ?? false}
