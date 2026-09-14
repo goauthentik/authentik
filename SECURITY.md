@@ -104,10 +104,12 @@ The destinations of outgoing network requests (HTTP, TCP, etc.) made by authenti
 1. Vulnerability is reported via a GitHub Security Advisory, as listed above.
 2. The authentik Security team will try to reproduce the issue and ask for more information if required.
 3. A severity level is assigned.
-4. A fix is created, and if possible tested by the issue reporter.
-5. The fix is backported to other supported versions, and if possible a workaround for other versions is created.
-6. An announcement is sent out with a fixed release date and severity level of the issue. The announcement will be sent at least 24 hours before the release of the security fix.
-7. The fixed version is released for the supported versions.
+4. If the issue qualifies as a CVE, a CVE ID is requested from GitHub, our CNA. See [Our CNA](#our-cna).
+5. A fix is created, and if possible tested by the issue reporter.
+6. The fix is backported to other supported versions, and if possible a workaround for other versions is created.
+7. An announcement is sent out with a fixed release date and severity level of the issue. The announcement will be sent at least 24 hours before the release of the security fix.
+8. The fixed version is released for the supported versions.
+9. The security advisory is published. If GitHub has not assigned the CVE ID by then, the ID is added to the advisory once it arrives.
 
 ## Getting security notifications
 
