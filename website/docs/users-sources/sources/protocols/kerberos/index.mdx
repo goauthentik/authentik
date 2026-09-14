@@ -61,7 +61,7 @@ In authentik, configure these extra options:
 
 - Sync users: enable it
 - Sync principal: `authentik/admin@REALM.COMPANY`
-- Sync keytab: the base64-encoded keytab created above.
+- Sync keytab: create or select a secret containing the base64-encoded keytab created above.
 
 If you do not wish to use a keytab, you can also configure authentik to authenticate using a password or an existing credentials cache.
 
@@ -80,7 +80,7 @@ $ rm /tmp/authentik.keytab
 
 In authentik, configure these extra options:
 
-- SPNEGO keytab: the base64-encoded keytab created above.
+- SPNEGO keytab: create or select a secret containing the base64-encoded keytab created above.
 
 If you do not wish to use a keytab, you can also configure authentik to use an existing credentials cache.
 
