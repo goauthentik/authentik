@@ -386,7 +386,7 @@ test.describe("User offboarding", () => {
 
     test.beforeEach(
         "Prepare user identity",
-        async ({ page, form, pointer, session }, { testId }) => {
+        async ({ page, form, pointer, session, license }, { testId }) => {
             const seed = IDGenerator.randomID(6);
             const displayName = `${randomName(seed)} Offboarding (${seed})`;
 
@@ -402,6 +402,7 @@ test.describe("User offboarding", () => {
                     page.getByRole("heading", { level: 1 }),
                     "User interface opens after authentication",
                 ).toHaveText("Application Dashboard", { timeout: 10_000 });
+                test.skip(!(await license.isAvailable()), "A valid enterprise license is required");
                 await pointer.click("Admin interface", "link");
                 await openUsers({ page, form, pointer });
             });
