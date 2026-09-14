@@ -6,6 +6,7 @@ import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -85,7 +86,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     row(item: SCIMProviderUser): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

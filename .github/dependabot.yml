@@ -26,7 +26,7 @@ updates:
           - "github/codeql-action/*"
       regclient:
         patterns:
-          - "regclient/actions//*"
+          - "regclient/actions/*"
 
   #endregion
 

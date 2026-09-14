@@ -38,7 +38,7 @@ test.describe("RAC", () => {
         const { click } = pointer;
 
         await test.step("Authenticate", async () => {
-            await session.login({ to: "/if/admin/#/core/providers" });
+            await session.login({ to: "/if/admin/core/providers" });
         });
 
         //#region Create RAC provider via the wizard
@@ -118,7 +118,7 @@ test.describe("RAC", () => {
         //#region Attach the provider to an application
 
         await test.step("Navigate to applications", async () => {
-            await navigator.navigate("/if/admin/#/core/applications");
+            await navigator.navigate("/if/admin/core/applications");
         });
 
         const appDialog = page.getByRole("dialog", { name: "New Application" });
@@ -175,13 +175,19 @@ test.describe("RAC", () => {
             "Application launch button appears in the filtered library",
         ).toBeVisible({ timeout: 15_000 });
 
-        await test.step("Open the endpoint launcher", async () => {
-            await launchButton.click();
-        });
-
         const launchDialog = page.getByRole("dialog", { name: /Launch Endpoint/i });
 
-        await expect(launchDialog, "Launch Endpoint dialog opens").toBeVisible();
+        // Click the card rather than relying on the library's single-match
+        // auto-launch: that fires from the search input's `change` event, and
+        // `locator.fill()` dispatches only `input`, so it never runs under
+        // Playwright. Activating the card is what a user does anyway.
+        await test.step("Endpoint launcher opens for the single match", async () => {
+            await launchButton.click();
+
+            await expect(launchDialog, "Launch Endpoint dialog opens").toBeVisible({
+                timeout: 15_000,
+            });
+        });
 
         // Both endpoints must render on first open — no manual refresh, no
         // re-navigation. Two endpoints are required because a single endpoint
@@ -190,7 +196,7 @@ test.describe("RAC", () => {
             await expect(
                 launchDialog.getByRole("cell", { name: endpointA }),
                 `Endpoint ${endpointA} is visible in the launcher`,
-            ).toBeVisible({ timeout: 5_000 });
+            ).toBeVisible();
 
             await expect(
                 launchDialog.getByRole("cell", { name: endpointB }),

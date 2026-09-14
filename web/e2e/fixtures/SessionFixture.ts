@@ -17,6 +17,11 @@ export interface LoginInit {
     page?: Page;
 }
 
+export interface CompletePasswordInit {
+    password?: string;
+    to?: URL | string;
+}
+
 export interface SessionFixtureInit extends PageFixtureInit {
     navigator: NavigatorFixture;
 }
@@ -78,12 +83,7 @@ export class SessionFixture extends PageFixture {
      * Log into the application.
      */
     public async login(
-        {
-            username = GOOD_USERNAME,
-            password = GOOD_PASSWORD,
-            to = SessionFixture.pathname,
-            rememberMe,
-        }: LoginInit = {},
+        { username = GOOD_USERNAME, password = GOOD_PASSWORD, to, rememberMe }: LoginInit = {},
         page = this.page,
     ): Promise<void> {
         this.logger.info("Logging in...");
@@ -93,7 +93,9 @@ export class SessionFixture extends PageFixture {
         if (initialURL.pathname === SessionFixture.pathname) {
             this.logger.info("Skipping navigation because we're already in a authentication flow");
         } else {
-            await page.goto(to.toString());
+            // Navigating to `to` while unauthenticated bounces through the flow with
+            // `?next=`, so the post-login redirect lands on the destination.
+            await page.goto((to ?? SessionFixture.pathname).toString());
         }
 
         if (typeof rememberMe === "boolean") {
@@ -130,6 +132,42 @@ export class SessionFixture extends PageFixture {
 
         await this.$passwordField.fill(password);
 
+        await this.$submitButton.click();
+
+        if (to) {
+            await this.navigator.waitForPathname(to);
+
+            return;
+        }
+
+        // With no destination the redirect lands on whichever interface the user
+        // defaults to, which the caller doesn't know. Waiting on the flow pathname
+        // would match the page we're already on and return before the redirect
+        // lands, leaving the next step to run against the login screen.
+        //
+        // Raced against the failure alert so callers that log in with bad credentials
+        // on purpose return here instead of waiting out the test timeout. Both sides
+        // swallow their own timeout: whichever settles first is the outcome, and the
+        // caller asserts on it.
+        await Promise.race([
+            this.navigator.waitForPathnameChange(SessionFixture.pathname).catch(() => undefined),
+            this.$authFailureMessage.waitFor({ state: "visible" }).catch(() => undefined),
+        ]);
+    }
+
+    /**
+     * Complete a password stage when identification was skipped
+     * (e.g. switching to a user that already has `pending_user` in the flow plan).
+     */
+    public async completePassword({
+        password = GOOD_PASSWORD,
+        to = SessionFixture.pathname,
+    }: CompletePasswordInit = {}): Promise<void> {
+        this.logger.info("Completing password stage...");
+
+        await this.$passwordStage.waitFor({ state: "visible" });
+
+        await this.$passwordField.fill(password);
         await this.$submitButton.click();
 
         await this.navigator.waitForPathname(to);

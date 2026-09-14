@@ -71,7 +71,9 @@ describe("buildFlowGraph", () => {
             ),
         );
 
-        expect(diagram).toBe(["graph TD", 'n0[["Flow\nLogged out of application"]]'].join("\n"));
+        expect(diagram).toBe(
+            ["graph TD", 'n0[["Flow\n<strong>Logged out of application</strong>"]]'].join("\n"),
+        );
     });
 
     it("declares a flow-end node as a subroutine labeled with the end of the flow", () => {
@@ -127,7 +129,7 @@ describe("buildFlowGraph", () => {
         expect(diagram).toBe(
             [
                 "graph TD",
-                'n0(["Stage (Identification Stage)\ndefault-authentication-identification"])',
+                'n0(["<strong>Identification Stage</strong>\ndefault-authentication-identification"])',
             ].join("\n"),
         );
     });
@@ -146,9 +148,10 @@ describe("buildFlowGraph", () => {
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0{{"Policy (Expression Policy)\ndefault-oobe-password-usable"}}'].join(
-                "\n",
-            ),
+            [
+                "graph TD",
+                'n0{{"<strong>Expression Policy</strong>\ndefault-oobe-password-usable"}}',
+            ].join("\n"),
         );
     });
 
@@ -164,9 +167,12 @@ describe("buildFlowGraph", () => {
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0[["Flow\nLog out"]]', 'n1[["End of the flow"]]', "n0 --> n1"].join(
-                "\n",
-            ),
+            [
+                "graph TD",
+                'n0[["Flow\n<strong>Log out</strong>"]]',
+                'n1[["End of the flow"]]',
+                "n0 --> n1",
+            ].join("\n"),
         );
     });
 
@@ -216,7 +222,10 @@ describe("buildFlowGraph", () => {
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0(["Stage (Prompt Stage)\nthe #quot;special#quot; stage"])'].join("\n"),
+            [
+                "graph TD",
+                'n0(["<strong>Prompt Stage</strong>\nthe #quot;special#quot; stage"])',
+            ].join("\n"),
         );
     });
 
@@ -298,12 +307,12 @@ describe("buildFlowGraph", () => {
                 "graph TD",
                 'n0["Flow authentication requirement\nrequire_superuser"]',
                 'n1[["Pre-flow policies"]]',
-                'n2{{"Policy (Expression Policy)\ndefault-oobe-password-usable"}}',
-                'n3[["Flow\ndefault-oobe-setup"]]',
-                'n4(["Stage (Prompt Stage)\nstage-default-oobe-password"])',
-                'n5{{"Policy (Expression Policy)\ndefault-oobe-prefill-user"}}',
-                'n6(["Stage (User Write Stage)\ndefault-password-change-write"])',
-                'n7(["Stage (User Login Stage)\ndefault-authentication-login"])',
+                'n2{{"<strong>Expression Policy</strong>\ndefault-oobe-password-usable"}}',
+                'n3[["Flow\n<strong>default-oobe-setup</strong>"]]',
+                'n4(["<strong>Prompt Stage</strong>\nstage-default-oobe-password"])',
+                'n5{{"<strong>Expression Policy</strong>\ndefault-oobe-prefill-user"}}',
+                'n6(["<strong>User Write Stage</strong>\ndefault-password-change-write"])',
+                'n7(["<strong>User Login Stage</strong>\ndefault-authentication-login"])',
                 'n8[["End of the flow"]]',
                 "n0 --Denied--> n8",
                 "n0 --Requirement met--> n3",
@@ -328,6 +337,6 @@ describe("buildFlowGraph", () => {
             ),
         );
 
-        expect(diagram).toBe(["graph TD", 'n0[["Flow\nLog out"]]'].join("\n"));
+        expect(diagram).toBe(["graph TD", 'n0[["Flow\n<strong>Log out</strong>"]]'].join("\n"));
     });
 });

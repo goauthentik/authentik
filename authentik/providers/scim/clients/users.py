@@ -71,11 +71,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
-                users = self._request(
-                    "GET",
-                    f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
+                users = self.lower_case_keys(
+                    self._request(
+                        "GET",
+                        f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
+                    )
                 )
-                users_res = self.lower_case_keys(users.get("resources", []))
+                users_res = users.get("resources", [])
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(

@@ -27,7 +27,7 @@ export class UserRolesTab extends WithLazyTabs(AKElement) {
             return nothing;
         }
 
-        return html`<ak-tabs pageIdentifier="userRoles" vertical>
+        return html`<ak-tabs routed vertical>
             <div
                 role="tabpanel"
                 tabindex="0"

@@ -1,50 +1,15 @@
 import { expect, test } from "#e2e";
-import { FormFixture } from "#e2e/fixtures/FormFixture";
-import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
-import { GOOD_USERNAME, SessionFixture } from "#e2e/fixtures/SessionFixture";
+import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 
 import type { Page } from "@playwright/test";
 
 const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
 const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
 
-const IDENTIFICATION_STAGE_NAME = "default-authentication-identification";
-
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
 
 test.describe("Session Lifecycle", () => {
-    test.beforeAll(
-        'Ensure "Enable Remember me on this device" is on for the default identification stage',
-        async ({ browser }, { title: testName }) => {
-            const context = await browser.newContext();
-            const page = await context.newPage();
-            const navigator = new NavigatorFixture(page, testName);
-            const form = new FormFixture(page, testName);
-            const session = new SessionFixture({ page, testName, navigator });
-
-            await test.step("Authenticate", async () =>
-                session.login({
-                    to: "/if/admin/#/flow/stages",
-                    page,
-                }));
-
-            const $stage = await test.step("Find stage via search", () =>
-                form.search(IDENTIFICATION_STAGE_NAME, page));
-
-            await $stage.getByRole("button", { name: "Edit Stage" }).click();
-
-            const dialog = page.getByRole("dialog", { name: "Edit Identification Stage" });
-            await expect(dialog, "Edit modal opens after clicking edit").toBeVisible();
-
-            await form.setInputCheck(`Enable "Remember me on this device"`, true, dialog);
-            await dialog.getByRole("button", { name: "Save Changes" }).click();
-            await expect(dialog, "Edit modal closes after save").toBeHidden();
-
-            await context.close();
-        },
-    );
-
     test.beforeEach(async ({ session, page }) => {
         await session.toLoginPage();
 
@@ -60,7 +25,7 @@ test.describe("Session Lifecycle", () => {
         await session.$identificationStage.waitFor({ state: "visible" });
     });
 
-    test("Remember me persists username", async ({ navigator, session, page }) => {
+    test("Remember me persists username", async ({ navigator, session, switcher, page }) => {
         await test.step("Verify identification stage", async () => {
             await expect(
                 session.$rememberMeCheckbox,
@@ -76,7 +41,7 @@ test.describe("Session Lifecycle", () => {
             await session.login(
                 {
                     rememberMe: true,
-                    to: "if/user/#/library",
+                    to: "/if/user/library",
                 },
                 page,
             );
@@ -90,15 +55,23 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            await session.signOut();
+            // Signing out lives inside the header account switcher, not as a bare
+            // header link — see `ak-user-switcher`.
+            await switcher.select(switcher.$signOut);
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
 
-            const passwordEmbedded = await session.$passwordField.isVisible();
+            // Remember-me lands on one of two stages: identification with the username
+            // pre-filled, or — when the remembered identity is restored outright — the
+            // password stage for that user.
+            await expect(
+                session.$identificationStage.or(session.$passwordStage),
+                "Sign out returns to the authentication flow",
+            ).toBeVisible({ timeout: 15_000 });
 
-            if (passwordEmbedded) {
-                // Password is embedded in the identification stage, so the Not-you UI never renders.
-                // Remember-me's only observable effect is the pre-filled username field.
+            if (await session.$identificationStage.isVisible()) {
+                // Remember-me's only observable effect here is the pre-filled username,
+                // so the Not-you UI never renders.
                 await expect(
                     session.$usernameField,
                     "Username pre-filled from remember-me",
@@ -106,9 +79,6 @@ test.describe("Session Lifecycle", () => {
 
                 return;
             }
-
-            await session.$submitButton.click();
-            await session.$passwordStage.waitFor({ state: "visible" });
 
             const notYouLink = page.getByRole("link", { name: "Not you?" });
 

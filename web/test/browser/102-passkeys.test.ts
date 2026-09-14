@@ -6,7 +6,9 @@ import { series } from "@goauthentik/core/promises";
 
 import { snakeCase } from "change-case";
 
-const CREDENTIALS_SETTINGS = `/if/user/#/settings;${JSON.stringify({ page: "page-credentials" })}`;
+// Tabs are path segments now: the `page-credentials` panel lives at
+// `/if/user/settings/credentials`, not behind a legacy hash tab token.
+const CREDENTIALS_SETTINGS = "/if/user/settings/credentials";
 
 test.describe("Passkeys", () => {
     const usernames = new Map<string, string>();

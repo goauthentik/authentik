@@ -229,6 +229,13 @@ The recovery token is valid for a short time, but anyone can use it to log in as
 
 ## End-to-end (E2E) setup
 
+authentik ships two end-to-end test suites:
+
+- The Django/Selenium suite under `tests/e2e/` — driven by Django's test runner. It is exercised in CI by the `test-e2e` job in `ci-main.yml`.
+- The browser-side Playwright suite under `web/test/browser/` — driven by `web/playwright.config.js`. It is exercised in CI by the `e2e (playwright)` job in `ci-web.yml` and runs against a live authentik server.
+
+### Django/Selenium suite
+
 Start the E2E test services with the following command:
 
 ```shell
@@ -242,6 +249,39 @@ Alternatively, you can connect directly via VNC on port `5900` using the passwor
 :::info
 When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
+
+### Playwright suite
+
+The Playwright suite assumes that:
+
+- An authentik stack is reachable at `http://localhost:9000` (override with `AK_TEST_RUNNER_PAGE_URL`).
+- The `akadmin` user can log in as `test-admin@goauthentik.io` with the password `test-runner`.
+
+Both are satisfied by the development environment described above, as long as the bootstrap credentials match what the tests expect. Set them before authentik first starts — the bootstrap blueprint only applies them while `akadmin` still has no usable password:
+
+```shell
+export AUTHENTIK_BOOTSTRAP_EMAIL=test-admin@goauthentik.io
+export AUTHENTIK_BOOTSTRAP_PASSWORD=test-runner
+
+make run
+```
+
+If your instance already has an `akadmin` password, either reset it to `test-runner` through the UI or point the suite at a different account via `SessionFixture`'s defaults.
+
+Install Playwright's browsers (one-time) and run the suite — these are the same scripts CI runs:
+
+```shell
+pnpm --dir web exec playwright install --with-deps chromium
+pnpm --dir web run test:e2e
+```
+
+After a failing run, open the HTML report to inspect traces, screenshots, and (in CI) videos:
+
+```shell
+pnpm --dir web exec playwright show-report
+```
+
+In CI, the same artifacts are uploaded under the `playwright-report` and `playwright-traces` artifact names on the workflow run.
 
 ## Contributing code
 
