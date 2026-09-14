@@ -7,8 +7,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import SerializerMethodField
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -117,9 +117,7 @@ class SAMLSourceImportSerializer(PassiveSerializer):
         if not attrs.get("name"):
             missing["name"] = "This field is required when source is not set."
         if not attrs.get("pre_authentication_flow"):
-            missing["pre_authentication_flow"] = (
-                "This field is required when source is not set."
-            )
+            missing["pre_authentication_flow"] = "This field is required when source is not set."
         if missing:
             raise ValidationError(missing)
         return attrs

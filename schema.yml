@@ -5349,6 +5349,255 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/:
+    get:
+      operationId: crypto_certificatekeypairrings_list
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: keypairs
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCertificateKeyPairRingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: crypto_certificatekeypairrings_create
+      description: CRUD for key rings + one action to replace membership list.
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/:
+    get:
+      operationId: crypto_certificatekeypairrings_retrieve
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: crypto_certificatekeypairrings_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: crypto_certificatekeypairrings_partial_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCertificateKeyPairRingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: crypto_certificatekeypairrings_destroy
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/set-bindings/:
+    put:
+      operationId: crypto_certificatekeypairrings_set_bindings_update
+      description: CRUD for key rings + one action to replace membership list.
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRingBindingsReplaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPairRing'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairrings/{ring_uuid}/used_by/:
+    get:
+      operationId: crypto_certificatekeypairrings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: ring_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair Ring.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -19824,6 +20073,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: encryption_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: invalidation_flow
         schema:
           type: string
@@ -19893,6 +20147,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: signing_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: sls_binding
         schema:
           allOf:
@@ -19915,6 +20174,11 @@ paths:
 
       - in: query
         name: verification_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: verification_kp_ring
         schema:
           type: string
           format: uuid
@@ -20168,7 +20432,7 @@ paths:
   /providers/saml/import_metadata/:
     post:
       operationId: providers_saml_import_metadata_create
-      description: Create provider from SAML Metadata
+      description: Create provider from SAML Metadata, or apply to an existing provider.
       tags:
       - providers
       requestBody:
@@ -20983,6 +21247,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: encryption_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: invalidation_flow
         schema:
           type: string
@@ -21060,6 +21329,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: signing_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: sls_binding
         schema:
           allOf:
@@ -21082,6 +21356,11 @@ paths:
 
       - in: query
         name: verification_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: verification_kp_ring
         schema:
           type: string
           format: uuid
@@ -26057,6 +26336,16 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: encryption_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: encryption_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: enrollment_flow
         schema:
           type: string
@@ -26118,6 +26407,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: signing_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: slo_url
         schema:
           type: string
@@ -26143,6 +26437,11 @@ paths:
 
       - in: query
         name: verification_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: verification_kp_ring
         schema:
           type: string
           format: uuid
@@ -26345,6 +26644,31 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/saml/import_metadata/:
+    post:
+      operationId: sources_saml_import_metadata_create
+      description: Create source from IdP SAML metadata, or apply to an existing source.
+      tags:
+      - sources
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SAMLSourceImportRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSource'
+          description: ''
+        '400':
+          description: No response body
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /sources/scim/:
@@ -38447,6 +38771,60 @@ components:
       required:
       - certificate_data
       - name
+    CertificateKeyPairRing:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        ring_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        bindings:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - bindings
+      - ring_uuid
+    CertificateKeyPairRingBindingWriteRequest:
+      type: object
+      description: Binding list item used for ring membership replacement (full replace).
+      properties:
+        keypair:
+          type: string
+          format: uuid
+        order:
+          type: integer
+          minimum: 0
+      required:
+      - keypair
+      - order
+    CertificateKeyPairRingBindingsReplaceRequest:
+      type: object
+      description: Payload for full replacement of ring membership.
+      properties:
+        bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPairRingBindingWriteRequest'
+      required:
+      - bindings
+    CertificateKeyPairRingRequest:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        name:
+          type: string
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -45592,6 +45970,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
+      - authentik_crypto.certificatekeypairring
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -47638,6 +48017,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedCertificateKeyPairRingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPairRing'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50912,6 +51306,15 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+    PatchedCertificateKeyPairRingRequest:
+      type: object
+      description: |-
+        Minimal ring serializer (owner-less).
+
+        - bindings: read-only (use set-bindings to update)
+      properties:
+        name:
+          type: string
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
@@ -53481,6 +53884,18 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         sign_assertion:
           type: boolean
         sign_response:
@@ -53634,6 +54049,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -53645,14 +54080,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:
@@ -57306,6 +57733,18 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         sign_assertion:
           type: boolean
         sign_response:
@@ -57401,22 +57840,32 @@ components:
       type: object
       description: Import saml provider from XML Metadata
       properties:
+        provider:
+          type: integer
+          nullable: true
         name:
           type: string
           minLength: 1
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
         file:
           type: string
           format: binary
+        signing_certificate:
+          type: string
+          format: uuid
+          nullable: true
+        create_missing_rings:
+          type: boolean
+          default: true
       required:
-      - authorization_flow
       - file
-      - invalidation_flow
       - name
     SAMLProviderRequest:
       type: object
@@ -57517,6 +57966,18 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         sign_assertion:
           type: boolean
         sign_response:
@@ -57695,6 +58156,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -57705,14 +58186,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:
@@ -57731,6 +58204,34 @@ components:
       - url_issuer
       - verbose_name
       - verbose_name_plural
+    SAMLSourceImportRequest:
+      type: object
+      description: Import SAML source from IdP XML Metadata
+      properties:
+        source:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        file:
+          type: string
+          format: binary
+        signing_certificate:
+          type: string
+          format: uuid
+          nullable: true
+        create_missing_rings:
+          type: boolean
+          default: true
+      required:
+      - file
+      - name
     SAMLSourcePropertyMapping:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -57900,6 +58401,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -57911,14 +58432,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:

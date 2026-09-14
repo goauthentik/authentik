@@ -141,7 +141,9 @@ export class SAMLSourceViewPage extends AKElement {
                                 </ak-forms-modal>
                                 <ak-forms-modal>
                                     <span slot="submit">${msg("Apply")}</span>
-                                    <span slot="header">${msg("Apply metadata to this source")}</span>
+                                    <span slot="header"
+                                        >${msg("Apply metadata to this source")}</span
+                                    >
                                     <ak-source-saml-apply-metadata-form
                                         slot="form"
                                         .sourceId=${this.source.pk || 0}

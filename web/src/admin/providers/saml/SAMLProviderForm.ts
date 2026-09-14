@@ -21,6 +21,15 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected hasSigningKp = false;
 
     @state()
+    protected verificationKeyMode: "kp" | "ring" = "kp";
+
+    @state()
+    protected encryptionKeyMode: "kp" | "ring" = "kp";
+
+    @state()
+    protected signingKeyMode: "kp" | "ring" = "kp";
+
+    @state()
     protected hasSlsUrl = false;
 
     @state()
@@ -49,6 +58,19 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         this.hasSlsUrl = !!provider.slsUrl;
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod = provider.logoutMethod ?? SAMLLogoutMethods.FrontchannelIframe;
+
+        this.signingKeyMode = provider.signingKp ? "kp" : provider.signingKpRing ? "ring" : "kp";
+        this.verificationKeyMode = provider.verificationKp
+            ? "kp"
+            : provider.verificationKpRing
+              ? "ring"
+              : "kp";
+        this.encryptionKeyMode = provider.encryptionKp
+            ? "kp"
+            : provider.encryptionKpRing
+              ? "ring"
+              : "kp";
+
         return provider;
     }
 
@@ -59,6 +81,24 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             data.logoutMethod === SAMLLogoutMethods.Backchannel
         ) {
             data.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
+        }
+
+        if (this.signingKeyMode === "kp") {
+            data.signingKpRing = null;
+        } else {
+            data.signingKp = null;
+        }
+
+        if (this.verificationKeyMode === "kp") {
+            data.verificationKpRing = null;
+        } else {
+            data.verificationKp = null;
+        }
+
+        if (this.encryptionKeyMode === "kp") {
+            data.encryptionKpRing = null;
+        } else {
+            data.encryptionKp = null;
         }
 
         if (this.instance) {
@@ -106,6 +146,21 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             this.logoutMethod = target.value as SAMLLogoutMethods;
         };
 
+        const setSigningKeyMode = (ev: Event) => {
+            const target = ev.target as HTMLInputElement;
+            this.signingKeyMode = target.value as "kp" | "ring";
+            this.hasSigningKp = this.signingKeyMode === "kp" && !!this.instance?.signingKp;
+        };
+
+        const setVerificationKeyMode = (ev: Event) => {
+            const target = ev.target as HTMLInputElement;
+            this.verificationKeyMode = target.value as "kp" | "ring";
+        };
+
+        const setEncryptionKeyMode = (ev: Event) => {
+            const target = ev.target as HTMLInputElement;
+            this.encryptionKeyMode = target.value as "kp" | "ring";
+        };
         return renderForm({
             provider: this.instance,
             setHasSigningKp,
@@ -117,6 +172,13 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             hasPostBinding: this.hasPostBinding,
             logoutMethod: this.logoutMethod,
             setLogoutMethod,
+
+            signingKeyMode: this.signingKeyMode,
+            setSigningKeyMode,
+            verificationKeyMode: this.verificationKeyMode,
+            setVerificationKeyMode,
+            encryptionKeyMode: this.encryptionKeyMode,
+            setEncryptionKeyMode,
         });
     }
 }

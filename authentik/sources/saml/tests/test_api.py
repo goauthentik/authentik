@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.sources.saml.models import SAMLNameIDPolicy, SAMLSource
+from authentik.sources.saml.models import SAMLSource
 
 IDP_METADATA_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <EntityDescriptor

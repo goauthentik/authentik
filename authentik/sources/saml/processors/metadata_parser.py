@@ -35,6 +35,7 @@ _PREFER_NAME_IDS = (
     SAMLNameIDPolicy.UNSPECIFIED,
 )
 
+
 def build_idp_snapshot(entity: etree._Element) -> dict[str, Any]:
     """Build IdP snapshot with stable keys."""
     idp_desc = mx.extract_idp_descriptor(entity)
@@ -43,9 +44,9 @@ def build_idp_snapshot(entity: etree._Element) -> dict[str, Any]:
     slo_list = mx.extract_all_slo(idp_desc)
     name_id_list = mx.extract_nameid_formats(idp_desc)
 
-    verification_b64 = mx.extract_x509_b64_list(idp_desc, use="signing") or mx.extract_x509_b64_list(
-        idp_desc, use=None
-    )
+    verification_b64 = mx.extract_x509_b64_list(
+        idp_desc, use="signing"
+    ) or mx.extract_x509_b64_list(idp_desc, use=None)
     encryption_b64 = mx.extract_x509_b64_list(idp_desc, use="encryption")
 
     return {
@@ -108,6 +109,7 @@ class IdentityProviderMetadata:
 
     want_authn_requests_signed: bool
     name_id_policy: SAMLNameIDPolicy
+    display_name: str | None = None
 
     """Keys extracted from metadata."""
     signing_cert_pems: list[str] | None = None
@@ -116,7 +118,10 @@ class IdentityProviderMetadata:
     # Single Logout Service (optional)
     slo_binding: str | None = None
     slo_location: str | None = None
-    def to_source(self, name: str, *, pre_authentication_flow: Flow,issuer: str="") -> SAMLSource:
+
+    def to_source(
+        self, name: str, *, pre_authentication_flow: Flow, issuer: str = ""
+    ) -> SAMLSource:
         """Create a new SAMLSource and apply metadata-derived fields."""
         # NOTE: adjust required fields per your SAMLSource model.
         if name is None:
@@ -126,7 +131,7 @@ class IdentityProviderMetadata:
         source = SAMLSource.objects.create(
             name=name,
             slug=slug,
-            pre_authentication_flow = pre_authentication_flow,
+            pre_authentication_flow=pre_authentication_flow,
             issuer_override=issuer,
         )
         self.apply_to_source(source, create_missing_rings=True)
@@ -164,6 +169,7 @@ class IdentityProviderMetadata:
 
         source.save()
 
+
 class IdentityProviderMetadataParser:
     """Identity-Provider Metadata Parser"""
 
@@ -188,10 +194,7 @@ class IdentityProviderMetadataParser:
                 "//ds:X509Certificate/text()"
             )
         elif use is None:
-            xp = (
-                "//md:IDPSSODescriptor/md:KeyDescriptor[not(@use)]"
-                "//ds:X509Certificate/text()"
-            )
+            xp = "//md:IDPSSODescriptor/md:KeyDescriptor[not(@use)]" "//ds:X509Certificate/text()"
         else:
             raise ValueError("Invalid use")
 
@@ -238,6 +241,11 @@ class IdentityProviderMetadataParser:
 
         snap = build_idp_snapshot(root)
         runtime = build_idp_runtime_from_snapshot(snap)
+        display_names = mx.extract_entity_display_names(root)
+        display_name = next(
+            (item["text"] for item in display_names if item.get("lang") == "en"),
+            display_names[0]["text"] if display_names else None,
+        )
 
         signing_pems = self.get_keydescriptor_cert_pems(root, use="signing")
         unspecified_pems = self.get_keydescriptor_cert_pems(root, use=None)
@@ -271,6 +279,7 @@ class IdentityProviderMetadataParser:
             sso_location=runtime.get("sso_url") or "",
             want_authn_requests_signed=bool(runtime.get("want_authn_requests_signed", False)),
             name_id_policy=runtime.get("name_id_policy") or SAMLNameIDPolicy.UNSPECIFIED,
+            display_name=display_name,
             slo_binding=runtime.get("slo_binding") or None,
             slo_location=runtime.get("slo_url") or None,
             signing_cert_pems=signing_pems,

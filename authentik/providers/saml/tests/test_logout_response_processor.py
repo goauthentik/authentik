@@ -11,6 +11,7 @@ from authentik.common.saml.constants import (
 )
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.models import CertificateKeyPairRing, CertificateKeyPairRingBinding
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
@@ -23,14 +24,16 @@ class TestLogoutResponse(TestCase):
 
     @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
-        cert = create_test_cert()
+        cert1 = create_test_cert()
+        cert2 = create_test_cert()  # rollover / second candidate
         self.factory = RequestFactory()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",
             sls_url="http://testserver/source/saml/provider/sls/",
-            signing_kp=cert,
-            verification_kp=cert,
+            signing_kp=None,
+            signing_kp_ring=None,
+            verification_kp=cert1,
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
@@ -39,6 +42,15 @@ class TestLogoutResponse(TestCase):
             slug=generate_id(),
             provider=self.provider,
         )
+
+        ring = CertificateKeyPairRing.objects.create(
+            name="logout-sign-ring",
+        )
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=cert1, order=0)
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=cert2, order=1)
+
+        self.provider.signing_kp_ring = ring
+        self.provider.save(update_fields=["signing_kp_ring"])
 
     def test_build_response(self):
         """Test building a LogoutResponse uses the generated issuer from the assertion"""

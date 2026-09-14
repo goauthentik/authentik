@@ -1,6 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/providers/saml/SAMLProviderApplyForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
@@ -375,7 +376,19 @@ export class SAMLProviderViewPage extends AKElement {
                                 ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
-                    </div>
+                            <ak-forms-modal>
+                            <span slot="submit">${msg("Apply")}</span>
+                            <span slot="header">${msg("Apply metadata to this provider")}</span>
+                            <ak-provider-saml-apply-metadata-form
+                                slot="form"
+                                .providerId=${this.provider.pk || 0}
+                                .providerName=${this.provider.name || ""}
+                            ></ak-provider-saml-apply-metadata-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Apply latest SP metadata")}
+                            </button>
+                            </ak-forms-modal>
+                        </div>
                 </div>
                 ${this.renderRelatedObjects()}
                 ${

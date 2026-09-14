@@ -107,9 +107,7 @@ class RequestProcessor:
 
             ctx = xmlsec.SignatureContext()
 
-            key = xmlsec.Key.from_memory(
-                key_pem, xmlsec.constants.KeyDataFormatPem, None
-            )
+            key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem, None)
             key.load_cert_from_memory(
                 cert_pem,
                 xmlsec.constants.KeyDataFormatCertPem,
@@ -167,9 +165,7 @@ class RequestProcessor:
 
             ctx = xmlsec.SignatureContext()
 
-            key = xmlsec.Key.from_memory(
-                key_pem, xmlsec.constants.KeyDataFormatPem, None
-            )
+            key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem, None)
             key.load_cert_from_memory(
                 cert_pem,
                 xmlsec.constants.KeyDataFormatPem,

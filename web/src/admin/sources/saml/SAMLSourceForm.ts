@@ -12,7 +12,6 @@ import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/common/ak-crypto-keyring-manager-form";
 
-import { SAMLSupportedKeyTypes } from "../../providers/saml/SAMLProviderOptions.js";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -21,6 +20,7 @@ import { PFSize } from "#common/enums";
 import { RadioOption } from "#elements/forms/Radio";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -38,10 +38,6 @@ import {
     UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
-
-import { SAMLSupportedKeyTypes } from "../../providers/saml/SAMLProviderOptions.js";
-
-import { RadioOption } from "#elements/forms/Radio";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -62,7 +58,7 @@ function renderKeyRingFixed(
     const hasRing = !!currentRingUuid;
 
     return html`
-        <ak-form-element-horizontal label=${label} name=${fieldName}>
+        <ak-form-element-horizontal label=${label}>
             <div class="pf-c-input-group" style="width: 100%;">
                 ${hasRing
                     ? html`
@@ -74,7 +70,7 @@ function renderKeyRingFixed(
                                   slot="form"
                                   ring-uuid=${currentRingUuid!}
                                   ?require-key=${fieldName === "signingKpRing"}
-                                  .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                                  .allowedKeyTypes=${XMLSigningKeyTypes}
                               ></ak-crypto-keyring-manager-form>
 
                               <button

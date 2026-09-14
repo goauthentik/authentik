@@ -55,46 +55,106 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface CryptoCertificatekeypairringsCreateRequest {
+    /**
+     *
+     */
     certificateKeyPairRingRequest?: CertificateKeyPairRingRequest;
 }
 
 export interface CryptoCertificatekeypairringsDestroyRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
 }
 
 export interface CryptoCertificatekeypairringsListRequest {
+    /**
+     *
+     */
     created?: Date;
+    /**
+     *
+     */
     keypairs?: Array<string>;
+    /**
+     *
+     */
     lastUpdated?: Date;
+    /**
+     *
+     */
     managed?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     ringUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CryptoCertificatekeypairringsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
+    /**
+     *
+     */
     patchedCertificateKeyPairRingRequest?: PatchedCertificateKeyPairRingRequest;
 }
 
 export interface CryptoCertificatekeypairringsRetrieveRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
 }
 
 export interface CryptoCertificatekeypairringsSetBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
+    /**
+     *
+     */
     certificateKeyPairRingBindingsReplaceRequest: CertificateKeyPairRingBindingsReplaceRequest;
 }
 
 export interface CryptoCertificatekeypairringsUpdateRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
+    /**
+     *
+     */
     certificateKeyPairRingRequest?: CertificateKeyPairRingRequest;
 }
 
 export interface CryptoCertificatekeypairringsUsedByListRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair Ring.
+     */
     ringUuid: string;
 }
 
@@ -353,7 +413,9 @@ export class CryptoApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters["created"] != null) {
-            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+            queryParameters["created"] = runtime.serializeDateTime(
+                requestParameters["created"] as any,
+            );
         }
 
         if (requestParameters["keypairs"] != null) {
@@ -361,9 +423,9 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["managed"] != null) {
