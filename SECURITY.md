@@ -14,6 +14,14 @@ If it is determined that the issue does qualify as a CVE, a CVE number will be i
 
 Even if the issue is not a CVE, we still greatly appreciate your help in hardening authentik.
 
+## Our CNA
+
+GitHub is the CNA (CVE Numbering Authority) for authentik. We request every authentik CVE ID from GitHub through the [repository security advisory](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories) that the report was filed under. This places authentik vulnerabilities in the scope of [GitHub, Inc. (CNA-2019-0009)](https://www.cve.org/PartnerInformation/ListofPartners/partner/GitHub_M).
+
+Please do not reserve or assign a CVE ID for authentik from any other CNA, including your own. A second ID creates a duplicate record for the same vulnerability. If you have already reserved an ID, please withdraw it and use the ID that GitHub assigns.
+
+GitHub reviews each request, so assignment can take several weeks. We publish the advisory without waiting for the ID, and the ID is added to the advisory once GitHub assigns it.
+
 ## Supported Versions
 
 (.x being the latest patch release for each version)
