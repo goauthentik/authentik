@@ -200,6 +200,15 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     label=${msg("Enabled")}
                 ></ak-switch-input>
                 <ak-switch-input
+                    name="dryRun"
+                    ?checked=${instance?.dryRun ?? false}
+                    label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                    help=${msg(
+                        "Evaluate this binding without including its result or messages in the final policy decision. Policy results remain available in flow context. Policy side effects are not prevented.",
+                        { id: "policies.bindings.dry-run.description" },
+                    )}
+                ></ak-switch-input>
+                <ak-switch-input
                     name="negate"
                     ?checked=${instance?.negate ?? false}
                     label=${msg("Negate Result")}

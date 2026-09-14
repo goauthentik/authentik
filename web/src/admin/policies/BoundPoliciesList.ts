@@ -112,6 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
+        [msg("Dry-run", { id: "policies.bindings.dry-run.label" })],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -201,6 +202,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
+            html`<ak-status-label type="neutral" ?good=${item.dryRun}></ak-status-label>`,
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
