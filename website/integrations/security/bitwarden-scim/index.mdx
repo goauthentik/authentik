@@ -1,0 +1,93 @@
+---
+title: Integrate with Bitwarden SCIM
+sidebar_label: Bitwarden SCIM
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Bitwarden
+
+> Bitwarden is a freemium, open-source password management service that helps users store, manage, and share sensitive information securely online.
+>
+> -- https://bitwarden.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `bitwarden.company` is the FQDN of the Bitwarden installation (if using self-hosted Bitwarden).
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Bitwarden configuration
+
+1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (choose `Accessing: bitwarden.eu` for Bitwarden accounts based in the EU). If you are using a self-hosted Bitwarden, go to `https://bitwarden.company/#/login`.
+2. In the sidebar, navigate to **Admin Console** > **Settings** >
+
+## authentik configuration
+
+To support the integration of Bitwarden SCIM with authentik, you need to create two property mappings and a SCIM provider in authentik.
+
+### Create property mappings
+
+Bitwarden SCIM requires two property mappings; user and group.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings**, click **Create** and configure the user property mapping.
+    - **Select type**: select **SCIM Provider Mapping**.
+    - **Configure the SCIM Provider Mapping**:
+        - **Name**: Provide a descriptive name (e.g. `Bitwarden SCIM User Mapping`).
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "userName": request.user.email,
+            "displayName": request.user.name,
+            "active": request.user.is_active,
+            "emails": [{
+                "value": request.user.email,
+                "primary": True,
+            }],
+            "externalId": request.user.email,
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
+4. Click **Create** and configure the group property mapping:
+    - **Select type**: select **SCIM Provider Mapping**.
+    - **Configure the SCIM Provider Mapping**:
+        - **Name**: Provide a descriptive name (e.g. `Bitwarden SCIM User Mapping`).
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "displayName": group.name,
+            "members": [
+            {
+                "userName": user.email,
+                "displayName": user.name,
+                "active": user.is_active,
+                "emails": [{
+                "value": user.email,
+                "primary": True,
+                }],
+            } for user in group.users.all()],
+        "externalId": group.name,
+        }
+        ```
+
+5. Click **Finish** to save the property mapping.
+
+### Create a SCIM provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to
+
+## Resources
+
+- [Bitwarden Help - About SCIM](https://bitwarden.com/help/about-scim/)
