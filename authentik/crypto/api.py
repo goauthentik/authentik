@@ -1,8 +1,11 @@
 """Crypto API Views"""
 
+from typing import Any
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
+from django.db import transaction
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +17,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
     extend_schema,
 )
+from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -36,7 +40,13 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
-from authentik.crypto.models import CertificateKeyPair, KeyType
+from authentik.crypto.models import (
+    CertificateKeyPair,
+    CertificateKeyPairRing,
+    CertificateKeyPairRingBinding,
+    KeyPairRef,
+    KeyType,
+)
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import SecretKeyFilter
@@ -305,3 +315,111 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             )
             return response
         return Response(CertificateDataSerializer({"data": certificate.key_data}).data)
+
+
+class CertificateKeyPairRingBindingWriteSerializer(PassiveSerializer):
+    """Binding list item used for ring membership replacement (full replace)."""
+
+    keypair = serializers.PrimaryKeyRelatedField(queryset=CertificateKeyPair.objects.all())
+    order = serializers.IntegerField(min_value=0)
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        if attrs.get("order", None) is None:
+            raise serializers.ValidationError({"order": "This field is required."})
+        return attrs
+
+
+class CertificateKeyPairRingBindingReadSerializer(ModelSerializer):
+    """Read-only view of ring bindings (ordered)."""
+
+    keypair_name = serializers.CharField(source="keypair.name", read_only=True)
+    fingerprint_sha256 = serializers.CharField(source="keypair.fingerprint_sha256", read_only=True)
+    private_key_available = serializers.SerializerMethodField()
+
+    def get_private_key_available(self, instance: CertificateKeyPairRingBinding) -> bool:
+        return bool(getattr(instance.keypair, "key_data", ""))
+
+    class Meta:
+        model = CertificateKeyPairRingBinding
+        fields = [
+            "uuid",
+            "order",
+            "keypair",
+            "keypair_name",
+            "fingerprint_sha256",
+            "private_key_available",
+        ]
+        read_only_fields = fields
+
+
+class CertificateKeyPairRingSerializer(ModelSerializer):
+    """Minimal ring serializer (owner-less).
+
+    - bindings: read-only (use set-bindings to update)
+    """
+
+    bindings = serializers.SerializerMethodField()
+
+    def get_bindings(self, instance: CertificateKeyPairRing) -> list[dict[str, Any]]:
+        qs = instance.bindings.select_related("keypair").order_by("order", "keypair__kp_uuid")
+        return CertificateKeyPairRingBindingReadSerializer(qs, many=True).data
+
+    class Meta:
+        model = CertificateKeyPairRing
+        fields = [
+            "ring_uuid",
+            "name",
+            "bindings",
+        ]
+        read_only_fields = ["ring_uuid", "bindings"]
+
+
+class CertificateKeyPairRingBindingsReplaceSerializer(PassiveSerializer):
+    """Payload for full replacement of ring membership."""
+
+    bindings = CertificateKeyPairRingBindingWriteSerializer(many=True)
+
+    def validate_bindings(self, value: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        seen_orders: set[int] = set()
+        seen_kps: set[str] = set()
+        for item in value:
+            order = int(item["order"])
+            kp = str(item["keypair"].pk)
+            if order in seen_orders:
+                raise serializers.ValidationError(f"Duplicate order={order}.")
+            if kp in seen_kps:
+                raise serializers.ValidationError("Duplicate keypair in bindings.")
+            seen_orders.add(order)
+            seen_kps.add(kp)
+        return value
+
+
+class CertificateKeyPairRingViewSet(UsedByMixin, viewsets.ModelViewSet):
+    """CRUD for key rings + one action to replace membership list."""
+
+    search_fields = ["name"]
+    ordering = ["name"]
+    filterset_fields = "__all__"
+
+    queryset = CertificateKeyPairRing.objects.all().prefetch_related("bindings__keypair")
+    serializer_class = CertificateKeyPairRingSerializer
+    lookup_field = "ring_uuid"
+    lookup_url_kwarg = "ring_uuid"
+
+    @extend_schema(
+        request=CertificateKeyPairRingBindingsReplaceSerializer,
+        responses={200: CertificateKeyPairRingSerializer},
+    )
+    @action(detail=True, methods=["PUT"], url_path="set-bindings")
+    @transaction.atomic
+    def set_bindings(self, request, ring_uuid=None):
+        ring: CertificateKeyPairRing = self.get_object()
+        s = CertificateKeyPairRingBindingsReplaceSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+
+        items = s.validated_data["bindings"]
+        ring.sync_bindings(
+            [KeyPairRef(keypair=item["keypair"], order=item["order"]) for item in items]
+        )
+        ring.refresh_from_db()
+        return Response(self.get_serializer(ring).data)
