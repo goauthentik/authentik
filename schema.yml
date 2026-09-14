@@ -27285,6 +27285,16 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: encryption_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: encryption_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: enrollment_flow
         schema:
           type: string
@@ -27346,6 +27356,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: signing_kp_ring
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: slo_url
         schema:
           type: string
@@ -27371,6 +27386,11 @@ paths:
 
       - in: query
         name: verification_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: verification_kp_ring
         schema:
           type: string
           format: uuid
@@ -27573,6 +27593,31 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/saml/import_metadata/:
+    post:
+      operationId: sources_saml_import_metadata_create
+      description: Create source from IdP SAML metadata, or apply to an existing source.
+      tags:
+      - sources
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SAMLSourceImportRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSource'
+          description: ''
+        '400':
+          description: No response body
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /sources/scim/:
@@ -54930,6 +54975,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -54941,14 +55006,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:
@@ -59241,6 +59298,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -59251,14 +59328,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:
@@ -59277,6 +59346,34 @@ components:
       - url_issuer
       - verbose_name
       - verbose_name_plural
+    SAMLSourceImportRequest:
+      type: object
+      description: Import SAML source from IdP XML Metadata
+      properties:
+        source:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        file:
+          type: string
+          format: binary
+        signing_certificate:
+          type: string
+          format: uuid
+          nullable: true
+        create_missing_rings:
+          type: boolean
+          default: true
+      required:
+      - file
+      - name
     SAMLSourcePropertyMapping:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -59446,6 +59543,26 @@ components:
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
+        verification_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        signing_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        encryption_kp_ring:
+          type: string
+          format: uuid
+          nullable: true
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -59457,14 +59574,6 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type: string
-          format: uuid
-          nullable: true
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP
-            using the public key of the encryption keypair. The assertion is decrypted
-            by the SP using the the private key.
         signed_assertion:
           type: boolean
         signed_response:

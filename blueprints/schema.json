@@ -13870,6 +13870,27 @@
                     "title": "Signing Keypair",
                     "description": "Keypair used to sign outgoing Responses going to the Identity Provider."
                 },
+                "verification_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Verification kp ring"
+                },
+                "signing_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing kp ring"
+                },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "encryption_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption kp ring"
+                },
                 "digest_algorithm": {
                     "type": "string",
                     "enum": [
@@ -13900,12 +13921,6 @@
                     "minLength": 1,
                     "title": "Delete temporary users after",
                     "description": "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
-                },
-                "encryption_kp": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Encryption Keypair",
-                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
                 },
                 "signed_assertion": {
                     "type": "boolean",
