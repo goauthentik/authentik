@@ -20,8 +20,6 @@
 export interface PatchedSMSDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedSMSDeviceRequest
      */
     name?: string;
 }

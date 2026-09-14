@@ -20,32 +20,22 @@
 export interface UserSetting {
     /**
      *
-     * @type {string}
-     * @memberof UserSetting
      */
     objectUid: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSetting
      */
     component: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSetting
      */
     title: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSetting
      */
     configureUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSetting
      */
     iconUrl?: string;
 }

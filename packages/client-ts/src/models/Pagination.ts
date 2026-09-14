@@ -20,44 +20,30 @@
 export interface Pagination {
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     next: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     previous: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     count: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     current: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     totalPages: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     startIndex: number;
     /**
      *
-     * @type {number}
-     * @memberof Pagination
      */
     endIndex: number;
 }

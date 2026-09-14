@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
+
 /**
  *
  * @export
@@ -20,32 +22,22 @@
 export interface PatchedEnrollmentTokenRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedEnrollmentTokenRequest
      */
     deviceGroup?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEnrollmentTokenRequest
      */
     connector?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEnrollmentTokenRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedEnrollmentTokenRequest
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedEnrollmentTokenRequest
      */
     expires?: Date | null;
 }
@@ -85,7 +77,7 @@ export function PatchedEnrollmentTokenRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
     };
 }
 
@@ -106,6 +98,6 @@ export function PatchedEnrollmentTokenRequestToJSONTyped(
         connector: value["connector"],
         name: value["name"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

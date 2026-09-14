@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedEndpointDeviceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedEndpointDeviceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<EndpointDevice>}
-     * @memberof PaginatedEndpointDeviceList
      */
     results: Array<EndpointDevice>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedEndpointDeviceList
      */
     autocomplete: { [key: string]: any };
 }

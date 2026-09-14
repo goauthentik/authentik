@@ -20,8 +20,6 @@
 export interface ImpersonationRequest {
     /**
      *
-     * @type {string}
-     * @memberof ImpersonationRequest
      */
     reason: string;
 }

@@ -24,44 +24,30 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AppleLoginChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AppleLoginChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AppleLoginChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AppleLoginChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AppleLoginChallenge
      */
     clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof AppleLoginChallenge
      */
     scope: string;
     /**
      *
-     * @type {string}
-     * @memberof AppleLoginChallenge
      */
     redirectUri: string;
     /**
      *
-     * @type {string}
-     * @memberof AppleLoginChallenge
      */
     state: string;
 }

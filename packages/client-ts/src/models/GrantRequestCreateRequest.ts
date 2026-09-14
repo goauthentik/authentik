@@ -20,14 +20,10 @@
 export interface GrantRequestCreateRequest {
     /**
      *
-     * @type {Array<string>}
-     * @memberof GrantRequestCreateRequest
      */
     pbms: Array<string>;
     /**
      * Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
-     * @type {string}
-     * @memberof GrantRequestCreateRequest
      */
     expiry?: string;
 }

@@ -32,152 +32,102 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface PlexSource {
     /**
      *
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PlexSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PlexSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PlexSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PlexSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PlexSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PlexSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PlexSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PlexSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PlexSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PlexSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PlexSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof PlexSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof PlexSource
      */
     readonly iconUrl: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof PlexSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof PlexSource
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Client identifier used to talk to Plex.
-     * @type {string}
-     * @memberof PlexSource
      */
     clientId?: string;
     /**
      * Which servers a user has to be a member of to be granted access. Empty list allows every server.
-     * @type {Array<string>}
-     * @memberof PlexSource
      */
     allowedServers?: Array<string>;
     /**
      * Allow friends to authenticate, even if you don't share a server.
-     * @type {boolean}
-     * @memberof PlexSource
      */
     allowFriends?: boolean;
     /**
      * Plex token used to check friends
-     * @type {string}
-     * @memberof PlexSource
      */
     plexToken: string;
 }

@@ -20,104 +20,70 @@
 export interface RACProvider {
     /**
      *
-     * @type {number}
-     * @memberof RACProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof RACProvider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof RACProvider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof RACProvider
      */
     authorizationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RACProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof RACProvider
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof RACProvider
      */
     settings?: { [key: string]: any };
     /**
      *
-     * @type {Array<string>}
-     * @memberof RACProvider
      */
     readonly outpostSet: Array<string>;
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof RACProvider
      */
     connectionExpiry?: string;
     /**
      * When set to true, connection tokens will be deleted upon disconnect.
-     * @type {boolean}
-     * @memberof RACProvider
      */
     deleteTokenOnDisconnect?: boolean;
 }

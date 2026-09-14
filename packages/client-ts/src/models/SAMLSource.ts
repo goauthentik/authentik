@@ -43,230 +43,154 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface SAMLSource {
     /**
      *
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof SAMLSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof SAMLSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof SAMLSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof SAMLSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SAMLSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SAMLSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof SAMLSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof SAMLSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SAMLSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly iconUrl: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof SAMLSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof SAMLSource
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Flow used before authentication.
-     * @type {string}
-     * @memberof SAMLSource
      */
     preAuthenticationFlow: string;
     /**
      * Also known as Entity ID. Defaults to the Metadata URL.
-     * @type {string}
-     * @memberof SAMLSource
      */
     issuerOverride?: string;
     /**
      * Get the resolved Issuer, falling back to the metadata URL when unset
-     * @type {string}
-     * @memberof SAMLSource
      */
     readonly urlIssuer: string;
     /**
      * URL that the initial Login request is sent to.
-     * @type {string}
-     * @memberof SAMLSource
      */
     ssoUrl: string;
     /**
      * Optional URL if your IDP supports Single-Logout.
-     * @type {string}
-     * @memberof SAMLSource
      */
     sloUrl?: string | null;
     /**
      * Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     allowIdpInitiated?: boolean;
     /**
      * When enabled, the IdP will re-authenticate the user even if a session exists.
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     forceAuthn?: boolean;
     /**
      * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof SAMLSource
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
      *
-     * @type {BindingTypeEnum}
-     * @memberof SAMLSource
      */
     bindingType?: BindingTypeEnum;
     /**
      * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-     * @type {string}
-     * @memberof SAMLSource
      */
     verificationKp?: string | null;
     /**
      * Keypair used to sign outgoing Responses going to the Identity Provider.
-     * @type {string}
-     * @memberof SAMLSource
      */
     signingKp?: string | null;
     /**
      *
-     * @type {DigestAlgorithmEnum}
-     * @memberof SAMLSource
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof SAMLSource
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof SAMLSource
      */
     temporaryUserDeleteAfter?: string;
     /**
      * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof SAMLSource
      */
     encryptionKp?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     signedAssertion?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof SAMLSource
      */
     signedResponse?: boolean;
 }

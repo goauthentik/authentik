@@ -23,14 +23,10 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 export interface PatchedGrantRequestFulfillRequest {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedGrantRequestFulfillRequest
      */
     data?: { [key: string]: any };
     /**
      *
-     * @type {RequestStatus}
-     * @memberof PatchedGrantRequestFulfillRequest
      */
     status?: RequestStatus;
 }

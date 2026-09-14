@@ -37,56 +37,38 @@ import { SoftwareFromJSON, SoftwareToJSON } from "./Software";
 export interface DeviceFacts {
     /**
      *
-     * @type {OperatingSystem}
-     * @memberof DeviceFacts
      */
     os?: OperatingSystem | null;
     /**
      *
-     * @type {Array<Disk>}
-     * @memberof DeviceFacts
      */
     disks?: Array<Disk> | null;
     /**
      *
-     * @type {Network}
-     * @memberof DeviceFacts
      */
     network?: Network | null;
     /**
      *
-     * @type {Hardware}
-     * @memberof DeviceFacts
      */
     hardware?: Hardware | null;
     /**
      *
-     * @type {Array<Software>}
-     * @memberof DeviceFacts
      */
     software?: Array<Software> | null;
     /**
      *
-     * @type {Array<Process>}
-     * @memberof DeviceFacts
      */
     processes?: Array<Process> | null;
     /**
      *
-     * @type {Array<DeviceUser>}
-     * @memberof DeviceFacts
      */
     users?: Array<DeviceUser> | null;
     /**
      *
-     * @type {Array<DeviceGroup>}
-     * @memberof DeviceFacts
      */
     groups?: Array<DeviceGroup> | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof DeviceFacts
      */
     vendor?: { [key: string]: any };
 }

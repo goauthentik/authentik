@@ -25,20 +25,14 @@ import { UserLoginStageFromJSON, UserLoginStageToJSON } from "./UserLoginStage";
 export interface PaginatedUserLoginStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserLoginStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserLoginStage>}
-     * @memberof PaginatedUserLoginStageList
      */
     results: Array<UserLoginStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserLoginStageList
      */
     autocomplete: { [key: string]: any };
 }

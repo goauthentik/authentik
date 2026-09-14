@@ -4,8 +4,10 @@
 
 import { FormFixture } from "#e2e/fixtures/FormFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
+import { PasskeyFixture } from "#e2e/fixtures/PasskeyFixture";
 import { PointerFixture } from "#e2e/fixtures/PointerFixture";
 import { SessionFixture } from "#e2e/fixtures/SessionFixture";
+import { UserSwitcherFixture } from "#e2e/fixtures/UserSwitcherFixture";
 
 import { test as base } from "@playwright/test";
 
@@ -18,6 +20,8 @@ interface E2EFixturesTestScope {
     session: SessionFixture;
     pointer: PointerFixture;
     form: FormFixture;
+    passkey: PasskeyFixture;
+    switcher: UserSwitcherFixture;
 }
 
 interface E2EWorkerScope {
@@ -39,5 +43,13 @@ export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
 
     pointer: async ({ page }, use, { title: testName }) => {
         await use(new PointerFixture({ page, testName }));
+    },
+
+    passkey: async ({ page, context }, use, { title: testName }) => {
+        await use(new PasskeyFixture({ page, testName, context }));
+    },
+
+    switcher: async ({ page }, use, { title: testName }) => {
+        await use(new UserSwitcherFixture({ page, testName }));
     },
 });

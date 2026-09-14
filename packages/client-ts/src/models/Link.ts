@@ -20,8 +20,6 @@
 export interface Link {
     /**
      *
-     * @type {string}
-     * @memberof Link
      */
     link: string;
 }

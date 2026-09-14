@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedNotificationRuleList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedNotificationRuleList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<NotificationRule>}
-     * @memberof PaginatedNotificationRuleList
      */
     results: Array<NotificationRule>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedNotificationRuleList
      */
     autocomplete: { [key: string]: any };
 }

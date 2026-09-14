@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { EventActions } from "./EventActions";
 import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
@@ -23,44 +24,30 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 export interface EventRequest {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EventRequest
      */
     user?: { [key: string]: any };
     /**
      *
-     * @type {EventActions}
-     * @memberof EventRequest
      */
     action: EventActions;
     /**
      *
-     * @type {string}
-     * @memberof EventRequest
      */
     app: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EventRequest
      */
     context?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof EventRequest
      */
     clientIp?: string | null;
     /**
      *
-     * @type {Date}
-     * @memberof EventRequest
      */
     expires?: Date;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EventRequest
      */
     brand?: { [key: string]: any };
 }
@@ -93,7 +80,7 @@ export function EventRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["client_ip"] === null
                   ? null
                   : json["client_ip"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
         brand: json["brand"] == null ? undefined : json["brand"],
     };
 }
@@ -116,7 +103,7 @@ export function EventRequestToJSONTyped(
         app: value["app"],
         context: value["context"],
         client_ip: value["clientIp"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         brand: value["brand"],
     };
 }

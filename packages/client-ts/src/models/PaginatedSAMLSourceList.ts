@@ -25,20 +25,14 @@ import { SAMLSourceFromJSON, SAMLSourceToJSON } from "./SAMLSource";
 export interface PaginatedSAMLSourceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSAMLSourceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SAMLSource>}
-     * @memberof PaginatedSAMLSourceList
      */
     results: Array<SAMLSource>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSAMLSourceList
      */
     autocomplete: { [key: string]: any };
 }

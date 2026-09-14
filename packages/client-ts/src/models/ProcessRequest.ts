@@ -20,20 +20,14 @@
 export interface ProcessRequest {
     /**
      *
-     * @type {number}
-     * @memberof ProcessRequest
      */
     id: number;
     /**
      *
-     * @type {string}
-     * @memberof ProcessRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof ProcessRequest
      */
     user?: string;
 }

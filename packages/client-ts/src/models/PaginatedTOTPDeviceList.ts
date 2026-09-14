@@ -25,20 +25,14 @@ import { TOTPDeviceFromJSON, TOTPDeviceToJSON } from "./TOTPDevice";
 export interface PaginatedTOTPDeviceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedTOTPDeviceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<TOTPDevice>}
-     * @memberof PaginatedTOTPDeviceList
      */
     results: Array<TOTPDevice>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedTOTPDeviceList
      */
     autocomplete: { [key: string]: any };
 }

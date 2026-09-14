@@ -25,20 +25,14 @@ import { PolicyBindingFromJSON, PolicyBindingToJSON } from "./PolicyBinding";
 export interface PaginatedPolicyBindingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPolicyBindingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PolicyBinding>}
-     * @memberof PaginatedPolicyBindingList
      */
     results: Array<PolicyBinding>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPolicyBindingList
      */
     autocomplete: { [key: string]: any };
 }

@@ -20,56 +20,38 @@
 export interface PolicyBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof PolicyBindingRequest
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PolicyBindingRequest
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof PolicyBindingRequest
      */
     user?: number | null;
     /**
      *
-     * @type {string}
-     * @memberof PolicyBindingRequest
      */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PolicyBindingRequest
      */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PolicyBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
      */
     failureResult?: boolean;
 }

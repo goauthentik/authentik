@@ -25,20 +25,14 @@ import { PlexSourceFromJSON, PlexSourceToJSON } from "./PlexSource";
 export interface PaginatedPlexSourceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPlexSourceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PlexSource>}
-     * @memberof PaginatedPlexSourceList
      */
     results: Array<PlexSource>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPlexSourceList
      */
     autocomplete: { [key: string]: any };
 }

@@ -23,8 +23,6 @@ import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnu
 export interface DuoDeviceEnrollmentStatus {
     /**
      *
-     * @type {DuoResponseEnum}
-     * @memberof DuoDeviceEnrollmentStatus
      */
     duoResponse: DuoResponseEnum;
 }

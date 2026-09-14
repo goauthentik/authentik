@@ -25,20 +25,14 @@ import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./Radius
 export interface PaginatedRadiusOutpostConfigList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRadiusOutpostConfigList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RadiusOutpostConfig>}
-     * @memberof PaginatedRadiusOutpostConfigList
      */
     results: Array<RadiusOutpostConfig>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRadiusOutpostConfigList
      */
     autocomplete: { [key: string]: any };
 }

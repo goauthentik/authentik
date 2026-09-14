@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedLDAPProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedLDAPProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<LDAPProvider>}
-     * @memberof PaginatedLDAPProviderList
      */
     results: Array<LDAPProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLDAPProviderList
      */
     autocomplete: { [key: string]: any };
 }

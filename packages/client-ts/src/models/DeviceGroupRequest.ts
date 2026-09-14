@@ -20,14 +20,10 @@
 export interface DeviceGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof DeviceGroupRequest
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceGroupRequest
      */
     name?: string;
 }

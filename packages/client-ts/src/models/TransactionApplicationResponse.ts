@@ -20,14 +20,10 @@
 export interface TransactionApplicationResponse {
     /**
      *
-     * @type {boolean}
-     * @memberof TransactionApplicationResponse
      */
     applied: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TransactionApplicationResponse
      */
     logs: Array<string>;
 }

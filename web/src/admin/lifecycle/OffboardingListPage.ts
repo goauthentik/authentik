@@ -6,6 +6,7 @@ import "#elements/timestamp/ak-timestamp";
 
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -116,7 +117,9 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
 
     protected override row(item: UserOffboarding): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.user}">${item.userObj.username}</a>`,
+            html`<a href=${toAdminInterface(`identity/users/${item.user}`)}
+                >${item.userObj.username}</a
+            >`,
             offboardingActionLabel(item.action),
             html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),

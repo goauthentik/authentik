@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Metadata } from "./Metadata";
 import { MetadataFromJSON } from "./Metadata";
 
@@ -23,26 +24,18 @@ import { MetadataFromJSON } from "./Metadata";
 export interface BlueprintFile {
     /**
      *
-     * @type {string}
-     * @memberof BlueprintFile
      */
     path: string;
     /**
      *
-     * @type {Date}
-     * @memberof BlueprintFile
      */
     lastM: Date;
     /**
      *
-     * @type {string}
-     * @memberof BlueprintFile
      */
     hash: string;
     /**
      *
-     * @type {Metadata}
-     * @memberof BlueprintFile
      */
     readonly meta: Metadata;
 }
@@ -74,7 +67,7 @@ export function BlueprintFileFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         path: json["path"],
-        lastM: new Date(json["last_m"]),
+        lastM: json["last_m"] == null ? json["last_m"] : parseDateTime(json["last_m"]),
         hash: json["hash"],
         meta: MetadataFromJSON(json["meta"]),
     };
@@ -94,7 +87,7 @@ export function BlueprintFileToJSONTyped(
 
     return {
         path: value["path"],
-        last_m: value["lastM"].toISOString(),
+        last_m: value["lastM"] == null ? value["lastM"] : serializeDateTime(value["lastM"]),
         hash: value["hash"],
     };
 }

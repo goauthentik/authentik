@@ -3,6 +3,7 @@ import "#elements/banner/Banner";
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { P4Disposition } from "#styles/patternfly/constants";
 
@@ -44,7 +45,7 @@ export class BaseURLBanner extends AKElement {
 
         return html`<ak-banner
             level=${P4Disposition.Warning}
-            action-href="#/admin/settings"
+            action-href=${toAdminInterface("admin/settings")}
             action-label=${msg("Configure it in the system settings", {
                 id: "settings.base-url.banner.action",
             })}

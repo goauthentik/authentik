@@ -20,26 +20,18 @@
 export interface PatchedUniquePasswordPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUniquePasswordPolicyRequest
      */
     name?: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PatchedUniquePasswordPolicyRequest
      */
     executionLogging?: boolean;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof PatchedUniquePasswordPolicyRequest
      */
     passwordField?: string;
     /**
      * Number of passwords to check against.
-     * @type {number}
-     * @memberof PatchedUniquePasswordPolicyRequest
      */
     numHistoricalPasswords?: number;
 }

@@ -20,14 +20,10 @@
 export interface PatchedUserSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserSourceConnectionRequest
      */
     identifier?: string;
 }

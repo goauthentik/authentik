@@ -144,9 +144,9 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 - `setup/full-dev-environment.mdx` — full backend + frontend dev environment.
 - `setup/frontend-dev-environment.mdx` — web-only setup.
-- `setup/debugging.md` — attaching a debugger (VS Code config included).
+- `setup/debugging.mdx` — attaching a debugger (VS Code config included).
 - `docs/style-guide.mdx` — the canonical prose style guide (also governs this repo's docs).
-- `contributing.md` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
+- `contributing.mdx` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
 
 ## Tech stack
 

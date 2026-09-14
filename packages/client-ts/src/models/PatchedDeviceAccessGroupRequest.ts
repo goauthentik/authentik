@@ -20,14 +20,10 @@
 export interface PatchedDeviceAccessGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedDeviceAccessGroupRequest
      */
     name?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedDeviceAccessGroupRequest
      */
     attributes?: { [key: string]: any };
 }

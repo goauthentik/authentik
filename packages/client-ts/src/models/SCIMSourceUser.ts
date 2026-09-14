@@ -23,38 +23,26 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface SCIMSourceUser {
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUser
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUser
      */
     externalId: string;
     /**
      *
-     * @type {number}
-     * @memberof SCIMSourceUser
      */
     user: number;
     /**
      *
-     * @type {PartialUser}
-     * @memberof SCIMSourceUser
      */
     readonly userObj: PartialUser;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUser
      */
     source: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMSourceUser
      */
     attributes?: { [key: string]: any };
 }

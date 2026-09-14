@@ -25,20 +25,14 @@ import { TenantFromJSON, TenantToJSON } from "./Tenant";
 export interface PaginatedTenantList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedTenantList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Tenant>}
-     * @memberof PaginatedTenantList
      */
     results: Array<Tenant>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedTenantList
      */
     autocomplete: { [key: string]: any };
 }

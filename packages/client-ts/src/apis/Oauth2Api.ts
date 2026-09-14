@@ -29,65 +29,146 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface Oauth2AccessTokensDestroyRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Access Token.
+     */
     id: number;
 }
 
 export interface Oauth2AccessTokensListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     user?: number;
 }
 
 export interface Oauth2AccessTokensRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Access Token.
+     */
     id: number;
 }
 
 export interface Oauth2AccessTokensUsedByListRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Access Token.
+     */
     id: number;
 }
 
 export interface Oauth2AuthorizationCodesDestroyRequest {
+    /**
+     * A unique integer value identifying this Authorization Code.
+     */
     id: number;
 }
 
 export interface Oauth2AuthorizationCodesListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     user?: number;
 }
 
 export interface Oauth2AuthorizationCodesRetrieveRequest {
+    /**
+     * A unique integer value identifying this Authorization Code.
+     */
     id: number;
 }
 
 export interface Oauth2AuthorizationCodesUsedByListRequest {
+    /**
+     * A unique integer value identifying this Authorization Code.
+     */
     id: number;
 }
 
 export interface Oauth2RefreshTokensDestroyRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Refresh Token.
+     */
     id: number;
 }
 
 export interface Oauth2RefreshTokensListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     user?: number;
 }
 
 export interface Oauth2RefreshTokensRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Refresh Token.
+     */
     id: number;
 }
 
 export interface Oauth2RefreshTokensUsedByListRequest {
+    /**
+     * A unique integer value identifying this OAuth2 Refresh Token.
+     */
     id: number;
 }
 

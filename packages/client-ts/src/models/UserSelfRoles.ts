@@ -20,14 +20,10 @@
 export interface UserSelfRoles {
     /**
      *
-     * @type {string}
-     * @memberof UserSelfRoles
      */
     readonly name: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSelfRoles
      */
     readonly pk: string;
 }

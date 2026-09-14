@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { ContentType } from "./ContentType";
 import { ContentTypeFromJSON } from "./ContentType";
 import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
@@ -28,86 +29,58 @@ import {
 export interface ObjectAttribute {
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     objectType: string;
     /**
      *
-     * @type {ContentType}
-     * @memberof ObjectAttribute
      */
     readonly objectTypeObj: ContentType;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttribute
      */
     enabled?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof ObjectAttribute
      */
     readonly created: Date;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     key: string;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     label: string;
     /**
      *
-     * @type {Date}
-     * @memberof ObjectAttribute
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     regex?: string;
     /**
      *
-     * @type {ObjectAttributeTypeEnum}
-     * @memberof ObjectAttribute
      */
     type: ObjectAttributeTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     group?: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof ObjectAttribute
      */
     managed?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttribute
      */
     isUnique?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttribute
      */
     isRequired?: boolean;
 }
@@ -161,10 +134,13 @@ export function ObjectAttributeFromJSONTyped(
         objectType: json["object_type"],
         objectTypeObj: ContentTypeFromJSON(json["object_type_obj"]),
         enabled: json["enabled"] == null ? undefined : json["enabled"],
-        created: new Date(json["created"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         key: json["key"],
         label: json["label"],
-        lastUpdated: new Date(json["last_updated"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
         regex: json["regex"] == null ? undefined : json["regex"],
         type: ObjectAttributeTypeEnumFromJSON(json["type"]),
         group: json["group"] == null ? undefined : json["group"],

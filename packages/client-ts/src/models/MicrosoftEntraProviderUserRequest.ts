@@ -20,20 +20,14 @@
 export interface MicrosoftEntraProviderUserRequest {
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderUserRequest
      */
     microsoftId: string;
     /**
      *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUserRequest
      */
     user: number;
     /**
      *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUserRequest
      */
     provider: number;
 }

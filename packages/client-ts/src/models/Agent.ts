@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
@@ -26,86 +27,58 @@ import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
 export interface Agent {
     /**
      *
-     * @type {number}
-     * @memberof Agent
      */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof Agent
      */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof Agent
      */
     name: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof Agent
      */
     isActive?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof Agent
      */
     lastLogin?: Date | null;
     /**
      *
-     * @type {string}
-     * @memberof Agent
      */
     email?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Agent
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof Agent
      */
     readonly uid: string;
     /**
      *
-     * @type {string}
-     * @memberof Agent
      */
     readonly uuid: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Agent
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof Agent
      */
     expires?: Date | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof Agent
      */
     readonly parent: PartialUser;
     /**
      *
-     * @type {PolicyBehaviorEnum}
-     * @memberof Agent
      */
     readonly policyBehavior: PolicyBehaviorEnum;
     /**
      * Identifier of the agent's API token, so its key can be retrieved/copied later.
-     * @type {string}
-     * @memberof Agent
      */
     readonly tokenIdentifier: string | null;
 }
@@ -155,7 +128,7 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
+                  : parseDateTime(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
@@ -166,7 +139,7 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
         policyBehavior: PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
         tokenIdentifier: json["token_identifier"],
@@ -193,10 +166,10 @@ export function AgentToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         email: value["email"],
         attributes: value["attributes"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

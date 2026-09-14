@@ -25,20 +25,14 @@ import { RACPropertyMappingFromJSON, RACPropertyMappingToJSON } from "./RACPrope
 export interface PaginatedRACPropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRACPropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RACPropertyMapping>}
-     * @memberof PaginatedRACPropertyMappingList
      */
     results: Array<RACPropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRACPropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

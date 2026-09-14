@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedBlueprintInstanceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedBlueprintInstanceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<BlueprintInstance>}
-     * @memberof PaginatedBlueprintInstanceList
      */
     results: Array<BlueprintInstance>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedBlueprintInstanceList
      */
     autocomplete: { [key: string]: any };
 }

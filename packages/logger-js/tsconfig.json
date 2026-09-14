@@ -1,10 +1,14 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "lib": ["ESNext"],
+        "lib": ["ESNext", "DOM"],
         "resolveJsonModule": true,
-        "checkJs": true,
-        "emitDeclarationOnly": true
+
+        // Sources import each other by `.ts` so Node can run them directly under
+        // type stripping; `rewriteRelativeImportExtensions` turns those into `.js`
+        // in the emitted output that published consumers load.
+        "allowImportingTsExtensions": true,
+        "rewriteRelativeImportExtensions": true
     },
     "exclude": [
         // ---

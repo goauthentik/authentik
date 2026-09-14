@@ -23,14 +23,10 @@ import { LogEventFromJSON } from "./LogEvent";
 export interface BlueprintImportResult {
     /**
      *
-     * @type {Array<LogEvent>}
-     * @memberof BlueprintImportResult
      */
     readonly logs: Array<LogEvent>;
     /**
      *
-     * @type {boolean}
-     * @memberof BlueprintImportResult
      */
     readonly success: boolean;
 }

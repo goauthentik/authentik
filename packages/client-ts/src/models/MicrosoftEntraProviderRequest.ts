@@ -26,86 +26,58 @@ import {
 export interface MicrosoftEntraProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     clientSecret: string;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     tenantId: string;
     /**
      *
-     * @type {boolean}
-     * @memberof MicrosoftEntraProviderRequest
      */
     excludeUsersServiceAccount?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     filterGroup?: string | null;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProviderRequest
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProviderRequest
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof MicrosoftEntraProviderRequest
      */
     syncPageSize?: number;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof MicrosoftEntraProviderRequest
      */
     discoveryEnabled?: boolean;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof MicrosoftEntraProviderRequest
      */
     dryRun?: boolean;
 }

@@ -20,134 +20,90 @@
 export interface Brand {
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     readonly brandUuid: string;
     /**
      * Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`
-     * @type {string}
-     * @memberof Brand
      */
     domain: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Brand
      */
     _default?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     brandingTitle?: string;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     brandingLogo?: string;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     brandingFavicon?: string;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     brandingCustomCss?: string;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     brandingDefaultFlowBackground?: string;
     /**
      * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
-     * @type {string}
-     * @memberof Brand
      */
     brandingMapTiles?: string;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowAuthentication?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowUserSwitch?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowInvalidation?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowRecovery?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowUnenrollment?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowUserSettings?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowDeviceCode?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowLockdown?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Brand
      */
     flowRequest?: string | null;
     /**
      * When set, external users will be redirected to this application after authenticating.
-     * @type {string}
-     * @memberof Brand
      */
     defaultApplication?: string | null;
     /**
      * Web Certificate used by the authentik Core webserver.
-     * @type {string}
-     * @memberof Brand
      */
     webCertificate?: string | null;
     /**
      * Certificates used for client authentication.
-     * @type {Array<string>}
-     * @memberof Brand
      */
     clientCertificates?: Array<string>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Brand
      */
     attributes?: { [key: string]: any };
 }

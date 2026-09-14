@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface FrameChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof FrameChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof FrameChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof FrameChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof FrameChallenge
      */
     url: string;
     /**
      *
-     * @type {boolean}
-     * @memberof FrameChallenge
      */
     loadingOverlay?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof FrameChallenge
      */
     loadingText: string;
 }

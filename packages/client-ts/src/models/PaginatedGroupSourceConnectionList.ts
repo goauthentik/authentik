@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGroupSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGroupSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GroupSourceConnection>}
-     * @memberof PaginatedGroupSourceConnectionList
      */
     results: Array<GroupSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGroupSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

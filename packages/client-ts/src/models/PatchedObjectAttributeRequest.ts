@@ -26,62 +26,42 @@ import {
 export interface PatchedObjectAttributeRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     objectType?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedObjectAttributeRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     key?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     label?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     regex?: string;
     /**
      *
-     * @type {ObjectAttributeTypeEnum}
-     * @memberof PatchedObjectAttributeRequest
      */
     type?: ObjectAttributeTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     group?: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedObjectAttributeRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedObjectAttributeRequest
      */
     isUnique?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedObjectAttributeRequest
      */
     isRequired?: boolean;
 }

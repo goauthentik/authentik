@@ -20,14 +20,10 @@
 export interface GroupLDAPSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnectionRequest
      */
     identifier: string;
 }

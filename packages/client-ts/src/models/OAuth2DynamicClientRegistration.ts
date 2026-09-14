@@ -25,62 +25,42 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface OAuth2DynamicClientRegistration {
     /**
      *
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {number}
-     * @memberof OAuth2DynamicClientRegistration
      */
     provider: number;
     /**
      * Group to assign to automatically created applications.
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     defaultApplicationGroup?: string;
     /**
      * Authorization flow applied to dynamically registered clients.
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     overrideAuthorizationFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     overrideInvalidationFlow?: string | null;
     /**
      * Scope mappings applied to dynamically registered clients.
-     * @type {Array<string>}
-     * @memberof OAuth2DynamicClientRegistration
      */
     overridePropertyMappings?: Array<string>;
     /**
      * Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     accessTokenValidity?: string;
     /**
      * Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof OAuth2DynamicClientRegistration
      */
     refreshTokenValidity?: string;
     /**
      * If empty, all grant types are allowed.
-     * @type {Array<GrantTypeEnum>}
-     * @memberof OAuth2DynamicClientRegistration
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof OAuth2DynamicClientRegistration
      */
     policyEngineMode?: PolicyEngineMode;
 }

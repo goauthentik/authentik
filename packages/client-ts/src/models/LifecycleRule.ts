@@ -28,86 +28,58 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface LifecycleRule {
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     readonly id: string;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     name: string;
     /**
      *
-     * @type {ContentTypeEnum}
-     * @memberof LifecycleRule
      */
     contentType: ContentTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     objectId?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     interval?: string;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     gracePeriod?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LifecycleRule
      */
     reviewerGroups?: Array<string>;
     /**
      *
-     * @type {Array<PartialGroup>}
-     * @memberof LifecycleRule
      */
     readonly reviewerGroupsObj: Array<PartialGroup>;
     /**
      *
-     * @type {number}
-     * @memberof LifecycleRule
      */
     minReviewers?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof LifecycleRule
      */
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LifecycleRule
      */
     reviewers: Array<string>;
     /**
      *
-     * @type {Array<PartialUser>}
-     * @memberof LifecycleRule
      */
     readonly reviewersObj: Array<PartialUser>;
     /**
      * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
-     * @type {Array<string>}
-     * @memberof LifecycleRule
      */
     notificationTransports?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleRule
      */
     readonly targetVerbose: string;
 }

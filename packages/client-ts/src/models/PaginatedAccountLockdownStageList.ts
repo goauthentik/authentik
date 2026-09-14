@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAccountLockdownStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAccountLockdownStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<AccountLockdownStage>}
-     * @memberof PaginatedAccountLockdownStageList
      */
     results: Array<AccountLockdownStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAccountLockdownStageList
      */
     autocomplete: { [key: string]: any };
 }

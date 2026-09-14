@@ -20,20 +20,14 @@
 export interface PlexSourcePropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PlexSourcePropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PlexSourcePropertyMappingRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof PlexSourcePropertyMappingRequest
      */
     expression: string;
 }

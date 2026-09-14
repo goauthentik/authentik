@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { LogLevelEnum } from "./LogLevelEnum";
 import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
 
@@ -23,32 +24,22 @@ import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
 export interface LogEvent {
     /**
      *
-     * @type {Date}
-     * @memberof LogEvent
      */
     timestamp: Date;
     /**
      *
-     * @type {LogLevelEnum}
-     * @memberof LogEvent
      */
     logLevel: LogLevelEnum;
     /**
      *
-     * @type {string}
-     * @memberof LogEvent
      */
     logger: string;
     /**
      *
-     * @type {string}
-     * @memberof LogEvent
      */
     event: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof LogEvent
      */
     attributes: { [key: string]: any };
 }
@@ -80,7 +71,7 @@ export function LogEventFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        timestamp: new Date(json["timestamp"]),
+        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
         logLevel: LogLevelEnumFromJSON(json["log_level"]),
         logger: json["logger"],
         event: json["event"],
@@ -101,7 +92,8 @@ export function LogEventToJSONTyped(
     }
 
     return {
-        timestamp: value["timestamp"].toISOString(),
+        timestamp:
+            value["timestamp"] == null ? value["timestamp"] : serializeDateTime(value["timestamp"]),
         log_level: LogLevelEnumToJSON(value["logLevel"]),
         logger: value["logger"],
         event: value["event"],

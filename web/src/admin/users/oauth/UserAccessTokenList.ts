@@ -5,6 +5,7 @@ import "#elements/forms/DeleteBulkForm";
 
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -82,7 +83,9 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
 
     row(item: TokenModel): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.provider?.pk}`)}>
+                ${item.provider?.name}
+            </a>`,
             html`<ak-status-label
                 type="warning"
                 ?good=${!item.revoked}

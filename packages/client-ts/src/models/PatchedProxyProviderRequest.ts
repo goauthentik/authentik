@@ -23,122 +23,82 @@ import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 export interface PatchedProxyProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     name?: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     authorizationFlow?: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     invalidationFlow?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedProxyProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     internalHost?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     externalHost?: string;
     /**
      * Validate SSL Certificates of upstream servers
-     * @type {boolean}
-     * @memberof PatchedProxyProviderRequest
      */
     internalHostSslValidation?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     certificate?: string | null;
     /**
      * Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     skipPathRegex?: string;
     /**
      * Set a custom HTTP-Basic Authentication header based on values from authentik.
-     * @type {boolean}
-     * @memberof PatchedProxyProviderRequest
      */
     basicAuthEnabled?: boolean;
     /**
      * User/Group Attribute used for the password part of the HTTP-Basic Header.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     basicAuthPasswordAttribute?: string;
     /**
      * User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     basicAuthUserAttribute?: string;
     /**
      * Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-     * @type {ProxyMode}
-     * @memberof PatchedProxyProviderRequest
      */
     mode?: ProxyMode;
     /**
      * When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-     * @type {boolean}
-     * @memberof PatchedProxyProviderRequest
      */
     interceptHeaderAuth?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     cookieDomain?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedProxyProviderRequest
      */
     jwtFederationSources?: Array<string>;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedProxyProviderRequest
      */
     jwtFederationProviders?: Array<number>;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     accessTokenValidity?: string;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedProxyProviderRequest
      */
     refreshTokenValidity?: string;
 }

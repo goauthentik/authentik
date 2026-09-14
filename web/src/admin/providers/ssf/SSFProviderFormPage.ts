@@ -12,6 +12,7 @@ import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -62,6 +63,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                     >
                         <ak-crypto-certificate-search
                             certificate=${ifPresent(provider?.signingKey)}
+                            .allowedKeyTypes=${JWTSigningKeyTypes}
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>

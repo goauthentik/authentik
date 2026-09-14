@@ -20,116 +20,78 @@
 export interface RadiusProvider {
     /**
      *
-     * @type {number}
-     * @memberof RadiusProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof RadiusProvider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RadiusProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof RadiusProvider
      */
     readonly metaModelName: string;
     /**
      * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     clientNetworks?: string;
     /**
      * Shared secret between clients and server to hash packets.
-     * @type {string}
-     * @memberof RadiusProvider
      */
     sharedSecret?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RadiusProvider
      */
     readonly outpostSet: Array<string>;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof RadiusProvider
      */
     mfaSupport?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof RadiusProvider
      */
     certificate?: string | null;
 }

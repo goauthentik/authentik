@@ -23,44 +23,30 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface UserLogoutStage {
     /**
      *
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof UserLogoutStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof UserLogoutStage
      */
     readonly flowSet: Array<FlowSet>;
 }

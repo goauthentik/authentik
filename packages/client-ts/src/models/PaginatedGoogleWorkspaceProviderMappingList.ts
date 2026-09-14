@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGoogleWorkspaceProviderMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGoogleWorkspaceProviderMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GoogleWorkspaceProviderMapping>}
-     * @memberof PaginatedGoogleWorkspaceProviderMappingList
      */
     results: Array<GoogleWorkspaceProviderMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGoogleWorkspaceProviderMappingList
      */
     autocomplete: { [key: string]: any };
 }

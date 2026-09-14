@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Group Membership Policy Serializer
  * @export
@@ -20,56 +22,46 @@
 export interface ExpressionPolicy {
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ExpressionPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ExpressionPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
+    /**
+     *
      */
     expression: string;
 }
@@ -109,6 +101,14 @@ export function instanceOfExpressionPolicy(value: object): value is ExpressionPo
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
@@ -133,6 +133,11 @@ export function ExpressionPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         expression: json["expression"],
     };
 }
@@ -144,7 +149,14 @@ export function ExpressionPolicyToJSON(json: any): ExpressionPolicy {
 export function ExpressionPolicyToJSONTyped(
     value?: Omit<
         ExpressionPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

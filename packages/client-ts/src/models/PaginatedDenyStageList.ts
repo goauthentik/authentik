@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedDenyStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedDenyStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<DenyStage>}
-     * @memberof PaginatedDenyStageList
      */
     results: Array<DenyStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDenyStageList
      */
     autocomplete: { [key: string]: any };
 }

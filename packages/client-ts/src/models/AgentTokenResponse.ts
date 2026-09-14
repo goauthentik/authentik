@@ -20,14 +20,10 @@
 export interface AgentTokenResponse {
     /**
      *
-     * @type {string}
-     * @memberof AgentTokenResponse
      */
     token: string;
     /**
      *
-     * @type {number}
-     * @memberof AgentTokenResponse
      */
     expiresIn?: number;
 }

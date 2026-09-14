@@ -20,8 +20,6 @@
 export interface AutoSubmitChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AutoSubmitChallengeResponseRequest
      */
     component?: string;
 }

@@ -20,20 +20,14 @@
 export interface ConnectionTokenRequest {
     /**
      *
-     * @type {string}
-     * @memberof ConnectionTokenRequest
      */
     pk?: string;
     /**
      *
-     * @type {number}
-     * @memberof ConnectionTokenRequest
      */
     provider: number;
     /**
      *
-     * @type {string}
-     * @memberof ConnectionTokenRequest
      */
     endpoint: string;
 }

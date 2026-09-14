@@ -20,14 +20,10 @@
 export interface PromptChoice {
     /**
      *
-     * @type {string}
-     * @memberof PromptChoice
      */
     value: string;
     /**
      *
-     * @type {string}
-     * @memberof PromptChoice
      */
     label: string;
 }

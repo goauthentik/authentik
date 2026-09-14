@@ -28,20 +28,14 @@ import {
 export interface PaginatedUserOAuthSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserOAuthSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserOAuthSourceConnection>}
-     * @memberof PaginatedUserOAuthSourceConnectionList
      */
     results: Array<UserOAuthSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserOAuthSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

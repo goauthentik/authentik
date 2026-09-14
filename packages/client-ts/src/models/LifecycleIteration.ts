@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { ContentTypeEnum } from "./ContentTypeEnum";
 import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
 import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum";
@@ -30,74 +31,50 @@ import { ReviewFromJSON } from "./Review";
 export interface LifecycleIteration {
     /**
      *
-     * @type {string}
-     * @memberof LifecycleIteration
      */
     readonly id: string;
     /**
      *
-     * @type {ContentTypeEnum}
-     * @memberof LifecycleIteration
      */
     contentType: ContentTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleIteration
      */
     readonly objectId: string;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleIteration
      */
     readonly objectVerbose: string;
     /**
      *
-     * @type {string}
-     * @memberof LifecycleIteration
      */
     readonly objectAdminUrl: string;
     /**
      *
-     * @type {LifecycleIterationStateEnum}
-     * @memberof LifecycleIteration
      */
     readonly state: LifecycleIterationStateEnum;
     /**
      *
-     * @type {Date}
-     * @memberof LifecycleIteration
      */
     readonly openedOn: Date;
     /**
      *
-     * @type {Date}
-     * @memberof LifecycleIteration
      */
     readonly gracePeriodEnd: Date;
     /**
      *
-     * @type {Date}
-     * @memberof LifecycleIteration
      */
     readonly nextReviewDate: Date;
     /**
      *
-     * @type {Array<Review>}
-     * @memberof LifecycleIteration
      */
     readonly reviews: Array<Review>;
     /**
      *
-     * @type {RelatedRule}
-     * @memberof LifecycleIteration
      */
     readonly rule: RelatedRule;
     /**
      *
-     * @type {boolean}
-     * @memberof LifecycleIteration
      */
     readonly userCanReview: boolean;
 }
@@ -187,9 +164,15 @@ export function LifecycleIterationFromJSONTyped(
         objectVerbose: json["object_verbose"],
         objectAdminUrl: json["object_admin_url"],
         state: LifecycleIterationStateEnumFromJSON(json["state"]),
-        openedOn: new Date(json["opened_on"]),
-        gracePeriodEnd: new Date(json["grace_period_end"]),
-        nextReviewDate: new Date(json["next_review_date"]),
+        openedOn: json["opened_on"] == null ? json["opened_on"] : parseDateTime(json["opened_on"]),
+        gracePeriodEnd:
+            json["grace_period_end"] == null
+                ? json["grace_period_end"]
+                : parseDateTime(json["grace_period_end"]),
+        nextReviewDate:
+            json["next_review_date"] == null
+                ? json["next_review_date"]
+                : parseDateTime(json["next_review_date"]),
         reviews: (json["reviews"] as Array<any>).map(ReviewFromJSON),
         rule: RelatedRuleFromJSON(json["rule"]),
         userCanReview: json["user_can_review"],

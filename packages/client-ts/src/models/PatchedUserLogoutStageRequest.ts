@@ -20,8 +20,6 @@
 export interface PatchedUserLogoutStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserLogoutStageRequest
      */
     name?: string;
 }

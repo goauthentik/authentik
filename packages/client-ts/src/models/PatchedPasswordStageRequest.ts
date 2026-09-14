@@ -23,32 +23,22 @@ import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
 export interface PatchedPasswordStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
      */
     name?: string;
     /**
      * Selection of backends to test the password against.
-     * @type {Array<BackendsEnum>}
-     * @memberof PatchedPasswordStageRequest
      */
     backends?: Array<BackendsEnum>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
      */
     configureFlow?: string | null;
     /**
      * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
-     * @type {number}
-     * @memberof PatchedPasswordStageRequest
      */
     failedAttemptsBeforeCancel?: number;
     /**
      * When enabled, provides a 'show password' button with the password input field.
-     * @type {boolean}
-     * @memberof PatchedPasswordStageRequest
      */
     allowShowPassword?: boolean;
 }

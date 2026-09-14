@@ -20,14 +20,10 @@
 export interface PatchedGroupPlexSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupPlexSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupPlexSourceConnectionRequest
      */
     identifier?: string;
 }

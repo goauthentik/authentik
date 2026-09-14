@@ -20,8 +20,6 @@
 export interface PlexTokenRedeemRequest {
     /**
      *
-     * @type {string}
-     * @memberof PlexTokenRedeemRequest
      */
     plexToken: string;
 }

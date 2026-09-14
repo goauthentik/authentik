@@ -20,8 +20,6 @@
 export interface TokenView {
     /**
      *
-     * @type {string}
-     * @memberof TokenView
      */
     readonly key: string;
 }

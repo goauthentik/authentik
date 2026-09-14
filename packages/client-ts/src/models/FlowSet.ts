@@ -29,74 +29,50 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface FlowSet {
     /**
      *
-     * @type {string}
-     * @memberof FlowSet
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowSet
      */
     readonly policybindingmodelPtrId: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowSet
      */
     name: string;
     /**
      * Visible in the URL.
-     * @type {string}
-     * @memberof FlowSet
      */
     slug: string;
     /**
      * Shown as the Title in Flow pages.
-     * @type {string}
-     * @memberof FlowSet
      */
     title: string;
     /**
      * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-     * @type {FlowDesignationEnum}
-     * @memberof FlowSet
      */
     designation: FlowDesignationEnum;
     /**
      * Get the URL to the background image
-     * @type {string}
-     * @memberof FlowSet
      */
     readonly backgroundUrl: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof FlowSet
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
-     * @type {boolean}
-     * @memberof FlowSet
      */
     compatibilityMode?: boolean;
     /**
      * Get export URL for flow
-     * @type {string}
-     * @memberof FlowSet
      */
     readonly exportUrl: string;
     /**
      *
-     * @type {FlowLayoutEnum}
-     * @memberof FlowSet
      */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
-     * @type {DeniedActionEnum}
-     * @memberof FlowSet
      */
     deniedAction?: DeniedActionEnum;
 }

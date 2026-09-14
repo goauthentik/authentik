@@ -20,14 +20,10 @@
 export interface PatchedUserTelegramSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserTelegramSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserTelegramSourceConnectionRequest
      */
     identifier?: string;
 }

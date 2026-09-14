@@ -24,32 +24,22 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface EndpointAgentChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof EndpointAgentChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof EndpointAgentChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof EndpointAgentChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof EndpointAgentChallenge
      */
     challenge: string;
     /**
      *
-     * @type {number}
-     * @memberof EndpointAgentChallenge
      */
     challengeIdleTimeout: number;
 }

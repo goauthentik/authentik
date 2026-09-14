@@ -26,128 +26,82 @@ import {
 export interface MicrosoftEntraProvider {
     /**
      *
-     * @type {number}
-     * @memberof MicrosoftEntraProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProvider
      */
     propertyMappingsGroup?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
-     */
-    clientSecret: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     tenantId: string;
     /**
      *
-     * @type {boolean}
-     * @memberof MicrosoftEntraProvider
      */
     excludeUsersServiceAccount?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     filterGroup?: string | null;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProvider
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProvider
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof MicrosoftEntraProvider
      */
     syncPageSize?: number;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof MicrosoftEntraProvider
      */
     discoveryEnabled?: boolean;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof MicrosoftEntraProvider
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof MicrosoftEntraProvider
      */
     dryRun?: boolean;
 }
@@ -202,13 +156,6 @@ export function instanceOfMicrosoftEntraProvider(value: object): value is Micros
     )
         return false;
     if (
-        (!("clientSecret" in (value as Record<string, any>)) &&
-            !("client_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientSecret"] === undefined &&
-            (value as Record<string, any>)["client_secret"] === undefined)
-    )
-        return false;
-    if (
         (!("tenantId" in (value as Record<string, any>)) &&
             !("tenant_id" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["tenantId"] === undefined &&
@@ -242,7 +189,6 @@ export function MicrosoftEntraProviderFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         clientId: json["client_id"],
-        clientSecret: json["client_secret"],
         tenantId: json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -295,7 +241,6 @@ export function MicrosoftEntraProviderToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
         tenant_id: value["tenantId"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],

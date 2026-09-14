@@ -25,20 +25,14 @@ import { SAMLPropertyMappingFromJSON, SAMLPropertyMappingToJSON } from "./SAMLPr
 export interface PaginatedSAMLPropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSAMLPropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SAMLPropertyMapping>}
-     * @memberof PaginatedSAMLPropertyMappingList
      */
     results: Array<SAMLPropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSAMLPropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

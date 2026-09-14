@@ -25,20 +25,14 @@ import { RequestableTargetFromJSON, RequestableTargetToJSON } from "./Requestabl
 export interface PaginatedRequestableTargetList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRequestableTargetList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RequestableTarget>}
-     * @memberof PaginatedRequestableTargetList
      */
     results: Array<RequestableTarget>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestableTargetList
      */
     autocomplete: { [key: string]: any };
 }

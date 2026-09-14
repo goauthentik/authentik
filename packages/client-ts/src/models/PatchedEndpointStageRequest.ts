@@ -23,20 +23,14 @@ import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
 export interface PatchedEndpointStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointStageRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointStageRequest
      */
     connector?: string;
     /**
      *
-     * @type {StageModeEnum}
-     * @memberof PatchedEndpointStageRequest
      */
     mode?: StageModeEnum;
 }

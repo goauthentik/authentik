@@ -25,20 +25,14 @@ import { ProviderFromJSON, ProviderToJSON } from "./Provider";
 export interface PaginatedProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Provider>}
-     * @memberof PaginatedProviderList
      */
     results: Array<Provider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedProviderList
      */
     autocomplete: { [key: string]: any };
 }

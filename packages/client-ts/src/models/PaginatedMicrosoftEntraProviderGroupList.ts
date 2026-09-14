@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedMicrosoftEntraProviderGroupList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<MicrosoftEntraProviderGroup>}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
     results: Array<MicrosoftEntraProviderGroup>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
     autocomplete: { [key: string]: any };
 }

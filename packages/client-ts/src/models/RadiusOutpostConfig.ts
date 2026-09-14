@@ -20,50 +20,34 @@
 export interface RadiusOutpostConfig {
     /**
      *
-     * @type {number}
-     * @memberof RadiusOutpostConfig
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     applicationSlug: string;
     /**
      *
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     authFlowSlug: string;
     /**
      * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     clientNetworks?: string;
     /**
      * Shared secret between clients and server to hash packets.
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     sharedSecret?: string;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof RadiusOutpostConfig
      */
     mfaSupport?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof RadiusOutpostConfig
      */
     certificate?: string | null;
 }

@@ -20,8 +20,6 @@
 export interface FrameChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof FrameChallengeResponseRequest
      */
     component?: string;
 }

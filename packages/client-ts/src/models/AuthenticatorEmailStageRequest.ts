@@ -20,92 +20,62 @@
 export interface AuthenticatorEmailStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     friendlyName?: string;
     /**
      * When enabled, global Email connection settings will be used and connection settings below will be ignored.
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStageRequest
      */
     useGlobalSettings?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     host?: string;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorEmailStageRequest
      */
     port?: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     password?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStageRequest
      */
     useTls?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStageRequest
      */
     useSsl?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorEmailStageRequest
      */
     timeout?: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     fromAddress?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     subject?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     tokenExpiry?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStageRequest
      */
     template?: string;
 }

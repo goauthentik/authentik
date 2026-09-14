@@ -25,20 +25,14 @@ import { SAMLProviderFromJSON, SAMLProviderToJSON } from "./SAMLProvider";
 export interface PaginatedSAMLProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSAMLProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SAMLProvider>}
-     * @memberof PaginatedSAMLProviderList
      */
     results: Array<SAMLProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSAMLProviderList
      */
     autocomplete: { [key: string]: any };
 }

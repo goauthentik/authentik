@@ -36,116 +36,78 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface AuthenticatorValidateStage {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorValidateStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {NotConfiguredActionEnum}
-     * @memberof AuthenticatorValidateStage
      */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
-     * @type {Array<DeviceClassesEnum>}
-     * @memberof AuthenticatorValidateStage
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
      * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
-     * @type {Array<string>}
-     * @memberof AuthenticatorValidateStage
      */
     configurationStages?: Array<string>;
     /**
      * If any of the user's device has been used within this threshold, this stage will be skipped
-     * @type {string}
-     * @memberof AuthenticatorValidateStage
      */
     lastAuthThreshold?: string;
     /**
      * Enforce user verification for WebAuthn devices.
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorValidateStage
      */
     webauthnUserVerification?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof AuthenticatorValidateStage
      */
     webauthnHints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof AuthenticatorValidateStage
      */
     webauthnAllowedDeviceTypes?: Array<string>;
     /**
      *
-     * @type {Array<WebAuthnDeviceType>}
-     * @memberof AuthenticatorValidateStage
      */
     readonly webauthnAllowedDeviceTypesObj: Array<WebAuthnDeviceType>;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStage
      */
     emailOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStage
      */
     smsOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStage
      */
     totpOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStage
      */
     staticOtpThrottlingFactor?: number;
 }

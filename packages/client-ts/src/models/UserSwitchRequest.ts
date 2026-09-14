@@ -23,14 +23,10 @@ import { UserSwitchActionEnumFromJSON, UserSwitchActionEnumToJSON } from "./User
 export interface UserSwitchRequest {
     /**
      *
-     * @type {UserSwitchActionEnum}
-     * @memberof UserSwitchRequest
      */
     action?: UserSwitchActionEnum;
     /**
      *
-     * @type {number}
-     * @memberof UserSwitchRequest
      */
     userPk?: number;
 }

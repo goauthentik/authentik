@@ -20,14 +20,10 @@
 export interface App {
     /**
      *
-     * @type {string}
-     * @memberof App
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof App
      */
     label: string;
 }

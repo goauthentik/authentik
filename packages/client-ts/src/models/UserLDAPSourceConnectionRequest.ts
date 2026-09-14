@@ -20,14 +20,10 @@
 export interface UserLDAPSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserLDAPSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserLDAPSourceConnectionRequest
      */
     identifier: string;
 }

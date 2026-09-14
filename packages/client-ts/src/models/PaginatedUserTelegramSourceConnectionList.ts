@@ -28,20 +28,14 @@ import {
 export interface PaginatedUserTelegramSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserTelegramSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserTelegramSourceConnection>}
-     * @memberof PaginatedUserTelegramSourceConnectionList
      */
     results: Array<UserTelegramSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserTelegramSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

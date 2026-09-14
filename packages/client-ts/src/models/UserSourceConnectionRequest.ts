@@ -20,14 +20,10 @@
 export interface UserSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserSourceConnectionRequest
      */
     identifier: string;
 }

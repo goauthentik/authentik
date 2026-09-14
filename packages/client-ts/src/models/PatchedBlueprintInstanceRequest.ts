@@ -20,32 +20,22 @@
 export interface PatchedBlueprintInstanceRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
      */
     path?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedBlueprintInstanceRequest
      */
     context?: { [key: string]: any };
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedBlueprintInstanceRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
      */
     content?: string;
 }

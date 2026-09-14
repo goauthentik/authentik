@@ -24,20 +24,14 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface OAuthDeviceCodeChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof OAuthDeviceCodeChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof OAuthDeviceCodeChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof OAuthDeviceCodeChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
 }

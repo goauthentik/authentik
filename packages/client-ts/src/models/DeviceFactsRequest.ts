@@ -40,56 +40,38 @@ import { SoftwareRequestFromJSON, SoftwareRequestToJSON } from "./SoftwareReques
 export interface DeviceFactsRequest {
     /**
      *
-     * @type {OperatingSystemRequest}
-     * @memberof DeviceFactsRequest
      */
     os?: OperatingSystemRequest | null;
     /**
      *
-     * @type {Array<DiskRequest>}
-     * @memberof DeviceFactsRequest
      */
     disks?: Array<DiskRequest> | null;
     /**
      *
-     * @type {NetworkRequest}
-     * @memberof DeviceFactsRequest
      */
     network?: NetworkRequest | null;
     /**
      *
-     * @type {HardwareRequest}
-     * @memberof DeviceFactsRequest
      */
     hardware?: HardwareRequest | null;
     /**
      *
-     * @type {Array<SoftwareRequest>}
-     * @memberof DeviceFactsRequest
      */
     software?: Array<SoftwareRequest> | null;
     /**
      *
-     * @type {Array<ProcessRequest>}
-     * @memberof DeviceFactsRequest
      */
     processes?: Array<ProcessRequest> | null;
     /**
      *
-     * @type {Array<DeviceUserRequest>}
-     * @memberof DeviceFactsRequest
      */
     users?: Array<DeviceUserRequest> | null;
     /**
      *
-     * @type {Array<DeviceGroupRequest>}
-     * @memberof DeviceFactsRequest
      */
     groups?: Array<DeviceGroupRequest> | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof DeviceFactsRequest
      */
     vendor?: { [key: string]: any };
 }

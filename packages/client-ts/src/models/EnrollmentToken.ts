@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroup } from "./DeviceAccessGroup";
 import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
 
@@ -23,44 +24,30 @@ import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
 export interface EnrollmentToken {
     /**
      *
-     * @type {string}
-     * @memberof EnrollmentToken
      */
     readonly tokenUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof EnrollmentToken
      */
     deviceGroup?: string | null;
     /**
      *
-     * @type {DeviceAccessGroup}
-     * @memberof EnrollmentToken
      */
     readonly deviceGroupObj: DeviceAccessGroup | null;
     /**
      *
-     * @type {string}
-     * @memberof EnrollmentToken
      */
     connector: string;
     /**
      *
-     * @type {string}
-     * @memberof EnrollmentToken
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof EnrollmentToken
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof EnrollmentToken
      */
     expires?: Date | null;
 }
@@ -116,7 +103,7 @@ export function EnrollmentTokenFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
     };
 }
 
@@ -137,6 +124,6 @@ export function EnrollmentTokenToJSONTyped(
         connector: value["connector"],
         name: value["name"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }
