@@ -2,6 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 
 import { aki } from "#common/api/client";
 
+import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -102,6 +103,12 @@ export class SecretListPage extends TablePage<Secret> {
             html`${this.typeLabel(item.type)}`,
             html`<div>
                 ${SecretValueButton(item)} ${IconEditButton(SecretForm, item.pk, item.name)}
+                ${item.type === SecretTypeEnum.Text
+                    ? IconRotateSecretButton({
+                          rotate: () =>
+                              aki(SecretsApi).secretsSecretsRotateCreate({ secretUuid: item.pk }),
+                      })
+                    : nothing}
                 ${IconPermissionButton(item.name, {
                     model: ModelEnum.AuthentikSecretsSecret,
                     objectPk: item.pk,

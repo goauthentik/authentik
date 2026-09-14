@@ -51,8 +51,6 @@ export abstract class HorizontalLightComponent<T>
 
     public override focus = this.autofocusTarget.focus;
 
-    public override role = "presentation";
-
     //#region Properties
 
     /**
@@ -168,6 +166,7 @@ export abstract class HorizontalLightComponent<T>
 
     public override connectedCallback() {
         super.connectedCallback();
+        this.role ||= "presentation";
         this.setAttribute("aria-labelledby", this.labelID);
 
         this.addEventListener("focus", this.autofocusTarget.toEventListener());
