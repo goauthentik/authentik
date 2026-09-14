@@ -81,7 +81,7 @@ rcgen = { version = "= 0.14.10", default-features = false, features = [
   "fips",
 ] }
 regex = "= 1.13.1"
-reqwest = { version = "= 0.13.4", features = [
+reqwest = { version = "= 0.13.5", features = [
   "form",
   "json",
   "multipart",
@@ -151,7 +151,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.26.0", features = ["serde", "v4"] }
+uuid = { version = "= 1.26.1", features = ["serde", "v4"] }
 
 ak-axum = { package = "authentik-axum", version = "2026.11.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.11.0-rc1", path = "./packages/client-rust" }
