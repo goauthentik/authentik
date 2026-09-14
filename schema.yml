@@ -36975,6 +36975,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorDuoStageDeviceImportResponse:
@@ -37033,17 +37034,11 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        admin_secret_key:
-          type: string
-          writeOnly: true
       required:
       - api_hostname
       - client_id
       - name
+      - secret
     AuthenticatorEmailChallenge:
       type: object
       description: Authenticator Email Setup challenge
@@ -37226,9 +37221,6 @@ components:
         template:
           type: string
           minLength: 1
-        password:
-          type: string
-          writeOnly: true
       required:
       - name
     AuthenticatorEndpointGDTCStage:
@@ -37274,15 +37266,13 @@ components:
         secret:
           type: string
           format: uuid
-        credentials:
-          type: object
-          additionalProperties: {}
       required:
       - component
       - flow_set
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorEndpointGDTCStageRequest:
@@ -37303,12 +37293,9 @@ components:
         secret:
           type: string
           format: uuid
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
       required:
       - name
+      - secret
     AuthenticatorSMSChallenge:
       type: object
       description: SMS Setup challenge
@@ -37417,6 +37404,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
+      - auth_secret
       - component
       - flow_set
       - from_number
@@ -37470,15 +37458,9 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
-        auth:
-          type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
-          type: string
-          writeOnly: true
       required:
       - account_sid
+      - auth_secret
       - from_number
       - name
       - provider
@@ -38552,6 +38534,7 @@ components:
       - name
       - pk
       - public_key
+      - secret
       - verbose_name
       - verbose_name_plural
     CaptchaStageRequest:
@@ -38592,13 +38575,10 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - name
       - public_key
+      - secret
     CertAttributeEnum:
       enum:
       - subject
@@ -40706,9 +40686,6 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
-        password:
-          type: string
-          writeOnly: true
       required:
       - name
     Endpoint:
@@ -41650,6 +41627,7 @@ components:
       - component
       - meta_model_name
       - name
+      - secret
       - url
       - verbose_name
       - verbose_name_plural
@@ -41684,12 +41662,9 @@ components:
           type: boolean
         map_teams_access_group:
           type: boolean
-        token:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - name
+      - secret
       - url
     Flow:
       type: object
@@ -42447,14 +42422,12 @@ components:
           nullable: true
           description: Full URL to be used in Google Workspace configuration
           readOnly: true
-        credentials:
-          type: object
-          additionalProperties: {}
       required:
       - chrome_url
       - component
       - meta_model_name
       - name
+      - secret
       - verbose_name
       - verbose_name_plural
     GoogleChromeConnectorRequest:
@@ -42472,12 +42445,9 @@ components:
         secret:
           type: string
           format: uuid
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
       required:
       - name
+      - secret
     GoogleEndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -42591,9 +42561,6 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
-        credentials:
-          type: object
-          additionalProperties: {}
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -42603,6 +42570,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     GoogleWorkspaceProviderGroup:
@@ -42777,14 +42745,11 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
       required:
       - default_group_email_domain
       - delegated_subject
       - name
+      - secret
     GoogleWorkspaceProviderUser:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -44298,21 +44263,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_password:
-          type: string
-          writeOnly: true
-        sync_keytab:
-          type: string
-          writeOnly: true
-        sync_ccache:
-          type: string
-          writeOnly: true
-        spnego_keytab:
-          type: string
-          writeOnly: true
-        spnego_ccache:
-          type: string
-          writeOnly: true
       required:
       - name
       - realm
@@ -44362,9 +44312,6 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
-        kubeconfig:
-          type: object
-          additionalProperties: {}
       required:
       - component
       - meta_model_name
@@ -44390,9 +44337,6 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
-        kubeconfig:
-          type: object
-          additionalProperties: {}
       required:
       - name
     LDAPAPIAccessMode:
@@ -45086,9 +45030,6 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
-        bind_password:
-          type: string
-          writeOnly: true
       required:
       - base_dn
       - name
@@ -45734,6 +45675,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - tenant_id
       - verbose_name
       - verbose_name_plural
@@ -45905,13 +45847,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - client_id
       - name
+      - secret
       - tenant_id
     MicrosoftEntraProviderUser:
       type: object
@@ -46484,8 +46423,6 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
-        webhook_url:
-          type: string
       required:
       - mode_verbose
       - name
@@ -46531,8 +46468,6 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
-        webhook_url:
-          type: string
       required:
       - name
     NotificationTransportTest:
@@ -46811,9 +46746,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46946,9 +46878,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - authorization_flow
       - invalidation_flow
@@ -47195,6 +47124,7 @@ components:
       - name
       - pk
       - provider_type
+      - secret
       - slug
       - type
       - verbose_name
@@ -47364,14 +47294,11 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - consumer_key
       - name
       - provider_type
+      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -50929,13 +50856,6 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        admin_secret_key:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50992,9 +50912,6 @@ components:
         template:
           type: string
           minLength: 1
-        password:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -51013,10 +50930,6 @@ components:
         secret:
           type: string
           format: uuid
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -51061,13 +50974,6 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
-        auth:
-          type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -51339,10 +51245,6 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedCertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -51593,9 +51495,6 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
-        password:
-          type: string
-          writeOnly: true
     PatchedEndpointDeviceRequest:
       type: object
       properties:
@@ -51789,10 +51688,6 @@ components:
           type: boolean
         map_teams_access_group:
           type: boolean
-        token:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -51922,10 +51817,6 @@ components:
         secret:
           type: string
           format: uuid
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -52017,10 +51908,6 @@ components:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
-        credentials:
-          type: object
-          additionalProperties: {}
-          minLength: 1
     PatchedGrantRequestFulfillRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -52383,21 +52270,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_password:
-          type: string
-          writeOnly: true
-        sync_keytab:
-          type: string
-          writeOnly: true
-        sync_ccache:
-          type: string
-          writeOnly: true
-        spnego_keytab:
-          type: string
-          writeOnly: true
-        spnego_ccache:
-          type: string
-          writeOnly: true
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -52416,9 +52288,6 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
-        kubeconfig:
-          type: object
-          additionalProperties: {}
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -52643,9 +52512,6 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
-        bind_password:
-          type: string
-          writeOnly: true
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -52772,10 +52638,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -52884,8 +52746,6 @@ components:
           type: boolean
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
-        webhook_url:
-          type: string
     PatchedNotificationWebhookMappingRequest:
       type: object
       description: NotificationWebhookMapping Serializer
@@ -53050,9 +52910,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -53170,10 +53027,6 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedObjectAttributeRequest:
       type: object
       properties:
@@ -53450,9 +53303,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -53757,9 +53607,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
     PatchedRedirectStageRequest:
       type: object
       description: RedirectStage Serializer
@@ -54268,9 +54115,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -54649,10 +54493,6 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -55212,8 +55052,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
       required:
       - component
       - icon_themed_urls
@@ -55222,6 +55060,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55367,11 +55206,9 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
       required:
       - name
+      - secret
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -56749,8 +56586,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -56881,9 +56716,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
       required:
       - authorization_flow
       - invalidation_flow
@@ -58824,9 +58656,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
       required:
       - name
       - url
@@ -60709,6 +60538,7 @@ components:
       - name
       - pk
       - pre_authentication_flow
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60846,14 +60676,11 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - bot_username
       - name
       - pre_authentication_flow
+      - secret
       - slug
     Tenant:
       type: object

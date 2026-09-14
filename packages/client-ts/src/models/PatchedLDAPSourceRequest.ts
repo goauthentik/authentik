@@ -172,10 +172,6 @@ export interface PatchedLDAPSourceRequest {
      * Sync group parentage/hierarchy from LDAP directories.
      */
     syncGroupHierarchy?: boolean;
-    /**
-     *
-     */
-    bindPassword?: string;
 }
 
 /**
@@ -293,7 +289,6 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
         syncGroupHierarchy:
             json["sync_group_hierarchy"] == null ? undefined : json["sync_group_hierarchy"],
-        bindPassword: json["bind_password"] == null ? undefined : json["bind_password"],
     };
 }
 
@@ -348,6 +343,5 @@ export function PatchedLDAPSourceRequestToJSONTyped(
             value["syncOutgoingTriggerMode"],
         ),
         sync_group_hierarchy: value["syncGroupHierarchy"],
-        bind_password: value["bindPassword"],
     };
 }

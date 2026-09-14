@@ -14,7 +14,7 @@ from authentik.rbac.models import Role
 
 
 class TestSecretFields(APITestCase):
-    """GETTING REMOVED WHEN FRONTEND IS DONE: check legacy value permissions."""
+    """Consumer APIs expose references, even to administrators."""
 
     def setUp(self) -> None:
         self.user = create_test_user()
@@ -120,7 +120,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["secret"], str(self.secret.pk))
-        self.assertEqual(body["kubeconfig"], self.kubeconfig)
+        self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_connection_create(self):
         """Test connection create (role has global add permission, but no change permission)"""
