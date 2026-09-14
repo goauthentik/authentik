@@ -57,6 +57,15 @@ test.describe("Applications", () => {
                     "Authorization Flow",
                     /default-provider-authorization-explicit-consent/,
                 ],
+                [
+                    expect(
+                        providerDialog.getByRole("textbox", {
+                            name: "Invalidation Flow",
+                            includeHidden: true,
+                        }),
+                    ).toHaveValue,
+                    /default-provider-invalidation-flow/,
+                ],
                 [click, "Create"],
             );
 

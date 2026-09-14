@@ -77,6 +77,12 @@ test.describe("Provider Wizard", () => {
                 "Authorization Flow",
                 /default-provider-authorization-explicit-consent/,
             ],
+            [
+                expect(
+                    dialog.getByRole("textbox", { name: "Invalidation Flow", includeHidden: true }),
+                ).toHaveValue,
+                /default-provider-invalidation-flow/,
+            ],
             [click, "Create", "button", dialog],
         );
     });
