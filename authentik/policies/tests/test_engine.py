@@ -92,16 +92,22 @@ class TestPolicyEngine(TestCase):
 
     def test_engine_dry_run_dynamic(self):
         """Dry-run policies execute but do not affect the result or messages."""
+        policy_true = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("effective")\nreturn True'
+        )
+        policy_false = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("dry run")\nreturn False'
+        )
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
-        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        PolicyBinding.objects.create(target=pbm, policy=policy_true, order=0)
         dry_run = PolicyBinding.objects.create(
-            target=pbm, policy=self.policy_false, order=1, dry_run=True
+            target=pbm, policy=policy_false, order=1, dry_run=True
         )
 
         result = PolicyEngine(pbm, self.user).build().result
 
         self.assertTrue(result.passing)
-        self.assertEqual(result.messages, ("dummy",))
+        self.assertEqual(result.messages, ("effective",))
         self.assertEqual(len(result.source_results), 2)
         dry_run_result = next(
             item for item in result.source_results if item.source_binding.pk == dry_run.pk
@@ -109,12 +115,12 @@ class TestPolicyEngine(TestCase):
         self.assertFalse(dry_run_result.passing)
 
         with patch(
-            "authentik.policies.dummy.models.DummyPolicy.passes",
+            "authentik.policies.expression.models.ExpressionPolicy.passes",
             side_effect=AssertionError("cached policies should not be evaluated"),
         ):
             cached_result = PolicyEngine(pbm, self.user).build().result
         self.assertTrue(cached_result.passing)
-        self.assertEqual(cached_result.messages, ("dummy",))
+        self.assertEqual(cached_result.messages, ("effective",))
         self.assertEqual(len(cached_result.source_results), 2)
         self.assertFalse(
             next(
