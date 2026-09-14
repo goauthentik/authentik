@@ -10365,6 +10365,30 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -37866,7 +37890,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
