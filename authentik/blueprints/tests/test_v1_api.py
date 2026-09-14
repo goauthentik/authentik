@@ -95,7 +95,7 @@ class TestBlueprintsV1API(APITestCase):
         continue_without_invitation = True
 
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={
                 "path": "example/flows-invitation-enrollment-minimal.yaml",
                 "context": dumps(
@@ -136,7 +136,7 @@ class TestBlueprintsV1API(APITestCase):
             file.flush()
             file.seek(0)
             res = self.client.post(
-                reverse("authentik_api:blueprintinstance-import-"),
+                reverse("authentik_api:blueprintinstance-import"),
                 data={"path": "", "file": file},
                 format="multipart",
             )
@@ -147,7 +147,7 @@ class TestBlueprintsV1API(APITestCase):
         file = SimpleUploadedFile("invalid-blueprint.yaml", b'{"version": 3}')
 
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={"file": file},
             format="multipart",
         )
@@ -181,7 +181,7 @@ class TestBlueprintsV1API(APITestCase):
         file = SimpleUploadedFile("invalid-blueprint-tag.yaml", content.encode())
 
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={"file": file},
             format="multipart",
         )
@@ -193,7 +193,7 @@ class TestBlueprintsV1API(APITestCase):
     def test_api_import_unknown_path(self):
         """Path not in available blueprints is rejected (covers api.py:56)."""
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={"path": "does/not/exist.yaml"},
             format="multipart",
         )
@@ -203,7 +203,7 @@ class TestBlueprintsV1API(APITestCase):
     def test_api_import_blank_context(self):
         """Blank context is normalized to empty dict (covers api.py:62)."""
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={
                 "path": "example/flows-invitation-enrollment-minimal.yaml",
                 "context": "",
@@ -215,7 +215,7 @@ class TestBlueprintsV1API(APITestCase):
     def test_api_import_invalid_json_context(self):
         """Malformed JSON context raises ValidationError (covers api.py:65-66)."""
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={
                 "path": "example/flows-invitation-enrollment-minimal.yaml",
                 "context": "{not json",
@@ -228,7 +228,7 @@ class TestBlueprintsV1API(APITestCase):
     def test_api_import_non_object_context(self):
         """JSON context that isn't an object is rejected (covers api.py:68)."""
         res = self.client.post(
-            reverse("authentik_api:blueprintinstance-import-"),
+            reverse("authentik_api:blueprintinstance-import"),
             data={
                 "path": "example/flows-invitation-enrollment-minimal.yaml",
                 "context": "[1, 2, 3]",
