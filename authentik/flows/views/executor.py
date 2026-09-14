@@ -22,6 +22,7 @@ from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
+from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -65,9 +66,6 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
-
-# OIDC login_hint query param, stripped from `next` on cancel so it can't re-prefill
-QS_LOGIN_HINT = "login_hint"
 
 SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_GET = "authentik/flows/get"
@@ -494,19 +492,19 @@ class FlowExecutorView(APIView):
                 del self.request.session[key]
 
 
-def cleanse_url_login_hint(url: str) -> str:
-    """Remove the OIDC `login_hint` query parameter from a (relative) URL, leaving all other
-    parameters untouched."""
-    parts = urlsplit(url)
-    if QS_LOGIN_HINT not in parts.query:
-        return url
-    query = QueryDict(parts.query, mutable=True)
-    query.pop(QS_LOGIN_HINT, None)
-    return urlunsplit(parts._replace(query=urlencode(sorted(query.items()), doseq=True)))
-
-
 class CancelView(View):
     """View which cancels the currently active plan"""
+
+    def clean_next_url(self, url: str) -> str:
+        """Remove any user identifiers from the URL to prevent loops"""
+        qs_to_remove = [QS_LOGIN_HINT]
+        parts = urlsplit(url)
+        if not any(x in parts.query for x in qs_to_remove):
+            return url
+        query = QueryDict(parts.query, mutable=True)
+        for qs in qs_to_remove:
+            query.pop(qs, None)
+        return urlunsplit(parts._replace(query=urlencode(sorted(query.items()), doseq=True)))
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """View which canels the currently active plan"""
@@ -515,10 +513,8 @@ class CancelView(View):
             LOGGER.debug("Canceled current plan")
         next_url = self.request.GET.get(NEXT_ARG_NAME)
         if next_url and not is_url_absolute(next_url):
-            # The user explicitly chose to change identity ("Not you?"), so we must not
-            # re-apply the login_hint carried in `next`, otherwise re-entering the flow
-            # would pre-fill the identifier again and trap the user in a loop (#25476).
-            return redirect(cleanse_url_login_hint(next_url))
+            # Ensure that we get rid of any user identifiers from the URL
+            return redirect(self.clean_next_url(next_url))
         return redirect("authentik_flows:default-invalidation")
 
 
