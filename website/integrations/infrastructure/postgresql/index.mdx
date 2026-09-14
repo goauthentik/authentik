@@ -31,6 +31,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 <!-- spellchecker:disable-next-line -->
+
 Other independently developed validators include [dvob's `pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator), an OIDC/JWKS experiment for Kubernetes service accounts, and [Tantor Labs' `oauth_validator`](https://github.com/TantorLabs/oauth_validator). As of September 2026, the Tantor Labs module reads claims without verifying the JWT signature and can accept forged tokens; do not use it without adding signature verification. Review any alternative against PostgreSQL's [validator security requirements](https://www.postgresql.org/docs/18/oauth-validator-design.html). The configuration below is specific to Percona's validator.
 
 ## authentik configuration
