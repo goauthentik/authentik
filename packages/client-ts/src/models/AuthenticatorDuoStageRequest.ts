@@ -37,7 +37,7 @@ export interface AuthenticatorDuoStageRequest {
     /**
      *
      */
-    secret: string;
+    secret?: string;
     /**
      *
      */
@@ -74,7 +74,6 @@ export function instanceOfAuthenticatorDuoStageRequest(
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("apiHostname" in (value as Record<string, any>)) &&
             !("api_hostname" in (value as Record<string, any>))) ||
@@ -106,7 +105,7 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
-        secret: json["secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],

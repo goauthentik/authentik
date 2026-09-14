@@ -36988,7 +36988,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorDuoStageDeviceImportResponse:
@@ -37058,7 +37057,6 @@ components:
       - api_hostname
       - client_id
       - name
-      - secret
     AuthenticatorEmailChallenge:
       type: object
       description: Authenticator Email Setup challenge
@@ -37417,7 +37415,6 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth_secret
       - component
       - flow_set
       - from_number
@@ -37480,7 +37477,6 @@ components:
           writeOnly: true
       required:
       - account_sid
-      - auth_secret
       - from_number
       - name
       - provider
