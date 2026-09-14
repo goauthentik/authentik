@@ -46,6 +46,30 @@ class TestTypeAzureAD(TestCase):
         self.assertEqual(ak_context["email"], EID_USER["mail"])
         self.assertEqual(ak_context["name"], EID_USER["displayName"])
 
+    def test_enroll_context_other_mails(self):
+        """mail empty, otherMails populated -> use otherMails[0]"""
+        info = {**EID_USER, "mail": None, "otherMails": ["alt@goauthentik.io"]}
+        ak_context = EntraIDType().get_base_user_properties(source=self.source, info=info)
+        self.assertEqual(ak_context["email"], "alt@goauthentik.io")
+
+    def test_enroll_context_other_mails_empty_list(self):
+        """mail empty, otherMails is [] -> fall back to UPN (regression: would IndexError)"""
+        info = {**EID_USER, "mail": None, "otherMails": []}
+        ak_context = EntraIDType().get_base_user_properties(source=self.source, info=info)
+        self.assertEqual(ak_context["email"], EID_USER["userPrincipalName"])
+
+    def test_enroll_context_no_mailbox(self):
+        """No mail / otherMails (license-less account) -> fall back to UPN. Issue #20448."""
+        info = {k: v for k, v in EID_USER.items() if k not in ("mail", "otherMails")}
+        ak_context = EntraIDType().get_base_user_properties(source=self.source, info=info)
+        self.assertEqual(ak_context["email"], EID_USER["userPrincipalName"])
+
+    def test_enroll_context_mail_empty_string(self):
+        """Graph occasionally returns mail='' rather than null -> fall back to UPN."""
+        info = {**EID_USER, "mail": ""}
+        ak_context = EntraIDType().get_base_user_properties(source=self.source, info=info)
+        self.assertEqual(ak_context["email"], EID_USER["userPrincipalName"])
+
     def test_user_id(self):
         """Test Entra ID user ID"""
         self.assertEqual(EntraIDOAuthCallback().get_user_id(EID_USER), EID_USER["id"])
