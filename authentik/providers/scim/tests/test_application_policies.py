@@ -7,6 +7,7 @@ from django.test import TestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Group, User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
@@ -27,7 +28,7 @@ class SCIMApplicationPoliciesTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         self.provider.property_mappings.add(

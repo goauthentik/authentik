@@ -157,7 +157,8 @@ def outpost_secret_value_changed(sender, secret: Secret, **_):
 
     def send_updates():
         outposts = Outpost.objects.filter(
-            Q(providers__oauth2provider__secret=secret)
+            Q(providers__radiusprovider__secret=secret)
+            | Q(providers__oauth2provider__secret=secret)
             | Q(providers__oauth2provider__proxyprovider__cookie_secret_ref=secret)
         ).distinct()
         for outpost in outposts:

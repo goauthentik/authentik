@@ -2,13 +2,14 @@
 
 from collections.abc import Iterable
 
-from django.db import models
+from django.db import models, transaction
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.models import create_named_secret
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -16,9 +17,22 @@ from authentik.outposts.models import OutpostModel
 class RadiusProvider(OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
-    shared_secret = models.TextField(
+    # Remove the legacy credential columns in 2027.2.
+    _shared_secret = models.TextField(
+        db_column="shared_secret",
         default=generate_id,
         help_text=_("Shared secret between clients and server to hash packets."),
+    )
+
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Shared Secret"),
+        help_text=_("Shared secret between clients and server to hash packets."),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="radius_providers",
     )
 
     client_networks = models.TextField(
@@ -49,6 +63,14 @@ class RadiusProvider(OutpostModel, Provider):
     def launch_url(self) -> str | None:
         """Radius never has a launch URL"""
         return None
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            if not self.secret_id:
+                self.secret = create_named_secret(f"{self.name} shared secret")
+                if (update_fields := kwargs.get("update_fields")) is not None:
+                    kwargs["update_fields"] = set(update_fields) | {"secret"}
+            return super().save(*args, **kwargs)
 
     @property
     def component(self) -> str:

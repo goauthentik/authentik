@@ -45,7 +45,7 @@ export interface PatchedRadiusProviderRequest {
     /**
      * Shared secret between clients and server to hash packets.
      */
-    sharedSecret?: string;
+    secret?: string | null;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
      */
@@ -89,7 +89,12 @@ export function PatchedRadiusProviderRequestFromJSONTyped(
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
         certificate:
             json["certificate"] === undefined
@@ -119,7 +124,7 @@ export function PatchedRadiusProviderRequestToJSONTyped(
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
         client_networks: value["clientNetworks"],
-        shared_secret: value["sharedSecret"],
+        secret: value["secret"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
     };
