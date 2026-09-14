@@ -1,13 +1,12 @@
-import { $ } from "./commands.mjs";
+import { $ } from "./commands.ts";
 
 /**
  * Checks whether the given file has uncommitted changes in git.
- *
- * @param {string} filePath
- * @param {string} [cwd]
- * @returns {Promise<{ clean: boolean, available: boolean }>}
  */
-export async function gitStatus(filePath, cwd = process.cwd()) {
+export async function gitStatus(
+    filePath: string,
+    cwd = process.cwd(),
+): Promise<{ clean: boolean; available: boolean }> {
     return $`git status --porcelain ${filePath}`({ cwd })
         .then((output) => ({ clean: !output, available: true }))
         .catch(() => ({ clean: false, available: false }));
@@ -16,10 +15,9 @@ export async function gitStatus(filePath, cwd = process.cwd()) {
 /**
  * Finds the root directory of the git repository containing the given directory.
  *
- * @param {string} cwd
- * @returns {Promise<string>} The path to the git repository root.
+ * @returns The path to the git repository root.
  * @throws {Error} If the command fails (e.g., not a git repository).
  */
-export function resolveRepoRoot(cwd = process.cwd()) {
+export function resolveRepoRoot(cwd = process.cwd()): Promise<string> {
     return $`git rev-parse --show-toplevel`({ cwd });
 }
