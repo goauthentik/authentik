@@ -67,6 +67,34 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.json()["value"])
 
+    def test_rotation_requires_permission_and_returns_value_only_when_allowed(self):
+        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret_value", self.secret)
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:secret-rotate", kwargs={"pk": self.secret.pk})
+        previous = self.secret.value
+        self.assertEqual(self.client.post(url).status_code, 403)
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.value, previous)
+
+        self.user.assign_perms_to_managed_role("authentik_secrets.rotate_secret", self.secret)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.secret.refresh_from_db()
+        self.assertEqual(response.json()["value"], self.secret.value)
+        self.assertNotEqual(self.secret.value, previous)
+
+    def test_type_cannot_change_after_creation(self):
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk}),
+            {"type": SecretType.FILE, "value": "aGk="},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("type", response.json())
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.type, SecretType.TEXT)
+
     def test_replace_value_requires_rotate_permission(self):
         self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
         self.user.assign_perms_to_managed_role("authentik_secrets.change_secret", self.secret)

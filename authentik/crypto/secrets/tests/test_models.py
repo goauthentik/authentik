@@ -33,3 +33,31 @@ class TestSecret(TestCase):
         second = create_named_secret("consumer")
         self.assertEqual(first.name, "consumer")
         self.assertEqual(second.name, "consumer (2)")
+
+    def test_structured_values(self):
+        for secret_type, value in [
+            (SecretType.TEXT, '{"token": "value"}'),
+            (SecretType.MULTILINE, "token: value\n"),
+            (SecretType.FILE, "dG9rZW46IHZhbHVlCg=="),
+        ]:
+            with self.subTest(type=secret_type):
+                self.assertEqual(
+                    Secret(type=secret_type, value=value).get_json(), {"token": "value"}
+                )
+
+    def test_invalid_structured_values(self):
+        for secret_type, value in [
+            (SecretType.TEXT, "[]"),
+            (SecretType.TEXT, "null"),
+            (SecretType.TEXT, "{broken"),
+            (SecretType.FILE, "not base64"),
+            (SecretType.FILE, "/w=="),
+        ]:
+            with self.subTest(type=secret_type, value=value):
+                with self.assertRaises(ValueError):
+                    Secret(type=secret_type, value=value).get_json()
+
+    def test_replacing_unchanged_value_does_not_audit_rotation(self):
+        secret = Secret.objects.create(name="unchanged", value="current")
+        secret.replace_value("current")
+        self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
