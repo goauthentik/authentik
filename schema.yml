@@ -47234,6 +47234,10 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        consumer_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
       required:
       - consumer_key
       - name
@@ -52956,6 +52960,10 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        consumer_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
     PatchedObjectAttributeRequest:
       type: object
       properties:
@@ -53232,6 +53240,9 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
+        plex_token:
+          type: string
+          minLength: 1
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -54428,6 +54439,10 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
+        bot_token:
+          type: string
+          writeOnly: true
+          minLength: 1
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -54987,6 +55002,8 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
+        plex_token:
+          type: string
       required:
       - component
       - icon_themed_urls
@@ -55141,6 +55158,9 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
+        plex_token:
+          type: string
+          minLength: 1
       required:
       - name
       - secret
@@ -60619,6 +60639,10 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
+        bot_token:
+          type: string
+          writeOnly: true
+          minLength: 1
       required:
       - bot_username
       - name

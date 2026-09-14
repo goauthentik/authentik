@@ -96,6 +96,10 @@ export interface PlexSourceRequest {
      * Plex token used to check friends
      */
     secret: string;
+    /**
+     *
+     */
+    plexToken?: string;
 }
 
 /**
@@ -159,6 +163,7 @@ export function PlexSourceRequestFromJSONTyped(
         allowedServers: json["allowed_servers"] == null ? undefined : json["allowed_servers"],
         allowFriends: json["allow_friends"] == null ? undefined : json["allow_friends"],
         secret: json["secret"],
+        plexToken: json["plex_token"] == null ? undefined : json["plex_token"],
     };
 }
 
@@ -192,5 +197,6 @@ export function PlexSourceRequestToJSONTyped(
         allowed_servers: value["allowedServers"],
         allow_friends: value["allowFriends"],
         secret: value["secret"],
+        plex_token: value["plexToken"],
     };
 }

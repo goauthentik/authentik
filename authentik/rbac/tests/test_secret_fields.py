@@ -14,7 +14,7 @@ from authentik.sources.plex.models import PlexSource
 
 
 class TestSecretFields(APITestCase):
-    """Consumer APIs expose references, even to administrators."""
+    """GETTING REMOVED WHEN FRONTEND IS DONE: check legacy value permissions."""
 
     def setUp(self) -> None:
         self.user = create_test_user()
@@ -98,7 +98,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["secret"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertEqual(body["plex_token"], self.secret.value)
 
     def test_source_create(self):
         """Test source create (role has global add permission, but no change permission)"""

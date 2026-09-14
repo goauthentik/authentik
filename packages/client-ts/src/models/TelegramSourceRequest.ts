@@ -87,6 +87,10 @@ export interface TelegramSourceRequest {
      * Flow used before authentication.
      */
     preAuthenticationFlow: string;
+    /**
+     *
+     */
+    botToken?: string;
 }
 
 /**
@@ -161,6 +165,7 @@ export function TelegramSourceRequestFromJSONTyped(
         requestMessageAccess:
             json["request_message_access"] == null ? undefined : json["request_message_access"],
         preAuthenticationFlow: json["pre_authentication_flow"],
+        botToken: json["bot_token"] == null ? undefined : json["bot_token"],
     };
 }
 
@@ -193,5 +198,6 @@ export function TelegramSourceRequestToJSONTyped(
         secret: value["secret"],
         request_message_access: value["requestMessageAccess"],
         pre_authentication_flow: value["preAuthenticationFlow"],
+        bot_token: value["botToken"],
     };
 }

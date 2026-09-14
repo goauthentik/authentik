@@ -141,6 +141,10 @@ export interface OAuthSourceRequest {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
+    /**
+     *
+     */
+    consumerSecret?: string;
 }
 
 /**
@@ -251,6 +255,7 @@ export function OAuthSourceRequestFromJSONTyped(
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
+        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
     };
 }
 
@@ -295,5 +300,6 @@ export function OAuthSourceRequestToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
+        consumer_secret: value["consumerSecret"],
     };
 }
