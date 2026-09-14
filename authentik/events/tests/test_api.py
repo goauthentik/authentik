@@ -10,11 +10,13 @@ from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.crypto.secrets.models import Secret
 from authentik.events.models import (
     Event,
     EventAction,
     Notification,
     NotificationSeverity,
+    NotificationTransport,
     TransportMode,
 )
 from authentik.events.utils import model_to_dict
@@ -146,15 +148,17 @@ class TestEventsAPI(APITestCase):
 
     def test_transport(self):
         """Test transport API"""
+        secret = Secret.objects.create(name=generate_id(), value="http://foo.com")
         response = self.client.post(
             reverse("authentik_api:notificationtransport-list"),
             data={
                 "name": "foo-with",
                 "mode": TransportMode.WEBHOOK,
-                "webhook_url": "http://foo.com",
+                "secret": secret.pk,
             },
         )
         self.assertEqual(response.status_code, 201)
+        transport = NotificationTransport.objects.get(name="foo-with")
         response = self.client.post(
             reverse("authentik_api:notificationtransport-list"),
             data={
@@ -163,6 +167,17 @@ class TestEventsAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+        invalid_secret = Secret.objects.create(name=generate_id(), value="not a URL")
+        response = self.client.patch(
+            reverse("authentik_api:notificationtransport-detail", kwargs={"pk": transport.pk}),
+            data={"secret": invalid_secret.pk},
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.patch(
+            reverse("authentik_api:notificationtransport-detail", kwargs={"pk": transport.pk}),
+            data={"mode": TransportMode.WEBHOOK, "send_once": True},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
 
     def test_volume(self):
         Event.objects.all().delete()

@@ -10543,9 +10543,10 @@
                     ],
                     "title": "Mode"
                 },
-                "webhook_url": {
+                "secret": {
                     "type": "string",
-                    "title": "Webhook url"
+                    "format": "uuid",
+                    "title": "Webhook URL"
                 },
                 "webhook_ca": {
                     "type": "string",
@@ -10921,11 +10922,10 @@
                     "title": "Local",
                     "description": "If enabled, use the local connection. Required Docker socket/Kubernetes Integration"
                 },
-                "kubeconfig": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Kubeconfig",
-                    "description": "Paste your kubeconfig here. authentik will automatically use the currently selected context."
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 },
                 "verify_ssl": {
                     "type": "boolean",
