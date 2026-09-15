@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.models import Secret
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -53,7 +54,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "google",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": "",
                     "oidc_jwks_url": "",
                 }
@@ -66,7 +67,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                 }
             ).is_valid()
         )
@@ -93,7 +94,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": url,
                     "oidc_jwks_url": "",
                 },
@@ -125,7 +126,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "consumer_secret": "foo",
+                    "secret": Secret.objects.create(name=generate_id()).pk,
                     "authorization_url": "http://foo",
                     "access_token_url": "http://foo",
                     "profile_url": "http://foo",

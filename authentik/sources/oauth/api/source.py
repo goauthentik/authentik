@@ -140,7 +140,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "profile_url",
             "pkce",
             "consumer_key",
-            "consumer_secret",
+            "secret",
             "callback_url",
             "additional_scopes",
             "type",
@@ -150,7 +150,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "consumer_secret": {"write_only": True},
+            "secret": {"required": True, "allow_null": False},
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},
             "access_token_url": {"allow_blank": True},

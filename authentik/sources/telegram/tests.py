@@ -10,6 +10,7 @@ from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -24,7 +25,7 @@ class MockTelegramResponseMixin:
     def _add_hash(self, response):
         to_hash = "\n".join([f"{key}={value}" for key, value in sorted(response.items())])
         response["hash"] = hmac.new(
-            hashlib.sha256(self.source.bot_token.encode("utf-8")).digest(),
+            hashlib.sha256(self.source.secret.value.encode("utf-8")).digest(),
             to_hash.encode("utf-8"),
             "sha256",
         ).hexdigest()
@@ -57,7 +58,7 @@ class TestTelegramSource(MockTelegramResponseMixin, TestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            bot_token="modern_token",  # nosec
+            secret=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -128,7 +129,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            bot_token="modern_token",  # nosec
+            secret=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             enrollment_flow=create_test_flow(),
             pre_authentication_flow=self.pre_auth_flow,

@@ -7,13 +7,14 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.rbac.models import Role
 from authentik.sources.plex.models import PlexSource
 
 
 class TestSecretFields(APITestCase):
-    """Test that secret fields are only rendered for users that can change the object"""
+    """Consumer APIs expose references, even to administrators."""
 
     def setUp(self) -> None:
         self.user = create_test_user()
@@ -23,11 +24,11 @@ class TestSecretFields(APITestCase):
         self.group.users.add(self.user)
 
         PlexSource.objects.all().delete()
-        self.plex_token = generate_id()
+        self.secret = create_test_secret(generate_id())
         self.source = PlexSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            plex_token=self.plex_token,
+            secret=self.secret,
         )
 
     def test_source_detail_view(self):
@@ -70,7 +71,8 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_source_detail_change_object(self):
         """Test source detail (role has change permission on the object)"""
@@ -83,7 +85,8 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_source_detail_superuser(self):
         """Test source detail (superuser)"""
@@ -94,7 +97,8 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["plex_token"], self.plex_token)
+        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["plex_token"], self.secret.value)
 
     def test_source_create(self):
         """Test source create (role has global add permission, but no change permission)"""
@@ -102,17 +106,18 @@ class TestSecretFields(APITestCase):
         self.client.force_login(self.user)
 
         name = generate_id()
-        plex_token = generate_id()
+        secret = create_test_secret(generate_id())
+        self.role.assign_perms("authentik_crypto_secrets.view_secret_value", secret)
         res = self.client.post(
             reverse("authentik_api:plexsource-list"),
             {
                 "name": name,
                 "slug": generate_id(),
-                "plex_token": plex_token,
+                "secret": str(secret.pk),
             },
         )
         self.assertEqual(res.status_code, 201)
         body = loads(res.content)
         self.assertNotIn("plex_token", body)
         source = PlexSource.objects.get(name=name)
-        self.assertEqual(source.plex_token, plex_token)
+        self.assertEqual(source.secret, secret)
