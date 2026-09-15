@@ -54,10 +54,6 @@ export interface PatchedRadiusProviderRequest {
      *
      */
     certificate?: string | null;
-    /**
-     *
-     */
-    sharedSecret?: string;
 }
 
 /**
@@ -106,7 +102,6 @@ export function PatchedRadiusProviderRequestFromJSONTyped(
                 : json["certificate"] === null
                   ? null
                   : json["certificate"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
     };
 }
 
@@ -132,6 +127,5 @@ export function PatchedRadiusProviderRequestToJSONTyped(
         secret: value["secret"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
-        shared_secret: value["sharedSecret"],
     };
 }

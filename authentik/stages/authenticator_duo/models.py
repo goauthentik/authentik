@@ -27,7 +27,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     client_id = models.TextField()
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Client secret"),
         on_delete=models.PROTECT,
         null=True,
@@ -38,7 +38,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     admin_integration_key = models.TextField(blank=True, default="")
     admin_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Admin secret key"),
         on_delete=models.PROTECT,
         null=True,

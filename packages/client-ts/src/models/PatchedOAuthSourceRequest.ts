@@ -141,10 +141,6 @@ export interface PatchedOAuthSourceRequest {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
-    /**
-     *
-     */
-    consumerSecret?: string;
 }
 
 /**
@@ -243,7 +239,6 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
-        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
     };
 }
 
@@ -288,6 +283,5 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
-        consumer_secret: value["consumerSecret"],
     };
 }

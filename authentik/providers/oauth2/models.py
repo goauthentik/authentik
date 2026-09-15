@@ -247,7 +247,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=generate_id,
     )
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
         on_delete=models.PROTECT,
         null=True,

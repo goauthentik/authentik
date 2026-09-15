@@ -22,7 +22,7 @@ def rollback_consumer_secret(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_sources_oauth", "0015_oauthsource_url_textfields"),
     ]
 
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="oauth_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Consumer secret",
             ),
         ),

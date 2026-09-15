@@ -14,7 +14,7 @@ from authentik.sources.plex.models import PlexSource
 
 
 class TestSecretFields(APITestCase):
-    """GETTING REMOVED WHEN FRONTEND IS DONE: check legacy value permissions."""
+    """Consumer APIs expose references, even to administrators."""
 
     def setUp(self) -> None:
         self.user = create_test_user()
@@ -107,7 +107,7 @@ class TestSecretFields(APITestCase):
 
         name = generate_id()
         secret = create_test_secret(generate_id())
-        self.role.assign_perms("authentik_secrets.view_secret_value", secret)
+        self.role.assign_perms("authentik_crypto_secrets.view_secret_value", secret)
         res = self.client.post(
             reverse("authentik_api:plexsource-list"),
             {

@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         ("authentik_sources_oauth", "0016_oauthsource_secret"),
         ("authentik_sources_plex", "0007_plexsource_secret"),
         ("authentik_sources_telegram", "0002_telegramsource_secret"),
-        ("authentik_secrets", "0003_preserve_provider_permissions"),
+        ("authentik_crypto_secrets", "0003_preserve_provider_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]
