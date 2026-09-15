@@ -1,105 +1,35 @@
+import type { CaptchaVendorConfig } from "#e2e/fixtures/captcha-vendors";
 import { FormFixture } from "#e2e/fixtures/FormFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { PageFixture, PageFixtureInit } from "#e2e/fixtures/PageFixture";
 import { PointerFixture } from "#e2e/fixtures/PointerFixture";
+import { series } from "#packages/core/promises";
 
 import { expect } from "@playwright/test";
-
-/**
- * A CAPTCHA provider as the stage form offers it, paired with the vendor's published
- * always-pass test credentials.
- *
- * @remarks
- *
- * Every key below is documented by the vendor as a test credential and is safe to commit —
- * they are shared across every integrator and grant nothing. `siteKey` renders a widget
- * that solves without user input; `secretKey` makes the matching `siteverify` call succeed,
- * which is what lets the flow advance past the stage.
- *
- * @see {@link https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha-v2-what-should-i-do reCAPTCHA test keys}
- * @see {@link https://docs.hcaptcha.com/#integration-testing-test-keys hCaptcha test keys}
- * @see {@link https://developers.cloudflare.com/turnstile/troubleshooting/testing/ Turnstile test keys}
- */
-export interface CaptchaVendor {
-    /**
-     * The label of the option in the stage form's "Provider Type" select.
-     */
-    providerType: string;
-    /**
-     * A site key whose widget waits for the user, so it stays on screen to be asserted
-     * against.
-     */
-    siteKey: string;
-    /**
-     * A site key whose widget solves itself, used to advance a flow past this stage
-     * without simulating a click inside a cross-origin vendor frame.
-     *
-     * Only needed where the vendor offers one; reCAPTCHA and hCaptcha always require a
-     * click on their test keys.
-     */
-    autoSolveSiteKey?: string;
-    secretKey: string;
-    /**
-     * The origin the vendor serves its widget iframe from, used to locate the rendered
-     * widget without depending on vendor-specific markup.
-     */
-    widgetOrigin: string;
-    /**
-     * The global the vendor's script installs on `window`.
-     */
-    globalName: string;
-}
-
-export const CAPTCHA_VENDORS = {
-    recaptcha: {
-        providerType: "Google reCAPTCHA v2",
-        siteKey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
-        secretKey: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe",
-        widgetOrigin: "recaptcha.net",
-        globalName: "grecaptcha",
-    },
-    hcaptcha: {
-        providerType: "hCaptcha",
-        // hCaptcha's "always passes" key solves with no interaction, completing the flow
-        // before the widget can be asserted against. The bot-detected key renders the same
-        // widget and never solves.
-        siteKey: "30000000-ffff-ffff-ffff-000000000003",
-        autoSolveSiteKey: "10000000-ffff-ffff-ffff-000000000001",
-        secretKey: "0x0000000000000000000000000000000000000000",
-        widgetOrigin: "hcaptcha.com",
-        globalName: "hcaptcha",
-    },
-    turnstile: {
-        providerType: "Cloudflare Turnstile",
-        // Turnstile's "always passes" key solves with no interaction, which would complete
-        // the flow before the widget could be asserted against. The forced-interactive key
-        // renders the same widget but waits.
-        siteKey: "3x00000000000000000000FF",
-        autoSolveSiteKey: "1x00000000000000000000AA",
-        secretKey: "1x0000000000000000000000000000000AA",
-        widgetOrigin: "challenges.cloudflare.com",
-        globalName: "turnstile",
-    },
-} as const satisfies Record<string, CaptchaVendor>;
 
 export interface BindCaptchaStageInit {
     /**
      * The slug of the flow to bind the stage to.
      */
     flowSlug: string;
-    vendor: CaptchaVendor;
+
+    vendor: CaptchaVendorConfig;
+
     /**
      * The name to give the created stage.
      */
     name: string;
+
     /**
      * The binding order within the flow. Stages run lowest-first.
      */
     order: number;
+
     /**
      * Whether the stage renders a visible widget. Defaults to `true`.
      */
     interactive?: boolean;
+
     /**
      * Use the vendor's self-solving site key so the flow advances unattended.
      */
@@ -119,46 +49,49 @@ export interface CaptchaFixtureInit extends PageFixtureInit {
  * form or the bind wizard surfaces here too.
  */
 export class CaptchaFixture extends PageFixture {
-    static fixtureName = "Captcha";
+    public static readonly fixtureName = "CAPTCHA";
 
-    readonly #form: FormFixture;
-    readonly #pointer: PointerFixture;
-    readonly #navigator: NavigatorFixture;
+    protected readonly form: FormFixture;
+    protected readonly pointer: PointerFixture;
+    protected readonly navigator: NavigatorFixture;
 
     constructor({ page, testName, form, pointer, navigator }: CaptchaFixtureInit) {
         super({ page, testName });
 
-        this.#form = form;
-        this.#pointer = pointer;
-        this.#navigator = navigator;
+        this.form = form;
+        this.pointer = pointer;
+        this.navigator = navigator;
     }
 
     /**
      * Create an empty authentication flow and return its slug.
      */
     public createFlow = async (name: string, slug: string): Promise<string> => {
-        const { page } = this;
+        const { page, form, pointer, logger } = this;
+        const { fill } = form;
 
-        await this.#navigator.navigate("/if/admin/flow/flows");
+        await this.navigator.navigate("/if/admin/flow/flows");
 
         const dialog = page.getByRole("dialog", { name: "New Flow" });
 
-        await this.#pointer.click("New Flow");
+        await pointer.click("New Flow");
         await expect(dialog, "Flow form opens").toBeVisible();
 
-        await this.#form.fill("Flow Name", name, dialog);
-        await this.#form.fill("Title", name, dialog);
-        await this.#form.fill("Slug", slug, dialog);
+        await series(
+            [fill, "Flow Name", name, dialog],
+            [fill, "Title", name, dialog],
+            [fill, "Slug", slug, dialog],
+        );
 
         await dialog.getByLabel("Designation").selectOption("authentication");
 
-        await this.#pointer.click("Create Flow", "button", dialog);
+        await pointer.click("Create Flow", "button", dialog);
 
         // Every save here is a round-trip to one shared authentik instance that the other
         // workers are also writing to, so this is slower than a typical dialog dismissal.
         await expect(dialog, "Flow form closes after save").toBeHidden({ timeout: 30_000 });
 
-        this.logger.info(`Created flow ${slug}`);
+        logger.info(`Created flow ${slug}`);
 
         return slug;
     };
@@ -174,9 +107,11 @@ export class CaptchaFixture extends PageFixture {
         interactive = true,
         autoSolve = false,
     }: BindCaptchaStageInit): Promise<void> => {
-        const { page } = this;
+        const { page, pointer, navigator, form } = this;
 
-        await this.#navigator.navigate(`/if/admin/flow/flows/${flowSlug}`);
+        const { fill, setInputCheck } = form;
+
+        await navigator.navigate(`/if/admin/flow/flows/${flowSlug}`);
 
         // The wizard relabels itself as it advances through its steps.
         const wizard = page.getByRole("dialog", {
@@ -189,7 +124,7 @@ export class CaptchaFixture extends PageFixture {
             .or(page.getByRole("link", { name: "Stage Bindings" }))
             .click();
 
-        await this.#pointer.click("Create or bind...");
+        await pointer.click("Create or bind...");
         await expect(wizard, "Bind wizard opens").toBeVisible({ timeout: 10_000 });
 
         await wizard.getByRole("radio", { name: "Captcha Stage" }).check();
@@ -200,12 +135,14 @@ export class CaptchaFixture extends PageFixture {
         await expect(providerSelect, "Stage form is shown").toBeVisible();
         await providerSelect.selectOption({ label: vendor.providerType });
 
-        await this.#form.fill("Stage Name", name, wizard);
+        await fill("Stage Name", name, wizard);
         const siteKey = autoSolve ? (vendor.autoSolveSiteKey ?? vendor.siteKey) : vendor.siteKey;
 
-        await this.#form.fill("Public Key", siteKey, wizard);
-        await this.#form.fill("Secret Key", vendor.secretKey, wizard);
-        await this.#form.setInputCheck("Interactive", interactive, wizard);
+        await series(
+            [fill, "Public Key", siteKey, wizard],
+            [fill, "Secret Key", vendor.secretKey, wizard],
+            [setInputCheck, "Interactive", interactive, wizard],
+        );
 
         await page.getByTestId("wizard-navigation-next").click();
 
@@ -231,7 +168,7 @@ export class CaptchaFixture extends PageFixture {
 
         // Filled after the stage, because adopting the stage re-renders this step and would
         // discard an order typed beforehand.
-        await this.#form.fill("Order", order.toString(), wizard);
+        await fill("Order", order.toString(), wizard);
 
         await page.getByTestId("wizard-navigation-next").click();
 
@@ -244,7 +181,7 @@ export class CaptchaFixture extends PageFixture {
      * Open a flow in the flow executor.
      */
     public executeFlow = async (flowSlug: string): Promise<void> => {
-        await this.#navigator.navigate(`/if/flow/${flowSlug}/`);
+        await this.navigator.navigate(`/if/flow/${flowSlug}/`);
     };
 
     /**
@@ -273,35 +210,70 @@ export class CaptchaFixture extends PageFixture {
      * `page.frames()` rather than a DOM locator because Turnstile puts its iframe inside a
      * closed shadow root, where no selector can reach it.
      */
-    public hasVendorFrame = (vendor: CaptchaVendor): boolean => {
+    public hasVendorFrame = (vendor: CaptchaVendorConfig): boolean => {
         return this.page.frames().some((frame) => frame.url().includes(vendor.widgetOrigin));
     };
 
     /**
      * Whether the vendor's script installed its global in the flow document's own realm.
-     *
-     * This is the positive form of "no wrapper iframe": when the stage framed each widget,
-     * the vendor script ran inside that frame and the top-level document never saw the
-     * global at all.
      */
-    public vendorGlobalDefined = (vendor: CaptchaVendor): Promise<boolean> => {
+    public vendorGlobalDefined = (vendor: CaptchaVendorConfig): Promise<boolean> => {
         return this.page
             .evaluate(
                 (globalName) => typeof (window as unknown as Record<string, unknown>)[globalName],
-                vendor.globalName,
+                vendor.globalName as string,
             )
             .then((type) => type !== "undefined");
     };
 
     /**
+     * Complete the challenge the way a user would.
+     */
+    public solve = async (vendor: CaptchaVendorConfig): Promise<void> => {
+        await this.expectVendorFrame(vendor);
+
+        if (!vendor.requiresInteraction) return;
+
+        // The checkbox lives in a cross-origin frame that can take a moment to paint after
+        // the frame itself appears, so this waits for it rather than sampling once — a
+        // silent no-op here reads as "the widget could not be solved", which is the exact
+        // failure this suite exists to catch.
+        const checkbox = async () => {
+            for (const frame of this.page.frames()) {
+                if (frame.isDetached() || !frame.url().includes(vendor.widgetOrigin)) continue;
+
+                const candidate = frame.locator("#recaptcha-anchor, #checkbox").first();
+
+                if (await candidate.isVisible().catch(() => false)) return candidate;
+            }
+
+            return null;
+        };
+
+        let target: Awaited<ReturnType<typeof checkbox>> = null;
+
+        await expect
+            .poll(async () => !!(target = await checkbox()), {
+                message: `${vendor.providerType} renders a checkbox to click`,
+                timeout: 20_000,
+            })
+            .toBe(true);
+
+        // The vendor can tear the frame down mid-click once it solves.
+        await target!.click().catch(() => undefined);
+    };
+
+    /**
      * Wait for `vendor` to have rendered its widget.
      */
-    public expectVendorFrame = async (vendor: CaptchaVendor, present = true): Promise<void> => {
-        await expect
+    public expectVendorFrame = (vendor: CaptchaVendorConfig, present = true): Promise<void> => {
+        const message = present
+            ? `${vendor.providerType} renders its own frame`
+            : `${vendor.providerType} has no frame on the page`;
+
+        return expect
             .poll(() => this.hasVendorFrame(vendor), {
-                message: present
-                    ? `${vendor.providerType} renders its own frame`
-                    : `${vendor.providerType} has no frame on the page`,
+                message,
                 // The vendor script is fetched over the network on first paint.
                 timeout: 30_000,
             })

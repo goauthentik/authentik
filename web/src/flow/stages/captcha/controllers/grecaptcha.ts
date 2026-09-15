@@ -1,6 +1,6 @@
 /// <reference types="@types/grecaptcha"/>
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
-import { matchesAnyHost } from "#flow/stages/captcha/controllers/shared";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 declare global {
     interface Window {
@@ -10,22 +10,12 @@ declare global {
     }
 }
 
-/**
- * Hosts that serve the reCAPTCHA bootstrap script.
- *
- * `recaptcha.net` is the alternate host Google documents for regions where
- * `google.com` is unreachable, and is authentik's default.
- */
-const RECAPTCHA_HOSTS = ["google.com", "recaptcha.net", "gstatic.com"] as const;
-
 export class GReCaptchaController extends CaptchaController {
-    public static readonly globalName = "grecaptcha";
+    public static override readonly vendor = CaptchaVendor.reCAPTCHA;
+
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.reCAPTCHA];
 
     protected static override logPrefix = "grecaptcha";
-
-    public static override matchesURL(url: URL): boolean {
-        return matchesAnyHost(url, RECAPTCHA_HOSTS) && url.pathname.includes("/recaptcha/");
-    }
 
     #widgetID: number | null = null;
 

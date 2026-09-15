@@ -1,17 +1,7 @@
 import { expect, test } from "#e2e";
-import { CAPTCHA_VENDORS, type CaptchaVendor } from "#e2e/fixtures/CaptchaFixture";
+import { CaptchaVendorRecord } from "#e2e/fixtures/captcha-vendors";
 
 import { IDGenerator } from "@goauthentik/core/id";
-
-/**
- * The CAPTCHA stage used to render each widget inside a generated `<iframe>` — a blob URL
- * or a `document.write`-populated `about:blank` document — purely so that two providers
- * could never collide over their `window` globals.
- *
- * These tests cover what replaced it: widgets render directly in the flow document, and
- * providers are chosen by the challenge's script URL rather than by whichever global
- * happens to be present.
- */
 
 interface FlowNames {
     flowName: string;
@@ -19,11 +9,6 @@ interface FlowNames {
     seed: string;
 }
 
-// Every case here loads a real vendor bundle from Google, hCaptcha or Cloudflare and, for
-// the auto-solving keys, has authentik call the vendor's `siteverify` endpoint. That is the
-// point — it is the only way to know the widgets actually work — but it makes the suite
-// dependent on third-party availability, so CI excludes the tag and runs the
-// provider-resolution unit tests instead.
 test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
     const names = new Map<string, FlowNames>();
 
@@ -37,7 +22,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
         });
     });
 
-    for (const [key, vendor] of Object.entries(CAPTCHA_VENDORS) as [string, CaptchaVendor][]) {
+    for (const [key, vendor] of Object.entries(CaptchaVendorRecord)) {
         test(`Renders the ${vendor.providerType} widget without a wrapper iframe`, async ({
             session,
             captcha,
@@ -66,23 +51,60 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
                 );
 
                 await expect(
-                    await captcha.vendorGlobalDefined(vendor),
+                    captcha.vendorGlobalDefined(vendor),
                     `\`window.${vendor.globalName}\` is defined in the flow document itself`,
-                ).toBe(true);
+                ).resolves.toBe(true);
             });
         });
     }
 
-    // Non-interactive challenges never used the wrapper iframe, but they did render into a
-    // container appended to `document.body`. They now share the interactive path's in-place
-    // container, so they need covering too.
+    // The regression this suite originally missed: every case asserted that a widget
+    // rendered, none that it could be solved. reCAPTCHA and hCaptcha rendered perfectly
+    // while being impossible to complete, because they resolve their internals through
+    // `document` and the container sat in the executor's shadow root.
+    for (const [key, vendor] of Object.entries(CaptchaVendorRecord)) {
+        test(`Solving the ${vendor.providerType} challenge advances the flow`, async ({
+            session,
+            captcha,
+            page,
+        }, testInfo) => {
+            const { flowName, flowSlug } = names.get(testInfo.testId)!;
+
+            await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
+
+            await test.step("Create the flow", () => captcha.createFlow(flowName, flowSlug));
+
+            await test.step("Bind the CAPTCHA stage", () =>
+                captcha.bindCaptchaStage({
+                    flowSlug,
+                    vendor,
+                    name: `solve-${key}-${flowSlug}`,
+                    order: 0,
+                    // The passing key: this asserts a solved challenge is accepted, not how
+                    // a vendor scores the client.
+                    autoSolve: true,
+                }));
+
+            await test.step("Execute the flow", () => captcha.executeFlow(flowSlug));
+
+            await test.step("Solve the challenge", () => captcha.solve(vendor));
+
+            await test.step("Flow advances", async () => {
+                await expect(page, "Flow leaves the CAPTCHA stage once solved").not.toHaveURL(
+                    new RegExp(`/if/flow/${flowSlug}`),
+                    { timeout: 30_000 },
+                );
+            });
+        });
+    }
+
     test("Solves a non-interactive challenge without user input", async ({
         session,
         captcha,
         page,
     }, testInfo) => {
         const { flowName, flowSlug } = names.get(testInfo.testId)!;
-        const vendor = CAPTCHA_VENDORS.turnstile;
+        const vendor = CaptchaVendorRecord.turnstile;
 
         await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
 
@@ -119,11 +141,9 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
     }, testInfo) => {
         const { flowName, flowSlug } = names.get(testInfo.testId)!;
 
-        // Turnstile is first because it is the one vendor with a self-solving test key, so
-        // the flow reaches the second stage without driving a click inside a cross-origin
-        // vendor frame.
-        const first = CAPTCHA_VENDORS.turnstile;
-        const second = CAPTCHA_VENDORS.recaptcha;
+        // Turnstile is first because it is the one vendor with a self-solving test key.
+        const first = CaptchaVendorRecord.turnstile;
+        const second = CaptchaVendorRecord.recaptcha;
 
         await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
 
@@ -154,9 +174,6 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
         });
 
         await test.step("Both vendor globals are present", async () => {
-            // The assertion that matters: the collision the wrapper iframe was hiding is
-            // real and still happens — two globals do coexist — but selection no longer
-            // depends on it.
             const globals = await page.evaluate(() => ({
                 turnstile: typeof window.turnstile !== "undefined",
                 grecaptcha: typeof window.grecaptcha !== "undefined",

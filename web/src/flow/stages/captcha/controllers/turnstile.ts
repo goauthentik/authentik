@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="turnstile-types"/>
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
-import { matchesHost } from "#flow/stages/captcha/controllers/shared";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 import { TurnstileObject } from "turnstile-types";
 
@@ -12,13 +12,11 @@ declare global {
 }
 
 export class TurnstileController extends CaptchaController {
-    public static readonly globalName = "turnstile";
+    public static override readonly vendor = CaptchaVendor.turnstile;
+
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.turnstile];
 
     protected static override logPrefix = "turnstile";
-
-    public static override matchesURL(url: URL): boolean {
-        return matchesHost(url, "challenges.cloudflare.com");
-    }
 
     #widgetID: string | null = null;
 

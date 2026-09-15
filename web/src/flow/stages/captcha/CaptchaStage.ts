@@ -21,6 +21,7 @@ import { GReCaptchaController } from "#flow/stages/captcha/controllers/grecaptch
 import { HCaptchaController } from "#flow/stages/captcha/controllers/hcaptcha";
 import { TurnstileController } from "#flow/stages/captcha/controllers/turnstile";
 import { loadCaptchaScript } from "#flow/stages/captcha/script-loader";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -38,9 +39,24 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 export type TokenListener = (token: string) => void;
 
 /**
- * The slot name used for the light-DOM element a provider renders into.
+ * The nearest ancestor that sits in the document tree rather than in a shadow root.
+ *
+ * Returns `null` while the node is detached, when there is no document-tree host to speak
+ * of yet.
  */
-const CAPTCHA_SLOT = "captcha";
+function documentTreeHost(node: Node): Element | null {
+    let current: Node = node;
+
+    for (;;) {
+        const root = current.getRootNode();
+
+        if (!(root instanceof ShadowRoot)) {
+            return current.isConnected && current instanceof Element ? current : null;
+        }
+
+        current = root.host;
+    }
+}
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage
@@ -128,11 +144,12 @@ export class CaptchaStage
     /**
      * The element a provider renders its widget into.
      *
-     * Kept in the light DOM and projected through a slot. Every provider locates and
-     * measures its own widget with plain DOM APIs, and reCAPTCHA in particular walks up
-     * from the container to position its challenge overlay — none of which crosses a
-     * shadow boundary reliably. Keeping the element in the light DOM sidesteps that
-     * entirely while the stage's own markup stays encapsulated.
+     * Attached to the nearest document-tree ancestor — the flow executor — and projected
+     * back down into the card through {@linkcode CAPTCHA_SLOT}. reCAPTCHA and hCaptcha
+     * resolve their own elements through `document`, so a container whose `getRootNode()`
+     * is a `ShadowRoot` renders but can never finish verifying: the checkbox spins
+     * forever. Slotting moves nothing, so the container stays in the document tree while
+     * appearing inside the card.
      */
     protected get container(): HTMLDivElement {
         if (this.#container) return this.#container;
@@ -141,6 +158,19 @@ export class CaptchaStage
 
         container.slot = CAPTCHA_SLOT;
         container.className = "ak-captcha-container";
+
+        // Set here rather than in the stage's stylesheet: the container lives in the
+        // document tree, out of reach of this element's shadow root.
+        //
+        // Vendors size their widget frames with the `height` content attribute, and that
+        // hint does not survive on authentik's pages — a plain `<iframe height="78">`
+        // computes to the 150px replaced-element default here, while identical markup
+        // computes to 78px on a page outside the app — so the frame spills below the widget
+        // as a blank band. Inside the old wrapper iframe the surrounding stylesheets never
+        // reached it. Clipping to the box the vendor actually declared is safe: every
+        // provider renders its expanded challenge as an overlay on `document.body`, never
+        // inside this container.
+        container.style.overflow = "hidden";
 
         this.#container = container;
 
@@ -256,7 +286,10 @@ export class CaptchaStage
             this.activeController = null;
         }
 
-        this.#container?.replaceChildren();
+        // The container lives outside this element's subtree, so dropping the stage does
+        // not take it with it.
+        this.#container?.remove();
+        this.#container = undefined;
         this.widgetLoaded = false;
     }
 
@@ -314,9 +347,16 @@ export class CaptchaStage
                 return;
             }
 
-            // The container has to be in the document before a provider renders into it —
-            // several of them measure it on the spot.
-            this.appendChild(this.container);
+            const host = documentTreeHost(this);
+
+            if (!host) {
+                this.#logger.debug("No document-tree host, skipping.");
+                return;
+            }
+
+            // The container has to be attached before a provider renders into it — several
+            // of them measure it on the spot.
+            host.appendChild(this.container);
 
             if (this.challenge?.interactive) {
                 await controller.mount(this.container);

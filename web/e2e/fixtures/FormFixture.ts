@@ -187,9 +187,6 @@ export class FormFixture extends PageFixture {
         await control.click();
 
         if (typeof pattern === "string") {
-            // Must be awaited: the option list is filtered by what has actually been typed,
-            // so racing ahead to the lookup below searches an unfiltered list — which, once
-            // a collection outgrows the picker's first page, silently finds nothing.
             await this.fill(control, pattern, parent);
         }
 

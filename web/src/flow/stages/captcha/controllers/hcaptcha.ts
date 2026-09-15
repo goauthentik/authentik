@@ -1,7 +1,7 @@
 /// <reference types="@hcaptcha/types"/>
 
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
-import { matchesHost } from "#flow/stages/captcha/controllers/shared";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 declare global {
     interface Window {
@@ -10,13 +10,11 @@ declare global {
 }
 
 export class HCaptchaController extends CaptchaController {
-    public static readonly globalName = "hcaptcha";
+    public static override readonly vendor = CaptchaVendor.hCaptcha;
+
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.hCaptcha];
 
     protected static override logPrefix = "hcaptcha";
-
-    public static override matchesURL(url: URL): boolean {
-        return matchesHost(url, "hcaptcha.com");
-    }
 
     #widgetID: HCaptchaId | null = null;
 

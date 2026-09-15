@@ -4,21 +4,19 @@ import {
     CapSolveEvent,
     type CapWidgetElement,
 } from "#flow/stages/captcha/controllers/events";
-import { isCapWidgetURL } from "#flow/stages/captcha/controllers/shared";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 export class CapController extends CaptchaController {
-    public static readonly globalName = "cap-widget";
+    public static override readonly vendor = CaptchaVendor.cap;
+
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.cap];
 
     public static readonly scriptType = "module";
 
     protected static override logPrefix = "cap";
 
     public static override isAvailable(): boolean {
-        return customElements.get("cap-widget") !== undefined;
-    }
-
-    public static override matchesURL(url: URL): boolean {
-        return isCapWidgetURL(url);
+        return customElements.get(CapController.globalName) !== undefined;
     }
 
     #widget: CapWidgetElement | null = null;

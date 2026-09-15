@@ -2,6 +2,8 @@ import type { ResolvedUITheme } from "#common/theme";
 
 import { ErrorProp } from "#components/ak-field-errors";
 
+import { CaptchaVendor, matchesVendorURL } from "#flow/stages/captcha/shared";
+
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { CaptchaChallenge } from "@goauthentik/api";
@@ -10,9 +12,6 @@ import { ReactiveController, ReactiveControllerHost } from "lit";
 
 /**
  * The result of resolving a challenge URL to a controller.
- *
- * `matched` records how the decision was reached, which is the single most useful thing to
- * have in a bug report when a stage renders the wrong vendor's widget.
  */
 export interface CaptchaResolution {
     Controller: CaptchaControllerConstructor;
@@ -20,6 +19,11 @@ export interface CaptchaResolution {
 }
 
 export abstract class CaptchaController implements ReactiveController {
+    /**
+     * The vendor this controller drives.
+     */
+    public static readonly vendor: CaptchaVendor | null = null;
+
     /**
      * The runtime global name of this Captcha provider, e.g. `grecaptcha`.
      */
@@ -44,8 +48,8 @@ export abstract class CaptchaController implements ReactiveController {
      *
      * This is the primary selection mechanism — see {@linkcode CaptchaController.resolve}.
      */
-    public static matchesURL(_url: URL): boolean {
-        return false;
+    public static matchesURL(url: URL): boolean {
+        return this.vendor ? matchesVendorURL(this.vendor, url) : false;
     }
 
     /**
