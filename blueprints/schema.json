@@ -8655,10 +8655,10 @@
                     "minLength": 1,
                     "title": "Url"
                 },
-                "token": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Token"
+                    "format": "uuid",
+                    "title": "Fleet API Token"
                 },
                 "headers_mapping": {
                     "type": "string",
@@ -8720,10 +8720,10 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 }
             },
             "required": []
@@ -10043,10 +10043,10 @@
                     "type": "string",
                     "title": "Friendly name"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "secret": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Secret"
                 }
             },
             "required": []

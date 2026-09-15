@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     AuthenticatorEndpointGDTCStage,
 )
@@ -18,7 +19,7 @@ class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
         self.flow = create_test_flow()
         self.stage = AuthenticatorEndpointGDTCStage.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

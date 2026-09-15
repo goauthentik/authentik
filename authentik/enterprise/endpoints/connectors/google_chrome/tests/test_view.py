@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.urls import reverse
 
 from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.endpoints.models import Device, EndpointStage
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
@@ -19,7 +20,7 @@ class TestChromeDTCView(FlowTestCase):
         self.flow = create_test_flow()
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()

@@ -5,6 +5,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import RequestFactory
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
@@ -21,7 +22,7 @@ class TestGoogleChromeConnector(APITestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}"),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()

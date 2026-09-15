@@ -7,6 +7,7 @@ from requests_mock import Mocker
 from authentik.core.tests.utils import (
     create_test_flow,
 )
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
@@ -21,7 +22,7 @@ class FleetConnectorStageTests(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", token=generate_id()
+            name=generate_id(), url="http://localhost", secret=create_test_secret(generate_id())
         )
 
         controller = self.connector.controller(self.connector)

@@ -7,6 +7,8 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.crypto.secrets.api import JSONSecretReferenceField
+from authentik.crypto.secrets.models import Secret
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     AuthenticatorEndpointGDTCStage,
@@ -20,14 +22,17 @@ LOGGER = get_logger()
 class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     """AuthenticatorEndpointGDTCStage Serializer"""
 
+    secret = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=True, allow_null=False
+    )
+
     class Meta:
         model = AuthenticatorEndpointGDTCStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "friendly_name",
-            "credentials",
+            "secret",
         ]
-        secret_fields = ["credentials"]
 
 
 class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):

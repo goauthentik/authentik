@@ -56,7 +56,12 @@ class JSONSecretReferenceField(SecretReferenceField):
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
 
-    structured_consumers = ("kubernetes_connections", "google_workspace_providers")
+    structured_consumers = (
+        "google_chrome_connectors",
+        "google_workspace_providers",
+        "gdtc_stages",
+        "kubernetes_connections",
+    )
 
     def validate_value(self, value: str) -> str:
         if value == "":

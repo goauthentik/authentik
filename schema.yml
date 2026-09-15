@@ -37295,16 +37295,16 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
       required:
       - component
-      - credentials
       - flow_set
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorEndpointGDTCStageRequest:
@@ -37322,12 +37322,12 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
       required:
-      - credentials
       - name
+      - secret
     AuthenticatorSMSChallenge:
       type: object
       description: SMS Setup challenge
@@ -41645,6 +41645,10 @@ components:
           type: string
           format: uri
           maxLength: 200
+        secret:
+          type: string
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -41659,6 +41663,7 @@ components:
       - component
       - meta_model_name
       - name
+      - secret
       - url
       - verbose_name
       - verbose_name_plural
@@ -41679,10 +41684,10 @@ components:
           format: uri
           minLength: 1
           maxLength: 200
-        token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -41695,7 +41700,7 @@ components:
           type: boolean
       required:
       - name
-      - token
+      - secret
       - url
     Flow:
       type: object
@@ -42445,9 +42450,9 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
         chrome_url:
           type: string
           nullable: true
@@ -42456,9 +42461,9 @@ components:
       required:
       - chrome_url
       - component
-      - credentials
       - meta_model_name
       - name
+      - secret
       - verbose_name
       - verbose_name_plural
     GoogleChromeConnectorRequest:
@@ -42473,12 +42478,12 @@ components:
           minLength: 1
         enabled:
           type: boolean
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
       required:
-      - credentials
       - name
+      - secret
     GoogleEndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -50966,9 +50971,9 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -51713,10 +51718,10 @@ components:
           format: uri
           minLength: 1
           maxLength: 200
-        token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -51853,9 +51858,9 @@ components:
           minLength: 1
         enabled:
           type: boolean
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices

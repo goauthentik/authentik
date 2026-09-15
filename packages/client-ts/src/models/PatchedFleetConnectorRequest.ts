@@ -37,7 +37,7 @@ export interface PatchedFleetConnectorRequest {
     /**
      *
      */
-    token?: string;
+    secret?: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
      */
@@ -77,7 +77,7 @@ export function PatchedFleetConnectorRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         url: json["url"] == null ? undefined : json["url"],
-        token: json["token"] == null ? undefined : json["token"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         headersMapping:
             json["headers_mapping"] === undefined
                 ? undefined
@@ -107,7 +107,7 @@ export function PatchedFleetConnectorRequestToJSONTyped(
         name: value["name"],
         enabled: value["enabled"],
         url: value["url"],
-        token: value["token"],
+        secret: value["secret"],
         headers_mapping: value["headersMapping"],
         map_users: value["mapUsers"],
         map_teams_access_group: value["mapTeamsAccessGroup"],
