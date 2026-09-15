@@ -10365,6 +10365,30 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -25425,6 +25449,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: service_bind_method
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: |+
+            Authentication method used for LDAP synchronization and writeback.
+
+      - in: query
         name: slug
         schema:
           type: string
@@ -38119,7 +38151,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
@@ -44679,6 +44715,10 @@ components:
             Certificate.
         bind_cn:
           type: string
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44904,6 +44944,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -45845,7 +45889,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
-      - authentik_secrets.secret
+      - authentik_crypto_secrets.secret
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -46680,9 +46724,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46815,9 +46856,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - authorization_flow
       - invalidation_flow
@@ -47064,6 +47102,7 @@ components:
       - name
       - pk
       - provider_type
+      - secret
       - slug
       - type
       - verbose_name
@@ -47233,14 +47272,11 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - consumer_key
       - name
       - provider_type
+      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -52373,6 +52409,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52838,9 +52878,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -52958,10 +52995,6 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedObjectAttributeRequest:
       type: object
       properties:
@@ -53238,9 +53271,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -53545,9 +53575,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
     PatchedRedirectStageRequest:
       type: object
       description: RedirectStage Serializer
@@ -54056,9 +54083,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -54437,10 +54461,6 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -55000,8 +55020,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
       required:
       - component
       - icon_themed_urls
@@ -55010,6 +55028,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55155,11 +55174,9 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
       required:
       - name
+      - secret
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -56537,8 +56554,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -56669,9 +56684,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
       required:
       - authorization_flow
       - invalidation_flow
@@ -58612,9 +58624,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
       required:
       - name
       - url
@@ -59340,6 +59349,11 @@ components:
       - name
       - pk
       - verbose_name
+    ServiceBindMethodEnum:
+      enum:
+      - simple
+      - sasl_external
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
@@ -60497,6 +60511,7 @@ components:
       - name
       - pk
       - pre_authentication_flow
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60634,14 +60649,11 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - bot_username
       - name
       - pre_authentication_flow
+      - secret
       - slug
     Tenant:
       type: object

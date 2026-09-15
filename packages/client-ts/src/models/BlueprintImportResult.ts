@@ -29,6 +29,10 @@ export interface BlueprintImportResult {
      *
      */
     readonly success: boolean;
+    /**
+     *
+     */
+    readonly imported: boolean;
 }
 
 /**
@@ -37,6 +41,7 @@ export interface BlueprintImportResult {
 export function instanceOfBlueprintImportResult(value: object): value is BlueprintImportResult {
     if (!("logs" in value) || value["logs"] === undefined) return false;
     if (!("success" in value) || value["success"] === undefined) return false;
+    if (!("imported" in value) || value["imported"] === undefined) return false;
     return true;
 }
 
@@ -54,6 +59,7 @@ export function BlueprintImportResultFromJSONTyped(
     return {
         logs: (json["logs"] as Array<any>).map(LogEventFromJSON),
         success: json["success"],
+        imported: json["imported"],
     };
 }
 
@@ -62,7 +68,7 @@ export function BlueprintImportResultToJSON(json: any): BlueprintImportResult {
 }
 
 export function BlueprintImportResultToJSONTyped(
-    value?: Omit<BlueprintImportResult, "logs" | "success"> | null,
+    value?: Omit<BlueprintImportResult, "logs" | "success" | "imported"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

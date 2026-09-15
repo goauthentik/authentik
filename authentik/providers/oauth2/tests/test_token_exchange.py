@@ -32,6 +32,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
@@ -122,6 +123,26 @@ class TestTokenExchange(OAuthTestCase):
             auth_time=now(),
         )
         return token
+
+    def _assert_exchange_event(self, actor: Actor | None):
+        """The exchange's login event is attributed to the actor when one was supplied
+        (recorded as an agent acting on behalf of the subject), else to the subject"""
+        event = (
+            Event.objects.filter(action=EventAction.LOGIN, context__auth_method="token_exchange")
+            .order_by("-created")
+            .first()
+        )
+        self.assertIsNotNone(event)
+        if actor is None:
+            self.assertEqual(event.user["username"], self.user.username)
+            self.assertNotIn("on_behalf_of", event.user)
+            return
+        self.assertEqual(event.user["username"], actor.username)
+        self.assertTrue(event.user["is_agent"])
+        if actor.parent_id is None:
+            self.assertNotIn("on_behalf_of", event.user)
+            return
+        self.assertEqual(event.user["on_behalf_of"]["username"], self.user.username)
 
     def test_missing_subject_token(self):
         """test request without a subject token"""
@@ -541,6 +562,7 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(jwt["given_name"], self.user.name)
         self.assertEqual(jwt["preferred_username"], self.user.username)
         self.assertNotIn("act", jwt)
+        self._assert_exchange_event(None)
 
     def test_successful_with_group_binding(self):
         """test that policies are evaluated as the subject, not anonymously"""
@@ -661,6 +683,7 @@ class TestTokenExchange(OAuthTestCase):
         access_token = AccessToken.objects.get(token=body["access_token"])
         self.assertEqual(access_token.user_id, self.user.pk)
         self.assertEqual(access_token.actor_id, actor.pk)
+        self._assert_exchange_event(actor)
 
     def test_actor_token_builtin_successful_delegation(self):
         """test RFC 8693 §4.1 delegation via an authentik built-in Token, for an actor
@@ -690,6 +713,7 @@ class TestTokenExchange(OAuthTestCase):
 
         access_token = AccessToken.objects.get(token=body["access_token"])
         self.assertEqual(access_token.actor_id, actor.pk)
+        self._assert_exchange_event(actor)
 
     def test_actor_token_unowned_jwt_allowed(self):
         """test that an actor with no owner can be delegated to via a JWT actor_token"""
@@ -718,6 +742,7 @@ class TestTokenExchange(OAuthTestCase):
 
         access_token = AccessToken.objects.get(token=body["access_token"])
         self.assertEqual(access_token.actor_id, actor.pk)
+        self._assert_exchange_event(actor)
 
     def test_actor_token_jwt_from_self_with_audience(self):
         """test that an actor_token issued by the requesting provider itself is accepted
