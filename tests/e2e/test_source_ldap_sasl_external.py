@@ -14,6 +14,7 @@ from docker.types import Healthcheck
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import (
@@ -205,7 +206,7 @@ class TestSourceLDAPSASLExternal(E2ETestCase):
             peer_certificate=self.ca_keypair,
             client_certificate=self.client_keypair,
             bind_cn="ignored",
-            bind_password="ignored",
+            secret=create_test_secret("ignored"),
             service_bind_method=LDAPSourceBindMethod.SASL_EXTERNAL,
             start_tls=True,
             sni=True,

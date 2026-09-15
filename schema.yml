@@ -44037,6 +44037,22 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
+        secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Sync password
+          description: Password to authenticate to kadmin for sync
+        sync_keytab_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Sync keytab
+        sync_ccache_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Sync ccache
         connectivity:
           type: object
           additionalProperties:
@@ -44048,6 +44064,16 @@ components:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
             in the form HTTP@hostname
+        spnego_keytab_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Spnego keytab
+        spnego_ccache_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Spnego ccache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -44212,33 +44238,36 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Sync password
           description: Password to authenticate to kadmin for sync
-        sync_keytab:
+        sync_keytab_secret:
           type: string
-          writeOnly: true
-          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded
-            or in the form TYPE:residual
-        sync_ccache:
+          format: uuid
+          nullable: true
+          title: Sync keytab
+        sync_ccache_secret:
           type: string
-          writeOnly: true
-          description: Credentials cache to authenticate to kadmin for sync. Must
-            be in the form TYPE:residual
+          format: uuid
+          nullable: true
+          title: Sync ccache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
             in the form HTTP@hostname
-        spnego_keytab:
+        spnego_keytab_secret:
           type: string
-          writeOnly: true
-          description: SPNEGO keytab base64-encoded or path to keytab in the form
-            FILE:path
-        spnego_ccache:
+          format: uuid
+          nullable: true
+          title: Spnego keytab
+        spnego_ccache_secret:
           type: string
-          writeOnly: true
-          description: Credential cache to use for SPNEGO in form type:residual
+          format: uuid
+          nullable: true
+          title: Spnego ccache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -44715,6 +44744,11 @@ components:
             Certificate.
         bind_cn:
           type: string
+        secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Bind password
         service_bind_method:
           allOf:
           - $ref: '#/components/schemas/ServiceBindMethodEnum'
@@ -44941,9 +44975,11 @@ components:
             Certificate.
         bind_cn:
           type: string
-        bind_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Bind password
         service_bind_method:
           allOf:
           - $ref: '#/components/schemas/ServiceBindMethodEnum'
@@ -52202,33 +52238,36 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Sync password
           description: Password to authenticate to kadmin for sync
-        sync_keytab:
+        sync_keytab_secret:
           type: string
-          writeOnly: true
-          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded
-            or in the form TYPE:residual
-        sync_ccache:
+          format: uuid
+          nullable: true
+          title: Sync keytab
+        sync_ccache_secret:
           type: string
-          writeOnly: true
-          description: Credentials cache to authenticate to kadmin for sync. Must
-            be in the form TYPE:residual
+          format: uuid
+          nullable: true
+          title: Sync ccache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
             in the form HTTP@hostname
-        spnego_keytab:
+        spnego_keytab_secret:
           type: string
-          writeOnly: true
-          description: SPNEGO keytab base64-encoded or path to keytab in the form
-            FILE:path
-        spnego_ccache:
+          format: uuid
+          nullable: true
+          title: Spnego keytab
+        spnego_ccache_secret:
           type: string
-          writeOnly: true
-          description: Credential cache to use for SPNEGO in form type:residual
+          format: uuid
+          nullable: true
+          title: Spnego ccache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -52406,9 +52445,11 @@ components:
             Certificate.
         bind_cn:
           type: string
-        bind_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Bind password
         service_bind_method:
           allOf:
           - $ref: '#/components/schemas/ServiceBindMethodEnum'

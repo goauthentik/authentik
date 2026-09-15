@@ -76,6 +76,9 @@ class LDAPSourceBindMethod(models.TextChoices):
 class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
+    # Remove the legacy credential columns in 2027.2.
+    _bind_password = models.TextField(blank=True, db_column="bind_password")
+
     server_uri = models.TextField(
         validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
@@ -100,7 +103,15 @@ class LDAPSource(IncomingSyncSource):
     )
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
-    bind_password = models.TextField(blank=True)
+    secret = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Bind password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="ldap_sources",
+    )
     service_bind_method = models.TextField(
         choices=LDAPSourceBindMethod,
         default=LDAPSourceBindMethod.SIMPLE,
@@ -294,7 +305,7 @@ class LDAPSource(IncomingSyncSource):
             )
         else:
             connection_kwargs.setdefault("user", self.bind_cn)
-            connection_kwargs.setdefault("password", self.bind_password)
+            connection_kwargs.setdefault("password", self.secret.value if self.secret else "")
         return self._connect_and_bind(server, server_kwargs, connection_kwargs)
 
     def connection_as_user(self, user: str, password: str) -> Connection:
