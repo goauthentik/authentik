@@ -164,7 +164,7 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION | tr -d '\n'))
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
