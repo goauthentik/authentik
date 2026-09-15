@@ -57,10 +57,6 @@ export interface NotificationTransportRequest {
      * Only send notification once, for example when sending a webhook into a chat channel.
      */
     sendOnce?: boolean;
-    /**
-     *
-     */
-    webhookUrl?: string;
 }
 
 /**
@@ -115,7 +111,6 @@ export function NotificationTransportRequestFromJSONTyped(
             json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
         emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
         sendOnce: json["send_once"] == null ? undefined : json["send_once"],
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
     };
 }
 
@@ -141,6 +136,5 @@ export function NotificationTransportRequestToJSONTyped(
         email_subject_prefix: value["emailSubjectPrefix"],
         email_template: value["emailTemplate"],
         send_once: value["sendOnce"],
-        webhook_url: value["webhookUrl"],
     };
 }

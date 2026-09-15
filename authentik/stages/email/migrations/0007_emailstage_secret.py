@@ -22,7 +22,7 @@ def rollback_password(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_stages_email", "0006_emailstage_recovery_cache_timeout_and_more"),
     ]
 
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="email_stages",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="SMTP password",
             ),
         ),

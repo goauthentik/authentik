@@ -97,10 +97,6 @@ export interface PatchedSCIMProviderRequest {
      * When enabled, provider will not modify or create objects in the remote system.
      */
     dryRun?: boolean;
-    /**
-     *
-     */
-    token?: string;
 }
 
 /**
@@ -165,7 +161,6 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
-        token: json["token"] == null ? undefined : json["token"],
     };
 }
 
@@ -199,6 +194,5 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         discovery_enabled: value["discoveryEnabled"],
         group_filters: value["groupFilters"],
         dry_run: value["dryRun"],
-        token: value["token"],
     };
 }

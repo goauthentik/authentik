@@ -57,6 +57,9 @@ services:
   test-samba-dc:
     image: ghcr.io/beryju/test-samba-dc:v1.0
     profiles: [pin-only]
+  openldap:
+    image: docker.io/osixia/openldap:2.6.10-alpha@sha256:80a577d7d4471c4db662195111e5709665b6fcbd6679094d05402b8c620e2607
+    profiles: [pin-only]
   openssh-server:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]

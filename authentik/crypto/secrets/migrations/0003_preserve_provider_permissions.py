@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_providers_radius", "0006_radiusprovider_secret"),
         ("authentik_providers_scim", "0022_scimprovider_secret"),
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]

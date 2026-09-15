@@ -30,7 +30,7 @@ class TestWriteOnlyFields(APITestCase):
 
     def test_secret_detail_view(self):
         """Test secret detail (role has global view permission)"""
-        self.role.assign_perms("authentik_secrets.view_secret")
+        self.role.assign_perms("authentik_crypto_secrets.view_secret")
         self.client.force_login(self.user)
 
         res = self.client.get(reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk}))
@@ -41,7 +41,7 @@ class TestWriteOnlyFields(APITestCase):
 
     def test_secret_list_view(self):
         """Test secret list (role has global view permission)"""
-        self.role.assign_perms("authentik_secrets.view_secret")
+        self.role.assign_perms("authentik_crypto_secrets.view_secret")
         self.client.force_login(self.user)
 
         res = self.client.get(reverse("authentik_api:secret-list"), {"name": self.secret.name})
@@ -55,8 +55,8 @@ class TestWriteOnlyFields(APITestCase):
         """Test secret detail (role has global change permission)"""
         self.role.assign_perms(
             [
-                "authentik_secrets.view_secret",
-                "authentik_secrets.change_secret",
+                "authentik_crypto_secrets.view_secret",
+                "authentik_crypto_secrets.change_secret",
             ]
         )
         self.client.force_login(self.user)
@@ -77,7 +77,7 @@ class TestWriteOnlyFields(APITestCase):
 
     def test_secret_create(self):
         """Test secret create (the response omits the values that were stored)"""
-        self.role.assign_perms("authentik_secrets.add_secret")
+        self.role.assign_perms("authentik_crypto_secrets.add_secret")
         self.client.force_login(self.user)
 
         name = generate_id()

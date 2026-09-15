@@ -78,7 +78,7 @@ export interface TelegramSourceRequest {
     /**
      * Telegram bot token
      */
-    secret?: string;
+    secret: string;
     /**
      * Request access to send messages from your bot.
      */
@@ -87,10 +87,6 @@ export interface TelegramSourceRequest {
      * Flow used before authentication.
      */
     preAuthenticationFlow: string;
-    /**
-     *
-     */
-    botToken?: string;
 }
 
 /**
@@ -106,6 +102,7 @@ export function instanceOfTelegramSourceRequest(value: object): value is Telegra
             (value as Record<string, any>)["bot_username"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
             !("pre_authentication_flow" in (value as Record<string, any>))) ||
@@ -160,11 +157,10 @@ export function TelegramSourceRequestFromJSONTyped(
             json["user_path_template"] == null ? undefined : json["user_path_template"],
         icon: json["icon"] == null ? undefined : json["icon"],
         botUsername: json["bot_username"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        secret: json["secret"],
         requestMessageAccess:
             json["request_message_access"] == null ? undefined : json["request_message_access"],
         preAuthenticationFlow: json["pre_authentication_flow"],
-        botToken: json["bot_token"] == null ? undefined : json["bot_token"],
     };
 }
 
@@ -197,6 +193,5 @@ export function TelegramSourceRequestToJSONTyped(
         secret: value["secret"],
         request_message_access: value["requestMessageAccess"],
         pre_authentication_flow: value["preAuthenticationFlow"],
-        bot_token: value["botToken"],
     };
 }

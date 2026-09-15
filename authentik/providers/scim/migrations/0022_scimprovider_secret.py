@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_scim", "0021_scimprovider_discovery_enabled"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="scim_providers",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Token",
             ),
         ),

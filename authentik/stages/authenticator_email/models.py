@@ -37,7 +37,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     port = models.IntegerField(default=25)
     username = models.TextField(default="", blank=True)
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("SMTP password"),
         on_delete=models.PROTECT,
         null=True,
