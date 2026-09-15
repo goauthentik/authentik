@@ -7317,6 +7317,23 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>License(s)</source>
   <target>라이선스</target>
 </trans-unit>
+<trans-unit id="sf58825457d61c429">
+  <source>Forecast internal users</source>
+  <target>내부 사용자 예측</target>
+</trans-unit>
+<trans-unit id="sde9a3f41977ec1f8">
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
+</trans-unit>
+<trans-unit id="s531571491deb239a">
+  <source>Approximately</source>
+</trans-unit>
+<trans-unit id="s4557b6b9da258643">
+  <source>Forecast external users</source>
+  <target>외부 사용자 예측</target>
+</trans-unit>
+<trans-unit id="sf52479d6daa0a4a8">
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
+</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>누적 라이선스 만료 기간</target>
@@ -11673,36 +11690,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.users.added-within.30-days.label">
-  <source>30 days</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.users.added-within.90-days.label">
-  <source>90 days</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.users.added-within.365-days.label">
-  <source>365 days</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.users.added-within-last.title">
-  <source>Added within last</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.internal-users.label">
-  <source>Internal users</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.internal-users.total-active.label">
-  <source>Total active internal users</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.external-users.label">
-  <source>External users</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.external-users.total-active.label">
-  <source>Total active external users</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.install-id.copy-button.label">
-  <source>Copy Install ID</source>
-</trans-unit>
-<trans-unit id="enterprise.licensing.install-id.label">
-  <source>Install ID</source>
 </trans-unit>
 </body>
 </file>
