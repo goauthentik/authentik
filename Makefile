@@ -333,6 +333,18 @@ helm-docs:
 		docker.io/jnorwood/helm-docs:v1.12.0 \
 			-c /helm-docs/lifecycle/charts
 
+helm-lint:
+	docker run \
+		--rm \
+		-v "${PWD}:/workdir" \
+		--entrypoint /bin/sh \
+		quay.io/helmpack/chart-testing:v3.10.1 \
+			-c cd /workdir/lifecycle/chart \
+			ct lint \
+			--config /workdir/lifecycle/chart/ct-lint.yaml \
+			--lint-conf /workdir/lifecycle/chart/lintconf.yaml \
+			--debug
+
 #########################
 ## CI
 #########################

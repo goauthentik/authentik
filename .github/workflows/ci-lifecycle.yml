@@ -1,0 +1,87 @@
+---
+name: CI - Lifecycle
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
+jobs:
+  helm-linter-artifacthub:
+    runs-on: ubuntu-latest
+    container:
+      image: public.ecr.aws/artifacthub/ah:v1.23.0
+      options: --user 1001
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Run ah lint
+        working-directory: ./lifecycle/charts
+        run: ah lint
+  helm-lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+      - name: Set up Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
+      - uses: ./.github/actions/setup
+        with:
+          dependencies: "python"
+      - name: Setup Chart Linting
+        id: lint
+        uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # v2.8.0
+      - name: List changed charts
+        id: list-changed
+        run: |
+          changed=$(ct --config ./lifecycle/charts/ct-lint.yaml list-changed)
+          charts=$(echo "$changed" | tr '\n' ' ' | xargs)
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+          fi
+      - name: Run chart-testing (lint)
+        run: ct lint --debug --config ./lifecycle/charts/ct-lint.yaml --lint-conf ./lifecycle/charts/lintconf.yaml
+      - name: Run docs-testing (helm-docs)
+        id: helm-docs
+        run: |
+          make helm-docs
+          if [[ $(git diff --stat) != '' ]]; then
+            echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
+            git diff --color
+            exit 1
+          else
+            echo -e '\033[0;32mDocumentation up to date\033[0m ✔'
+          fi
+      - name: Create kind cluster
+        uses: helm/kind-action@06c1ae10762d3b9c1644e7fe69596ae519e015a2 # v1.15.0
+        if: ${{ steps.list-changed.outputs.changed == 'true' }}
+      - name: Run chart-testing (install)
+        run: |
+          namespace=authentik-$(uuidgen)
+          kubectl create ns $namespace
+          kubectl apply -n $namespace -f lifecycle/charts/authentik/ci/manifests/
+          ct install --namespace=$namespace --config ./lifecycle/charts/ct-install.yaml
+        if: ${{ steps.list-changed.outputs.changed == 'true' }}
+  ci-lifecycle-mark:
+    if: always()
+    needs:
+      - helm-linter-artifacthub
+      - helm-lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
