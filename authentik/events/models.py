@@ -378,7 +378,7 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Webhook URL"),
         on_delete=models.PROTECT,
         null=True,

@@ -19,7 +19,7 @@ class FleetConnector(Connector):
 
     url = models.URLField()
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Fleet API Token"),
         on_delete=models.PROTECT,
         null=True,

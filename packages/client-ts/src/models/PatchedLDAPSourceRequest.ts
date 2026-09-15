@@ -14,6 +14,11 @@
 
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { ServiceBindMethodEnum } from "./ServiceBindMethodEnum";
+import {
+    ServiceBindMethodEnumFromJSON,
+    ServiceBindMethodEnumToJSON,
+} from "./ServiceBindMethodEnum";
 import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
 import {
     SyncOutgoingTriggerModeEnumFromJSON,
@@ -97,6 +102,10 @@ export interface PatchedLDAPSourceRequest {
      */
     secret?: string | null;
     /**
+     * Authentication method used for LDAP synchronization and writeback.
+     */
+    serviceBindMethod?: ServiceBindMethodEnum;
+    /**
      *
      */
     startTls?: boolean;
@@ -172,10 +181,6 @@ export interface PatchedLDAPSourceRequest {
      * Sync group parentage/hierarchy from LDAP directories.
      */
     syncGroupHierarchy?: boolean;
-    /**
-     *
-     */
-    bindPassword?: string;
 }
 
 /**
@@ -250,6 +255,10 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                 : json["secret"] === null
                   ? null
                   : json["secret"],
+        serviceBindMethod:
+            json["service_bind_method"] == null
+                ? undefined
+                : ServiceBindMethodEnumFromJSON(json["service_bind_method"]),
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
         baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
@@ -293,7 +302,6 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
         syncGroupHierarchy:
             json["sync_group_hierarchy"] == null ? undefined : json["sync_group_hierarchy"],
-        bindPassword: json["bind_password"] == null ? undefined : json["bind_password"],
     };
 }
 
@@ -327,6 +335,7 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
         secret: value["secret"],
+        service_bind_method: ServiceBindMethodEnumToJSON(value["serviceBindMethod"]),
         start_tls: value["startTls"],
         sni: value["sni"],
         base_dn: value["baseDn"],
@@ -348,6 +357,5 @@ export function PatchedLDAPSourceRequestToJSONTyped(
             value["syncOutgoingTriggerMode"],
         ),
         sync_group_hierarchy: value["syncGroupHierarchy"],
-        bind_password: value["bindPassword"],
     };
 }
