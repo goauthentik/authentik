@@ -288,3 +288,42 @@ class TestEnterpriseAudit(APITestCase):
             update_fields=["is_active"],
         )
         self.assertEqual(diff, {"is_active": {"new_value": True, "previous_value": False}})
+
+    def test_diff_attributes(self):
+        """Test nested attribute diff"""
+        diff = EnterpriseAuditMiddleware(None).diff(
+            {
+                "attributes": {
+                    "department": "Engineering",
+                    "name": "Alice",
+                    "settings": {"theme": "light", "timezone": "UTC"},
+                },
+            },
+            {
+                "attributes": {
+                    "department": "Security",
+                    "name": "Alice",
+                    "role": "admin",
+                    "settings": {"theme": "dark"},
+                },
+            },
+        )
+        self.assertEqual(
+            diff,
+            {
+                "attributes.department": {
+                    "new_value": "Security",
+                    "previous_value": "Engineering",
+                },
+                "attributes.role": {"new_value": "admin", "previous_value": None},
+                "attributes.settings.theme": {
+                    "new_value": "dark",
+                    "previous_value": "light",
+                },
+                "attributes.settings.timezone": {
+                    "new_value": None,
+                    "previous_value": "UTC",
+                },
+            },
+        )
+        self.assertEqual(list(diff), sorted(diff))
