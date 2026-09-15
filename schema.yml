@@ -8828,10 +8828,6 @@ paths:
         name: send_once
         schema:
           type: boolean
-      - in: query
-        name: webhook_url
-        schema:
-          type: string
       tags:
       - events
       security:
@@ -44340,11 +44336,10 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        kubeconfig:
-          type: object
-          additionalProperties: {}
-          description: Paste your kubeconfig here. authentik will automatically use
-            the currently selected context.
+        secret:
+          type: string
+          format: uuid
+          nullable: true
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -44366,11 +44361,10 @@ components:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
-        kubeconfig:
-          type: object
-          additionalProperties: {}
-          description: Paste your kubeconfig here. authentik will automatically use
-            the currently selected context.
+        secret:
+          type: string
+          format: uuid
+          nullable: true
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -46432,9 +46426,11 @@ components:
           type: string
           description: Return selected mode with a UI Label
           readOnly: true
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid
@@ -46474,9 +46470,11 @@ components:
           minLength: 1
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid
@@ -52317,11 +52315,10 @@ components:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
-        kubeconfig:
-          type: object
-          additionalProperties: {}
-          description: Paste your kubeconfig here. authentik will automatically use
-            the currently selected context.
+        secret:
+          type: string
+          format: uuid
+          nullable: true
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -52755,9 +52752,11 @@ components:
           minLength: 1
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid

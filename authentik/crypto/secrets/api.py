@@ -56,6 +56,8 @@ class JSONSecretReferenceField(SecretReferenceField):
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
 
+    structured_consumers = ("kubernetes_connections",)
+
     def validate_value(self, value: str) -> str:
         if value == "":
             raise SkipField
@@ -75,6 +77,11 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
                 raise ValidationError(
                     _("OAuth client secrets must consist of only ASCII characters.")
                 )
+        if any(getattr(instance, relation).exists() for relation in self.structured_consumers):
+            try:
+                Secret(type=instance.type, value=value).get_json()
+            except BinasciiError, ValueError:
+                raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
         return value
 
     def validate(self, attrs: dict) -> dict:

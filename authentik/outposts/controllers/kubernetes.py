@@ -37,10 +37,13 @@ class KubernetesClient(ApiClient, BaseClient):
             if connection.local:
                 load_incluster_config(client_configuration=config)
             else:
-                load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
+                load_kube_config_from_dict(
+                    connection.secret.get_json() if connection.secret else {},
+                    client_configuration=config,
+                )
             config.verify_ssl = connection.verify_ssl
             super().__init__(config)
-        except ConfigException as exc:
+        except (ConfigException, ValueError) as exc:
             raise ServiceConnectionInvalid(exc) from exc
 
     def fetch_state(self) -> OutpostServiceConnectionState:
