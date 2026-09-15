@@ -76,11 +76,36 @@ jobs:
           kubectl apply -n $namespace -f lifecycle/charts/authentik/ci/manifests/
           ct install --namespace=$namespace --config ./lifecycle/charts/ct-install.yaml
         if: ${{ steps.list-changed.outputs.changed == 'true' }}
+  helm-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: authentik
+          - name: authentik-remote-cluster
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Set up Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
+      - env:
+          CHART_NAME: ${{ matrix.name }}
+        run: |
+          mkdir build
+          helm package -u "lifecycle/charts/${CHART_NAME}" -d build
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "helm-build-${{ matrix.name }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true
   ci-lifecycle-mark:
     if: always()
     needs:
       - helm-linter-artifacthub
       - helm-lint-and-test
+      - helm-build
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
