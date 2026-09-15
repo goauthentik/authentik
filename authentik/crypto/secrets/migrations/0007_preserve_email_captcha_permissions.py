@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         ("authentik_stages_authenticator_email", "0005_authenticatoremailstage_secret"),
         ("authentik_stages_captcha", "0006_captchastage_secret"),
         ("authentik_stages_email", "0007_emailstage_secret"),
-        ("authentik_secrets", "0006_preserve_mfa_stage_permissions"),
+        ("authentik_crypto_secrets", "0006_preserve_mfa_stage_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]

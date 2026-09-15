@@ -11,9 +11,12 @@ GAUGE_LICENSE_USAGE = Gauge(
     "authentik_enterprise_license_usage",
     "Enterprise license usage (percentage per user type).",
     ["user_type"],
+    multiprocess_mode="livemostrecent",
 )
 GAUGE_LICENSE_EXPIRY = Gauge(
-    "authentik_enterprise_license_expiry_seconds", "Duration until license expires, in seconds."
+    "authentik_enterprise_license_expiry_seconds",
+    "Duration until license expires, in seconds.",
+    multiprocess_mode="livemostrecent",
 )
 
 

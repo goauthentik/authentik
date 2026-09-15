@@ -20,7 +20,7 @@ class TestSecretReferenceFields(TestCase):
         other = Secret.objects.create(name="other", value="{}")
         request = APIRequestFactory().patch("/")
         request.user = user
-        user.assign_perms_to_managed_role("authentik_secrets.view_secret", secret)
+        user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", secret)
         for model in apps.get_models():
             for relation in model._meta.fields:
                 if relation.related_model is not Secret:
@@ -37,10 +37,12 @@ class TestSecretReferenceFields(TestCase):
                     self.assertEqual(field.run_validation(str(secret.pk)), secret)
                     with self.assertRaises(PermissionDenied):
                         field.run_validation(str(other.pk))
-                    user.assign_perms_to_managed_role("authentik_secrets.view_secret_value", other)
+                    user.assign_perms_to_managed_role(
+                        "authentik_crypto_secrets.view_secret_value", other
+                    )
                     self.assertEqual(field.run_validation(str(other.pk)), other)
                     user.remove_perms_from_managed_role(
-                        "authentik_secrets.view_secret_value", other
+                        "authentik_crypto_secrets.view_secret_value", other
                     )
 
 
@@ -64,7 +66,7 @@ class TestSecretReferenceAPI(APITestCase):
         self.assertNotEqual(provider.secret, secret)
         response = self.client.patch(url, {"name": "renamed", "secret": str(provider.secret_id)})
         self.assertEqual(response.status_code, 200, response.content)
-        user.assign_perms_to_managed_role("authentik_secrets.view_secret_value", secret)
+        user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret_value", secret)
         response = self.client.patch(url, {"secret": str(secret.pk)})
         self.assertEqual(response.status_code, 200, response.content)
         provider.refresh_from_db()

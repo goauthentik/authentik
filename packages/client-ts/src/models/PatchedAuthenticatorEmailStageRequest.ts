@@ -78,10 +78,6 @@ export interface PatchedAuthenticatorEmailStageRequest {
      *
      */
     template?: string;
-    /**
-     *
-     */
-    password?: string;
 }
 
 /**
@@ -133,7 +129,6 @@ export function PatchedAuthenticatorEmailStageRequestFromJSONTyped(
         subject: json["subject"] == null ? undefined : json["subject"],
         tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
         template: json["template"] == null ? undefined : json["template"],
-        password: json["password"] == null ? undefined : json["password"],
     };
 }
 
@@ -167,6 +162,5 @@ export function PatchedAuthenticatorEmailStageRequestToJSONTyped(
         subject: value["subject"],
         token_expiry: value["tokenExpiry"],
         template: value["template"],
-        password: value["password"],
     };
 }

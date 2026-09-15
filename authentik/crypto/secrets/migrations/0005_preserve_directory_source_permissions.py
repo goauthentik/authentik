@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_sources_kerberos", "0006_kerberossource_secret"),
         ("authentik_sources_ldap", "0013_ldapsource_secret"),
-        ("authentik_secrets", "0004_preserve_web_source_permissions"),
+        ("authentik_crypto_secrets", "0004_preserve_web_source_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]

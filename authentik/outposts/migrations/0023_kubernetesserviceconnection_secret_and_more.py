@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_outposts", "0022_outpostprovider_alter_outpost_providers"),
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
     ]
 
     operations = [
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kubernetes_connections",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Kubeconfig",
             ),
         ),
