@@ -1371,15 +1371,27 @@ export interface ProvidersSamlImportMetadataCreateRequest {
     /**
      *
      */
-    authorizationFlow: string;
-    /**
-     *
-     */
-    invalidationFlow: string;
-    /**
-     *
-     */
     file: Blob;
+    /**
+     *
+     */
+    provider?: number | null;
+    /**
+     *
+     */
+    authorizationFlow?: string | null;
+    /**
+     *
+     */
+    invalidationFlow?: string | null;
+    /**
+     *
+     */
+    signingCertificate?: string | null;
+    /**
+     *
+     */
+    createMissingRings?: boolean;
 }
 
 export interface ProvidersSamlListRequest {
@@ -1431,6 +1443,10 @@ export interface ProvidersSamlListRequest {
      *
      */
     encryptionKp?: string;
+    /**
+     *
+     */
+    encryptionKpRing?: string;
     /**
      *
      */
@@ -1506,6 +1522,10 @@ export interface ProvidersSamlListRequest {
     /**
      *
      */
+    signingKpRing?: string;
+    /**
+     *
+     */
     slsBinding?: SAMLBindingsEnum;
     /**
      *
@@ -1519,6 +1539,10 @@ export interface ProvidersSamlListRequest {
      *
      */
     verificationKp?: string;
+    /**
+     *
+     */
+    verificationKpRing?: string;
 }
 
 export interface ProvidersSamlMetadataRetrieveRequest {
@@ -1947,6 +1971,10 @@ export interface ProvidersWsfedListRequest {
     /**
      *
      */
+    encryptionKpRing?: string;
+    /**
+     *
+     */
     invalidationFlow?: string;
     /**
      *
@@ -2023,6 +2051,10 @@ export interface ProvidersWsfedListRequest {
     /**
      *
      */
+    signingKpRing?: string;
+    /**
+     *
+     */
     slsBinding?: SAMLBindingsEnum;
     /**
      *
@@ -2036,6 +2068,10 @@ export interface ProvidersWsfedListRequest {
      *
      */
     verificationKp?: string;
+    /**
+     *
+     */
+    verificationKpRing?: string;
 }
 
 export interface ProvidersWsfedMetadataRetrieveRequest {
@@ -8302,20 +8338,6 @@ export class ProvidersApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters["authorizationFlow"] == null) {
-            throw new runtime.RequiredError(
-                "authorizationFlow",
-                'Required parameter "authorizationFlow" was null or undefined when calling providersSamlImportMetadataCreate().',
-            );
-        }
-
-        if (requestParameters["invalidationFlow"] == null) {
-            throw new runtime.RequiredError(
-                "invalidationFlow",
-                'Required parameter "invalidationFlow" was null or undefined when calling providersSamlImportMetadataCreate().',
-            );
-        }
-
         if (requestParameters["file"] == null) {
             throw new runtime.RequiredError(
                 "file",
@@ -8349,6 +8371,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
+        if (requestParameters["provider"] != null) {
+            formParams.append("provider", requestParameters["provider"] as any);
+        }
+
         if (requestParameters["name"] != null) {
             formParams.append("name", requestParameters["name"] as any);
         }
@@ -8365,6 +8391,20 @@ export class ProvidersApi extends runtime.BaseAPI {
             formParams.append("file", requestParameters["file"] as any);
         }
 
+        if (requestParameters["signingCertificate"] != null) {
+            formParams.append(
+                "signing_certificate",
+                requestParameters["signingCertificate"] as any,
+            );
+        }
+
+        if (requestParameters["createMissingRings"] != null) {
+            formParams.append(
+                "create_missing_rings",
+                requestParameters["createMissingRings"] as any,
+            );
+        }
+
         let urlPath = `/providers/saml/import_metadata/`;
 
         return {
@@ -8377,7 +8417,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create provider from SAML Metadata
+     * Create provider from SAML Metadata, or apply to an existing provider.
      */
     async providersSamlImportMetadataCreateRaw(
         requestParameters: ProvidersSamlImportMetadataCreateRequest,
@@ -8393,7 +8433,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create provider from SAML Metadata
+     * Create provider from SAML Metadata, or apply to an existing provider.
      */
     async providersSamlImportMetadataCreate(
         requestParameters: ProvidersSamlImportMetadataCreateRequest,
@@ -8464,6 +8504,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["encryptionKp"] != null) {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
+        }
+
+        if (requestParameters["encryptionKpRing"] != null) {
+            queryParameters["encryption_kp_ring"] = requestParameters["encryptionKpRing"];
         }
 
         if (requestParameters["invalidationFlow"] != null) {
@@ -8539,6 +8583,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
+        if (requestParameters["signingKpRing"] != null) {
+            queryParameters["signing_kp_ring"] = requestParameters["signingKpRing"];
+        }
+
         if (requestParameters["slsBinding"] != null) {
             queryParameters["sls_binding"] = requestParameters["slsBinding"];
         }
@@ -8553,6 +8601,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["verificationKp"] != null) {
             queryParameters["verification_kp"] = requestParameters["verificationKp"];
+        }
+
+        if (requestParameters["verificationKpRing"] != null) {
+            queryParameters["verification_kp_ring"] = requestParameters["verificationKpRing"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10950,6 +11002,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
 
+        if (requestParameters["encryptionKpRing"] != null) {
+            queryParameters["encryption_kp_ring"] = requestParameters["encryptionKpRing"];
+        }
+
         if (requestParameters["invalidationFlow"] != null) {
             queryParameters["invalidation_flow"] = requestParameters["invalidationFlow"];
         }
@@ -11027,6 +11083,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
+        if (requestParameters["signingKpRing"] != null) {
+            queryParameters["signing_kp_ring"] = requestParameters["signingKpRing"];
+        }
+
         if (requestParameters["slsBinding"] != null) {
             queryParameters["sls_binding"] = requestParameters["slsBinding"];
         }
@@ -11041,6 +11101,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["verificationKp"] != null) {
             queryParameters["verification_kp"] = requestParameters["verificationKp"];
+        }
+
+        if (requestParameters["verificationKpRing"] != null) {
+            queryParameters["verification_kp_ring"] = requestParameters["verificationKpRing"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

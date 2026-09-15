@@ -14,7 +14,11 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import (
+    CertificateKeyPair,
+    CertificateKeyPairRing,
+    CertificateKeyPairRingBinding,
+)
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
@@ -30,6 +34,11 @@ GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 KEYCLOAK_ACS_URL = "http://localhost:9000/source/saml/keycloak/acs/"
 SHIBBOLETH_ACS_URL = "https://sp.example.org:9443/source/saml/shibboleth-post/acs/"
 SHIBBOLETH_TRANSIENT_ACS_URL = "https://sp.example.org:10443/Shibboleth.sso/SAML2/POST"
+
+
+def _ring_add_keypairs(*, ring: CertificateKeyPairRing, keypairs: list[CertificateKeyPair]) -> None:
+    for i, kp in enumerate(keypairs):
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp, order=i)
 
 
 @patch.object(SAMLSource, "build_full_url", MagicMock(return_value=DEMO_ACS_URL))
@@ -615,4 +624,136 @@ class TestResponseProcessor(TestCase):
         )
 
         with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2022-10-14T14:16:40Z")
+    def test_verification_assertion_with_ring(self):
+        """Test verifying signature inside assertion via verification_kp_ring."""
+        cert_pem = load_fixture("fixtures/signature_cert.pem")
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        ring.sync_membership([(0, cert_pem)])
+
+        self.source.verification_kp = None
+        self.source.verification_kp_ring = ring
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        self.source.save()
+
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion.xml").encode()
+                ).decode()
+            },
+        )
+
+        ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_response_with_ring(self):
+        """Test verifying signature inside response via verification_kp_ring."""
+        cert_pem = load_fixture("fixtures/signature_cert.pem")
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        ring.sync_membership([(0, cert_pem)])
+
+        self.source.verification_kp = None
+        self.source.verification_kp_ring = ring
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        self.source.save()
+
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_ring_try_order(self):
+        """Ring should try certs in order until one verifies."""
+        good = load_fixture("fixtures/signature_cert.pem")
+        bad = create_test_cert().certificate_data  # wrong cert
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        ring.sync_membership([(0, bad), (1, good)])
+
+        self.source.verification_kp = None
+        self.source.verification_kp_ring = ring
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        self.source.save()
+
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion.xml").encode()
+                ).decode()
+            },
+        )
+
+        ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2024-08-07T15:48:09.325Z")
+    def test_encrypted_correct_with_ring(self):
+        """Decrypt using encryption_kp_ring (no encryption_kp)."""
+        key_pem = load_fixture("fixtures/encrypted-key.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            key_data=key_pem,
+        )
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        _ring_add_keypairs(ring=ring, keypairs=[kp])
+
+        self.source.encryption_kp = None
+        self.source.encryption_kp_ring = ring
+        self.source.save()
+
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_encrypted.xml").encode()
+                ).decode()
+            },
+        )
+
+        with patch.object(SAMLSource, "build_full_url", return_value=KEYCLOAK_ACS_URL):
+            ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2024-08-07T15:48:09.325Z")
+    def test_encrypted_ring_try_order(self):
+        """Ring should try private keys in order until one decrypts."""
+        bad = create_test_cert()  # has a private key but wrong one for this fixture
+        good = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            key_data=load_fixture("fixtures/encrypted-key.pem"),
+        )
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        _ring_add_keypairs(ring=ring, keypairs=[bad, good])
+
+        self.source.encryption_kp = None
+        self.source.encryption_kp_ring = ring
+        self.source.save()
+
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_encrypted.xml").encode()
+                ).decode()
+            },
+        )
+
+        with patch.object(SAMLSource, "build_full_url", return_value=KEYCLOAK_ACS_URL):
             ResponseProcessor(self.source, request).parse()

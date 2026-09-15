@@ -105,6 +105,9 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     };
 
+    @property({ type: Array, attribute: "exclude-keypairs" })
+    public excludeKeypairs: string[] = [];
+
     /**
      * Why this keypair cannot be used for the field it is being offered in, or `null` if it can.
      *
@@ -147,11 +150,14 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
             restrictions.keyType = this.allowedKeyTypes;
         }
 
+        const exclude = new Set((this.excludeKeypairs ?? []).map(String));
+        const notExcluded = (item: CertificateKeyPair) => !exclude.has(String(item.pk));
+
         const api = aki(CryptoApi);
 
         if (Object.keys(restrictions).length === 0) {
             const { results } = await api.cryptoCertificatekeypairsList(args);
-            return results;
+            return results.filter(notExcluded);
         }
 
         // The API only returns one page of results, so ask it for the usable keypairs directly.
@@ -178,7 +184,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
                 : all.filter((item) => this.#unusableReason(item) === null);
         const unusable = all.filter((item) => this.#unusableReason(item) !== null);
 
-        return [...usable, ...unusable];
+        return [...usable, ...unusable].filter(notExcluded);
     };
 
     optionDisabled = (item: CertificateKeyPair): boolean => this.#unusableReason(item) !== null;

@@ -111,6 +111,18 @@ export interface SAMLProviderRequest {
     /**
      *
      */
+    signingKpRing?: string | null;
+    /**
+     *
+     */
+    verificationKpRing?: string | null;
+    /**
+     *
+     */
+    encryptionKpRing?: string | null;
+    /**
+     *
+     */
     signAssertion?: boolean;
     /**
      *
@@ -251,6 +263,24 @@ export function SAMLProviderRequestFromJSONTyped(
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        signingKpRing:
+            json["signing_kp_ring"] === undefined
+                ? undefined
+                : json["signing_kp_ring"] === null
+                  ? null
+                  : json["signing_kp_ring"],
+        verificationKpRing:
+            json["verification_kp_ring"] === undefined
+                ? undefined
+                : json["verification_kp_ring"] === null
+                  ? null
+                  : json["verification_kp_ring"],
+        encryptionKpRing:
+            json["encryption_kp_ring"] === undefined
+                ? undefined
+                : json["encryption_kp_ring"] === null
+                  ? null
+                  : json["encryption_kp_ring"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
@@ -306,6 +336,9 @@ export function SAMLProviderRequestToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        signing_kp_ring: value["signingKpRing"],
+        verification_kp_ring: value["verificationKpRing"],
+        encryption_kp_ring: value["encryptionKpRing"],
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],

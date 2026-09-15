@@ -134,6 +134,22 @@ export interface SAMLSourceRequest {
     /**
      *
      */
+    verificationKpRing?: string | null;
+    /**
+     *
+     */
+    signingKpRing?: string | null;
+    /**
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     */
+    encryptionKp?: string | null;
+    /**
+     *
+     */
+    encryptionKpRing?: string | null;
+    /**
+     *
+     */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
@@ -143,10 +159,6 @@ export interface SAMLSourceRequest {
      * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
      */
     temporaryUserDeleteAfter?: string;
-    /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     */
-    encryptionKp?: string | null;
     /**
      *
      */
@@ -259,6 +271,30 @@ export function SAMLSourceRequestFromJSONTyped(
                 : json["signing_kp"] === null
                   ? null
                   : json["signing_kp"],
+        verificationKpRing:
+            json["verification_kp_ring"] === undefined
+                ? undefined
+                : json["verification_kp_ring"] === null
+                  ? null
+                  : json["verification_kp_ring"],
+        signingKpRing:
+            json["signing_kp_ring"] === undefined
+                ? undefined
+                : json["signing_kp_ring"] === null
+                  ? null
+                  : json["signing_kp_ring"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
+        encryptionKpRing:
+            json["encryption_kp_ring"] === undefined
+                ? undefined
+                : json["encryption_kp_ring"] === null
+                  ? null
+                  : json["encryption_kp_ring"],
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -271,12 +307,6 @@ export function SAMLSourceRequestFromJSONTyped(
             json["temporary_user_delete_after"] == null
                 ? undefined
                 : json["temporary_user_delete_after"],
-        encryptionKp:
-            json["encryption_kp"] === undefined
-                ? undefined
-                : json["encryption_kp"] === null
-                  ? null
-                  : json["encryption_kp"],
         signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
         signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
     };
@@ -318,10 +348,13 @@ export function SAMLSourceRequestToJSONTyped(
         binding_type: BindingTypeEnumToJSON(value["bindingType"]),
         verification_kp: value["verificationKp"],
         signing_kp: value["signingKp"],
+        verification_kp_ring: value["verificationKpRing"],
+        signing_kp_ring: value["signingKpRing"],
+        encryption_kp: value["encryptionKp"],
+        encryption_kp_ring: value["encryptionKpRing"],
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         temporary_user_delete_after: value["temporaryUserDeleteAfter"],
-        encryption_kp: value["encryptionKp"],
         signed_assertion: value["signedAssertion"],
         signed_response: value["signedResponse"],
     };
