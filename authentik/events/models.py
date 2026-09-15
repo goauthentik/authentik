@@ -144,6 +144,11 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+def event_actions():
+    # Wrapper used in models to prevent migrations constantly changing when actions are added
+    return EventAction.choices
+
+
 class LoginFailedReason(models.TextChoices):
     """All possible reasons a login failed, to be shown in event log"""
 
