@@ -26,10 +26,6 @@ from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.tasks.models import Task
 from tests.live import E2ETestCase
 
-OPENLDAP_IMAGE = (
-    "docker.io/osixia/openldap:2.6.10-alpha@"
-    "sha256:80a577d7d4471c4db662195111e5709665b6fcbd6679094d05402b8c620e2607"
-)
 LDAP_PASSWORD = "correct-horse-battery-staple"
 NEW_LDAP_PASSWORD = "correct-staple-horse-battery"
 
@@ -140,7 +136,7 @@ class TestSourceLDAPSASLExternal(E2ETestCase):
 
         fixtures = Path(__file__).parent / "fixtures" / "openldap-sasl"
         self.openldap = self.run_container(
-            image=OPENLDAP_IMAGE,
+            image=self.pinned_image("openldap", "e2e/compose.yml"),
             hostname="localhost",
             ports={"3890/tcp": None},
             healthcheck=Healthcheck(
