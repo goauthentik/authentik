@@ -263,8 +263,8 @@ importers:
   lifecycle/aws:
     devDependencies:
       aws-cdk:
-        specifier: ^2.1129.0
-        version: 2.1129.0
+        specifier: ^2.1140.0
+        version: 2.1141.0
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -3223,8 +3223,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  aws-cdk@2.1129.0:
-    resolution: {integrity: sha512-M0EWbjeKW+baUsirjtKuWh7w/9dPxF8taEi2hqo9ecCjGeQxV1dzyosJf+caR3Jh7dFyyT3J8zEtRb/cU971Rw==}
+  aws-cdk@2.1141.0:
+    resolution: {integrity: sha512-RIKueAoFNYUot/VmlUzPUbecxNCtLzJFqpy/O+vTpjrvDn4k2Uiu9Y/QlVlQzaSJw0qqNNY6ldusJVdkX8aBNA==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
 
@@ -11160,7 +11160,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  aws-cdk@2.1129.0: {}
+  aws-cdk@2.1141.0: {}
 
   babel-loader@9.2.1(@babel/core@7.29.7(supports-color@8.1.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.26)):
     dependencies:

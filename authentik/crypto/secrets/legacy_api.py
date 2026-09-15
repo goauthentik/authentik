@@ -94,8 +94,8 @@ class LegacySecretField(CharField):
             raise SkipField
         secret = super().get_attribute(instance)
         if not secret or not (
-            request.user.has_perm("authentik_secrets.view_secret_value")
-            or request.user.has_perm("authentik_secrets.view_secret_value", secret)
+            request.user.has_perm("authentik_crypto_secrets.view_secret_value")
+            or request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         ):
             raise SkipField
         Event.new(EventAction.SECRET_VIEW, secret=secret).from_http(request)
@@ -183,7 +183,7 @@ class LegacySecretCompatibility:
                 ):
                     permissions.append("view_secret_value")
                 request.user.assign_perms_to_managed_role(
-                    [f"authentik_secrets.{permission}" for permission in permissions], secret
+                    [f"authentik_crypto_secrets.{permission}" for permission in permissions], secret
                 )
             validated_data[name] = secret
         return validated_data

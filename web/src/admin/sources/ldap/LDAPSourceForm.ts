@@ -23,6 +23,7 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
+    ServiceBindMethodEnum,
     SourcesApi,
     SyncOutgoingTriggerModeEnum,
 } from "@goauthentik/api";
@@ -163,6 +164,40 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         help=${msg("Required for servers using TLS 1.3+")}
                     ></ak-switch-input>
                     <ak-form-element-horizontal
+                        label=${msg("Service bind method", {
+                            id: "ldap-source.service-bind-method.label",
+                        })}
+                        required
+                        name="serviceBindMethod"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=${ServiceBindMethodEnum.Simple}
+                                ?selected=${!this.instance?.serviceBindMethod ||
+                                this.instance.serviceBindMethod === ServiceBindMethodEnum.Simple}
+                            >
+                                ${msg("Simple or anonymous bind", {
+                                    id: "ldap-source.service-bind-method.simple.label",
+                                })}
+                            </option>
+                            <option
+                                value=${ServiceBindMethodEnum.SaslExternal}
+                                ?selected=${this.instance?.serviceBindMethod ===
+                                ServiceBindMethodEnum.SaslExternal}
+                            >
+                                ${msg("SASL EXTERNAL", {
+                                    id: "ldap-source.service-bind-method.sasl-external.label",
+                                })}
+                            </option>
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.",
+                                { id: "ldap-source.service-bind-method.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
@@ -185,7 +220,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
+                                "Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.",
+                                { id: "ldap-source.client-certificate.description" },
                             )}
                         </p>
                     </ak-form-element-horizontal>

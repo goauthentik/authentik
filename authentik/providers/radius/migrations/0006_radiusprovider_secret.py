@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_radius", "0005_radiusprovider_certificate"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="radius_providers",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Shared Secret",
             ),
         ),
