@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_oauth2", "0037_accesstoken_actor_authorizationcode_actor_and_more"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="oauth2_providers",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Client Secret",
             ),
         ),

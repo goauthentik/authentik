@@ -22,7 +22,7 @@ def rollback_bind_password(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_sources_ldap", "0012_ldapsource_sync_group_parents"),
     ]
 
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="ldap_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Bind password",
             ),
         ),

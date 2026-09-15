@@ -87,10 +87,6 @@ export interface PatchedTelegramSourceRequest {
      * Flow used before authentication.
      */
     preAuthenticationFlow?: string;
-    /**
-     *
-     */
-    botToken?: string;
 }
 
 /**
@@ -151,7 +147,6 @@ export function PatchedTelegramSourceRequestFromJSONTyped(
             json["request_message_access"] == null ? undefined : json["request_message_access"],
         preAuthenticationFlow:
             json["pre_authentication_flow"] == null ? undefined : json["pre_authentication_flow"],
-        botToken: json["bot_token"] == null ? undefined : json["bot_token"],
     };
 }
 
@@ -184,6 +179,5 @@ export function PatchedTelegramSourceRequestToJSONTyped(
         secret: value["secret"],
         request_message_access: value["requestMessageAccess"],
         pre_authentication_flow: value["preAuthenticationFlow"],
-        bot_token: value["botToken"],
     };
 }

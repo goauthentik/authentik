@@ -10365,6 +10365,30 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -25425,6 +25449,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: service_bind_method
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: |+
+            Authentication method used for LDAP synchronization and writeback.
+
+      - in: query
         name: slug
         schema:
           type: string
@@ -36979,6 +37011,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorDuoStageDeviceImportResponse:
@@ -37037,17 +37070,11 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        admin_secret_key:
-          type: string
-          writeOnly: true
       required:
       - api_hostname
       - client_id
       - name
+      - secret
     AuthenticatorEmailChallenge:
       type: object
       description: Authenticator Email Setup challenge
@@ -37230,9 +37257,6 @@ components:
         template:
           type: string
           minLength: 1
-        password:
-          type: string
-          writeOnly: true
       required:
       - name
     AuthenticatorEndpointGDTCStage:
@@ -37416,6 +37440,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
+      - auth_secret
       - component
       - flow_set
       - from_number
@@ -37469,15 +37494,9 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
-        auth:
-          type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
-          type: string
-          writeOnly: true
       required:
       - account_sid
+      - auth_secret
       - from_number
       - name
       - provider
@@ -38141,7 +38160,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
@@ -38551,6 +38574,7 @@ components:
       - name
       - pk
       - public_key
+      - secret
       - verbose_name
       - verbose_name_plural
     CaptchaStageRequest:
@@ -38591,13 +38615,10 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - name
       - public_key
+      - secret
     CertAttributeEnum:
       enum:
       - subject
@@ -40705,9 +40726,6 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
-        password:
-          type: string
-          writeOnly: true
       required:
       - name
     Endpoint:
@@ -44280,21 +44298,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_password:
-          type: string
-          writeOnly: true
-        sync_keytab:
-          type: string
-          writeOnly: true
-        sync_ccache:
-          type: string
-          writeOnly: true
-        spnego_keytab:
-          type: string
-          writeOnly: true
-        spnego_ccache:
-          type: string
-          writeOnly: true
       required:
       - name
       - realm
@@ -44768,6 +44771,10 @@ components:
           format: uuid
           nullable: true
           title: Bind password
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44995,6 +45002,10 @@ components:
           format: uuid
           nullable: true
           title: Bind password
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -45064,9 +45075,6 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
-        bind_password:
-          type: string
-          writeOnly: true
       required:
       - base_dn
       - name
@@ -45939,7 +45947,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
-      - authentik_secrets.secret
+      - authentik_crypto_secrets.secret
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -46774,9 +46782,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46909,9 +46914,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - authorization_flow
       - invalidation_flow
@@ -47158,6 +47160,7 @@ components:
       - name
       - pk
       - provider_type
+      - secret
       - slug
       - type
       - verbose_name
@@ -47327,14 +47330,11 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - consumer_key
       - name
       - provider_type
+      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -50892,13 +50892,6 @@ components:
           format: uuid
           nullable: true
           title: Admin secret key
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        admin_secret_key:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50955,9 +50948,6 @@ components:
         template:
           type: string
           minLength: 1
-        password:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -51020,13 +51010,6 @@ components:
           format: uuid
           nullable: true
           description: Optionally modify the payload being sent to custom providers.
-        auth:
-          type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
-          type: string
-          writeOnly: true
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -51298,10 +51281,6 @@ components:
             given threshold, the stage will show an error message. When not enabled,
             the flow will continue, but the data from the captcha will be available
             in the context for policy decisions
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedCertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -51552,9 +51531,6 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
-        password:
-          type: string
-          writeOnly: true
     PatchedEndpointDeviceRequest:
       type: object
       properties:
@@ -52330,21 +52306,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_password:
-          type: string
-          writeOnly: true
-        sync_keytab:
-          type: string
-          writeOnly: true
-        sync_ccache:
-          type: string
-          writeOnly: true
-        spnego_keytab:
-          type: string
-          writeOnly: true
-        spnego_ccache:
-          type: string
-          writeOnly: true
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -52519,6 +52480,10 @@ components:
           format: uuid
           nullable: true
           title: Bind password
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52588,9 +52553,6 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
-        bind_password:
-          type: string
-          writeOnly: true
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -52987,9 +52949,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -53107,10 +53066,6 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedObjectAttributeRequest:
       type: object
       properties:
@@ -53387,9 +53342,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -53694,9 +53646,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
     PatchedRedirectStageRequest:
       type: object
       description: RedirectStage Serializer
@@ -54205,9 +54154,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -54586,10 +54532,6 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -55149,8 +55091,6 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
       required:
       - component
       - icon_themed_urls
@@ -55159,6 +55099,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55304,11 +55245,9 @@ components:
           format: uuid
           title: Plex token
           description: Plex token used to check friends
-        plex_token:
-          type: string
-          minLength: 1
       required:
       - name
+      - secret
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -56686,8 +56625,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -56818,9 +56755,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        shared_secret:
-          type: string
-          minLength: 1
       required:
       - authorization_flow
       - invalidation_flow
@@ -58761,9 +58695,6 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
-        token:
-          type: string
-          writeOnly: true
       required:
       - name
       - url
@@ -59489,6 +59420,11 @@ components:
       - name
       - pk
       - verbose_name
+    ServiceBindMethodEnum:
+      enum:
+      - simple
+      - sasl_external
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
@@ -60646,6 +60582,7 @@ components:
       - name
       - pk
       - pre_authentication_flow
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60783,14 +60720,11 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
       required:
       - bot_username
       - name
       - pre_authentication_flow
+      - secret
       - slug
     Tenant:
       type: object

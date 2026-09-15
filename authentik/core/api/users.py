@@ -90,6 +90,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
+from authentik.core.signals import impersonation_changed
 from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -1070,6 +1071,10 @@ class UserViewSet(
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
+        # Persist the new identity before outposts can start reauthorization.
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
+
         return Response(status=204)
 
     @extend_schema(
@@ -1094,6 +1099,9 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 
