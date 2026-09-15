@@ -14960,6 +14960,15 @@
                     "type": "string",
                     "title": "Bind password"
                 },
+                "service_bind_method": {
+                    "type": "string",
+                    "enum": [
+                        "simple",
+                        "sasl_external"
+                    ],
+                    "title": "Service bind method",
+                    "description": "Authentication method used for LDAP synchronization and writeback."
+                },
                 "start_tls": {
                     "type": "boolean",
                     "title": "Enable Start TLS"
