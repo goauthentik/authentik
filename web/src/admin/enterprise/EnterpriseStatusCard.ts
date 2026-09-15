@@ -8,7 +8,7 @@ import "#elements/Label";
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseSummary, LicenseSummaryStatusEnum, LicenseUserCounts } from "@goauthentik/api";
 
 import { differenceInSeconds, formatDistanceStrict } from "date-fns";
 import { match } from "ts-pattern";
@@ -47,6 +47,10 @@ const Styles = css`
             --pf-l-split--m-gutter--MarginRight: 3rem;
         }
     }
+
+    .unlicensed-status {
+        padding-block: var(--pf-global--spacer--md);
+    }
 `;
 
 const DAY_IN_SECONDS = 86400;
@@ -56,7 +60,7 @@ export class EnterpriseStatusCard extends AKElement {
     static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFStack, Styles];
 
     @property({ attribute: false })
-    public forecast?: LicenseForecast;
+    public userCounts?: Pick<LicenseUserCounts, "activeInternalUsers" | "activeExternalUsers">;
 
     @property({ attribute: false })
     public summary?: LicenseSummary;
@@ -90,26 +94,30 @@ export class EnterpriseStatusCard extends AKElement {
     }
 
     public override render() {
-        if (!this.forecast || !this.summary) {
+        if (!this.userCounts || !this.summary) {
             return html`${msg("Loading")}`;
         }
 
+        if (this.summary.status === LicenseSummaryStatusEnum.Unlicensed) {
+            return html`<div class="pf-c-card">
+                <div class="pf-c-card__title">${msg("Current license status")}</div>
+                <div class="pf-c-card__body unlicensed-status">${this.renderSummaryBadge()}</div>
+            </div>`;
+        }
+
         // Actual current usage counts (not the forecasted/projected fields).
-        const currentInternalUsers = this.forecast.internalUsers;
-        const currentExternalUsers = this.forecast.externalUsers;
+        const currentInternalUsers = this.userCounts.activeInternalUsers;
+        const currentExternalUsers = this.userCounts.activeExternalUsers;
         const licensedInternalUsers = this.summary.internalUsers;
         const licensedExternalUsers = this.summary.externalUsers;
-        const licensed = this.summary.status !== LicenseSummaryStatusEnum.Unlicensed;
 
         const progressBar = (label: string, current: number, allowed: number) => {
-            const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
+            const percentage = this.calcUserPercentage(allowed, current);
             // prettier-ignore
-            const severity = licensed
-                ? match(percentage)
-                    .when((p) => p <= 80, () => "success")
-                    .when((p) => p > 80 && p <= 100, () => "warning")
-                    .otherwise(() => "danger")
-                : null;
+            const severity = match(percentage)
+                .when((p) => p <= 80, () => "success")
+                .when((p) => p > 80 && p <= 100, () => "warning")
+                .otherwise(() => "danger");
 
             return html`
                 <ak-progress value=${percentage} severity=${ifPresent(severity)}>
