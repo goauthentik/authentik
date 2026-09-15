@@ -69,7 +69,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
         )
         c_s256 = pkce_s256_challenge("foobar")
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -115,7 +115,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             dpop_jkt=None,
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -149,7 +149,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             dpop_jkt=self.dpop_builder.jkt,
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -175,7 +175,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             dpop_jkt=self.dpop_builder.jkt,
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -204,7 +204,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             _id_token=dumps({}),
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -238,7 +238,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             _id_token=dumps({}),
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -267,7 +267,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             _id_token=dumps({}),
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -295,7 +295,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
             _id_token=dumps({}),
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),

@@ -22,6 +22,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.secrets.models import Secret
 from authentik.crypto.validators import (
     JWE_ENCRYPTION_KEY_TYPES,
     JWT_SIGNING_KEY_TYPES,
@@ -59,8 +60,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             raise ValidationError("Client ID must consist of only ASCII characters.")
         return secret
 
-    def validate_client_secret(self, secret: str) -> str:
-        if not is_all_vschar(secret):
+    def validate_secret(self, secret: Secret | None) -> Secret | None:
+        if secret and not is_all_vschar(secret.value):
             raise ValidationError("Client secret must consist of only ASCII characters.")
         return secret
 
@@ -83,7 +84,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_type",
             "grant_types",
             "client_id",
-            "client_secret",
+            "secret",
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",
@@ -100,7 +101,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        secret_fields = ["client_secret"]
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
