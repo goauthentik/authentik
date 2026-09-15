@@ -12,7 +12,7 @@ context:
     context1: context-nested-value
     context2: !Context context1
 entries:
-    - model: authentik_secrets.secret
+    - model: authentik_crypto_secrets.secret
       id: source-secret
       identifiers:
           name: !Env [non-existing, !Context foo]

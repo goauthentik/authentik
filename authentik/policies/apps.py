@@ -12,6 +12,7 @@ GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
     "Cached Policies",
     ["tenant"],
+    multiprocess_mode="livemostrecent",
 )
 HIST_POLICIES_ENGINE_TOTAL_TIME = Histogram(
     "authentik_policies_engine_time_total_seconds",

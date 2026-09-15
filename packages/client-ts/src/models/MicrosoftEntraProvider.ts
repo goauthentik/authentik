@@ -71,7 +71,7 @@ export interface MicrosoftEntraProvider {
     /**
      *
      */
-    secret?: string;
+    secret: string;
     /**
      *
      */
@@ -159,6 +159,7 @@ export function instanceOfMicrosoftEntraProvider(value: object): value is Micros
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("tenantId" in (value as Record<string, any>)) &&
             !("tenant_id" in (value as Record<string, any>))) ||
@@ -193,7 +194,7 @@ export function MicrosoftEntraProviderFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         clientId: json["client_id"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        secret: json["secret"],
         tenantId: json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null

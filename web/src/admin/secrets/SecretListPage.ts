@@ -103,7 +103,7 @@ export class SecretListPage extends TablePage<Secret> {
             html`<div>
                 ${SecretValueButton(item)} ${IconEditButton(SecretForm, item.pk, item.name)}
                 ${IconPermissionButton(item.name, {
-                    model: ModelEnum.AuthentikSecretsSecret,
+                    model: ModelEnum.AuthentikCryptoSecretsSecret,
                     objectPk: item.pk,
                 })}
             </div>`,

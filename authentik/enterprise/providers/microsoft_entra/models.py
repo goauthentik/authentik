@@ -83,7 +83,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
 
     client_id = models.TextField()
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
         on_delete=models.PROTECT,
         null=True,

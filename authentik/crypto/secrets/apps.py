@@ -7,6 +7,6 @@ class AuthentikSecretsConfig(ManagedAppConfig):
     """Managed secrets app configuration."""
 
     name = "authentik.crypto.secrets"
-    label = "authentik_secrets"
+    label = "authentik_crypto_secrets"
     verbose_name = "authentik Secrets"
     default = True

@@ -29,7 +29,7 @@ def rollback_secrets(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_stages_authenticator_sms", "0010_alter_smsdevice_stage"),
     ]
 
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="sms_stages_auth_password",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Auth password",
             ),
         ),
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="sms_stages_auth",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Auth token",
             ),
         ),

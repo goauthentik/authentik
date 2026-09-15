@@ -22,7 +22,7 @@ class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, Friendl
     credentials = models.JSONField(default=dict)
 
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Google credentials"),
         on_delete=models.PROTECT,
         null=True,

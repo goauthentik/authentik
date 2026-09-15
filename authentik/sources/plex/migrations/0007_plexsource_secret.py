@@ -22,7 +22,7 @@ def rollback_plex_token(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_sources_plex", "0006_migrate_groupplexsourceconnection"),
     ]
 
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="plex_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Plex token",
             ),
         ),
