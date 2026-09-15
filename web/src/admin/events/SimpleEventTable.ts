@@ -35,7 +35,7 @@ export abstract class SimpleEventTable extends Table<Event> {
     }
 
     protected override rowLabel(item: Event): string {
-        return actionToLabel(item.action);
+        return actionToLabel(item.action, item.context);
     }
 
     protected columns: TableColumn[] = [
@@ -49,7 +49,7 @@ export abstract class SimpleEventTable extends Table<Event> {
         return [
             html`<div>
                     <a href=${toAdminInterface(`events/log/${item.pk}`)}
-                        >${actionToLabel(item.action)}</a
+                        >${actionToLabel(item.action, item.context)}</a
                     >
                 </div>
                 <small>${item.app}</small>`,

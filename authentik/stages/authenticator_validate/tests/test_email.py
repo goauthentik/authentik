@@ -4,6 +4,7 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
@@ -181,3 +182,6 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
                 ],
             },
         )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.MFA_INVALID_OTP.value)
