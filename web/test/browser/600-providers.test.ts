@@ -25,7 +25,10 @@ test.describe("Provider Wizard", () => {
         await test.step("Navigate to provider wizard", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
 
-            await page.getByRole("button", { name: "New Provider" }).click();
+            await page
+                .getByLabel("Providers actions")
+                .getByRole("button", { name: "New Provider" })
+                .click();
 
             await expect(dialog, "Dialog opens after clicking on New Provider").toBeVisible();
 
@@ -73,6 +76,12 @@ test.describe("Provider Wizard", () => {
                 selectSearchValue,
                 "Authorization Flow",
                 /default-provider-authorization-explicit-consent/,
+            ],
+            [
+                expect(
+                    dialog.getByRole("textbox", { name: "Invalidation Flow", includeHidden: true }),
+                ).toHaveValue,
+                /default-provider-invalidation-flow/,
             ],
             [click, "Create", "button", dialog],
         );

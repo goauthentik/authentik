@@ -504,6 +504,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_crypto_secrets.secret"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "id": {
@@ -5783,6 +5823,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -7177,6 +7223,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -8018,6 +8070,58 @@
                             "view_certificatekeypair",
                             "view_certificatekeypair_certificate",
                             "view_certificatekeypair_key"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_crypto_secrets.secret": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "text",
+                        "multiline",
+                        "file"
+                    ],
+                    "title": "Type"
+                },
+                "value": {
+                    "type": "string",
+                    "title": "Value"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_crypto_secrets.secret_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_secret",
+                            "change_secret",
+                            "delete_secret",
+                            "rotate_secret",
+                            "view_secret",
+                            "view_secret_value"
                         ]
                     },
                     "user": {
@@ -11074,6 +11178,7 @@
                         "authentik.api",
                         "authentik.core",
                         "authentik.crypto",
+                        "authentik.crypto.secrets",
                         "authentik.endpoints",
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
@@ -11169,6 +11274,7 @@
                         "authentik_core.objectattribute",
                         "authentik_core.actor",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_crypto_secrets.secret",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
@@ -13677,6 +13783,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
