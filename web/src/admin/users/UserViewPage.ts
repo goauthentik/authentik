@@ -23,7 +23,13 @@ import { WithSession } from "#elements/mixins/session";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    LicenseSummaryStatusEnum,
+    ModelEnum,
+    User,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
@@ -110,6 +116,8 @@ export class UserViewPage extends WithLazyTabs(
                         .currentUserPk=${this.currentUser?.pk}
                         .canImpersonate=${this.can(CapabilitiesEnum.CanImpersonate)}
                         .hasEnterpriseLicense=${this.hasEnterpriseLicense}
+                        .hasInstalledEnterpriseLicense=${this.licenseSummary !== null &&
+                        this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed}
                         .brandHasRecoveryFlow=${!!this.brand.flowRecovery}
                     ></ak-user-overview-tab>
                 </div>
