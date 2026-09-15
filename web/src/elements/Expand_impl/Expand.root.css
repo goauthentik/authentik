@@ -1,0 +1,19 @@
+/**
+ * @file Document-level CSS Custom Properties for Expand components.
+ */
+
+:root {
+    --ak-c-expand__toggle--Color: var(--pf-global--link--Color);
+    --ak-c-expand__toggle--hover--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expand__toggle--active--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expand__toggle--focus--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expand__toggle--m-expanded--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expand__toggle--BackgroundColor: transparent;
+    --ak-c-expand__content--MarginTop: var(--pf-global--spacer--md);
+    --ak-c-expand__content--MaxWidth: none;
+    --ak-c-expand__content--PaddingLeft: calc(
+        var(--ak-c-expansion-toggle--ColumnGap) + var(--ak-c-expansion-toggle__icon--MinWidth)
+    );
+    --ak-c-expand__content--PaddingRight: 0;
+    --ak-c-expand__content--PaddingBottom: 0;
+}
