@@ -25,6 +25,19 @@ export class QL extends DjangoQL {
         this.completionEnabled = !!this.options.completionEnabled;
         return;
     }
+    generateSuggestions() {
+        try {
+            super.generateSuggestions();
+        } catch (error) {
+            // A query the engine cannot resolve (e.g. a relation missing from the
+            // introspections) must never leave stale suggestions behind, as an open menu
+            // captures Enter and the engine also calls this on its own timers.
+            this.logError(`Failed to generate suggestions: ${error}`);
+            this.prefix = "";
+            this.suggestions = [];
+            this.selected = null;
+        }
+    }
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
@@ -321,7 +334,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         const suggestionsLength = this.#ql?.suggestions.length;
 
+        // The completion engine attaches its own keydown listener to the textarea and would
+        // handle these keys a second time, with its own notion of the selected suggestion.
+        if (["Enter", "ArrowDown", "ArrowUp", "Tab", "Escape"].includes(event.key)) {
+            event.stopImmediatePropagation();
+        }
+
         if (event.key === "Enter" && !this.open && this.form) {
+            event.preventDefault();
             this.submit();
 
             return;
@@ -369,25 +389,41 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 return;
 
             case "Tab":
-                if (this.selectionIndex) {
+                if (this.selectionIndex !== -1) {
                     this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
                 }
 
                 return;
-            case "Enter":
+            case "Enter": {
                 // Technically this is a textarea, due to automatic multi-line feature,
                 // but other than that it should look and behave like a normal input.
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
-                if (this.selectionIndex !== -1) {
-                    this.#selectCompletion(this.selectionIndex);
-                    this.selectionIndex = 0;
-                }
-
                 event.preventDefault();
 
+                const before = this.anchorRef.value?.value ?? "";
+
+                if (this.selectionIndex !== -1) {
+                    this.#selectCompletion(this.selectionIndex);
+                }
+
+                const after = this.anchorRef.value?.value ?? "";
+
+                // Nothing was highlighted, or applying the highlighted suggestion changed
+                // nothing: the query is as complete as the suggestions can make it, so
+                // Enter means submit rather than trapping the user in the menu.
+                if (after === before) {
+                    this.open = false;
+                    this.submit();
+
+                    return;
+                }
+
+                this.selectionIndex = 0;
+
                 return;
+            }
             case "Escape":
                 this.open = false;
                 return;

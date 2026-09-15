@@ -11,6 +11,10 @@ class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
                 if not isinstance(field, JSONSearchField):
                     continue
                 serialization["models"].update(field.get_nested_options(self))
+                # The field is serialized as a relation to this model; make sure the model
+                # exists even when no keys are suggested, otherwise the completion client
+                # fails resolving the relation and stops offering completions entirely
+                serialization["models"].setdefault(field.relation(), {})
         return serialization
 
     def serialize_field(self, field):
