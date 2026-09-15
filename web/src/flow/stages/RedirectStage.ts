@@ -103,7 +103,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (
-            !url.protocol.startsWith("http") &&
+            !url.protocol.startsWith("http") ||
             // Special case for apple PlatformSSO, we redirect to a non-http endpoint
             // however it may take a second for the flow to finish, so we don't
             // want to show a mis-leading "close" message

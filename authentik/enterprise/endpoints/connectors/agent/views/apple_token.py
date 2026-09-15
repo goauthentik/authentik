@@ -1,4 +1,4 @@
-from base64 import urlsafe_b64decode, urlsafe_b64encode
+from base64 import b64encode, urlsafe_b64decode, urlsafe_b64encode
 from typing import Any
 from uuid import UUID
 
@@ -168,6 +168,23 @@ class TokenView(View):
             raise ValidationError("Invalid nonce")
         return device_user, decoded
 
+    @staticmethod
+    def _ecdh_shared_key(cert_private_key_pem: str, other_publickey_b64: str) -> bytes:
+        """Compute an ECDH shared secret between our unlock cert's private key and the
+        device's ephemeral public key sent in the current request. The device regenerates
+        its side of this exchange per-request, so `other_publickey` must always come from
+        the request being handled, never a value cached from registration or a prior request."""
+        private_key = serialization.load_pem_private_key(
+            cert_private_key_pem.encode(), password=None
+        )
+        other_pubkey_bytes = urlsafe_b64decode(
+            other_publickey_b64 + "=" * (-len(other_publickey_b64) % 4)
+        )
+        other_public_key = EllipticCurvePublicKey.from_encoded_point(
+            SECP256R1(), other_pubkey_bytes
+        )
+        return private_key.exchange(ECDH(), other_public_key)
+
     def create_auth_session(self, user: User):
         event = Event.new(
             EventAction.LOGIN,
@@ -253,16 +270,11 @@ class TokenView(View):
                 .order_by("-expires")
                 .first()
             )
-            if unlock_key and self.device_connection.apple_key_exchange_key:
+            other_publickey = self.jwt_request.get("other_publickey")
+            if unlock_key and other_publickey:
                 try:
-                    cert_private_key = serialization.load_pem_private_key(
-                        unlock_key.private_key.encode(), password=None
-                    )
-                    device_public_key = serialization.load_pem_public_key(
-                        self.device_connection.apple_key_exchange_key.encode()
-                    )
-                    shared_key = cert_private_key.exchange(ECDH(), device_public_key)
-                    response_body["key"] = urlsafe_b64encode(shared_key).rstrip(b"=").decode()
+                    shared_key = self._ecdh_shared_key(unlock_key.private_key, other_publickey)
+                    response_body["key"] = b64encode(shared_key).decode()
                     response_body["key_context"] = str(unlock_key.identifier)
                     LOGGER.debug(
                         "Computed unlock ECDH key",
@@ -273,9 +285,9 @@ class TokenView(View):
                     LOGGER.warning("Failed to compute unlock ECDH key", exc=exc)
             else:
                 LOGGER.warning(
-                    "auth:unlock scope requested but no unlock key or exchange key available",
+                    "auth:unlock scope requested but no unlock key or other_publickey available",
                     has_unlock_key=unlock_key is not None,
-                    has_exchange_key=bool(self.device_connection.apple_key_exchange_key),
+                    has_other_publickey=bool(other_publickey),
                 )
         return JWEResponse(
             response_body,
@@ -431,23 +443,14 @@ class TokenView(View):
             LOGGER.warning("No unlock key found for key_context", key_context=raw_context)
             return HttpResponse(status=400)
 
-        private_key = serialization.load_pem_private_key(
-            unlock_key.private_key.encode(),
-            password=None,
+        shared_key = self._ecdh_shared_key(
+            unlock_key.private_key, self.jwt_request["other_publickey"]
         )
-
-        raw_pubkey = self.jwt_request["other_publickey"]
-        other_pubkey_bytes = urlsafe_b64decode(raw_pubkey + "=" * (-len(raw_pubkey) % 4))
-        other_public_key = EllipticCurvePublicKey.from_encoded_point(
-            SECP256R1(), other_pubkey_bytes
-        )
-
-        shared_key = private_key.exchange(ECDH(), other_public_key)
         expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
 
         return JWEResponse(
             {
-                "key": urlsafe_b64encode(shared_key).rstrip(b"=").decode(),
+                "key": b64encode(shared_key).decode(),
                 "exp": int(expires_at.timestamp()),
                 "iat": int(self.now.timestamp()),
                 "key_context": str(unlock_key.identifier),
