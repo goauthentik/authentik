@@ -14,6 +14,11 @@
 
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { ServiceBindMethodEnum } from "./ServiceBindMethodEnum";
+import {
+    ServiceBindMethodEnumFromJSON,
+    ServiceBindMethodEnumToJSON,
+} from "./ServiceBindMethodEnum";
 import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
 import {
     SyncOutgoingTriggerModeEnumFromJSON,
@@ -96,6 +101,10 @@ export interface PatchedLDAPSourceRequest {
      *
      */
     secret?: string | null;
+    /**
+     * Authentication method used for LDAP synchronization and writeback.
+     */
+    serviceBindMethod?: ServiceBindMethodEnum;
     /**
      *
      */
@@ -246,6 +255,10 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                 : json["secret"] === null
                   ? null
                   : json["secret"],
+        serviceBindMethod:
+            json["service_bind_method"] == null
+                ? undefined
+                : ServiceBindMethodEnumFromJSON(json["service_bind_method"]),
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
         baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
@@ -322,6 +335,7 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
         secret: value["secret"],
+        service_bind_method: ServiceBindMethodEnumToJSON(value["serviceBindMethod"]),
         start_tls: value["startTls"],
         sni: value["sni"],
         base_dn: value["baseDn"],

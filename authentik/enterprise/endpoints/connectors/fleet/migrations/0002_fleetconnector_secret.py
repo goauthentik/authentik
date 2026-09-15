@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_endpoints_connectors_fleet", "0001_initial"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="fleet_connectors",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Fleet API Token",
             ),
         ),

@@ -40,9 +40,9 @@ def preserve_role_permissions(apps, schema_editor, consumers=CONSUMERS):
     Permission = apps.get_model("auth", "Permission")
     ObjectPermission = apps.get_model("guardian", "RoleObjectPermission")
     ModelPermission = apps.get_model("guardian", "RoleModelPermission")
-    Secret = apps.get_model("authentik_secrets", "Secret")
+    Secret = apps.get_model("authentik_crypto_secrets", "Secret")
     secret_type, _ = ContentType.objects.using(alias).get_or_create(
-        app_label="authentik_secrets", model="secret"
+        app_label="authentik_crypto_secrets", model="secret"
     )
     permissions = {}
     for codename, name in [
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("guardian", "0005_delete_userobjectpermission_and_groupobjectpermission"),
         ("authentik_providers_oauth2", "0038_oauth2provider_secret"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(preserve_provider_permissions, migrations.RunPython.noop)]

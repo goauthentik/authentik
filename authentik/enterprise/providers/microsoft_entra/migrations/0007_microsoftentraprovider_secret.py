@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_microsoft_entra", "0006_microsoftentraprovider_discovery_enabled"),
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
     ]
 
     operations = [
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="microsoft_entra_providers",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Client Secret",
             ),
         ),
