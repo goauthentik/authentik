@@ -9,6 +9,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import (
     Event,
@@ -17,7 +18,7 @@ from authentik.events.models import (
     NotificationSeverity,
     TransportMode,
 )
-from authentik.events.utils import model_to_dict
+from authentik.events.utils import model_to_dict, sanitize_dict
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -102,6 +103,34 @@ class TestEventsAPI(APITestCase):
         self.assertJSONEqual(
             response.content,
             [{"application": {"name": "foo"}, "counted_events": 1, "unique_users": 0}],
+        )
+
+    def test_top_n_renamed_application(self):
+        """Test top_per_user with an application that has been renamed"""
+        uid = generate_id()
+        application = Application.objects.create(name=uid, slug=uid)
+        Event.new(EventAction.AUTHORIZE_APPLICATION, authorized_application=application).set_user(
+            self.user
+        ).save()
+        application.name = generate_id()
+        application.save()
+        Event.new(EventAction.AUTHORIZE_APPLICATION, authorized_application=application).set_user(
+            self.user
+        ).save()
+        response = self.client.get(
+            reverse("authentik_api:event-top-per-user"),
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            [
+                {
+                    "application": sanitize_dict(model_to_dict(application)),
+                    "counted_events": 2,
+                    "unique_users": 1,
+                }
+            ],
         )
 
     def test_actions(self):
