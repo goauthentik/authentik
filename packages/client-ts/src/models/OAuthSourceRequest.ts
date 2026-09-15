@@ -120,7 +120,7 @@ export interface OAuthSourceRequest {
     /**
      *
      */
-    secret?: string;
+    secret: string;
     /**
      *
      */
@@ -141,10 +141,6 @@ export interface OAuthSourceRequest {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
-    /**
-     *
-     */
-    consumerSecret?: string;
 }
 
 /**
@@ -167,6 +163,7 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             (value as Record<string, any>)["consumer_key"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -244,7 +241,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        secret: json["secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -254,7 +251,6 @@ export function OAuthSourceRequestFromJSONTyped(
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
-        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
     };
 }
 
@@ -299,6 +295,5 @@ export function OAuthSourceRequestToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
-        consumer_secret: value["consumerSecret"],
     };
 }
