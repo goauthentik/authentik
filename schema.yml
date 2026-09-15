@@ -46724,9 +46724,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46859,9 +46856,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
       required:
       - authorization_flow
       - invalidation_flow
@@ -52879,9 +52873,6 @@ components:
           type: array
           items:
             type: integer
-        client_secret:
-          type: string
-          maxLength: 255
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer

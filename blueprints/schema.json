@@ -12539,11 +12539,6 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
-                },
-                "client_secret": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "title": "Client secret"
                 }
             },
             "required": []
