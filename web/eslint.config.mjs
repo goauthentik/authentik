@@ -6,6 +6,7 @@
 
 import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
 
+import compat from "eslint-plugin-compat";
 import { defineConfig } from "eslint/config";
 
 // @ts-check
@@ -43,7 +44,9 @@ const eslintConfig = defineConfig(
         files: ["packages/**/*"],
     },
     {
+        ...compat.configs["flat/recommended"],
         rules: {
+            "compat/compat": "warn",
             "consistent-return": "off",
             "no-div-regex": "off",
             "no-empty-function": ["error", { allow: ["arrowFunctions"] }],
