@@ -1,6 +1,7 @@
 """policy engine tests"""
 
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.core.cache import cache
 from django.db import connections
@@ -89,6 +90,67 @@ class TestPolicyEngine(TestCase):
             ),
         )
 
+    def test_engine_dry_run_dynamic(self):
+        """Dry-run policies execute but do not affect the result or messages."""
+        policy_true = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("effective")\nreturn True'
+        )
+        policy_false = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("dry run")\nreturn False'
+        )
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, policy=policy_true, order=0)
+        dry_run = PolicyBinding.objects.create(
+            target=pbm, policy=policy_false, order=1, dry_run=True
+        )
+
+        result = PolicyEngine(pbm, self.user).build().result
+
+        self.assertTrue(result.passing)
+        self.assertEqual(result.messages, ("effective",))
+        self.assertEqual(len(result.source_results), 2)
+        dry_run_result = next(
+            item for item in result.source_results if item.source_binding.pk == dry_run.pk
+        )
+        self.assertFalse(dry_run_result.passing)
+
+        with patch(
+            "authentik.policies.expression.models.ExpressionPolicy.passes",
+            side_effect=AssertionError("cached policies should not be evaluated"),
+        ):
+            cached_result = PolicyEngine(pbm, self.user).build().result
+        self.assertTrue(cached_result.passing)
+        self.assertEqual(cached_result.messages, ("effective",))
+        self.assertEqual(len(cached_result.source_results), 2)
+        self.assertFalse(
+            next(
+                item
+                for item in cached_result.source_results
+                if item.source_binding.pk == dry_run.pk
+            ).passing
+        )
+
+    def test_engine_dry_run_only_uses_empty_result(self):
+        """An engine with only dry-run policies behaves like an empty engine."""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0, dry_run=True)
+
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+
+        self.assertTrue(result.passing)
+        self.assertEqual(result.messages, ())
+        self.assertEqual(len(result.source_results), 1)
+        self.assertFalse(result.source_results[0].passing)
+
+    def test_engine_dry_run_static(self):
+        """Dry-run static bindings do not affect the effective result."""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1, dry_run=True)
+
+        self.assertTrue(PolicyEngine(pbm, self.user).build().passing)
+
     def test_engine_mode_all_static(self):
         """Ensure all policies passes with OR mode (false and true -> true)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
@@ -169,10 +231,24 @@ class TestPolicyEngine(TestCase):
         binding.expiring = True
         binding.expires = now() - timedelta(minutes=10)
         binding.save()
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 0)
 
         engine = PolicyEngine(pbm, self.user)
         engine.empty_result = False
         self.assertEqual(engine.build().passing, False)
+
+    def test_engine_cache_binding_deleted(self):
+        """Ensure deleting a binding removes its cached policy results"""
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        self.assertEqual(engine.build().passing, True)
+        cache_prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*"
+        self.assertEqual(len(cache.keys(cache_prefix)), 1)
+
+        binding.delete()
+
+        self.assertEqual(len(cache.keys(cache_prefix)), 0)
 
     def test_engine_static_bindings(self):
         """Test static bindings"""
