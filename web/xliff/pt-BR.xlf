@@ -7865,26 +7865,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>License(s)</source>
   <target>Licença(s)</target>
 </trans-unit>
-<trans-unit id="sf58825457d61c429">
-  <source>Forecast internal users</source>
-  <target>Previsão de usuários internos</target>
-</trans-unit>
-<trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
-  <target>Número estimado de usuários daqui a um ano com base nos <x id="0" equiv-text="${internalUsers}"/>usuários internos atuais e nos <x id="1" equiv-text="${forecastedInternalUsers}"/> usuários internos projetados.</target>
-</trans-unit>
-<trans-unit id="s531571491deb239a">
-  <source>Approximately</source>
-  <target>Aproximadamente</target>
-</trans-unit>
-<trans-unit id="s4557b6b9da258643">
-  <source>Forecast external users</source>
-  <target>Previsão de usuários externos</target>
-</trans-unit>
-<trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
-  <target>Número estimado de usuários daqui a um ano com base nos <x id="0" equiv-text="${externalUsers}"/>  usuários externos atuais e nos <x id="1" equiv-text="${forecastedExternalUsers}"/> usuários externos projetados.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Expiração cumulativa da licença</target>
@@ -12304,6 +12284,36 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.30-days.label">
+  <source>30 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.90-days.label">
+  <source>90 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.365-days.label">
+  <source>365 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within-last.title">
+  <source>Added within last</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.label">
+  <source>Internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.total-active.label">
+  <source>Total active internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.label">
+  <source>External users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.total-active.label">
+  <source>Total active external users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.copy-button.label">
+  <source>Copy Install ID</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.label">
+  <source>Install ID</source>
 </trans-unit>
 </body>
 </file>

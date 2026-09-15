@@ -17,6 +17,7 @@ import { type License, LicenseFromJSON } from "../models/License";
 import { type LicenseForecast, LicenseForecastFromJSON } from "../models/LicenseForecast";
 import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest";
 import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary";
+import { type LicenseUserCounts, LicenseUserCountsFromJSON } from "../models/LicenseUserCounts";
 import {
     type PaginatedLicenseList,
     PaginatedLicenseListFromJSON,
@@ -106,6 +107,21 @@ export interface EnterpriseLicenseUsedByListRequest {
      * A UUID string identifying this License.
      */
     licenseUuid: string;
+}
+
+export interface EnterpriseLicenseUserCountsRetrieveRequest {
+    /**
+     * Positive relative periods, such as 'days=30' or 'weeks=3;days=2'.
+     */
+    countSteps?: Array<string>;
+    /**
+     * Exclusive end of an absolute range; must be provided with start.
+     */
+    end?: Date;
+    /**
+     * Inclusive start of an absolute range; must be provided with end.
+     */
+    start?: Date;
 }
 
 /**
@@ -746,6 +762,77 @@ export class EnterpriseApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.enterpriseLicenseUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for enterpriseLicenseUserCountsRetrieve without sending the request
+     */
+    async enterpriseLicenseUserCountsRetrieveRequestOpts(
+        requestParameters: EnterpriseLicenseUserCountsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["countSteps"] != null) {
+            queryParameters["count_steps"] = requestParameters["countSteps"];
+        }
+
+        if (requestParameters["end"] != null) {
+            queryParameters["end"] = runtime.serializeDateTime(requestParameters["end"] as any);
+        }
+
+        if (requestParameters["start"] != null) {
+            queryParameters["start"] = runtime.serializeDateTime(requestParameters["start"] as any);
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/enterprise/license/user_counts/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get active user totals and counts for relative or absolute date ranges.  At least one positive relative count step or a complete absolute range is required. Relative and absolute ranges may be combined. Range starts are inclusive and ends are exclusive. Counts include currently active, non-anonymous accounts.
+     */
+    async enterpriseLicenseUserCountsRetrieveRaw(
+        requestParameters: EnterpriseLicenseUserCountsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LicenseUserCounts>> {
+        const requestOptions =
+            await this.enterpriseLicenseUserCountsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LicenseUserCountsFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Get active user totals and counts for relative or absolute date ranges.  At least one positive relative count step or a complete absolute range is required. Relative and absolute ranges may be combined. Range starts are inclusive and ends are exclusive. Counts include currently active, non-anonymous accounts.
+     */
+    async enterpriseLicenseUserCountsRetrieve(
+        requestParameters: EnterpriseLicenseUserCountsRetrieveRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LicenseUserCounts> {
+        const response = await this.enterpriseLicenseUserCountsRetrieveRaw(
             requestParameters,
             initOverrides,
         );

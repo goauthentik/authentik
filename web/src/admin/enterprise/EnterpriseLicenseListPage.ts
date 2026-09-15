@@ -11,6 +11,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
+import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -22,9 +23,9 @@ import { EnterpriseLicenseForm } from "#admin/enterprise/EnterpriseLicenseForm";
 import {
     EnterpriseApi,
     License,
-    LicenseForecast,
     LicenseSummary,
     LicenseSummaryStatusEnum,
+    LicenseUserCounts,
     ModelEnum,
 } from "@goauthentik/api";
 
@@ -52,7 +53,63 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 padding-bottom: 0;
             }
             .install-id {
-                word-break: break-all;
+                align-items: center;
+                display: flex;
+                gap: var(--pf-global--spacer--xs);
+            }
+            .install-id-value {
+                min-width: 0;
+                overflow-wrap: anywhere;
+            }
+            .user-growth-card::part(card-body) {
+                padding-top: var(--pf-global--spacer--xs);
+            }
+            .user-growth__title {
+                color: var(--pf-global--Color--200);
+                font-size: var(--pf-global--FontSize--md);
+                margin-bottom: var(--pf-global--spacer--xs);
+            }
+            .user-growth {
+                margin: 0;
+            }
+            .user-growth__row {
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                padding-block: var(--pf-global--spacer--xs);
+            }
+            .user-growth__row + .user-growth__row {
+                border-top: var(--pf-global--BorderWidth--sm) solid
+                    var(--pf-global--BorderColor--100);
+            }
+            .user-growth__period,
+            .user-growth__count {
+                margin: 0;
+            }
+            .user-growth__count {
+                font-size: var(--pf-global--FontSize--lg);
+                font-variant-numeric: tabular-nums;
+                font-weight: var(--pf-global--FontWeight--bold);
+                margin-left: var(--pf-global--spacer--md);
+            }
+            .user-total {
+                align-items: baseline;
+                border-bottom: var(--pf-global--BorderWidth--sm) solid
+                    var(--pf-global--BorderColor--100);
+                display: flex;
+                gap: var(--pf-global--spacer--sm);
+                margin-bottom: var(--pf-global--spacer--sm);
+                padding-bottom: var(--pf-global--spacer--sm);
+            }
+            .user-total__count {
+                font-size: var(--pf-global--FontSize--2xl);
+                font-variant-numeric: tabular-nums;
+                font-weight: var(--pf-global--FontWeight--bold);
+                line-height: 1;
+            }
+            .user-total__label {
+                color: var(--pf-global--Color--200);
+                font-size: var(--pf-global--FontSize--sm);
             }
         `,
     ];
@@ -68,7 +125,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     public override order = "name";
 
     @state()
-    protected forecast?: LicenseForecast;
+    protected userCounts?: LicenseUserCounts;
 
     @state()
     protected summary?: LicenseSummary;
@@ -77,7 +134,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     protected installID?: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
-        this.forecast = await aki(EnterpriseApi).enterpriseLicenseForecastRetrieve();
+        this.userCounts = await aki(EnterpriseApi).enterpriseLicenseUserCountsRetrieve({
+            countSteps: ["days=30", "days=90", "days=365"],
+        });
         this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
             cached: false,
         });
@@ -138,14 +197,62 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     protected override renderSectionBefore(): SlottedTemplateResult {
         const {
-            externalUsers = 0,
-            internalUsers = 0,
-            forecastedExternalUsers = 0,
-            forecastedInternalUsers = 0,
-        } = this.forecast || {};
+            activeInternalUsers = 0,
+            activeExternalUsers = 0,
+            ranges = [],
+        } = this.userCounts || {};
+        const countsByInterval = new Map(ranges.map((range) => [range.interval, range]));
+        const last30Days = countsByInterval.get("days=30");
+        const last90Days = countsByInterval.get("days=90");
+        const last365Days = countsByInterval.get("days=365");
 
-        const totalInternalUserEstimate = internalUsers + forecastedInternalUsers;
-        const totalExternalUserEstimate = externalUsers + forecastedExternalUsers;
+        const renderUserGrowth = (
+            totalUsers: number,
+            totalLabel: string,
+            last30Days: number,
+            last90Days: number,
+            last365Days: number,
+        ) => {
+            const periods = [
+                {
+                    label: msg("30 days", {
+                        id: "enterprise.licensing.users.added-within.30-days.label",
+                    }),
+                    value: last30Days,
+                },
+                {
+                    label: msg("90 days", {
+                        id: "enterprise.licensing.users.added-within.90-days.label",
+                    }),
+                    value: last90Days,
+                },
+                {
+                    label: msg("365 days", {
+                        id: "enterprise.licensing.users.added-within.365-days.label",
+                    }),
+                    value: last365Days,
+                },
+            ];
+
+            return html`<div class="user-total">
+                    <span class="user-total__count">${totalUsers}</span>
+                    <span class="user-total__label">${totalLabel}</span>
+                </div>
+                <div class="user-growth__title">
+                    ${msg("Added within last", {
+                        id: "enterprise.licensing.users.added-within-last.title",
+                    })}
+                </div>
+                <dl class="user-growth">
+                    ${periods.map(
+                        (period) =>
+                            html`<div class="user-growth__row">
+                                <dt class="user-growth__period">${period.label}</dt>
+                                <dd class="user-growth__count">${period.value}</dd>
+                            </div>`,
+                    )}
+                </dl>`;
+        };
 
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
@@ -154,27 +261,39 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
                     ${this.renderGetLicenseCard()}
                     <ak-aggregate-card
-                        role="status"
-                        class="pf-l-grid__item"
+                        class="pf-l-grid__item user-growth-card"
                         icon="pf-icon pf-icon-user"
-                        label=${msg("Forecast internal users")}
-                        subtext=${msg(
-                            str`Estimated user count one year from now based on ${internalUsers} current internal users and ${forecastedInternalUsers} forecasted internal users.`,
-                        )}
-                        ><span aria-label=${msg("Approximately")}>&#8776;</span
-                        >${totalInternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
+                        label=${msg("Internal users", {
+                            id: "enterprise.licensing.internal-users.label",
+                        })}
                     >
+                        ${renderUserGrowth(
+                            activeInternalUsers,
+                            msg("Total active internal users", {
+                                id: "enterprise.licensing.internal-users.total-active.label",
+                            }),
+                            last30Days?.internalUsersAdded ?? 0,
+                            last90Days?.internalUsersAdded ?? 0,
+                            last365Days?.internalUsersAdded ?? 0,
+                        )}
+                    </ak-aggregate-card>
                     <ak-aggregate-card
-                        role="status"
-                        class="pf-l-grid__item"
+                        class="pf-l-grid__item user-growth-card"
                         icon="pf-icon pf-icon-user"
-                        label=${msg("Forecast external users")}
-                        subtext=${msg(
-                            str`Estimated user count one year from now based on ${externalUsers} current external users and ${forecastedExternalUsers} forecasted external users.`,
-                        )}
-                        ><span aria-label=${msg("Approximately")}>&#8776;</span
-                        >${totalExternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
+                        label=${msg("External users", {
+                            id: "enterprise.licensing.external-users.label",
+                        })}
                     >
+                        ${renderUserGrowth(
+                            activeExternalUsers,
+                            msg("Total active external users", {
+                                id: "enterprise.licensing.external-users.total-active.label",
+                            }),
+                            last30Days?.externalUsersAdded ?? 0,
+                            last90Days?.externalUsersAdded ?? 0,
+                            last365Days?.externalUsersAdded ?? 0,
+                        )}
+                    </ak-aggregate-card>
                     <ak-aggregate-card
                         role="status"
                         class="pf-l-grid__item"
@@ -193,7 +312,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <ak-enterprise-status-card
                     .summary=${this.summary}
-                    .forecast=${this.forecast}
+                    .userCounts=${this.userCounts}
                 ></ak-enterprise-status-card>
             </section>
         `;
@@ -245,7 +364,18 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
         const renderCard = (installID: string) => html`
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body install-id pf-m-monospace">${installID}</div>
+            <div class="pf-c-card__body install-id pf-m-monospace">
+                <span class="install-id-value">${installID}</span>
+                ${IconCopyButton({
+                    source: installID,
+                    buttonLabel: msg("Copy Install ID", {
+                        id: "enterprise.licensing.install-id.copy-button.label",
+                    }),
+                    entityLabel: msg("Install ID", {
+                        id: "enterprise.licensing.install-id.label",
+                    }),
+                })}
+            </div>
             <div class="pf-c-card__body">
                 <a
                     target="_blank"

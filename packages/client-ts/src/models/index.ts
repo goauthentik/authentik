@@ -302,6 +302,8 @@ export * from "./LicenseRequest";
 export * from "./LicenseStatusEnum";
 export * from "./LicenseSummary";
 export * from "./LicenseSummaryStatusEnum";
+export * from "./LicenseUserCountRange";
+export * from "./LicenseUserCounts";
 export * from "./LifecycleIteration";
 export * from "./LifecycleIterationRequest";
 export * from "./LifecycleIterationStateEnum";

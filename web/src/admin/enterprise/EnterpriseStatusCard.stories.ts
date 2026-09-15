@@ -1,13 +1,13 @@
 import "./EnterpriseStatusCard";
 
-import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseSummary, LicenseSummaryStatusEnum, LicenseUserCounts } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
 interface StatusCardArgs {
-    forecast?: LicenseForecast;
+    userCounts?: Pick<LicenseUserCounts, "activeInternalUsers" | "activeExternalUsers">;
     summary?: LicenseSummary;
 }
 
@@ -22,10 +22,10 @@ export default meta;
 type Story = StoryObj<StatusCardArgs>;
 
 const Template: Story = {
-    render: ({ forecast, summary }: StatusCardArgs) =>
+    render: ({ userCounts, summary }: StatusCardArgs) =>
         html`<div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-enterprise-status-card
-                .forecast=${forecast}
+                .userCounts=${userCounts}
                 .summary=${summary}
             ></ak-enterprise-status-card>
         </div>`,
@@ -34,11 +34,9 @@ const Template: Story = {
 export const Valid: Story = {
     ...Template,
     args: {
-        forecast: {
-            internalUsers: 20,
-            externalUsers: 5,
-            forecastedInternalUsers: 24,
-            forecastedExternalUsers: 6,
+        userCounts: {
+            activeInternalUsers: 20,
+            activeExternalUsers: 5,
         },
         summary: {
             internalUsers: 100,
@@ -53,11 +51,9 @@ export const Valid: Story = {
 export const ExpiringSoon: Story = {
     ...Template,
     args: {
-        forecast: {
-            internalUsers: 85,
-            externalUsers: 40,
-            forecastedInternalUsers: 95,
-            forecastedExternalUsers: 48,
+        userCounts: {
+            activeInternalUsers: 85,
+            activeExternalUsers: 40,
         },
         summary: {
             internalUsers: 100,
@@ -72,11 +68,9 @@ export const ExpiringSoon: Story = {
 export const ExpiringToday: Story = {
     ...Template,
     args: {
-        forecast: {
-            internalUsers: 85,
-            externalUsers: 40,
-            forecastedInternalUsers: 95,
-            forecastedExternalUsers: 48,
+        userCounts: {
+            activeInternalUsers: 85,
+            activeExternalUsers: 40,
         },
         summary: {
             internalUsers: 100,
@@ -91,11 +85,9 @@ export const ExpiringToday: Story = {
 export const LimitExceeded: Story = {
     ...Template,
     args: {
-        forecast: {
-            internalUsers: 120,
-            externalUsers: 3,
-            forecastedInternalUsers: 140,
-            forecastedExternalUsers: 5,
+        userCounts: {
+            activeInternalUsers: 120,
+            activeExternalUsers: 3,
         },
         summary: {
             internalUsers: 100,
@@ -110,11 +102,9 @@ export const LimitExceeded: Story = {
 export const Unlicensed: Story = {
     ...Template,
     args: {
-        forecast: {
-            internalUsers: 12,
-            externalUsers: 4,
-            forecastedInternalUsers: 15,
-            forecastedExternalUsers: 5,
+        userCounts: {
+            activeInternalUsers: 12,
+            activeExternalUsers: 4,
         },
         summary: {
             internalUsers: 0,

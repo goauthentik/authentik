@@ -7851,6 +7851,52 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /enterprise/license/user_counts/:
+    get:
+      operationId: enterprise_license_user_counts_retrieve
+      description: |-
+        Get active user totals and counts for relative or absolute date ranges.
+
+        At least one positive relative count step or a complete absolute range is required.
+        Relative and absolute ranges may be combined. Range starts are inclusive and ends are
+        exclusive. Counts include currently active, non-anonymous accounts.
+      parameters:
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          maxItems: 20
+        description: Positive relative periods, such as 'days=30' or 'weeks=3;days=2'.
+      - in: query
+        name: end
+        schema:
+          type: string
+          format: date-time
+        description: Exclusive end of an absolute range; must be provided with start.
+      - in: query
+        name: start
+        schema:
+          type: string
+          format: date-time
+        description: Inclusive start of an absolute range; must be provided with end.
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseUserCounts'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /events/events/:
     get:
       operationId: events_events_list
@@ -44973,6 +45019,45 @@ components:
       - limit_exceeded_user
       - read_only
       type: string
+    LicenseUserCountRange:
+      type: object
+      description: Counts of active users added within a date range.
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        interval:
+          type: string
+          nullable: true
+        internal_users_added:
+          type: integer
+        external_users_added:
+          type: integer
+      required:
+      - end
+      - external_users_added
+      - internal_users_added
+      - interval
+      - start
+    LicenseUserCounts:
+      type: object
+      description: Current active user totals and counts for requested date ranges.
+      properties:
+        active_internal_users:
+          type: integer
+        active_external_users:
+          type: integer
+        ranges:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseUserCountRange'
+      required:
+      - active_external_users
+      - active_internal_users
+      - ranges
     LifecycleIteration:
       type: object
       description: |-
