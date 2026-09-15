@@ -132,6 +132,21 @@ export interface ManagedBlueprintsUsedByListRequest {
     instanceUuid: string;
 }
 
+export interface ManagedBlueprintsValidateCreateRequest {
+    /**
+     *
+     */
+    file?: Blob;
+    /**
+     *
+     */
+    path?: string;
+    /**
+     *
+     */
+    context?: string;
+}
+
 /**
  *
  */
@@ -827,6 +842,91 @@ export class ManagedApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.managedBlueprintsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for managedBlueprintsValidateCreate without sending the request
+     */
+    async managedBlueprintsValidateCreateRequestOpts(
+        requestParameters: ManagedBlueprintsValidateCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters["file"] != null) {
+            formParams.append("file", requestParameters["file"] as any);
+        }
+
+        if (requestParameters["path"] != null) {
+            formParams.append("path", requestParameters["path"] as any);
+        }
+
+        if (requestParameters["context"] != null) {
+            formParams.append("context", requestParameters["context"] as any);
+        }
+
+        let urlPath = `/managed/blueprints/validate/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Validate blueprint from .yaml file and return any errors
+     */
+    async managedBlueprintsValidateCreateRaw(
+        requestParameters: ManagedBlueprintsValidateCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintImportResult>> {
+        const requestOptions =
+            await this.managedBlueprintsValidateCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintImportResultFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Validate blueprint from .yaml file and return any errors
+     */
+    async managedBlueprintsValidateCreate(
+        requestParameters: ManagedBlueprintsValidateCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintImportResult> {
+        const response = await this.managedBlueprintsValidateCreateRaw(
             requestParameters,
             initOverrides,
         );
