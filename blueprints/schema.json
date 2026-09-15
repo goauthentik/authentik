@@ -5295,46 +5295,6 @@
                             "$ref": "#/definitions/model_authentik_tasks_schedules.schedule"
                         }
                     }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_tenants.domain"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain"
-                        },
-                        "identifiers": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain"
-                        }
-                    }
                 }
             ]
         },
@@ -6539,15 +6499,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -7933,15 +7885,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -11068,7 +11012,6 @@
                     "enum": [
                         null,
                         "authentik.commands",
-                        "authentik.tenants",
                         "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
@@ -11128,6 +11071,7 @@
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
                         "authentik.tasks.schedules",
+                        "authentik.tenants",
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.enterprise.agents",
@@ -11160,7 +11104,6 @@
                     ],
                     "enum": [
                         null,
-                        "authentik_tenants.domain",
                         "authentik_core.group",
                         "authentik_core.user",
                         "authentik_core.application",
@@ -14433,15 +14376,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -18556,53 +18491,6 @@
                             "change_schedule",
                             "send_schedule",
                             "view_schedule"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_tenants.domain": {
-            "type": "object",
-            "properties": {
-                "domain": {
-                    "type": "string",
-                    "maxLength": 253,
-                    "minLength": 1,
-                    "title": "Domain"
-                },
-                "is_primary": {
-                    "type": "boolean",
-                    "title": "Is primary"
-                },
-                "tenant": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Tenant"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_tenants.domain_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_domain",
-                            "change_domain",
-                            "delete_domain",
-                            "view_domain"
                         ]
                     },
                     "user": {

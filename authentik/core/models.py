@@ -35,6 +35,8 @@ from structlog.stdlib import get_logger
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -53,8 +55,7 @@ from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
-from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
@@ -94,10 +95,10 @@ def managed_role_name(user_or_group: models.Model):
 
 def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_duration = (
-        current_tenant.default_token_duration
-        if hasattr(current_tenant, "default_token_duration")
+        settings.default_token_duration
+        if hasattr(settings, "default_token_duration")
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
@@ -105,10 +106,10 @@ def default_token_duration() -> datetime:
 
 def default_token_key() -> str:
     """Default token key"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_length = (
-        current_tenant.default_token_length
-        if hasattr(current_tenant, "default_token_length")
+        settings.default_token_length
+        if hasattr(settings, "default_token_length")
         else DEFAULT_TOKEN_LENGTH
     )
     # We use generate_id since the chars in the key should be easy
@@ -606,7 +607,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""

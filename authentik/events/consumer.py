@@ -5,13 +5,12 @@ from hashlib import sha256
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
-from django.db import connection
 
 from authentik.core.models import User
 
 
 def build_user_group(user: User):
-    return sha256(f"{connection.schema_name}/group_client_user_{user.uuid}".encode()).hexdigest()
+    return sha256(f"group_client_user_{user.uuid}".encode()).hexdigest()
 
 
 class ClientConsumer(JsonWebsocketConsumer):

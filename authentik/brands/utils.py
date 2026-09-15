@@ -9,9 +9,10 @@ from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
 
 from authentik import authentik_full_version
+from authentik.admin.models import SystemSettings
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import _BRAND_RELATED_FK_FIELDS, SESSION_KEY_BRAND_SAFE_MODE, Brand
 from authentik.lib.tracing import active_tracer
-from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
@@ -65,7 +66,10 @@ def get_brand_for_request(request: HttpRequest) -> Brand:
 def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
     brand = getattr(request, "brand", DEFAULT_BRAND)
-    tenant = getattr(request, "tenant", Tenant())
+    try:
+        footer_links = get_system_settings(["footer_links"]).footer_links
+    except SystemSettings.DoesNotExist:
+        footer_links = []
     # Suppress custom CSS for safe-mode sessions so misconfigured branding can't lock a
     # user out of the UI needed to fix it.
     safe_mode = session_safe_mode(request)
@@ -78,7 +82,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "brand": brand,
         "brand_css": brand_css,
         "safe_mode": safe_mode,
-        "footer_links": tenant.footer_links,
+        "footer_links": footer_links,
         "html_meta": {**active_tracer().get_http_meta()},
         "version": authentik_full_version(),
     }

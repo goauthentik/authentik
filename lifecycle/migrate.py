@@ -121,6 +121,30 @@ def ensure_allowed_version(cursor: Cursor) -> None:
     raise RuntimeError(message)
 
 
+ACKNOWLEDGE_REMOVAL = "tenants.acknowledge_removal"
+
+
+def ensure_no_extra_tenants(curr):
+    curr.execute("SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname LIKE 't\\_%'")
+    schemas = sorted(row[0] for row in curr.fetchall())
+    if not schemas:
+        return
+    if CONFIG.get_bool(ACKNOWLEDGE_REMOVAL, False):
+        LOGGER.warning(
+            "Continuing past additional tenant schemas, their data will not be migrated",
+            schemas=schemas,
+        )
+        return
+    message = (
+        "Multi-tenancy has been removed, but this install still has additional tenant "
+        f"schemas: {', '.join(schemas)}. Their data will not be migrated and will no longer "
+        "be reachable. See https://docs.goauthentik.io/releases/2026.8/#breaking-changes. "
+        "Set AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true to continue anyway."
+    )
+    LOGGER.error(message, schemas=schemas)
+    raise RuntimeError(message)
+
+
 def run_migrations():
     if CONFIG.get_bool("skip_migrations", False):
         return
@@ -133,6 +157,7 @@ def run_migrations():
     try:
         wait_for_lock(conn, curr)
         ensure_allowed_version(curr)
+        ensure_no_extra_tenants(curr)
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):
@@ -161,9 +186,7 @@ def run_migrations():
                 "available on your PYTHONPATH environment variable? Did you "
                 "forget to activate a virtual environment?"
             ) from exc
-        execute_from_command_line(["", "migrate_schemas"])
-        if CONFIG.get_bool("tenants.enabled", False):
-            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(["", "migrate"])
         # Run django system checks for all databases
         check_args = ["", "check"]
         for label in django_db_config(CONFIG).keys():

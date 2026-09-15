@@ -55,10 +55,11 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-SHARED_APPS = [
+INSTALLED_APPS = [
     "authentik.commands",
-    "django_tenants",
-    "authentik.tenants",
+    "django_dramatiq_postgres",
+    "authentik.tasks",
+    "authentik.admin",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -73,16 +74,11 @@ SHARED_APPS = [
     "pglock",
     "channels",
     "django_channels_postgres",
-    "django_dramatiq_postgres",
-    "authentik.tasks",
-]
-TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "pgtrigger",
     "django_postgres_cache",
-    "authentik.admin",
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
@@ -139,17 +135,12 @@ TENANT_APPS = [
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
     "authentik.tasks.schedules",
+    # TODO: remove in 2027
+    "authentik.tenants",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
 ]
-
-TENANT_MODEL = "authentik_tenants.Tenant"
-TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
-
-TENANT_CREATION_FAKES_MIGRATIONS = True
-TENANT_BASE_SCHEMA = "template"
-PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
@@ -268,8 +259,6 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
-        "KEY_FUNCTION": "django_tenants.cache.make_key",
-        "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     },
     # In-process cache for DRF throttle counters. Per-worker rather than
     # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
@@ -297,7 +286,6 @@ MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
@@ -347,17 +335,12 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 # The tree looks like this:
 # psqlextra backend
 #   -> authentik custom backend
-#     -> django_tenants backend
-#       -> django_prometheus backend
-#         -> django built-in backend
-ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
+#     -> django_prometheus backend
+#       -> django built-in backend
 POSTGRES_EXTRA_DB_BACKEND_BASE = "authentik.root.db"
 DATABASES = django_db_config()
 
-DATABASE_ROUTERS = (
-    "authentik.tenants.db.FailoverRouter",
-    "django_tenants.routers.TenantSyncRouter",
-)
+DATABASE_ROUTERS = ("authentik.root.db.router.FailoverRouter",)
 
 # We don't use HStore
 POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
@@ -423,7 +406,6 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # Dramatiq
 
 DRAMATIQ = {
-    "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
     # Route the broker's LISTEN connection and advisory-lock connection through
@@ -448,7 +430,6 @@ DRAMATIQ = {
         ).total_seconds(),
         "watch_folder": BASE_DIR / "authentik",
     },
-    "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
     "scheduler_interval": timedelta_from_string(
         CONFIG.get("worker.scheduler_interval")
@@ -480,7 +461,6 @@ DRAMATIQ = {
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
-        ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.ModelDataMiddleware", {}),
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
@@ -520,8 +500,6 @@ LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [
-    "SHARED_APPS",
-    "TENANT_APPS",
     "INSTALLED_APPS",
     "MIDDLEWARE_FIRST",
     "MIDDLEWARE",
@@ -559,11 +537,9 @@ def _update_settings(app_path: str) -> None:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
 
-        new_shared_apps = subtract_list(getattr(settings_module, "SHARED_APPS", []), SHARED_APPS)
-        new_tenant_apps = subtract_list(getattr(settings_module, "TENANT_APPS", []), TENANT_APPS)
-        SHARED_APPS.extend(new_shared_apps)
-        TENANT_APPS.extend(new_tenant_apps)
-        _filter_and_update(new_shared_apps + new_tenant_apps)
+        new_apps = subtract_list(getattr(settings_module, "INSTALLED_APPS", []), INSTALLED_APPS)
+        INSTALLED_APPS.extend(new_apps)
+        _filter_and_update(new_apps)
 
         MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
@@ -583,25 +559,23 @@ def _update_settings(app_path: str) -> None:
 try:
     importlib.import_module("authentik.enterprise.apps")
     CONFIG.log("info", "Enabled authentik enterprise")
-    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+    INSTALLED_APPS.insert(INSTALLED_APPS.index("authentik.events"), "authentik.enterprise")
 except ImportError:
     pass
 
 
 if DEBUG:
-    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 
 
 CONFIG.log("info", "Booting authentik", version=authentik_version())
 
 # Load subapps's settings
-_filter_and_update(SHARED_APPS + TENANT_APPS)
+_filter_and_update(INSTALLED_APPS)
 _update_settings("data.user_settings")
 
 MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
-SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
-INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 
 # Error-reporting tracers (OpenTelemetry, Sentry) are initialized from
 # AuthentikCoreConfig.ready(), since it needs to run after Django settings have fully

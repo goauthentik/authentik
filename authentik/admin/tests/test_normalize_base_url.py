@@ -2,7 +2,7 @@
 
 from django.test import SimpleTestCase
 
-from authentik.tenants.utils import normalize_base_url
+from authentik.admin.utils import normalize_base_url
 
 
 class TestNormalizeBaseURL(SimpleTestCase):

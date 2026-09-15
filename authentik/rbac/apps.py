@@ -14,7 +14,7 @@ class AuthentikRBACConfig(ManagedAppConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.rbac.tasks import clean_orphaned_object_permissions
 
         return [

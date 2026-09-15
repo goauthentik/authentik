@@ -11,6 +11,7 @@ from django.urls import reverse
 from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
+from authentik.admin.flags import patch_flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import (
     NS_MAP,
@@ -40,7 +41,6 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 from authentik.stages.dummy.models import DummyStage
-from authentik.tenants.flags import patch_flag
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"

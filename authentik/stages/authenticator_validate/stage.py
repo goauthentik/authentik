@@ -22,6 +22,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.reputation.signals import update_score
+from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_email.models import EmailDevice
@@ -38,7 +39,6 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
-from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_MFA = "authentik_mfa"
 
@@ -362,7 +362,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def cookie_jwt_key(self) -> str:
         """Signing key for MFA Cookie for this stage"""
         return sha256(
-            f"{get_unique_identifier()}:{self.executor.current_stage.pk.hex}".encode("ascii")
+            f"{get_install_id()}:{self.executor.current_stage.pk.hex}".encode("ascii")
         ).hexdigest()
 
     def check_mfa_cookie(self, allowed_devices: list[Device]):

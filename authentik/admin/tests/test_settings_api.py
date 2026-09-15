@@ -4,9 +4,9 @@ from django.core.management import call_command
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.admin.flags import Flag
+from authentik.admin.utils import get_system_settings
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.tenants.flags import Flag
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestLocalSettingsAPI(APITestCase):
@@ -15,7 +15,7 @@ class TestLocalSettingsAPI(APITestCase):
     def setUp(self):
         super().setUp()
         self.local_admin = create_test_admin_user()
-        self.tenant = get_current_tenant()
+        self.tenant = get_system_settings()
 
     def tearDown(self):
         super().tearDown()
@@ -34,7 +34,7 @@ class TestLocalSettingsAPI(APITestCase):
 
         self.client.force_login(self.local_admin)
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={
                 "flags": {"tenants_test_flag_bool": True},
             },
@@ -55,7 +55,7 @@ class TestLocalSettingsAPI(APITestCase):
 
         self.client.force_login(self.local_admin)
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={
                 "flags": {"tenants_test_flag_incorrect": 123},
             },
@@ -80,7 +80,7 @@ class TestLocalSettingsAPI(APITestCase):
 
         self.client.force_login(self.local_admin)
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={
                 "flags": {"tenants_test_flag_sys": 123},
             },
@@ -101,7 +101,7 @@ class TestLocalSettingsAPI(APITestCase):
 
         self.client.force_login(self.local_admin)
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={
                 "flags": {},
             },
