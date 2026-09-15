@@ -42,7 +42,7 @@ def backwards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
         (
             "authentik_stages_authenticator_endpoint_gdtc",
             "0002_alter_authenticatorendpointgdtcstage_friendly_name",
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="gdtc_stages",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Google credentials",
             ),
         ),

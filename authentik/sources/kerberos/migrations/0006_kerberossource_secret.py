@@ -22,7 +22,7 @@ def rollback_sync_password(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_sources_kerberos", "0005_alter_kerberossource_kadmin_type"),
     ]
 
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Sync password",
             ),
         ),

@@ -22,7 +22,7 @@ def rollback_private_key(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0001_initial"),
+        ("authentik_crypto_secrets", "0001_initial"),
         ("authentik_stages_captcha", "0005_captchastage_request_content_type"),
     ]
 
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="captcha_stages",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Private key",
             ),
         ),

@@ -37,7 +37,7 @@ export interface FleetConnectorRequest {
     /**
      *
      */
-    secret?: string;
+    secret: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
      */
@@ -50,10 +50,6 @@ export interface FleetConnectorRequest {
      *
      */
     mapTeamsAccessGroup?: boolean;
-    /**
-     *
-     */
-    token?: string;
 }
 
 /**
@@ -62,6 +58,7 @@ export interface FleetConnectorRequest {
 export function instanceOfFleetConnectorRequest(value: object): value is FleetConnectorRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("url" in value) || value["url"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -81,7 +78,7 @@ export function FleetConnectorRequestFromJSONTyped(
         name: json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         url: json["url"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        secret: json["secret"],
         headersMapping:
             json["headers_mapping"] === undefined
                 ? undefined
@@ -91,7 +88,6 @@ export function FleetConnectorRequestFromJSONTyped(
         mapUsers: json["map_users"] == null ? undefined : json["map_users"],
         mapTeamsAccessGroup:
             json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],
-        token: json["token"] == null ? undefined : json["token"],
     };
 }
 
@@ -116,6 +112,5 @@ export function FleetConnectorRequestToJSONTyped(
         headers_mapping: value["headersMapping"],
         map_users: value["mapUsers"],
         map_teams_access_group: value["mapTeamsAccessGroup"],
-        token: value["token"],
     };
 }

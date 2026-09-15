@@ -33,7 +33,7 @@ def backwards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
         ("authentik_sources_kerberos", "0006_kerberossource_secret"),
     ]
 
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_spnego_ccache_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Spnego ccache",
             ),
         ),
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_spnego_keytab_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Spnego keytab",
             ),
         ),
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_sync_ccache_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Sync ccache",
             ),
         ),
@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_sync_keytab_sources",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Sync keytab",
             ),
         ),

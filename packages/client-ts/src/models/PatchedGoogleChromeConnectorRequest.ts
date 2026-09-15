@@ -34,10 +34,6 @@ export interface PatchedGoogleChromeConnectorRequest {
      *
      */
     secret?: string;
-    /**
-     *
-     */
-    credentials?: { [key: string]: any };
 }
 
 /**
@@ -67,7 +63,6 @@ export function PatchedGoogleChromeConnectorRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         secret: json["secret"] == null ? undefined : json["secret"],
-        credentials: json["credentials"] == null ? undefined : json["credentials"],
     };
 }
 
@@ -90,6 +85,5 @@ export function PatchedGoogleChromeConnectorRequestToJSONTyped(
         name: value["name"],
         enabled: value["enabled"],
         secret: value["secret"],
-        credentials: value["credentials"],
     };
 }
