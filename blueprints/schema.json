@@ -12539,11 +12539,6 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
-                },
-                "client_secret": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "title": "Client secret"
                 }
             },
             "required": []
@@ -13049,11 +13044,6 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Certificate"
-                },
-                "shared_secret": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Shared secret"
                 }
             },
             "required": []
@@ -13584,10 +13574,6 @@
                     "type": "boolean",
                     "title": "Dry run",
                     "description": "When enabled, provider will not modify or create objects in the remote system."
-                },
-                "token": {
-                    "type": "string",
-                    "title": "Token"
                 }
             },
             "required": []
