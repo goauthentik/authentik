@@ -142,7 +142,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     )
 
     cookie_secret_ref = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Cookie secret"),
         on_delete=models.PROTECT,
         null=True,

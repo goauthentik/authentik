@@ -129,7 +129,7 @@ class TestSecretFields(APITestCase):
 
         name = generate_id()
         secret = create_test_secret(dumps(self.kubeconfig))
-        self.role.assign_perms("authentik_secrets.view_secret_value", secret)
+        self.role.assign_perms("authentik_crypto_secrets.view_secret_value", secret)
         res = self.client.post(
             reverse("authentik_api:kubernetesserviceconnection-list"),
             {

@@ -20,7 +20,7 @@ entries:
   - identifiers:
       name: default-authentication-flow-captcha private key
     id: default-authentication-flow-captcha-private-key
-    model: authentik_secrets.secret
+    model: authentik_crypto_secrets.secret
     attrs:
       value: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
   - identifiers:

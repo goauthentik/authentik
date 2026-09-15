@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_events", "0021_notificationtransport_secret"),
-        ("authentik_secrets", "0007_preserve_email_captcha_permissions"),
+        ("authentik_crypto_secrets", "0007_preserve_email_captcha_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]

@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_proxy", "0016_proxysession"),
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
     ]
 
     operations = [
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="proxy_providers",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Cookie secret",
             ),
         ),

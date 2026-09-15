@@ -25,7 +25,7 @@ class RadiusProvider(OutpostModel, Provider):
     )
 
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Shared Secret"),
         help_text=_("Shared secret between clients and server to hash packets."),
         on_delete=models.PROTECT,

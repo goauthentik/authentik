@@ -53,7 +53,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     account_sid = models.TextField()
     auth_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Auth token"),
         on_delete=models.PROTECT,
         null=True,
@@ -62,7 +62,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         related_name="sms_stages_auth",
     )
     auth_password_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Auth password"),
         on_delete=models.PROTECT,
         null=True,

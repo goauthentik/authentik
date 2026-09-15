@@ -20,7 +20,7 @@ from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage
 from authentik.tasks.test import TESTING_QUEUE
 
 OLD_MIGRATIONS = [
-    ("authentik_secrets", "0001_initial"),
+    ("authentik_crypto_secrets", "0001_initial"),
     ("authentik_events", "0020_alter_event_action"),
     ("authentik_providers_oauth2", "0037_accesstoken_actor_authorizationcode_actor_and_more"),
     ("authentik_providers_proxy", "0016_proxysession"),
@@ -49,13 +49,13 @@ OLD_MIGRATIONS = [
 ]
 
 LATEST_MIGRATIONS = [
-    ("authentik_secrets", "0008_preserve_transport_permissions"),
+    ("authentik_crypto_secrets", "0008_preserve_transport_permissions"),
     ("authentik_events", "0021_notificationtransport_secret"),
     ("authentik_providers_oauth2", "0038_oauth2provider_secret"),
     ("authentik_providers_proxy", "0017_proxyprovider_cookie_secret_ref"),
     ("authentik_providers_radius", "0006_radiusprovider_secret"),
     ("authentik_providers_scim", "0022_scimprovider_secret"),
-    ("authentik_sources_ldap", "0013_ldapsource_secret"),
+    ("authentik_sources_ldap", "0014_merge_20260915_1552"),
     ("authentik_sources_oauth", "0016_oauthsource_secret"),
     ("authentik_sources_plex", "0007_plexsource_secret"),
     ("authentik_sources_telegram", "0002_telegramsource_secret"),
@@ -290,33 +290,43 @@ class TestSecretPermissionMigration(TestCase):
             "authentik_stages_authenticator_sms.change_authenticatorsmsstage", sms
         )
         existing_secret_role = Role.objects.create(name="existing secret role")
-        existing_secret_role.assign_perms("authentik_secrets.view_secret")
+        existing_secret_role.assign_perms("authentik_crypto_secrets.view_secret")
         apps = MigrationLoader(connection).project_state().apps
         model_permission_count = RoleModelPermission.objects.filter(
-            content_type__app_label="authentik_secrets"
+            content_type__app_label="authentik_crypto_secrets"
         ).count()
         migration.preserve_role_permissions(apps, connection.schema_editor())
         count = RoleObjectPermission.objects.count()
         migration.preserve_role_permissions(apps, connection.schema_editor())
         self.assertEqual(RoleObjectPermission.objects.count(), count)
 
-        self.assertTrue(reader.has_perm("authentik_secrets.view_secret", provider.secret))
-        self.assertFalse(reader.has_perm("authentik_secrets.view_secret_value", provider.secret))
-        self.assertFalse(reader.has_perm("authentik_secrets.rotate_secret", provider.secret))
-        self.assertTrue(editor.has_perm("authentik_secrets.view_secret_value", provider.secret))
-        self.assertTrue(editor.has_perm("authentik_secrets.rotate_secret", provider.secret))
-        self.assertFalse(editor.has_perm("authentik_secrets.view_secret", other_provider.secret))
-        self.assertTrue(
-            global_editor.has_perm("authentik_secrets.rotate_secret", other_provider.secret)
+        self.assertTrue(reader.has_perm("authentik_crypto_secrets.view_secret", provider.secret))
+        self.assertFalse(
+            reader.has_perm("authentik_crypto_secrets.view_secret_value", provider.secret)
         )
-        self.assertFalse(global_editor.has_perm("authentik_secrets.rotate_secret"))
-        self.assertTrue(reader.has_perm("authentik_secrets.view_secret_value", transport.secret))
+        self.assertFalse(reader.has_perm("authentik_crypto_secrets.rotate_secret", provider.secret))
+        self.assertTrue(
+            editor.has_perm("authentik_crypto_secrets.view_secret_value", provider.secret)
+        )
+        self.assertTrue(editor.has_perm("authentik_crypto_secrets.rotate_secret", provider.secret))
+        self.assertFalse(
+            editor.has_perm("authentik_crypto_secrets.view_secret", other_provider.secret)
+        )
+        self.assertTrue(
+            global_editor.has_perm("authentik_crypto_secrets.rotate_secret", other_provider.secret)
+        )
+        self.assertFalse(global_editor.has_perm("authentik_crypto_secrets.rotate_secret"))
+        self.assertTrue(
+            reader.has_perm("authentik_crypto_secrets.view_secret_value", transport.secret)
+        )
         for secret in [ldap.secret, sms.auth_secret, sms.auth_password_secret]:
-            self.assertTrue(editor.has_perm("authentik_secrets.change_secret", secret))
-            self.assertTrue(editor.has_perm("authentik_secrets.rotate_secret", secret))
-            self.assertFalse(editor.has_perm("authentik_secrets.view_secret_value", secret))
+            self.assertTrue(editor.has_perm("authentik_crypto_secrets.change_secret", secret))
+            self.assertTrue(editor.has_perm("authentik_crypto_secrets.rotate_secret", secret))
+            self.assertFalse(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
         self.assertEqual(
-            RoleModelPermission.objects.filter(content_type__app_label="authentik_secrets").count(),
+            RoleModelPermission.objects.filter(
+                content_type__app_label="authentik_crypto_secrets"
+            ).count(),
             model_permission_count,
         )
 
@@ -339,7 +349,7 @@ class TestSecretPermissionMigration(TestCase):
                     field.name
                     for field in Model._meta.fields
                     if field.related_model
-                    and field.related_model._meta.label_lower == "authentik_secrets.secret"
+                    and field.related_model._meta.label_lower == "authentik_crypto_secrets.secret"
                 ]
                 secrets = {
                     name: Secret.objects.create(name=f"{model_name} {name}") for name in fields

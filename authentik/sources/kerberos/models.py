@@ -101,7 +101,7 @@ class KerberosSource(IncomingSyncSource):
         help_text=_("Principal to authenticate to kadmin for sync."), blank=True
     )
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync password"),
         help_text=_("Password to authenticate to kadmin for sync"),
         on_delete=models.PROTECT,
@@ -111,7 +111,7 @@ class KerberosSource(IncomingSyncSource):
         related_name="kerberos_sources",
     )
     sync_keytab_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync keytab"),
         on_delete=models.PROTECT,
         null=True,
@@ -120,7 +120,7 @@ class KerberosSource(IncomingSyncSource):
         related_name="kerberos_sync_keytab_sources",
     )
     sync_ccache_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync ccache"),
         on_delete=models.PROTECT,
         null=True,
@@ -136,7 +136,7 @@ class KerberosSource(IncomingSyncSource):
         blank=True,
     )
     spnego_keytab_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Spnego keytab"),
         on_delete=models.PROTECT,
         null=True,
@@ -145,7 +145,7 @@ class KerberosSource(IncomingSyncSource):
         related_name="kerberos_spnego_keytab_sources",
     )
     spnego_ccache_secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Spnego ccache"),
         on_delete=models.PROTECT,
         null=True,

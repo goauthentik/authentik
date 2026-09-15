@@ -504,7 +504,7 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_secrets.secret"
+                            "const": "authentik_crypto_secrets.secret"
                         },
                         "id": {
                             "type": "string"
@@ -526,13 +526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/definitions/model_authentik_secrets.secret_permissions"
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/definitions/model_authentik_secrets.secret"
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
                         },
                         "identifiers": {
-                            "$ref": "#/definitions/model_authentik_secrets.secret"
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
                         }
                     }
                 },
@@ -5823,6 +5823,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -6282,12 +6288,6 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
-                            "authentik_secrets.add_secret",
-                            "authentik_secrets.change_secret",
-                            "authentik_secrets.delete_secret",
-                            "authentik_secrets.rotate_secret",
-                            "authentik_secrets.view_secret",
-                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -7223,6 +7223,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -7682,12 +7688,6 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
-                            "authentik_secrets.add_secret",
-                            "authentik_secrets.change_secret",
-                            "authentik_secrets.delete_secret",
-                            "authentik_secrets.rotate_secret",
-                            "authentik_secrets.view_secret",
-                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -8081,7 +8081,7 @@
                 }
             }
         },
-        "model_authentik_secrets.secret": {
+        "model_authentik_crypto_secrets.secret": {
             "type": "object",
             "properties": {
                 "name": {
@@ -8105,7 +8105,7 @@
             },
             "required": []
         },
-        "model_authentik_secrets.secret_permissions": {
+        "model_authentik_crypto_secrets.secret_permissions": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -11274,7 +11274,7 @@
                         "authentik_core.objectattribute",
                         "authentik_core.actor",
                         "authentik_crypto.certificatekeypair",
-                        "authentik_secrets.secret",
+                        "authentik_crypto_secrets.secret",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
@@ -13784,6 +13784,12 @@
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto_secrets.add_secret",
+                            "authentik_crypto_secrets.change_secret",
+                            "authentik_crypto_secrets.delete_secret",
+                            "authentik_crypto_secrets.rotate_secret",
+                            "authentik_crypto_secrets.view_secret",
+                            "authentik_crypto_secrets.view_secret_value",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -14243,12 +14249,6 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
-                            "authentik_secrets.add_secret",
-                            "authentik_secrets.change_secret",
-                            "authentik_secrets.delete_secret",
-                            "authentik_secrets.rotate_secret",
-                            "authentik_secrets.view_secret",
-                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -15074,6 +15074,15 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Bind password"
+                },
+                "service_bind_method": {
+                    "type": "string",
+                    "enum": [
+                        "simple",
+                        "sasl_external"
+                    ],
+                    "title": "Service bind method",
+                    "description": "Authentication method used for LDAP synchronization and writeback."
                 },
                 "start_tls": {
                     "type": "boolean",

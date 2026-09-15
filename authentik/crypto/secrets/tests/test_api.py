@@ -48,20 +48,24 @@ class TestSecretsAPI(APITestCase):
                 self.assertEqual(secret.value, " replacement ")
 
     def test_view_value_permission_and_audit(self):
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
         self.client.force_login(self.user)
         url = reverse("authentik_api:secret-view-value", kwargs={"pk": self.secret.pk})
         self.assertEqual(self.client.get(url).status_code, 403)
 
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret_value", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.view_secret_value", self.secret
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"value": self.secret.value})
         self.assertTrue(Event.objects.filter(action=EventAction.SECRET_VIEW).exists())
 
     def test_rotate_permission_and_disclosure(self):
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
-        self.user.assign_perms_to_managed_role("authentik_secrets.rotate_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.rotate_secret", self.secret
+        )
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:secret-rotate", kwargs={"pk": self.secret.pk})
@@ -70,8 +74,10 @@ class TestSecretsAPI(APITestCase):
         self.assertIsNone(response.json()["value"])
 
     def test_rotation_requires_permission_and_returns_value_only_when_allowed(self):
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret_value", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.view_secret_value", self.secret
+        )
         self.client.force_login(self.user)
         url = reverse("authentik_api:secret-rotate", kwargs={"pk": self.secret.pk})
         previous = self.secret.value
@@ -79,7 +85,9 @@ class TestSecretsAPI(APITestCase):
         self.secret.refresh_from_db()
         self.assertEqual(self.secret.value, previous)
 
-        self.user.assign_perms_to_managed_role("authentik_secrets.rotate_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.rotate_secret", self.secret
+        )
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         self.secret.refresh_from_db()
@@ -98,8 +106,10 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(self.secret.type, SecretType.TEXT)
 
     def test_replace_value_requires_rotate_permission(self):
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
-        self.user.assign_perms_to_managed_role("authentik_secrets.change_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.change_secret", self.secret
+        )
         self.client.force_login(self.user)
         url = reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk})
         response = self.client.patch(url, {"value": "replacement"})
@@ -107,7 +117,9 @@ class TestSecretsAPI(APITestCase):
         self.secret.refresh_from_db()
         self.assertNotEqual(self.secret.value, "replacement")
 
-        self.user.assign_perms_to_managed_role("authentik_secrets.rotate_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.rotate_secret", self.secret
+        )
         response = self.client.patch(url, {"value": "replacement"})
         self.assertEqual(response.status_code, 200, response.content)
         self.secret.refresh_from_db()
@@ -130,8 +142,10 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_blank_value_keeps_existing_value_without_rotate_permission(self):
-        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
-        self.user.assign_perms_to_managed_role("authentik_secrets.change_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.change_secret", self.secret
+        )
         self.client.force_login(self.user)
         previous = self.secret.value
 
