@@ -97,8 +97,9 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     # audit log always ties the activity back to a responsible human.
     if getattr(user, "type", None) == UserTypes.SERVICE_ACCOUNT and hasattr(user, "actor"):
         user_data["is_agent"] = True
-        # FIXME: This will need to be adjusted for OAuth OBO
-        user_data["on_behalf_of"] = get_user(user.actor.parent)
+        # An actor without an owner acts for itself, so there is nobody to attribute to
+        if user.actor.parent:
+            user_data["on_behalf_of"] = get_user(user.actor.parent)
     return user_data
 
 

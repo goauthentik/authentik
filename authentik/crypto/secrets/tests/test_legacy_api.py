@@ -75,7 +75,7 @@ class TestLegacySecretAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("client_secret", response.json())
         user.assign_perms_to_managed_role(
-            "authentik_secrets.view_secret_value", self.provider.secret
+            "authentik_crypto_secrets.view_secret_value", self.provider.secret
         )
         self.assertEqual(
             self.client.get(self.url).json()["client_secret"], self.provider.secret.value

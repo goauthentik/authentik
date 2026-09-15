@@ -817,6 +817,7 @@ export * from "./SecretRequest";
 export * from "./SecretTypeEnum";
 export * from "./SecretValue";
 export * from "./SelectableStage";
+export * from "./ServiceBindMethodEnum";
 export * from "./ServiceConnection";
 export * from "./ServiceConnectionState";
 export * from "./SessionEndChallenge";
