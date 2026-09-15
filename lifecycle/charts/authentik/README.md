@@ -6,8 +6,8 @@
 
 [![Join Discord](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://goauthentik.io/discord)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/goauthentik/helm/lint-test.yaml?branch=main&label=ci&style=for-the-badge)](https://github.com/goauthentik/helm/actions/workflows/lint-test.yaml)
-![Version: 2026.8.0](https://img.shields.io/badge/Version-2026.8.0-informational?style=flat-square)
-![AppVersion: 2026.8.0](https://img.shields.io/badge/AppVersion-2026.8.0-informational?style=flat-square)
+![Version: 2026.11.0-rc1](https://img.shields.io/badge/Version-2026.11.0--rc1-informational?style=flat-square)
+![AppVersion: 2026.11.0-rc1](https://img.shields.io/badge/AppVersion-2026.11.0--rc1-informational?style=flat-square)
 
 authentik is an open-source Identity Provider focused on flexibility and versatility
 

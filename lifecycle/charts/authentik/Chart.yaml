@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
-version: 2026.8.0
-appVersion: 2026.8.0
+version: 2026.11.0-rc1
+appVersion: 2026.11.0-rc1
 name: authentik
 description: authentik is an open-source Identity Provider focused on flexibility and versatility
 type: application
@@ -41,7 +41,7 @@ dependencies:
 annotations:
   artifacthub.io/changes: |
     - kind: changed
-      description: upgrade to authentik 2026.8.0
+      description: upgrade to authentik 2026.11.0-rc1
   artifacthub.io/license: GPL
   artifacthub.io/links: |
     - name: GitHub
@@ -54,19 +54,19 @@ annotations:
       url: https://goauthentik.io
   artifacthub.io/images: |
     - name: authentik
-      image: ghcr.io/goauthentik/server:2026.8.0
+      image: ghcr.io/goauthentik/server:2026.11.0-rc1
       whitelisted: true
     - name: authentik-outpost-proxy
-      image: ghcr.io/goauthentik/proxy:2026.8.0
+      image: ghcr.io/goauthentik/proxy:2026.11.0-rc1
       whitelisted: true
     - name: authentik-outpost-ldap
-      image: ghcr.io/goauthentik/ldap:2026.8.0
+      image: ghcr.io/goauthentik/ldap:2026.11.0-rc1
       whitelisted: true
     - name: authentik-outpost-radius
-      image: ghcr.io/goauthentik/radius:2026.8.0
+      image: ghcr.io/goauthentik/radius:2026.11.0-rc1
       whitelisted: true
     - name: authentik-outpost-rac
-      image: ghcr.io/goauthentik/rac:2026.8.0
+      image: ghcr.io/goauthentik/rac:2026.11.0-rc1
       whitelisted: true
   artifacthub.io/screenshots: |
     - title: User interface
