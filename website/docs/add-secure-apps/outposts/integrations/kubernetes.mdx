@@ -70,4 +70,4 @@ The required permissions for this integration are documented in the Helm chart:
 
 To connect a remote cluster, install the [`authentik-remote-cluster` Helm chart](https://artifacthub.io/packages/helm/goauthentik/authentik-remote-cluster) in the target cluster and namespace.
 
-After installation, the chart outputs an example kubeconfig file. Add that kubeconfig to authentik to connect to the cluster.
+After installation, the chart outputs an example kubeconfig file. Create a Kubernetes service connection in authentik and select a secret in **Kubeconfig**. Upload the kubeconfig as a **File** secret, or paste its YAML into a **Multi-line text** secret.
