@@ -2,6 +2,7 @@ from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.fields import CharField, UUIDField
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -13,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.offboarding.models import OffboardingStatus, UserOffboarding
@@ -21,9 +22,15 @@ from authentik.enterprise.lifecycle.offboarding.models import OffboardingStatus,
 DUPLICATE_PENDING_ERROR = _("This user already has a pending offboarding scheduled.")
 
 
+class PartialUserExpirationRuleSerializer(PassiveSerializer):
+    pk = UUIDField(read_only=True)
+    name = CharField(read_only=True)
+
+
 class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
     user_obj = PartialUserSerializer(source="user", read_only=True)
     created_by_obj = PartialUserSerializer(source="created_by", read_only=True)
+    rule_obj = PartialUserExpirationRuleSerializer(source="rule", read_only=True)
 
     class Meta:
         model = UserOffboarding
@@ -39,6 +46,8 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "created_by_obj",
             "created_at",
             "executed_at",
+            "rule",
+            "rule_obj",
         ]
         read_only_fields = [
             "id",
@@ -47,6 +56,8 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "created_by_obj",
             "created_at",
             "executed_at",
+            "rule",
+            "rule_obj",
         ]
 
     def validate_scheduled_at(self, value):
@@ -87,12 +98,17 @@ class UserOffboardingViewSet(
     DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = UserOffboarding.objects.select_related("user", "created_by").all()
+    queryset = UserOffboarding.objects.select_related("user", "created_by", "rule").all()
     serializer_class = UserOffboardingSerializer
     search_fields = ["user__username"]
     ordering = ["scheduled_at"]
     ordering_fields = ["scheduled_at", "created_at", "status"]
-    filterset_fields = ["user__uuid", "status", "action"]
+    filterset_fields = {
+        "user__uuid": ["exact"],
+        "status": ["exact"],
+        "action": ["exact"],
+        "rule": ["exact", "isnull"],
+    }
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:
         # Two concurrent requests can both pass validate()'s duplicate check and
