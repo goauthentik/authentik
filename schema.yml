@@ -42559,9 +42559,9 @@ components:
           type: string
           format: email
           maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
         scopes:
           type: string
         exclude_users_service_account:
@@ -42596,12 +42596,12 @@ components:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - component
-      - credentials
       - default_group_email_domain
       - delegated_subject
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     GoogleWorkspaceProviderGroup:
@@ -42740,9 +42740,9 @@ components:
           format: email
           minLength: 1
           maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
         scopes:
           type: string
           minLength: 1
@@ -42777,10 +42777,10 @@ components:
           description: When enabled, authentik will attempt to discover existing resources
             in the remote system.
       required:
-      - credentials
       - default_group_email_domain
       - delegated_subject
       - name
+      - secret
     GoogleWorkspaceProviderUser:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -45674,6 +45674,10 @@ components:
           readOnly: true
         client_id:
           type: string
+        secret:
+          type: string
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
         exclude_users_service_account:
@@ -45710,6 +45714,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - tenant_id
       - verbose_name
       - verbose_name_plural
@@ -45847,10 +45852,10 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
           minLength: 1
@@ -45883,8 +45888,8 @@ components:
             the remote system.
       required:
       - client_id
-      - client_secret
       - name
+      - secret
       - tenant_id
     MicrosoftEntraProviderUser:
       type: object
@@ -51906,9 +51911,9 @@ components:
           format: email
           minLength: 1
           maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
+        secret:
+          type: string
+          format: uuid
         scopes:
           type: string
           minLength: 1
@@ -52642,10 +52647,10 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
           minLength: 1

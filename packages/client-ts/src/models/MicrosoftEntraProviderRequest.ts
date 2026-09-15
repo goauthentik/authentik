@@ -43,7 +43,7 @@ export interface MicrosoftEntraProviderRequest {
     /**
      *
      */
-    clientSecret: string;
+    secret: string;
     /**
      *
      */
@@ -96,13 +96,7 @@ export function instanceOfMicrosoftEntraProviderRequest(
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
-    if (
-        (!("clientSecret" in (value as Record<string, any>)) &&
-            !("client_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientSecret"] === undefined &&
-            (value as Record<string, any>)["client_secret"] === undefined)
-    )
-        return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("tenantId" in (value as Record<string, any>)) &&
             !("tenant_id" in (value as Record<string, any>))) ||
@@ -130,7 +124,7 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         clientId: json["client_id"],
-        clientSecret: json["client_secret"],
+        secret: json["secret"],
         tenantId: json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -174,7 +168,7 @@ export function MicrosoftEntraProviderRequestToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        secret: value["secret"],
         tenant_id: value["tenantId"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],
