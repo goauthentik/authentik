@@ -214,7 +214,12 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 func (b *Builder) mainContainer(c *component) *corev1.Container {
 	global := b.global()
 
-	env := slices.Concat(global.Env, c.spec.Env)
+	env := []corev1.EnvVar{}
+	if b.SkipMigrations {
+		// Listed first so a user's own Env can still override it.
+		env = append(env, corev1.EnvVar{Name: skipMigrationsEnvVar, Value: "true"})
+	}
+	env = slices.Concat(env, global.Env, c.spec.Env)
 
 	envFrom := []corev1.EnvFromSource{}
 	// Injected whether the operator renders the Secret or the user supplies

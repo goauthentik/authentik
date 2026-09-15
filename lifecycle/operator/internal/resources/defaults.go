@@ -123,3 +123,8 @@ const configChecksumAnnotation = "checksum/secret"
 
 // volumeNameData is the volume and claim name for the database's storage.
 const volumeNameData = "data"
+
+// skipMigrationsEnvVar tells the server and worker not to migrate the
+// database themselves on startup, because Builder.SkipMigrations means
+// something else already did.
+const skipMigrationsEnvVar = "AUTHENTIK_DANGEROUSLY_SKIP_MIGRATIONS"

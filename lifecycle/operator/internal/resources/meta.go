@@ -31,6 +31,13 @@ const (
 type Builder struct {
 	Authentik *akv1alpha1.Authentik
 	Version   string
+
+	// SkipMigrations is true when the operator's own migration Job, not the
+	// server or worker, is what migrates the database. It mirrors
+	// Authentik.MigrationsEnabled: whenever the gate runs, it runs before any
+	// Deployment carrying this value is applied, so the containers never need
+	// to migrate the database themselves.
+	SkipMigrations bool
 }
 
 func (b *Builder) Namespace() string {

@@ -49,12 +49,16 @@ const (
 // build renders the objects for a spec, keyed by "<kind>/<name>".
 func build(t *testing.T, spec akv1alpha1.AuthentikSpec) map[string]map[string]any {
 	t.Helper()
+	return buildWith(t, &resources.Builder{
+		Authentik: &akv1alpha1.Authentik{Name: name, Namespace: namespace, Spec: spec},
+		Version:   testTag,
+	})
+}
 
-	ak := &akv1alpha1.Authentik{
-		Name: name, Namespace: namespace,
-		Spec: spec,
-	}
-	builder := &resources.Builder{Authentik: ak, Version: testTag}
+// buildWith renders the objects for a fully-formed Builder, keyed by
+// "<kind>/<name>".
+func buildWith(t *testing.T, builder *resources.Builder) map[string]map[string]any {
+	t.Helper()
 
 	objects, err := builder.Build()
 	if err != nil {
@@ -159,6 +163,18 @@ func firstContainer(t *testing.T, object map[string]any) map[string]any {
 	return container
 }
 
+// hasEnvVar reports whether a rendered container sets the named environment
+// variable.
+func hasEnvVar(container map[string]any, name string) bool {
+	env, _ := container["env"].([]any)
+	for _, entry := range env {
+		if e, ok := entry.(map[string]any); ok && e["name"] == name {
+			return true
+		}
+	}
+	return false
+}
+
 func minimalSpec() akv1alpha1.AuthentikSpec {
 	return akv1alpha1.AuthentikSpec{
 		Global:    &akv1alpha1.GlobalSpec{Image: &akv1alpha1.ImageSpec{Tag: testTag}},
@@ -217,6 +233,22 @@ func TestBuildDefaults(t *testing.T) {
 	}
 	if _, ok := dig(t, server, "spec", "template", "spec").(map[string]any)["serviceAccountName"]; ok {
 		t.Error("the server should not get a ServiceAccount by default")
+	}
+}
+
+func TestBuildSkipMigrations(t *testing.T) {
+	ak := &akv1alpha1.Authentik{Name: name, Namespace: namespace, Spec: minimalSpec()}
+
+	for _, skip := range []bool{false, true} {
+		objects := buildWith(t, &resources.Builder{Authentik: ak, Version: testTag, SkipMigrations: skip})
+
+		for _, key := range []string{"Deployment/authentik-server", "Deployment/authentik-worker"} {
+			got := hasEnvVar(firstContainer(t, mustGet(t, objects, key)), "AUTHENTIK_DANGEROUSLY_SKIP_MIGRATIONS")
+			if got != skip {
+				t.Errorf("SkipMigrations=%v: %s carries AUTHENTIK_DANGEROUSLY_SKIP_MIGRATIONS = %v, want %v",
+					skip, key, got, skip)
+			}
+		}
 	}
 }
 

@@ -166,7 +166,23 @@ func (r *AuthentikReconciler) reconcileInstance(
 	}
 	status.ResolvedImage = ak.ImageRef(targetVersion)
 
-	resourceBuilder := &resources.Builder{Authentik: ak, Version: targetVersion}
+	// What is already running decides whether this is a first install or an
+	// upgrade, and from which version. Read from the cluster rather than from
+	// status, which is written by this controller and can lag behind it.
+	current, err := r.currentState(ctx, ak)
+	if err != nil {
+		r.fail(status, ak, akv1alpha1.ConditionDeployed, "ClusterReadFailed", err.Error())
+		return ctrl.Result{}, err
+	}
+
+	resourceBuilder := &resources.Builder{
+		Authentik: ak,
+		Version:   targetVersion,
+		// Whenever the gate runs -- including for a first install, see below
+		// -- it runs before the Deployments built here are applied, so the
+		// server and worker never need to migrate the database themselves.
+		SkipMigrations: ak.MigrationsEnabled(),
+	}
 	desired, err := resourceBuilder.Build()
 	if err != nil {
 		// A spec the builders reject will not build on a retry either.
@@ -180,25 +196,7 @@ func (r *AuthentikReconciler) reconcileInstance(
 		return ctrl.Result{}, reconcile.TerminalError(err)
 	}
 
-	// What is already running decides whether this is a first install or an
-	// upgrade, and from which version. Read from the cluster rather than from
-	// status, which is written by this controller and can lag behind it.
-	current, err := r.currentState(ctx, ak)
-	if err != nil {
-		r.fail(status, ak, akv1alpha1.ConditionDeployed, "ClusterReadFailed", err.Error())
-		return ctrl.Result{}, err
-	}
-
-	// A first install is exempt from the migration gate: there is no older
-	// authentik to be inconsistent with, and the configuration Secret the Job
-	// would read its database credentials from does not exist yet. The server
-	// and worker migrate on startup instead.
 	switch {
-	case !current.installed:
-		status.MigratedVersion = targetVersion
-		status.SetCondition(akv1alpha1.ConditionMigrated, string(metav1.ConditionTrue),
-			"InitialInstall", "A first install migrates on startup, no migration Job was needed", ak.Generation)
-
 	case !ak.MigrationsEnabled():
 		status.MigratedVersion = targetVersion
 		status.SetCondition(akv1alpha1.ConditionMigrated, string(metav1.ConditionTrue),
@@ -210,6 +208,19 @@ func (r *AuthentikReconciler) reconcileInstance(
 			"UpToDate", fmt.Sprintf("Database is migrated to %s", targetVersion), ak.Generation)
 
 	default:
+		// The Job needs the configuration Secret -- and, if the database is
+		// bundled, the PostgreSQL objects -- to already exist, so everything
+		// except the Deployments is applied before the gate runs. This also
+		// covers a first install: it is no longer exempt from the gate, so
+		// the server and worker are never rolled out ahead of a migrated
+		// database.
+		prereqs := withoutDeployments(desired, resourceBuilder.ServerName(), resourceBuilder.WorkerName())
+		if _, err := r.Applier.Apply(ctx, ak, prereqs); err != nil {
+			r.fail(status, ak, akv1alpha1.ConditionDeployed, "ApplyFailed", err.Error())
+			r.event(ak, corev1.EventTypeWarning, "ApplyFailed", "Apply", err.Error())
+			return ctrl.Result{RequeueAfter: requeueOnFailure}, nil
+		}
+
 		if done, result := r.runMigrationGate(ctx, ak, status, targetVersion); !done {
 			return result, nil
 		}
@@ -604,6 +615,24 @@ func (r *AuthentikReconciler) requeueInterval(ak *akv1alpha1.Authentik) time.Dur
 		}
 	}
 	return interval
+}
+
+// withoutDeployments returns the desired objects other than the Deployments
+// named, so they can be applied ahead of the migration gate.
+func withoutDeployments(desired []client.Object, names ...string) []client.Object {
+	skip := make(map[string]bool, len(names))
+	for _, name := range names {
+		skip[name] = true
+	}
+
+	out := make([]client.Object, 0, len(desired))
+	for _, object := range desired {
+		if _, ok := object.(*appsv1.Deployment); ok && skip[object.GetName()] {
+			continue
+		}
+		out = append(out, object)
+	}
+	return out
 }
 
 // annotateAppliedHash stamps the desired-state hash and the version onto the

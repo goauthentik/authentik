@@ -321,8 +321,10 @@ type PostgreSQLSpec struct {
 // while old pods are still serving against the old schema. Running migrations
 // once, to completion, in a Job first keeps that window closed.
 //
-// The gate only applies to upgrades. A first install has nothing to migrate
-// away from, so the Deployments are created directly.
+// The gate also covers a first install, so the schema is created exactly once
+// rather than raced by however many server and worker replicas start up. In
+// both cases the server and worker are told not to migrate the database
+// themselves.
 type MigrationsSpec struct {
 	// enabled runs migrations in a Job and blocks the upgrade until it
 	// succeeds. Defaults to true.
