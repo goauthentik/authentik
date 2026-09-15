@@ -37,7 +37,7 @@ export interface AuthenticatorDuoStageRequest {
     /**
      *
      */
-    secret?: string;
+    secret: string;
     /**
      *
      */
@@ -50,14 +50,6 @@ export interface AuthenticatorDuoStageRequest {
      *
      */
     adminSecret?: string | null;
-    /**
-     *
-     */
-    clientSecret?: string;
-    /**
-     *
-     */
-    adminSecretKey?: string;
 }
 
 /**
@@ -74,6 +66,7 @@ export function instanceOfAuthenticatorDuoStageRequest(
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("apiHostname" in (value as Record<string, any>)) &&
             !("api_hostname" in (value as Record<string, any>))) ||
@@ -105,7 +98,7 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        secret: json["secret"],
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
@@ -115,8 +108,6 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
                 : json["admin_secret"] === null
                   ? null
                   : json["admin_secret"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
-        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
     };
 }
 
@@ -141,7 +132,5 @@ export function AuthenticatorDuoStageRequestToJSONTyped(
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
         admin_secret: value["adminSecret"],
-        client_secret: value["clientSecret"],
-        admin_secret_key: value["adminSecretKey"],
     };
 }

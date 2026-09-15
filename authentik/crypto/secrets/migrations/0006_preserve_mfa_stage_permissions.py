@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_stages_authenticator_duo", "0009_authenticatorduostage_secret"),
         ("authentik_stages_authenticator_sms", "0011_authenticatorsmsstage_secret"),
-        ("authentik_secrets", "0005_preserve_directory_source_permissions"),
+        ("authentik_crypto_secrets", "0005_preserve_directory_source_permissions"),
     ]
 
     operations = [migrations.RunPython(preserve_permissions, migrations.RunPython.noop)]

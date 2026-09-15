@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_endpoints_connectors_google_chrome", "0001_initial"),
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
     ]
 
     operations = [
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="google_chrome_connectors",
-                to="authentik_secrets.secret",
+                to="authentik_crypto_secrets.secret",
                 verbose_name="Google credentials",
             ),
         ),

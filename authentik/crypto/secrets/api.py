@@ -34,8 +34,8 @@ class SecretReferenceField(PrimaryKeyRelatedField):
         if not request or (instance and getattr(instance, f"{self.source}_id") == secret.pk):
             return secret
         if not (
-            request.user.has_perm("authentik_secrets.view_secret_value")
-            or request.user.has_perm("authentik_secrets.view_secret_value", secret)
+            request.user.has_perm("authentik_crypto_secrets.view_secret_value")
+            or request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         ):
             raise PermissionDenied(_("You do not have permission to use this secret."))
         return secret
@@ -71,8 +71,8 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
             return value
         request = self.context.get("request")
         if request and not (
-            request.user.has_perm("authentik_secrets.rotate_secret")
-            or request.user.has_perm("authentik_secrets.rotate_secret", instance)
+            request.user.has_perm("authentik_crypto_secrets.rotate_secret")
+            or request.user.has_perm("authentik_crypto_secrets.rotate_secret", instance)
         ):
             raise PermissionDenied(_("You do not have permission to replace this value."))
         if instance.oauth2_providers.exists():
@@ -165,7 +165,7 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
                 _("Secret is in use. Remove it from the objects referencing it first.")
             ) from None
 
-    @permission_required("authentik_secrets.view_secret_value")
+    @permission_required("authentik_crypto_secrets.view_secret_value")
     @extend_schema(responses={200: SecretValueSerializer})
     @action(detail=True, pagination_class=None)
     def view_value(self, request: Request, pk: str) -> Response:
@@ -187,7 +187,7 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
         if secret.type != SecretType.TEXT:
             raise ValidationError({"non_field_errors": [_("Only text secrets can be rotated.")]})
         value = secret.rotate(request)
-        can_view = request.user.has_perm("authentik_secrets.view_secret_value") or (
-            request.user.has_perm("authentik_secrets.view_secret_value", secret)
+        can_view = request.user.has_perm("authentik_crypto_secrets.view_secret_value") or (
+            request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         )
         return Response(RotatedSecretSerializer({"value": value if can_view else None}).data)

@@ -59,7 +59,7 @@ entries:
         }
 
 
-  - model: authentik_secrets.secret
+  - model: authentik_crypto_secrets.secret
     id: oidc-conformance-1-secret
     identifiers:
       name: oidc-conformance-1 client secret
@@ -108,7 +108,7 @@ entries:
       provider: !KeyOf oidc-conformance-1
       name: OIDC Conformance (1)
 
-  - model: authentik_secrets.secret
+  - model: authentik_crypto_secrets.secret
     id: oidc-conformance-2-secret
     identifiers:
       name: oidc-conformance-2 client secret

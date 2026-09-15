@@ -15,7 +15,7 @@ def preserve_role_permissions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_secrets", "0002_preserve_role_permissions"),
+        ("authentik_crypto_secrets", "0002_preserve_role_permissions"),
         ("authentik_providers_microsoft_entra", "0007_microsoftentraprovider_secret"),
     ]
 

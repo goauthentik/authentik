@@ -111,7 +111,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     secret = models.ForeignKey(
-        "authentik_secrets.Secret",
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Token"),
         help_text=_("Authentication token"),
         on_delete=models.PROTECT,

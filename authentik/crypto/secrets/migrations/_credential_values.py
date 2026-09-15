@@ -9,7 +9,7 @@ from yaml import safe_load
 def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, include_empty=False):
     alias = schema_editor.connection.alias
     Model = apps.get_model(app_label, model_name)
-    Secret = apps.get_model("authentik_secrets", "Secret")
+    Secret = apps.get_model("authentik_crypto_secrets", "Secret")
     names = set(Secret.objects.using(alias).values_list("name", flat=True))
     for instance in Model.objects.using(alias).iterator():
         updated_fields = []

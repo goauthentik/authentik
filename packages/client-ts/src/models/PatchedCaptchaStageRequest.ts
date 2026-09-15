@@ -64,10 +64,6 @@ export interface PatchedCaptchaStageRequest {
      * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
      */
     errorOnInvalidScore?: boolean;
-    /**
-     *
-     */
-    privateKey?: string;
 }
 
 /**
@@ -107,7 +103,6 @@ export function PatchedCaptchaStageRequestFromJSONTyped(
             json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
         errorOnInvalidScore:
             json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
-        privateKey: json["private_key"] == null ? undefined : json["private_key"],
     };
 }
 
@@ -134,6 +129,5 @@ export function PatchedCaptchaStageRequestToJSONTyped(
         score_min_threshold: value["scoreMinThreshold"],
         score_max_threshold: value["scoreMaxThreshold"],
         error_on_invalid_score: value["errorOnInvalidScore"],
-        private_key: value["privateKey"],
     };
 }
