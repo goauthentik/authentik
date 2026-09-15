@@ -8,6 +8,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
+import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 interface PropertyMapping {
@@ -24,10 +25,22 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     public static override verboseName = msg("Property Mapping");
     public static override verboseNamePlural = msg("Property Mappings");
 
+    @property({ type: Boolean })
+    public copyMode = false;
+
     getSuccessMessage(): string {
-        return this.instance
+        return this.instancePk
             ? msg("Successfully updated mapping.")
             : msg("Successfully created mapping.");
+    }
+
+    protected override assignInstance(instance: T | null): void {
+        if (instance && this.copyMode) {
+            this.instancePk = null;
+            super.assignInstance({ ...instance, name: `${instance.name} - copy` });
+            return;
+        }
+        super.assignInstance(instance);
     }
 
     renderExtraFields(): SlottedTemplateResult {

@@ -11716,6 +11716,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
 </trans-unit>
+<trans-unit id="common.actions.copy.label">
+  <source>Copy</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

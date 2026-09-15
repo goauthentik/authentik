@@ -12085,6 +12085,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
 </trans-unit>
+<trans-unit id="common.actions.copy.label">
+  <source>Copy</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

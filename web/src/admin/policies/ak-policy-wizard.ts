@@ -46,6 +46,12 @@ export class PolicyWizard extends CreateWizard {
     @property()
     public bindingTarget: string | null = null;
 
+    @property()
+    public copyFromPk: string | null = null;
+
+    @property()
+    public copyFromComponent: string | null = null;
+
     public override groupLabel = msg("Choose Policy Type");
     public override groupDescription = msg("Select the type of policy you want to create.");
 
@@ -67,6 +73,23 @@ export class PolicyWizard extends CreateWizard {
 
         if (changedProperties.has("showBindingPage")) {
             this.initialSteps = this.showBindingPage ? ["initial", "create-binding"] : ["initial"];
+        }
+
+        if (
+            changedProperties.has("creationTypes") &&
+            this.copyFromComponent &&
+            !this.selectedType
+        ) {
+            const type = this.creationTypes?.find(
+                (candidate) => candidate.component === this.copyFromComponent,
+            );
+            if (
+                type &&
+                this.pageTypeCreate &&
+                (!type.requiresEnterprise || this.pageTypeCreate.hasEnterpriseLicense)
+            ) {
+                this.pageTypeCreate.selectedType = type;
+            }
         }
     }
 
@@ -136,6 +159,15 @@ export class PolicyWizard extends CreateWizard {
             >
             </ak-radio>
         </ak-form-group>`;
+    }
+
+    protected override assembleFormProps(type: TypeCreate) {
+        if (!this.copyFromPk || type.component !== this.copyFromComponent) return {};
+
+        return {
+            instancePk: this.copyFromPk,
+            copyMode: true,
+        };
     }
 
     protected renderForms(): SlottedTemplateResult {
