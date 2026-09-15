@@ -37,7 +37,7 @@ class Flag[T]:
         flags = {}
         try:
             flags: dict[str, Any] = tenant.flags
-        except DatabaseError, ProgrammingError, InternalError:
+        except (DatabaseError, ProgrammingError, InternalError):
             pass
         value = flags.get(cls.__key, None)
         if value is None:
