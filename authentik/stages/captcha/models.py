@@ -18,8 +18,22 @@ class CaptchaRequestContentType(models.TextChoices):
 class CaptchaStage(Stage):
     """Verify the user is human using Google's reCaptcha/other compatible CAPTCHA solutions."""
 
+    # Remove the legacy credential columns in 2027.2.
+    _private_key = models.TextField(
+        db_column="private_key", help_text=_("Private key, acquired your captcha Provider.")
+    )
+
     public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
-    private_key = models.TextField(help_text=_("Private key, acquired your captcha Provider."))
+    secret = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Private key"),
+        help_text=_("Private key, acquired your captcha Provider."),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="captcha_stages",
+    )
 
     interactive = models.BooleanField(default=False)
 
