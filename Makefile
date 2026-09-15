@@ -171,6 +171,12 @@ endif
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/web/package.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
+# Helm
+	$(SED_INPLACE) "s/^version: ${current_version}/version: $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/^appVersion: ${current_version}/appVersion: $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/upgrade to authentik ${current_version}/upgrade to authentik $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/${current_version}/$(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(MAKE) helm-docs
 
 #########################
 ## API Schema
