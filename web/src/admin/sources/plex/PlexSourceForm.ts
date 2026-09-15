@@ -16,6 +16,8 @@ import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -25,6 +27,7 @@ import {
     FlowDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
+    SecretsApi,
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
@@ -41,13 +44,25 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
-        this.plexToken = source.plexToken;
-        this.loadServers();
+        if (source.secret) {
+            try {
+                const { value } = await aki(SecretsApi).secretsSecretsViewValueRetrieve({
+                    secretUuid: source.secret,
+                });
+                this.plexToken = value;
+                this.initialToken = value;
+                await this.loadServers();
+            } catch (error) {
+                await showAPIErrorMessage(error);
+            }
+        }
         return source;
     }
 
     @property()
     plexToken?: string;
+
+    private initialToken?: string;
 
     @property({ attribute: false })
     plexResources?: PlexResource[];
@@ -59,7 +74,16 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     async send(data: PlexSource): Promise<PlexSource> {
-        data.plexToken = this.plexToken || "";
+        if (!this.plexResources && this.instance) {
+            data.allowedServers = this.instance.allowedServers;
+            data.allowFriends = this.instance.allowFriends;
+        }
+        if (this.instance?.secret) {
+            data.secret = this.instance.secret;
+        }
+        if (this.plexToken && this.plexToken !== this.initialToken) {
+            data.secret = await this.saveTokenSecret(data.name || this.instance?.name || "Plex");
+        }
         if (this.instance?.pk) {
             return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
@@ -70,6 +94,29 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         return aki(SourcesApi).sourcesPlexCreate({
             plexSourceRequest: data,
         });
+    }
+
+    // A secret created for a not-yet-saved source, so a retry after a failed source
+    // save reuses it instead of leaving an orphan and creating another.
+    private createdSecretPk?: string;
+
+    private async saveTokenSecret(sourceName: string): Promise<string> {
+        const target = this.instance?.secret ?? this.createdSecretPk;
+        if (target) {
+            await aki(SecretsApi).secretsSecretsPartialUpdate({
+                secretUuid: target,
+                patchedSecretRequest: { value: this.plexToken },
+            });
+            return target;
+        }
+        const secret = await aki(SecretsApi).secretsSecretsCreate({
+            secretRequest: {
+                name: `${sourceName} Plex token (${crypto.randomUUID()})`,
+                value: this.plexToken,
+            },
+        });
+        this.createdSecretPk = secret.pk;
+        return secret.pk;
     }
 
     async doAuth(): Promise<void> {
@@ -86,11 +133,15 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
-        this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
+        try {
+            this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
+        } catch (error) {
+            await showAPIErrorMessage(error);
+        }
     }
 
     renderSettings(): TemplateResult {
-        if (!this.plexToken) {
+        if (!this.plexResources) {
             return html` <button
                 class="pf-c-button pf-m-primary"
                 type="button"

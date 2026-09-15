@@ -1,4 +1,4 @@
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
@@ -7,6 +7,8 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -80,14 +82,17 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-secret-text-input
-                name="auth"
-                label=${msg("Twilio Auth Token")}
-                input-hint="code"
-                ?required=${!this.instance}
-                ?revealed=${!this.instance}
-                help=${msg("Get this value from https://console.twilio.com")}
-            ></ak-secret-text-input>`;
+            <ak-secret-search-input
+                name="authSecret"
+                label=${msg("Twilio Auth Token", {
+                    id: "stage.authenticator-sms.form.twilio-auth-secret.label",
+                })}
+                value=${ifPresent(this.instance?.authSecret ?? undefined)}
+                required
+                help=${msg("Auth token from https://console.twilio.com.", {
+                    id: "stage.authenticator-sms.form.twilio-auth-secret.description",
+                })}
+            ></ak-secret-search-input>`;
     }
 
     renderProviderGeneric(): TemplateResult {
@@ -130,23 +135,30 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-secret-text-input
-                name="auth"
-                label=${msg("API Auth Username")}
-                input-hint="code"
-                ?required=${!this.instance}
-                ?revealed=${!this.instance}
-                help=${msg(
-                    "This is the username to be used with basic auth or the token when used with bearer token",
-                )}
-            ></ak-secret-text-input>
-            <ak-secret-text-input
-                name="authPassword"
-                label=${msg("API Auth password")}
-                input-hint="code"
-                ?revealed=${!this.instance}
-                help=${msg("This is the password to be used with basic auth")}
-            ></ak-secret-text-input>
+            <ak-secret-search-input
+                name="authSecret"
+                label=${this.authType === AuthTypeEnum.Bearer
+                    ? msg("Bearer token", {
+                          id: "stage.authenticator-sms.form.bearer-token.label",
+                      })
+                    : msg("API Auth Username", {
+                          id: "stage.authenticator-sms.form.api-auth-username-secret.label",
+                      })}
+                value=${ifPresent(this.instance?.authSecret ?? undefined)}
+                required
+            ></ak-secret-search-input>
+            <ak-secret-search-input
+                name="authPasswordSecret"
+                ?hidden=${this.authType === AuthTypeEnum.Bearer}
+                label=${msg("API Auth password", {
+                    id: "stage.authenticator-sms.form.api-auth-password-secret.label",
+                })}
+                value=${ifPresent(this.instance?.authPasswordSecret ?? undefined)}
+                blankable
+                help=${msg("The password to be used with basic auth.", {
+                    id: "stage.authenticator-sms.form.auth-password-secret.description",
+                })}
+            ></ak-secret-search-input>
         `;
     }
 
