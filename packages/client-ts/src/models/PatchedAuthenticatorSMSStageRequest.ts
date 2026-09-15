@@ -50,11 +50,11 @@ export interface PatchedAuthenticatorSMSStageRequest {
     /**
      *
      */
-    auth?: string;
+    authSecret?: string;
     /**
      *
      */
-    authPassword?: string;
+    authPasswordSecret?: string | null;
     /**
      *
      */
@@ -103,8 +103,13 @@ export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
         provider: json["provider"] == null ? undefined : ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"] == null ? undefined : json["from_number"],
         accountSid: json["account_sid"] == null ? undefined : json["account_sid"],
-        auth: json["auth"] == null ? undefined : json["auth"],
-        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
+        authSecret: json["auth_secret"] == null ? undefined : json["auth_secret"],
+        authPasswordSecret:
+            json["auth_password_secret"] === undefined
+                ? undefined
+                : json["auth_password_secret"] === null
+                  ? null
+                  : json["auth_password_secret"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
         mapping:
@@ -137,8 +142,8 @@ export function PatchedAuthenticatorSMSStageRequestToJSONTyped(
         provider: ProviderEnumToJSON(value["provider"]),
         from_number: value["fromNumber"],
         account_sid: value["accountSid"],
-        auth: value["auth"],
-        auth_password: value["authPassword"],
+        auth_secret: value["authSecret"],
+        auth_password_secret: value["authPasswordSecret"],
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],

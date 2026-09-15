@@ -37,7 +37,7 @@ export interface AuthenticatorDuoStageRequest {
     /**
      *
      */
-    clientSecret: string;
+    secret: string;
     /**
      *
      */
@@ -49,7 +49,7 @@ export interface AuthenticatorDuoStageRequest {
     /**
      *
      */
-    adminSecretKey?: string;
+    adminSecret?: string | null;
 }
 
 /**
@@ -66,13 +66,7 @@ export function instanceOfAuthenticatorDuoStageRequest(
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
-    if (
-        (!("clientSecret" in (value as Record<string, any>)) &&
-            !("client_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientSecret"] === undefined &&
-            (value as Record<string, any>)["client_secret"] === undefined)
-    )
-        return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("apiHostname" in (value as Record<string, any>)) &&
             !("api_hostname" in (value as Record<string, any>))) ||
@@ -104,11 +98,16 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
-        clientSecret: json["client_secret"],
+        secret: json["secret"],
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
-        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
+        adminSecret:
+            json["admin_secret"] === undefined
+                ? undefined
+                : json["admin_secret"] === null
+                  ? null
+                  : json["admin_secret"],
     };
 }
 
@@ -129,9 +128,9 @@ export function AuthenticatorDuoStageRequestToJSONTyped(
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        secret: value["secret"],
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
-        admin_secret_key: value["adminSecretKey"],
+        admin_secret: value["adminSecret"],
     };
 }

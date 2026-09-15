@@ -41,14 +41,13 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "configure_flow",
             "friendly_name",
             "client_id",
-            "client_secret",
+            "secret",
             "api_hostname",
             "admin_integration_key",
-            "admin_secret_key",
+            "admin_secret",
         ]
         extra_kwargs = {
-            "client_secret": {"write_only": True},
-            "admin_secret_key": {"write_only": True},
+            "secret": {"required": True, "allow_null": False},
         }
 
 
