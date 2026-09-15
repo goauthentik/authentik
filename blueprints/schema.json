@@ -13029,10 +13029,10 @@
                     "title": "Client networks",
                     "description": "List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped."
                 },
-                "shared_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Shared secret",
+                    "format": "uuid",
+                    "title": "Shared Secret",
                     "description": "Shared secret between clients and server to hash packets."
                 },
                 "mfa_support": {
@@ -13492,8 +13492,9 @@
                     "type": "boolean",
                     "title": "Verify certificates"
                 },
-                "token": {
+                "secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Token",
                     "description": "Authentication token"
                 },

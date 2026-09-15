@@ -27,8 +27,7 @@ type RadiusOutpostConfig struct {
 	AuthFlowSlug    string `json:"auth_flow_slug"`
 	// List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
 	ClientNetworks *string `json:"client_networks,omitempty"`
-	// Shared secret between clients and server to hash packets.
-	SharedSecret *string `json:"shared_secret,omitempty"`
+	SharedSecret   string  `json:"shared_secret"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
 	MfaSupport           *bool          `json:"mfa_support,omitempty"`
 	Certificate          NullableString `json:"certificate,omitempty"`
@@ -41,12 +40,13 @@ type _RadiusOutpostConfig RadiusOutpostConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRadiusOutpostConfig(pk int32, name string, applicationSlug string, authFlowSlug string) *RadiusOutpostConfig {
+func NewRadiusOutpostConfig(pk int32, name string, applicationSlug string, authFlowSlug string, sharedSecret string) *RadiusOutpostConfig {
 	this := RadiusOutpostConfig{}
 	this.Pk = pk
 	this.Name = name
 	this.ApplicationSlug = applicationSlug
 	this.AuthFlowSlug = authFlowSlug
+	this.SharedSecret = sharedSecret
 	return &this
 }
 
@@ -186,36 +186,28 @@ func (o *RadiusOutpostConfig) SetClientNetworks(v string) {
 	o.ClientNetworks = &v
 }
 
-// GetSharedSecret returns the SharedSecret field value if set, zero value otherwise.
+// GetSharedSecret returns the SharedSecret field value
 func (o *RadiusOutpostConfig) GetSharedSecret() string {
-	if o == nil || IsNil(o.SharedSecret) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.SharedSecret
+
+	return o.SharedSecret
 }
 
-// GetSharedSecretOk returns a tuple with the SharedSecret field value if set, nil otherwise
+// GetSharedSecretOk returns a tuple with the SharedSecret field value
 // and a boolean to check if the value has been set.
 func (o *RadiusOutpostConfig) GetSharedSecretOk() (*string, bool) {
-	if o == nil || IsNil(o.SharedSecret) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SharedSecret, true
+	return &o.SharedSecret, true
 }
 
-// HasSharedSecret returns a boolean if a field has been set.
-func (o *RadiusOutpostConfig) HasSharedSecret() bool {
-	if o != nil && !IsNil(o.SharedSecret) {
-		return true
-	}
-
-	return false
-}
-
-// SetSharedSecret gets a reference to the given string and assigns it to the SharedSecret field.
+// SetSharedSecret sets field value
 func (o *RadiusOutpostConfig) SetSharedSecret(v string) {
-	o.SharedSecret = &v
+	o.SharedSecret = v
 }
 
 // GetMfaSupport returns the MfaSupport field value if set, zero value otherwise.
@@ -310,9 +302,7 @@ func (o RadiusOutpostConfig) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ClientNetworks) {
 		toSerialize["client_networks"] = o.ClientNetworks
 	}
-	if !IsNil(o.SharedSecret) {
-		toSerialize["shared_secret"] = o.SharedSecret
-	}
+	toSerialize["shared_secret"] = o.SharedSecret
 	if !IsNil(o.MfaSupport) {
 		toSerialize["mfa_support"] = o.MfaSupport
 	}
@@ -336,6 +326,7 @@ func (o *RadiusOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 		"name",
 		"application_slug",
 		"auth_flow_slug",
+		"shared_secret",
 	}
 
 	allProperties := make(map[string]interface{})
