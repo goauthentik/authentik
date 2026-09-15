@@ -45889,7 +45889,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
-      - authentik_secrets.secret
+      - authentik_crypto_secrets.secret
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage

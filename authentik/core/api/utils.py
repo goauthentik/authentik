@@ -108,7 +108,7 @@ class ModelSerializer(BaseModelSerializer):
             relation_info = relation_info._replace(has_through_model=False)
 
         field_class, field_kwargs = super().build_relational_field(field_name, relation_info)
-        if relation_info.related_model._meta.label_lower == "authentik_secrets.secret":
+        if relation_info.related_model._meta.label_lower == "authentik_crypto_secrets.secret":
             from authentik.crypto.secrets.api import SecretReferenceField
 
             field_class = SecretReferenceField
