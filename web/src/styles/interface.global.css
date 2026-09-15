@@ -33,6 +33,8 @@
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);

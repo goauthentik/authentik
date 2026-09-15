@@ -35,6 +35,8 @@
 @import "#styles/authentik/components/Icon/icon.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 @import "#elements/locale/ak-locale-select.css" layer(components);
 @import "#styles/authentik/components/Login/login-tokens.css" layer(components);
