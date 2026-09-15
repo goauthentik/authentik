@@ -21,6 +21,10 @@ class LifecycleConfig(EnterpriseConfig):
                 f"{fqdn_rand('lifecycle_apply_lifecycle_rules', 24)} * * *",
             ),
             ScheduleSpec(
+                actor=apply_expiration_rules,
+                crontab=f"{fqdn_rand('lifecycle_apply_expiration_rules')} * * * *",
+            ),
+            ScheduleSpec(
                 actor=execute_due_offboardings,
                 crontab=f"{fqdn_rand('lifecycle_execute_due_offboardings', 5)}-59/5 * * * *",
             ),
