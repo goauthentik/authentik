@@ -17,6 +17,7 @@
         "ms-python.vscode-pylance",
         "redhat.vscode-yaml",
         "Tobermory.es6-string-html",
-        "unifiedjs.vscode-mdx"
+        "unifiedjs.vscode-mdx",
+        "Tim-Koehler.helm-intellisense"
     ]
 }

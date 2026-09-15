@@ -316,7 +316,7 @@ docs-api-clean:  ## Clean generated API documentation
 	pnpm --dir website/api run clean
 
 #########################
-## Docker
+## Lifecycle
 #########################
 
 docker:  ## Build a docker image of the current source tree
@@ -324,6 +324,14 @@ docker:  ## Build a docker image of the current source tree
 
 test-docker:
 	BUILD=true ${PWD}/scripts/test_docker.sh
+
+helm-docs:
+	docker run \
+		--rm \
+		-v "${PWD}:/helm-docs" \
+		-u $(UID) \
+		docker.io/jnorwood/helm-docs:v1.12.0 \
+			-c /helm-docs/lifecycle/charts
 
 #########################
 ## CI
