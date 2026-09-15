@@ -29,9 +29,7 @@ export class QL extends DjangoQL {
         try {
             super.generateSuggestions();
         } catch (error) {
-            // A query the engine cannot resolve (e.g. a relation missing from the
-            // introspections) must never leave stale suggestions behind, as an open menu
-            // captures Enter and the engine also calls this on its own timers.
+            // Never leave stale suggestions behind; an open menu captures Enter.
             this.logError(`Failed to generate suggestions: ${error}`);
             this.prefix = "";
             this.suggestions = [];
@@ -389,6 +387,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 return;
 
             case "Tab":
+                // -1 means no selection; 0 is a valid (falsy) index
                 if (this.selectionIndex !== -1) {
                     this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
@@ -410,9 +409,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
                 const after = this.anchorRef.value?.value ?? "";
 
-                // Nothing was highlighted, or applying the highlighted suggestion changed
-                // nothing: the query is as complete as the suggestions can make it, so
-                // Enter means submit rather than trapping the user in the menu.
+                // Nothing to complete, so Enter submits instead of trapping the user.
                 if (after === before) {
                     this.open = false;
                     this.submit();
