@@ -561,11 +561,12 @@ export class CaptchaStage
 
         if (
             controller instanceof GReCaptchaController ||
-            controller instanceof HCaptchaController
+            controller instanceof HCaptchaController ||
+            controller instanceof TurnstileController
         ) {
-            // reCAPTCHA's & hCaptcha's domain verification can't seem to penetrate the true origin
-            // of the page when loaded from a blob URL, likely due to their double-nested
-            // iframe structure.
+            // reCAPTCHA and hCaptcha cannot reliably verify the page's origin when loaded from
+            // a blob URL, likely due to their double-nested iframe structure. Some embedded
+            // browsers also block blob URL iframe navigations, preventing Turnstile from loading.
             // We fallback to the deprecated `document.write` to get around this.
             this.#iframeSource = "about:blank";
 
