@@ -6,6 +6,7 @@ import "#elements/router/core/RouterView";
 import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
+import { UIConfig } from "#common/ui/config";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -47,6 +48,15 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+
+type Feature = keyof UIConfig["enabledFeatures"];
+
+interface UserNavItem {
+    label: string;
+    link: string;
+    feature?: Feature;
+    capability?: CapabilitiesEnum;
+}
 
 @customElement("ak-interface-user")
 class UserInterface extends WithLicenseSummary(
@@ -123,6 +133,23 @@ class UserInterface extends WithLicenseSummary(
         });
     }
 
+    protected canUseNavItem = ({ feature, capability }: UserNavItem) => {
+        if (!feature && !capability) {
+            return true;
+        }
+
+        const LE = LicenseSummaryStatusEnum;
+        const licensed: ReadonlySet<LicenseSummaryStatusEnum> = new Set([LE.Valid, LE.ExpirySoon]);
+        const { status } = this.licenseSummary ?? {};
+
+        return (
+            status &&
+            licensed.has(status) &&
+            (!feature || this.uiConfig.enabledFeatures[feature]) &&
+            (!capability || this.can(capability))
+        );
+    };
+
     protected render() {
         const { currentUser } = this;
 
@@ -142,25 +169,27 @@ class UserInterface extends WithLicenseSummary(
 
         const backgroundStyles = this.uiConfig.theme.background;
 
-        const navItems = [{ label: msg("Applications"), link: toUserInterface("library") }];
         // Requests are an enterprise feature, can be disabled for the user interface
         // and are only shown when the admin has configured at least one request rule
         // We can't easily check if this user actually has something they can request,
         // that is a semi-expensive request
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.requests &&
-            this.can(CapabilitiesEnum.CanRequest)
-        ) {
-            navItems.push({ label: msg("Discover"), link: toUserInterface("requests") });
-        }
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.agents &&
-            this.can(CapabilitiesEnum.CanAgentSelfService)
-        ) {
-            navItems.push({ label: msg("Agents"), link: toUserInterface("agents") });
-        }
+
+        const CE = CapabilitiesEnum;
+        const navItems: UserNavItem[] = [
+            { label: msg("Applications"), link: toUserInterface("library") },
+            {
+                label: msg("Discover"),
+                link: toUserInterface("requests"),
+                feature: "requests" as Feature,
+                capability: CE.CanRequest,
+            },
+            {
+                label: msg("Agents"),
+                link: toUserInterface("agents"),
+                feature: "agents" as Feature,
+                capability: CE.CanAgentSelfService,
+            },
+        ].filter(this.canUseNavItem);
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
