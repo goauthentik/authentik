@@ -52,7 +52,7 @@ go.mod              # Go module (module path: goauthentik.io)
 - **`sources/`** — inbound identity (LDAP, OAuth, SAML, SCIM, Kerberos source).
 - **`providers/`** — outbound protocols authentik exposes (SAML, OAuth2/OIDC, Proxy, LDAP, RADIUS, SCIM, RAC).
 - **`outposts/`** — management/coordination of the Go outposts.
-- **`brands/`** + **`tenants/`** — branding/theming and multi-tenancy (`django-tenants`).
+- **`brands/`** — branding/theming per domain.
 - **`blueprints/`** — the engine that applies the YAML under the top-level `blueprints/` directory.
 - **`rbac/`**, **`crypto/`**, **`events/`** (audit log), **`enterprise/`** (EE-licensed features), **`api/`** - **`admin/`** (REST surfaces), **`root/`** (Django project: settings, URLs, ASGI/WSGI).
 
@@ -154,7 +154,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`)                           |
+| Datastore       | PostgreSQL                                                               |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |
