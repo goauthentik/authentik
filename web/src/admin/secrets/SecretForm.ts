@@ -1,4 +1,5 @@
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
+import "#components/ak-secret-textarea-input";
 import "#components/ak-radio-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
@@ -23,8 +24,8 @@ import {
 import { fromByteArray } from "base64-js";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-secret-form")
@@ -33,6 +34,43 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     public static override verboseNamePlural = msg("Secrets", { id: "secret.verbose-name-plural" });
 
     public override size = PFSize.Medium;
+
+    public static styles = [
+        ...ModelForm.styles,
+        css`
+            .secret-upload {
+                position: relative;
+                overflow: hidden;
+            }
+            .secret-upload input {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                opacity: 0;
+                cursor: pointer;
+            }
+            .secret-upload:focus-within {
+                outline: 2px solid var(--pf-global--active-color--100);
+            }
+            .secret-file-name {
+                margin-inline-start: var(--pf-global--spacer--sm);
+                overflow-wrap: anywhere;
+            }
+        `,
+    ];
+
+    @state()
+    protected fileName = "";
+
+    @property({ attribute: false })
+    public types = [SecretTypeEnum.Text, SecretTypeEnum.Multiline, SecretTypeEnum.File];
+
+    protected override willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
+        if (changed.has("types") && !this.instance) {
+            this.type = this.types[0];
+        }
+    }
 
     @state()
     protected type: SecretTypeEnum = SecretTypeEnum.Text;
@@ -56,6 +94,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     }
 
     protected override async send(data: SecretRequest): Promise<unknown> {
+        data.type = this.type;
         if (this.type === SecretTypeEnum.File) {
             const file = this.files<"value">().get("value");
             if (file) {
@@ -78,11 +117,19 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
             : "";
         switch (this.type) {
             case SecretTypeEnum.Multiline:
+                if (this.instance) {
+                    return html`<ak-secret-textarea-input
+                        name="value"
+                        label=${label}
+                        help=${help}
+                        input-hint="code"
+                    ></ak-secret-textarea-input>`;
+                }
                 return html`<ak-textarea-input
                     name="value"
                     label=${label}
                     help=${help}
-                    rows="8"
+                    rows="4"
                     input-hint="code"
                     ?required=${!this.instance}
                 ></ak-textarea-input>`;
@@ -99,25 +146,36 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                             ? msg("New file", { id: "secret.form.new-file.label" })
                             : msg("File", { id: "secret.form.file.label" }),
                     )}
-                    <input
-                        type="file"
-                        class="pf-c-form-control"
-                        id="secret-file-input"
-                        ?required=${!this.instance}
-                    />
+                    <span class="pf-c-button pf-m-secondary secret-upload">
+                        <i class="fas fa-upload" aria-hidden="true"></i>
+                        ${msg("Upload file", { id: "secret.form.file.upload.label" })}
+                        <input
+                            type="file"
+                            id="secret-file-input"
+                            ?required=${!this.instance}
+                            @change=${(event: Event) => {
+                                this.fileName =
+                                    (event.target as HTMLInputElement).files?.[0]?.name ?? "";
+                            }}
+                        />
+                    </span>
+                    <span class="secret-file-name" aria-live="polite"
+                        >${this.fileName ||
+                        msg("No file selected", { id: "secret.form.file.empty.label" })}</span
+                    >
                     ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
                 </ak-form-element-horizontal>`;
             default:
-                return html`<ak-hidden-text-input
+                return html`<ak-secret-text-input
                     label=${label}
                     name="value"
-                    autocomplete="new-password"
+                    ?revealed=${!this.instance}
                     input-hint="code"
                     help=${help ||
                     msg("Leave empty to generate a value.", {
                         id: "secret.form.value.generate-description",
                     })}
-                ></ak-hidden-text-input>`;
+                ></ak-secret-text-input>`;
         }
     }
 
@@ -131,7 +189,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                 autocomplete="off"
                 spellcheck="false"
             ></ak-text-input>
-            ${this.instance
+            ${this.instance || this.types.length === 1
                 ? nothing
                 : html`<ak-radio-input
                       name="type"
@@ -164,7 +222,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                                   id: "secret.type.file.description",
                               })}`,
                           },
-                      ]}
+                      ].filter((option) => this.types.includes(option.value))}
                       @input=${(ev: InputEvent) => {
                           this.type = (ev.currentTarget as AkRadioInput<SecretTypeEnum>).value;
                       }}

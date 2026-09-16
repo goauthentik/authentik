@@ -2,7 +2,7 @@ import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton
 import { showMessage } from "#elements/messages/MessageContainer";
 import { RouterNavigateEvent } from "#elements/router/core/navigation";
 
-import { afterEach, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 
 import { render } from "lit";
@@ -14,9 +14,13 @@ vi.mock("#elements/messages/MessageContainer", async (importOriginal) => ({
 
 const container = document.createElement("div");
 
-afterEach(() => {
+beforeEach(() => vi.stubEnv("AK_DOCS_URL", "https://docs.goauthentik.io"));
+
+afterEach(async () => {
     document.querySelectorAll("dialog").forEach((dialog) => dialog.close());
+    await vi.waitFor(() => expect(document.querySelector("dialog")).toBeNull());
     container.remove();
+    vi.unstubAllEnvs();
 });
 
 test.each([false, true])("rotation completes once even after navigation: %s", async (navigate) => {
@@ -42,11 +46,37 @@ test.each([false, true])("rotation completes once even after navigation: %s", as
     await vi.waitFor(() => expect(dialog.isConnected).toBe(false));
     if (navigate) {
         await vi.waitFor(() =>
-            expect(document.querySelector("ak-hidden-text-input")?.getAttribute("value")).toBe(
+            expect(document.querySelector("ak-secret-value")?.getAttribute("value")).toBe(
                 "replacement",
             ),
         );
         document.querySelector<HTMLDialogElement>("dialog[open]")!.close();
     }
     await vi.waitFor(() => expect(showMessage).toHaveBeenCalledTimes(1));
+});
+
+test("rotation links documentation and masks the result in a styled field", async () => {
+    const rotate = vi.fn().mockResolvedValue({ value: "replacement" });
+    document.body.append(container);
+    render(IconRotateSecretButton({ rotate }), container);
+    container.querySelector("button")!.click();
+    await vi.waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
+    expect(document.querySelector<HTMLAnchorElement>("dialog a")?.href).toContain(
+        "/sys-mgmt/secrets/rotation/",
+    );
+    document.querySelector<HTMLButtonElement>("dialog .pf-m-danger")!.click();
+    await vi.waitFor(() =>
+        expect(
+            document.querySelector("ak-secret-value")?.shadowRoot?.querySelector("input"),
+        ).toBeTruthy(),
+    );
+    const display = document.querySelector("ak-secret-value")!;
+    const input = display.shadowRoot!.querySelector("input")!;
+    expect(input.type).toBe("password");
+    expect(input.value).toBe("replacement");
+    expect(input.readOnly).toBe(true);
+    await vi.waitFor(() => expect(input.getBoundingClientRect().width).toBeGreaterThan(0));
+    expect(input.getBoundingClientRect().width).toBeGreaterThan(
+        display.getBoundingClientRect().width * 0.65,
+    );
 });
