@@ -132,6 +132,17 @@ export abstract class CaptchaController implements ReactiveController {
     public abstract reset(): Promise<void>;
 
     /**
+     * Adjust a frame the provider has just added to the container.
+     *
+     * Called from the stage's mutation observer for every iframe that appears under the
+     * container, after the stage has pinned the frame to its declared size. The default
+     * leaves the frame alone.
+     */
+    public decorateFrame(_frame: HTMLIFrameElement): void {
+        // Optional for providers whose frames need no adjustment.
+    }
+
+    /**
      * Tear down any provider state. Must be safe to call when nothing was mounted.
      */
     public unmount(): void {

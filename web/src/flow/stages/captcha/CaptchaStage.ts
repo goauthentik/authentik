@@ -58,6 +58,68 @@ function documentTreeHost(node: Node): Element | null {
     }
 }
 
+/**
+ * Pin a vendor frame to the size it declared.
+ *
+ * reCAPTCHA and hCaptcha size their anchor frames with the `width` and `height`
+ * content attributes. Those are presentational hints, which lose to any author rule —
+ * including PatternFly's base reset, `img, embed, iframe, ... { max-width: 100%;
+ * height: auto }`, which reaches the container now that it lives in the document tree.
+ * `height: auto` on an iframe is the 150px replaced-element default, so the frame's own
+ * body shows as a blank band below the 78px widget. Inside the old wrapper iframe no
+ * page stylesheet ever reached the vendor markup.
+ *
+ * Only frames that declare a size and have not set one inline are touched; Turnstile
+ * sizes its frame inline already.
+ */
+function pinFrameSize(node: Node): void {
+    if (!(node instanceof HTMLIFrameElement)) return;
+
+    for (const dimension of ["width", "height"] as const) {
+        const declared = node.getAttribute(dimension);
+
+        if (!declared || node.style[dimension]) continue;
+
+        node.style[dimension] = `${declared}px`;
+    }
+}
+
+/**
+ * Observe a container for vendor frames as they arrive, pinning each to its declared size
+ * and handing it to the controller for any vendor-specific adjustment.
+ *
+ * Observed rather than swept after `mount()`: `grecaptcha.render` happens to build its
+ * frame synchronously, but the other vendors make no such promise, and `reset()` can
+ * rebuild frames well after the initial mount.
+ */
+function observeFrames(
+    container: HTMLElement,
+    decorate: (frame: HTMLIFrameElement) => void,
+): MutationObserver {
+    const visit = (node: Node) => {
+        if (!(node instanceof HTMLIFrameElement)) return;
+
+        pinFrameSize(node);
+        decorate(node);
+    };
+
+    const observer = new MutationObserver((mutations) => {
+        for (const { addedNodes } of mutations) {
+            for (const node of addedNodes) {
+                visit(node);
+
+                if (node instanceof Element) {
+                    node.querySelectorAll("iframe").forEach(visit);
+                }
+            }
+        }
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+
+    return observer;
+}
+
 @customElement("ak-stage-captcha")
 export class CaptchaStage
     extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest>
@@ -125,6 +187,7 @@ export class CaptchaStage
     protected activeController: CaptchaController | null = null;
 
     #container?: HTMLDivElement;
+    #frameObserver?: MutationObserver;
     #listenController = new ListenerController();
 
     /**
@@ -158,19 +221,6 @@ export class CaptchaStage
 
         container.slot = CAPTCHA_SLOT;
         container.className = "ak-captcha-container";
-
-        // Set here rather than in the stage's stylesheet: the container lives in the
-        // document tree, out of reach of this element's shadow root.
-        //
-        // Vendors size their widget frames with the `height` content attribute, and that
-        // hint does not survive on authentik's pages — a plain `<iframe height="78">`
-        // computes to the 150px replaced-element default here, while identical markup
-        // computes to 78px on a page outside the app — so the frame spills below the widget
-        // as a blank band. Inside the old wrapper iframe the surrounding stylesheets never
-        // reached it. Clipping to the box the vendor actually declared is safe: every
-        // provider renders its expanded challenge as an overlay on `document.body`, never
-        // inside this container.
-        container.style.overflow = "hidden";
 
         this.#container = container;
 
@@ -288,6 +338,8 @@ export class CaptchaStage
 
         // The container lives outside this element's subtree, so dropping the stage does
         // not take it with it.
+        this.#frameObserver?.disconnect();
+        this.#frameObserver = undefined;
         this.#container?.remove();
         this.#container = undefined;
         this.widgetLoaded = false;
@@ -357,6 +409,13 @@ export class CaptchaStage
             // The container has to be attached before a provider renders into it — several
             // of them measure it on the spot.
             host.appendChild(this.container);
+
+            // Frames are decorated by the controller that is about to mount, which is not
+            // `activeController` yet — that is only assigned once mounting succeeds.
+            this.#frameObserver?.disconnect();
+            this.#frameObserver = observeFrames(this.container, (frame) =>
+                controller.decorateFrame(frame),
+            );
 
             if (this.challenge?.interactive) {
                 await controller.mount(this.container);

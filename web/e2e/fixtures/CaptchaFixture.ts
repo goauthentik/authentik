@@ -215,6 +215,35 @@ export class CaptchaFixture extends PageFixture {
     };
 
     /**
+     * The declared and rendered sizes of every vendor frame that sizes itself through
+     * `width`/`height` content attributes.
+     *
+     * Empty for vendors that size their frame inline (Turnstile), or that render into a
+     * closed shadow root where no selector can reach.
+     */
+    public declaredFrameSizes = (): Promise<
+        Array<{ width: [declared: number, rendered: number]; height: [number, number] }>
+    > => {
+        return this.page.evaluate(() =>
+            Array.from(
+                document.querySelectorAll<HTMLIFrameElement>(
+                    ".ak-captcha-container iframe[width][height]",
+                ),
+                (frame) => ({
+                    width: [Number(frame.getAttribute("width")), frame.offsetWidth] as [
+                        number,
+                        number,
+                    ],
+                    height: [Number(frame.getAttribute("height")), frame.offsetHeight] as [
+                        number,
+                        number,
+                    ],
+                }),
+            ),
+        );
+    };
+
+    /**
      * Whether the vendor's script installed its global in the flow document's own realm.
      */
     public vendorGlobalDefined = (vendor: CaptchaVendorConfig): Promise<boolean> => {

@@ -9,25 +9,27 @@ interface FlowNames {
     seed: string;
 }
 
+/**
+ * Name a flow after the vendors it exercises, so a run leaves behind flows that can be told
+ * apart in the admin list and opened by hand.
+ */
+function flowNames(label: string): FlowNames {
+    const seed = IDGenerator.randomID(6).toLowerCase();
+
+    return {
+        seed,
+        flowName: `Captcha ${label} ${seed}`,
+        flowSlug: `captcha-${label}-${seed}`,
+    };
+}
+
 test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
-    const names = new Map<string, FlowNames>();
-
-    test.beforeEach("Seed names", async ({ page: _page }, { testId }) => {
-        const seed = IDGenerator.randomID(6).toLowerCase();
-
-        names.set(testId, {
-            seed,
-            flowName: `Captcha Flow ${seed}`,
-            flowSlug: `captcha-flow-${seed}`,
-        });
-    });
-
     for (const [key, vendor] of Object.entries(CaptchaVendorRecord)) {
         test(`Renders the ${vendor.providerType} widget without a wrapper iframe`, async ({
             session,
             captcha,
-        }, testInfo) => {
-            const { flowName, flowSlug } = names.get(testInfo.testId)!;
+        }) => {
+            const { flowName, flowSlug, seed } = flowNames(key);
 
             await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
 
@@ -37,7 +39,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
                 captcha.bindCaptchaStage({
                     flowSlug,
                     vendor,
-                    name: `captcha-${key}-${flowSlug}`,
+                    name: `captcha-${key}-${seed}`,
                     order: 0,
                 }));
 
@@ -55,6 +57,16 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
                     `\`window.${vendor.globalName}\` is defined in the flow document itself`,
                 ).resolves.toBe(true);
             });
+
+            await test.step("Widget keeps its declared size", async () => {
+                // PatternFly's base reset applies `height: auto` to every iframe in the
+                // document, which discards the vendor's `height` attribute and leaves the
+                // frame at the 150px default with a blank band below the widget.
+                for (const { width, height } of await captcha.declaredFrameSizes()) {
+                    expect(height[1], "Rendered height matches the declared one").toBe(height[0]);
+                    expect(width[1], "Rendered width matches the declared one").toBe(width[0]);
+                }
+            });
         });
     }
 
@@ -67,8 +79,8 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
             session,
             captcha,
             page,
-        }, testInfo) => {
-            const { flowName, flowSlug } = names.get(testInfo.testId)!;
+        }) => {
+            const { flowName, flowSlug, seed } = flowNames(`${key}-solve`);
 
             await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
 
@@ -78,7 +90,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
                 captcha.bindCaptchaStage({
                     flowSlug,
                     vendor,
-                    name: `solve-${key}-${flowSlug}`,
+                    name: `solve-${key}-${seed}`,
                     order: 0,
                     // The passing key: this asserts a solved challenge is accepted, not how
                     // a vendor scores the client.
@@ -102,8 +114,8 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
         session,
         captcha,
         page,
-    }, testInfo) => {
-        const { flowName, flowSlug } = names.get(testInfo.testId)!;
+    }) => {
+        const { flowName, flowSlug, seed } = flowNames("turnstile-invisible");
         const vendor = CaptchaVendorRecord.turnstile;
 
         await test.step("Authenticate", () => session.login({ to: "/if/admin/flow/flows" }));
@@ -114,7 +126,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
             captcha.bindCaptchaStage({
                 flowSlug,
                 vendor,
-                name: `captcha-invisible-${flowSlug}`,
+                name: `captcha-invisible-${seed}`,
                 order: 0,
                 interactive: false,
                 autoSolve: true,
@@ -138,8 +150,8 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
         session,
         captcha,
         page,
-    }, testInfo) => {
-        const { flowName, flowSlug } = names.get(testInfo.testId)!;
+    }) => {
+        const { flowName, flowSlug, seed } = flowNames("turnstile-recaptcha");
 
         // Turnstile is first because it is the one vendor with a self-solving test key.
         const first = CaptchaVendorRecord.turnstile;
@@ -153,7 +165,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
             captcha.bindCaptchaStage({
                 flowSlug,
                 vendor: first,
-                name: `captcha-turnstile-${flowSlug}`,
+                name: `captcha-turnstile-${seed}`,
                 order: 0,
                 autoSolve: true,
             }));
@@ -162,7 +174,7 @@ test.describe("CAPTCHA stage", { tag: "@vendor-network" }, () => {
             captcha.bindCaptchaStage({
                 flowSlug,
                 vendor: second,
-                name: `captcha-recaptcha-${flowSlug}`,
+                name: `captcha-recaptcha-${seed}`,
                 order: 10,
             }));
 
