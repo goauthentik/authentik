@@ -8,7 +8,12 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_consumer_secret", "secret", None, "consumer secret")]
+
+def secret_type(source):
+    return "multiline" if source.provider_type == "apple" else "text"
+
+
+FIELDS = [("_consumer_secret", "secret", secret_type, "consumer secret")]
 
 
 def migrate_consumer_secret(apps, schema_editor):

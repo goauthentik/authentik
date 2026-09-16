@@ -29,7 +29,7 @@ def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, i
             names.add(name)
             secret = Secret.objects.using(alias).create(
                 name=name,
-                type=secret_type or "text",
+                type=secret_type(instance) if callable(secret_type) else secret_type or "text",
                 value=value,
             )
             setattr(instance, new, secret)
