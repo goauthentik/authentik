@@ -69,23 +69,21 @@ export class GReCaptchaController extends CaptchaController {
     };
 
     /**
-     * `color-scheme` on an iframe element is not a paint instruction. It declares which
-     * scheme the embedder expects the embedded document to render in, and the browser
-     * compares that with what the document itself declares. When they agree the frame's
-     * backdrop stays transparent; when they disagree the browser assumes the content
-     * would be illegible against the parent and paints an opaque canvas behind it, in
-     * the document's own scheme.
+     * `color-scheme` on an iframe does not directly paint colors.
+     * It tells the browser which scheme the embedder expects the framed document to use.
+     * The browser then compares that expectation with the framed document's own declaration.
      *
-     * The anchor document declares nothing (`normal`, so light) — Google paints the dark
-     * widget with an explicit `#222` on a div and leaves `html` and `body` transparent —
-     * while the frame element inherits `dark` from authentik's dark theme. That mismatch
-     * is where the white behind the widget's rounded corners and along its 2px inset
-     * comes from. Declaring the document as light, which is what it is, restores the
-     * transparent backdrop; the widget stays dark because Google's CSS makes it so.
+     * If they match, the iframe backdrop remains transparent. If they differ,
+     * the browser paints an opaque fallback canvas in the framed document's scheme.
      *
-     * The reverse holds too: a document that declares `dark` inside an element computing
-     * `light` gets an opaque near-black canvas, so this is deliberately not applied to
-     * every vendor's frame.
+     * reCAPTCHA's anchor document effectively declares light (`normal`),
+     * while the iframe element in our dark mode computes to `dark`.
+     * That mismatch causes the white background visible around rounded corners and along the inset.
+     * Forcing the iframe to `light` aligns with the framed document and restores transparency.
+     *
+     * The widget itself remains dark because Google styles it explicitly.
+     *
+     * Only reCAPTCHA seems to be affected by this behavior.
      *
      * @see {@link https://drafts.csswg.org/css-color-adjust-1/#color-scheme-effect}
      */
