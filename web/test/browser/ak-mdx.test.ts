@@ -36,10 +36,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
 
         await test.step("Create provider via wizard", async () => {
             await expect(dialog).toBeHidden();
+
             await page
                 .getByLabel("Providers actions")
                 .getByRole("button", { name: "New Provider" })
                 .click();
+
             await expect(dialog).toBeVisible();
 
             await series(
