@@ -1,14 +1,16 @@
 declare namespace AppleID {
     const auth: AppleIDAuth;
 
+    interface AppleIDAuthInit {
+        clientId: string;
+        scope: string;
+        redirectURI: string;
+        state: string;
+        usePopup: boolean;
+    }
+
     class AppleIDAuth {
-        init({
-            clientId: string,
-            scope: string,
-            redirectURI: string,
-            state: string,
-            usePopup: boolean,
-        }): void;
-        async signIn(): Promise<void>;
+        init(options: AppleIDAuthInit): void;
+        signIn(): Promise<void>;
     }
 }

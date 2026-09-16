@@ -9,6 +9,33 @@ import { authentikSortImportsConfig } from "./imports.js";
 export * from "./imports.js";
 
 /**
+ * Default ignore patterns for generated and build output.
+ *
+ * @remarks
+ * `poly.ts`-style files whose import order is load-bearing belong here too: `sortImports` will
+ * happily reorder a side-effect-adjacent import and break the runtime.
+ */
+export const DefaultIgnorePatterns = [
+    "**/out",
+    "**/dist",
+    "**/build",
+    "**/.docusaurus",
+    "**/.wireit",
+    "**/node_modules",
+    "**/coverage",
+    "**/storybook-static",
+    "**/vendored",
+    "**/*.min.js",
+    // pnpm owns the lockfile's formatting.
+    "**/pnpm-lock.yaml",
+    // Generated: `lit-localize extract` owns these.
+    "**/locale-codes.ts",
+    "**/src/locales",
+    // Generated: `make gen-clients` owns this.
+    "packages/client-ts",
+];
+
+/**
  * authentik's oxfmt configuration.
  *
  * ```ts
@@ -17,6 +44,7 @@ export * from "./imports.js";
  * ```
  */
 export const authentikOxfmtConfig: OxfmtConfig = {
+    ignorePatterns: DefaultIgnorePatterns,
     useTabs: false,
     tabWidth: 4,
     printWidth: 100,

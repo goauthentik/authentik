@@ -44,35 +44,41 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
         return html`<ak-flow-card .challenge=${challenge}>
             <form class="pf-c-form">
-                ${FlowUserDetails({ challenge: challenge })}
+                ${FlowUserDetails({ challenge })}
 
                 <p>${this.getText(challenge)}</p>
-                ${challenge.overviewUrl
-                    ? html`<a href="${challenge.overviewUrl}" class="pf-c-button pf-m-primary">
-                          ${msg("Go back to overview")}
-                      </a>`
-                    : nothing}
-                ${challenge.invalidationFlowUrl
-                    ? html`
-                          <a
-                              href="${challenge.invalidationFlowUrl}"
-                              class="pf-c-button pf-m-secondary"
-                              id="logout"
-                          >
-                              ${msg(str`Log out of ${challenge.brandName}`)}
-                          </a>
-                      `
-                    : nothing}
-                ${challenge.applicationLaunchUrl && challenge.applicationName
-                    ? html`
-                          <a
-                              href="${challenge.applicationLaunchUrl}"
-                              class="pf-c-button pf-m-secondary"
-                          >
-                              ${msg(str`Log back into ${challenge.applicationName}`)}
-                          </a>
-                      `
-                    : nothing}
+                ${
+                    challenge.overviewUrl
+                        ? html`<a href="${challenge.overviewUrl}" class="pf-c-button pf-m-primary">
+                              ${msg("Go back to overview")}
+                          </a>`
+                        : nothing
+                }
+                ${
+                    challenge.invalidationFlowUrl
+                        ? html`
+                              <a
+                                  href="${challenge.invalidationFlowUrl}"
+                                  class="pf-c-button pf-m-secondary"
+                                  id="logout"
+                              >
+                                  ${msg(str`Log out of ${challenge.brandName}`)}
+                              </a>
+                          `
+                        : nothing
+                }
+                ${
+                    challenge.applicationLaunchUrl && challenge.applicationName
+                        ? html`
+                              <a
+                                  href="${challenge.applicationLaunchUrl}"
+                                  class="pf-c-button pf-m-secondary"
+                              >
+                                  ${msg(str`Log back into ${challenge.applicationName}`)}
+                              </a>
+                          `
+                        : nothing
+                }
             </form>
         </ak-flow-card>`;
     }
