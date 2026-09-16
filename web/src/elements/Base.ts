@@ -24,7 +24,7 @@ import { property } from "lit/decorators.js";
 const $PFBase = createStyleSheetUnsafe(PFBase);
 
 /**
- * Authentik base styles, providing overrides to Patternfly's initial definitions,
+ * authentik base styles, providing overrides to Patternfly's initial definitions,
  * and additional customizations.
  */
 const $AKBase = createStyleSheetUnsafe(AKBase);

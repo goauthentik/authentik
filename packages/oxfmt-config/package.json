@@ -8,10 +8,12 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/oxfmt-config"
     },
-    "scripts": {
-        "build": "tsc -p .",
-        "prepare": "tsc -p ."
-    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
     "type": "module",
     "types": "./out/index.d.ts",
     "exports": {
@@ -20,6 +22,13 @@
             "import": "./out/index.js",
             "types": "./out/index.d.ts"
         }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "prepare": "tsc -p ."
     },
     "devDependencies": {
         "@goauthentik/oxlint-config": "link:../oxlint-config",
@@ -30,16 +39,7 @@
         "oxfmt": ">=0.67.0 <1",
         "typescript": "^6.0.3 || ^7.0.0"
     },
-    "files": [
-        "out/**/*.js",
-        "out/**/*.d.ts",
-        "out/**/*.map",
-        "src"
-    ],
     "engines": {
         "node": ">=24.0"
-    },
-    "publishConfig": {
-        "access": "public"
     }
 }

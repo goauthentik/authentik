@@ -53,7 +53,7 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
  *
  * An optional dictionary of configuration options is available. These enable the Patternfly
  * "horizontal," "compact", "2 column on large," or "3 column on large" layouts that are (so far)
- * the layouts used in Authentik's (and Gravity's, for that matter) code.
+ * the layouts used in authentik's (and Gravity's, for that matter) code.
  *
  * This is not a web component and it does not bring its own styling ; calling code will still have
  * to provide the styling necessary. It is only a function to replace the repetitious boilerplate of

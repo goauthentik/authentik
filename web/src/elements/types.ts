@@ -256,7 +256,7 @@ export function createMixin<Mixin, C = unknown>(
 //#region Search/List types
 
 /**
- * Authentik's list types (ak-dual-select, ak-list-select, ak-search-select) all take a tuple of two
+ * authentik's list types (ak-dual-select, ak-list-select, ak-search-select) all take a tuple of two
  * or three items, or a collection of groups of such tuples. In order to push dynamic checking
  * around, we also allow the inclusion of a fourth component, which is just a scratchpad the
  * developer can use for their own reasons.

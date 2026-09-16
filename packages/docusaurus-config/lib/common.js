@@ -111,7 +111,7 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
 
     // Declare the site name for search engines. Without an explicit `WebSite`
     // structured-data `name`, Google synthesizes the site name from the hostname
-    // and renders it title-cased ("Authentik"); the product name is always
+    // and renders it title-cased ("authentik"); the product name is always
     // lowercase. https://developers.google.com/search/docs/appearance/site-names
     merged.headTags = [
         ...(merged.headTags ?? []),

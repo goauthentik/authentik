@@ -14,7 +14,7 @@ import { createLogger as createConsoleLogger } from "@goauthentik/esbuild-plugin
 import { findFreePorts } from "find-free-ports";
 
 /**
- * Authentik's logger, when the optional `@goauthentik/logger-js` peer is present.
+ * authentik's logger, when the optional `@goauthentik/logger-js` peer is present.
  *
  * It's optional so that consumers outside the monorepo aren't made to install a
  * logging package to use an esbuild plugin; without it, log output falls back to

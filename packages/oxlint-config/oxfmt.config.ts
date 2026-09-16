@@ -2,11 +2,9 @@
  * @file Oxfmt configuration.
  */
 
-import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
-import { DefaultIgnorePatterns } from "@goauthentik/oxlint-config";
+import { createOxfmtConfig, DefaultIgnorePatterns } from "@goauthentik/oxfmt-config";
 
-export default {
-    ...authentikOxfmtConfig,
+export default createOxfmtConfig({
     // The fixtures are deliberately mis-formatted inputs for `scripts/verify-fixtures.mjs`.
     ignorePatterns: [...DefaultIgnorePatterns, "fixtures/**"],
-};
+});

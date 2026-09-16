@@ -3,7 +3,7 @@
  *   This component is a swizzled version of the original DocItemContent component.
  *   Similar to Docusaurus' default `DocItemContent`, this component renders
  *   the content of a documentation page. However, it also adds support for
- *   support badges, and Authentik version badges.
+ *   support badges, and authentik version badges.
  */
 
 import "./styles.css";

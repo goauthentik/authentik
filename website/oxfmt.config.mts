@@ -2,11 +2,9 @@
  * @file Oxfmt configuration.
  */
 
-import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
-import { DefaultIgnorePatterns } from "@goauthentik/oxlint-config";
+import { createOxfmtConfig, DefaultIgnorePatterns } from "@goauthentik/oxfmt-config";
 
-export default {
-    ...authentikOxfmtConfig,
+export default createOxfmtConfig({
     ignorePatterns: [
         ...DefaultIgnorePatterns,
         "**/reference",
@@ -17,4 +15,4 @@ export default {
         "pnpm-workspace.yaml",
         "pnpm-lock.yaml",
     ],
-};
+});

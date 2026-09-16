@@ -21,7 +21,7 @@ interface NamedInstance {
 }
 
 /*
- * Type for saving and retrieving data ops from the Authentik API.
+ * Type for saving and retrieving data ops from the authentik API.
  */
 export interface ModelEndpoints<T, PKT extends string | number = string, D = T> {
     load: (pk: PKT) => Promise<T>;

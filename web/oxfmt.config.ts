@@ -2,17 +2,14 @@
  * @file Oxfmt configuration
  */
 
-const config = await import("@goauthentik/oxfmt-config-dev")
-    .catch(() => {
-        console.debug("Fallback to published @goauthentik/oxfmt-config");
+const { default: createOxfmtConfig } = await import("@goauthentik/oxfmt-config-dev").catch(() => {
+    console.debug("Fallback to published @goauthentik/oxfmt-config");
 
-        // @ts-expect-error - Remove ignore after package is published.
-        return import("@goauthentik/oxfmt-config");
-    })
-    .then((module) => module.default);
+    // @ts-expect-error - Remove ignore after package is published.
+    return import("@goauthentik/oxfmt-config");
+});
 
-export default {
-    ...config,
+export default createOxfmtConfig({
     // Carried over from the former .prettierignore.
     ignorePatterns: [
         "node_modules",
@@ -30,4 +27,4 @@ export default {
         "src/locale-codes.ts",
         "src/locales/**",
     ],
-};
+});

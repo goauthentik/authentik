@@ -2,6 +2,6 @@
  * @file Oxfmt configuration.
  */
 
-import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
+import { createOxfmtConfig } from "@goauthentik/oxfmt-config";
 
-export default authentikOxfmtConfig;
+export default createOxfmtConfig();
