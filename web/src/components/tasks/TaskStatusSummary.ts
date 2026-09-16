@@ -1,5 +1,7 @@
 import "#elements/cards/AggregateCard";
 import "#elements/Spinner";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -9,9 +11,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 type Status = [string, string, number | null];
 

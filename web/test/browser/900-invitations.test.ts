@@ -129,6 +129,7 @@ test.describe("Invitation form", () => {
             await expect($flowDialog, "Flow form closes after creation").toBeHidden({
                 timeout: 20_000,
             });
+
             await expect($dialog, "Invitation form is still open underneath").toBeVisible();
         });
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,41 +18,18 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface PatchedRequestRuleRequest
  */
 export interface PatchedRequestRuleRequest {
-    /**
-     *
-     */
     uuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     notificationTransports?: Array<string>;
-    /**
-     *
-     */
     notificationMode?: NotificationModeEnum;
-    /**
-     *
-     */
     minReviewers?: number;
-    /**
-     *
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     */
     requestFlow?: string | null;
 }
 

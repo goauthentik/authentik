@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge when a flow's active stage calls `stage_invalid()`.
+ *
  * @export
  * @interface AccessDeniedChallenge
  */
 export interface AccessDeniedChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     errorMessage?: string;
 }
 
