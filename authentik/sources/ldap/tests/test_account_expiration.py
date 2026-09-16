@@ -13,7 +13,7 @@ from authentik.core.tests.utils import create_test_session
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.sync.vendor.ms_ad import account_expired
+from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.tasks.models import Task
 
@@ -53,12 +53,12 @@ class AccountExpirationTests(SimpleTestCase):
         ]
         for value, expired in cases:
             with self.subTest(value=value):
-                self.assertEqual(account_expired(value), expired)
+                self.assertEqual(MicrosoftActiveDirectory.account_expired(value), expired)
 
     def test_invalid_expiration(self):
         for value in ("", "invalid", -1, "-1", 9223372036854775808, True, 1.5, {}):
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, "accountExpires"):
-                account_expired(value)
+                MicrosoftActiveDirectory.account_expired(value)
 
 
 class AccountExpirationSyncTests(TestCase):
