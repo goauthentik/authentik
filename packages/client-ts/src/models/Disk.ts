@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,34 +11,15 @@
  */
 
 /**
- *
  * @export
  * @interface Disk
  */
 export interface Disk {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     mountpoint: string;
-    /**
-     *
-     */
     label?: string;
-    /**
-     *
-     */
     capacityTotalBytes?: number;
-    /**
-     *
-     */
     capacityUsedBytes?: number;
-    /**
-     *
-     */
     encryptionEnabled?: boolean;
 }
 

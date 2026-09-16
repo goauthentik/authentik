@@ -1,13 +1,13 @@
+// ts-import-sorter: disable
+import PackageJSON from "../../../../package.json" with { type: "json" };
+
 /**
  * @file Utility functions for working with semantic versions.
- *
  * @runtime node
  */
 import { NodeEnvironment } from "#environment/node";
-import { parse } from "semver";
 
-// ts-import-sorter: disable
-import PackageJSON from "../../../../package.json" with { type: "json" };
+import { parse } from "semver";
 
 //#region Semantic Versioning
 
@@ -56,7 +56,8 @@ const prerelease = NodeEnvironment === "development" || !GIT_BUILD_HASH || GIT_B
  * An identifier representing the current version of authentik,
  * optionally prefixed with Git commit hash.
  *
- * This must match the behavior defined in authentik's server-side `authentik_full_version` function.
+ * This must match the behavior defined in authentik's server-side `authentik_full_version`
+ * function.
  *
  * @runtime node
  * @see {@link "authentik\_\_init\_\_.py"}
@@ -96,7 +97,6 @@ export const CurrentReleaseDocsURL = prerelease
  * A URL to the latest release notes, if any are available.
  *
  * @type {URL}
- *
  * @runtime node
  */
 let ReleaseNotesURL;

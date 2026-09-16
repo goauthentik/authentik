@@ -23,7 +23,7 @@
  * @property {LLMSDocsSection[]} sections One or more docs roots to scan.
  * @property {string[]} [ignoreFiles] Extra glob patterns to exclude.
  * @property {LLMSCrossLink[]} [crossLinks] Sibling-site links for the header.
- * @property {"topic"|"category"} [groupBy] How to group the root index.
+ * @property {"topic" | "category"} [groupBy] How to group the root index.
  * @property {readonly (readonly [string, string])[]} [categories] [slug, label] pairs that
  *   override the auto title-cased section heading for a group (used by both group modes).
  * @property {readonly (readonly [string, string])[]} [regroup] [pathPrefix, groupSlug] pairs:
@@ -55,6 +55,7 @@ export const LLMS_FULL_FILENAME = "llms-full.txt";
  * polynomial backtracking time on strings of repeated slashes.
  *
  * @param {string} value
+ *
  * @returns {string}
  */
 export function trimTrailingSlashes(value) {
@@ -71,7 +72,14 @@ export function trimTrailingSlashes(value) {
  * Validate and apply defaults to plugin options.
  *
  * @param {Partial<LLMSPluginOptions>} options
- * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy" | "overviewPages">> & LLMSPluginOptions}
+ *
+ * @returns {Required<
+ *     Pick<
+ *         LLMSPluginOptions,
+ *         "sections" | "ignoreFiles" | "crossLinks" | "groupBy" | "overviewPages"
+ *     >
+ * > &
+ *     LLMSPluginOptions}
  */
 export function normalizeOptions(options) {
     if (!options || !Array.isArray(options.sections) || options.sections.length === 0) {

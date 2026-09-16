@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 export * from "./AdminApi";
 export * from "./AgentsApi";
 export * from "./AuthenticatorsApi";

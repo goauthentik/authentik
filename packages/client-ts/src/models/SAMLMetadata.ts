@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * SAML Provider Metadata serializer
+ *
  * @export
  * @interface SAMLMetadata
  */
 export interface SAMLMetadata {
-    /**
-     *
-     */
     metadata: string;
-    /**
-     *
-     */
     downloadUrl?: string | null;
 }
 

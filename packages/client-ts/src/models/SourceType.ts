@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,45 +12,19 @@
 
 /**
  * Serializer for SourceType
+ *
  * @export
  * @interface SourceType
  */
 export interface SourceType {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     verboseName: string;
-    /**
-     *
-     */
     urlsCustomizable: boolean;
-    /**
-     *
-     */
     readonly requestTokenUrl: string | null;
-    /**
-     *
-     */
     readonly authorizationUrl: string | null;
-    /**
-     *
-     */
     readonly accessTokenUrl: string | null;
-    /**
-     *
-     */
     readonly profileUrl: string | null;
-    /**
-     *
-     */
     readonly oidcWellKnownUrl: string | null;
-    /**
-     *
-     */
     readonly oidcJwksUrl: string | null;
 }
 

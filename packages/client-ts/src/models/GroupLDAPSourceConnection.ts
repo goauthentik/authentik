@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,41 +18,18 @@ import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupLDAPSourceConnection
  */
 export interface GroupLDAPSourceConnection {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly group: string;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly groupObj: PartialGroup;
 }
 

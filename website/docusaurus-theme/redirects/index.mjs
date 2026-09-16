@@ -1,8 +1,7 @@
 /**
  * @file Docusaurus redirects utils.
- *
- * Shared between build-time site configs (Node.js) and the client-side
- * router (see `theme/NotFound`), so this module must remain browser-safe.
+ *   Shared between build-time site configs (Node.js) and the client-side
+ *   router (see `theme/NotFound`), so this module must remain browser-safe.
  */
 
 import escapeStringRegexp from "escape-string-regexp";
@@ -14,7 +13,6 @@ export const REDIRECTS_PLUGIN_NAME = "ak-redirects-plugin";
 
 /**
  * @typedef {Object} RedirectEntry
- *
  * @property {string} from
  * @property {string} to
  * @property {boolean} force
@@ -29,6 +27,7 @@ const SPLAT_GROUP_PATTERN = "(?<splat>.*)";
  * matcher only matches the pathname exactly.
  *
  * @param {string} pathname
+ *
  * @returns {RegExp}
  */
 export function pathnameToMatcher(pathname) {
@@ -46,6 +45,7 @@ export function pathnameToMatcher(pathname) {
  * This is used to match the inverse of a pathname matcher.
  *
  * @param {string} destination
+ *
  * @returns {RegExp}
  */
 export function destinationToMatcher(destination) {
@@ -62,6 +62,7 @@ export function destinationToMatcher(destination) {
  *
  * @param {string} template
  * @param {Record<string, string>} groups
+ *
  * @returns {string}
  */
 function expandTemplate(template, groups) {
@@ -81,6 +82,7 @@ function expandTemplate(template, groups) {
  * polynomial backtracking time on pathnames made of many slashes.
  *
  * @param {string} pathname
+ *
  * @returns {string}
  */
 function normalizeAliasPathname(pathname) {
@@ -97,11 +99,10 @@ function normalizeAliasPathname(pathname) {
  * A redirect entry compiled for matching in both directions.
  *
  * @typedef {Object} RewriteRule
- *
- * @property {RegExp} fromMatcher matches pathnames against the entry's source
- * @property {string} toTemplate the destination, with `:splat` placeholders
- * @property {RegExp} destinationMatcher matches pathnames against the entry's destination
- * @property {string} fromTemplate the source, with `*` rewritten to `:splat`
+ * @property {RegExp} fromMatcher Matches pathnames against the entry's source
+ * @property {string} toTemplate The destination, with `:splat` placeholders
+ * @property {RegExp} destinationMatcher Matches pathnames against the entry's destination
+ * @property {string} fromTemplate The source, with `*` rewritten to `:splat`
  */
 
 /**
@@ -144,6 +145,7 @@ export class RewriteIndex {
      * rule matches.
      *
      * @param {string} pathname
+     *
      * @returns {string}
      */
     findNextDestination(pathname) {
@@ -164,6 +166,7 @@ export class RewriteIndex {
      * pathname.
      *
      * @param {string} pathname
+     *
      * @returns {string}
      */
     finalDestination(pathname) {
@@ -191,6 +194,7 @@ export class RewriteIndex {
      * itself is never included.
      *
      * @param {string} pathname
+     *
      * @returns {string[]}
      */
     findAliases(pathname) {

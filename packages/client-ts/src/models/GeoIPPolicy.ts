@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,20 +18,16 @@ import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjI
 
 /**
  * GeoIP Policy Serializer
+ *
  * @export
  * @interface GeoIPPolicy
  */
 export interface GeoIPPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -56,49 +50,16 @@ export interface GeoIPPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     asns?: Array<number>;
-    /**
-     *
-     */
     countries: Array<CountryCodeEnum>;
-    /**
-     *
-     */
     readonly countriesObj: Array<GeoIPPolicyCountriesObjInner>;
-    /**
-     *
-     */
     checkHistoryDistance?: boolean;
-    /**
-     *
-     */
     historyMaxDistanceKm?: number;
-    /**
-     *
-     */
     distanceToleranceKm?: number;
-    /**
-     *
-     */
     historyLoginCount?: number;
-    /**
-     *
-     */
     checkImpossibleTravel?: boolean;
-    /**
-     *
-     */
     impossibleToleranceKm?: number;
 }
 
