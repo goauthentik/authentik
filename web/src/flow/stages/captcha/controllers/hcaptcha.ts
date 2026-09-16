@@ -1,10 +1,7 @@
 /// <reference types="@hcaptcha/types"/>
 
-import { ifPresent } from "#elements/utils/attributes";
-
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
-
-import { html } from "lit";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 declare global {
     interface Window {
@@ -13,44 +10,58 @@ declare global {
 }
 
 export class HCaptchaController extends CaptchaController {
-    public static readonly globalName = "hcaptcha";
+    public static override readonly vendor = CaptchaVendor.hCaptcha;
 
-    #hcaptchaID: HCaptchaId | null = null;
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.hCaptcha];
 
-    public interactive = () => {
-        return html`<div
-            id="ak-container"
-            class="h-captcha"
-            data-sitekey=${ifPresent(this.host.challenge?.siteKey)}
-            data-theme=${this.host.activeTheme}
-            data-callback="callback"
-        ></div>`;
+    protected static override logPrefix = "hcaptcha";
+
+    #widgetID: HCaptchaId | null = null;
+
+    public mount = async (container: HTMLElement): Promise<void> => {
+        this.#widgetID = hcaptcha.render(container, {
+            sitekey: this.host.challenge?.siteKey ?? "",
+            callback: this.host.onTokenChange,
+            theme: this.host.activeTheme,
+            hl: this.host.activeLanguageTag,
+        });
+
+        this.host.onWidgetLoad();
     };
 
-    public refreshInteractive = async () => {
-        this.host.iframeRef.value?.contentWindow?.hcaptcha?.reset();
-    };
-
-    public execute = async () => {
-        this.#hcaptchaID = hcaptcha.render(this.host.captchaDocumentContainer, {
+    public execute = async (container: HTMLElement): Promise<void> => {
+        this.#widgetID = hcaptcha.render(container, {
             sitekey: this.host.challenge?.siteKey ?? "",
             callback: this.host.onTokenChange,
             size: "invisible",
             hl: this.host.activeLanguageTag,
         });
 
-        await hcaptcha.execute(this.#hcaptchaID, {
+        await hcaptcha.execute(this.#widgetID, {
             async: true,
         });
     };
 
-    public refresh = async () => {
-        if (this.#hcaptchaID === null) {
-            this.logger.warn("Skipping refresh: no hCaptcha ID set");
+    public reset = async (): Promise<void> => {
+        if (this.#widgetID === null) {
+            this.logger.warn("Skipping reset: no widget rendered");
             return;
         }
 
-        window.hcaptcha.reset(this.#hcaptchaID);
-        window.hcaptcha.execute(this.#hcaptchaID);
+        hcaptcha.reset(this.#widgetID);
+
+        if (!this.host.challenge?.interactive) {
+            await hcaptcha.execute(this.#widgetID, { async: true });
+        }
     };
+
+    public override unmount(): void {
+        if (this.#widgetID === null) return;
+
+        // hCaptcha keeps per-widget state keyed by the container it rendered into. Without
+        // an explicit remove, re-rendering the stage leaks the old widget and its nested
+        // iframes stay subscribed to postMessage traffic from the vendor origin.
+        hcaptcha.remove(this.#widgetID);
+        this.#widgetID = null;
+    }
 }

@@ -187,7 +187,7 @@ export class FormFixture extends PageFixture {
         await control.click();
 
         if (typeof pattern === "string") {
-            this.fill(control, pattern, parent);
+            await this.fill(control, pattern, parent);
         }
 
         const button = this.page

@@ -1,113 +1,89 @@
-import type { ResolvedUITheme } from "#common/theme";
+/**
+ * @file Shared types and constants for CAPTCHA vendors.
+ */
 
-import { createDocumentTemplate } from "#elements/utils/iframe";
+/**
+ * The slot a CAPTCHA widget's container is projected through.
+ *
+ * reCAPTCHA and hCaptcha resolve their internals through `document`, so a container whose
+ * `getRootNode()` is a `ShadowRoot` can never finish verifying. The container therefore
+ * lives in the flow executor's light DOM — in the document tree — and is forwarded down to
+ * the stage through a chain of slots, which projects it into the card without moving it.
+ */
+export const CAPTCHA_SLOT = "captcha";
 
-import { html, TemplateResult } from "lit";
+/**
+ * CAPTCHA vendor identifiers.
+ */
+export const CaptchaVendor = {
+    reCAPTCHA: "recaptcha",
+    hCaptcha: "hcaptcha",
+    turnstile: "turnstile",
+    cap: "cap",
+} as const satisfies Record<string, string>;
 
-const ThemeColor = {
-    dark: "#18191a",
-    light: "#ffffff",
-} as const satisfies Record<ResolvedUITheme, string>;
+export type CaptchaVendor = (typeof CaptchaVendor)[keyof typeof CaptchaVendor];
 
-export function themeMeta(theme: ResolvedUITheme) {
-    switch (theme) {
-        case "dark":
-            return html`
-                <meta name="color-scheme" content="dark" />
-                <meta name="theme-color" content=${ThemeColor.dark} />
-            `;
-        case "light":
-            return html` <meta name="color-scheme" content="light" />
-                <meta name="theme-color" content=${ThemeColor.light} />`;
-    }
+export const CaptchaVendorGlobal: Record<CaptchaVendor, string> = {
+    [CaptchaVendor.reCAPTCHA]: "grecaptcha",
+    [CaptchaVendor.hCaptcha]: "hcaptcha",
+    [CaptchaVendor.turnstile]: "turnstile",
+    [CaptchaVendor.cap]: "cap-widget",
+};
+
+export type CaptchaVendorGlobal = (typeof CaptchaVendorGlobal)[keyof typeof CaptchaVendorGlobal];
+
+//#region URL matching
+
+/**
+ * Whether `url` is served by `host` or one of its subdomains.
+ *
+ * Compared against the registrable host rather than the full origin so that regional and
+ * versioned CDN hostnames (`js.hcaptcha.com`, `www.recaptcha.net`) match without having to
+ * enumerate them.
+ */
+export function matchesHost(url: URL, ...hosts: string[]): boolean {
+    return hosts.some((host) => url.hostname === host || url.hostname.endsWith(`.${host}`));
 }
 
-export interface IFrameTemplateInit {
-    challengeURL: URL | string;
-    theme: ResolvedUITheme;
-    /**
-     * If `true`, the script element will fire `loadListener()` on load.
-     * Defaults to `true`.
-     */
-    scriptOnLoad?: boolean;
-    scriptType?: "classic" | "module";
+export type CaptchaVendorURLPredicate = (url: URL) => boolean;
+
+/**
+ * Whether the URL points at a Cap widget bundle.
+ *
+ * Cap is self-hosted, so there is no canonical host to match — only the bundle's path
+ * shape, which is stable across deployments.
+ */
+export const isCapWidgetURL: CaptchaVendorURLPredicate = (url: URL): boolean => {
+    return url.pathname.includes("cap-widget") || url.pathname.endsWith("/assets/widget.js");
+};
+
+const CaptchaVendorURLPredicate: Record<CaptchaVendor, CaptchaVendorURLPredicate> = {
+    [CaptchaVendor.reCAPTCHA]: (url) =>
+        matchesHost(url, "google.com", "recaptcha.net", "gstatic.com") &&
+        url.pathname.includes("/recaptcha/"),
+    [CaptchaVendor.hCaptcha]: (url) => matchesHost(url, "hcaptcha.com"),
+    [CaptchaVendor.turnstile]: (url) => matchesHost(url, "challenges.cloudflare.com"),
+    [CaptchaVendor.cap]: isCapWidgetURL,
+};
+
+/**
+ * Whether `url` is the script URL of `vendor`.
+ */
+export function matchesVendorURL(vendor: CaptchaVendor, url: URL): boolean {
+    return CaptchaVendorURLPredicate[vendor](url);
 }
 
 /**
- * A container iframe for a hosted Captcha, with an event emitter to monitor
- * when the Captcha forces a resize.
- *
- * Because the Captcha is itself in an iframe, the reported height is often off by some
- * margin, adding 2rem of height to our container adds padding and prevents scrollbars
- * or hidden rendering.
+ * The vendor serving `url`, if it is one we recognize.
  */
-export function iframeTemplate(
-    children: TemplateResult,
-    { challengeURL, theme, scriptOnLoad = true, scriptType = "classic" }: IFrameTemplateInit,
-) {
-    return createDocumentTemplate({
-        head: html`
-            <meta charset="UTF-8" />
+export function findVendorByURL(url: string | URL | null | undefined): CaptchaVendor | null {
+    if (!url) return null;
+    if (typeof url === "string" && !URL.canParse(url)) return null;
 
-            ${themeMeta(theme)}
-        `,
-        body: html`
-            <script>
-                "use strict";
+    const parsed = typeof url === "string" ? new URL(url) : url;
 
-                function callback(token) {
-                    self.parent.postMessage({
-                        message: "captcha",
-                        source: "goauthentik.io",
-                        context: "flow-executor",
-                        token,
-                    });
-                }
-
-                function loadListener() {
-                    self.parent.postMessage({
-                        message: "load",
-                        source: "goauthentik.io",
-                        context: "flow-executor",
-                    });
-                }
-            </script>
-
-            <style>
-                html,
-                body {
-                    background: transparent;
-                }
-
-                body {
-                    margin: 0;
-                    padding: 0;
-                }
-
-                .g-recaptcha {
-                    padding-block: 0.5rem;
-                }
-
-                .g-recaptcha,
-                .h-captcha,
-                .cap-container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .cap-container {
-                    box-sizing: border-box;
-                    padding-block: 0.5rem;
-                    width: 100%;
-                }
-            </style>
-            ${children}
-            <script
-                ${scriptOnLoad ? 'onload="loadListener()"' : ""}
-                ${scriptType === "module" ? 'type="module"' : ""}
-                src="${challengeURL.toString()}"
-            ></script>
-        `,
-    });
+    return Object.values(CaptchaVendor).find((vendor) => matchesVendorURL(vendor, parsed)) ?? null;
 }
+
+//#endregion
