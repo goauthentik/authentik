@@ -6,13 +6,12 @@ packages:
   # instead (see web + sfe package.json).
   - "!packages/client-ts"
   # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
-  # materializing their targets — and `prettier-config`'s own linked
+  # materializing their targets — and their own linked
   # `tsconfig` — under web/packages/ when it regenerates this workspace's
   # lockfile. Without these exclusions the `packages/*` glob then swallows
   # them as workspace importers, committing phantom entries that every local
   # `pnpm install` prunes right back out.
   - "!packages/fonts"
-  - "!packages/prettier-config"
   - "!packages/theme"
   - "!packages/tsconfig"
 
@@ -51,9 +50,6 @@ catalog:
 overrides:
   "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
   "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
-  "@goauthentik/eslint-config>typescript": "catalog:"
-  "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
-  "@goauthentik/prettier-config>typescript": "catalog:"
   "@mrmarble/djangoql-completion>lex": "workspace:*"
   "@mrmarble/djangoql-completion>lodash": "^4.18.1"
   "@typescript-eslint/eslint-plugin>typescript": "catalog:"

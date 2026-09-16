@@ -54,8 +54,6 @@ overrides:
     # rendered its provider into, and every useColorMode call throws. Unscoped so
     # no workspace member or transitive peer can pull its own copy.
     "@docusaurus/theme-common": "catalog:"
-    "@goauthentik/eslint-config>typescript": "catalog:"
-    "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
     "@typescript-eslint/parser>typescript": "catalog:"
     "@typescript-eslint/utils>typescript": "catalog:"
     "docusaurus-theme-openapi-docs>postman-code-generators": "^2.1.1"

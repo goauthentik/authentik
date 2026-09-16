@@ -8,13 +8,12 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/docusaurus-config"
     },
-    "scripts": {
-        "build": "tsc -p .",
-        "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --cache --write -u .",
-        "prettier-check": "prettier --cache --check -u ."
-    },
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "css/**/*",
+        "out/**/*"
+    ],
     "type": "module",
     "types": "./out/index.d.ts",
     "exports": {
@@ -25,6 +24,20 @@
         },
         "./css/*.css": "./css/*.css"
     },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "fix:oxfmt": "oxfmt --write .",
+        "fix:oxlint": "oxlint --fix",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:oxlint": "oxlint"
+    },
     "dependencies": {
         "deepmerge-ts": "^8.0.0",
         "prism-react-renderer": "^2.4.1"
@@ -33,19 +46,16 @@
         "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/theme-search-algolia": "^3.10.2",
         "@docusaurus/types": "^3.10.2",
-        "@eslint/js": "catalog:",
-        "@goauthentik/eslint-config": "link:../eslint-config",
-        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "eslint": "catalog:",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "pino": "^10.3.1",
-        "prettier": "catalog:",
-        "prettier-plugin-packagejson": "catalog:",
-        "typescript": "catalog:",
-        "typescript-eslint": "^8.65.0"
+        "typescript": "catalog:"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
@@ -54,29 +64,6 @@
         "react": ">=19",
         "react-dom": ">=19"
     },
-    "optionalDependencies": {
-        "react": "^19.2.8",
-        "react-dom": "^19.2.8"
-    },
-    "files": [
-        "./index.js",
-        "lib/**/*",
-        "css/**/*",
-        "out/**/*"
-    ],
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "version": ">=24.20",
-            "onFail": "error"
-        }
-    },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "@goauthentik/prettier-config",
     "peerDependenciesMeta": {
         "@docusaurus/theme-search-algolia": {
             "optional": true
@@ -88,7 +75,20 @@
             "optional": true
         }
     },
-    "publishConfig": {
-        "access": "public"
-    }
+    "optionalDependencies": {
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

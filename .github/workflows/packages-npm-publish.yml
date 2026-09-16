@@ -6,8 +6,6 @@ on:
     branches: [main]
     paths:
       - packages/tsconfig/**
-      - packages/eslint-config/**
-      - packages/prettier-config/**
       - packages/oxlint-config/**
       - packages/oxfmt-config/**
       - packages/docusaurus-config/**
@@ -29,8 +27,6 @@ jobs:
         package:
           # The order of the `*config` packages should not be changed, as they depend on each other.
           - packages/tsconfig
-          - packages/eslint-config
-          - packages/prettier-config
           - packages/oxlint-config
           - packages/oxfmt-config
           - packages/logger-js

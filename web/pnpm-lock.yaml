@@ -201,9 +201,6 @@ catalogs:
 overrides:
   '@goauthentik/esbuild-plugin-live-reload>esbuild': ^0.28.1
   '@goauthentik/esbuild-plugin-live-reload>typescript': ^6.0.3
-  '@goauthentik/eslint-config>typescript': ^6.0.3
-  '@goauthentik/prettier-config>prettier-plugin-packagejson': ^3.0.2
-  '@goauthentik/prettier-config>typescript': ^6.0.3
   '@mrmarble/djangoql-completion>lex': workspace:*
   '@mrmarble/djangoql-completion>lodash': ^4.18.1
   '@typescript-eslint/eslint-plugin>typescript': ^6.0.3
