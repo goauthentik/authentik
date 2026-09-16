@@ -25,6 +25,7 @@ test.describe("Provider Wizard", () => {
         await test.step("Navigate to provider wizard", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
 
+            // Scope the action to the toolbar; the empty state has another create button.
             await page
                 .getByLabel("Providers actions")
                 .getByRole("button", { name: "New Provider" })

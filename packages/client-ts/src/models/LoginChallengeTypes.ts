@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,7 +27,6 @@ import {
 
 /**
  * @type LoginChallengeTypes
- *
  * @export
  */
 export type LoginChallengeTypes =

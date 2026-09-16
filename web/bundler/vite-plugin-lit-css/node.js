@@ -1,6 +1,6 @@
 /**
- * @file Vite plugin to inline CSS imports
  * @import { Plugin as VitePlugin } from "vite";
+ * @file Vite plugin to inline CSS imports
  */
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;

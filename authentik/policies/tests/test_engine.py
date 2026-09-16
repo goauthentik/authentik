@@ -169,10 +169,24 @@ class TestPolicyEngine(TestCase):
         binding.expiring = True
         binding.expires = now() - timedelta(minutes=10)
         binding.save()
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 0)
 
         engine = PolicyEngine(pbm, self.user)
         engine.empty_result = False
         self.assertEqual(engine.build().passing, False)
+
+    def test_engine_cache_binding_deleted(self):
+        """Ensure deleting a binding removes its cached policy results"""
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        self.assertEqual(engine.build().passing, True)
+        cache_prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*"
+        self.assertEqual(len(cache.keys(cache_prefix)), 1)
+
+        binding.delete()
+
+        self.assertEqual(len(cache.keys(cache_prefix)), 0)
 
     def test_engine_static_bindings(self):
         """Test static bindings"""

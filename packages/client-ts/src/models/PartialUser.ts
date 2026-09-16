@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,16 +11,13 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Partial User Serializer, does not include child relations.
+ *
  * @export
  * @interface PartialUser
  */
 export interface PartialUser {
-    /**
-     *
-     */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
@@ -33,24 +28,13 @@ export interface PartialUser {
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     email?: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly uid: string;
 }
 

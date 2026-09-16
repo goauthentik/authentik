@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,41 +12,28 @@
 
 /**
  * RadiusProvider Serializer
+ *
  * @export
  * @interface RadiusOutpostConfig
  */
 export interface RadiusOutpostConfig {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     applicationSlug: string;
-    /**
-     *
-     */
     authFlowSlug: string;
     /**
-     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will
+     * match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
      */
     clientNetworks?: string;
-    /**
-     *
-     */
     readonly sharedSecret: string;
     /**
-     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
+     * the TOTP code to the password. This should only be enabled if all users that will bind to
+     * this provider have a TOTP device configured, as otherwise a password may incorrectly be
+     * rejected if it contains a semicolon.
      */
     mfaSupport?: boolean;
-    /**
-     *
-     */
     certificate?: string | null;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * A secret value.
+ *
  * @export
  * @interface SecretValue
  */
 export interface SecretValue {
-    /**
-     *
-     */
     readonly value: string;
 }
 

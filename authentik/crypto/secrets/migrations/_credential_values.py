@@ -14,6 +14,8 @@ def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, i
     for instance in Model.objects.using(alias).iterator():
         updated_fields = []
         for old, new, secret_type, label in fields:
+            if getattr(instance, f"{new}_id") is not None:
+                continue
             value = getattr(instance, old)
             if Model._meta.get_field(old).get_internal_type() == "JSONField":
                 value = dumps(value)
@@ -27,7 +29,7 @@ def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, i
             names.add(name)
             secret = Secret.objects.using(alias).create(
                 name=name,
-                type=secret_type or ("multiline" if "\n" in value else "text"),
+                type=secret_type(instance) if callable(secret_type) else secret_type or "text",
                 value=value,
             )
             setattr(instance, new, secret)

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,33 +18,16 @@ import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
 
 /**
  * Serializer for WebAuthn authenticator devices
+ *
  * @export
  * @interface WebAuthnDevice
  */
 export interface WebAuthnDevice {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     readonly createdOn: Date;
-    /**
-     *
-     */
     readonly deviceType: WebAuthnDeviceType | null;
-    /**
-     *
-     */
     readonly aaguid: string;
-    /**
-     *
-     */
     readonly user: PartialUser;
 }
 
