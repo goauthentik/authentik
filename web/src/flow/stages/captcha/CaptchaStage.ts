@@ -1,5 +1,9 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
@@ -33,11 +37,6 @@ import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 export type TokenListener = (token: string) => void;
 
@@ -242,6 +241,7 @@ export class CaptchaStage
 
     public connectedCallback(): void {
         super.connectedCallback();
+
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
@@ -259,7 +259,7 @@ export class CaptchaStage
         super.disconnectedCallback();
     }
 
-    public override firstUpdated(changedProperties: PropertyValues<this>) {
+    protected override firstUpdated(changedProperties: PropertyValues<this>) {
         super.firstUpdated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
@@ -267,7 +267,7 @@ export class CaptchaStage
         }
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
@@ -286,6 +286,7 @@ export class CaptchaStage
     #refreshControllers() {
         if (!this.challenge) {
             this.#logger.debug("No challenge, skipping controller refresh.");
+
             return;
         }
 
@@ -303,6 +304,7 @@ export class CaptchaStage
 
         if (!challengeURL) {
             this.#logger.debug("No challenge URL, skipping controller refresh.");
+
             return;
         }
 
@@ -324,13 +326,16 @@ export class CaptchaStage
 
         // Then, load the new script...
         const scriptElement = document.createElement("script");
+
         const matchedController = Array.from(CaptchaStage.controllers).find((Controller) =>
             Controller.matchesURL(challengeURL),
         );
 
         scriptElement.src = challengeURL.toString();
+
         scriptElement.type =
             matchedController?.scriptType === "module" ? "module" : "text/javascript";
+
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
@@ -350,6 +355,7 @@ export class CaptchaStage
 
         if (event.detail.status === "error") {
             this.#logger.debug("Error loading locale:", event.detail);
+
             return;
         }
 
@@ -402,6 +408,7 @@ export class CaptchaStage
                 // Check all iframes. hCaptcha appends the step-2 challenge popup as a
                 // second iframe directly on the body
                 let maxHeight = target.clientHeight;
+
                 for (const iframe of contentDocument.querySelectorAll("iframe")) {
                     const styleHeight = parseFloat(iframe.style.height);
                     const rectBottom = iframe.getBoundingClientRect().bottom;
@@ -409,6 +416,7 @@ export class CaptchaStage
 
                     if (iframe.parentElement) {
                         const height = styleHeight || iframe.getBoundingClientRect().height;
+
                         if (height > 0) iframe.parentElement.style.height = `${height}px`;
                     }
                 }
@@ -482,6 +490,7 @@ export class CaptchaStage
 
         if (!Controller) {
             this.error = msg("Could not find a suitable CAPTCHA provider.");
+
             return;
         }
 
@@ -532,6 +541,7 @@ export class CaptchaStage
 
         if (!iframe) {
             this.#logger.debug(`No iframe found, skipping.`);
+
             return;
         }
 
@@ -552,6 +562,7 @@ export class CaptchaStage
         }
 
         const captchaElement = controller.interactive();
+
         const template = iframeTemplate(captchaElement, {
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,

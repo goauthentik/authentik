@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,32 +11,17 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Counts of active users added within a date range.
+ *
  * @export
  * @interface LicenseUserCountRange
  */
 export interface LicenseUserCountRange {
-    /**
-     *
-     */
     start: Date;
-    /**
-     *
-     */
     end: Date;
-    /**
-     *
-     */
     interval: string | null;
-    /**
-     *
-     */
     internalUsersAdded: number;
-    /**
-     *
-     */
     externalUsersAdded: number;
 }
 

@@ -184,7 +184,6 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         response = LicenseSummarySerializer(instance=summary)
         return Response(response.data)
 
-
     @permission_required(None, ["authentik_enterprise.view_license"])
     @extend_schema(
         request=OpenApiTypes.NONE,

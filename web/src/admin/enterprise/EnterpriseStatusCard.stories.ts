@@ -1,5 +1,4 @@
 import "./EnterpriseStatusCard";
-
 import { LicenseSummary, LicenseSummaryStatusEnum, LicenseUserCounts } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

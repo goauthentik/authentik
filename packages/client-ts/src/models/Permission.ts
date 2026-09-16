@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * Global permission
+ *
  * @export
  * @interface Permission
  */
 export interface Permission {
-    /**
-     *
-     */
     readonly id: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     codename: string;
-    /**
-     *
-     */
     readonly model: string;
-    /**
-     *
-     */
     readonly appLabel: string;
     /**
      * Human-readable app label

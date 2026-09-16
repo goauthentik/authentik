@@ -4,6 +4,10 @@
 
 import "#elements/Progress";
 import "#elements/Label";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
@@ -16,11 +20,6 @@ import { match } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 const badgeDetails = new Map<LicenseSummaryStatusEnum, [string, string]>([
     [LicenseSummaryStatusEnum.Expired, ["red", msg("Expired")]],
@@ -67,21 +66,25 @@ export class EnterpriseStatusCard extends AKElement {
 
     protected renderSummaryBadge() {
         const summary = this.summary?.status;
+
         if (!summary) return nothing;
 
         const status = badgeDetails.get(summary);
+
         if (!status) return nothing;
 
         const valid = this.summary?.latestValid;
         const today = new Date();
+
         if (summary === LicenseSummaryStatusEnum.ExpirySoon && valid) {
             const gap = differenceInSeconds(valid, today);
+
             // prettier-ignore
             status[1] = match(gap)
                 .when((g) => g < 0, () => status[1])
                 .when((g) => g > 0 && g < DAY_IN_SECONDS, () => msg("Expiring today"))
                 .otherwise(() => msg(
-                    str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`))
+                    str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`));
         }
 
         return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
@@ -89,7 +92,9 @@ export class EnterpriseStatusCard extends AKElement {
 
     protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
+
         if (current > 0 && licensed === 0) return Infinity;
+
         return percentage;
     }
 

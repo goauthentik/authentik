@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,9 +27,6 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EnterpriseLicenseCreateRequest {
-    /**
-     *
-     */
     licenseRequest: LicenseRequest;
 }
 
@@ -43,9 +38,6 @@ export interface EnterpriseLicenseDestroyRequest {
 }
 
 export interface EnterpriseLicenseListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -70,9 +62,6 @@ export interface EnterpriseLicensePartialUpdateRequest {
      * A UUID string identifying this License.
      */
     licenseUuid: string;
-    /**
-     *
-     */
     patchedLicenseRequest?: PatchedLicenseRequest;
 }
 
@@ -84,9 +73,6 @@ export interface EnterpriseLicenseRetrieveRequest {
 }
 
 export interface EnterpriseLicenseSummaryRetrieveRequest {
-    /**
-     *
-     */
     cached?: boolean;
 }
 
@@ -95,9 +81,6 @@ export interface EnterpriseLicenseUpdateRequest {
      * A UUID string identifying this License.
      */
     licenseUuid: string;
-    /**
-     *
-     */
     licenseRequest: LicenseRequest;
 }
 
@@ -123,9 +106,6 @@ export interface EnterpriseLicenseUserCountsRetrieveRequest {
     start?: Date;
 }
 
-/**
- *
- */
 export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseCreate without sending the request
@@ -155,7 +135,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/`;
+        const urlPath = `/enterprise/license/`;
 
         return {
             path: urlPath,
@@ -270,7 +250,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/install_id/`;
+        const urlPath = `/enterprise/license/install_id/`;
 
         return {
             path: urlPath,
@@ -341,7 +321,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/`;
+        const urlPath = `/enterprise/license/`;
 
         return {
             path: urlPath,
@@ -535,7 +515,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/summary/`;
+        const urlPath = `/enterprise/license/summary/`;
 
         return {
             path: urlPath,
@@ -747,7 +727,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/user_counts/`;
+        const urlPath = `/enterprise/license/user_counts/`;
 
         return {
             path: urlPath,
@@ -758,7 +738,10 @@ export class EnterpriseApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get active user totals and counts for relative or absolute date ranges.  At least one positive relative count step or a complete absolute range is required. Relative and absolute ranges may be combined. Range starts are inclusive and ends are exclusive. Counts include currently active, non-anonymous accounts.
+     * Get active user totals and counts for relative or absolute date ranges. At least one positive
+     * relative count step or a complete absolute range is required. Relative and absolute ranges
+     * may be combined. Range starts are inclusive and ends are exclusive. Counts include currently
+     * active, non-anonymous accounts.
      */
     async enterpriseLicenseUserCountsRetrieveRaw(
         requestParameters: EnterpriseLicenseUserCountsRetrieveRequest,
@@ -774,7 +757,10 @@ export class EnterpriseApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get active user totals and counts for relative or absolute date ranges.  At least one positive relative count step or a complete absolute range is required. Relative and absolute ranges may be combined. Range starts are inclusive and ends are exclusive. Counts include currently active, non-anonymous accounts.
+     * Get active user totals and counts for relative or absolute date ranges. At least one positive
+     * relative count step or a complete absolute range is required. Relative and absolute ranges
+     * may be combined. Range starts are inclusive and ends are exclusive. Counts include currently
+     * active, non-anonymous accounts.
      */
     async enterpriseLicenseUserCountsRetrieve(
         requestParameters: EnterpriseLicenseUserCountsRetrieveRequest = {},

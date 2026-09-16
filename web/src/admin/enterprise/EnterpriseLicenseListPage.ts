@@ -7,6 +7,11 @@ import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
@@ -32,12 +37,6 @@ import {
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
@@ -140,7 +139,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
             cached: false,
         });
+
         this.installID = (await aki(EnterpriseApi).enterpriseLicenseInstallIdRetrieve()).installId;
+
         return aki(EnterpriseApi).enterpriseLicenseList(await this.defaultEndpointConfig());
     }
 
@@ -155,20 +156,23 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     // of the object to use in the renderEmpty
     protected override renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No licenses found.")}</span>
-                      <div slot="body">
-                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
-                      </div>
-                      <div slot="primary">${this.renderObjectCreate()}</div>
-                  </ak-empty-state>`}
+            ${
+                inner
+                    ? inner
+                    : html`<ak-empty-state icon=${this.pageIcon}
+                          ><span>${msg("No licenses found.")}</span>
+                          <div slot="body">
+                              ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                          </div>
+                          <div slot="primary">${this.renderObjectCreate()}</div>
+                      </ak-empty-state>`
+            }
         `);
     }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("License(s)")}
             .objects=${this.selectedElements}
@@ -300,12 +304,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         icon="pf-icon pf-icon-user"
                         label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
-                        >${this.summary &&
-                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? Timestamp(this.summary.latestValid)
-                            : html`<span aria-label=${msg("No expiry")}
-                                  >-</span
-                              >`}</ak-aggregate-card
+                        >${
+                            this.summary &&
+                            this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                                ? Timestamp(this.summary.latestValid)
+                                : html`<span aria-label=${msg("No expiry")}>-</span>`
+                        }</ak-aggregate-card
                     >
                 </div>
             </section>
@@ -320,17 +324,21 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     row(item: License): SlottedTemplateResult[] {
         let color = PFColor.Green;
+
         if (item.expiry) {
             const now = new Date();
             const inAMonth = new Date();
             inAMonth.setDate(inAMonth.getDate() + 30);
+
             if (item.expiry <= inAMonth) {
                 color = PFColor.Orange;
             }
+
             if (item.expiry <= now) {
                 color = PFColor.Red;
             }
         }
+
         return [
             html`<div>${item.name}</div>`,
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>

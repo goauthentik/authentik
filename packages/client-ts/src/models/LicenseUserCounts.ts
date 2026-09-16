@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,21 +18,13 @@ import {
 
 /**
  * Current active user totals and counts for requested date ranges.
+ *
  * @export
  * @interface LicenseUserCounts
  */
 export interface LicenseUserCounts {
-    /**
-     *
-     */
     activeInternalUsers: number;
-    /**
-     *
-     */
     activeExternalUsers: number;
-    /**
-     *
-     */
     ranges: Array<LicenseUserCountRange>;
 }
 

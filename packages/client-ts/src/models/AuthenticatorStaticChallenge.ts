@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Static authenticator challenge
+ *
  * @export
  * @interface AuthenticatorStaticChallenge
  */
 export interface AuthenticatorStaticChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     codes: Array<string>;
 }
 
