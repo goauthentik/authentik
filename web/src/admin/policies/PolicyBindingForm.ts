@@ -12,8 +12,8 @@ import {
 } from "#common/policies/utils";
 import { groupBy } from "#common/utils";
 
-import { ModelForm } from "#elements/forms/ModelForm";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     CoreApi,
@@ -291,12 +291,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected override renderForm(): TemplateResult {
-        return html`${this.allowedTypes.length > 1
-                ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
-                      <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                      <div class="pf-c-card__footer">${this.renderTarget()}</div>
-                  </div>`
-                : this.renderTarget()}
+        return html`${
+                this.allowedTypes.length > 1
+                    ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
+                          <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+                          <div class="pf-c-card__footer">${this.renderTarget()}</div>
+                      </div>`
+                    : this.renderTarget()
+            }
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}

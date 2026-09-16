@@ -45,9 +45,9 @@ function assignValue(
 }
 
 /**
- * Sort elements by their specificity, the more precise the key (more dots)
- * the later it gets serialized, to ensure it has a higher priority than general
- * fields (such as attributes vs attributes.foo.bar)
+ * Sort elements by their specificity, the more precise the key (more dots) the later it gets
+ * serialized, to ensure it has a higher priority than general fields (such as attributes vs
+ * attributes.foo.bar)
  */
 const specificityComparator: Comparator<Element> = (a, b) => {
     if (!isNamedElement(a) || !isNamedElement(b)) {

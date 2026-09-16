@@ -1,8 +1,8 @@
-import "#components/ak-text-input";
-import "#components/ak-radio-input";
-import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -202,15 +202,17 @@ export function renderForm({
                     )}
                     @input=${setHasSlsUrl}
                 ></ak-text-input>
-                ${hasSlsUrl
-                    ? renderHasSlsUrl(
-                          provider,
-                          hasPostBinding,
-                          setSlsBinding,
-                          logoutMethod,
-                          setLogoutMethod,
-                      )
-                    : nothing}
+                ${
+                    hasSlsUrl
+                        ? renderHasSlsUrl(
+                              provider,
+                              hasPostBinding,
+                              setSlsBinding,
+                              logoutMethod,
+                              setLogoutMethod,
+                          )
+                        : nothing
+                }
             </div>
         </ak-form-group>
 
@@ -439,36 +441,46 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent
+                            }
                         >
                             ${msg("Persistent")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress
+                            }
                         >
                             ${msg("Email address")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName
+                            }
                         >
                             ${msg("Windows")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName
+                            }
                         >
                             ${msg("X509 Subject")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient
+                            }
                         >
                             ${msg("Transient")}
                         </option>
@@ -490,8 +502,10 @@ export function renderForm({
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.digestAlgorithm === opt.value ||
-                                    (!provider?.digestAlgorithm && opt.default)}
+                                    ?selected=${
+                                        provider?.digestAlgorithm === opt.value ||
+                                        (!provider?.digestAlgorithm && opt.default)
+                                    }
                                 >
                                     ${opt.label}
                                 </option>
@@ -521,9 +535,11 @@ export function renderForm({
                             return html`
                                 <option
                                     value=${algorithmValue}
-                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable &&
-                                        hash === DEFAULT_HASH_ALGORITHM)}
+                                    ?selected=${
+                                        provider?.signatureAlgorithm === algorithmValue ||
+                                        (!isCurrentAlgorithmAvailable &&
+                                            hash === DEFAULT_HASH_ALGORITHM)
+                                    }
                                 >
                                     ${hash}
                                 </option>

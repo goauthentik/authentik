@@ -1,6 +1,6 @@
-import styles from "./styles.module.css";
-
 import React from "react";
+
+import styles from "./styles.module.css";
 
 /** A–Z navigation anchors for simplified view. */
 export interface AlphaNavProps {

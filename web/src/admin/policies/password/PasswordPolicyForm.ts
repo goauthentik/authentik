@@ -1,5 +1,5 @@
-import "#elements/forms/FormGroup";
 import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";

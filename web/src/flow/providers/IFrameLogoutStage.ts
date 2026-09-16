@@ -111,12 +111,10 @@ export class IFrameLogoutStage extends BaseStage<
         // Initialize status tracking
         const logoutUrls = (this.challenge?.logoutUrls as LogoutURL[]) || [];
 
-        this.logoutStatuses = logoutUrls.map(
-            (url): LogoutStatus => ({
-                providerName: url.providerName || msg("Unknown Provider"),
-                status: LogoutStatusStatus.Pending,
-            }),
-        );
+        this.logoutStatuses = logoutUrls.map((url): LogoutStatus => ({
+            providerName: url.providerName || msg("Unknown Provider"),
+            status: LogoutStatusStatus.Pending,
+        }));
 
         // Start the logout process
         this.performLogouts();

@@ -1,5 +1,5 @@
-import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
 import { AKControlElement } from "#elements/ControlElement";
+import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
 import { SlottedTemplateResult } from "#elements/types";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
@@ -26,13 +26,11 @@ function* generateCheckboxKeyValuePairs(items: Iterable<CheckboxItemInit>): Iter
 const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
- * @element ak-checkbox-group
+ * CheckboxGroup renders a collection of checkboxes in a linear list. Multiple checkboxes may be
+ * picked.
  *
  * @class CheckboxGroup
- *
- * @description
- * CheckboxGroup renders a collection of checkboxes in a linear list. Multiple
- * checkboxes may be picked.
+ * @element ak-checkbox-group
  *
  * @attr {options} - An array of either `[string, string | TemplateResult]` or
  *     `{ name: string, label: string | TemplateResult }`. The first value or
@@ -74,7 +72,6 @@ const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
  * form of `name=value1&name=value2` format, and must be unpacked into an array
  * correctly on the server side according to the CGI (common gateway interface)
  * protocol.
- *
  */
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {

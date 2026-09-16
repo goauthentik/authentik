@@ -33,7 +33,8 @@ export type WizardValidationRecord<K extends PropertyKey = string> = {
 /**
  * An error that occurs during the creation or modification of an application.
  *
- * @todo (Elf) Extend this type to include all possible errors that can occur during the creation or modification of an application.
+ * @todo (Elf) Extend this type to include all possible errors that can occur during the creation or
+ *   modification of an application.
  */
 export interface ApplicationTransactionValidationError extends Pick<
     ValidationError,
@@ -47,7 +48,8 @@ export interface ApplicationTransactionValidationError extends Pick<
 }
 
 /**
- * Type-guard to determine if an API response is shaped like an {@linkcode ApplicationTransactionValidationError}.
+ * Type-guard to determine if an API response is shaped like an
+ * {@linkcode ApplicationTransactionValidationError}.
  */
 export function isApplicationTransactionValidationError(
     error: ValidationError,

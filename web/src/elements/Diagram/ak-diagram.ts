@@ -3,9 +3,9 @@ import "#elements/EmptyState";
 import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";
-import { listen } from "#elements/decorators/listen";
 import Styles from "#elements/Diagram/ak-diagram.css";
 import { EmptyState } from "#elements/EmptyState";
+import { listen } from "#elements/decorators/listen";
 import MermaidStyles from "#elements/mermaid/mermaid.css";
 import { loadMermaid } from "#elements/mermaid/utils";
 import { SlottedTemplateResult } from "#elements/types";
@@ -143,7 +143,7 @@ export class Diagram extends AKElement {
     }
 
     /**
-     * Callback to be called when the *diagram* (not the component) has been updated. This is called
+     * Callback to be called when the _diagram_ (not the component) has been updated. This is called
      * after the diagram has been rendered, and can be used to fill in details using the SVG
      * ForeignObject protocol.
      *

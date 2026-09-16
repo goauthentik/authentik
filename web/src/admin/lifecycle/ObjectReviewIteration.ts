@@ -1,8 +1,8 @@
 import "#admin/lifecycle/LifecyclePreviewBanner";
+import "#admin/lifecycle/ObjectReviewForm";
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
 import "#elements/timestamp/ak-timestamp";
-import "#admin/lifecycle/ObjectReviewForm";
 
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";

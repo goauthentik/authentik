@@ -1,7 +1,7 @@
 import "#user/LibraryPage/ak-library";
 
-import { UUID_PATTERN } from "#elements/router/core/constants";
 import { Route, type RouteLike } from "#elements/router/core/Route";
+import { UUID_PATTERN } from "#elements/router/core/constants";
 
 import { html } from "lit";
 

@@ -2,10 +2,10 @@
  * @file Display details for a Fleet Connector: Overview, Changelog, Permissions
  */
 
-import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
-import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#elements/Tabs";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";

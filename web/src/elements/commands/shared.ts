@@ -16,8 +16,8 @@ export type PaletteCommandNamespace =
     (typeof PaletteCommandNamespace)[keyof typeof PaletteCommandNamespace];
 
 /**
- * A symbol used to namespace commands in the command palette.
- * This is used to separate different types of commands, such as actions, navigation, etc.
+ * A symbol used to namespace commands in the command palette. This is used to separate different
+ * types of commands, such as actions, navigation, etc.
  */
 export const CommandNamespaceSymbol = {
     [PaletteCommandNamespace.Action]: ">",
@@ -26,13 +26,14 @@ export const CommandNamespaceSymbol = {
 } satisfies Record<PaletteCommandNamespace, string>;
 
 /**
- * A set of all command namespace symbols, used to quickly check if a user input contains a namespace symbol.
+ * A set of all command namespace symbols, used to quickly check if a user input contains a
+ * namespace symbol.
  */
 export const CommandNamespaceSymbolIndex = new Set(Object.values(CommandNamespaceSymbol));
 
 /**
- * Given a user input, attempt to resolve it to a command namespace.
- * This is used to determine which commands to show in the command palette based on the user's input.
+ * Given a user input, attempt to resolve it to a command namespace. This is used to determine which
+ * commands to show in the command palette based on the user's input.
  */
 export function resolveCommandNamespace(
     value: string,

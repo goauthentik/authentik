@@ -1,4 +1,5 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
@@ -7,7 +8,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
-import "#components/ak-radio-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 

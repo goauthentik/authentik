@@ -15,8 +15,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 /**
  * Horizontal Form Element Container.
  *
- * This element provides the interface between elements of our forms and the
- * form itself.
+ * This element provides the interface between elements of our forms and the form itself.
+ *
  * @custom-element ak-form-element-horizontal
  *
  * @TODO
@@ -53,9 +53,11 @@ export class HorizontalFormElement extends AKElement {
 
     /**
      * The label for the input control
-     * @property
+     *
+     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label`
+     *   element instead.
+     * @property *
      * @attribute
-     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label` element instead.
      */
     @property({ type: String })
     public label?: string;

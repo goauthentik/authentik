@@ -1,20 +1,14 @@
 /**
- * @file Color tokens — semantic surface, text, state, and brand colors.
- *
- * Light values are declared via `variable()`. Dark values are declared inside
- * the `dark` theme block so they emit under `html[data-theme="dark"]`.
- *
- * Link tokens are wired through `ref()` so brand overrides to `color.primary`
- * cascade to links without separate overrides. The dark theme intentionally
- * re-points links to their own values rather than chaining through primary
- * because dark mode links need higher luminance than primary buttons.
- *
- * `warning` and `danger` deliberately stay on light values in dark mode — state
- * colors keep consistent intensity across themes so warnings read as urgent.
- *
- * Values are authored as hex and transformed to `oklch()` on emit (see
- * `./color-libs.ts`). Read the maps below as a spreadsheet: one group per
- * concern, light values first, dark overrides in the theme block underneath.
+ * @file Color tokens — semantic surface, text, state, and brand colors. Light values are declared
+ *   via `variable()`. Dark values are declared inside the `dark` theme block so they emit under
+ *   `html[data-theme="dark"]`. Link tokens are wired through `ref()` so brand overrides to
+ *   `color.primary` cascade to links without separate overrides. The dark theme intentionally
+ *   re-points links to their own values rather than chaining through primary because dark mode
+ *   links need higher luminance than primary buttons. `warning` and `danger` deliberately stay on
+ *   light values in dark mode — state colors keep consistent intensity across themes so warnings
+ *   read as urgent. Values are authored as hex and transformed to `oklch()` on emit (see
+ *   `./color-libs.ts`). Read the maps below as a spreadsheet: one group per concern, light values
+ *   first, dark overrides in the theme block underneath.
  */
 
 import { instance, ref, theme } from "../shared.js";

@@ -87,15 +87,17 @@ export class ConfirmationForm extends ModalButton {
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-                ${this.nonSubmittable
-                    ? nothing
-                    : html`<ak-spinner-button
-                          .callAction=${() => {
-                              return this.confirm();
-                          }}
-                          class=${this.actionLevel}
-                          >${this.action}</ak-spinner-button
-                      >`}
+                ${
+                    this.nonSubmittable
+                        ? nothing
+                        : html`<ak-spinner-button
+                              .callAction=${() => {
+                                  return this.confirm();
+                              }}
+                              class=${this.actionLevel}
+                              >${this.action}</ak-spinner-button
+                          >`
+                }
             </fieldset>`;
     }
 }

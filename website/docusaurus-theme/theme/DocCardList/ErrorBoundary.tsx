@@ -11,8 +11,8 @@ interface ErrorBoundaryState {
 }
 
 /**
- * Error boundary component for gracefully handling errors in DocCardList components.
- * Provides a fallback UI when errors occur during rendering or data processing.
+ * Error boundary component for gracefully handling errors in DocCardList components. Provides a
+ * fallback UI when errors occur during rendering or data processing.
  */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {

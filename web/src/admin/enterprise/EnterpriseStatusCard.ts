@@ -2,8 +2,8 @@
  * @file Display the current usage and license status of Enterprise licenses.
  */
 
-import "#elements/Progress";
 import "#elements/Label";
+import "#elements/Progress";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";

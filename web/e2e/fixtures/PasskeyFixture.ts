@@ -20,10 +20,10 @@ export interface PasskeyQuery {
 /**
  * Drives Playwright's virtual WebAuthn authenticator.
  *
- * A real ceremony needs hardware and a human touching it, neither of which exists in CI.
- * The virtual authenticator answers `navigator.credentials.create()` and
- * `navigator.credentials.get()` in-browser with a software keypair, so registration and
- * login flows run end-to-end against a real authentik instance without either.
+ * A real ceremony needs hardware and a human touching it, neither of which exists in CI. The
+ * virtual authenticator answers `navigator.credentials.create()` and `navigator.credentials.get()`
+ * in-browser with a software keypair, so registration and login flows run end-to-end against a real
+ * authentik instance without either.
  *
  * @see {@link https://playwright.dev/docs/api/class-credentials | Playwright Credentials}
  */

@@ -1,8 +1,8 @@
 import "#admin/admin-overview/AdminOverviewPage";
 
+import { Route, type RouteLike } from "#elements/router/core/Route";
 import { toUserInterface } from "#elements/router/core/interfaces";
 import { navigate } from "#elements/router/core/navigation";
-import { Route, type RouteLike } from "#elements/router/core/Route";
 
 import { html } from "lit";
 
@@ -16,9 +16,8 @@ export const DEFAULT_PATH = "/administration/overview";
  *
  * Route names are stable identifiers used for Sentry span naming.
  *
- * NOTE: literal sub-routes (e.g. a future "/core/applications/new") MUST be
- * registered before their sibling ":slug"/":id" param route so they are not
- * shadowed; "new" is reserved as a slug.
+ * NOTE: literal sub-routes (e.g. a future "/core/applications/new") MUST be registered before their
+ * sibling ":slug"/":id" param route so they are not shadowed; "new" is reserved as a slug.
  */
 export const ROUTES: RouteLike[] = [
     // Cross-interface: full-load redirect to the user interface.

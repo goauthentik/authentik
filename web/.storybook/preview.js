@@ -1,14 +1,13 @@
 /**
- * @file Storybook manager configuration.
- *
  * @import { Preview } from "@storybook/web-components";
+ * @file Storybook manager configuration.
  */
 
-import "@goauthentik/fonts/faces.css";
-import "@goauthentik/fonts/icons.css";
 import "#styles/interface.global.css";
 import "#styles/static.global.css";
 import "./preview.css";
+import "@goauthentik/fonts/faces.css";
+import "@goauthentik/fonts/icons.css";
 
 import { ThemedDocsContainer } from "./DocsContainer.tsx";
 import { extendStorybookTheme } from "./theme.js";

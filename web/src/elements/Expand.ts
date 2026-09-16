@@ -31,9 +31,9 @@ export class Expand extends AKElement implements IExpand {
 
     render() {
         return html`<div
-            class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
-                ? "pf-m-expanded"
-                : ""}"
+            class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${
+                this.expanded ? "pf-m-expanded" : ""
+            }"
         >
             <button
                 type="button"

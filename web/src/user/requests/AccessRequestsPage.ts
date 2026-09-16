@@ -7,8 +7,8 @@ import "#user/requests/PendingReviewList";
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
 
-import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { toUserInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
@@ -63,12 +63,14 @@ export class AccessRequestsPage extends AKElement {
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-                ${(this.toReview?.pagination.count || 0) > 0
-                    ? html`<div class="pf-c-banner pf-m-info">
-                          ${msg("Requests to review: ")}
-                          <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
-                      </div>`
-                    : nothing}
+                ${
+                    (this.toReview?.pagination.count || 0) > 0
+                        ? html`<div class="pf-c-banner pf-m-info">
+                              ${msg("Requests to review: ")}
+                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                          </div>`
+                        : nothing
+                }
                 <ak-tabs
                     routed
                     role="main"

@@ -22,8 +22,8 @@ export * from "./tokens/index.js";
 
 interface BuildOptions {
     /**
-     * If provided, the generated CSS is written to this absolute path in
-     * addition to being returned.
+     * If provided, the generated CSS is written to this absolute path in addition to being
+     * returned.
      */
     outFile?: string;
 }
@@ -34,8 +34,7 @@ interface BuildResult {
      */
     css: string;
     /**
-     * Raw transpile output for callers that want to inspect every file
-     * styleframe produced.
+     * Raw transpile output for callers that want to inspect every file styleframe produced.
      */
     files: OutputFile[];
 }
@@ -43,8 +42,8 @@ interface BuildResult {
 /**
  * Transpile the configured token tree to CSS.
  *
- * Equivalent to `npx styleframe build` for the css output type, but returns
- * the string directly so build scripts can post-process before writing.
+ * Equivalent to `npx styleframe build` for the css output type, but returns the string directly so
+ * build scripts can post-process before writing.
  */
 export async function build(options: BuildOptions = {}): Promise<BuildResult> {
     const output = await transpile(instance, { type: "css" });

@@ -1,17 +1,15 @@
 import type { MermaidConfig } from "mermaid";
 
 /**
- * Resolves PatternFly CSS custom properties into concrete hex colors and maps
- * them onto Mermaid's `themeVariables` keyset.
+ * Resolves PatternFly CSS custom properties into concrete hex colors and maps them onto Mermaid's
+ * `themeVariables` keyset.
  *
  * @remarks
  *
- * Colors are parsed through a 1x1 canvas so that any valid CSS color form
- * (named, rgb/rgba, hsl, or a `var()` chain) collapses to a hex string Mermaid
- * can consume. Fully transparent values resolve to `"transparent"`.
- *
- * PatternFly 4 handles light/dark theming at the token level, so a single token
- * set resolves correctly under either theme — no per-theme branching needed.
+ *   Colors are parsed through a 1x1 canvas so that any valid CSS color form (named, rgb/rgba, hsl,
+ *   or a `var()` chain) collapses to a hex string Mermaid can consume. Fully transparent values
+ *   resolve to `"transparent"`. PatternFly 4 handles light/dark theming at the token level, so a
+ *   single token set resolves correctly under either theme — no per-theme branching needed.
  */
 export class MermaidThemeAdapter {
     canvas = new OffscreenCanvas(1, 1);
@@ -47,8 +45,8 @@ export class MermaidThemeAdapter {
     };
 
     /**
-     * Read a surface color, substituting an opaque fallback when the token
-     * resolves to `transparent`. Node fills must never be see-through.
+     * Read a surface color, substituting an opaque fallback when the token resolves to
+     * `transparent`. Node fills must never be see-through.
      */
     protected readSurface = (cssProperty: string, fallback: string): string => {
         const value = this.readHexColorVariable(cssProperty, fallback);
@@ -61,8 +59,8 @@ export class MermaidThemeAdapter {
      *
      * @remarks
      *
-     * Requires `theme: "base"` in the Mermaid config — other built-in themes
-     * ignore most of these overrides.
+     *   Requires `theme: "base"` in the Mermaid config — other built-in themes ignore most of these
+     *   overrides.
      */
     public toThemeVariables(darkMode?: boolean): MermaidConfig["themeVariables"] {
         const { readHexColorVariable: read, readSurface } = this;
@@ -147,8 +145,8 @@ export class MermaidThemeAdapter {
     }
 
     /**
-     * Semantic accent colors for emitting `linkStyle` / `classDef` directives
-     * into diagram source (e.g. coloring policy pass/fail edges).
+     * Semantic accent colors for emitting `linkStyle` / `classDef` directives into diagram source
+     * (e.g. coloring policy pass/fail edges).
      */
     public toAccents() {
         const { readHexColorVariable: read } = this;

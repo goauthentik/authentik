@@ -1,7 +1,7 @@
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
+import "#components/sync/SyncObjectForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncObjectForm";
-import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { StaticTable } from "#elements/table/StaticTable";

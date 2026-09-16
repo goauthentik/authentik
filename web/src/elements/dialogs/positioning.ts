@@ -4,14 +4,13 @@ export const AnchorPositionSupported: boolean =
     CSS.supports("position-anchor", "--x") && CSS.supports("top", "anchor(bottom)");
 
 /**
- * Whether the browser supports the `anchor-size()` function for sizing an element
- * against its anchor (e.g. `width: anchor-size(width)`).
+ * Whether the browser supports the `anchor-size()` function for sizing an element against its
+ * anchor (e.g. `width: anchor-size(width)`).
  *
  * @remarks
- * This is a *separate* capability from {@link AnchorPositionSupported}: Firefox
- * (through at least 152) ships `position-anchor` and `anchor()` but not
- * `anchor-size()`, so a consumer that sizes against its anchor must check this too
- * or the sizing declaration is silently dropped.
+ *   This is a _separate_ capability from {@link AnchorPositionSupported}: Firefox (through at least 152)
+ *   ships `position-anchor` and `anchor()` but not `anchor-size()`, so a consumer that sizes
+ *   against its anchor must check this too or the sizing declaration is silently dropped.
  */
 export const AnchorSizeSupported: boolean =
     CSS.supports("width", "anchor-size(width)") && !isFirefox();
@@ -33,8 +32,7 @@ const BOUNDARY_INSET = 8;
 const MIN_POPOVER_HEIGHT = 128;
 
 /**
- * Walk the flattened (composed) tree upward from `node`, crossing shadow boundaries and
- * slots.
+ * Walk the flattened (composed) tree upward from `node`, crossing shadow boundaries and slots.
  */
 export function* composedAncestors(node: Node): Generator<HTMLElement> {
     const composedParent = (current: Node): Node | null => {
@@ -70,13 +68,13 @@ export function findScrollableAncestor(node: Node): HTMLElement | null {
 }
 
 /**
- * The vertical band an anchored popover has to stay within: the dialog containing its
- * anchor, or the viewport when the anchor isn't in one.
+ * The vertical band an anchored popover has to stay within: the dialog containing its anchor, or
+ * the viewport when the anchor isn't in one.
  *
  * @remarks
- * A popover renders in the top layer, positioned against the viewport, so nothing clips it
- * to the dialog it belongs to — without this it overhangs the dialog's edges and paints
- * over the backdrop.
+ *   A popover renders in the top layer, positioned against the viewport, so nothing clips it to the
+ *   dialog it belongs to — without this it overhangs the dialog's edges and paints over the
+ *   backdrop.
  */
 export function popoverBoundaryBand(anchor: Node): { top: number; bottom: number } {
     const viewportHeight = window.innerHeight;
@@ -104,8 +102,8 @@ export interface AnchoredPopoverPlacementOptions {
 }
 
 /**
- * Place a top-layer popover directly under its anchor, never taller than the space its
- * boundary leaves below the anchor.
+ * Place a top-layer popover directly under its anchor, never taller than the space its boundary
+ * leaves below the anchor.
  */
 export function placeAnchoredPopover(
     anchor: HTMLElement,

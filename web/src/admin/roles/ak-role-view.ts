@@ -1,9 +1,9 @@
-import "#admin/groups/RelatedGroupList";
-import "#admin/groups/RelatedUserList";
-import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
 import "#admin/events/UserEvents";
+import "#admin/groups/RelatedGroupList";
+import "#admin/groups/RelatedUserList";
+import "#admin/lifecycle/ObjectLifecyclePage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/Tabs";
 
 import { aki } from "#common/api/client";
@@ -13,8 +13,8 @@ import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RoleForm } from "#admin/roles/ak-role-form";
 
@@ -146,17 +146,19 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     model=${ModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.hasEnterpriseLicense
-                    ? html`<ak-object-lifecycle-page
-                          role="tabpanel"
-                          tabindex="0"
-                          slot="page-lifecycle"
-                          id="page-lifecycle"
-                          aria-label="${msg("Lifecycle")}"
-                          model=${ContentTypeEnum.AuthentikRbacRole}
-                          object-pk=${this.targetRole.pk}
-                      ></ak-object-lifecycle-page>`
-                    : nothing}
+                ${
+                    this.hasEnterpriseLicense
+                        ? html`<ak-object-lifecycle-page
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-lifecycle"
+                              id="page-lifecycle"
+                              aria-label="${msg("Lifecycle")}"
+                              model=${ContentTypeEnum.AuthentikRbacRole}
+                              object-pk=${this.targetRole.pk}
+                          ></ak-object-lifecycle-page>`
+                        : nothing
+                }
             </ak-tabs>
         </main>`;
     }

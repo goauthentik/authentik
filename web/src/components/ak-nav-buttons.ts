@@ -1,7 +1,7 @@
-import "#components/ak-user-switcher";
-import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
+import "#components/ak-user-switcher";
 import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";

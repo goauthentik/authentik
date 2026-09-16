@@ -1,8 +1,6 @@
 /**
- * @file Router pattern constants for path-based routing.
- *
- * Raw `URLPattern` pathname-group regex sources used to type path parameters.
- * App-context-free.
+ * @file Router pattern constants for path-based routing. Raw `URLPattern` pathname-group regex
+ *   sources used to type path parameters. App-context-free.
  */
 
 /**
@@ -18,7 +16,7 @@ export const ID_PATTERN = "\\d+";
 /**
  * UUID pattern (hex groups).
  *
- * @todo Enforcing this format on the front-end may be too strict; revisit if a
- * non-canonical UUID needs to route.
+ * @todo Enforcing this format on the front-end may be too strict; revisit if a non-canonical UUID
+ *   needs to route.
  */
 export const UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

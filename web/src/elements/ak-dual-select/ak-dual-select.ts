@@ -51,13 +51,12 @@ const DelegatedEvents = [
 ] as const satisfies DualSelectEventType[];
 
 /**
+ * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  * @element ak-dual-select
  *
  * A master (but independent) component that shows two lists-- one of "available options" and one of
  * "selected options".  The Available Options panel supports pagination if it receives a valid and
  * active pagination object (based on Django's pagination object) from the invoking component.
- *
- * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  */
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
@@ -66,17 +65,16 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     //#region Properties
 
     /**
-     * The list of options to *currently* show.
+     * The list of options to _currently_ show.
      *
-     * Note that this is not *all* the options,
-     * only the currently shown list of options from a pagination collection.
+     * Note that this is not _all_ the options, only the currently shown list of options from a
+     * pagination collection.
      */
     @property({ type: Array })
     options: DualSelectPair[] = [];
 
     /**
-     * The list of options selected.
-     * This is the *entire* list and will not be paginated.
+     * The list of options selected. This is the _entire_ list and will not be paginated.
      */
     @property({ type: Array })
     selected: DualSelectPair[] = [];
@@ -97,8 +95,8 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     noStatus = false;
 
     /**
-     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
-     * Use this when the order of selected items is meaningful (e.g. priority-based lists).
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically. Use
+     * this when the order of selected items is meaningful (e.g. priority-based lists).
      */
     @property({ type: Boolean, attribute: "preserve-order" })
     preserveOrder = false;
@@ -335,29 +333,35 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    ${this.noSearch
-                        ? nothing
-                        : html`<ak-search-bar
-                              placeholder=${msg(str`Search ${this.availableLabel}...`)}
-                              name="ak-dual-list-available-search"
-                          ></ak-search-bar>`}
-                    ${this.noStatus
-                        ? nothing
-                        : html`<div class="pf-c-dual-list-selector__status">
-                              <span
-                                  class="pf-c-dual-list-selector__status-text"
-                                  id="basic-available-status-text"
-                                  >${unsafeHTML(availableStatus)}</span
-                              >
-                          </div>`}
+                    ${
+                        this.noSearch
+                            ? nothing
+                            : html`<ak-search-bar
+                                  placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                                  name="ak-dual-list-available-search"
+                              ></ak-search-bar>`
+                    }
+                    ${
+                        this.noStatus
+                            ? nothing
+                            : html`<div class="pf-c-dual-list-selector__status">
+                                  <span
+                                      class="pf-c-dual-list-selector__status-text"
+                                      id="basic-available-status-text"
+                                      >${unsafeHTML(availableStatus)}</span
+                                  >
+                              </div>`
+                    }
                     <ak-dual-select-available-pane
                         ${ref(this.availablePane)}
                         .options=${this.options}
                         .selected=${this.#selectedKeys}
                     ></ak-dual-select-available-pane>
-                    ${this.needPagination
-                        ? html`<ak-pagination .pages=${this.pages}></ak-pagination>`
-                        : nothing}
+                    ${
+                        this.needPagination
+                            ? html`<ak-pagination .pages=${this.pages}></ak-pagination>`
+                            : nothing
+                    }
                 </div>
                 <ak-dual-select-controls
                     ?add-active=${(this.availablePane.value?.moveable.length ?? 0) > 0}
@@ -376,27 +380,31 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    ${this.noSearch
-                        ? nothing
-                        : html`<ak-search-bar
-                              placeholder=${msg(str`Search ${this.selectedLabel}...`)}
-                              name="ak-dual-list-selected-search"
-                          ></ak-search-bar>`}
-                    ${this.noStatus
-                        ? nothing
-                        : html`<div
-                              class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
-                          >
-                              <span class="pf-c-dual-list-selector__status-text"
-                                  >${selectedStatus}</span
+                    ${
+                        this.noSearch
+                            ? nothing
+                            : html`<ak-search-bar
+                                  placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                                  name="ak-dual-list-selected-search"
+                              ></ak-search-bar>`
+                    }
+                    ${
+                        this.noStatus
+                            ? nothing
+                            : html`<div
+                                  class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
                               >
-                          </div>`}
+                                  <span class="pf-c-dual-list-selector__status-text"
+                                      >${selectedStatus}</span
+                                  >
+                              </div>`
+                    }
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
-                        .selected=${this.preserveOrder
-                            ? selected
-                            : selected.toSorted(localeComparator)}
+                        .selected=${
+                            this.preserveOrder ? selected : selected.toSorted(localeComparator)
+                        }
                     ></ak-dual-select-selected-pane>
                 </div>
             </div>

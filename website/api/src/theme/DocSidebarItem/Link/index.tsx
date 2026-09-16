@@ -2,8 +2,8 @@ import "./styles.css";
 
 import { useCachedVersionPluginData } from "@goauthentik/docusaurus-theme/components/VersionPicker/utils.ts";
 
-import isInternalUrl from "@docusaurus/isInternalUrl";
 import Link from "@docusaurus/Link";
+import isInternalUrl from "@docusaurus/isInternalUrl";
 import { isActiveSidebarItem } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
 import type { Props } from "@theme/DocSidebarItem/Link";

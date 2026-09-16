@@ -64,19 +64,21 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </button>
                 </fieldset>
             </form>
-            ${this.challenge?.recoveryUrl
-                ? html`<fieldset
-                      slot="footer-band"
-                      part="additional-actions"
-                      name="additional-actions"
-                      class="ak-c-fieldset pf-c-login__main-footer-band"
-                  >
-                      <legend class="sr-only">${msg("Additional actions")}</legend>
-                      <div class="pf-c-login__main-footer-band-item">
-                          <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
-                      </div>
-                  </fieldset>`
-                : null}
+            ${
+                this.challenge?.recoveryUrl
+                    ? html`<fieldset
+                          slot="footer-band"
+                          part="additional-actions"
+                          name="additional-actions"
+                          class="ak-c-fieldset pf-c-login__main-footer-band"
+                      >
+                          <legend class="sr-only">${msg("Additional actions")}</legend>
+                          <div class="pf-c-login__main-footer-band-item">
+                              <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
+                          </div>
+                      </fieldset>`
+                    : null
+            }
         </ak-flow-card>`;
     }
 }

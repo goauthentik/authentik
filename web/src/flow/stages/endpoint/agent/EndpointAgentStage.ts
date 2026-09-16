@@ -88,20 +88,22 @@ export class EndpointAgentStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.challenge?.responseErrors
-                ? html`
-                      <ak-empty-state icon="fa-times"
-                          ><span>${msg("Failed to validate device.")}</span>
-                          <div slot="body">
-                              ${this.challenge.responseErrors.response.map((err) => {
-                                  return html`<p>${err.string}</p>`;
-                              })}
-                          </div>
-                      </ak-empty-state>
-                  `
-                : html` <ak-empty-state loading
-                      ><span>${msg("Verifying your device...")}</span>
-                  </ak-empty-state>`}
+            ${
+                this.challenge?.responseErrors
+                    ? html`
+                          <ak-empty-state icon="fa-times"
+                              ><span>${msg("Failed to validate device.")}</span>
+                              <div slot="body">
+                                  ${this.challenge.responseErrors.response.map((err) => {
+                                      return html`<p>${err.string}</p>`;
+                                  })}
+                              </div>
+                          </ak-empty-state>
+                      `
+                    : html` <ak-empty-state loading
+                          ><span>${msg("Verifying your device...")}</span>
+                      </ak-empty-state>`
+            }
         </ak-flow-card>`;
     }
 }

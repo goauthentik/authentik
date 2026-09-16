@@ -39,7 +39,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     protected transformedCredentialRequestOptions: PublicKeyCredentialRequestOptions | null = null;
 
     /**
-     * Whether a {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential} ceremony should start once the pending render has committed.
+     * Whether a
+     * {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
+     * ceremony should start once the pending render has committed.
      *
      * Reactive state is derived in {@linkcode willUpdate} so it lands in the same render, but the
      * ceremony itself is a side effect and belongs after the DOM has been written.
@@ -154,15 +156,17 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
         return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            ${errorMessages.length
-                ? html`<button
-                      class="pf-c-button pf-m-primary pf-m-block"
-                      @click=${this.tryAuthenticating}
-                      type="button"
-                  >
-                      ${msg("Retry authentication")}
-                  </button>`
-                : null}
+            ${
+                errorMessages.length
+                    ? html`<button
+                          class="pf-c-button pf-m-primary pf-m-block"
+                          @click=${this.tryAuthenticating}
+                          type="button"
+                      >
+                          ${msg("Retry authentication")}
+                      </button>`
+                    : null
+            }
             ${this.renderReturnToDevicePicker()}
         </fieldset>`;
     }

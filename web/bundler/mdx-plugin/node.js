@@ -1,18 +1,4 @@
 /**
- * @file Markdown plugin for ESBuild.
- *
- * Resolves `~docs/...` imports to the website docs tree, then compiles each
- * `.md` / `.mdx` file to HTML at build time. The compiled HTML uses
- * `<ak-md-a>` and `<ak-alert>` custom elements so the runtime side can
- * stamp the HTML directly into shadow DOM without any client-side
- * JavaScript evaluation — this is what lets the page CSP drop
- * `'unsafe-eval'`.
- *
- * The on-load result is shipped via the `file` loader so the JSON travels
- * over the existing fetch-then-set-innerHTML path used by `<ak-mdx>`. The
- * shape is `{ content, frontmatter, publicPath, publicDirectory }` where
- * `content` is now pre-rendered HTML rather than raw markdown source.
- *
  * @import {
  *   OnLoadArgs,
  *   OnLoadResult,
@@ -21,6 +7,14 @@
  *   Plugin,
  *   PluginBuild
  * } from "esbuild"
+ * @file Markdown plugin for ESBuild. Resolves `~docs/...` imports to the website docs tree, then
+ *   compiles each `.md` / `.mdx` file to HTML at build time. The compiled HTML uses `<ak-md-a>` and
+ *   `<ak-alert>` custom elements so the runtime side can stamp the HTML directly into shadow DOM
+ *   without any client-side JavaScript evaluation — this is what lets the page CSP drop
+ *   `'unsafe-eval'`. The on-load result is shipped via the `file` loader so the JSON travels over
+ *   the existing fetch-then-set-innerHTML path used by `<ak-mdx>`. The shape is `{ content,
+ *   frontmatter, publicPath, publicDirectory }` where `content` is now pre-rendered HTML rather
+ *   than raw markdown source.
  */
 
 import * as fs from "node:fs/promises";
@@ -41,6 +35,7 @@ const pluginName = "mdx-plugin";
  * Bundle markdown and MDX source into JSON modules.
  *
  * @param {MDXPluginOptions} options
+ *
  * @returns {Plugin}
  */
 export function mdxPlugin({ root }) {
@@ -54,6 +49,7 @@ export function mdxPlugin({ root }) {
     function setup(build) {
         /**
          * @param {OnResolveArgs} args
+         *
          * @returns {Promise<OnResolveResult>}
          */
         async function resolveListener(args) {
@@ -67,6 +63,7 @@ export function mdxPlugin({ root }) {
 
         /**
          * @param {OnLoadArgs} args
+         *
          * @returns {Promise<OnLoadResult>}
          */
         async function loadListener(args) {

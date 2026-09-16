@@ -1,5 +1,5 @@
-import "#admin/stages/register";
 import "#admin/rbac/ObjectPermissionModal";
+import "#admin/stages/register";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

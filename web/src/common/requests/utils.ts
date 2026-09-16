@@ -5,8 +5,8 @@ import { RequestableTarget } from "@goauthentik/api";
 import { html, nothing } from "lit-html";
 
 /**
- * Renders the first of a list of RequestableTargets (an Application or Application
- * Entitlement, paired with its owning Application), plus an overflow count for the rest.
+ * Renders the first of a list of RequestableTargets (an Application or Application Entitlement,
+ * paired with its owning Application), plus an overflow count for the rest.
  */
 export function renderTargetSummary(targets: RequestableTarget[]): SlottedTemplateResult {
     if (targets.length < 1) {

@@ -1,17 +1,17 @@
-import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 import Styles from "#elements/forms/Radio.css";
+import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
+import { ref } from "lit-html/directives/ref.js";
+import { repeat } from "lit-html/directives/repeat.js";
 import { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { ref } from "lit-html/directives/ref.js";
-import { repeat } from "lit-html/directives/repeat.js";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -208,11 +208,13 @@ export class Radio<T extends Jsonifiable = never> extends FormAssociatedElement<
                 part="input"
             />
 
-            ${option.description
-                ? html`<span class="pf-c-radio__description" part="description"
-                      >${option.description}</span
-                  >`
-                : null}
+            ${
+                option.description
+                    ? html`<span class="pf-c-radio__description" part="description"
+                          >${option.description}</span
+                      >`
+                    : null
+            }
         </label>`;
     };
 

@@ -9,8 +9,8 @@ declare global {
      */
     interface ImportMetaEnv {
         /**
-         * The injected watcher URL for ESBuild.
-         * This is used for live reloading in development mode.
+         * The injected watcher URL for ESBuild. This is used for live reloading in development
+         * mode.
          *
          * @format url
          */

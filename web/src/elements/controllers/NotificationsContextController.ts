@@ -122,14 +122,20 @@ export class NotificationsContextController extends ReactiveContextController<No
             level: MessageLevel.info,
             message: actionToLabel(notification.event?.action) ?? notification.body,
             description: html`${notification.body}
-            ${notification.hyperlink
-                ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
-                : nothing}
-            ${notification.event
-                ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
-                          >${msg("View details...")}</a
-                      >`
-                : nothing}`,
+            ${
+                notification.hyperlink
+                    ? html`<br /><a href=${notification.hyperlink}
+                              >${notification.hyperlinkLabel}</a
+                          >`
+                    : nothing
+            }
+            ${
+                notification.event
+                    ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
+                              >${msg("View details...")}</a
+                          >`
+                    : nothing
+            }`,
         });
 
         const currentNotifications = this.context.value;

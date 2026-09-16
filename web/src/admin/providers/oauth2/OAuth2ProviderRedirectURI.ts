@@ -90,8 +90,10 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
             >
                 <option
                     value="${RedirectURITypeEnum.Authorization}"
-                    ?selected=${(this.redirectURI.redirectUriType ??
-                        RedirectURITypeEnum.Authorization) === RedirectURITypeEnum.Authorization}
+                    ?selected=${
+                        (this.redirectURI.redirectUriType ?? RedirectURITypeEnum.Authorization) ===
+                        RedirectURITypeEnum.Authorization
+                    }
                 >
                     ${msg("Authorization")}
                 </option>

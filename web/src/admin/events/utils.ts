@@ -37,9 +37,11 @@ export function renderEventUser(
     if (!event.user.username) return html`-`;
 
     const linkOrSpan = (inner: TemplateResult, evu: EventUser) => {
-        return html`${evu.pk && !evu.is_anonymous
-            ? html`<a href=${toAdminInterface(`identity/users/${evu.pk}`)}>${inner}</a>`
-            : html`<span>${inner}</span>`}`;
+        return html`${
+            evu.pk && !evu.is_anonymous
+                ? html`<a href=${toAdminInterface(`identity/users/${evu.pk}`)}>${inner}</a>`
+                : html`<span>${inner}</span>`
+        }`;
     };
 
     const renderUsername = (evu: EventUser) => {

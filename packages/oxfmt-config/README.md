@@ -19,10 +19,10 @@ oxfmt has no `extends`, so spread the config into your own `oxfmt.config.ts` (ox
 it):
 
 ```ts
-import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config"
+import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
 
 export default {
-	...authentikOxfmtConfig,
-	// per-repo tweaks, e.g. ignorePatterns
-}
+    ...authentikOxfmtConfig,
+    // per-repo tweaks, e.g. ignorePatterns
+};
 ```

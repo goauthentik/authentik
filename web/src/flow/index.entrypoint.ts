@@ -1,6 +1,6 @@
 import "#common/sentry/apply";
-import "#elements/messages/MessageContainer";
 import "#elements/ak-drawer/ak-drawer";
+import "#elements/messages/MessageContainer";
 import "#flow/FlowExecutor";
 // Statically import some stages to speed up load speed
 import "#flow/stages/access_denied/AccessDeniedStage";

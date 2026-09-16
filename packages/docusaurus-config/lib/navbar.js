@@ -1,7 +1,6 @@
 /**
- * @file Docusaurus navbar configuration for the authentik website.
- *
  * @import { NavbarItem } from "@docusaurus/theme-common";
+ * @file Docusaurus navbar configuration for the authentik website.
  */
 
 import { DocusaurusURL, SocialURL } from "./routing.js";
@@ -74,10 +73,9 @@ export const NavbarItemsTemplate = /** @type {const} */ ([
 
 /**
  * @typedef {Object} NavbarItemOverrides
- *
- * @prop {string} WWW_URL The URL for the WWW environment.
- * @prop {string} DOCS_URL The URL for the documentation.
- * @prop {string} INTEGRATIONS_URL The URL for the integrations.
+ * @property {string} WWW_URL The URL for the WWW environment.
+ * @property {string} DOCS_URL The URL for the documentation.
+ * @property {string} INTEGRATIONS_URL The URL for the integrations.
  */
 
 const DEFAULT_NAVBAR_REPLACEMENTS = /** @type {const} */ ({
@@ -90,6 +88,7 @@ const DEFAULT_NAVBAR_REPLACEMENTS = /** @type {const} */ ({
  * Creates a navbar item array, replacing placeholders with the given replacements.
  *
  * @param {Partial<NavbarItemOverrides>} [overrides]
+ *
  * @returns {NavbarItem[]}
  */
 export function createNavbarItems(overrides) {
@@ -106,7 +105,7 @@ export function createNavbarItems(overrides) {
             to: item.to.replace(
                 /{{([^}]+)}}/g,
                 /**
-                 * @param {keyof NavbarItemOverrides}  key
+                 * @param {keyof NavbarItemOverrides} key
                  */
                 (_, key) => {
                     return replacements[key];

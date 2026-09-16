@@ -17,8 +17,7 @@ import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 /**
- * @prop {StageHost} host - The host managing this stage.
- *
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
@@ -70,15 +69,18 @@ export class UserSettingsPromptStage extends PromptStage {
                     <button name="continue" type="submit" class="pf-c-button pf-m-primary">
                         ${msg("Save")}
                     </button>
-                    ${this.host.brand?.flowUnenrollment
-                        ? html` <a
-                              class="pf-c-button pf-m-danger"
-                              href="${globalAK().api.base}if/flow/${this.host.brand
-                                  .flowUnenrollment}/"
-                          >
-                              ${msg("Delete account")}
-                          </a>`
-                        : nothing}
+                    ${
+                        this.host.brand?.flowUnenrollment
+                            ? html` <a
+                                  class="pf-c-button pf-m-danger"
+                                  href="${globalAK().api.base}if/flow/${
+                                      this.host.brand.flowUnenrollment
+                                  }/"
+                              >
+                                  ${msg("Delete account")}
+                              </a>`
+                            : nothing
+                    }
                 </div>
             </div>
         </div>`;

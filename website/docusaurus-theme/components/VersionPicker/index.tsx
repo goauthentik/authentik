@@ -1,5 +1,5 @@
-import { useVersionPluginData } from "#components/VersionPicker/utils.ts";
 import { VersionPickerLoader } from "#components/VersionPicker/VersionPickerLoader.tsx";
+import { useVersionPluginData } from "#components/VersionPicker/utils.ts";
 
 /**
  * A component that shows the available versions of the documentation.

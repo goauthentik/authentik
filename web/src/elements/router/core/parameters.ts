@@ -1,10 +1,7 @@
 /**
- * @file Search-parameter serialization for path-based routing.
- *
- * Round-trips primitive route parameters (string, number, boolean, and arrays
- * thereof) to and from `URLSearchParams`. App-context-free.
- *
- * Adapted from the `basepath-aware-routing` prototype's `parsing.ts`.
+ * @file Search-parameter serialization for path-based routing. Round-trips primitive route
+ *   parameters (string, number, boolean, and arrays thereof) to and from `URLSearchParams`.
+ *   App-context-free. Adapted from the `basepath-aware-routing` prototype's `parsing.ts`.
  */
 
 export type PrimitiveRouteParameter = string | number | boolean | null | undefined;

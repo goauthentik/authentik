@@ -67,13 +67,15 @@ export class AKRequestRuleWizard extends CreateWizard {
     protected override renderCreateBefore(): SlottedTemplateResult {
         return html`<ak-form-group slot="pre-items" label=${msg("Existing Request Rule")} open>
             <ak-radio
-                .options=${[
-                    {
-                        label: msg("Bind existing rule"),
-                        description: msg("Bind an existing request rule to this object."),
-                        value: true,
-                    },
-                ] satisfies RadioOption<boolean>[]}
+                .options=${
+                    [
+                        {
+                            label: msg("Bind existing rule"),
+                            description: msg("Bind an existing request rule to this object."),
+                            value: true,
+                        },
+                    ] satisfies RadioOption<boolean>[]
+                }
                 @change=${() => {
                     if (!this.wizard) {
                         return;

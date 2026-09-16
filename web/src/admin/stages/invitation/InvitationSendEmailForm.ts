@@ -1,5 +1,5 @@
-import "#elements/buttons/SpinnerButton/index";
 import "#components/ak-textarea-input";
+import "#elements/buttons/SpinnerButton/index";
 
 import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";

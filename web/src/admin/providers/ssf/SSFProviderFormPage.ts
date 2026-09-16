@@ -1,4 +1,5 @@
 import "#admin/common/ak-crypto-certificate-search";
+import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -6,7 +7,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 
@@ -30,7 +30,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * Form page for SSF Authentication Method
  *
  * @element ak-provider-ssf-form
- *
  */
 
 @customElement("ak-provider-ssf-form")

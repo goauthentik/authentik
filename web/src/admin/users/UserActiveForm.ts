@@ -74,13 +74,15 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
         const displayName = this.formatDisplayName();
 
         return html`<p class="pf-c-form__helper-text">
-            ${this.instance?.isActive
-                ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
-                      id: "user.activation.confirm.deactivate",
-                  })
-                : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
-                      id: "user.activation.confirm.activate",
-                  })}
+            ${
+                this.instance?.isActive
+                    ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
+                          id: "user.activation.confirm.deactivate",
+                      })
+                    : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
+                          id: "user.activation.confirm.activate",
+                      })
+            }
         </p>`;
     }
 }

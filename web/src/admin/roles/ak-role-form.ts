@@ -1,8 +1,8 @@
+import "#components/ak-text-input";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";

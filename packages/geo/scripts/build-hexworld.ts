@@ -71,9 +71,8 @@ export interface HexSlice {
 }
 
 /**
- * Layout of the hex-band tippecanoe invocations. The `label` on each entry
- * describes the file the geojsonl for that slice lives at; the plan uses it
- * as the output pmtiles name too.
+ * Layout of the hex-band tippecanoe invocations. The `label` on each entry describes the file the
+ * geojsonl for that slice lives at; the plan uses it as the output pmtiles name too.
  */
 function hexSlices(): HexSlice[] {
     // Res-3 → z0-2, res-4 → z3-6 come straight from HEX_BANDS. At z7-8 the
@@ -229,10 +228,9 @@ interface EdgeFeature extends Feature {
 }
 
 /**
- * At z7-8 the base fill is res-4 and the overlay is res-5 zone cells only.
- * Res-4 borders whose two endpoints both fall in the zone are invisible under
- * the overlay and get taken over by res-5 borders — skip them from the base
- * emission so they don't ship twice.
+ * At z7-8 the base fill is res-4 and the overlay is res-5 zone cells only. Res-4 borders whose two
+ * endpoints both fall in the zone are invisible under the overlay and get taken over by res-5
+ * borders — skip them from the base emission so they don't ship twice.
  */
 function filterRes4BaseBorders(edges: EdgeFeature[], zoneBaseCells: Set<string>): EdgeFeature[] {
     if (!zoneBaseCells || zoneBaseCells.size === 0) {

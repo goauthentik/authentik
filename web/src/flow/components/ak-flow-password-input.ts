@@ -182,8 +182,8 @@ export class InputPassword extends AKElement {
     /**
      * Periodically attempt to focus the input field until it is focused.
      *
-     * This is some-what of a crude way to get autofocus, but in most cases
-     * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
+     * This is some-what of a crude way to get autofocus, but in most cases the `autofocus`
+     * attribute isn't enough, due to timing within shadow doms and such.
      */
     observeInputFocus(): void {
         if (!this.grabFocus) {
@@ -232,8 +232,8 @@ export class InputPassword extends AKElement {
     /**
      * Create the render root for the password input.
      *
-     * Must support both older browsers and shadyDom; we'll keep using this in-line,
-     * but it'll still be in the scope of the parent element, not an independent shadowDOM.
+     * Must support both older browsers and shadyDom; we'll keep using this in-line, but it'll still
+     * be in the scope of the parent element, not an independent shadowDOM.
      */
     protected override createRenderRoot() {
         return this;
@@ -242,10 +242,11 @@ export class InputPassword extends AKElement {
     /**
      * Render the password visibility toggle button.
      *
-     * In the unlikely event that we want to make "show password" the _default_ behavior,
-     * this effect handler is broken out into its own method.
+     * In the unlikely event that we want to make "show password" the _default_ behavior, this
+     * effect handler is broken out into its own method.
      *
-     * The current behavior in the main {@linkcode render} method assumes the field is of type "password."
+     * The current behavior in the main {@linkcode render} method assumes the field is of type
+     * "password."
      *
      * To have this effect, er, take effect, call it in an {@linkcode updated} method.
      *

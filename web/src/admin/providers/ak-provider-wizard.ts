@@ -1,9 +1,9 @@
-import "#elements/LicenseNotice";
 import "#admin/providers/ldap/LDAPProviderForm";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/providers/saml/SAMLProviderImportForm";
+import "#elements/LicenseNotice";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";

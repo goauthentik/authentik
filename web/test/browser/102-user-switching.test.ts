@@ -11,34 +11,33 @@ import type { Page } from "@playwright/test";
 import { snakeCase } from "change-case";
 
 /**
- * The domain of the brand seeded by `blueprints/default/default-brand.yaml`, which is
- * the brand resolved for the test runner's origin.
+ * The domain of the brand seeded by `blueprints/default/default-brand.yaml`, which is the brand
+ * resolved for the test runner's origin.
  */
 const DEFAULT_BRAND_DOMAIN = "authentik-default";
 
 /**
  * The flow the default brand is pointed at for user switching.
  *
- * Reusing the default authentication flow is the configuration described in the feature
- * docs, and it is what makes the "identification skipped, password requested" path
- * observable: the switch plan carries `pending_user`, so the identification stage
- * auto-completes and the flow opens on the password stage.
+ * Reusing the default authentication flow is the configuration described in the feature docs, and
+ * it is what makes the "identification skipped, password requested" path observable: the switch
+ * plan carries `pending_user`, so the identification stage auto-completes and the flow opens on the
+ * password stage.
  */
 const USER_SWITCH_FLOW = /default-authentication-flow/;
 
 /**
- * The password assigned — through the admin UI — to the secondary account each test
- * creates for itself. Long and unlike the generated username so Django's password
- * validators accept it.
+ * The password assigned — through the admin UI — to the secondary account each test creates for
+ * itself. Long and unlike the generated username so Django's password validators accept it.
  */
 const SECONDARY_PASSWORD = "e2e-user-switching-secondary";
 
 /**
- * Every entry in the switcher menu is labelled with the account's email, whichever
- * `UserDisplay` setting is in effect, so emails are what the tests match on.
+ * Every entry in the switcher menu is labelled with the account's email, whichever `UserDisplay`
+ * setting is in effect, so emails are what the tests match on.
  *
- * Passed as a plain string: role name matching is a case-insensitive substring match
- * unless `exact` is set, so no pattern escaping is involved.
+ * Passed as a plain string: role name matching is a case-insensitive substring match unless `exact`
+ * is set, so no pattern escaping is involved.
  */
 const ADMIN_ENTRY_NAME = GOOD_USERNAME;
 
@@ -121,12 +120,11 @@ test.describe("User switching", () => {
     //#region Helpers
 
     /**
-     * Create an internal, non-superuser account and give it a known password, entirely
-     * through the admin UI.
+     * Create an internal, non-superuser account and give it a known password, entirely through the
+     * admin UI.
      *
-     * The account is deliberately not a superuser: the "Admin interface" link in the
-     * User header then doubles as an independent signal of which account a switch
-     * actually landed on.
+     * The account is deliberately not a superuser: the "Admin interface" link in the User header
+     * then doubles as an independent signal of which account a switch actually landed on.
      */
     async function createSecondaryUser(
         { form, page }: { form: FormFixture; page: Page },

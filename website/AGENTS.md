@@ -154,14 +154,14 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 
 ## Tech Stack
 
-| Concern        | Tooling                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------ |
-| Site generator | Docusaurus 3.x (classic preset + Mermaid)                                                        |
-| Content        | MDX + React                                                                                      |
-| API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                                   |
-| Build runtime  | Node ≥ 24, pnpm ≥ 12.4 (pinned via `packageManager`)                                             |
-| Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)                               |
-| Lint / format  | oxlint + oxfmt (`@goauthentik/oxlint-config`, `@goauthentik/oxfmt-config`)          |
-| Spell check    | cspell (typo-only mode)                                                                          |
-| Types          | TypeScript (`tsc -b`)                                                                            |
-| Hosting        | Netlify + GitHub Actions                                                                         |
+| Concern        | Tooling                                                                    |
+| -------------- | -------------------------------------------------------------------------- |
+| Site generator | Docusaurus 3.x (classic preset + Mermaid)                                  |
+| Content        | MDX + React                                                                |
+| API reference  | `docusaurus-plugin-openapi-docs` (from schema)                             |
+| Build runtime  | Node ≥ 24, pnpm ≥ 12.4 (pinned via `packageManager`)                       |
+| Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)         |
+| Lint / format  | oxlint + oxfmt (`@goauthentik/oxlint-config`, `@goauthentik/oxfmt-config`) |
+| Spell check    | cspell (typo-only mode)                                                    |
+| Types          | TypeScript (`tsc -b`)                                                      |
+| Hosting        | Netlify + GitHub Actions                                                   |

@@ -73,26 +73,28 @@ export class UserCredentialsTab extends WithLazyTabs(WithLicenseSummary(AKElemen
                     </div>`,
                 )}
             </div>
-            ${this.hasEnterpriseLicense
-                ? html`<div
-                      role="tabpanel"
-                      tabindex="0"
-                      slot="page-agents"
-                      id="page-agents"
-                      aria-label=${msg("Agents")}
-                      class="pf-c-page__main-section pf-m-no-padding-mobile"
-                      @activate=${() => this.activateTab("page-agents")}
-                  >
-                      ${this.renderWhenActive(
-                          "page-agents",
-                          html`<div class="pf-c-card">
-                              <ak-admin-user-agent-list
-                                  .user=${this.user}
-                              ></ak-admin-user-agent-list>
-                          </div>`,
-                      )}
-                  </div>`
-                : nothing}
+            ${
+                this.hasEnterpriseLicense
+                    ? html`<div
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-agents"
+                          id="page-agents"
+                          aria-label=${msg("Agents")}
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          @activate=${() => this.activateTab("page-agents")}
+                      >
+                          ${this.renderWhenActive(
+                              "page-agents",
+                              html`<div class="pf-c-card">
+                                  <ak-admin-user-agent-list
+                                      .user=${this.user}
+                                  ></ak-admin-user-agent-list>
+                              </div>`,
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div
                 role="tabpanel"
                 tabindex="0"

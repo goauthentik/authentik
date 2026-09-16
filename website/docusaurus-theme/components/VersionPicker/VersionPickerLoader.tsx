@@ -1,5 +1,5 @@
-import { useHostname } from "#components/VersionPicker/utils.ts";
 import { VersionDropdown } from "#components/VersionPicker/VersionDropdown.tsx";
+import { useHostname } from "#components/VersionPicker/utils.ts";
 
 import type {
     AKReleaseFrontMatter,
@@ -16,9 +16,9 @@ export interface VersionPickerLoaderProps {
 /**
  * A data-fetching component that loads available versions of the documentation.
  *
+ * @client
  * @see {@linkcode VersionPicker} for the component.
  * @see {@linkcode AKReleasesPluginData} for the plugin data.
- * @client
  */
 export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ pluginData }) => {
     const { preReleaseOrigin } = pluginData.env;

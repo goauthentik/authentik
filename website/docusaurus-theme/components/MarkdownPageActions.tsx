@@ -1,7 +1,7 @@
-import styles from "./MarkdownPageActions.module.css";
-
 import Translate from "@docusaurus/Translate";
 import React, { type ReactNode, useState } from "react";
+
+import styles from "./MarkdownPageActions.module.css";
 
 export function markdownUrlFromPermalink(permalink: string): string {
     try {

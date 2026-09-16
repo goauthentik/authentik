@@ -12,10 +12,9 @@ import { latLngToCell } from "h3-js";
 export { LABEL_MIN_ZOOM, type LabelKind, LabelKinds };
 
 /**
- * Population thresholds mapping a country to the zoom where its label first
- * appears. The dump's own `min_zoom` is tuned for Protomaps' dense basemap
- * and buries major countries (China ships with min_zoom 6); on hexworld the
- * big ones must label from the world view.
+ * Population thresholds mapping a country to the zoom where its label first appears. The dump's own
+ * `min_zoom` is tuned for Protomaps' dense basemap and buries major countries (China ships with
+ * min_zoom 6); on hexworld the big ones must label from the world view.
  */
 const COUNTRY_ZOOM_TIERS: [population: number, zoom: number][] = [
     [100_000_000, 0],
@@ -81,8 +80,8 @@ export function normalizePlace(
 }
 
 /**
- * The same place repeats in every tile from its min_zoom to z8; collapse to one point per
- * kind+name within a res-5 cell, keeping the earliest minZoom.
+ * The same place repeats in every tile from its min_zoom to z8; collapse to one point per kind+name
+ * within a res-5 cell, keeping the earliest minZoom.
  */
 export function dedupePlaces(places: PlaceLabel[]): PlaceLabel[] {
     const byKey = new Map<string, PlaceLabel>();

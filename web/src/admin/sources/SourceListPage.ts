@@ -10,8 +10,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
-import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -84,11 +84,13 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
-                ${item.enabled
-                    ? nothing
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Disabled")}</ak-label
-                      >`}
+                ${
+                    item.enabled
+                        ? nothing
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Disabled")}</ak-label
+                          >`
+                }
             </a>`,
             item.verboseName,
             html`<div class="ak-c-table__actions">

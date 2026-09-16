@@ -1,6 +1,6 @@
+import "#admin/endpoints/connectors/agent/ConfigModal";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/forms/SearchSelect/index";
-import "#admin/endpoints/connectors/agent/ConfigModal";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";

@@ -2,8 +2,9 @@ import { AKElement } from "#elements/Base";
 import { Chip } from "#elements/chips/Chip";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { css, CSSResult, html } from "lit";
 import { createRef, ref } from "lit-html/directives/ref.js";
+
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -67,11 +68,11 @@ export class ChipGroup<T = string | number> extends AKElement {
     }
 
     /**
-     * Intercept clicks on the chip group, marking the default as prevented
-     * if the click did not directly target the chip group itself.
+     * Intercept clicks on the chip group, marking the default as prevented if the click did not
+     * directly target the chip group itself.
      *
-     * This allows the group to have a click listener, while still allowing clicks
-     * on the chips themselves.
+     * This allows the group to have a click listener, while still allowing clicks on the chips
+     * themselves.
      */
     protected interceptClick(event: MouseEvent) {
         if (event.target !== this) {

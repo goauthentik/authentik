@@ -1,7 +1,7 @@
 import "../ak-select-table.js";
 
-import { SelectTable } from "../ak-select-table.js";
 import { TableSortEvent } from "../TableColumn.js";
+import { SelectTable } from "../ak-select-table.js";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";

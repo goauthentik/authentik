@@ -1,6 +1,6 @@
 import "#elements/CodeMirror";
-import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
+import "#elements/buttons/ActionButton/index";
 
 import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";

@@ -73,8 +73,7 @@ export abstract class WizardPage<S = WizardPageState> extends AKElement {
     /**
      * Optional override for the wizard's next-button label while this page is active.
      *
-     * Return `null` (the default) to keep the wizard's default labeling
-     * (Next/Finish/Create).
+     * Return `null` (the default) to keep the wizard's default labeling (Next/Finish/Create).
      */
     public formatNextLabel(): SlottedTemplateResult | null {
         return null;

@@ -1,6 +1,6 @@
-import styles from "./styles.module.css";
-
 import React from "react";
+
+import styles from "./styles.module.css";
 
 /** Controlled filter input with a clear button. */
 export interface FilterInputProps {

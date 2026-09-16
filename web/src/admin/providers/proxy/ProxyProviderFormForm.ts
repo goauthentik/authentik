@@ -1,8 +1,8 @@
-import "#components/ak-text-input";
-import "#components/ak-radio-input";
-import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ToggleGroup";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -275,14 +275,15 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
-                    label="${mode === ProxyMode.ForwardDomain
-                        ? msg("Unauthenticated URLs")
-                        : msg("Unauthenticated Paths")}"
+                    label="${
+                        mode === ProxyMode.ForwardDomain
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths")
+                    }"
                     name="skipPathRegex"
                 >
                     <textarea class="pf-c-form-control pf-m-monospace">
-${provider.skipPathRegex}</textarea
-                    >
+${provider.skipPathRegex}</textarea>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",

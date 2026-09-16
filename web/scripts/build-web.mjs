@@ -10,9 +10,8 @@ import * as path from "node:path";
 import { copyAssets } from "./build-assets.mjs";
 
 /**
- * @file ESBuild script for building the authentik web UI.
- *
  * @import { BuildOptions, Plugin } from "esbuild";
+ * @file ESBuild script for building the authentik web UI.
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -50,7 +49,7 @@ const BASE_ESBUILD_PLUGINS = [
         setup(build) {
             build.onEnd(async () => {
                 /**
-                 * @type {import('esbuild').PartialMessage[]}
+                 * @type {import("esbuild").PartialMessage[]}
                  */
                 const errors = [];
 
@@ -91,14 +90,13 @@ const BASE_ESBUILD_OPTIONS = {
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     /**
-     * Anchor `[dir]` at the monorepo root rather than letting ESBuild infer it
-     * from the entry points.
+     * Anchor `[dir]` at the monorepo root rather than letting ESBuild infer it from the entry
+     * points.
      *
      * Assets pulled from a workspace package outside `web/` (the RedHat faces in
-     * `@goauthentik/fonts`) would otherwise resolve to a `..` segment, which
-     * ESBuild sanitizes to `_.._`. Go's `//go:embed dist/*` in `static_outpost.go`
-     * silently skips any path segment starting with `_`, so those fonts would be
-     * missing from the embedded outpost build.
+     * `@goauthentik/fonts`) would otherwise resolve to a `..` segment, which ESBuild sanitizes to
+     * `_.._`. Go's `//go:embed dist/*` in `static_outpost.go` silently skips any path segment
+     * starting with `_`, so those fonts would be missing from the embedded outpost build.
      */
     outbase: MonoRepoRoot,
     outdir: DistDirectory,
@@ -122,10 +120,9 @@ const BASE_ESBUILD_OPTIONS = {
     /**
      * Conditions for module resolution.
      *
-     * `bundler` lets workspace packages that ship TypeScript sources (e.g.
-     * `@goauthentik/theme`) expose `src/*.ts` to this build while keeping a
-     * compiled `default` entry for plain Node consumers. esbuild does not
-     * imply it, so without this the resolver falls through to the built
+     * `bundler` lets workspace packages that ship TypeScript sources (e.g. `@goauthentik/theme`)
+     * expose `src/*.ts` to this build while keeping a compiled `default` entry for plain Node
+     * consumers. esbuild does not imply it, so without this the resolver falls through to the built
      * output and every edit needs a rebuild of the dependency first.
      *
      * @see https://esbuild.github.io/api/#conditions
@@ -145,6 +142,7 @@ const BASE_ESBUILD_OPTIONS = {
  *
  * @param {BuildOptions["entryPoints"]} entryPoints
  * @param {Plugin[]} plugIns
+ *
  * @returns {BuildOptions}
  */
 export function createESBuildOptions(entryPoints, plugIns = []) {
@@ -183,8 +181,7 @@ function doHelp() {
 }
 
 /**
- *
- * @returns {Promise<() => Promise<void>>} dispose
+ * @returns {Promise<() => Promise<void>>} Dispose
  */
 async function doWatch() {
     logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);

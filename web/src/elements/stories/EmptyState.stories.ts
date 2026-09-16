@@ -99,13 +99,15 @@ const Template: Story = {
         >
             ${args.headingText ? html`<span>${args.headingText}</span>` : nothing}
             ${args.bodyText ? html`<span slot="body">${args.bodyText}</span>` : nothing}
-            ${args.primaryButtonText
-                ? html`
-                      <button slot="primary" class="pf-c-button pf-m-primary">
-                          ${args.primaryButtonText}
-                      </button>
-                  `
-                : nothing}
+            ${
+                args.primaryButtonText
+                    ? html`
+                          <button slot="primary" class="pf-c-button pf-m-primary">
+                              ${args.primaryButtonText}
+                          </button>
+                      `
+                    : nothing
+            }
         </ak-empty-state>
     `,
 };

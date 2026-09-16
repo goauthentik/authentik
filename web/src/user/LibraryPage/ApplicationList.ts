@@ -109,11 +109,13 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                     >
                         <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
                     </legend>
-                    ${isList
-                        ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
-                              ${inner}
-                          </ul>`
-                        : inner}
+                    ${
+                        isList
+                            ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
+                                  ${inner}
+                              </ul>`
+                            : inner
+                    }
                     <hr part="app-group-separator" aria-hidden="true" />
                 </fieldset>`;
             },

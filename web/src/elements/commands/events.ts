@@ -1,8 +1,8 @@
 import type { PaletteCommandDefinition } from "#elements/commands/shared";
 
 /**
- * Event dispatched when the available commands in the command palette change.
- * This is used by the command palette to update the list of available commands.
+ * Event dispatched when the available commands in the command palette change. This is used by the
+ * command palette to update the list of available commands.
  */
 export class AKCommandChangeEvent<D = unknown> extends Event {
     public static readonly eventName = "ak-command-change";

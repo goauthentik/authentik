@@ -39,7 +39,8 @@ const formatUnknownUserLabel = () =>
     });
 
 /**
- * Format a user's display name with disambiguation, such as when multiple users have the same name appearing in a list.
+ * Format a user's display name with disambiguation, such as when multiple users have the same name
+ * appearing in a list.
  */
 export function formatDisambiguatedUserDisplayName(
     user?: UserLike | null,
@@ -177,9 +178,8 @@ export async function startAccountLockdown(user?: number): Promise<void> {
 /**
  * Retrieve the current user session.
  *
- * @see {@linkcode refreshMe} to force a refresh.
- *
  * @category Session
+ * @see {@linkcode refreshMe} to force a refresh.
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
     return aki(CoreApi)

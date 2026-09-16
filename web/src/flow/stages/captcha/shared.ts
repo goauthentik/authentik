@@ -26,20 +26,18 @@ export interface IFrameTemplateInit {
     challengeURL: URL | string;
     theme: ResolvedUITheme;
     /**
-     * If `true`, the script element will fire `loadListener()` on load.
-     * Defaults to `true`.
+     * If `true`, the script element will fire `loadListener()` on load. Defaults to `true`.
      */
     scriptOnLoad?: boolean;
     scriptType?: "classic" | "module";
 }
 
 /**
- * A container iframe for a hosted Captcha, with an event emitter to monitor
- * when the Captcha forces a resize.
+ * A container iframe for a hosted Captcha, with an event emitter to monitor when the Captcha forces
+ * a resize.
  *
- * Because the Captcha is itself in an iframe, the reported height is often off by some
- * margin, adding 2rem of height to our container adds padding and prevents scrollbars
- * or hidden rendering.
+ * Because the Captcha is itself in an iframe, the reported height is often off by some margin,
+ * adding 2rem of height to our container adds padding and prevents scrollbars or hidden rendering.
  */
 export function iframeTemplate(
     children: TemplateResult,

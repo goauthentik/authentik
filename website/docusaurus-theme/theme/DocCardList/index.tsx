@@ -2,7 +2,6 @@
 import { type GlossaryItem, isGlossaryItem, isGlossaryPath } from "../utils/glossaryUtils";
 import ErrorBoundary from "./ErrorBoundary";
 import GlossaryDocCardList from "./GlossaryDocCardList";
-import styles from "./styles.module.css";
 
 // Docusaurus core imports
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
@@ -17,6 +16,8 @@ import Layout from "@theme/DocCard/Layout";
 import type { Props } from "@theme/DocCardList";
 import clsx from "clsx";
 import React, { ReactNode, useMemo } from "react";
+
+import styles from "./styles.module.css";
 
 // Constant empty array to avoid creating new array on each render
 const EMPTY_SIDEBAR_ITEMS: PropSidebarItem[] = [];

@@ -16,7 +16,7 @@ import { customElement } from "lit/decorators.js";
 /**
  * LDAP Provider Form
  *
- * @prop {number} instancePk - The primary key of the instance to load.
+ * @property {number} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {

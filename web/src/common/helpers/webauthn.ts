@@ -31,7 +31,8 @@ export function assertWebAuthnSupported(scope = window): void {
 }
 
 /**
- * Ensures that the given assertion is a {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
+ * Ensures that the given assertion is a
+ * {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
  *
  * @throws TypeError if the assertion is not a PublicKeyCredential
  */
@@ -50,7 +51,8 @@ export function ensurePublicKeyCredential(assertion?: Credential | null): Public
 // #endregion
 
 /**
- * Predicate to determine if a given error originates from a user cancellation or timeout of a WebAuthn authentication ceremony.
+ * Predicate to determine if a given error originates from a user cancellation or timeout of a
+ * WebAuthn authentication ceremony.
  */
 export function isWebAuthnNotAllowedError(error: unknown): error is DOMException {
     return error instanceof DOMException && (error.name === "NotAllowedError" || error.code === 0);
@@ -72,8 +74,8 @@ export async function isConditionalMediationAvailable(): Promise<boolean> {
 // #region Transformations
 
 /**
- * Transforms items in the credentialCreateOptions generated on the server
- * into byte arrays expected by the navigator.credentials.create() call
+ * Transforms items in the credentialCreateOptions generated on the server into byte arrays expected
+ * by the navigator.credentials.create() call
  */
 export function transformCredentialCreateOptions(
     credentialCreateOptions: PublicKeyCredentialCreationOptions,
@@ -106,8 +108,8 @@ export interface Assertion {
 }
 
 /**
- * Transforms the binary data in the credential into base64 strings
- * for posting to the server.
+ * Transforms the binary data in the credential into base64 strings for posting to the server.
+ *
  * @param {PublicKeyCredential} newAssertion
  */
 export function transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
@@ -164,6 +166,7 @@ export interface AuthAssertion {
 
 /**
  * Encodes the binary data in the assertion into strings for posting to the server.
+ *
  * @param {PublicKeyCredential} newAssertion
  */
 export function transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {

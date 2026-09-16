@@ -99,9 +99,11 @@ export class AuthenticatedSessionList extends WithLocale(Table<AuthenticatedSess
 
         return [
             html`<div>
-                    ${item.geoIp?.country
-                        ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
-                        : nothing}
+                    ${
+                        item.geoIp?.country
+                            ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
+                            : nothing
+                    }
                     ${item.current ? html`${msg("(Current session)")}&nbsp;` : nothing}
                     ${item.lastIp}
                 </div>

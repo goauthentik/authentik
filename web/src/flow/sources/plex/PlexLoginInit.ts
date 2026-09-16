@@ -1,6 +1,6 @@
+import "#elements/Divider";
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
-import "#elements/Divider";
 
 import { aki } from "#common/api/client";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";

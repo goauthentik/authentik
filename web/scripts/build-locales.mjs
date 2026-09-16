@@ -1,17 +1,13 @@
 /// <reference types="node" />
 
 /**
- * @file Lit Localize build script.
- *
- * @remarks
- * Determines if all the Xliff translation source files are present and
- * if the Typescript source files generated from those sources are up-to-date.
- *
- * If they are not, it runs the locale building script, intercepting the
- * long spew of "this string is not translated" and replacing it with a
- * summary of how many strings are missing with respect to the source locale.
- *
  * @import { Stats } from "node:fs";
+ * @remarks
+ *   Determines if all the Xliff translation source files are present and if the Typescript source
+ *   files generated from those sources are up-to-date. If they are not, it runs the locale building
+ *   script, intercepting the long spew of "this string is not translated" and replacing it with a
+ *   summary of how many strings are missing with respect to the source locale.
+ * @file Lit Localize build script.
  */
 
 import * as fs from "node:fs/promises";
@@ -80,12 +76,12 @@ async function cleanEmittedLocales() {
 }
 
 /**
- * Returns false if: the expected XLF file doesn't exist, The expected
- * generated file doesn't exist, or the XLF file is newer (has a higher date)
- * than the generated file.  The missing XLF file is important enough it
- * generates a unique error message and halts the build.
+ * Returns false if: the expected XLF file doesn't exist, The expected generated file doesn't exist,
+ * or the XLF file is newer (has a higher date) than the generated file. The missing XLF file is
+ * important enough it generates a unique error message and halts the build.
  *
  * @param {string} localeCode
+ *
  * @returns {Promise<boolean>}
  */
 async function checkIfEmittedFileCurrent(localeCode) {
@@ -128,6 +124,7 @@ async function checkIfEmittedFileCurrent(localeCode) {
 
 /**
  * Checks if all the locale source files are up-to-date with their XLIFF sources.
+ *
  * @returns {Promise<boolean>}
  */
 async function checkIfLocalesAreCurrent() {

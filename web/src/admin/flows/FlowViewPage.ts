@@ -1,8 +1,8 @@
+import "#admin/events/ObjectChangelog";
 import "#admin/flows/BoundStagesList";
 import "#admin/flows/FlowDiagram";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
@@ -14,8 +14,8 @@ import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";

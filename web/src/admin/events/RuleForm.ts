@@ -130,21 +130,23 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
                 <ak-radio
-                    .options=${[
-                        {
-                            label: severityToLabel(SeverityEnum.Alert),
-                            value: SeverityEnum.Alert,
-                            default: true,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Warning),
-                            value: SeverityEnum.Warning,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Notice),
-                            value: SeverityEnum.Notice,
-                        },
-                    ] satisfies RadioOption<SeverityEnum>[]}
+                    .options=${
+                        [
+                            {
+                                label: severityToLabel(SeverityEnum.Alert),
+                                value: SeverityEnum.Alert,
+                                default: true,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Warning),
+                                value: SeverityEnum.Warning,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Notice),
+                                value: SeverityEnum.Notice,
+                            },
+                        ] satisfies RadioOption<SeverityEnum>[]
+                    }
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>

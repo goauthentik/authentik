@@ -7,10 +7,11 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { type UsedBy } from "@goauthentik/api";
 
+import { until } from "lit-html/directives/until.js";
+
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
-import { until } from "lit-html/directives/until.js";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -77,9 +78,11 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
             }
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
-        return html`${this.usedBy
-            ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-            : null}`;
+        return html`${
+            this.usedBy
+                ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
+                : null
+        }`;
     }
 
     protected renderUsedBy(usedBy: UsedBy[]): SlottedTemplateResult {

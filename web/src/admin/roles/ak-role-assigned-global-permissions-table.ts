@@ -1,5 +1,5 @@
-import "#elements/forms/DeleteBulkForm";
 import "#admin/roles/ak-role-permission-form";
+import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";

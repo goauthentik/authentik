@@ -94,10 +94,9 @@ function toHex(rgb) {
 // ------------------------------------------------------------------
 
 /**
- * Walk a stylesheet with a brace counter, yielding every innermost
- * block along with the selector path that encloses it. Comments are
- * stripped first so the file's banner does not attach itself to the
- * :root selector.
+ * Walk a stylesheet with a brace counter, yielding every innermost block along with the selector
+ * path that encloses it. Comments are stripped first so the file's banner does not attach itself to
+ * the :root selector.
  */
 function parseStylesheet(text) {
     const hexes = new Map();

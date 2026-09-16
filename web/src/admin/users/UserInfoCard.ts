@@ -17,11 +17,11 @@ import { Timestamp } from "#elements/table/shared";
 
 import { keyValueListStyles, renderKeyValueList } from "#components/KeyValueList";
 
-import { RecoveryButtons } from "#admin/users/recovery";
 import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
+import { RecoveryButtons } from "#admin/users/recovery";
 
 import {
     LifecycleApi,
@@ -133,30 +133,34 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
-            ${showEnterpriseActions
-                ? html`<button
-                      class="pf-c-button pf-m-danger pf-m-block"
-                      @click=${this.lockdownUser}
-                      type="button"
-                  >
-                      ${msg("Account Lockdown")}
-                  </button>`
-                : nothing}
-            ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
-            ${showImpersonate
-                ? html`<button
-                      class="pf-c-button pf-m-tertiary pf-m-block"
-                      ${UserImpersonateForm.asInstanceInvoker(user.pk)}
-                      aria-label=${msg(str`Impersonate ${displayName}`)}
-                  >
-                      <pf-tooltip
-                          position="top"
-                          content=${msg("Temporarily assume the identity of this user")}
+            ${
+                showEnterpriseActions
+                    ? html`<button
+                          class="pf-c-button pf-m-danger pf-m-block"
+                          @click=${this.lockdownUser}
+                          type="button"
                       >
-                          <span>${msg("Impersonate")}</span>
-                      </pf-tooltip>
-                  </button>`
-                : nothing}
+                          ${msg("Account Lockdown")}
+                      </button>`
+                    : nothing
+            }
+            ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
+            ${
+                showImpersonate
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary pf-m-block"
+                          ${UserImpersonateForm.asInstanceInvoker(user.pk)}
+                          aria-label=${msg(str`Impersonate ${displayName}`)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : nothing
+            }
         </div> `;
     }
 

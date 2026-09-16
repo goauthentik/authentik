@@ -1,14 +1,14 @@
 import "#components/ak-status-label";
+import "#elements/ToggleGroup";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/ToggleGroup";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -106,73 +106,82 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                 <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
                 <option value=${BlueprintSource.File}>${msg("Local path")}</option>
             </ak-toggle-group>
-            ${this.source === BlueprintSource.Upload
-                ? html`
-                      ${this.findSlotted("banner-warning")
-                          ? html`<div class="pf-c-banner pf-m-warning" slot="above-form">
-                                <slot name="banner-warning"></slot>
-                            </div>`
-                          : null}
-                      <ak-form-element-horizontal name="blueprint">
-                          ${AKLabel(
-                              {
-                                  slot: "label",
-                                  className: "pf-c-form__group-label",
-                                  htmlFor: "blueprint",
-                              },
-                              msg("Blueprint"),
-                          )}
+            ${
+                this.source === BlueprintSource.Upload
+                    ? html`
+                          ${
+                              this.findSlotted("banner-warning")
+                                  ? html`<div class="pf-c-banner pf-m-warning" slot="above-form">
+                                        <slot name="banner-warning"></slot>
+                                    </div>`
+                                  : null
+                          }
+                          <ak-form-element-horizontal name="blueprint">
+                              ${AKLabel(
+                                  {
+                                      slot: "label",
+                                      className: "pf-c-form__group-label",
+                                      htmlFor: "blueprint",
+                                  },
+                                  msg("Blueprint"),
+                              )}
 
-                          <input
-                              type="file"
-                              value=""
-                              class="pf-c-form-control"
-                              id="blueprint"
-                              name="blueprint"
-                              aria-describedby="blueprint-help"
-                          />
+                              <input
+                                  type="file"
+                                  value=""
+                                  class="pf-c-form-control"
+                                  id="blueprint"
+                                  name="blueprint"
+                                  aria-describedby="blueprint-help"
+                              />
 
-                          <div id="blueprint-help">
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      ".yaml files, which can be found in the Example Flows documentation",
-                                  )}
-                              </p>
-                              ${this.findSlotted("read-more-link")
-                                  ? html`<p class="pf-c-form__helper-text">
-                                        ${msg("Read more about")}&nbsp;
-                                        <slot name="read-more-link"></slot>
-                                    </p>`
-                                  : null}
-                          </div>
-                      </ak-form-element-horizontal>
-                  `
-                : null}
-            ${this.source === BlueprintSource.File
-                ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
-                      <ak-search-select
-                          placeholder=${msg("Select a blueprint...")}
-                          .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
-                              const items = await aki(ManagedApi).managedBlueprintsAvailableList();
-                              return items.filter((item) =>
-                                  query ? item.path.includes(query) : true,
-                              );
-                          }}
-                          .renderElement=${(item: BlueprintFile): string => {
-                              const name = item.path;
-                              if (item.meta && item.meta.name) {
-                                  return `${name} (${item.meta.name})`;
-                              }
-                              return name;
-                          }}
-                          .value=${(item: BlueprintFile | null) => {
-                              return item?.path;
-                          }}
-                          blankable
-                      >
-                      </ak-search-select>
-                  </ak-form-element-horizontal>`
-                : nothing}
+                              <div id="blueprint-help">
+                                  <p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          ".yaml files, which can be found in the Example Flows documentation",
+                                      )}
+                                  </p>
+                                  ${
+                                      this.findSlotted("read-more-link")
+                                          ? html`<p class="pf-c-form__helper-text">
+                                                ${msg("Read more about")}&nbsp;
+                                                <slot name="read-more-link"></slot>
+                                            </p>`
+                                          : null
+                                  }
+                              </div>
+                          </ak-form-element-horizontal>
+                      `
+                    : null
+            }
+            ${
+                this.source === BlueprintSource.File
+                    ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
+                          <ak-search-select
+                              placeholder=${msg("Select a blueprint...")}
+                              .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
+                                  const items =
+                                      await aki(ManagedApi).managedBlueprintsAvailableList();
+                                  return items.filter((item) =>
+                                      query ? item.path.includes(query) : true,
+                                  );
+                              }}
+                              .renderElement=${(item: BlueprintFile): string => {
+                                  const name = item.path;
+                                  if (item.meta && item.meta.name) {
+                                      return `${name} (${item.meta.name})`;
+                                  }
+                                  return name;
+                              }}
+                              .value=${(item: BlueprintFile | null) => {
+                                  return item?.path;
+                              }}
+                              blankable
+                          >
+                          </ak-search-select>
+                      </ak-form-element-horizontal>`
+                    : nothing
+            }
             ${this.result ? this.renderResult() : nothing}`;
     }
 }

@@ -1,7 +1,7 @@
 import { formatSpanName, RouterView } from "./RouterView.js";
 
-import { getRouterConfig, initRouter, resetRouterConfig } from "#elements/router/core/config";
 import { Route } from "#elements/router/core/Route";
+import { getRouterConfig, initRouter, resetRouterConfig } from "#elements/router/core/config";
 
 import { page } from "@vitest/browser/context";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";

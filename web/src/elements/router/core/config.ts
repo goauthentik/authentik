@@ -1,9 +1,8 @@
 /**
- * @file Router configuration injected by each entrypoint at boot.
- *
- * The router core never reads globals. Each entrypoint calls {@linkcode initRouter}
- * once at boot with the deployment base path (read from the injected `ak-base-url-rel`
- * **at the entrypoint**) and the interface name. The core only ever receives values.
+ * @file Router configuration injected by each entrypoint at boot. The router core never reads
+ *   globals. Each entrypoint calls {@linkcode initRouter} once at boot with the deployment base
+ *   path (read from the injected `ak-base-url-rel` **at the entrypoint**) and the interface name.
+ *   The core only ever receives values.
  */
 
 export interface RouterConfig {
@@ -42,7 +41,8 @@ export function getRouterConfig(): RouterConfig {
 /**
  * Reset the configuration to its defaults.
  *
- * @remarks Test-only. Not for production call sites.
+ * @remarks
+ *   Test-only. Not for production call sites.
  */
 export function resetRouterConfig(): void {
     currentConfig = { ...DEFAULT_CONFIG };

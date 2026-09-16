@@ -53,8 +53,8 @@ export class SessionFixture extends PageFixture {
     });
 
     /**
-     * The button to submit the the login flow,
-     * typically redirecting to the authenticated interface.
+     * The button to submit the the login flow, typically redirecting to the authenticated
+     * interface.
      */
     public $submitButton = this.page.locator('button[type="submit"]');
 
@@ -156,8 +156,8 @@ export class SessionFixture extends PageFixture {
     }
 
     /**
-     * Complete a password stage when identification was skipped
-     * (e.g. switching to a user that already has `pending_user` in the flow plan).
+     * Complete a password stage when identification was skipped (e.g. switching to a user that
+     * already has `pending_user` in the flow plan).
      */
     public async completePassword({
         password = GOOD_PASSWORD,
@@ -184,8 +184,8 @@ export class SessionFixture extends PageFixture {
     /**
      * Sign the current user out, landing back on the identification stage.
      *
-     * Sign-out lives behind the user switcher's dropdown toggle rather than as a bare link,
-     * so the menu has to be opened before the item exists in the accessibility tree.
+     * Sign-out lives behind the user switcher's dropdown toggle rather than as a bare link, so the
+     * menu has to be opened before the item exists in the accessibility tree.
      */
     public async signOut(page: Page = this.page): Promise<void> {
         this.logger.info("Signing out...");

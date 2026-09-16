@@ -1,11 +1,9 @@
 /**
- * @file Label kinds and their reveal zooms.
- *
- * These are the contract between the bundled hexworld archive and the style
- * that renders it: the generator stamps each place feature with a minzoom
- * derived from {@linkcode LABEL_MIN_ZOOM}, and the runtime style gates the
- * matching layer on the same number. `packages/geo` imports this module so
- * the two cannot drift — see that package's README.
+ * @file Label kinds and their reveal zooms. These are the contract between the bundled hexworld
+ *   archive and the style that renders it: the generator stamps each place feature with a minzoom
+ *   derived from {@linkcode LABEL_MIN_ZOOM}, and the runtime style gates the matching layer on the
+ *   same number. `packages/geo` imports this module so the two cannot drift — see that package's
+ *   README.
  */
 
 export const LabelKinds = new Set(["country", "region", "locality"] as const);
