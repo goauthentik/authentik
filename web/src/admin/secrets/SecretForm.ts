@@ -46,6 +46,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                 position: absolute;
                 inset: 0;
                 width: 100%;
+                height: 100%;
                 opacity: 0;
                 cursor: pointer;
             }
@@ -63,7 +64,11 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     protected fileName = "";
 
     @property({ attribute: false })
-    public types: SecretTypeEnum[] = [SecretTypeEnum.Text, SecretTypeEnum.Multiline, SecretTypeEnum.File];
+    public types: SecretTypeEnum[] = [
+        SecretTypeEnum.Text,
+        SecretTypeEnum.Multiline,
+        SecretTypeEnum.File,
+    ];
 
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
@@ -225,6 +230,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                       ].filter((option) => this.types.includes(option.value))}
                       @input=${(ev: InputEvent) => {
                           this.type = (ev.currentTarget as AkRadioInput<SecretTypeEnum>).value;
+                          this.fileName = "";
                       }}
                   ></ak-radio-input> `}
             ${this.renderValueInput()}`;
