@@ -1,9 +1,11 @@
 """Managed secret model tests."""
 
+from traceback import format_exception
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.db import transaction
+from django.test import TestCase, TransactionTestCase
 
 from authentik.crypto.secrets.models import Secret, SecretType, create_named_secret
 from authentik.events.models import Event, EventAction
@@ -65,6 +67,12 @@ class TestSecret(TestCase):
         secret.replace_value("current")
         self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
 
+    def test_parser_error_does_not_disclose_value(self):
+        secret = Secret(type=SecretType.MULTILINE, value="private-credential: [unterminated")
+        with self.assertRaises(ValueError) as error:
+            secret.get_json()
+        self.assertNotIn("private-credential", "".join(format_exception(error.exception)))
+
     def test_invalid_file_replacement_preserves_value(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, value="aGk=")
         with self.assertRaises(ValidationError):
@@ -91,3 +99,27 @@ class TestSecret(TestCase):
         self.assertEqual(secret.value, "old")
         self.assertEqual(secret.last_updated, previous_updated)
         self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+
+
+class TestCommittedSecret(TransactionTestCase):
+    def test_callback_failure_keeps_committed_value(self):
+        secret = Secret.objects.create(name="committed", value="old")
+
+        def schedule_failure(**kwargs):
+            def fail():
+                raise RuntimeError("outpost unavailable")
+
+            transaction.on_commit(fail)
+
+        with (
+            patch(
+                "authentik.crypto.secrets.models.secret_value_changed.send",
+                side_effect=schedule_failure,
+            ),
+            self.assertRaises(RuntimeError),
+        ):
+            secret.replace_value("new")
+        self.assertEqual(secret.value, "new")
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "new")
+        self.assertTrue(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
