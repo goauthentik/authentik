@@ -100,12 +100,22 @@ export class CodeMirrorTextarea<
     #parsedValue?: string;
 
     #parse(editorState?: EditorState): string {
-        if (!editorState) {
+        if (editorState) {
+            return this.#parseSource(editorState.doc.toString());
+        }
+
+        // The editor module is imported lazily.
+        // A form submitted before that import resolves has no editor state to read.
+        // So we fall back to the pending value stored in `#parsedValue`.
+
+        if (typeof this.#parsedValue === "undefined") {
             return "";
         }
 
-        const innerValue = editorState.doc.toString();
+        return this.#parseSource(this.#parsedValue);
+    }
 
+    #parseSource(innerValue: string): string {
         if (this.raw) {
             return innerValue;
         }
