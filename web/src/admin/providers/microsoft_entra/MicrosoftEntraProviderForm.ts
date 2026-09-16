@@ -10,7 +10,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
@@ -166,10 +165,13 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

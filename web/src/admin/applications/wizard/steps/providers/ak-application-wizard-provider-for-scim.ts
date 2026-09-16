@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/scim/SCIMProviderFormForm";
 

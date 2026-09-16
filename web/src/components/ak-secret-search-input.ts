@@ -19,7 +19,7 @@ import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -45,6 +45,26 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean })
     public blankable = false;
 
+    @property({
+        attribute: false,
+        hasChanged: (next: SecretTypeEnum[], previous?: SecretTypeEnum[]) =>
+            next.join() !== previous?.join(),
+    })
+    public types: SecretTypeEnum[] = [SecretTypeEnum.Text];
+
+    protected override willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
+        if (changed.has("types") && changed.get("types")) {
+            this.value = "";
+            this.selectedSecret = undefined;
+            const select = this.secretSearchRef.value;
+            if (select) {
+                select.selectedObject = null;
+                select.updateData();
+            }
+        }
+    }
+
     protected secretSearchRef = createRef<SearchSelect>();
 
     @state()
@@ -54,6 +74,7 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
         invocationEvent?.stopPropagation();
 
         const secretForm = new SecretForm();
+        secretForm.types = this.types;
 
         secretForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
             const secret = (event as AKFormSubmittedEvent<Secret>).response;
@@ -87,6 +108,7 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
     protected refresh = async (query?: string): Promise<Secret[]> => {
         const secrets = await aki(SecretsApi).secretsSecretsList({
             ordering: "name",
+            typeIn: this.types,
             pageSize: 100,
             ...(query ? { search: query } : {}),
         });
@@ -98,7 +120,7 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
                 secrets.results.find((secret) => secret.pk === this.value) ??
                 (await aki(SecretsApi).secretsSecretsRetrieve({ secretUuid: this.value }));
             this.selectedSecret = selected;
-            if (!secrets.results.includes(selected)) {
+            if (this.types.includes(selected.type!) && !secrets.results.includes(selected)) {
                 return [selected, ...secrets.results];
             }
         }

@@ -2,6 +2,7 @@
 
 from importlib import import_module
 from json import loads
+from unittest.mock import patch
 
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
@@ -87,7 +88,8 @@ LATEST_MIGRATIONS = [
 class TestSecretMigration(TransactionTestCase):
     """Upgrade populated credential columns, then downgrade edited secrets."""
 
-    def test_upgrade_and_downgrade(self):
+    @patch("authentik.outposts.signals.outpost_send_update.send_with_options")
+    def test_upgrade_and_downgrade(self, _send_outpost_update):
         get_broker().join(TESTING_QUEUE, timeout=10_000)
         executor = MigrationExecutor(connection)
         self.addCleanup(lambda: MigrationExecutor(connection).migrate(LATEST_MIGRATIONS))
@@ -157,6 +159,15 @@ class TestSecretMigration(TransactionTestCase):
         records = []
         for app, model_name, fields in consumers:
             Model = state.apps.get_model(app, model_name)
+            expected_types = {
+                name: (
+                    "multiline"
+                    if Model._meta.get_field(name).get_internal_type() == "JSONField"
+                    or (model_name == "KerberosSource" and name != "sync_password")
+                    else "text"
+                )
+                for name in fields
+            }
             values = {
                 name: (
                     {"token": " original "}
@@ -170,6 +181,8 @@ class TestSecretMigration(TransactionTestCase):
                 kwargs["slug"] = model_name.lower()
             if model_name == "TelegramSource":
                 kwargs["pre_authentication_flow_id"] = create_test_flow().pk
+            if model_name == "OAuthSource":
+                kwargs["provider_type"] = "github"
             obj = Model.objects.create(**kwargs)
             permission = state.apps.get_model("auth", "Permission").objects.get(
                 content_type__app_label=app, codename=f"change_{model_name.lower()}"
@@ -180,7 +193,34 @@ class TestSecretMigration(TransactionTestCase):
                 content_type_id=permission.content_type_id,
                 object_pk=str(obj.pk),
             )
-            records.append((app, model_name, obj.pk, fields, values))
+            records.append((app, model_name, obj.pk, fields, values, expected_types))
+
+        OAuthSource = state.apps.get_model("authentik_sources_oauth", "OAuthSource")
+        apple = OAuthSource.objects.create(
+            name="OAuthSource Apple",
+            slug="oauthsource-apple",
+            provider_type="apple",
+            consumer_secret="private\nkey",
+        )
+        oauth_source_permission = state.apps.get_model("auth", "Permission").objects.get(
+            content_type__app_label="authentik_sources_oauth", codename="change_oauthsource"
+        )
+        state.apps.get_model("guardian", "RoleObjectPermission").objects.create(
+            role_id=role.pk,
+            permission=oauth_source_permission,
+            content_type_id=oauth_source_permission.content_type_id,
+            object_pk=str(apple.pk),
+        )
+        records.append(
+            (
+                "authentik_sources_oauth",
+                "OAuthSource",
+                apple.pk,
+                {"consumer_secret": "secret"},
+                {"consumer_secret": "private\nkey"},
+                {"consumer_secret": "multiline"},
+            )
+        )
 
         ProxyProvider = state.apps.get_model("authentik_providers_proxy", "ProxyProvider")
         proxy = ProxyProvider.objects.create(name="ProxyProvider", cookie_secret=" original ")
@@ -191,6 +231,7 @@ class TestSecretMigration(TransactionTestCase):
                 proxy.pk,
                 {"cookie_secret": "cookie_secret_ref"},
                 {"cookie_secret": " original "},
+                {"cookie_secret": "text"},
             )
         )
 
@@ -201,12 +242,14 @@ class TestSecretMigration(TransactionTestCase):
             obj = state.apps.get_model(app, model_name).objects.create(
                 name=f"{model_name} empty", **{field: ""}
             )
-            records.append((app, model_name, obj.pk, {field: "secret"}, {field: ""}))
+            records.append(
+                (app, model_name, obj.pk, {field: "secret"}, {field: ""}, {field: "text"})
+            )
 
         executor = MigrationExecutor(connection)
         executor.migrate(LATEST_MIGRATIONS)
         state = executor.loader.project_state(LATEST_MIGRATIONS)
-        for app, model_name, pk, fields, values in records:
+        for app, model_name, pk, fields, values, expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
             with self.subTest(model=model_name):
                 for old_field, new_field in fields.items():
@@ -215,6 +258,7 @@ class TestSecretMigration(TransactionTestCase):
                         loads(secret.value) if isinstance(values[old_field], dict) else secret.value
                     )
                     self.assertEqual(value, values[old_field])
+                    self.assertEqual(secret.type, expected_types[old_field])
                     legacy = next(
                         f for f in obj._meta.fields if f.name in {old_field, f"_{old_field}"}
                     )
@@ -240,7 +284,7 @@ class TestSecretMigration(TransactionTestCase):
         executor = MigrationExecutor(connection)
         executor.migrate(OLD_MIGRATIONS)
         state = executor.loader.project_state(OLD_MIGRATIONS)
-        for app, model_name, pk, fields, values in records:
+        for app, model_name, pk, fields, values, _expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
             with self.subTest(downgrade=model_name):
                 for field in fields:

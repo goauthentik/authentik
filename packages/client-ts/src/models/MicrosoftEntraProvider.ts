@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,21 +18,13 @@ import {
 
 /**
  * MicrosoftEntraProvider Serializer
+ *
  * @export
  * @interface MicrosoftEntraProvider
  */
 export interface MicrosoftEntraProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
@@ -64,33 +54,12 @@ export interface MicrosoftEntraProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     clientId: string;
-    /**
-     *
-     */
     secret: string;
-    /**
-     *
-     */
     tenantId: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     filterGroup?: string | null;
-    /**
-     *
-     */
     userDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      * Controls the number of objects synced in a single task

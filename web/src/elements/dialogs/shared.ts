@@ -112,7 +112,8 @@ export interface TransclusionParentElement extends LitElement {
 }
 
 /**
- * An element that is designed to included in a dialog or other container that supports transclusion.
+ * An element that is designed to included in a dialog or other container that supports
+ * transclusion.
  */
 export interface TransclusionChildElement extends LitElement {
     /**
@@ -141,7 +142,8 @@ export interface TransclusionChildElement extends LitElement {
     size?: PFSize | null;
 
     /**
-     * Whether the element is considered visible for the purposes of rendering in a dialog or other container.
+     * Whether the element is considered visible for the purposes of rendering in a dialog or other
+     * container.
      */
     visible?: boolean;
 
@@ -154,8 +156,8 @@ export interface TransclusionChildElement extends LitElement {
     renderHeader?(force?: boolean): SlottedTemplateResult;
 
     /**
-     * An optional method to render action buttons for the element, which can be used
-     * when the element is transcluded into a dialog or other container that supports action buttons.
+     * An optional method to render action buttons for the element, which can be used when the
+     * element is transcluded into a dialog or other container that supports action buttons.
      *
      * @param force Whether to force the contents to render.
      */

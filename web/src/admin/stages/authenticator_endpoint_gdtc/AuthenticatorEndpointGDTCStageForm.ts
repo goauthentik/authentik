@@ -2,6 +2,7 @@ import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -9,13 +10,11 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
+import { AuthenticatorEndpointGDTCStage, SecretTypeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
@@ -64,6 +63,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                 <div class="pf-c-form">
                     <ak-secret-search-input
                         name="secret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Credentials", { id: "google.credentials.label" })}
                         value=${ifPresent(this.instance?.secret)}
                         required

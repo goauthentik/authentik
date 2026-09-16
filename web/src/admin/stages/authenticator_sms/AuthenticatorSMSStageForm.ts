@@ -5,7 +5,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
@@ -42,6 +41,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             .then((stage) => {
                 this.provider = stage.provider;
                 this.authType = stage.authType;
+
                 return stage;
             });
     }
@@ -59,6 +59,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 patchedAuthenticatorSMSStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorSmsCreate({
             authenticatorSMSStageRequest: data as unknown as AuthenticatorSMSStageRequest,
         });
@@ -235,9 +236,11 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             ${msg("Number the SMS will be sent from.")}
                         </p>
                     </ak-form-element-horizontal>
-                    ${this.provider === ProviderEnum.Generic
-                        ? this.renderProviderGeneric()
-                        : this.renderProviderTwillio()}
+                    ${
+                        this.provider === ProviderEnum.Generic
+                            ? this.renderProviderGeneric()
+                            : this.renderProviderTwillio()
+                    }
                     <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
                         <ak-search-select
                             .fetchObjects=${async (
@@ -246,13 +249,16 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 const args: PropertymappingsNotificationListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query) {
                                     args.search = query;
                                 }
+
                                 const items =
                                     await aki(PropertymappingsApi).propertymappingsNotificationList(
                                         args,
                                     );
+
                                 return items.results;
                             }}
                             .renderElement=${(item: NotificationWebhookMapping): string => {
@@ -289,10 +295,13 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

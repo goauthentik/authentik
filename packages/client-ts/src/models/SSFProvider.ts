@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,17 +17,12 @@ import { TokenFromJSON } from "./Token";
 
 /**
  * SSFProvider Serializer
+ *
  * @export
  * @interface SSFProvider
  */
 export interface SSFProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object component so that we know how to edit the object
@@ -51,29 +44,11 @@ export interface SSFProvider {
      * Key used to sign the SSF Events.
      */
     signingKey: string;
-    /**
-     *
-     */
     readonly tokenObj: Token;
-    /**
-     *
-     */
     oidcAuthProviders?: Array<number>;
-    /**
-     *
-     */
     readonly oidcAuthProvidersObj: Array<Provider>;
-    /**
-     *
-     */
     readonly ssfUrl: string | null;
-    /**
-     *
-     */
     eventRetention?: string;
-    /**
-     *
-     */
     pushVerifyCertificates?: boolean;
 }
 

@@ -14,16 +14,16 @@ import { styleMap } from "lit/directives/style-map.js";
  * This component switches between a display of asterisks indicating a secret value, and an input
  * control. By default, the input control is type 'password'; the attribute 'plaintext' will change
  * it to type 'text.'
-
- * @element ak-secret-text-input
  *
  * @class AkSecretTextInput
- *
- * @prop {String} value - The value of the component
- * @prop {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when input allowed.
- * @prop {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will show the secret.
- * @prop {Number} maxLength
- * @prop {Number} minLength
+ * @property {String} value - The value of the component
+ * @property {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when
+ *   input allowed.
+ * @property {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will
+ *   show the secret.
+ * @property {Number} maxLength
+ * @property {Number} minLength
+ * @element ak-secret-text-input
  */
 
 @customElement("ak-secret-text-input")
@@ -54,13 +54,13 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
         this.value = (ev.target as HTMLInputElement).value;
     };
 
-    #ref = createRef<HTMLInputElement>();
+    protected inputRef = createRef<HTMLInputElement | HTMLTextAreaElement>();
 
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("revealed") && this.revealed) {
-            this.#ref.value?.focus();
+            this.inputRef.value?.focus();
         }
     }
 
@@ -105,13 +105,14 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
     protected renderVisibleInput() {
         const code = this.inputHint === "code";
+
         const classes = {
             "pf-c-form-control": true,
             "pf-m-monospace": code,
         };
 
         return html`<input
-            ${ref(this.#ref)}
+            ${ref(this.inputRef)}
             type=${this.plaintext ? "text" : "password"}
             id=${this.fieldID}
             aria-describedby=${this.helpID}

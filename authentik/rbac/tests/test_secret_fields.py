@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.crypto.secrets.models import SecretType
 from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import KubernetesServiceConnection
@@ -32,7 +33,7 @@ class TestSecretFields(APITestCase):
             "contexts": [{"name": "test", "context": {"cluster": "test", "user": "test"}}],
             "users": [{"name": "test", "user": {"token": generate_id()}}],
         }
-        self.secret = create_test_secret(dumps(self.kubeconfig))
+        self.secret = create_test_secret(dumps(self.kubeconfig), SecretType.MULTILINE)
         self.connection = KubernetesServiceConnection.objects.create(
             name=generate_id(), secret=self.secret
         )
@@ -128,7 +129,7 @@ class TestSecretFields(APITestCase):
         self.client.force_login(self.user)
 
         name = generate_id()
-        secret = create_test_secret(dumps(self.kubeconfig))
+        secret = create_test_secret(dumps(self.kubeconfig), SecretType.MULTILINE)
         self.role.assign_perms("authentik_crypto_secrets.view_secret_value", secret)
         res = self.client.post(
             reverse("authentik_api:kubernetesserviceconnection-list"),

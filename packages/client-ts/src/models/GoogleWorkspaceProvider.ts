@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,21 +18,13 @@ import {
 
 /**
  * GoogleWorkspaceProvider Serializer
+ *
  * @export
  * @interface GoogleWorkspaceProvider
  */
 export interface GoogleWorkspaceProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
@@ -64,37 +54,13 @@ export interface GoogleWorkspaceProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     delegatedSubject: string;
-    /**
-     *
-     */
     secret: string;
-    /**
-     *
-     */
     scopes?: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     filterGroup?: string | null;
-    /**
-     *
-     */
     userDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     */
     groupDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     */
     defaultGroupEmailDomain: string;
     /**
      * Controls the number of objects synced in a single task

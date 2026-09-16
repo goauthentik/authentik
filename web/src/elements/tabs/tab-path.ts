@@ -1,10 +1,9 @@
 /**
  * @file Pure path helpers for path-routed tabs.
- *
- * A tab panel is a slotted child named `page-<segment>`; its URL is the tab
- * group's mount path plus that segment (`/if/user/settings` + `sessions` →
- * `/if/user/settings/sessions`). These functions map between the two and pick
- * the active tab from a location. No DOM, no globals — unit-testable in Node.
+ *   A tab panel is a slotted child named `page-<segment>`; its URL is the tab
+ *   group's mount path plus that segment (`/if/user/settings` + `sessions` →
+ *   `/if/user/settings/sessions`). These functions map between the two and pick
+ *   the active tab from a location. No DOM, no globals — unit-testable in Node.
  */
 
 /**

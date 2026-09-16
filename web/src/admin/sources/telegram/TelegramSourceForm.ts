@@ -5,7 +5,6 @@ import "#components/ak-secret-search-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -78,36 +77,41 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>

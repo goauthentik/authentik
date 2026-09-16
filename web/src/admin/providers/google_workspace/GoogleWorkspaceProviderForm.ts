@@ -10,7 +10,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
@@ -28,6 +27,7 @@ import {
     Group,
     OutgoingSyncDeleteAction,
     ProvidersApi,
+    SecretTypeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -63,6 +63,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 <div class="pf-c-form">
                     <ak-secret-search-input
                         name="secret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Credentials", { id: "google.credentials.label" })}
                         value=${ifPresent(this.instance?.secret)}
                         required
@@ -182,10 +183,13 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
