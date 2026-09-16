@@ -80,7 +80,7 @@ class RegisterDeviceView(APIView):
                 ),
                 "authorization_endpoint": request.build_absolute_uri(
                     reverse(
-                        "authentik_enterprise_endpoints_connectors_agent:psso-authorize",
+                        "authentik_enterprise_endpoints_connectors_agent:psso-preauthenticate",
                         kwargs={"connector_uuid": str(conn.connector.pk)},
                     )
                 ),
