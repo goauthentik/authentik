@@ -26,6 +26,7 @@ export const authentikOxfmtConfig: OxfmtConfig = {
     quoteProps: "consistent",
     jsdoc: {
         commentLineStrategy: "keep",
+        lineWrappingStyle: "balance",
         separateReturnsFromParam: true,
     },
     sortPackageJson: true,
