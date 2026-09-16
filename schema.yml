@@ -10365,6 +10365,30 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -25173,6 +25197,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: service_bind_method
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: |+
+            Authentication method used for LDAP synchronization and writeback.
+
+      - in: query
         name: slug
         schema:
           type: string
@@ -37866,7 +37898,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
@@ -44426,6 +44462,10 @@ components:
             Certificate.
         bind_cn:
           type: string
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44651,6 +44691,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52087,6 +52131,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -58909,6 +58957,11 @@ components:
       - name
       - pk
       - verbose_name
+    ServiceBindMethodEnum:
+      enum:
+      - simple
+      - sasl_external
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
