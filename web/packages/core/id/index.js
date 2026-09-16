@@ -5,10 +5,9 @@
 /**
  * A global ID generator.
  *
+ * @category IDs
  * @singleton
  * @runtime common
- *
- * @category IDs
  */
 export class IDGenerator {
     static #sequenceIndex = 0;

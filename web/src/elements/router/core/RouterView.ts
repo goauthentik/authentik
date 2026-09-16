@@ -1,19 +1,16 @@
 /**
  * @file Path-router outlet for the new route table.
- *
- * Renders the route matched from `location.pathname` (with the interface
- * `prefix` stripped per the matcher's leading-slash contract), owns the
- * loading and error states, and claims in-interface anchor clicks. Ships
- * inert: nothing imports it until the interface flip in Plan 3b.
- *
- * App-context-free: imports only the router core, the reused 404/empty-state
- * elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
- * `sentry/tracing` predicate), and `@lit/localize`.
+ *   Renders the route matched from `location.pathname` (with the interface
+ *   `prefix` stripped per the matcher's leading-slash contract), owns the
+ *   loading and error states, and claims in-interface anchor clicks. Ships
+ *   inert: nothing imports it until the interface flip in Plan 3b.
+ *   App-context-free: imports only the router core, the reused 404/empty-state
+ *   elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
+ *   `sentry/tracing` predicate), and `@lit/localize`.
  */
 
 import "#elements/router/Router404";
 import "#elements/EmptyState";
-
 import { sentryReporting } from "#common/sentry/tracing";
 
 import { AKElement } from "#elements/Base";
@@ -168,6 +165,7 @@ export class RouterView extends AKElement {
         const base = this.prefix.replace(/\/+$/, "");
 
         if (pathname === base) return "/";
+
         if (pathname.startsWith(`${base}/`)) {
             return `/${pathname.slice(base.length + 1).replace(/^\/+/, "")}`;
         }
@@ -256,6 +254,7 @@ export class RouterView extends AKElement {
 
     protected override updated(changedProperties: PropertyValues): void {
         if (!changedProperties.has("current")) return;
+
         if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         const name = this.#spanName();

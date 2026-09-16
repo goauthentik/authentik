@@ -8,6 +8,7 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.crypto.secrets.api import SecretSerializer
 from authentik.crypto.secrets.models import Secret, SecretType
+from authentik.crypto.secrets.tests.utils import KUBECONFIG
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
@@ -16,24 +17,6 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
 from authentik.outposts.api.service_connections import KubernetesServiceConnectionSerializer
 from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import KubernetesServiceConnection
-
-KUBECONFIG = """apiVersion: v1
-kind: Config
-current-context: test
-clusters:
-- name: test
-  cluster:
-    server: https://cluster.example.com
-contexts:
-- name: test
-  context:
-    cluster: test
-    user: test
-users:
-- name: test
-  user:
-    token: cluster-token
-"""
 
 
 class TestStructuredSecrets(TestCase):
@@ -55,11 +38,11 @@ class TestStructuredSecrets(TestCase):
     def test_invalid_structured_value(self):
         field = GoogleChromeConnector().serializer().fields["secret"]
         for secret_type, value in [
-            (SecretType.TEXT, "[]"),
-            (SecretType.TEXT, "null"),
-            (SecretType.TEXT, "password"),
-            (SecretType.TEXT, "{broken"),
-            (SecretType.TEXT, "!!python/object:os.system {}"),
+            (SecretType.MULTILINE, "[]"),
+            (SecretType.MULTILINE, "null"),
+            (SecretType.MULTILINE, "password"),
+            (SecretType.MULTILINE, "{broken"),
+            (SecretType.MULTILINE, "!!python/object:os.system {}"),
             (SecretType.FILE, "not base64"),
         ]:
             with self.subTest(type=secret_type, value=value):
@@ -68,7 +51,9 @@ class TestStructuredSecrets(TestCase):
                     field.run_validation(str(secret.pk))
 
     def test_invalid_structured_replacement(self):
-        secret = Secret.objects.create(name="credentials", value='{"token":"value"}')
+        secret = Secret.objects.create(
+            name="credentials", type=SecretType.MULTILINE, value='{"token":"value"}'
+        )
         GoogleChromeConnector.objects.create(name="connector", secret=secret)
         serializer = SecretSerializer(instance=secret, data={"value": "[]"}, partial=True)
         self.assertFalse(serializer.is_valid())
@@ -108,7 +93,9 @@ class TestStructuredSecrets(TestCase):
         self.assertIn("secret", serializer.errors)
 
     def test_invalid_current_kubeconfig(self):
-        secret = Secret.objects.create(name="invalid", value="not a kubeconfig")
+        secret = Secret.objects.create(
+            name="invalid", type=SecretType.MULTILINE, value="not a kubeconfig"
+        )
         connection = KubernetesServiceConnection(name="remote", local=False, secret=secret)
         serializer = KubernetesServiceConnectionSerializer(
             instance=connection, data={"name": "renamed"}, partial=True

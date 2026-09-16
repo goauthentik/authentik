@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,9 +27,6 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface SecretsSecretsCreateRequest {
-    /**
-     *
-     */
     secretRequest: SecretRequest;
 }
 
@@ -43,13 +38,7 @@ export interface SecretsSecretsDestroyRequest {
 }
 
 export interface SecretsSecretsListRequest {
-    /**
-     *
-     */
     managed?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -67,10 +56,11 @@ export interface SecretsSecretsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     type?: SecretTypeEnum;
+    /**
+     * Multiple values may be separated by commas.
+     */
+    typeIn?: Array<string>;
 }
 
 export interface SecretsSecretsPartialUpdateRequest {
@@ -78,9 +68,6 @@ export interface SecretsSecretsPartialUpdateRequest {
      * A UUID string identifying this Secret.
      */
     secretUuid: string;
-    /**
-     *
-     */
     patchedSecretRequest?: PatchedSecretRequest;
 }
 
@@ -103,9 +90,6 @@ export interface SecretsSecretsUpdateRequest {
      * A UUID string identifying this Secret.
      */
     secretUuid: string;
-    /**
-     *
-     */
     secretRequest: SecretRequest;
 }
 
@@ -123,9 +107,6 @@ export interface SecretsSecretsViewValueRetrieveRequest {
     secretUuid: string;
 }
 
-/**
- *
- */
 export class SecretsApi extends runtime.BaseAPI {
     /**
      * Creates request options for secretsSecretsCreate without sending the request
@@ -155,7 +136,7 @@ export class SecretsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/secrets/secrets/`;
+        const urlPath = `/secrets/secrets/`;
 
         return {
             path: urlPath,
@@ -289,6 +270,12 @@ export class SecretsApi extends runtime.BaseAPI {
             queryParameters["type"] = requestParameters["type"];
         }
 
+        if (requestParameters["typeIn"] != null) {
+            queryParameters["type__in"] = requestParameters["typeIn"]!.join(
+                runtime.COLLECTION_FORMATS["csv"],
+            );
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -300,7 +287,7 @@ export class SecretsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/secrets/secrets/`;
+        const urlPath = `/secrets/secrets/`;
 
         return {
             path: urlPath,

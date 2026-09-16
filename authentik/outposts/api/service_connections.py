@@ -2,11 +2,9 @@
 
 from dataclasses import asdict
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from kubernetes.client.configuration import Configuration
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.kube_config import load_kube_config_from_dict
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
@@ -23,6 +21,7 @@ from authentik.core.api.utils import (
 )
 from authentik.crypto.secrets.api import JSONSecretReferenceField
 from authentik.crypto.secrets.models import Secret
+from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -123,9 +122,9 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
                     {"secret": _("A kubeconfig secret is required for a remote cluster.")}
                 )
             try:
-                load_kube_config_from_dict(secret.get_json(), client_configuration=Configuration())
-            except ConfigException, ValueError:
-                raise serializers.ValidationError({"secret": _("Invalid kubeconfig")}) from None
+                validate_kubeconfig(secret)
+            except DjangoValidationError as exc:
+                raise serializers.ValidationError({"secret": exc.messages}) from exc
         return attrs
 
     class Meta:

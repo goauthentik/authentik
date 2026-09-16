@@ -1,5 +1,4 @@
 import "#elements/banner/Banner";
-
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
