@@ -109,7 +109,7 @@ dev = [
   "pytest-django==4.14.0",
   "pytest-flakefinder==1.1.0",
   "pytest-github-actions-annotate-failures==0.4.2",
-  "pytest-randomly==4.1.0",
+  "pytest-randomly==5.0.0",
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
