@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * GoogleChromeConnector Serializer
+ *
  * @export
  * @interface GoogleChromeConnector
  */
 export interface GoogleChromeConnector {
-    /**
-     *
-     */
     connectorUuid?: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
@@ -46,9 +36,6 @@ export interface GoogleChromeConnector {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     secret: string;
     /**
      * Full URL to be used in Google Workspace configuration

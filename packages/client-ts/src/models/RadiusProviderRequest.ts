@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,16 +12,15 @@
 
 /**
  * RadiusProvider Serializer
+ *
  * @export
  * @interface RadiusProviderRequest
  */
 export interface RadiusProviderRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -34,12 +31,10 @@ export interface RadiusProviderRequest {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
-     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will
+     * match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
      */
     clientNetworks?: string;
     /**
@@ -47,12 +42,12 @@ export interface RadiusProviderRequest {
      */
     secret?: string | null;
     /**
-     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
+     * the TOTP code to the password. This should only be enabled if all users that will bind to
+     * this provider have a TOTP device configured, as otherwise a password may incorrectly be
+     * rejected if it contains a semicolon.
      */
     mfaSupport?: boolean;
-    /**
-     *
-     */
     certificate?: string | null;
 }
 

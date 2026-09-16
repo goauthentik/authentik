@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorEmailStage Serializer
+ *
  * @export
  * @interface AuthenticatorEmailStage
  */
 export interface AuthenticatorEmailStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,65 +38,31 @@ export interface AuthenticatorEmailStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     */
     host?: string;
-    /**
-     *
-     */
     port?: number;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     secret?: string | null;
-    /**
-     *
-     */
     useTls?: boolean;
-    /**
-     *
-     */
     useSsl?: boolean;
-    /**
-     *
-     */
     timeout?: number;
-    /**
-     *
-     */
     fromAddress?: string;
-    /**
-     *
-     */
     subject?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
      */
     tokenExpiry?: string;
-    /**
-     *
-     */
     template?: string;
 }
 

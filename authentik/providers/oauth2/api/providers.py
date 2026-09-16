@@ -36,7 +36,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIType,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import is_all_vschar
+from authentik.providers.oauth2.utils import is_all_vschar, validate_client_secret
 from authentik.rbac.decorators import permission_required
 
 
@@ -61,8 +61,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         return secret
 
     def validate_secret(self, secret: Secret | None) -> Secret | None:
-        if secret and not is_all_vschar(secret.value):
-            raise ValidationError("Client secret must consist of only ASCII characters.")
+        if secret:
+            validate_client_secret(secret.value)
         return secret
 
     def validate_redirect_uris(self, data: list) -> list:

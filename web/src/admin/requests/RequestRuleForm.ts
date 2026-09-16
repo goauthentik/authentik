@@ -5,7 +5,6 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -21,9 +20,10 @@ import {
     RequestsApi,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
 function createNotificationModeOptions(): RadioOption<NotificationModeEnum>[] {

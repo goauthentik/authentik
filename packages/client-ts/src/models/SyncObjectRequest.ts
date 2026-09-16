@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,13 @@ import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncOb
 
 /**
  * Sync object serializer
+ *
  * @export
  * @interface SyncObjectRequest
  */
 export interface SyncObjectRequest {
-    /**
-     *
-     */
     syncObjectModel: SyncObjectModelEnum;
-    /**
-     *
-     */
     syncObjectId: string;
-    /**
-     *
-     */
     overrideDryRun?: boolean;
 }
 
