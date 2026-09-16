@@ -56,6 +56,7 @@ export function CustomEmitterElement<
 }
 
 type CustomEventListener<D = unknown> = (ev: CustomEvent<D>) => void;
+
 type EventMap<D = unknown> = WeakMap<CustomEventListener<D>, CustomEventListener<D>>;
 
 export interface CustomEventTarget<EventType extends string = string> {
@@ -66,8 +67,8 @@ export interface CustomEventTarget<EventType extends string = string> {
 /**
  * A mixin that enables Lit Elements to handle custom events in a more straightforward manner.
  *
- * @todo Can we lean on the native `EventTarget` class for this?
  * @category Mixin
+ * @todo Can we lean on the native `EventTarget` class for this?
  */
 export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClass }) => {
     return class ListenerElementHandler extends SuperClass implements CustomEventTarget {

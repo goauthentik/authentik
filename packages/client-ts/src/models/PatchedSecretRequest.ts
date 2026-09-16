@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,13 @@ import { SecretTypeEnumFromJSON, SecretTypeEnumToJSON } from "./SecretTypeEnum";
 
 /**
  * Create and configure a secret without exposing its value.
+ *
  * @export
  * @interface PatchedSecretRequest
  */
 export interface PatchedSecretRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     type?: SecretTypeEnum;
-    /**
-     *
-     */
     value?: string;
 }
 

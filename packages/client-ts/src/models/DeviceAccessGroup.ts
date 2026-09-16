@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface DeviceAccessGroup
  */
 export interface DeviceAccessGroup {
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

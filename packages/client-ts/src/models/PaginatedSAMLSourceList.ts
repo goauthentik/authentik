@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SAMLSource } from "./SAMLSource";
 import { SAMLSourceFromJSON, SAMLSourceToJSON } from "./SAMLSource";
 
 /**
- *
  * @export
  * @interface PaginatedSAMLSourceList
  */
 export interface PaginatedSAMLSourceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SAMLSource>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 
