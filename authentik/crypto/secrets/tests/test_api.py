@@ -1,10 +1,14 @@
 """Managed secret API tests."""
 
+from unittest.mock import patch
+
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.crypto.secrets.api import SecretSerializer
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.crypto.secrets.tests.utils import KUBECONFIG
 from authentik.events.models import Event, EventAction, NotificationTransport, TransportMode
@@ -263,3 +267,21 @@ class TestSecretsAPI(APITestCase):
         secret.replace_value("https://example.com/replacement")
         secret.refresh_from_db()
         self.assertEqual(secret.value, "https://example.com/replacement")
+    def test_replacement_rejected_after_validation_rolls_back_metadata(self):
+        serializer = SecretSerializer(
+            instance=self.secret, data={"name": "renamed", "value": "replacement"}, partial=True
+        )
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        with (
+            patch.object(
+                self.secret,
+                "validate_value",
+                side_effect=DjangoValidationError("Invalid credential"),
+            ),
+            self.assertRaises(ValidationError) as error,
+        ):
+            serializer.save()
+        self.assertIn("value", error.exception.detail)
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.name, "test")
+        self.assertNotEqual(self.secret.value, "replacement")
