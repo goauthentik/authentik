@@ -4,7 +4,7 @@ import { DebugApi } from "@goauthentik/api";
 
 let _serverLog = async (_: string): Promise<void> => {};
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "production") {
     _serverLog = async (msg): Promise<void> => {
         const api = await aki(DebugApi);
 
