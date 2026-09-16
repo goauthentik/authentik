@@ -71,9 +71,11 @@ test.describe("Account lockdown", () => {
                 session.login({ to: "/if/admin/core/brands", page }));
 
             const licensed = await new LicenseFixture({ page, testName }).isAvailable();
+
             if (!licensed) {
                 await context.close();
             }
+
             test.skip(!licensed, "A valid enterprise license is required");
 
             const $brand = await test.step("Find the default brand via search", () =>
