@@ -465,6 +465,7 @@ export const ROUTES: RouteLike[] = [
         "/secrets",
         async () => {
             await import("#admin/secrets/SecretListPage");
+
             return html`<ak-secret-list></ak-secret-list>`;
         },
         "secrets",
