@@ -128,7 +128,10 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         ignorePatterns,
         ...configOverrides,
         rules: { ...rules, ...ruleOverrides },
-        overrides: [...createRuntimeOverrides(packageNamespace), ...(fileOverrides ?? [])],
+        overrides: [
+            ...createRuntimeOverrides(packageNamespace),
+            ...(fileOverrides ?? []),
+        ] as OxlintConfig["overrides"],
     };
 }
 
