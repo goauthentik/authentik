@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 /**
  * @file Renders a Playwright run's JSON report into GitHub's reviewer-facing surfaces.
- *
- * Usage:
+ *   Usage:
  *   playwright-report [path/to/results.json]
- *
- * Every input has a flag, and each one falls back to the variable a workflow runner sets:
- *
+ *   Every input has a flag, and each one falls back to the variable a workflow runner sets:
  *   --report         The JSON report to render            (positional)
  *   --summary        File the job summary is appended to  (GITHUB_STEP_SUMMARY)
  *   --pr             Pull request to comment on           (PR_NUMBER)
@@ -16,9 +13,8 @@
  *   --artifact-url   Download URL of the HTML report      (REPORT_ARTIFACT_URL)
  *   --server-url     GitHub's web origin                  (GITHUB_SERVER_URL)
  *   --api-url        GitHub's API origin                  (GITHUB_API_URL)
- *
- * `GITHUB_TOKEN` deliberately has no flag: anything in `argv` is readable by every other
- * process on the machine. Without a pull request to comment on, no token is needed.
+ *   `GITHUB_TOKEN` deliberately has no flag: anything in `argv` is readable by every other
+ *   process on the machine. Without a pull request to comment on, no token is needed.
  */
 
 import { appendFile } from "node:fs/promises";

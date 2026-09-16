@@ -104,5 +104,6 @@ export function collectFailures(
 }
 
 export function stripANSI(input: string): string {
+    // oxlint-disable-next-line no-control-regex -- matching ESC is the point of this function.
     return input.replace(/\u001B\[[0-9;]*m/g, "");
 }

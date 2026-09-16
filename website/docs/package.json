@@ -7,7 +7,7 @@
         "build": "docusaurus build && cp -r ./build/ ../build/",
         "build:copy": "cp -r ./build/ ../build/",
         "build:docusaurus": "docusaurus build",
-        "check-types": "tsc -b .",
+        "build:types": "tsc -b .",
         "clear": "docusaurus clear",
         "docusaurus": "docusaurus",
         "serve": "docusaurus serve",

@@ -66,18 +66,16 @@
         "build-locales": "node scripts/build-locales.mjs",
         "build-proxy": "wireit",
         "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
+        "build:types": "wireit",
         "bundler:watch": "node scripts/build-web.mjs --watch",
+        "check": "run-s lint:check format:check",
         "extract-locales": "lit-localize extract",
-        "fix:oxfmt": "oxfmt --write .",
-        "fix:oxlint": "oxlint --fix",
-        "lint": "run-s lint:oxlint lint:oxfmt",
-        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
-        "lint-check:oxlint": "oxlint --max-warnings=0",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix": "run-s lint format",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
         "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:oxlint": "oxlint",
-        "lint:types": "wireit",
         "lit-analyse": "wireit",
         "precommit": "wireit",
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
@@ -137,7 +135,7 @@
         "lint:components": {
             "command": "lit-analyzer src"
         },
-        "lint:types": {
+        "build:types": {
             "command": "tsc -p .",
             "dependencies": [
                 "build-locales"
@@ -153,7 +151,7 @@
             "command": "oxfmt --write .",
             "dependencies": [
                 "lint",
-                "lint:types",
+                "build:types",
                 "lint:components"
             ]
         },

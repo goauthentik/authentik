@@ -27,10 +27,10 @@
         "access": "public"
     },
     "scripts": {
-        "fix:oxfmt": "oxfmt --write .",
-        "lint": "run-s lint:oxfmt",
-        "lint-check": "run-s lint:oxfmt",
-        "lint:oxfmt": "oxfmt --check ."
+        "check": "run-s format:check",
+        "fix": "run-s format",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check ."
     },
     "devDependencies": {
         "@goauthentik/oxfmt-config": "link:../oxfmt-config",

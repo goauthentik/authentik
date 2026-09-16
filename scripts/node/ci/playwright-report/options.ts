@@ -1,9 +1,8 @@
 /**
  * @file Resolves everything the renderer and the GitHub client need, in one place.
- *
- * This is the only module that reads the environment. Every value also has a flag, so a run
- * can be reproduced locally without impersonating a runner, and the modules downstream take
- * plain arguments instead of reaching for globals they cannot be tested without.
+ *   This is the only module that reads the environment. Every value also has a flag, so a run
+ *   can be reproduced locally without impersonating a runner, and the modules downstream take
+ *   plain arguments instead of reaching for globals they cannot be tested without.
  */
 
 import { resolve } from "node:path";

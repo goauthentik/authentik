@@ -28,14 +28,12 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "fix:oxfmt": "oxfmt --write .",
-        "fix:oxlint": "oxlint --fix",
-        "lint": "run-s lint:oxlint lint:oxfmt",
-        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
-        "lint-check:oxlint": "oxlint --max-warnings=0",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:oxlint": "oxlint",
+        "fix": "run-s lint format",
+        "check": "run-s lint:check format:check",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
         "prepare": "tsc -p ."
     },
     "devDependencies": {
