@@ -62,23 +62,30 @@ test.describe("Session Lifecycle", () => {
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
 
             // Remember-me lands on one of two stages: identification with the username
-            // pre-filled, or — when the remembered identity is restored outright — the
-            // password stage for that user.
+            // pre-filled, or — when the executor submits that pre-filled identification
+            // for you — the password stage for that user.
             await expect(
                 session.$identificationStage.or(session.$passwordStage),
                 "Sign out returns to the authentication flow",
             ).toBeVisible({ timeout: 15_000 });
 
             if (await session.$identificationStage.isVisible()) {
-                // Remember-me's only observable effect here is the pre-filled username,
-                // so the Not-you UI never renders.
-                await expect(
-                    session.$usernameField,
-                    "Username pre-filled from remember-me",
-                ).toHaveValue(GOOD_USERNAME);
+                if (await session.$passwordField.isVisible()) {
+                    // Embedded password: the flow never leaves identification, so
+                    // the Not-you UI never renders and the pre-filled username is
+                    // remember-me's only observable effect.
+                    await expect(
+                        session.$usernameField,
+                        "Username pre-filled from remember-me",
+                    ).toHaveValue(GOOD_USERNAME);
 
-                return;
+                    return;
+                }
+
+                await session.$submitButton.click();
             }
+
+            await session.$passwordStage.waitFor({ state: "visible" });
 
             const notYouLink = page.getByRole("link", { name: "Not you?" });
 
