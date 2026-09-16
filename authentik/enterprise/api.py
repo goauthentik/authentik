@@ -21,7 +21,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import User, UserTypes
+from authentik.core.models import UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
 from authentik.enterprise.models import License
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -78,14 +78,6 @@ class LicenseSerializer(ModelSerializer):
             "external_users": {"read_only": True},
         }
 
-
-class LicenseForecastSerializer(PassiveSerializer):
-    """Serializer for license forecast"""
-
-    internal_users = IntegerField(required=True)
-    external_users = IntegerField(required=True)
-    forecasted_internal_users = IntegerField(required=True)
-    forecasted_external_users = IntegerField(required=True)
 
 
 class LicenseUserCountsParameters(PassiveSerializer):
@@ -192,34 +184,6 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         response = LicenseSummarySerializer(instance=summary)
         return Response(response.data)
 
-    @permission_required(None, ["authentik_enterprise.view_license"])
-    @extend_schema(
-        request=OpenApiTypes.NONE,
-        responses={
-            200: LicenseForecastSerializer(),
-        },
-    )
-    @action(detail=False, methods=["GET"])
-    def forecast(self, request: Request) -> Response:
-        """Forecast how many users will be required in a year"""
-        last_month = now() - timedelta(days=30)
-        # Forecast for internal users
-        internal_in_last_month = User.objects.filter(
-            type=UserTypes.INTERNAL, date_joined__gte=last_month
-        ).count()
-        # Forecast for external users
-        external_in_last_month = LicenseKey.get_external_user_count()
-        forecast_for_months = 12
-        response = LicenseForecastSerializer(
-            data={
-                "internal_users": LicenseKey.get_internal_user_count(),
-                "external_users": LicenseKey.get_external_user_count(),
-                "forecasted_internal_users": (internal_in_last_month * forecast_for_months),
-                "forecasted_external_users": (external_in_last_month * forecast_for_months),
-            }
-        )
-        response.is_valid(raise_exception=True)
-        return Response(response.data)
 
     @permission_required(None, ["authentik_enterprise.view_license"])
     @extend_schema(

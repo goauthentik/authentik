@@ -14,7 +14,6 @@
 
 import { type InstallID, InstallIDFromJSON } from "../models/InstallID";
 import { type License, LicenseFromJSON } from "../models/License";
-import { type LicenseForecast, LicenseForecastFromJSON } from "../models/LicenseForecast";
 import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest";
 import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary";
 import { type LicenseUserCounts, LicenseUserCountsFromJSON } from "../models/LicenseUserCounts";
@@ -252,57 +251,6 @@ export class EnterpriseApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.enterpriseLicenseDestroyRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Creates request options for enterpriseLicenseForecastRetrieve without sending the request
-     */
-    async enterpriseLicenseForecastRetrieveRequestOpts(): Promise<runtime.RequestOpts> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/enterprise/license/forecast/`;
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Forecast how many users will be required in a year
-     */
-    async enterpriseLicenseForecastRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LicenseForecast>> {
-        const requestOptions = await this.enterpriseLicenseForecastRetrieveRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LicenseForecastFromJSON(jsonValue),
-        );
-    }
-
-    /**
-     * Forecast how many users will be required in a year
-     */
-    async enterpriseLicenseForecastRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LicenseForecast> {
-        const response = await this.enterpriseLicenseForecastRetrieveRaw(initOverrides);
-        return await response.value();
     }
 
     /**

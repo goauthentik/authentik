@@ -7788,25 +7788,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /enterprise/license/forecast/:
-    get:
-      operationId: enterprise_license_forecast_retrieve
-      description: Forecast how many users will be required in a year
-      tags:
-      - enterprise
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LicenseForecast'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/install_id/:
     get:
       operationId: enterprise_license_install_id_retrieve
@@ -44950,23 +44931,6 @@ components:
       - trial
       - non_production
       type: string
-    LicenseForecast:
-      type: object
-      description: Serializer for license forecast
-      properties:
-        internal_users:
-          type: integer
-        external_users:
-          type: integer
-        forecasted_internal_users:
-          type: integer
-        forecasted_external_users:
-          type: integer
-      required:
-      - external_users
-      - forecasted_external_users
-      - forecasted_internal_users
-      - internal_users
     LicenseRequest:
       type: object
       description: License Serializer

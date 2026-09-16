@@ -297,7 +297,6 @@ export * from "./LangEnum";
 export * from "./LastTaskStatusEnum";
 export * from "./License";
 export * from "./LicenseFlagsEnum";
-export * from "./LicenseForecast";
 export * from "./LicenseRequest";
 export * from "./LicenseStatusEnum";
 export * from "./LicenseSummary";
