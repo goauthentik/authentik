@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Secret } from "./Secret";
 import { SecretFromJSON, SecretToJSON } from "./Secret";
 
 /**
- *
  * @export
  * @interface PaginatedSecretList
  */
 export interface PaginatedSecretList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Secret>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,29 +18,15 @@ import {
 
 /**
  * RedirectStage Serializer
+ *
  * @export
  * @interface RedirectStageRequest
  */
 export interface RedirectStageRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     keepContext?: boolean;
-    /**
-     *
-     */
     mode: RedirectStageModeEnum;
-    /**
-     *
-     */
     targetStatic?: string;
-    /**
-     *
-     */
     targetFlow?: string | null;
 }
 

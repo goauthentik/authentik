@@ -9,6 +9,7 @@ import { ref, RefOrCallback } from "lit/directives/ref.js";
  * Finds the main content element within a given context.
  *
  * @param context - The element to start searching from
+ *
  * @returns The main content element, if any.
  */
 export function findMainContent(context: HTMLElement): HTMLElement | null {
@@ -91,7 +92,7 @@ export class AKSkipToContent extends AKElement {
      *
      * ```ts
      * function render() {
-     *   return html`<main ${AKSkipToContent.ref}></main>`;
+     *     return html`<main ${AKSkipToContent.ref}></main>`;
      * }
      * ```
      *
@@ -131,6 +132,7 @@ export class AKSkipToContent extends AKElement {
 
         if (!targetElement) {
             console.warn(`Could not find target element for skip to content`);
+
             return;
         }
 

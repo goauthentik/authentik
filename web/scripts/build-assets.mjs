@@ -1,5 +1,4 @@
 import "@goauthentik/core/environment/load/node";
-
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -65,6 +64,7 @@ const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
 
 async function copyHexworld() {
     const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
+
     if (!existsSync(archive)) {
         throw new Error(
             `hexworld.pmtiles missing at ${archive}. The archive is committed to git; ` +
@@ -72,13 +72,16 @@ async function copyHexworld() {
                 "`pnpm --dir packages/geo run hexworld:build`.",
         );
     }
+
     const fonts = path.resolve(HEXWORLD_SRC, "fonts");
+
     if (!existsSync(fonts)) {
         throw new Error(
             `hexworld fonts missing at ${fonts}. The glyph ranges are committed to git; ` +
                 "restore from HEAD.",
         );
     }
+
     await fs.mkdir(HEXWORLD_DEST, { recursive: true });
     await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
     await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });

@@ -3,6 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -18,8 +19,6 @@ import { CoreApi, ObjectAttribute, ObjectAttributeTypeEnum } from "@goauthentik/
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): string {
     if (!type) return "";

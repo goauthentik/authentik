@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Payload to create a recovery link
+ *
  * @export
  * @interface UserRecoveryLinkRequest
  */
 export interface UserRecoveryLinkRequest {
-    /**
-     *
-     */
     tokenDuration?: string;
 }
 

@@ -1,8 +1,6 @@
 """Managed secrets API."""
 
-from base64 import b64decode
-from binascii import Error as BinasciiError
-
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.utils.translation import gettext_lazy as _
@@ -27,22 +25,35 @@ from authentik.rbac.permissions import ObjectPermissions
 class SecretReferenceField(PrimaryKeyRelatedField):
     """Attaching a credential can disclose it through the consumer."""
 
+    allowed_types = (SecretType.TEXT,)
+
+    def __init__(self, **kwargs):
+        self.allowed_types = kwargs.pop("allowed_types", self.allowed_types)
+        super().__init__(**kwargs)
+
     def to_internal_value(self, data):
         secret = super().to_internal_value(data)
         request = self.context.get("request")
         instance = self.parent.instance
-        if not request or (instance and getattr(instance, f"{self.source}_id") == secret.pk):
-            return secret
-        if not (
-            request.user.has_perm("authentik_crypto_secrets.view_secret_value")
-            or request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
+        unchanged = instance and getattr(instance, f"{self.source}_id") == secret.pk
+        if (
+            request
+            and not unchanged
+            and not (
+                request.user.has_perm("authentik_crypto_secrets.view_secret_value")
+                or request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
+            )
         ):
             raise PermissionDenied(_("You do not have permission to use this secret."))
+        if secret.type not in self.allowed_types:
+            raise ValidationError(_("This secret type is not supported by this field."))
         return secret
 
 
 class JSONSecretReferenceField(SecretReferenceField):
     """A reference to a structured credential."""
+
+    allowed_types = (SecretType.MULTILINE, SecretType.FILE)
 
     def to_internal_value(self, data):
         secret = super().to_internal_value(data)
@@ -56,8 +67,6 @@ class JSONSecretReferenceField(SecretReferenceField):
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
 
-    structured_consumers = ("kubernetes_connections", "google_workspace_providers")
-
     def validate_value(self, value: str) -> str:
         if value == "":
             raise SkipField
@@ -70,18 +79,6 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
             or request.user.has_perm("authentik_crypto_secrets.rotate_secret", instance)
         ):
             raise PermissionDenied(_("You do not have permission to replace this value."))
-        if instance.oauth2_providers.exists():
-            from authentik.providers.oauth2.utils import is_all_vschar
-
-            if not is_all_vschar(value):
-                raise ValidationError(
-                    _("OAuth client secrets must consist of only ASCII characters.")
-                )
-        if any(getattr(instance, relation).exists() for relation in self.structured_consumers):
-            try:
-                Secret(type=instance.type, value=value).get_json()
-            except BinasciiError, ValueError:
-                raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
         return value
 
     def validate(self, attrs: dict) -> dict:
@@ -91,11 +88,11 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         secret_type = attrs.get("type", instance.type if instance else SecretType.TEXT)
         if not instance and secret_type != SecretType.TEXT and not attrs.get("value"):
             raise ValidationError({"value": _("A value is required for this type.")})
-        if secret_type == SecretType.FILE and attrs.get("value"):
+        if "value" in attrs:
             try:
-                b64decode(attrs["value"], validate=True)
-            except BinasciiError, ValueError:
-                raise ValidationError({"value": _("Value must be base64-encoded.")}) from None
+                (instance or Secret(type=secret_type)).validate_value(attrs["value"])
+            except DjangoValidationError as exc:
+                raise ValidationError({"value": exc.messages}) from exc
         return attrs
 
     def update(self, instance: Secret, validated_data: dict) -> Secret:
@@ -106,7 +103,10 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
                     setattr(instance, field, field_value)
                 instance.save(update_fields=[*validated_data, "last_updated"])
             if value is not None:
-                instance.replace_value(value, self.context.get("request"))
+                try:
+                    instance.replace_value(value, self.context.get("request"))
+                except DjangoValidationError as exc:
+                    raise ValidationError({"value": exc.messages}) from exc
         return instance
 
     class Meta:
@@ -150,7 +150,7 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
     serializer_class = SecretSerializer
     ordering = ["name"]
     search_fields = ["name"]
-    filterset_fields = ["name", "type", "managed"]
+    filterset_fields = {"name": ["exact"], "type": ["exact", "in"], "managed": ["exact"]}
 
     def destroy(self, request: Request, *args, **kwargs) -> Response:
         try:
@@ -181,7 +181,10 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
         secret = self.get_object()
         if secret.type != SecretType.TEXT:
             raise ValidationError({"non_field_errors": [_("Only text secrets can be rotated.")]})
-        value = secret.rotate(request)
+        try:
+            value = secret.rotate(request)
+        except DjangoValidationError as exc:
+            raise ValidationError({"non_field_errors": exc.messages}) from exc
         can_view = request.user.has_perm("authentik_crypto_secrets.view_secret_value") or (
             request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         )

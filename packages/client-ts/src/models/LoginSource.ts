@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,25 +15,14 @@ import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginC
 
 /**
  * Serializer for Login buttons of sources
+ *
  * @export
  * @interface LoginSource
  */
 export interface LoginSource {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     iconUrl?: string | null;
-    /**
-     *
-     */
     promoted?: boolean;
-    /**
-     *
-     */
     challenge: LoginChallengeTypes;
 }
 

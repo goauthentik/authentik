@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * Get GeoIP Data
+ *
  * @export
  * @interface AuthenticatedSessionGeoIp
  */
 export interface AuthenticatedSessionGeoIp {
-    /**
-     *
-     */
     continent: string | null;
-    /**
-     *
-     */
     country: string | null;
-    /**
-     *
-     */
     lat: number | null;
-    /**
-     *
-     */
     _long: number | null;
-    /**
-     *
-     */
     city: string;
 }
 

@@ -1,5 +1,7 @@
 import type { OwnPropertyRecord, Writeable } from "#common/types";
 
+import type { DirectiveResult } from "lit-html/directive.js";
+
 import type { Context, ContextProvider, ContextType } from "@lit/context";
 import type {
     LitElement,
@@ -8,11 +10,11 @@ import type {
     ReactiveControllerHost,
     TemplateResult,
 } from "lit";
-import type { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
 
 export const AKElementTagPrefix = `ak-`;
+
 export type AKElementTagPrefix = `ak-${string}`;
 
 /**
@@ -40,6 +42,7 @@ export type CustomHTMLElementTagNameMap = {
  * }
  *
  * type FormElements = HTMLElementTagNamesOf<Form>;
+ * ```
  */
 export type ElementTagNamesOf<T, Map = CustomHTMLElementTagNameMap> = {
     [K in keyof Map]: Map[K] extends T ? K : never;
@@ -50,7 +53,6 @@ export type ElementTagNamesOf<T, Map = CustomHTMLElementTagNameMap> = {
 //#region Element Properties
 
 /**
- *
  * Given an element and a base class, pluck the properties not defined on the base class.
  */
 export type TemplatedProperties<
@@ -90,6 +92,7 @@ export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
  * @template P The type of the props object.
  * @param props The props object.
  * @param children The children to render.
+ *
  * @returns The rendered template.
  */
 export type LitFC<P> = (
@@ -134,7 +137,7 @@ export interface ReactiveControllerHostRegistry extends ReactiveControllerHost {
  *
  * @remarks
  *
- * This type is derived from an internal type in Lit.
+ *   This type is derived from an internal type in Lit.
  */
 export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Writeable<T>> &
     HTMLElement;
@@ -178,7 +181,8 @@ export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElem
 /**
  * A utility type to extract the public static members of a class, excluding the constructor.
  *
- * This is used to ensure that when we create a mixin, we don't accidentally lose any static members of the superclass.
+ * This is used to ensure that when we create a mixin, we don't accidentally lose any static members
+ * of the superclass.
  */
 type PublicStaticsOf<T> = Pick<T, keyof T>;
 
@@ -199,6 +203,7 @@ export type ConstructorWithMixin<SuperClass, Mixin> =
                 new (...args: ConstructorParameters<SuperClass>): InstanceType<SuperClass> & Mixin;
             }
           : never;
+
 /**
  * The init object passed to the `createMixin` callback.
  */
@@ -220,8 +225,8 @@ export interface CreateMixinInit<C = unknown> {
 /**
  * Create a mixin for a LitElement.
  *
- * @param mixinCallback The callback that will be called to create the mixin.
  * @template Mixin The mixin class to union with the superclass.
+ * @param mixinCallback The callback that will be called to create the mixin.
  */
 export function createMixin<Mixin, C = unknown>(
     mixinCallback: (init: CreateMixinInit<C>) => unknown,
@@ -233,8 +238,8 @@ export function createMixin<Mixin, C = unknown>(
         /**
          * Whether or not to subscribe to the context.
          *
-         * Should the context be explicitly reset, all active web components that are
-         * currently active and subscribed to the context will automatically have a `requestUpdate()`
+         * Should the context be explicitly reset, all active web components that are currently
+         * active and subscribed to the context will automatically have a `requestUpdate()`
          * triggered with the new configuration.
          */
         subscribe?: boolean,
@@ -258,10 +263,11 @@ export function createMixin<Mixin, C = unknown>(
  *
  * The displayed element for our list can be a TemplateResult.
  *
- * If it is, we *strongly* recommend that you include the `sortBy` string as well, which is used for sorting but is also used for our autocomplete element (ak-search-select),
- * both for tracking the user's input and for what we display in the autocomplete input box.
+ * If it is, we _strongly_ recommend that you include the `sortBy` string as well, which is used for
+ * sorting but is also used for our autocomplete element (ak-search-select), both for tracking the
+ * user's input and for what we display in the autocomplete input box.
  *
- * Note that this is a *tuple*, not a record or map!
+ * Note that this is a _tuple_, not a record or map!
  */
 export type SelectOption<T = never> = [
     /**
@@ -278,7 +284,7 @@ export type SelectOption<T = never> = [
     desc: SlottedTemplateResult,
     /**
      * The object the key represents; used by some specific apps. API layers may use
-     *   this as a way to find the referenced object, rather than the string and keeping a local map.
+     * this as a way to find the referenced object, rather than the string and keeping a local map.
      */
     localMapping?: T,
 ];
@@ -297,13 +303,11 @@ export type SelectFlat<T = never> = {
 
 /**
  * A search group consists of a group name and a collection of SelectTuples.
- *
  */
 export type SelectGroup<T = never> = { name: string; options: SelectOption<T>[] };
 
 /**
  * A grouped search is an array of SelectGroups, of course!
- *
  */
 export type SelectGrouped<T = never> = {
     grouped: true;
@@ -313,9 +317,9 @@ export type SelectGrouped<T = never> = {
 /**
  * Internally, we only work with these two, but we have the `SelectOptions` variant
  * below to support the case where you just want to pass in an array of SelectTuples.
- *
  */
 export type GroupedOptions<T = never> = SelectGrouped<T> | SelectFlat<T>;
+
 export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
 
 //#endregion

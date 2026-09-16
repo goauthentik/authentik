@@ -15,6 +15,15 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/Divider";
 import "#admin/policies/BoundPoliciesList";
 import "../../../elements/forms/ConfirmationForm";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -51,16 +60,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 export const TypeToLabel = (clientType?: ClientTypeEnum) =>
     match(clientType)
         .with(P.nullish, () => "")
@@ -70,6 +69,7 @@ export const TypeToLabel = (clientType?: ClientTypeEnum) =>
         .exhaustive();
 
 const LogoutMethod = OAuth2ProviderLogoutMethodEnum;
+
 const LogoutMethodToLabel = (method?: OAuth2ProviderLogoutMethodEnum) =>
     match(method)
         .with(P.nullish, () => "")
@@ -128,6 +128,7 @@ export class OAuth2ProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -160,6 +161,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs routed part="tabs">
                 <div
@@ -234,11 +236,13 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     renderTabOverview(provider: OAuth2Provider): SlottedTemplateResult {
-        return html`${provider.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
+        return html`${
+                provider.assignedApplicationName
+                    ? nothing
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
@@ -411,31 +415,34 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                         </form>
                     </div>
-                    ${this.dcrConfig !== null
-                        ? html`<ak-divider></ak-divider>
-                              <div class="pf-c-card__body">
-                                  <form class="pf-c-form">
-                                      <div class="pf-c-form__group">
-                                          <label
-                                              class="pf-c-form__label"
-                                              for="${IDGenerator.elementID("registration")}"
-                                          >
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("Dynamic Client Registration URL")}</span
+                    ${
+                        this.dcrConfig !== null
+                            ? html`<ak-divider></ak-divider>
+                                  <div class="pf-c-card__body">
+                                      <form class="pf-c-form">
+                                          <div class="pf-c-form__group">
+                                              <label
+                                                  class="pf-c-form__label"
+                                                  for="${IDGenerator.elementID("registration")}"
                                               >
-                                          </label>
-                                          <input
-                                              id="${IDGenerator.elementID("registration")}"
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${this.providerUrls?.dcrRegistration ||
-                                              msg("-")}"
-                                          />
-                                      </div>
-                                  </form>
-                              </div>`
-                        : nothing}
+                                                  <span class="pf-c-form__label-text"
+                                                      >${msg("Dynamic Client Registration URL")}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  id="${IDGenerator.elementID("registration")}"
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${
+                                                      this.providerUrls?.dcrRegistration || msg("-")
+                                                  }"
+                                              />
+                                          </div>
+                                      </form>
+                                  </div>`
+                            : nothing
+                    }
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
@@ -453,6 +460,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     if (!this.provider) {
                                         return input;
                                     }
+
                                     return input.replaceAll(
                                         "<application slug>",
                                         provider.assignedApplicationSlug ?? "<application slug>",
@@ -469,6 +477,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -488,10 +497,13 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             const args: CoreUsersListRequest = {
                                                 ordering: "username",
                                             };
+
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
+
                                             const users = await aki(CoreApi).coreUsersList(args);
+
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {
@@ -520,9 +532,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                     )}
                 </div>
                 <div class="pf-c-card__body">
-                    ${this.preview
-                        ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
-                        : html` <ak-empty-state loading></ak-empty-state> `}
+                    ${
+                        this.preview
+                            ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
+                            : html` <ak-empty-state loading></ak-empty-state> `
+                    }
                 </div>
             </div>
         </div>`;
@@ -532,6 +546,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (this.dcrConfig === undefined) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         if (this.dcrConfig === null) {
             return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">
@@ -558,7 +573,9 @@ export class OAuth2ProviderViewPage extends AKElement {
                 </div>
             </div>`;
         }
+
         const dcr = this.dcrConfig;
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -568,15 +585,19 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${renderDescriptionList([
                         [
                             msg("Default application group"),
-                            html`${dcr.defaultApplicationGroup !== ""
-                                ? dcr.defaultApplicationGroup
-                                : "-"}`,
+                            html`${
+                                dcr.defaultApplicationGroup !== ""
+                                    ? dcr.defaultApplicationGroup
+                                    : "-"
+                            }`,
                         ],
                         [
                             msg("Allowed grant types"),
-                            html`${(dcr.allowedGrantTypes || []).length > 0
-                                ? dcr.allowedGrantTypes?.join(", ")
-                                : msg("All")}`,
+                            html`${
+                                (dcr.allowedGrantTypes || []).length > 0
+                                    ? dcr.allowedGrantTypes?.join(", ")
+                                    : msg("All")
+                            }`,
                         ],
                         [
                             msg("Related actions"),
