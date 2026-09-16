@@ -3986,10 +3986,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <source>TLS Client authentication certificate</source>
   <target>Certyfikat uwierzytelniania klienta TLS</target>
 </trans-unit>
-<trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
-  <target>Para kluczy certyfikatu klienta do uwierzytelniania w oparciu o certyfikat serwera LDAP.</target>
-</trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
   <target>Wiąż CN</target>
@@ -11715,6 +11711,21 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.label">
+  <source>Service bind method</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.simple.label">
+  <source>Simple or anonymous bind</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.sasl-external.label">
+  <source>SASL EXTERNAL</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.description">
+  <source>Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.</source>
+</trans-unit>
+<trans-unit id="ldap-source.client-certificate.description">
+  <source>Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.</source>
 </trans-unit>
 </body>
 </file>

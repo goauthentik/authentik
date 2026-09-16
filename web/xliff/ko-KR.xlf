@@ -3963,10 +3963,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>TLS Client authentication certificate</source>
   <target>TLS 클라이언트 인증 인증서</target>
 </trans-unit>
-<trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
-  <target>클라이언트 인증서 키쌍으로 LDAP 서버의 인증서에 대해 인증합니다.</target>
-</trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
   <target>CN 바인딩</target>
@@ -11690,6 +11686,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.label">
+  <source>Service bind method</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.simple.label">
+  <source>Simple or anonymous bind</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.sasl-external.label">
+  <source>SASL EXTERNAL</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.description">
+  <source>Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.</source>
+</trans-unit>
+<trans-unit id="ldap-source.client-certificate.description">
+  <source>Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.</source>
 </trans-unit>
 </body>
 </file>
