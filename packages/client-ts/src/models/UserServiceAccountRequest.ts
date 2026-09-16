@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,24 +11,15 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Payload to create a service account
+ *
  * @export
  * @interface UserServiceAccountRequest
  */
 export interface UserServiceAccountRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     createGroup?: boolean;
-    /**
-     *
-     */
     expiring?: boolean;
     /**
      * If not provided, valid for 360 days

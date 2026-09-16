@@ -141,6 +141,7 @@ export class Tabs extends AKElement {
 
         if (!this.visible) {
             this.#commands.clear();
+
             return;
         }
 
@@ -217,6 +218,7 @@ export class Tabs extends AKElement {
         if (this.#pathMode) {
             this.activeTabName = this.#slotFromLocation();
             this.#publishChildBase();
+
             return;
         }
 
@@ -269,11 +271,13 @@ export class Tabs extends AKElement {
     public activateTab(nextTabName: string): void {
         if (!nextTabName) {
             console.warn("Cannot activate falsey tab name:", nextTabName);
+
             return;
         }
 
         if (!this.tabs.has(nextTabName)) {
             console.warn("Cannot activate unknown tab name:", nextTabName, this.tabs);
+
             return;
         }
 
@@ -303,6 +307,7 @@ export class Tabs extends AKElement {
     public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
         if (!tabPanel) {
             console.warn("Cannot dispatch activate event, no tab panel found");
+
             return;
         }
 
@@ -332,6 +337,7 @@ export class Tabs extends AKElement {
         // to the browser so real links keep working; the top outlet's anchor
         // interceptor claims the rest, but activate directly as a fallback.
         if (event.button !== 0) return;
+
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
         event.preventDefault();

@@ -8,7 +8,6 @@ import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { getRouterConfig } from "#elements/router/core/config";

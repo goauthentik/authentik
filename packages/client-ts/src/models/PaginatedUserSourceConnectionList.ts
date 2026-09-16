@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { UserSourceConnection } from "./UserSourceConnection";
 import { UserSourceConnectionFromJSON, UserSourceConnectionToJSON } from "./UserSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserSourceConnectionList
  */
 export interface PaginatedUserSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

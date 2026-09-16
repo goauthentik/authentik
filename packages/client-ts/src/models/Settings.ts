@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,6 +18,7 @@ import {
 
 /**
  * Settings Serializer
+ *
  * @export
  * @interface Settings
  */
@@ -29,7 +28,8 @@ export interface Settings {
      */
     avatars?: string;
     /**
-     * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+     * Configure the base URL under which this authentik instance is reachable, e.g.
+     * https://authentik.company
      */
     baseUrl?: string;
     /**
@@ -56,9 +56,6 @@ export interface Settings {
      * Reputation cannot increase higher than this value. Zero or positive.
      */
     reputationUpperLimit?: number;
-    /**
-     *
-     */
     footerLinks?: any | null;
     /**
      * When enabled, all the events caused by a user will be deleted upon the user's deletion.
@@ -88,9 +85,6 @@ export interface Settings {
      * Maximum page size
      */
     paginationMaxPageSize?: number;
-    /**
-     *
-     */
     flags: PatchedSettingsRequestFlags;
 }
 

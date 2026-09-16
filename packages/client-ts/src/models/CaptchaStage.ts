@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,17 +20,12 @@ import {
 
 /**
  * CaptchaStage Serializer
+ *
  * @export
  * @interface CaptchaStage
  */
 export interface CaptchaStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -50,40 +43,21 @@ export interface CaptchaStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
      * Public key, acquired your captcha Provider.
      */
     publicKey: string;
-    /**
-     *
-     */
     jsUrl?: string;
-    /**
-     *
-     */
     apiUrl?: string;
-    /**
-     *
-     */
     requestContentType?: RequestContentTypeEnum;
-    /**
-     *
-     */
     interactive?: boolean;
-    /**
-     *
-     */
     scoreMinThreshold?: number;
-    /**
-     *
-     */
     scoreMaxThreshold?: number;
     /**
-     * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+     * When enabled and the received captcha score is outside of the given threshold, the stage will
+     * show an error message. When not enabled, the flow will continue, but the data from the
+     * captcha will be available in the context for policy decisions
      */
     errorOnInvalidScore?: boolean;
 }

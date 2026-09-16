@@ -4,7 +4,6 @@ import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/devices/DeviceUserBindingForm";
-
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
