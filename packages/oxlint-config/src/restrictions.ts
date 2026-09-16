@@ -4,6 +4,8 @@
 
 import { builtinModules } from "node:module";
 
+import type { DummyRuleMap, OxlintOverride } from "oxlint";
+
 //#region Runtime data
 
 /**
@@ -147,7 +149,7 @@ const BROWSER_GLOBALS = [
     "top",
 ] as const;
 
-function restrictedBrowserGlobalsRule(): unknown {
+function restrictedBrowserGlobalsRule(): DummyRuleMap["no-restricted-globals"] {
     return [
         "warn",
         ...BROWSER_GLOBALS.map((name) => ({
@@ -160,12 +162,6 @@ function restrictedBrowserGlobalsRule(): unknown {
 //#endregion
 
 //#region Override generation
-
-/** A per-file-glob oxlint override: applies `rules` only to files matching `files`. */
-export interface OxlintOverride {
-    files: string[];
-    rules: Record<string, unknown>;
-}
 
 /** A restricted-import pattern: a set of gitignore-style globs plus a message. */
 interface RestrictedPattern {
