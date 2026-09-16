@@ -24,12 +24,12 @@ export const CaptchaVendor = {
 
 export type CaptchaVendor = (typeof CaptchaVendor)[keyof typeof CaptchaVendor];
 
-export const CaptchaVendorGlobal = {
+export const CaptchaVendorGlobal: Record<CaptchaVendor, string> = {
     [CaptchaVendor.reCAPTCHA]: "grecaptcha",
     [CaptchaVendor.hCaptcha]: "hcaptcha",
     [CaptchaVendor.turnstile]: "turnstile",
     [CaptchaVendor.cap]: "cap-widget",
-} as const satisfies Record<CaptchaVendor, string>;
+};
 
 export type CaptchaVendorGlobal = (typeof CaptchaVendorGlobal)[keyof typeof CaptchaVendorGlobal];
 
@@ -46,24 +46,26 @@ export function matchesHost(url: URL, ...hosts: string[]): boolean {
     return hosts.some((host) => url.hostname === host || url.hostname.endsWith(`.${host}`));
 }
 
+export type CaptchaVendorURLPredicate = (url: URL) => boolean;
+
 /**
  * Whether the URL points at a Cap widget bundle.
  *
  * Cap is self-hosted, so there is no canonical host to match — only the bundle's path
  * shape, which is stable across deployments.
  */
-export function isCapWidgetURL(url: URL): boolean {
+export const isCapWidgetURL: CaptchaVendorURLPredicate = (url: URL): boolean => {
     return url.pathname.includes("cap-widget") || url.pathname.endsWith("/assets/widget.js");
-}
+};
 
-const CaptchaVendorURLPredicate = {
-    [CaptchaVendor.reCAPTCHA]: (url: URL) =>
+const CaptchaVendorURLPredicate: Record<CaptchaVendor, CaptchaVendorURLPredicate> = {
+    [CaptchaVendor.reCAPTCHA]: (url) =>
         matchesHost(url, "google.com", "recaptcha.net", "gstatic.com") &&
         url.pathname.includes("/recaptcha/"),
-    [CaptchaVendor.hCaptcha]: (url: URL) => matchesHost(url, "hcaptcha.com"),
-    [CaptchaVendor.turnstile]: (url: URL) => matchesHost(url, "challenges.cloudflare.com"),
+    [CaptchaVendor.hCaptcha]: (url) => matchesHost(url, "hcaptcha.com"),
+    [CaptchaVendor.turnstile]: (url) => matchesHost(url, "challenges.cloudflare.com"),
     [CaptchaVendor.cap]: isCapWidgetURL,
-} as const satisfies Record<CaptchaVendor, (url: URL) => boolean>;
+};
 
 /**
  * Whether `url` is the script URL of `vendor`.
