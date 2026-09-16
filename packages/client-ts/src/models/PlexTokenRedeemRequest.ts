@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PlexTokenRedeemRequest {
     /**
-     *
+     * 
      */
     plexToken: string;
 }
@@ -28,13 +27,7 @@ export interface PlexTokenRedeemRequest {
  * Check if a given object implements the PlexTokenRedeemRequest interface.
  */
 export function instanceOfPlexTokenRedeemRequest(value: object): value is PlexTokenRedeemRequest {
-    if (
-        (!("plexToken" in (value as Record<string, any>)) &&
-            !("plex_token" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["plexToken"] === undefined &&
-            (value as Record<string, any>)["plex_token"] === undefined)
-    )
-        return false;
+    if ((!('plexToken' in (value as Record<string, any>)) && !('plex_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['plexToken'] === undefined && (value as Record<string, any>)['plex_token'] === undefined)) return false;
     return true;
 }
 
@@ -42,15 +35,13 @@ export function PlexTokenRedeemRequestFromJSON(json: any): PlexTokenRedeemReques
     return PlexTokenRedeemRequestFromJSONTyped(json, false);
 }
 
-export function PlexTokenRedeemRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PlexTokenRedeemRequest {
+export function PlexTokenRedeemRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlexTokenRedeemRequest {
     if (json == null) {
         return json;
     }
     return {
-        plexToken: json["plex_token"],
+        
+        'plexToken': json['plex_token'],
     };
 }
 
@@ -58,15 +49,14 @@ export function PlexTokenRedeemRequestToJSON(json: any): PlexTokenRedeemRequest 
     return PlexTokenRedeemRequestToJSONTyped(json, false);
 }
 
-export function PlexTokenRedeemRequestToJSONTyped(
-    value?: PlexTokenRedeemRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PlexTokenRedeemRequestToJSONTyped(value?: PlexTokenRedeemRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        plex_token: value["plexToken"],
+        
+        'plex_token': value['plexToken'],
     };
 }
+

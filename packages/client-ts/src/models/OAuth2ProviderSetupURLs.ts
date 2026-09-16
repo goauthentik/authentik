@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,35 +18,35 @@
  */
 export interface OAuth2ProviderSetupURLs {
     /**
-     *
+     * 
      */
     readonly issuer: string;
     /**
-     *
+     * 
      */
     readonly authorize: string;
     /**
-     *
+     * 
      */
     readonly token: string;
     /**
-     *
+     * 
      */
     readonly userInfo: string;
     /**
-     *
+     * 
      */
     readonly providerInfo: string;
     /**
-     *
+     * 
      */
     readonly logout: string;
     /**
-     *
+     * 
      */
     readonly jwks: string;
     /**
-     *
+     * 
      */
     readonly dcrRegistration: string | null;
 }
@@ -56,32 +55,14 @@ export interface OAuth2ProviderSetupURLs {
  * Check if a given object implements the OAuth2ProviderSetupURLs interface.
  */
 export function instanceOfOAuth2ProviderSetupURLs(value: object): value is OAuth2ProviderSetupURLs {
-    if (!("issuer" in value) || value["issuer"] === undefined) return false;
-    if (!("authorize" in value) || value["authorize"] === undefined) return false;
-    if (!("token" in value) || value["token"] === undefined) return false;
-    if (
-        (!("userInfo" in (value as Record<string, any>)) &&
-            !("user_info" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userInfo"] === undefined &&
-            (value as Record<string, any>)["user_info"] === undefined)
-    )
-        return false;
-    if (
-        (!("providerInfo" in (value as Record<string, any>)) &&
-            !("provider_info" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["providerInfo"] === undefined &&
-            (value as Record<string, any>)["provider_info"] === undefined)
-    )
-        return false;
-    if (!("logout" in value) || value["logout"] === undefined) return false;
-    if (!("jwks" in value) || value["jwks"] === undefined) return false;
-    if (
-        (!("dcrRegistration" in (value as Record<string, any>)) &&
-            !("dcr_registration" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["dcrRegistration"] === undefined &&
-            (value as Record<string, any>)["dcr_registration"] === undefined)
-    )
-        return false;
+    if (!('issuer' in value) || value['issuer'] === undefined) return false;
+    if (!('authorize' in value) || value['authorize'] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
+    if ((!('userInfo' in (value as Record<string, any>)) && !('user_info' in (value as Record<string, any>))) || ((value as Record<string, any>)['userInfo'] === undefined && (value as Record<string, any>)['user_info'] === undefined)) return false;
+    if ((!('providerInfo' in (value as Record<string, any>)) && !('provider_info' in (value as Record<string, any>))) || ((value as Record<string, any>)['providerInfo'] === undefined && (value as Record<string, any>)['provider_info'] === undefined)) return false;
+    if (!('logout' in value) || value['logout'] === undefined) return false;
+    if (!('jwks' in value) || value['jwks'] === undefined) return false;
+    if ((!('dcrRegistration' in (value as Record<string, any>)) && !('dcr_registration' in (value as Record<string, any>))) || ((value as Record<string, any>)['dcrRegistration'] === undefined && (value as Record<string, any>)['dcr_registration'] === undefined)) return false;
     return true;
 }
 
@@ -89,22 +70,20 @@ export function OAuth2ProviderSetupURLsFromJSON(json: any): OAuth2ProviderSetupU
     return OAuth2ProviderSetupURLsFromJSONTyped(json, false);
 }
 
-export function OAuth2ProviderSetupURLsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OAuth2ProviderSetupURLs {
+export function OAuth2ProviderSetupURLsFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuth2ProviderSetupURLs {
     if (json == null) {
         return json;
     }
     return {
-        issuer: json["issuer"],
-        authorize: json["authorize"],
-        token: json["token"],
-        userInfo: json["user_info"],
-        providerInfo: json["provider_info"],
-        logout: json["logout"],
-        jwks: json["jwks"],
-        dcrRegistration: json["dcr_registration"],
+        
+        'issuer': json['issuer'],
+        'authorize': json['authorize'],
+        'token': json['token'],
+        'userInfo': json['user_info'],
+        'providerInfo': json['provider_info'],
+        'logout': json['logout'],
+        'jwks': json['jwks'],
+        'dcrRegistration': json['dcr_registration'],
     };
 }
 
@@ -112,23 +91,13 @@ export function OAuth2ProviderSetupURLsToJSON(json: any): OAuth2ProviderSetupURL
     return OAuth2ProviderSetupURLsToJSONTyped(json, false);
 }
 
-export function OAuth2ProviderSetupURLsToJSONTyped(
-    value?: Omit<
-        OAuth2ProviderSetupURLs,
-        | "issuer"
-        | "authorize"
-        | "token"
-        | "userInfo"
-        | "providerInfo"
-        | "logout"
-        | "jwks"
-        | "dcrRegistration"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OAuth2ProviderSetupURLsToJSONTyped(value?: Omit<OAuth2ProviderSetupURLs, 'issuer'|'authorize'|'token'|'userInfo'|'providerInfo'|'logout'|'jwks'|'dcrRegistration'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

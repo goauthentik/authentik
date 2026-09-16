@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { Token } from "./Token";
-import { TokenFromJSON } from "./Token";
+import type { Token } from './Token';
+import {
+    TokenFromJSON,
+} from './Token';
 
 /**
  * SCIMSource Serializer
@@ -22,7 +23,7 @@ import { TokenFromJSON } from "./Token";
  */
 export interface SCIMSource {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -34,15 +35,15 @@ export interface SCIMSource {
      */
     slug: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     userPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     groupPropertyMappings?: Array<string>;
     /**
@@ -66,7 +67,7 @@ export interface SCIMSource {
      */
     readonly managed: string | null;
     /**
-     *
+     * 
      */
     userPathTemplate?: string;
     /**
@@ -74,7 +75,7 @@ export interface SCIMSource {
      */
     readonly rootUrl: string;
     /**
-     *
+     * 
      */
     readonly tokenObj: Token;
 }
@@ -83,46 +84,16 @@ export interface SCIMSource {
  * Check if a given object implements the SCIMSource interface.
  */
 export function instanceOfSCIMSource(value: object): value is SCIMSource {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("managed" in value) || value["managed"] === undefined) return false;
-    if (
-        (!("rootUrl" in (value as Record<string, any>)) &&
-            !("root_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["rootUrl"] === undefined &&
-            (value as Record<string, any>)["root_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("tokenObj" in (value as Record<string, any>)) &&
-            !("token_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenObj"] === undefined &&
-            (value as Record<string, any>)["token_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('managed' in value) || value['managed'] === undefined) return false;
+    if ((!('rootUrl' in (value as Record<string, any>)) && !('root_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['rootUrl'] === undefined && (value as Record<string, any>)['root_url'] === undefined)) return false;
+    if ((!('tokenObj' in (value as Record<string, any>)) && !('token_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenObj'] === undefined && (value as Record<string, any>)['token_obj'] === undefined)) return false;
     return true;
 }
 
@@ -135,23 +106,21 @@ export function SCIMSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        slug: json["slug"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        userPropertyMappings:
-            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
-        groupPropertyMappings:
-            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        managed: json["managed"],
-        userPathTemplate:
-            json["user_path_template"] == null ? undefined : json["user_path_template"],
-        rootUrl: json["root_url"],
-        tokenObj: TokenFromJSON(json["token_obj"]),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'slug': json['slug'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
+        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'managed': json['managed'],
+        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        'rootUrl': json['root_url'],
+        'tokenObj': TokenFromJSON(json['token_obj']),
     };
 }
 
@@ -159,30 +128,19 @@ export function SCIMSourceToJSON(json: any): SCIMSource {
     return SCIMSourceToJSONTyped(json, false);
 }
 
-export function SCIMSourceToJSONTyped(
-    value?: Omit<
-        SCIMSource,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "managed"
-        | "rootUrl"
-        | "tokenObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMSourceToJSONTyped(value?: Omit<SCIMSource, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'managed'|'rootUrl'|'tokenObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        enabled: value["enabled"],
-        user_property_mappings: value["userPropertyMappings"],
-        group_property_mappings: value["groupPropertyMappings"],
-        user_path_template: value["userPathTemplate"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'enabled': value['enabled'],
+        'user_property_mappings': value['userPropertyMappings'],
+        'group_property_mappings': value['groupPropertyMappings'],
+        'user_path_template': value['userPathTemplate'],
     };
 }
+

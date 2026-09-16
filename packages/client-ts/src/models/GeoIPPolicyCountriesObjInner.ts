@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,17 +12,17 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface GeoIPPolicyCountriesObjInner
  */
 export interface GeoIPPolicyCountriesObjInner {
     /**
-     *
+     * 
      */
     code: string;
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -31,11 +30,9 @@ export interface GeoIPPolicyCountriesObjInner {
 /**
  * Check if a given object implements the GeoIPPolicyCountriesObjInner interface.
  */
-export function instanceOfGeoIPPolicyCountriesObjInner(
-    value: object,
-): value is GeoIPPolicyCountriesObjInner {
-    if (!("code" in value) || value["code"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfGeoIPPolicyCountriesObjInner(value: object): value is GeoIPPolicyCountriesObjInner {
+    if (!('code' in value) || value['code'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -43,16 +40,14 @@ export function GeoIPPolicyCountriesObjInnerFromJSON(json: any): GeoIPPolicyCoun
     return GeoIPPolicyCountriesObjInnerFromJSONTyped(json, false);
 }
 
-export function GeoIPPolicyCountriesObjInnerFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GeoIPPolicyCountriesObjInner {
+export function GeoIPPolicyCountriesObjInnerFromJSONTyped(json: any, ignoreDiscriminator: boolean): GeoIPPolicyCountriesObjInner {
     if (json == null) {
         return json;
     }
     return {
-        code: json["code"],
-        name: json["name"],
+        
+        'code': json['code'],
+        'name': json['name'],
     };
 }
 
@@ -60,16 +55,15 @@ export function GeoIPPolicyCountriesObjInnerToJSON(json: any): GeoIPPolicyCountr
     return GeoIPPolicyCountriesObjInnerToJSONTyped(json, false);
 }
 
-export function GeoIPPolicyCountriesObjInnerToJSONTyped(
-    value?: GeoIPPolicyCountriesObjInner | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GeoIPPolicyCountriesObjInnerToJSONTyped(value?: GeoIPPolicyCountriesObjInner | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        code: value["code"],
-        name: value["name"],
+        
+        'code': value['code'],
+        'name': value['name'],
     };
 }
+

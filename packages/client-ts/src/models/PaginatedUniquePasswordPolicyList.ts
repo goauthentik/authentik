@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,80 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UniquePasswordPolicy } from "./UniquePasswordPolicy";
-import { UniquePasswordPolicyFromJSON, UniquePasswordPolicyToJSON } from "./UniquePasswordPolicy";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { UniquePasswordPolicy } from './UniquePasswordPolicy';
+import {
+    UniquePasswordPolicyFromJSON,
+    UniquePasswordPolicyToJSON,
+} from './UniquePasswordPolicy';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedUniquePasswordPolicyList
  */
 export interface PaginatedUniquePasswordPolicyList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<UniquePasswordPolicy>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedUniquePasswordPolicyList interface.
  */
-export function instanceOfPaginatedUniquePasswordPolicyList(
-    value: object,
-): value is PaginatedUniquePasswordPolicyList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedUniquePasswordPolicyList(value: object): value is PaginatedUniquePasswordPolicyList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedUniquePasswordPolicyListFromJSON(
-    json: any,
-): PaginatedUniquePasswordPolicyList {
+export function PaginatedUniquePasswordPolicyListFromJSON(json: any): PaginatedUniquePasswordPolicyList {
     return PaginatedUniquePasswordPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedUniquePasswordPolicyListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedUniquePasswordPolicyList {
+export function PaginatedUniquePasswordPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUniquePasswordPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(UniquePasswordPolicyFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(UniquePasswordPolicyFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedUniquePasswordPolicyListToJSON(
-    json: any,
-): PaginatedUniquePasswordPolicyList {
+export function PaginatedUniquePasswordPolicyListToJSON(json: any): PaginatedUniquePasswordPolicyList {
     return PaginatedUniquePasswordPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedUniquePasswordPolicyListToJSONTyped(
-    value?: PaginatedUniquePasswordPolicyList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedUniquePasswordPolicyListToJSONTyped(value?: PaginatedUniquePasswordPolicyList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(UniquePasswordPolicyToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(UniquePasswordPolicyToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

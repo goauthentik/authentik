@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Endpoint } from "./Endpoint";
-import { EndpointFromJSON, EndpointToJSON } from "./Endpoint";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { Endpoint } from './Endpoint';
+import {
+    EndpointFromJSON,
+    EndpointToJSON,
+} from './Endpoint';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedEndpointList
  */
 export interface PaginatedEndpointList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Endpoint>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedEndpointList interface.
  */
 export function instanceOfPaginatedEndpointList(value: object): value is PaginatedEndpointList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedEndpointListFromJSON(json: any): PaginatedEndpointList 
     return PaginatedEndpointListFromJSONTyped(json, false);
 }
 
-export function PaginatedEndpointListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedEndpointList {
+export function PaginatedEndpointListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEndpointList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EndpointFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(EndpointFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedEndpointListToJSON(json: any): PaginatedEndpointList {
     return PaginatedEndpointListToJSONTyped(json, false);
 }
 
-export function PaginatedEndpointListToJSONTyped(
-    value?: PaginatedEndpointList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedEndpointListToJSONTyped(value?: PaginatedEndpointList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EndpointToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(EndpointToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

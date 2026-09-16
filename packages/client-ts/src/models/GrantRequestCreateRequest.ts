@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface GrantRequestCreateRequest {
     /**
-     *
+     * 
      */
     pbms: Array<string>;
     /**
@@ -31,10 +30,8 @@ export interface GrantRequestCreateRequest {
 /**
  * Check if a given object implements the GrantRequestCreateRequest interface.
  */
-export function instanceOfGrantRequestCreateRequest(
-    value: object,
-): value is GrantRequestCreateRequest {
-    if (!("pbms" in value) || value["pbms"] === undefined) return false;
+export function instanceOfGrantRequestCreateRequest(value: object): value is GrantRequestCreateRequest {
+    if (!('pbms' in value) || value['pbms'] === undefined) return false;
     return true;
 }
 
@@ -42,16 +39,14 @@ export function GrantRequestCreateRequestFromJSON(json: any): GrantRequestCreate
     return GrantRequestCreateRequestFromJSONTyped(json, false);
 }
 
-export function GrantRequestCreateRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GrantRequestCreateRequest {
+export function GrantRequestCreateRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GrantRequestCreateRequest {
     if (json == null) {
         return json;
     }
     return {
-        pbms: json["pbms"],
-        expiry: json["expiry"] == null ? undefined : json["expiry"],
+        
+        'pbms': json['pbms'],
+        'expiry': json['expiry'] == null ? undefined : json['expiry'],
     };
 }
 
@@ -59,16 +54,15 @@ export function GrantRequestCreateRequestToJSON(json: any): GrantRequestCreateRe
     return GrantRequestCreateRequestToJSONTyped(json, false);
 }
 
-export function GrantRequestCreateRequestToJSONTyped(
-    value?: GrantRequestCreateRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GrantRequestCreateRequestToJSONTyped(value?: GrantRequestCreateRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pbms: value["pbms"],
-        expiry: value["expiry"],
+        
+        'pbms': value['pbms'],
+        'expiry': value['expiry'],
     };
 }
+

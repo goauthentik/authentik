@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface TransactionApplicationResponse {
     /**
-     *
+     * 
      */
     applied: boolean;
     /**
-     *
+     * 
      */
     logs: Array<string>;
 }
@@ -31,11 +30,9 @@ export interface TransactionApplicationResponse {
 /**
  * Check if a given object implements the TransactionApplicationResponse interface.
  */
-export function instanceOfTransactionApplicationResponse(
-    value: object,
-): value is TransactionApplicationResponse {
-    if (!("applied" in value) || value["applied"] === undefined) return false;
-    if (!("logs" in value) || value["logs"] === undefined) return false;
+export function instanceOfTransactionApplicationResponse(value: object): value is TransactionApplicationResponse {
+    if (!('applied' in value) || value['applied'] === undefined) return false;
+    if (!('logs' in value) || value['logs'] === undefined) return false;
     return true;
 }
 
@@ -43,16 +40,14 @@ export function TransactionApplicationResponseFromJSON(json: any): TransactionAp
     return TransactionApplicationResponseFromJSONTyped(json, false);
 }
 
-export function TransactionApplicationResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TransactionApplicationResponse {
+export function TransactionApplicationResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransactionApplicationResponse {
     if (json == null) {
         return json;
     }
     return {
-        applied: json["applied"],
-        logs: json["logs"],
+        
+        'applied': json['applied'],
+        'logs': json['logs'],
     };
 }
 
@@ -60,16 +55,15 @@ export function TransactionApplicationResponseToJSON(json: any): TransactionAppl
     return TransactionApplicationResponseToJSONTyped(json, false);
 }
 
-export function TransactionApplicationResponseToJSONTyped(
-    value?: TransactionApplicationResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TransactionApplicationResponseToJSONTyped(value?: TransactionApplicationResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        applied: value["applied"],
-        logs: value["logs"],
+        
+        'applied': value['applied'],
+        'logs': value['logs'],
     };
 }
+

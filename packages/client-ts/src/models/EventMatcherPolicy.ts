@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,22 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { AppEnum } from "./AppEnum";
-import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import { parseDateTime } from '../runtime';
+import type { ModelEnum } from './ModelEnum';
+import {
+    ModelEnumFromJSON,
+    ModelEnumToJSON,
+} from './ModelEnum';
+import type { AppEnum } from './AppEnum';
+import {
+    AppEnumFromJSON,
+    AppEnumToJSON,
+} from './AppEnum';
+import type { EventActions } from './EventActions';
+import {
+    EventActionsFromJSON,
+    EventActionsToJSON,
+} from './EventActions';
 
 /**
  * Event Matcher Policy Serializer
@@ -27,11 +35,11 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
  */
 export interface EventMatcherPolicy {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -59,11 +67,11 @@ export interface EventMatcherPolicy {
      */
     readonly boundTo: number;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
@@ -83,54 +91,26 @@ export interface EventMatcherPolicy {
      */
     model?: ModelEnum | null;
     /**
-     *
+     * 
      */
     query?: string | null;
 }
+
+
 
 /**
  * Check if a given object implements the EventMatcherPolicy interface.
  */
 export function instanceOfEventMatcherPolicy(value: object): value is EventMatcherPolicy {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("boundTo" in (value as Record<string, any>)) &&
-            !("bound_to" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["boundTo"] === undefined &&
-            (value as Record<string, any>)["bound_to"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('boundTo' in (value as Record<string, any>)) && !('bound_to' in (value as Record<string, any>))) || ((value as Record<string, any>)['boundTo'] === undefined && (value as Record<string, any>)['bound_to'] === undefined)) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
     return true;
 }
 
@@ -138,53 +118,27 @@ export function EventMatcherPolicyFromJSON(json: any): EventMatcherPolicy {
     return EventMatcherPolicyFromJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EventMatcherPolicy {
+export function EventMatcherPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventMatcherPolicy {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        boundTo: json["bound_to"],
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        action:
-            json["action"] === undefined
-                ? undefined
-                : json["action"] === null
-                  ? null
-                  : EventActionsFromJSON(json["action"]),
-        clientIp:
-            json["client_ip"] === undefined
-                ? undefined
-                : json["client_ip"] === null
-                  ? null
-                  : json["client_ip"],
-        app:
-            json["app"] === undefined
-                ? undefined
-                : json["app"] === null
-                  ? null
-                  : AppEnumFromJSON(json["app"]),
-        model:
-            json["model"] === undefined
-                ? undefined
-                : json["model"] === null
-                  ? null
-                  : ModelEnumFromJSON(json["model"]),
-        query:
-            json["query"] === undefined ? undefined : json["query"] === null ? null : json["query"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'boundTo': json['bound_to'],
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'action': json['action'] === undefined ? undefined : json['action'] === null ? null : EventActionsFromJSON(json['action']),
+        'clientIp': json['client_ip'] === undefined ? undefined : json['client_ip'] === null ? null : json['client_ip'],
+        'app': json['app'] === undefined ? undefined : json['app'] === null ? null : AppEnumFromJSON(json['app']),
+        'model': json['model'] === undefined ? undefined : json['model'] === null ? null : ModelEnumFromJSON(json['model']),
+        'query': json['query'] === undefined ? undefined : json['query'] === null ? null : json['query'],
     };
 }
 
@@ -192,31 +146,20 @@ export function EventMatcherPolicyToJSON(json: any): EventMatcherPolicy {
     return EventMatcherPolicyToJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyToJSONTyped(
-    value?: Omit<
-        EventMatcherPolicy,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "boundTo"
-        | "lastUpdated"
-        | "created"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EventMatcherPolicyToJSONTyped(value?: Omit<EventMatcherPolicy, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'boundTo'|'lastUpdated'|'created'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        action: EventActionsToJSON(value["action"]),
-        client_ip: value["clientIp"],
-        app: AppEnumToJSON(value["app"]),
-        model: ModelEnumToJSON(value["model"]),
-        query: value["query"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'action': EventActionsToJSON(value['action']),
+        'client_ip': value['clientIp'],
+        'app': AppEnumToJSON(value['app']),
+        'model': ModelEnumToJSON(value['model']),
+        'query': value['query'],
     };
 }
+

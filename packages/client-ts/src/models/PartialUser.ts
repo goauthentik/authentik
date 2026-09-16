@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * Partial User Serializer, does not include child relations.
  * @export
@@ -21,7 +19,7 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface PartialUser {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
@@ -37,19 +35,19 @@ export interface PartialUser {
      */
     isActive?: boolean;
     /**
-     *
+     * 
      */
     lastLogin?: Date | null;
     /**
-     *
+     * 
      */
     email?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     readonly uid: string;
 }
@@ -58,10 +56,10 @@ export interface PartialUser {
  * Check if a given object implements the PartialUser interface.
  */
 export function instanceOfPartialUser(value: object): value is PartialUser {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('uid' in value) || value['uid'] === undefined) return false;
     return true;
 }
 
@@ -74,19 +72,15 @@ export function PartialUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        pk: json["pk"],
-        username: json["username"],
-        name: json["name"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin:
-            json["last_login"] === undefined
-                ? undefined
-                : json["last_login"] === null
-                  ? null
-                  : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        uid: json["uid"],
+        
+        'pk': json['pk'],
+        'username': json['username'],
+        'name': json['name'],
+        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'lastLogin': json['last_login'] === undefined ? undefined : json['last_login'] === null ? null : (parseDateTime(json['last_login'])),
+        'email': json['email'] == null ? undefined : json['email'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'uid': json['uid'],
     };
 }
 
@@ -94,21 +88,19 @@ export function PartialUserToJSON(json: any): PartialUser {
     return PartialUserToJSONTyped(json, false);
 }
 
-export function PartialUserToJSONTyped(
-    value?: Omit<PartialUser, "pk" | "uid"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PartialUserToJSONTyped(value?: Omit<PartialUser, 'pk'|'uid'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        is_active: value["isActive"],
-        last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
-        attributes: value["attributes"],
+        
+        'username': value['username'],
+        'name': value['name'],
+        'is_active': value['isActive'],
+        'last_login': value['lastLogin'] == null ? value['lastLogin'] : serializeDateTime(value['lastLogin']),
+        'email': value['email'],
+        'attributes': value['attributes'],
     };
 }
+

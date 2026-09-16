@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface DeviceSummary {
     /**
-     *
+     * 
      */
     totalCount: number;
     /**
-     *
+     * 
      */
     unreachableCount: number;
     /**
-     *
+     * 
      */
     outdatedAgentCount: number;
 }
@@ -36,27 +35,9 @@ export interface DeviceSummary {
  * Check if a given object implements the DeviceSummary interface.
  */
 export function instanceOfDeviceSummary(value: object): value is DeviceSummary {
-    if (
-        (!("totalCount" in (value as Record<string, any>)) &&
-            !("total_count" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["totalCount"] === undefined &&
-            (value as Record<string, any>)["total_count"] === undefined)
-    )
-        return false;
-    if (
-        (!("unreachableCount" in (value as Record<string, any>)) &&
-            !("unreachable_count" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["unreachableCount"] === undefined &&
-            (value as Record<string, any>)["unreachable_count"] === undefined)
-    )
-        return false;
-    if (
-        (!("outdatedAgentCount" in (value as Record<string, any>)) &&
-            !("outdated_agent_count" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["outdatedAgentCount"] === undefined &&
-            (value as Record<string, any>)["outdated_agent_count"] === undefined)
-    )
-        return false;
+    if ((!('totalCount' in (value as Record<string, any>)) && !('total_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['totalCount'] === undefined && (value as Record<string, any>)['total_count'] === undefined)) return false;
+    if ((!('unreachableCount' in (value as Record<string, any>)) && !('unreachable_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['unreachableCount'] === undefined && (value as Record<string, any>)['unreachable_count'] === undefined)) return false;
+    if ((!('outdatedAgentCount' in (value as Record<string, any>)) && !('outdated_agent_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['outdatedAgentCount'] === undefined && (value as Record<string, any>)['outdated_agent_count'] === undefined)) return false;
     return true;
 }
 
@@ -69,9 +50,10 @@ export function DeviceSummaryFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        totalCount: json["total_count"],
-        unreachableCount: json["unreachable_count"],
-        outdatedAgentCount: json["outdated_agent_count"],
+        
+        'totalCount': json['total_count'],
+        'unreachableCount': json['unreachable_count'],
+        'outdatedAgentCount': json['outdated_agent_count'],
     };
 }
 
@@ -79,17 +61,16 @@ export function DeviceSummaryToJSON(json: any): DeviceSummary {
     return DeviceSummaryToJSONTyped(json, false);
 }
 
-export function DeviceSummaryToJSONTyped(
-    value?: DeviceSummary | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceSummaryToJSONTyped(value?: DeviceSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        total_count: value["totalCount"],
-        unreachable_count: value["unreachableCount"],
-        outdated_agent_count: value["outdatedAgentCount"],
+        
+        'total_count': value['totalCount'],
+        'unreachable_count': value['unreachableCount'],
+        'outdated_agent_count': value['outdatedAgentCount'],
     };
 }
+

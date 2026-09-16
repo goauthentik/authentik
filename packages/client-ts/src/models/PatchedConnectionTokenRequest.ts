@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface PatchedConnectionTokenRequest {
     /**
-     *
+     * 
      */
     pk?: string;
     /**
-     *
+     * 
      */
     provider?: number;
     /**
-     *
+     * 
      */
     endpoint?: string;
 }
@@ -35,9 +34,7 @@ export interface PatchedConnectionTokenRequest {
 /**
  * Check if a given object implements the PatchedConnectionTokenRequest interface.
  */
-export function instanceOfPatchedConnectionTokenRequest(
-    value: object,
-): value is PatchedConnectionTokenRequest {
+export function instanceOfPatchedConnectionTokenRequest(value: object): value is PatchedConnectionTokenRequest {
     return true;
 }
 
@@ -45,17 +42,15 @@ export function PatchedConnectionTokenRequestFromJSON(json: any): PatchedConnect
     return PatchedConnectionTokenRequestFromJSONTyped(json, false);
 }
 
-export function PatchedConnectionTokenRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedConnectionTokenRequest {
+export function PatchedConnectionTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedConnectionTokenRequest {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"] == null ? undefined : json["pk"],
-        provider: json["provider"] == null ? undefined : json["provider"],
-        endpoint: json["endpoint"] == null ? undefined : json["endpoint"],
+        
+        'pk': json['pk'] == null ? undefined : json['pk'],
+        'provider': json['provider'] == null ? undefined : json['provider'],
+        'endpoint': json['endpoint'] == null ? undefined : json['endpoint'],
     };
 }
 
@@ -63,17 +58,16 @@ export function PatchedConnectionTokenRequestToJSON(json: any): PatchedConnectio
     return PatchedConnectionTokenRequestToJSONTyped(json, false);
 }
 
-export function PatchedConnectionTokenRequestToJSONTyped(
-    value?: PatchedConnectionTokenRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedConnectionTokenRequestToJSONTyped(value?: PatchedConnectionTokenRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        provider: value["provider"],
-        endpoint: value["endpoint"],
+        
+        'pk': value['pk'],
+        'provider': value['provider'],
+        'endpoint': value['endpoint'],
     };
 }
+

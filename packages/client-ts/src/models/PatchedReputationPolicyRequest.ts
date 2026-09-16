@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedReputationPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,15 +26,15 @@ export interface PatchedReputationPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     checkIp?: boolean;
     /**
-     *
+     * 
      */
     checkUsername?: boolean;
     /**
-     *
+     * 
      */
     threshold?: number;
 }
@@ -43,9 +42,7 @@ export interface PatchedReputationPolicyRequest {
 /**
  * Check if a given object implements the PatchedReputationPolicyRequest interface.
  */
-export function instanceOfPatchedReputationPolicyRequest(
-    value: object,
-): value is PatchedReputationPolicyRequest {
+export function instanceOfPatchedReputationPolicyRequest(value: object): value is PatchedReputationPolicyRequest {
     return true;
 }
 
@@ -53,19 +50,17 @@ export function PatchedReputationPolicyRequestFromJSON(json: any): PatchedReputa
     return PatchedReputationPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedReputationPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedReputationPolicyRequest {
+export function PatchedReputationPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedReputationPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
-        checkUsername: json["check_username"] == null ? undefined : json["check_username"],
-        threshold: json["threshold"] == null ? undefined : json["threshold"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'checkIp': json['check_ip'] == null ? undefined : json['check_ip'],
+        'checkUsername': json['check_username'] == null ? undefined : json['check_username'],
+        'threshold': json['threshold'] == null ? undefined : json['threshold'],
     };
 }
 
@@ -73,19 +68,18 @@ export function PatchedReputationPolicyRequestToJSON(json: any): PatchedReputati
     return PatchedReputationPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedReputationPolicyRequestToJSONTyped(
-    value?: PatchedReputationPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedReputationPolicyRequestToJSONTyped(value?: PatchedReputationPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        check_ip: value["checkIp"],
-        check_username: value["checkUsername"],
-        threshold: value["threshold"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'check_ip': value['checkIp'],
+        'check_username': value['checkUsername'],
+        'threshold': value['threshold'],
     };
 }
+

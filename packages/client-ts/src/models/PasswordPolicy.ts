@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from '../runtime';
 /**
  * Password Policy Serializer
  * @export
@@ -21,11 +19,11 @@ import { parseDateTime } from "../runtime";
  */
 export interface PasswordPolicy {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -53,11 +51,11 @@ export interface PasswordPolicy {
      */
     readonly boundTo: number;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
@@ -65,43 +63,43 @@ export interface PasswordPolicy {
      */
     passwordField?: string;
     /**
-     *
+     * 
      */
     amountDigits?: number;
     /**
-     *
+     * 
      */
     amountUppercase?: number;
     /**
-     *
+     * 
      */
     amountLowercase?: number;
     /**
-     *
+     * 
      */
     amountSymbols?: number;
     /**
-     *
+     * 
      */
     lengthMin?: number;
     /**
-     *
+     * 
      */
     symbolCharset?: string;
     /**
-     *
+     * 
      */
     errorMessage?: string;
     /**
-     *
+     * 
      */
     checkStaticRules?: boolean;
     /**
-     *
+     * 
      */
     checkHaveIBeenPwned?: boolean;
     /**
-     *
+     * 
      */
     checkZxcvbn?: boolean;
     /**
@@ -118,45 +116,15 @@ export interface PasswordPolicy {
  * Check if a given object implements the PasswordPolicy interface.
  */
 export function instanceOfPasswordPolicy(value: object): value is PasswordPolicy {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("boundTo" in (value as Record<string, any>)) &&
-            !("bound_to" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["boundTo"] === undefined &&
-            (value as Record<string, any>)["bound_to"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('boundTo' in (value as Record<string, any>)) && !('bound_to' in (value as Record<string, any>))) || ((value as Record<string, any>)['boundTo'] === undefined && (value as Record<string, any>)['bound_to'] === undefined)) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
     return true;
 }
 
@@ -164,44 +132,35 @@ export function PasswordPolicyFromJSON(json: any): PasswordPolicy {
     return PasswordPolicyFromJSONTyped(json, false);
 }
 
-export function PasswordPolicyFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PasswordPolicy {
+export function PasswordPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordPolicy {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        boundTo: json["bound_to"],
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        passwordField: json["password_field"] == null ? undefined : json["password_field"],
-        amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
-        amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
-        amountLowercase: json["amount_lowercase"] == null ? undefined : json["amount_lowercase"],
-        amountSymbols: json["amount_symbols"] == null ? undefined : json["amount_symbols"],
-        lengthMin: json["length_min"] == null ? undefined : json["length_min"],
-        symbolCharset: json["symbol_charset"] == null ? undefined : json["symbol_charset"],
-        errorMessage: json["error_message"] == null ? undefined : json["error_message"],
-        checkStaticRules:
-            json["check_static_rules"] == null ? undefined : json["check_static_rules"],
-        checkHaveIBeenPwned:
-            json["check_have_i_been_pwned"] == null ? undefined : json["check_have_i_been_pwned"],
-        checkZxcvbn: json["check_zxcvbn"] == null ? undefined : json["check_zxcvbn"],
-        hibpAllowedCount:
-            json["hibp_allowed_count"] == null ? undefined : json["hibp_allowed_count"],
-        zxcvbnScoreThreshold:
-            json["zxcvbn_score_threshold"] == null ? undefined : json["zxcvbn_score_threshold"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'boundTo': json['bound_to'],
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'passwordField': json['password_field'] == null ? undefined : json['password_field'],
+        'amountDigits': json['amount_digits'] == null ? undefined : json['amount_digits'],
+        'amountUppercase': json['amount_uppercase'] == null ? undefined : json['amount_uppercase'],
+        'amountLowercase': json['amount_lowercase'] == null ? undefined : json['amount_lowercase'],
+        'amountSymbols': json['amount_symbols'] == null ? undefined : json['amount_symbols'],
+        'lengthMin': json['length_min'] == null ? undefined : json['length_min'],
+        'symbolCharset': json['symbol_charset'] == null ? undefined : json['symbol_charset'],
+        'errorMessage': json['error_message'] == null ? undefined : json['error_message'],
+        'checkStaticRules': json['check_static_rules'] == null ? undefined : json['check_static_rules'],
+        'checkHaveIBeenPwned': json['check_have_i_been_pwned'] == null ? undefined : json['check_have_i_been_pwned'],
+        'checkZxcvbn': json['check_zxcvbn'] == null ? undefined : json['check_zxcvbn'],
+        'hibpAllowedCount': json['hibp_allowed_count'] == null ? undefined : json['hibp_allowed_count'],
+        'zxcvbnScoreThreshold': json['zxcvbn_score_threshold'] == null ? undefined : json['zxcvbn_score_threshold'],
     };
 }
 
@@ -209,39 +168,28 @@ export function PasswordPolicyToJSON(json: any): PasswordPolicy {
     return PasswordPolicyToJSONTyped(json, false);
 }
 
-export function PasswordPolicyToJSONTyped(
-    value?: Omit<
-        PasswordPolicy,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "boundTo"
-        | "lastUpdated"
-        | "created"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PasswordPolicyToJSONTyped(value?: Omit<PasswordPolicy, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'boundTo'|'lastUpdated'|'created'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        password_field: value["passwordField"],
-        amount_digits: value["amountDigits"],
-        amount_uppercase: value["amountUppercase"],
-        amount_lowercase: value["amountLowercase"],
-        amount_symbols: value["amountSymbols"],
-        length_min: value["lengthMin"],
-        symbol_charset: value["symbolCharset"],
-        error_message: value["errorMessage"],
-        check_static_rules: value["checkStaticRules"],
-        check_have_i_been_pwned: value["checkHaveIBeenPwned"],
-        check_zxcvbn: value["checkZxcvbn"],
-        hibp_allowed_count: value["hibpAllowedCount"],
-        zxcvbn_score_threshold: value["zxcvbnScoreThreshold"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'password_field': value['passwordField'],
+        'amount_digits': value['amountDigits'],
+        'amount_uppercase': value['amountUppercase'],
+        'amount_lowercase': value['amountLowercase'],
+        'amount_symbols': value['amountSymbols'],
+        'length_min': value['lengthMin'],
+        'symbol_charset': value['symbolCharset'],
+        'error_message': value['errorMessage'],
+        'check_static_rules': value['checkStaticRules'],
+        'check_have_i_been_pwned': value['checkHaveIBeenPwned'],
+        'check_zxcvbn': value['checkZxcvbn'],
+        'hibp_allowed_count': value['hibpAllowedCount'],
+        'zxcvbn_score_threshold': value['zxcvbnScoreThreshold'],
     };
 }
+

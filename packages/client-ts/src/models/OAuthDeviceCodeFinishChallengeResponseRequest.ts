@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface OAuthDeviceCodeFinishChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -27,45 +26,36 @@ export interface OAuthDeviceCodeFinishChallengeResponseRequest {
 /**
  * Check if a given object implements the OAuthDeviceCodeFinishChallengeResponseRequest interface.
  */
-export function instanceOfOAuthDeviceCodeFinishChallengeResponseRequest(
-    value: object,
-): value is OAuthDeviceCodeFinishChallengeResponseRequest {
+export function instanceOfOAuthDeviceCodeFinishChallengeResponseRequest(value: object): value is OAuthDeviceCodeFinishChallengeResponseRequest {
     return true;
 }
 
-export function OAuthDeviceCodeFinishChallengeResponseRequestFromJSON(
-    json: any,
-): OAuthDeviceCodeFinishChallengeResponseRequest {
+export function OAuthDeviceCodeFinishChallengeResponseRequestFromJSON(json: any): OAuthDeviceCodeFinishChallengeResponseRequest {
     return OAuthDeviceCodeFinishChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeFinishChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OAuthDeviceCodeFinishChallengeResponseRequest {
+export function OAuthDeviceCodeFinishChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuthDeviceCodeFinishChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
-export function OAuthDeviceCodeFinishChallengeResponseRequestToJSON(
-    json: any,
-): OAuthDeviceCodeFinishChallengeResponseRequest {
+export function OAuthDeviceCodeFinishChallengeResponseRequestToJSON(json: any): OAuthDeviceCodeFinishChallengeResponseRequest {
     return OAuthDeviceCodeFinishChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeFinishChallengeResponseRequestToJSONTyped(
-    value?: OAuthDeviceCodeFinishChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OAuthDeviceCodeFinishChallengeResponseRequestToJSONTyped(value?: OAuthDeviceCodeFinishChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from '../runtime';
 /**
  * Group Membership Policy Serializer
  * @export
@@ -21,11 +19,11 @@ import { parseDateTime } from "../runtime";
  */
 export interface ExpressionPolicy {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -53,15 +51,15 @@ export interface ExpressionPolicy {
      */
     readonly boundTo: number;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -70,46 +68,16 @@ export interface ExpressionPolicy {
  * Check if a given object implements the ExpressionPolicy interface.
  */
 export function instanceOfExpressionPolicy(value: object): value is ExpressionPolicy {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("boundTo" in (value as Record<string, any>)) &&
-            !("bound_to" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["boundTo"] === undefined &&
-            (value as Record<string, any>)["bound_to"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('boundTo' in (value as Record<string, any>)) && !('bound_to' in (value as Record<string, any>))) || ((value as Record<string, any>)['boundTo'] === undefined && (value as Record<string, any>)['bound_to'] === undefined)) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
@@ -117,28 +85,23 @@ export function ExpressionPolicyFromJSON(json: any): ExpressionPolicy {
     return ExpressionPolicyFromJSONTyped(json, false);
 }
 
-export function ExpressionPolicyFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ExpressionPolicy {
+export function ExpressionPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExpressionPolicy {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        boundTo: json["bound_to"],
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        expression: json["expression"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'boundTo': json['bound_to'],
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'expression': json['expression'],
     };
 }
 
@@ -146,27 +109,16 @@ export function ExpressionPolicyToJSON(json: any): ExpressionPolicy {
     return ExpressionPolicyToJSONTyped(json, false);
 }
 
-export function ExpressionPolicyToJSONTyped(
-    value?: Omit<
-        ExpressionPolicy,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "boundTo"
-        | "lastUpdated"
-        | "created"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ExpressionPolicyToJSONTyped(value?: Omit<ExpressionPolicy, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'boundTo'|'lastUpdated'|'created'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        expression: value["expression"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'expression': value['expression'],
     };
 }
+

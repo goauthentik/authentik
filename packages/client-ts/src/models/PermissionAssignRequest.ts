@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import type { ModelEnum } from './ModelEnum';
+import {
+    ModelEnumFromJSON,
+    ModelEnumToJSON,
+} from './ModelEnum';
 
 /**
  * Request to assign a new permission
@@ -22,24 +24,26 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
  */
 export interface PermissionAssignRequest {
     /**
-     *
+     * 
      */
     permissions: Array<string>;
     /**
-     *
+     * 
      */
     model?: ModelEnum;
     /**
-     *
+     * 
      */
     objectPk?: string;
 }
+
+
 
 /**
  * Check if a given object implements the PermissionAssignRequest interface.
  */
 export function instanceOfPermissionAssignRequest(value: object): value is PermissionAssignRequest {
-    if (!("permissions" in value) || value["permissions"] === undefined) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
     return true;
 }
 
@@ -47,17 +51,15 @@ export function PermissionAssignRequestFromJSON(json: any): PermissionAssignRequ
     return PermissionAssignRequestFromJSONTyped(json, false);
 }
 
-export function PermissionAssignRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PermissionAssignRequest {
+export function PermissionAssignRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PermissionAssignRequest {
     if (json == null) {
         return json;
     }
     return {
-        permissions: json["permissions"],
-        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
-        objectPk: json["object_pk"] == null ? undefined : json["object_pk"],
+        
+        'permissions': json['permissions'],
+        'model': json['model'] == null ? undefined : ModelEnumFromJSON(json['model']),
+        'objectPk': json['object_pk'] == null ? undefined : json['object_pk'],
     };
 }
 
@@ -65,17 +67,16 @@ export function PermissionAssignRequestToJSON(json: any): PermissionAssignReques
     return PermissionAssignRequestToJSONTyped(json, false);
 }
 
-export function PermissionAssignRequestToJSONTyped(
-    value?: PermissionAssignRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PermissionAssignRequestToJSONTyped(value?: PermissionAssignRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        permissions: value["permissions"],
-        model: ModelEnumToJSON(value["model"]),
-        object_pk: value["objectPk"],
+        
+        'permissions': value['permissions'],
+        'model': ModelEnumToJSON(value['model']),
+        'object_pk': value['objectPk'],
     };
 }
+

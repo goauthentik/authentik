@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * Tenant recovery key creation response serializer
  * @export
@@ -21,11 +19,11 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface TenantRecoveryKeyResponse {
     /**
-     *
+     * 
      */
     expiry: Date;
     /**
-     *
+     * 
      */
     url: string;
 }
@@ -33,11 +31,9 @@ export interface TenantRecoveryKeyResponse {
 /**
  * Check if a given object implements the TenantRecoveryKeyResponse interface.
  */
-export function instanceOfTenantRecoveryKeyResponse(
-    value: object,
-): value is TenantRecoveryKeyResponse {
-    if (!("expiry" in value) || value["expiry"] === undefined) return false;
-    if (!("url" in value) || value["url"] === undefined) return false;
+export function instanceOfTenantRecoveryKeyResponse(value: object): value is TenantRecoveryKeyResponse {
+    if (!('expiry' in value) || value['expiry'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -45,16 +41,14 @@ export function TenantRecoveryKeyResponseFromJSON(json: any): TenantRecoveryKeyR
     return TenantRecoveryKeyResponseFromJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TenantRecoveryKeyResponse {
+export function TenantRecoveryKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TenantRecoveryKeyResponse {
     if (json == null) {
         return json;
     }
     return {
-        expiry: json["expiry"] == null ? json["expiry"] : parseDateTime(json["expiry"]),
-        url: json["url"],
+        
+        'expiry': (json['expiry'] == null ? json['expiry'] : parseDateTime(json['expiry'])),
+        'url': json['url'],
     };
 }
 
@@ -62,16 +56,15 @@ export function TenantRecoveryKeyResponseToJSON(json: any): TenantRecoveryKeyRes
     return TenantRecoveryKeyResponseToJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyResponseToJSONTyped(
-    value?: TenantRecoveryKeyResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TenantRecoveryKeyResponseToJSONTyped(value?: TenantRecoveryKeyResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        expiry: value["expiry"] == null ? value["expiry"] : serializeDateTime(value["expiry"]),
-        url: value["url"],
+        
+        'expiry': value['expiry'] == null ? value['expiry'] : serializeDateTime(value['expiry']),
+        'url': value['url'],
     };
 }
+

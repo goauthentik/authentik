@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface FleetConnector {
     /**
-     *
+     * 
      */
     connectorUuid?: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -47,7 +46,7 @@ export interface FleetConnector {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     url: string;
     /**
@@ -55,11 +54,11 @@ export interface FleetConnector {
      */
     headersMapping?: string | null;
     /**
-     *
+     * 
      */
     mapUsers?: boolean;
     /**
-     *
+     * 
      */
     mapTeamsAccessGroup?: boolean;
 }
@@ -68,30 +67,12 @@ export interface FleetConnector {
  * Check if a given object implements the FleetConnector interface.
  */
 export function instanceOfFleetConnector(value: object): value is FleetConnector {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("url" in value) || value["url"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -99,31 +80,23 @@ export function FleetConnectorFromJSON(json: any): FleetConnector {
     return FleetConnectorFromJSONTyped(json, false);
 }
 
-export function FleetConnectorFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): FleetConnector {
+export function FleetConnectorFromJSONTyped(json: any, ignoreDiscriminator: boolean): FleetConnector {
     if (json == null) {
         return json;
     }
     return {
-        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
-        name: json["name"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        url: json["url"],
-        headersMapping:
-            json["headers_mapping"] === undefined
-                ? undefined
-                : json["headers_mapping"] === null
-                  ? null
-                  : json["headers_mapping"],
-        mapUsers: json["map_users"] == null ? undefined : json["map_users"],
-        mapTeamsAccessGroup:
-            json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],
+        
+        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
+        'name': json['name'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'url': json['url'],
+        'headersMapping': json['headers_mapping'] === undefined ? undefined : json['headers_mapping'] === null ? null : json['headers_mapping'],
+        'mapUsers': json['map_users'] == null ? undefined : json['map_users'],
+        'mapTeamsAccessGroup': json['map_teams_access_group'] == null ? undefined : json['map_teams_access_group'],
     };
 }
 
@@ -131,24 +104,20 @@ export function FleetConnectorToJSON(json: any): FleetConnector {
     return FleetConnectorToJSONTyped(json, false);
 }
 
-export function FleetConnectorToJSONTyped(
-    value?: Omit<
-        FleetConnector,
-        "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FleetConnectorToJSONTyped(value?: Omit<FleetConnector, 'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        connector_uuid: value["connectorUuid"],
-        name: value["name"],
-        enabled: value["enabled"],
-        url: value["url"],
-        headers_mapping: value["headersMapping"],
-        map_users: value["mapUsers"],
-        map_teams_access_group: value["mapTeamsAccessGroup"],
+        
+        'connector_uuid': value['connectorUuid'],
+        'name': value['name'],
+        'enabled': value['enabled'],
+        'url': value['url'],
+        'headers_mapping': value['headersMapping'],
+        'map_users': value['mapUsers'],
+        'map_teams_access_group': value['mapTeamsAccessGroup'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,18 +11,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const IntentEnum = {
-    Verification: "verification",
-    Api: "api",
-    Recovery: "recovery",
-    AppPassword: "app_password",
-    UnknownDefaultOpenApi: "11184809",
+    Verification: 'verification',
+    Api: 'api',
+    Recovery: 'recovery',
+    AppPassword: 'app_password',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type IntentEnum = (typeof IntentEnum)[keyof typeof IntentEnum];
+export type IntentEnum = typeof IntentEnum[keyof typeof IntentEnum];
+
 
 export function instanceOfIntentEnum(value: any): boolean {
     for (const key in IntentEnum) {
@@ -51,3 +52,4 @@ export function IntentEnumToJSON(value?: IntentEnum | null): any {
 export function IntentEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): IntentEnum {
     return value as IntentEnum;
 }
+

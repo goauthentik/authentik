@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
+import type { OutgoingSyncDeleteAction } from './OutgoingSyncDeleteAction';
 import {
     OutgoingSyncDeleteActionFromJSON,
     OutgoingSyncDeleteActionToJSON,
-} from "./OutgoingSyncDeleteAction";
+} from './OutgoingSyncDeleteAction';
 
 /**
  * GoogleWorkspaceProvider Serializer
@@ -25,15 +24,15 @@ import {
  */
 export interface GoogleWorkspaceProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -65,35 +64,35 @@ export interface GoogleWorkspaceProvider {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     delegatedSubject: string;
     /**
-     *
+     * 
      */
-    credentials: { [key: string]: any };
+    credentials: { [key: string]: any; };
     /**
-     *
+     * 
      */
     scopes?: string;
     /**
-     *
+     * 
      */
     excludeUsersServiceAccount?: boolean;
     /**
-     *
+     * 
      */
     filterGroup?: string | null;
     /**
-     *
+     * 
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     *
+     * 
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     *
+     * 
      */
     defaultGroupEmailDomain: string;
     /**
@@ -114,63 +113,23 @@ export interface GoogleWorkspaceProvider {
     discoveryEnabled?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the GoogleWorkspaceProvider interface.
  */
 export function instanceOfGoogleWorkspaceProvider(value: object): value is GoogleWorkspaceProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("delegatedSubject" in (value as Record<string, any>)) &&
-            !("delegated_subject" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["delegatedSubject"] === undefined &&
-            (value as Record<string, any>)["delegated_subject"] === undefined)
-    )
-        return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
-    if (
-        (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
-            !("default_group_email_domain" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["defaultGroupEmailDomain"] === undefined &&
-            (value as Record<string, any>)["default_group_email_domain"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('delegatedSubject' in (value as Record<string, any>)) && !('delegated_subject' in (value as Record<string, any>))) || ((value as Record<string, any>)['delegatedSubject'] === undefined && (value as Record<string, any>)['delegated_subject'] === undefined)) return false;
+    if (!('credentials' in value) || value['credentials'] === undefined) return false;
+    if ((!('defaultGroupEmailDomain' in (value as Record<string, any>)) && !('default_group_email_domain' in (value as Record<string, any>))) || ((value as Record<string, any>)['defaultGroupEmailDomain'] === undefined && (value as Record<string, any>)['default_group_email_domain'] === undefined)) return false;
     return true;
 }
 
@@ -178,51 +137,34 @@ export function GoogleWorkspaceProviderFromJSON(json: any): GoogleWorkspaceProvi
     return GoogleWorkspaceProviderFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleWorkspaceProvider {
+export function GoogleWorkspaceProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProvider {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        propertyMappingsGroup:
-            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
-        component: json["component"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        delegatedSubject: json["delegated_subject"],
-        credentials: json["credentials"],
-        scopes: json["scopes"] == null ? undefined : json["scopes"],
-        excludeUsersServiceAccount:
-            json["exclude_users_service_account"] == null
-                ? undefined
-                : json["exclude_users_service_account"],
-        filterGroup:
-            json["filter_group"] === undefined
-                ? undefined
-                : json["filter_group"] === null
-                  ? null
-                  : json["filter_group"],
-        userDeleteAction:
-            json["user_delete_action"] == null
-                ? undefined
-                : OutgoingSyncDeleteActionFromJSON(json["user_delete_action"]),
-        groupDeleteAction:
-            json["group_delete_action"] == null
-                ? undefined
-                : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
-        defaultGroupEmailDomain: json["default_group_email_domain"],
-        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
-        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
-        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
-        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
+        'component': json['component'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'delegatedSubject': json['delegated_subject'],
+        'credentials': json['credentials'],
+        'scopes': json['scopes'] == null ? undefined : json['scopes'],
+        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
+        'filterGroup': json['filter_group'] === undefined ? undefined : json['filter_group'] === null ? null : json['filter_group'],
+        'userDeleteAction': json['user_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['user_delete_action']),
+        'groupDeleteAction': json['group_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['group_delete_action']),
+        'defaultGroupEmailDomain': json['default_group_email_domain'],
+        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
+        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
+        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
+        'discoveryEnabled': json['discovery_enabled'] == null ? undefined : json['discovery_enabled'],
     };
 }
 
@@ -230,38 +172,28 @@ export function GoogleWorkspaceProviderToJSON(json: any): GoogleWorkspaceProvide
     return GoogleWorkspaceProviderToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderToJSONTyped(
-    value?: Omit<
-        GoogleWorkspaceProvider,
-        | "pk"
-        | "component"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleWorkspaceProviderToJSONTyped(value?: Omit<GoogleWorkspaceProvider, 'pk'|'component'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        property_mappings: value["propertyMappings"],
-        property_mappings_group: value["propertyMappingsGroup"],
-        delegated_subject: value["delegatedSubject"],
-        credentials: value["credentials"],
-        scopes: value["scopes"],
-        exclude_users_service_account: value["excludeUsersServiceAccount"],
-        filter_group: value["filterGroup"],
-        user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
-        group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
-        default_group_email_domain: value["defaultGroupEmailDomain"],
-        sync_page_size: value["syncPageSize"],
-        sync_page_timeout: value["syncPageTimeout"],
-        dry_run: value["dryRun"],
-        discovery_enabled: value["discoveryEnabled"],
+        
+        'name': value['name'],
+        'property_mappings': value['propertyMappings'],
+        'property_mappings_group': value['propertyMappingsGroup'],
+        'delegated_subject': value['delegatedSubject'],
+        'credentials': value['credentials'],
+        'scopes': value['scopes'],
+        'exclude_users_service_account': value['excludeUsersServiceAccount'],
+        'filter_group': value['filterGroup'],
+        'user_delete_action': OutgoingSyncDeleteActionToJSON(value['userDeleteAction']),
+        'group_delete_action': OutgoingSyncDeleteActionToJSON(value['groupDeleteAction']),
+        'default_group_email_domain': value['defaultGroupEmailDomain'],
+        'sync_page_size': value['syncPageSize'],
+        'sync_page_timeout': value['syncPageTimeout'],
+        'dry_run': value['dryRun'],
+        'discovery_enabled': value['discoveryEnabled'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { ResumeOnMatchFailuresEnum } from './ResumeOnMatchFailuresEnum';
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from './ResumeOnMatchFailuresEnum';
 
 /**
  * SourceStage Serializer
@@ -25,11 +24,11 @@ import {
  */
 export interface PatchedSourceStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     source?: string;
     /**
@@ -45,9 +44,7 @@ export interface PatchedSourceStageRequest {
 /**
  * Check if a given object implements the PatchedSourceStageRequest interface.
  */
-export function instanceOfPatchedSourceStageRequest(
-    value: object,
-): value is PatchedSourceStageRequest {
+export function instanceOfPatchedSourceStageRequest(value: object): value is PatchedSourceStageRequest {
     return true;
 }
 
@@ -55,23 +52,16 @@ export function PatchedSourceStageRequestFromJSON(json: any): PatchedSourceStage
     return PatchedSourceStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSourceStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSourceStageRequest {
+export function PatchedSourceStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSourceStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        source: json["source"] == null ? undefined : json["source"],
-        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
-        resumeOnMatchFailures:
-            json["resume_on_match_failures"] == null
-                ? undefined
-                : (json["resume_on_match_failures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumFromJSON,
-                  ),
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'source': json['source'] == null ? undefined : json['source'],
+        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        'resumeOnMatchFailures': json['resume_on_match_failures'] == null ? undefined : ((json['resume_on_match_failures'] as Array<any>).map(ResumeOnMatchFailuresEnumFromJSON)),
     };
 }
 
@@ -79,23 +69,17 @@ export function PatchedSourceStageRequestToJSON(json: any): PatchedSourceStageRe
     return PatchedSourceStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedSourceStageRequestToJSONTyped(
-    value?: PatchedSourceStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSourceStageRequestToJSONTyped(value?: PatchedSourceStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        source: value["source"],
-        resume_timeout: value["resumeTimeout"],
-        resume_on_match_failures:
-            value["resumeOnMatchFailures"] == null
-                ? undefined
-                : (value["resumeOnMatchFailures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumToJSON,
-                  ),
+        
+        'name': value['name'],
+        'source': value['source'],
+        'resume_timeout': value['resumeTimeout'],
+        'resume_on_match_failures': value['resumeOnMatchFailures'] == null ? undefined : ((value['resumeOnMatchFailures'] as Array<any>).map(ResumeOnMatchFailuresEnumToJSON)),
     };
 }
+

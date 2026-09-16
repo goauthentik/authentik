@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { UserTypeEnum } from './UserTypeEnum';
+import {
+    UserTypeEnumFromJSON,
+    UserTypeEnumToJSON,
+} from './UserTypeEnum';
 
 /**
  * User Serializer
@@ -23,7 +25,7 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
  */
 export interface UserRequest {
     /**
-     *
+     * 
      */
     username: string;
     /**
@@ -35,41 +37,43 @@ export interface UserRequest {
      */
     isActive?: boolean;
     /**
-     *
+     * 
      */
     lastLogin?: Date | null;
     /**
-     *
+     * 
      */
     groups?: Array<string>;
     /**
-     *
+     * 
      */
     roles?: Array<string>;
     /**
-     *
+     * 
      */
     email?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     path?: string;
     /**
-     *
+     * 
      */
     type?: UserTypeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the UserRequest interface.
  */
 export function instanceOfUserRequest(value: object): value is UserRequest {
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -82,21 +86,17 @@ export function UserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        username: json["username"],
-        name: json["name"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin:
-            json["last_login"] === undefined
-                ? undefined
-                : json["last_login"] === null
-                  ? null
-                  : parseDateTime(json["last_login"]),
-        groups: json["groups"] == null ? undefined : json["groups"],
-        roles: json["roles"] == null ? undefined : json["roles"],
-        email: json["email"] == null ? undefined : json["email"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        path: json["path"] == null ? undefined : json["path"],
-        type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
+        
+        'username': json['username'],
+        'name': json['name'],
+        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'lastLogin': json['last_login'] === undefined ? undefined : json['last_login'] === null ? null : (parseDateTime(json['last_login'])),
+        'groups': json['groups'] == null ? undefined : json['groups'],
+        'roles': json['roles'] == null ? undefined : json['roles'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'path': json['path'] == null ? undefined : json['path'],
+        'type': json['type'] == null ? undefined : UserTypeEnumFromJSON(json['type']),
     };
 }
 
@@ -104,25 +104,23 @@ export function UserRequestToJSON(json: any): UserRequest {
     return UserRequestToJSONTyped(json, false);
 }
 
-export function UserRequestToJSONTyped(
-    value?: UserRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserRequestToJSONTyped(value?: UserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        is_active: value["isActive"],
-        last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        groups: value["groups"],
-        roles: value["roles"],
-        email: value["email"],
-        attributes: value["attributes"],
-        path: value["path"],
-        type: UserTypeEnumToJSON(value["type"]),
+        
+        'username': value['username'],
+        'name': value['name'],
+        'is_active': value['isActive'],
+        'last_login': value['lastLogin'] == null ? value['lastLogin'] : serializeDateTime(value['lastLogin']),
+        'groups': value['groups'],
+        'roles': value['roles'],
+        'email': value['email'],
+        'attributes': value['attributes'],
+        'path': value['path'],
+        'type': UserTypeEnumToJSON(value['type']),
     };
 }
+

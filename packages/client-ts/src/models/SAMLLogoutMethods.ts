@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const SAMLLogoutMethods = {
-    FrontchannelIframe: "frontchannel_iframe",
-    FrontchannelNative: "frontchannel_native",
-    Backchannel: "backchannel",
-    UnknownDefaultOpenApi: "11184809",
+    FrontchannelIframe: 'frontchannel_iframe',
+    FrontchannelNative: 'frontchannel_native',
+    Backchannel: 'backchannel',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type SAMLLogoutMethods = (typeof SAMLLogoutMethods)[keyof typeof SAMLLogoutMethods];
+export type SAMLLogoutMethods = typeof SAMLLogoutMethods[keyof typeof SAMLLogoutMethods];
+
 
 export function instanceOfSAMLLogoutMethods(value: any): boolean {
     for (const key in SAMLLogoutMethods) {
@@ -39,10 +40,7 @@ export function SAMLLogoutMethodsFromJSON(json: any): SAMLLogoutMethods {
     return SAMLLogoutMethodsFromJSONTyped(json, false);
 }
 
-export function SAMLLogoutMethodsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SAMLLogoutMethods {
+export function SAMLLogoutMethodsFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLLogoutMethods {
     return json as SAMLLogoutMethods;
 }
 
@@ -50,9 +48,7 @@ export function SAMLLogoutMethodsToJSON(value?: SAMLLogoutMethods | null): any {
     return value as any;
 }
 
-export function SAMLLogoutMethodsToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): SAMLLogoutMethods {
+export function SAMLLogoutMethodsToJSONTyped(value: any, ignoreDiscriminator: boolean): SAMLLogoutMethods {
     return value as SAMLLogoutMethods;
 }
+

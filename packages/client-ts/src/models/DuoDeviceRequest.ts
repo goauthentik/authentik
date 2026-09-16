@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -28,7 +27,7 @@ export interface DuoDeviceRequest {
  * Check if a given object implements the DuoDeviceRequest interface.
  */
 export function instanceOfDuoDeviceRequest(value: object): value is DuoDeviceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function DuoDeviceRequestFromJSON(json: any): DuoDeviceRequest {
     return DuoDeviceRequestFromJSONTyped(json, false);
 }
 
-export function DuoDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DuoDeviceRequest {
+export function DuoDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DuoDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +49,14 @@ export function DuoDeviceRequestToJSON(json: any): DuoDeviceRequest {
     return DuoDeviceRequestToJSONTyped(json, false);
 }
 
-export function DuoDeviceRequestToJSONTyped(
-    value?: DuoDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DuoDeviceRequestToJSONTyped(value?: DuoDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

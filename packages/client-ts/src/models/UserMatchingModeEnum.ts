@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,19 +11,21 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const UserMatchingModeEnum = {
-    Identifier: "identifier",
-    EmailLink: "email_link",
-    EmailDeny: "email_deny",
-    UsernameLink: "username_link",
-    UsernameDeny: "username_deny",
-    UnknownDefaultOpenApi: "11184809",
+    Identifier: 'identifier',
+    EmailLink: 'email_link',
+    EmailDeny: 'email_deny',
+    UsernameLink: 'username_link',
+    UsernameDeny: 'username_deny',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type UserMatchingModeEnum = (typeof UserMatchingModeEnum)[keyof typeof UserMatchingModeEnum];
+export type UserMatchingModeEnum = typeof UserMatchingModeEnum[keyof typeof UserMatchingModeEnum];
+
 
 export function instanceOfUserMatchingModeEnum(value: any): boolean {
     for (const key in UserMatchingModeEnum) {
@@ -41,10 +42,7 @@ export function UserMatchingModeEnumFromJSON(json: any): UserMatchingModeEnum {
     return UserMatchingModeEnumFromJSONTyped(json, false);
 }
 
-export function UserMatchingModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserMatchingModeEnum {
+export function UserMatchingModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserMatchingModeEnum {
     return json as UserMatchingModeEnum;
 }
 
@@ -52,9 +50,7 @@ export function UserMatchingModeEnumToJSON(value?: UserMatchingModeEnum | null):
     return value as any;
 }
 
-export function UserMatchingModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): UserMatchingModeEnum {
+export function UserMatchingModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserMatchingModeEnum {
     return value as UserMatchingModeEnum;
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface PatchedUserTelegramSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +30,38 @@ export interface PatchedUserTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserTelegramSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserTelegramSourceConnectionRequest(
-    value: object,
-): value is PatchedUserTelegramSourceConnectionRequest {
+export function instanceOfPatchedUserTelegramSourceConnectionRequest(value: object): value is PatchedUserTelegramSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserTelegramSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestFromJSON(json: any): PatchedUserTelegramSourceConnectionRequest {
     return PatchedUserTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserTelegramSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedUserTelegramSourceConnectionRequestToJSON(
-    json: any,
-): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestToJSON(json: any): PatchedUserTelegramSourceConnectionRequest {
     return PatchedUserTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserTelegramSourceConnectionRequestToJSONTyped(
-    value?: PatchedUserTelegramSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserTelegramSourceConnectionRequestToJSONTyped(value?: PatchedUserTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

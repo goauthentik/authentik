@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * VersionHistory Serializer
  * @export
@@ -21,19 +19,19 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface VersionHistory {
     /**
-     *
+     * 
      */
     readonly id: number;
     /**
-     *
+     * 
      */
     timestamp: Date;
     /**
-     *
+     * 
      */
     version: string;
     /**
-     *
+     * 
      */
     build: string;
 }
@@ -42,10 +40,10 @@ export interface VersionHistory {
  * Check if a given object implements the VersionHistory interface.
  */
 export function instanceOfVersionHistory(value: object): value is VersionHistory {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
-    if (!("version" in value) || value["version"] === undefined) return false;
-    if (!("build" in value) || value["build"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
+    if (!('version' in value) || value['version'] === undefined) return false;
+    if (!('build' in value) || value['build'] === undefined) return false;
     return true;
 }
 
@@ -53,18 +51,16 @@ export function VersionHistoryFromJSON(json: any): VersionHistory {
     return VersionHistoryFromJSONTyped(json, false);
 }
 
-export function VersionHistoryFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): VersionHistory {
+export function VersionHistoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): VersionHistory {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
-        version: json["version"],
-        build: json["build"],
+        
+        'id': json['id'],
+        'timestamp': (json['timestamp'] == null ? json['timestamp'] : parseDateTime(json['timestamp'])),
+        'version': json['version'],
+        'build': json['build'],
     };
 }
 
@@ -72,18 +68,16 @@ export function VersionHistoryToJSON(json: any): VersionHistory {
     return VersionHistoryToJSONTyped(json, false);
 }
 
-export function VersionHistoryToJSONTyped(
-    value?: Omit<VersionHistory, "id"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function VersionHistoryToJSONTyped(value?: Omit<VersionHistory, 'id'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        timestamp:
-            value["timestamp"] == null ? value["timestamp"] : serializeDateTime(value["timestamp"]),
-        version: value["version"],
-        build: value["build"],
+        
+        'timestamp': value['timestamp'] == null ? value['timestamp'] : serializeDateTime(value['timestamp']),
+        'version': value['version'],
+        'build': value['build'],
     };
 }
+

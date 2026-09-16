@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,20 +11,22 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DiagramNodeTypeEnum = {
-    FlowStart: "flow-start",
-    PreFlowPolicies: "pre-flow-policies",
-    AuthenticationRequirement: "authentication-requirement",
-    Stage: "stage",
-    Policy: "policy",
-    FlowEnd: "flow-end",
-    UnknownDefaultOpenApi: "11184809",
+    FlowStart: 'flow-start',
+    PreFlowPolicies: 'pre-flow-policies',
+    AuthenticationRequirement: 'authentication-requirement',
+    Stage: 'stage',
+    Policy: 'policy',
+    FlowEnd: 'flow-end',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DiagramNodeTypeEnum = (typeof DiagramNodeTypeEnum)[keyof typeof DiagramNodeTypeEnum];
+export type DiagramNodeTypeEnum = typeof DiagramNodeTypeEnum[keyof typeof DiagramNodeTypeEnum];
+
 
 export function instanceOfDiagramNodeTypeEnum(value: any): boolean {
     for (const key in DiagramNodeTypeEnum) {
@@ -42,10 +43,7 @@ export function DiagramNodeTypeEnumFromJSON(json: any): DiagramNodeTypeEnum {
     return DiagramNodeTypeEnumFromJSONTyped(json, false);
 }
 
-export function DiagramNodeTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DiagramNodeTypeEnum {
+export function DiagramNodeTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DiagramNodeTypeEnum {
     return json as DiagramNodeTypeEnum;
 }
 
@@ -53,9 +51,7 @@ export function DiagramNodeTypeEnumToJSON(value?: DiagramNodeTypeEnum | null): a
     return value as any;
 }
 
-export function DiagramNodeTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): DiagramNodeTypeEnum {
+export function DiagramNodeTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DiagramNodeTypeEnum {
     return value as DiagramNodeTypeEnum;
 }
+

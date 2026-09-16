@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * OAuth Device code challenge
@@ -23,25 +25,23 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface OAuthDeviceCodeChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
 }
 
 /**
  * Check if a given object implements the OAuthDeviceCodeChallenge interface.
  */
-export function instanceOfOAuthDeviceCodeChallenge(
-    value: object,
-): value is OAuthDeviceCodeChallenge {
+export function instanceOfOAuthDeviceCodeChallenge(value: object): value is OAuthDeviceCodeChallenge {
     return true;
 }
 
@@ -49,18 +49,15 @@ export function OAuthDeviceCodeChallengeFromJSON(json: any): OAuthDeviceCodeChal
     return OAuthDeviceCodeChallengeFromJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OAuthDeviceCodeChallenge {
+export function OAuthDeviceCodeChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuthDeviceCodeChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
     };
 }
 
@@ -68,17 +65,16 @@ export function OAuthDeviceCodeChallengeToJSON(json: any): OAuthDeviceCodeChalle
     return OAuthDeviceCodeChallengeToJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeChallengeToJSONTyped(
-    value?: OAuthDeviceCodeChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OAuthDeviceCodeChallengeToJSONTyped(value?: OAuthDeviceCodeChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
     };
 }
+

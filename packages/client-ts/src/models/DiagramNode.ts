@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { DiagramNodeTypeEnum } from "./DiagramNodeTypeEnum";
-import { DiagramNodeTypeEnumFromJSON } from "./DiagramNodeTypeEnum";
+import type { DiagramNodeTypeEnum } from './DiagramNodeTypeEnum';
+import {
+    DiagramNodeTypeEnumFromJSON,
+} from './DiagramNodeTypeEnum';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,85 +23,63 @@ import { DiagramNodeTypeEnumFromJSON } from "./DiagramNodeTypeEnum";
  */
 export interface DiagramNode {
     /**
-     *
+     * 
      */
     readonly identifier: string;
     /**
-     *
+     * 
      */
     readonly type: DiagramNodeTypeEnum;
     /**
-     *
+     * 
      */
     readonly name: string;
     /**
-     *
+     * 
      */
     readonly verboseName: string;
     /**
-     *
+     * 
      */
     readonly model: string;
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     readonly component: string;
     /**
-     *
+     * 
      */
     readonly bindingModel: string;
     /**
-     *
+     * 
      */
     readonly bindingPk: string;
     /**
-     *
+     * 
      */
     readonly bindingOrder: number | null;
 }
+
+
 
 /**
  * Check if a given object implements the DiagramNode interface.
  */
 export function instanceOfDiagramNode(value: object): value is DiagramNode {
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("bindingModel" in (value as Record<string, any>)) &&
-            !("binding_model" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["bindingModel"] === undefined &&
-            (value as Record<string, any>)["binding_model"] === undefined)
-    )
-        return false;
-    if (
-        (!("bindingPk" in (value as Record<string, any>)) &&
-            !("binding_pk" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["bindingPk"] === undefined &&
-            (value as Record<string, any>)["binding_pk"] === undefined)
-    )
-        return false;
-    if (
-        (!("bindingOrder" in (value as Record<string, any>)) &&
-            !("binding_order" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["bindingOrder"] === undefined &&
-            (value as Record<string, any>)["binding_order"] === undefined)
-    )
-        return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('bindingModel' in (value as Record<string, any>)) && !('binding_model' in (value as Record<string, any>))) || ((value as Record<string, any>)['bindingModel'] === undefined && (value as Record<string, any>)['binding_model'] === undefined)) return false;
+    if ((!('bindingPk' in (value as Record<string, any>)) && !('binding_pk' in (value as Record<string, any>))) || ((value as Record<string, any>)['bindingPk'] === undefined && (value as Record<string, any>)['binding_pk'] === undefined)) return false;
+    if ((!('bindingOrder' in (value as Record<string, any>)) && !('binding_order' in (value as Record<string, any>))) || ((value as Record<string, any>)['bindingOrder'] === undefined && (value as Record<string, any>)['binding_order'] === undefined)) return false;
     return true;
 }
 
@@ -113,16 +92,17 @@ export function DiagramNodeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        identifier: json["identifier"],
-        type: DiagramNodeTypeEnumFromJSON(json["type"]),
-        name: json["name"],
-        verboseName: json["verbose_name"],
-        model: json["model"],
-        pk: json["pk"],
-        component: json["component"],
-        bindingModel: json["binding_model"],
-        bindingPk: json["binding_pk"],
-        bindingOrder: json["binding_order"],
+        
+        'identifier': json['identifier'],
+        'type': DiagramNodeTypeEnumFromJSON(json['type']),
+        'name': json['name'],
+        'verboseName': json['verbose_name'],
+        'model': json['model'],
+        'pk': json['pk'],
+        'component': json['component'],
+        'bindingModel': json['binding_model'],
+        'bindingPk': json['binding_pk'],
+        'bindingOrder': json['binding_order'],
     };
 }
 
@@ -130,25 +110,13 @@ export function DiagramNodeToJSON(json: any): DiagramNode {
     return DiagramNodeToJSONTyped(json, false);
 }
 
-export function DiagramNodeToJSONTyped(
-    value?: Omit<
-        DiagramNode,
-        | "identifier"
-        | "type"
-        | "name"
-        | "verboseName"
-        | "model"
-        | "pk"
-        | "component"
-        | "bindingModel"
-        | "bindingPk"
-        | "bindingOrder"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DiagramNodeToJSONTyped(value?: Omit<DiagramNode, 'identifier'|'type'|'name'|'verboseName'|'model'|'pk'|'component'|'bindingModel'|'bindingPk'|'bindingOrder'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

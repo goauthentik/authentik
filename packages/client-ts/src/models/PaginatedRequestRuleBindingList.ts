@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +11,60 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RequestRuleBinding } from "./RequestRuleBinding";
-import { RequestRuleBindingFromJSON, RequestRuleBindingToJSON } from "./RequestRuleBinding";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { RequestRuleBinding } from './RequestRuleBinding';
+import {
+    RequestRuleBindingFromJSON,
+    RequestRuleBindingToJSON,
+} from './RequestRuleBinding';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRequestRuleBindingList
  */
 export interface PaginatedRequestRuleBindingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RequestRuleBinding>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRequestRuleBindingList interface.
  */
-export function instanceOfPaginatedRequestRuleBindingList(
-    value: object,
-): value is PaginatedRequestRuleBindingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRequestRuleBindingList(value: object): value is PaginatedRequestRuleBindingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedRequestRuleBindingListFromJSON(
-    json: any,
-): PaginatedRequestRuleBindingList {
+export function PaginatedRequestRuleBindingListFromJSON(json: any): PaginatedRequestRuleBindingList {
     return PaginatedRequestRuleBindingListFromJSONTyped(json, false);
 }
 
-export function PaginatedRequestRuleBindingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRequestRuleBindingList {
+export function PaginatedRequestRuleBindingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRequestRuleBindingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RequestRuleBindingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RequestRuleBindingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -73,17 +72,16 @@ export function PaginatedRequestRuleBindingListToJSON(json: any): PaginatedReque
     return PaginatedRequestRuleBindingListToJSONTyped(json, false);
 }
 
-export function PaginatedRequestRuleBindingListToJSONTyped(
-    value?: PaginatedRequestRuleBindingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRequestRuleBindingListToJSONTyped(value?: PaginatedRequestRuleBindingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RequestRuleBindingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RequestRuleBindingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

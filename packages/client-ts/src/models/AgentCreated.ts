@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { Agent } from "./Agent";
-import { AgentFromJSON } from "./Agent";
+import type { Agent } from './Agent';
+import {
+    AgentFromJSON,
+} from './Agent';
 
 /**
  * Response returned once when an agent is created, carrying the one-time API token.
@@ -22,11 +23,11 @@ import { AgentFromJSON } from "./Agent";
  */
 export interface AgentCreated {
     /**
-     *
+     * 
      */
     readonly agent: Agent;
     /**
-     *
+     * 
      */
     readonly token: string;
 }
@@ -35,8 +36,8 @@ export interface AgentCreated {
  * Check if a given object implements the AgentCreated interface.
  */
 export function instanceOfAgentCreated(value: object): value is AgentCreated {
-    if (!("agent" in value) || value["agent"] === undefined) return false;
-    if (!("token" in value) || value["token"] === undefined) return false;
+    if (!('agent' in value) || value['agent'] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
@@ -49,8 +50,9 @@ export function AgentCreatedFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        agent: AgentFromJSON(json["agent"]),
-        token: json["token"],
+        
+        'agent': AgentFromJSON(json['agent']),
+        'token': json['token'],
     };
 }
 
@@ -58,13 +60,13 @@ export function AgentCreatedToJSON(json: any): AgentCreated {
     return AgentCreatedToJSONTyped(json, false);
 }
 
-export function AgentCreatedToJSONTyped(
-    value?: Omit<AgentCreated, "agent" | "token"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentCreatedToJSONTyped(value?: Omit<AgentCreated, 'agent'|'token'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,37 +12,37 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface Pagination
  */
 export interface Pagination {
     /**
-     *
+     * 
      */
     next: number;
     /**
-     *
+     * 
      */
     previous: number;
     /**
-     *
+     * 
      */
     count: number;
     /**
-     *
+     * 
      */
     current: number;
     /**
-     *
+     * 
      */
     totalPages: number;
     /**
-     *
+     * 
      */
     startIndex: number;
     /**
-     *
+     * 
      */
     endIndex: number;
 }
@@ -52,31 +51,13 @@ export interface Pagination {
  * Check if a given object implements the Pagination interface.
  */
 export function instanceOfPagination(value: object): value is Pagination {
-    if (!("next" in value) || value["next"] === undefined) return false;
-    if (!("previous" in value) || value["previous"] === undefined) return false;
-    if (!("count" in value) || value["count"] === undefined) return false;
-    if (!("current" in value) || value["current"] === undefined) return false;
-    if (
-        (!("totalPages" in (value as Record<string, any>)) &&
-            !("total_pages" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["totalPages"] === undefined &&
-            (value as Record<string, any>)["total_pages"] === undefined)
-    )
-        return false;
-    if (
-        (!("startIndex" in (value as Record<string, any>)) &&
-            !("start_index" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["startIndex"] === undefined &&
-            (value as Record<string, any>)["start_index"] === undefined)
-    )
-        return false;
-    if (
-        (!("endIndex" in (value as Record<string, any>)) &&
-            !("end_index" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["endIndex"] === undefined &&
-            (value as Record<string, any>)["end_index"] === undefined)
-    )
-        return false;
+    if (!('next' in value) || value['next'] === undefined) return false;
+    if (!('previous' in value) || value['previous'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('current' in value) || value['current'] === undefined) return false;
+    if ((!('totalPages' in (value as Record<string, any>)) && !('total_pages' in (value as Record<string, any>))) || ((value as Record<string, any>)['totalPages'] === undefined && (value as Record<string, any>)['total_pages'] === undefined)) return false;
+    if ((!('startIndex' in (value as Record<string, any>)) && !('start_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['startIndex'] === undefined && (value as Record<string, any>)['start_index'] === undefined)) return false;
+    if ((!('endIndex' in (value as Record<string, any>)) && !('end_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['endIndex'] === undefined && (value as Record<string, any>)['end_index'] === undefined)) return false;
     return true;
 }
 
@@ -89,13 +70,14 @@ export function PaginationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        next: json["next"],
-        previous: json["previous"],
-        count: json["count"],
-        current: json["current"],
-        totalPages: json["total_pages"],
-        startIndex: json["start_index"],
-        endIndex: json["end_index"],
+        
+        'next': json['next'],
+        'previous': json['previous'],
+        'count': json['count'],
+        'current': json['current'],
+        'totalPages': json['total_pages'],
+        'startIndex': json['start_index'],
+        'endIndex': json['end_index'],
     };
 }
 
@@ -103,21 +85,20 @@ export function PaginationToJSON(json: any): Pagination {
     return PaginationToJSONTyped(json, false);
 }
 
-export function PaginationToJSONTyped(
-    value?: Pagination | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginationToJSONTyped(value?: Pagination | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        next: value["next"],
-        previous: value["previous"],
-        count: value["count"],
-        current: value["current"],
-        total_pages: value["totalPages"],
-        start_index: value["startIndex"],
-        end_index: value["endIndex"],
+        
+        'next': value['next'],
+        'previous': value['previous'],
+        'count': value['count'],
+        'current': value['current'],
+        'total_pages': value['totalPages'],
+        'start_index': value['startIndex'],
+        'end_index': value['endIndex'],
     };
 }
+

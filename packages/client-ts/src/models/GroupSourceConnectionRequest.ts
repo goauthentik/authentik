@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface GroupSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,11 +30,9 @@ export interface GroupSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupSourceConnectionRequest interface.
  */
-export function instanceOfGroupSourceConnectionRequest(
-    value: object,
-): value is GroupSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfGroupSourceConnectionRequest(value: object): value is GroupSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
@@ -43,16 +40,14 @@ export function GroupSourceConnectionRequestFromJSON(json: any): GroupSourceConn
     return GroupSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupSourceConnectionRequest {
+export function GroupSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
@@ -60,16 +55,15 @@ export function GroupSourceConnectionRequestToJSON(json: any): GroupSourceConnec
     return GroupSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupSourceConnectionRequestToJSONTyped(
-    value?: GroupSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupSourceConnectionRequestToJSONTyped(value?: GroupSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

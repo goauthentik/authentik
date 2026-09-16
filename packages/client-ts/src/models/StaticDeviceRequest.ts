@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -28,7 +27,7 @@ export interface StaticDeviceRequest {
  * Check if a given object implements the StaticDeviceRequest interface.
  */
 export function instanceOfStaticDeviceRequest(value: object): value is StaticDeviceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function StaticDeviceRequestFromJSON(json: any): StaticDeviceRequest {
     return StaticDeviceRequestFromJSONTyped(json, false);
 }
 
-export function StaticDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): StaticDeviceRequest {
+export function StaticDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): StaticDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +49,14 @@ export function StaticDeviceRequestToJSON(json: any): StaticDeviceRequest {
     return StaticDeviceRequestToJSONTyped(json, false);
 }
 
-export function StaticDeviceRequestToJSONTyped(
-    value?: StaticDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function StaticDeviceRequestToJSONTyped(value?: StaticDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

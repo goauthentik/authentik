@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserOffboarding } from "./UserOffboarding";
-import { UserOffboardingFromJSON, UserOffboardingToJSON } from "./UserOffboarding";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { UserOffboarding } from './UserOffboarding';
+import {
+    UserOffboardingFromJSON,
+    UserOffboardingToJSON,
+} from './UserOffboarding';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedUserOffboardingList
  */
 export interface PaginatedUserOffboardingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<UserOffboarding>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedUserOffboardingList interface.
  */
-export function instanceOfPaginatedUserOffboardingList(
-    value: object,
-): value is PaginatedUserOffboardingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedUserOffboardingList(value: object): value is PaginatedUserOffboardingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedUserOffboardingListFromJSON(json: any): PaginatedUserOf
     return PaginatedUserOffboardingListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserOffboardingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedUserOffboardingList {
+export function PaginatedUserOffboardingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserOffboardingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(UserOffboardingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(UserOffboardingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedUserOffboardingListToJSON(json: any): PaginatedUserOffb
     return PaginatedUserOffboardingListToJSONTyped(json, false);
 }
 
-export function PaginatedUserOffboardingListToJSONTyped(
-    value?: PaginatedUserOffboardingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedUserOffboardingListToJSONTyped(value?: PaginatedUserOffboardingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(UserOffboardingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(UserOffboardingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

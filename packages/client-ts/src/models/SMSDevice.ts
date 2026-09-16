@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
 
 /**
  * Serializer for sms authenticator devices
@@ -26,15 +27,15 @@ export interface SMSDevice {
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly phoneNumber: string;
     /**
-     *
+     * 
      */
     readonly user: PartialUser;
 }
@@ -43,16 +44,10 @@ export interface SMSDevice {
  * Check if a given object implements the SMSDevice interface.
  */
 export function instanceOfSMSDevice(value: object): value is SMSDevice {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("phoneNumber" in (value as Record<string, any>)) &&
-            !("phone_number" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["phoneNumber"] === undefined &&
-            (value as Record<string, any>)["phone_number"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('phoneNumber' in (value as Record<string, any>)) && !('phone_number' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneNumber'] === undefined && (value as Record<string, any>)['phone_number'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -65,10 +60,11 @@ export function SMSDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        name: json["name"],
-        pk: json["pk"],
-        phoneNumber: json["phone_number"],
-        user: PartialUserFromJSON(json["user"]),
+        
+        'name': json['name'],
+        'pk': json['pk'],
+        'phoneNumber': json['phone_number'],
+        'user': PartialUserFromJSON(json['user']),
     };
 }
 
@@ -76,15 +72,14 @@ export function SMSDeviceToJSON(json: any): SMSDevice {
     return SMSDeviceToJSONTyped(json, false);
 }
 
-export function SMSDeviceToJSONTyped(
-    value?: Omit<SMSDevice, "pk" | "phoneNumber" | "user"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SMSDeviceToJSONTyped(value?: Omit<SMSDevice, 'pk'|'phoneNumber'|'user'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

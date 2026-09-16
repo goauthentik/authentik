@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface GoogleChromeConnector {
     /**
-     *
+     * 
      */
     connectorUuid?: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -47,9 +46,9 @@ export interface GoogleChromeConnector {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
-    credentials: { [key: string]: any };
+    credentials: { [key: string]: any; };
     /**
      * Full URL to be used in Google Workspace configuration
      */
@@ -60,37 +59,13 @@ export interface GoogleChromeConnector {
  * Check if a given object implements the GoogleChromeConnector interface.
  */
 export function instanceOfGoogleChromeConnector(value: object): value is GoogleChromeConnector {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
-    if (
-        (!("chromeUrl" in (value as Record<string, any>)) &&
-            !("chrome_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["chromeUrl"] === undefined &&
-            (value as Record<string, any>)["chrome_url"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('credentials' in value) || value['credentials'] === undefined) return false;
+    if ((!('chromeUrl' in (value as Record<string, any>)) && !('chrome_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['chromeUrl'] === undefined && (value as Record<string, any>)['chrome_url'] === undefined)) return false;
     return true;
 }
 
@@ -98,23 +73,21 @@ export function GoogleChromeConnectorFromJSON(json: any): GoogleChromeConnector 
     return GoogleChromeConnectorFromJSONTyped(json, false);
 }
 
-export function GoogleChromeConnectorFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleChromeConnector {
+export function GoogleChromeConnectorFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleChromeConnector {
     if (json == null) {
         return json;
     }
     return {
-        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
-        name: json["name"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        credentials: json["credentials"],
-        chromeUrl: json["chrome_url"],
+        
+        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
+        'name': json['name'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'credentials': json['credentials'],
+        'chromeUrl': json['chrome_url'],
     };
 }
 
@@ -122,21 +95,17 @@ export function GoogleChromeConnectorToJSON(json: any): GoogleChromeConnector {
     return GoogleChromeConnectorToJSONTyped(json, false);
 }
 
-export function GoogleChromeConnectorToJSONTyped(
-    value?: Omit<
-        GoogleChromeConnector,
-        "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "chromeUrl"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleChromeConnectorToJSONTyped(value?: Omit<GoogleChromeConnector, 'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'chromeUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        connector_uuid: value["connectorUuid"],
-        name: value["name"],
-        enabled: value["enabled"],
-        credentials: value["credentials"],
+        
+        'connector_uuid': value['connectorUuid'],
+        'name': value['name'],
+        'enabled': value['enabled'],
+        'credentials': value['credentials'],
     };
 }
+

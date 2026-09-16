@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface UserDeleteStageRequest {
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -28,7 +27,7 @@ export interface UserDeleteStageRequest {
  * Check if a given object implements the UserDeleteStageRequest interface.
  */
 export function instanceOfUserDeleteStageRequest(value: object): value is UserDeleteStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function UserDeleteStageRequestFromJSON(json: any): UserDeleteStageReques
     return UserDeleteStageRequestFromJSONTyped(json, false);
 }
 
-export function UserDeleteStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserDeleteStageRequest {
+export function UserDeleteStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserDeleteStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +49,14 @@ export function UserDeleteStageRequestToJSON(json: any): UserDeleteStageRequest 
     return UserDeleteStageRequestToJSONTyped(json, false);
 }
 
-export function UserDeleteStageRequestToJSONTyped(
-    value?: UserDeleteStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserDeleteStageRequestToJSONTyped(value?: UserDeleteStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

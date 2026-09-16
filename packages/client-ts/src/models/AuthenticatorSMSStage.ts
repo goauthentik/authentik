@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,20 @@
  * Do not edit the class manually.
  */
 
-import type { AuthTypeEnum } from "./AuthTypeEnum";
-import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ProviderEnum } from "./ProviderEnum";
-import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
+import type { ProviderEnum } from './ProviderEnum';
+import {
+    ProviderEnumFromJSON,
+    ProviderEnumToJSON,
+} from './ProviderEnum';
+import type { AuthTypeEnum } from './AuthTypeEnum';
+import {
+    AuthTypeEnumFromJSON,
+    AuthTypeEnumToJSON,
+} from './AuthTypeEnum';
 
 /**
  * AuthenticatorSMSStage Serializer
@@ -26,11 +33,11 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
  */
 export interface AuthenticatorSMSStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -50,7 +57,7 @@ export interface AuthenticatorSMSStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -58,23 +65,23 @@ export interface AuthenticatorSMSStage {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     provider: ProviderEnum;
     /**
-     *
+     * 
      */
     fromNumber: string;
     /**
-     *
+     * 
      */
     accountSid: string;
     /**
-     *
+     * 
      */
     authType?: AuthTypeEnum;
     /**
@@ -87,56 +94,22 @@ export interface AuthenticatorSMSStage {
     mapping?: string | null;
 }
 
+
+
 /**
  * Check if a given object implements the AuthenticatorSMSStage interface.
  */
 export function instanceOfAuthenticatorSMSStage(value: object): value is AuthenticatorSMSStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (
-        (!("fromNumber" in (value as Record<string, any>)) &&
-            !("from_number" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fromNumber"] === undefined &&
-            (value as Record<string, any>)["from_number"] === undefined)
-    )
-        return false;
-    if (
-        (!("accountSid" in (value as Record<string, any>)) &&
-            !("account_sid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["accountSid"] === undefined &&
-            (value as Record<string, any>)["account_sid"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if ((!('fromNumber' in (value as Record<string, any>)) && !('from_number' in (value as Record<string, any>))) || ((value as Record<string, any>)['fromNumber'] === undefined && (value as Record<string, any>)['from_number'] === undefined)) return false;
+    if ((!('accountSid' in (value as Record<string, any>)) && !('account_sid' in (value as Record<string, any>))) || ((value as Record<string, any>)['accountSid'] === undefined && (value as Record<string, any>)['account_sid'] === undefined)) return false;
     return true;
 }
 
@@ -144,39 +117,27 @@ export function AuthenticatorSMSStageFromJSON(json: any): AuthenticatorSMSStage 
     return AuthenticatorSMSStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorSMSStage {
+export function AuthenticatorSMSStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorSMSStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        provider: ProviderEnumFromJSON(json["provider"]),
-        fromNumber: json["from_number"],
-        accountSid: json["account_sid"],
-        authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
-        verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
-        mapping:
-            json["mapping"] === undefined
-                ? undefined
-                : json["mapping"] === null
-                  ? null
-                  : json["mapping"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'provider': ProviderEnumFromJSON(json['provider']),
+        'fromNumber': json['from_number'],
+        'accountSid': json['account_sid'],
+        'authType': json['auth_type'] == null ? undefined : AuthTypeEnumFromJSON(json['auth_type']),
+        'verifyOnly': json['verify_only'] == null ? undefined : json['verify_only'],
+        'mapping': json['mapping'] === undefined ? undefined : json['mapping'] === null ? null : json['mapping'],
     };
 }
 
@@ -184,26 +145,22 @@ export function AuthenticatorSMSStageToJSON(json: any): AuthenticatorSMSStage {
     return AuthenticatorSMSStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSStageToJSONTyped(
-    value?: Omit<
-        AuthenticatorSMSStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorSMSStageToJSONTyped(value?: Omit<AuthenticatorSMSStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        provider: ProviderEnumToJSON(value["provider"]),
-        from_number: value["fromNumber"],
-        account_sid: value["accountSid"],
-        auth_type: AuthTypeEnumToJSON(value["authType"]),
-        verify_only: value["verifyOnly"],
-        mapping: value["mapping"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'provider': ProviderEnumToJSON(value['provider']),
+        'from_number': value['fromNumber'],
+        'account_sid': value['accountSid'],
+        'auth_type': AuthTypeEnumToJSON(value['authType']),
+        'verify_only': value['verifyOnly'],
+        'mapping': value['mapping'],
     };
 }
+

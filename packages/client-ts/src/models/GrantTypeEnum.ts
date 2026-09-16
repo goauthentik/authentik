@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,22 +11,24 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const GrantTypeEnum = {
-    AuthorizationCode: "authorization_code",
-    Implicit: "implicit",
-    Hybrid: "hybrid",
-    RefreshToken: "refresh_token",
-    ClientCredentials: "client_credentials",
-    Password: "password",
-    UrnIetfParamsOauthGrantTypeDeviceCode: "urn:ietf:params:oauth:grant-type:device_code",
-    UrnIetfParamsOauthGrantTypeTokenExchange: "urn:ietf:params:oauth:grant-type:token-exchange",
-    UnknownDefaultOpenApi: "11184809",
+    AuthorizationCode: 'authorization_code',
+    Implicit: 'implicit',
+    Hybrid: 'hybrid',
+    RefreshToken: 'refresh_token',
+    ClientCredentials: 'client_credentials',
+    Password: 'password',
+    UrnIetfParamsOauthGrantTypeDeviceCode: 'urn:ietf:params:oauth:grant-type:device_code',
+    UrnIetfParamsOauthGrantTypeTokenExchange: 'urn:ietf:params:oauth:grant-type:token-exchange',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type GrantTypeEnum = (typeof GrantTypeEnum)[keyof typeof GrantTypeEnum];
+export type GrantTypeEnum = typeof GrantTypeEnum[keyof typeof GrantTypeEnum];
+
 
 export function instanceOfGrantTypeEnum(value: any): boolean {
     for (const key in GrantTypeEnum) {
@@ -55,3 +56,4 @@ export function GrantTypeEnumToJSON(value?: GrantTypeEnum | null): any {
 export function GrantTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): GrantTypeEnum {
     return value as GrantTypeEnum;
 }
+

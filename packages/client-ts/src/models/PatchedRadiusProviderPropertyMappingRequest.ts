@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,11 +22,11 @@ export interface PatchedRadiusProviderPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,54 +34,40 @@ export interface PatchedRadiusProviderPropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedRadiusProviderPropertyMappingRequest interface.
  */
-export function instanceOfPatchedRadiusProviderPropertyMappingRequest(
-    value: object,
-): value is PatchedRadiusProviderPropertyMappingRequest {
+export function instanceOfPatchedRadiusProviderPropertyMappingRequest(value: object): value is PatchedRadiusProviderPropertyMappingRequest {
     return true;
 }
 
-export function PatchedRadiusProviderPropertyMappingRequestFromJSON(
-    json: any,
-): PatchedRadiusProviderPropertyMappingRequest {
+export function PatchedRadiusProviderPropertyMappingRequestFromJSON(json: any): PatchedRadiusProviderPropertyMappingRequest {
     return PatchedRadiusProviderPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRadiusProviderPropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedRadiusProviderPropertyMappingRequest {
+export function PatchedRadiusProviderPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRadiusProviderPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedRadiusProviderPropertyMappingRequestToJSON(
-    json: any,
-): PatchedRadiusProviderPropertyMappingRequest {
+export function PatchedRadiusProviderPropertyMappingRequestToJSON(json: any): PatchedRadiusProviderPropertyMappingRequest {
     return PatchedRadiusProviderPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedRadiusProviderPropertyMappingRequestToJSONTyped(
-    value?: PatchedRadiusProviderPropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedRadiusProviderPropertyMappingRequestToJSONTyped(value?: PatchedRadiusProviderPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

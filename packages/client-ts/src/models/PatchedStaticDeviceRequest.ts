@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -27,9 +26,7 @@ export interface PatchedStaticDeviceRequest {
 /**
  * Check if a given object implements the PatchedStaticDeviceRequest interface.
  */
-export function instanceOfPatchedStaticDeviceRequest(
-    value: object,
-): value is PatchedStaticDeviceRequest {
+export function instanceOfPatchedStaticDeviceRequest(value: object): value is PatchedStaticDeviceRequest {
     return true;
 }
 
@@ -37,15 +34,13 @@ export function PatchedStaticDeviceRequestFromJSON(json: any): PatchedStaticDevi
     return PatchedStaticDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedStaticDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedStaticDeviceRequest {
+export function PatchedStaticDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedStaticDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -53,15 +48,14 @@ export function PatchedStaticDeviceRequestToJSON(json: any): PatchedStaticDevice
     return PatchedStaticDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedStaticDeviceRequestToJSONTyped(
-    value?: PatchedStaticDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedStaticDeviceRequestToJSONTyped(value?: PatchedStaticDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

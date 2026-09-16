@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -35,15 +34,13 @@ export function PatchedSMSDeviceRequestFromJSON(json: any): PatchedSMSDeviceRequ
     return PatchedSMSDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSMSDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSMSDeviceRequest {
+export function PatchedSMSDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSMSDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -51,15 +48,14 @@ export function PatchedSMSDeviceRequestToJSON(json: any): PatchedSMSDeviceReques
     return PatchedSMSDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedSMSDeviceRequestToJSONTyped(
-    value?: PatchedSMSDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSMSDeviceRequestToJSONTyped(value?: PatchedSMSDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { UserSwitchActionEnum } from "./UserSwitchActionEnum";
-import { UserSwitchActionEnumFromJSON, UserSwitchActionEnumToJSON } from "./UserSwitchActionEnum";
+import type { UserSwitchActionEnum } from './UserSwitchActionEnum';
+import {
+    UserSwitchActionEnumFromJSON,
+    UserSwitchActionEnumToJSON,
+} from './UserSwitchActionEnum';
 
 /**
  * Request to add or switch users in the current browser.
@@ -22,14 +24,16 @@ import { UserSwitchActionEnumFromJSON, UserSwitchActionEnumToJSON } from "./User
  */
 export interface UserSwitchRequest {
     /**
-     *
+     * 
      */
     action?: UserSwitchActionEnum;
     /**
-     *
+     * 
      */
     userPk?: number;
 }
+
+
 
 /**
  * Check if a given object implements the UserSwitchRequest interface.
@@ -42,16 +46,14 @@ export function UserSwitchRequestFromJSON(json: any): UserSwitchRequest {
     return UserSwitchRequestFromJSONTyped(json, false);
 }
 
-export function UserSwitchRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSwitchRequest {
+export function UserSwitchRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSwitchRequest {
     if (json == null) {
         return json;
     }
     return {
-        action: json["action"] == null ? undefined : UserSwitchActionEnumFromJSON(json["action"]),
-        userPk: json["user_pk"] == null ? undefined : json["user_pk"],
+        
+        'action': json['action'] == null ? undefined : UserSwitchActionEnumFromJSON(json['action']),
+        'userPk': json['user_pk'] == null ? undefined : json['user_pk'],
     };
 }
 
@@ -59,16 +61,15 @@ export function UserSwitchRequestToJSON(json: any): UserSwitchRequest {
     return UserSwitchRequestToJSONTyped(json, false);
 }
 
-export function UserSwitchRequestToJSONTyped(
-    value?: UserSwitchRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSwitchRequestToJSONTyped(value?: UserSwitchRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        action: UserSwitchActionEnumToJSON(value["action"]),
-        user_pk: value["userPk"],
+        
+        'action': UserSwitchActionEnumToJSON(value['action']),
+        'user_pk': value['userPk'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,11 +22,11 @@ export interface MicrosoftEntraProviderMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,56 +34,42 @@ export interface MicrosoftEntraProviderMappingRequest {
 /**
  * Check if a given object implements the MicrosoftEntraProviderMappingRequest interface.
  */
-export function instanceOfMicrosoftEntraProviderMappingRequest(
-    value: object,
-): value is MicrosoftEntraProviderMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderMappingRequest(value: object): value is MicrosoftEntraProviderMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
-export function MicrosoftEntraProviderMappingRequestFromJSON(
-    json: any,
-): MicrosoftEntraProviderMappingRequest {
+export function MicrosoftEntraProviderMappingRequestFromJSON(json: any): MicrosoftEntraProviderMappingRequest {
     return MicrosoftEntraProviderMappingRequestFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MicrosoftEntraProviderMappingRequest {
+export function MicrosoftEntraProviderMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
-export function MicrosoftEntraProviderMappingRequestToJSON(
-    json: any,
-): MicrosoftEntraProviderMappingRequest {
+export function MicrosoftEntraProviderMappingRequestToJSON(json: any): MicrosoftEntraProviderMappingRequest {
     return MicrosoftEntraProviderMappingRequestToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderMappingRequestToJSONTyped(
-    value?: MicrosoftEntraProviderMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MicrosoftEntraProviderMappingRequestToJSONTyped(value?: MicrosoftEntraProviderMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

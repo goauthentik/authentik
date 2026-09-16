@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
@@ -34,23 +32,23 @@ export interface AgentRequest {
      */
     isActive?: boolean;
     /**
-     *
+     * 
      */
     lastLogin?: Date | null;
     /**
-     *
+     * 
      */
     email?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
 }
@@ -59,8 +57,8 @@ export interface AgentRequest {
  * Check if a given object implements the AgentRequest interface.
  */
 export function instanceOfAgentRequest(value: object): value is AgentRequest {
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -73,24 +71,15 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        username: json["username"],
-        name: json["name"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin:
-            json["last_login"] === undefined
-                ? undefined
-                : json["last_login"] === null
-                  ? null
-                  : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
+        
+        'username': json['username'],
+        'name': json['name'],
+        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'lastLogin': json['last_login'] === undefined ? undefined : json['last_login'] === null ? null : (parseDateTime(json['last_login'])),
+        'email': json['email'] == null ? undefined : json['email'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
     };
 }
 
@@ -98,23 +87,21 @@ export function AgentRequestToJSON(json: any): AgentRequest {
     return AgentRequestToJSONTyped(json, false);
 }
 
-export function AgentRequestToJSONTyped(
-    value?: AgentRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentRequestToJSONTyped(value?: AgentRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        is_active: value["isActive"],
-        last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
-        attributes: value["attributes"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'username': value['username'],
+        'name': value['name'],
+        'is_active': value['isActive'],
+        'last_login': value['lastLogin'] == null ? value['lastLogin'] : serializeDateTime(value['lastLogin']),
+        'email': value['email'],
+        'attributes': value['attributes'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

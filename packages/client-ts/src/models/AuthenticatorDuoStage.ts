@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * AuthenticatorDuoStage Serializer
@@ -22,11 +23,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface AuthenticatorDuoStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,7 +47,7 @@ export interface AuthenticatorDuoStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -54,19 +55,19 @@ export interface AuthenticatorDuoStage {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     clientId: string;
     /**
-     *
+     * 
      */
     apiHostname: string;
     /**
-     *
+     * 
      */
     adminIntegrationKey?: string;
 }
@@ -75,51 +76,15 @@ export interface AuthenticatorDuoStage {
  * Check if a given object implements the AuthenticatorDuoStage interface.
  */
 export function instanceOfAuthenticatorDuoStage(value: object): value is AuthenticatorDuoStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("apiHostname" in (value as Record<string, any>)) &&
-            !("api_hostname" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["apiHostname"] === undefined &&
-            (value as Record<string, any>)["api_hostname"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if ((!('apiHostname' in (value as Record<string, any>)) && !('api_hostname' in (value as Record<string, any>))) || ((value as Record<string, any>)['apiHostname'] === undefined && (value as Record<string, any>)['api_hostname'] === undefined)) return false;
     return true;
 }
 
@@ -127,32 +92,24 @@ export function AuthenticatorDuoStageFromJSON(json: any): AuthenticatorDuoStage 
     return AuthenticatorDuoStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorDuoStage {
+export function AuthenticatorDuoStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        clientId: json["client_id"],
-        apiHostname: json["api_hostname"],
-        adminIntegrationKey:
-            json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'clientId': json['client_id'],
+        'apiHostname': json['api_hostname'],
+        'adminIntegrationKey': json['admin_integration_key'] == null ? undefined : json['admin_integration_key'],
     };
 }
 
@@ -160,23 +117,19 @@ export function AuthenticatorDuoStageToJSON(json: any): AuthenticatorDuoStage {
     return AuthenticatorDuoStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageToJSONTyped(
-    value?: Omit<
-        AuthenticatorDuoStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorDuoStageToJSONTyped(value?: Omit<AuthenticatorDuoStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        client_id: value["clientId"],
-        api_hostname: value["apiHostname"],
-        admin_integration_key: value["adminIntegrationKey"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'client_id': value['clientId'],
+        'api_hostname': value['apiHostname'],
+        'admin_integration_key': value['adminIntegrationKey'],
     };
 }
+

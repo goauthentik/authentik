@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { LifecycleRule } from "./LifecycleRule";
-import { LifecycleRuleFromJSON, LifecycleRuleToJSON } from "./LifecycleRule";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { LifecycleRule } from './LifecycleRule';
+import {
+    LifecycleRuleFromJSON,
+    LifecycleRuleToJSON,
+} from './LifecycleRule';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedLifecycleRuleList
  */
 export interface PaginatedLifecycleRuleList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<LifecycleRule>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedLifecycleRuleList interface.
  */
-export function instanceOfPaginatedLifecycleRuleList(
-    value: object,
-): value is PaginatedLifecycleRuleList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedLifecycleRuleList(value: object): value is PaginatedLifecycleRuleList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedLifecycleRuleListFromJSON(json: any): PaginatedLifecycl
     return PaginatedLifecycleRuleListFromJSONTyped(json, false);
 }
 
-export function PaginatedLifecycleRuleListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedLifecycleRuleList {
+export function PaginatedLifecycleRuleListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLifecycleRuleList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(LifecycleRuleFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(LifecycleRuleFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedLifecycleRuleListToJSON(json: any): PaginatedLifecycleR
     return PaginatedLifecycleRuleListToJSONTyped(json, false);
 }
 
-export function PaginatedLifecycleRuleListToJSONTyped(
-    value?: PaginatedLifecycleRuleList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedLifecycleRuleListToJSONTyped(value?: PaginatedLifecycleRuleList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(LifecycleRuleToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(LifecycleRuleToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

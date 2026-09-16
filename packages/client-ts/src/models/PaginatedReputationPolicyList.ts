@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ReputationPolicy } from "./ReputationPolicy";
-import { ReputationPolicyFromJSON, ReputationPolicyToJSON } from "./ReputationPolicy";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { ReputationPolicy } from './ReputationPolicy';
+import {
+    ReputationPolicyFromJSON,
+    ReputationPolicyToJSON,
+} from './ReputationPolicy';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedReputationPolicyList
  */
 export interface PaginatedReputationPolicyList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ReputationPolicy>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedReputationPolicyList interface.
  */
-export function instanceOfPaginatedReputationPolicyList(
-    value: object,
-): value is PaginatedReputationPolicyList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedReputationPolicyList(value: object): value is PaginatedReputationPolicyList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedReputationPolicyListFromJSON(json: any): PaginatedReput
     return PaginatedReputationPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedReputationPolicyListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedReputationPolicyList {
+export function PaginatedReputationPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedReputationPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ReputationPolicyFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ReputationPolicyFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedReputationPolicyListToJSON(json: any): PaginatedReputat
     return PaginatedReputationPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedReputationPolicyListToJSONTyped(
-    value?: PaginatedReputationPolicyList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedReputationPolicyListToJSONTyped(value?: PaginatedReputationPolicyList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ReputationPolicyToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ReputationPolicyToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

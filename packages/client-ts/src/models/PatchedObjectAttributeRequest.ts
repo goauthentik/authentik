@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,44 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import type { ObjectAttributeTypeEnum } from './ObjectAttributeTypeEnum';
 import {
     ObjectAttributeTypeEnumFromJSON,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+} from './ObjectAttributeTypeEnum';
 
 /**
- *
+ * 
  * @export
  * @interface PatchedObjectAttributeRequest
  */
 export interface PatchedObjectAttributeRequest {
     /**
-     *
+     * 
      */
     objectType?: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     key?: string;
     /**
-     *
+     * 
      */
     label?: string;
     /**
-     *
+     * 
      */
     regex?: string;
     /**
-     *
+     * 
      */
     type?: ObjectAttributeTypeEnum;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -57,21 +56,21 @@ export interface PatchedObjectAttributeRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     isUnique?: boolean;
     /**
-     *
+     * 
      */
     isRequired?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedObjectAttributeRequest interface.
  */
-export function instanceOfPatchedObjectAttributeRequest(
-    value: object,
-): value is PatchedObjectAttributeRequest {
+export function instanceOfPatchedObjectAttributeRequest(value: object): value is PatchedObjectAttributeRequest {
     return true;
 }
 
@@ -79,29 +78,22 @@ export function PatchedObjectAttributeRequestFromJSON(json: any): PatchedObjectA
     return PatchedObjectAttributeRequestFromJSONTyped(json, false);
 }
 
-export function PatchedObjectAttributeRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedObjectAttributeRequest {
+export function PatchedObjectAttributeRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedObjectAttributeRequest {
     if (json == null) {
         return json;
     }
     return {
-        objectType: json["object_type"] == null ? undefined : json["object_type"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        key: json["key"] == null ? undefined : json["key"],
-        label: json["label"] == null ? undefined : json["label"],
-        regex: json["regex"] == null ? undefined : json["regex"],
-        type: json["type"] == null ? undefined : ObjectAttributeTypeEnumFromJSON(json["type"]),
-        group: json["group"] == null ? undefined : json["group"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
-        isRequired: json["is_required"] == null ? undefined : json["is_required"],
+        
+        'objectType': json['object_type'] == null ? undefined : json['object_type'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'key': json['key'] == null ? undefined : json['key'],
+        'label': json['label'] == null ? undefined : json['label'],
+        'regex': json['regex'] == null ? undefined : json['regex'],
+        'type': json['type'] == null ? undefined : ObjectAttributeTypeEnumFromJSON(json['type']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'isUnique': json['is_unique'] == null ? undefined : json['is_unique'],
+        'isRequired': json['is_required'] == null ? undefined : json['is_required'],
     };
 }
 
@@ -109,24 +101,23 @@ export function PatchedObjectAttributeRequestToJSON(json: any): PatchedObjectAtt
     return PatchedObjectAttributeRequestToJSONTyped(json, false);
 }
 
-export function PatchedObjectAttributeRequestToJSONTyped(
-    value?: PatchedObjectAttributeRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedObjectAttributeRequestToJSONTyped(value?: PatchedObjectAttributeRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        object_type: value["objectType"],
-        enabled: value["enabled"],
-        key: value["key"],
-        label: value["label"],
-        regex: value["regex"],
-        type: ObjectAttributeTypeEnumToJSON(value["type"]),
-        group: value["group"],
-        managed: value["managed"],
-        is_unique: value["isUnique"],
-        is_required: value["isRequired"],
+        
+        'object_type': value['objectType'],
+        'enabled': value['enabled'],
+        'key': value['key'],
+        'label': value['label'],
+        'regex': value['regex'],
+        'type': ObjectAttributeTypeEnumToJSON(value['type']),
+        'group': value['group'],
+        'managed': value['managed'],
+        'is_unique': value['isUnique'],
+        'is_required': value['isRequired'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +11,31 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface PatchedEnrollmentTokenRequest
  */
 export interface PatchedEnrollmentTokenRequest {
     /**
-     *
+     * 
      */
     deviceGroup?: string | null;
     /**
-     *
+     * 
      */
     connector?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
 }
@@ -45,9 +43,7 @@ export interface PatchedEnrollmentTokenRequest {
 /**
  * Check if a given object implements the PatchedEnrollmentTokenRequest interface.
  */
-export function instanceOfPatchedEnrollmentTokenRequest(
-    value: object,
-): value is PatchedEnrollmentTokenRequest {
+export function instanceOfPatchedEnrollmentTokenRequest(value: object): value is PatchedEnrollmentTokenRequest {
     return true;
 }
 
@@ -55,29 +51,17 @@ export function PatchedEnrollmentTokenRequestFromJSON(json: any): PatchedEnrollm
     return PatchedEnrollmentTokenRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEnrollmentTokenRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedEnrollmentTokenRequest {
+export function PatchedEnrollmentTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEnrollmentTokenRequest {
     if (json == null) {
         return json;
     }
     return {
-        deviceGroup:
-            json["device_group"] === undefined
-                ? undefined
-                : json["device_group"] === null
-                  ? null
-                  : json["device_group"],
-        connector: json["connector"] == null ? undefined : json["connector"],
-        name: json["name"] == null ? undefined : json["name"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
+        
+        'deviceGroup': json['device_group'] === undefined ? undefined : json['device_group'] === null ? null : json['device_group'],
+        'connector': json['connector'] == null ? undefined : json['connector'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
     };
 }
 
@@ -85,19 +69,18 @@ export function PatchedEnrollmentTokenRequestToJSON(json: any): PatchedEnrollmen
     return PatchedEnrollmentTokenRequestToJSONTyped(json, false);
 }
 
-export function PatchedEnrollmentTokenRequestToJSONTyped(
-    value?: PatchedEnrollmentTokenRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedEnrollmentTokenRequestToJSONTyped(value?: PatchedEnrollmentTokenRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_group: value["deviceGroup"],
-        connector: value["connector"],
-        name: value["name"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'device_group': value['deviceGroup'],
+        'connector': value['connector'],
+        'name': value['name'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

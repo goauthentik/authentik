@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -23,19 +25,19 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface RequestRuleBindingRequest {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     rule: string;
     /**
-     *
+     * 
      */
     target: string;
     /**
@@ -48,14 +50,14 @@ export interface RequestRuleBindingRequest {
     expiryGrantedMax?: string;
 }
 
+
+
 /**
  * Check if a given object implements the RequestRuleBindingRequest interface.
  */
-export function instanceOfRequestRuleBindingRequest(
-    value: object,
-): value is RequestRuleBindingRequest {
-    if (!("rule" in value) || value["rule"] === undefined) return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
+export function instanceOfRequestRuleBindingRequest(value: object): value is RequestRuleBindingRequest {
+    if (!('rule' in value) || value['rule'] === undefined) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
     return true;
 }
 
@@ -63,24 +65,18 @@ export function RequestRuleBindingRequestFromJSON(json: any): RequestRuleBinding
     return RequestRuleBindingRequestFromJSONTyped(json, false);
 }
 
-export function RequestRuleBindingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestRuleBindingRequest {
+export function RequestRuleBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestRuleBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        rule: json["rule"],
-        target: json["target"],
-        expiryPending: json["expiry_pending"] == null ? undefined : json["expiry_pending"],
-        expiryGrantedMax:
-            json["expiry_granted_max"] == null ? undefined : json["expiry_granted_max"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'rule': json['rule'],
+        'target': json['target'],
+        'expiryPending': json['expiry_pending'] == null ? undefined : json['expiry_pending'],
+        'expiryGrantedMax': json['expiry_granted_max'] == null ? undefined : json['expiry_granted_max'],
     };
 }
 
@@ -88,20 +84,19 @@ export function RequestRuleBindingRequestToJSON(json: any): RequestRuleBindingRe
     return RequestRuleBindingRequestToJSONTyped(json, false);
 }
 
-export function RequestRuleBindingRequestToJSONTyped(
-    value?: RequestRuleBindingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestRuleBindingRequestToJSONTyped(value?: RequestRuleBindingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        rule: value["rule"],
-        target: value["target"],
-        expiry_pending: value["expiryPending"],
-        expiry_granted_max: value["expiryGrantedMax"],
+        
+        'uuid': value['uuid'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'rule': value['rule'],
+        'target': value['target'],
+        'expiry_pending': value['expiryPending'],
+        'expiry_granted_max': value['expiryGrantedMax'],
     };
 }
+

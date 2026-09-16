@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,27 +22,27 @@ export interface BrandRequest {
      */
     domain: string;
     /**
-     *
+     * 
      */
     _default?: boolean;
     /**
-     *
+     * 
      */
     brandingTitle?: string;
     /**
-     *
+     * 
      */
     brandingLogo?: string;
     /**
-     *
+     * 
      */
     brandingFavicon?: string;
     /**
-     *
+     * 
      */
     brandingCustomCss?: string;
     /**
-     *
+     * 
      */
     brandingDefaultFlowBackground?: string;
     /**
@@ -51,39 +50,39 @@ export interface BrandRequest {
      */
     brandingMapTiles?: string;
     /**
-     *
+     * 
      */
     flowAuthentication?: string | null;
     /**
-     *
+     * 
      */
     flowUserSwitch?: string | null;
     /**
-     *
+     * 
      */
     flowInvalidation?: string | null;
     /**
-     *
+     * 
      */
     flowRecovery?: string | null;
     /**
-     *
+     * 
      */
     flowUnenrollment?: string | null;
     /**
-     *
+     * 
      */
     flowUserSettings?: string | null;
     /**
-     *
+     * 
      */
     flowDeviceCode?: string | null;
     /**
-     *
+     * 
      */
     flowLockdown?: string | null;
     /**
-     *
+     * 
      */
     flowRequest?: string | null;
     /**
@@ -99,16 +98,16 @@ export interface BrandRequest {
      */
     clientCertificates?: Array<string>;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the BrandRequest interface.
  */
 export function instanceOfBrandRequest(value: object): value is BrandRequest {
-    if (!("domain" in value) || value["domain"] === undefined) return false;
+    if (!('domain' in value) || value['domain'] === undefined) return false;
     return true;
 }
 
@@ -121,88 +120,28 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        domain: json["domain"],
-        _default: json["default"] == null ? undefined : json["default"],
-        brandingTitle: json["branding_title"] == null ? undefined : json["branding_title"],
-        brandingLogo: json["branding_logo"] == null ? undefined : json["branding_logo"],
-        brandingFavicon: json["branding_favicon"] == null ? undefined : json["branding_favicon"],
-        brandingCustomCss:
-            json["branding_custom_css"] == null ? undefined : json["branding_custom_css"],
-        brandingDefaultFlowBackground:
-            json["branding_default_flow_background"] == null
-                ? undefined
-                : json["branding_default_flow_background"],
-        brandingMapTiles:
-            json["branding_map_tiles"] == null ? undefined : json["branding_map_tiles"],
-        flowAuthentication:
-            json["flow_authentication"] === undefined
-                ? undefined
-                : json["flow_authentication"] === null
-                  ? null
-                  : json["flow_authentication"],
-        flowUserSwitch:
-            json["flow_user_switch"] === undefined
-                ? undefined
-                : json["flow_user_switch"] === null
-                  ? null
-                  : json["flow_user_switch"],
-        flowInvalidation:
-            json["flow_invalidation"] === undefined
-                ? undefined
-                : json["flow_invalidation"] === null
-                  ? null
-                  : json["flow_invalidation"],
-        flowRecovery:
-            json["flow_recovery"] === undefined
-                ? undefined
-                : json["flow_recovery"] === null
-                  ? null
-                  : json["flow_recovery"],
-        flowUnenrollment:
-            json["flow_unenrollment"] === undefined
-                ? undefined
-                : json["flow_unenrollment"] === null
-                  ? null
-                  : json["flow_unenrollment"],
-        flowUserSettings:
-            json["flow_user_settings"] === undefined
-                ? undefined
-                : json["flow_user_settings"] === null
-                  ? null
-                  : json["flow_user_settings"],
-        flowDeviceCode:
-            json["flow_device_code"] === undefined
-                ? undefined
-                : json["flow_device_code"] === null
-                  ? null
-                  : json["flow_device_code"],
-        flowLockdown:
-            json["flow_lockdown"] === undefined
-                ? undefined
-                : json["flow_lockdown"] === null
-                  ? null
-                  : json["flow_lockdown"],
-        flowRequest:
-            json["flow_request"] === undefined
-                ? undefined
-                : json["flow_request"] === null
-                  ? null
-                  : json["flow_request"],
-        defaultApplication:
-            json["default_application"] === undefined
-                ? undefined
-                : json["default_application"] === null
-                  ? null
-                  : json["default_application"],
-        webCertificate:
-            json["web_certificate"] === undefined
-                ? undefined
-                : json["web_certificate"] === null
-                  ? null
-                  : json["web_certificate"],
-        clientCertificates:
-            json["client_certificates"] == null ? undefined : json["client_certificates"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'domain': json['domain'],
+        '_default': json['default'] == null ? undefined : json['default'],
+        'brandingTitle': json['branding_title'] == null ? undefined : json['branding_title'],
+        'brandingLogo': json['branding_logo'] == null ? undefined : json['branding_logo'],
+        'brandingFavicon': json['branding_favicon'] == null ? undefined : json['branding_favicon'],
+        'brandingCustomCss': json['branding_custom_css'] == null ? undefined : json['branding_custom_css'],
+        'brandingDefaultFlowBackground': json['branding_default_flow_background'] == null ? undefined : json['branding_default_flow_background'],
+        'brandingMapTiles': json['branding_map_tiles'] == null ? undefined : json['branding_map_tiles'],
+        'flowAuthentication': json['flow_authentication'] === undefined ? undefined : json['flow_authentication'] === null ? null : json['flow_authentication'],
+        'flowUserSwitch': json['flow_user_switch'] === undefined ? undefined : json['flow_user_switch'] === null ? null : json['flow_user_switch'],
+        'flowInvalidation': json['flow_invalidation'] === undefined ? undefined : json['flow_invalidation'] === null ? null : json['flow_invalidation'],
+        'flowRecovery': json['flow_recovery'] === undefined ? undefined : json['flow_recovery'] === null ? null : json['flow_recovery'],
+        'flowUnenrollment': json['flow_unenrollment'] === undefined ? undefined : json['flow_unenrollment'] === null ? null : json['flow_unenrollment'],
+        'flowUserSettings': json['flow_user_settings'] === undefined ? undefined : json['flow_user_settings'] === null ? null : json['flow_user_settings'],
+        'flowDeviceCode': json['flow_device_code'] === undefined ? undefined : json['flow_device_code'] === null ? null : json['flow_device_code'],
+        'flowLockdown': json['flow_lockdown'] === undefined ? undefined : json['flow_lockdown'] === null ? null : json['flow_lockdown'],
+        'flowRequest': json['flow_request'] === undefined ? undefined : json['flow_request'] === null ? null : json['flow_request'],
+        'defaultApplication': json['default_application'] === undefined ? undefined : json['default_application'] === null ? null : json['default_application'],
+        'webCertificate': json['web_certificate'] === undefined ? undefined : json['web_certificate'] === null ? null : json['web_certificate'],
+        'clientCertificates': json['client_certificates'] == null ? undefined : json['client_certificates'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -210,35 +149,34 @@ export function BrandRequestToJSON(json: any): BrandRequest {
     return BrandRequestToJSONTyped(json, false);
 }
 
-export function BrandRequestToJSONTyped(
-    value?: BrandRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function BrandRequestToJSONTyped(value?: BrandRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        domain: value["domain"],
-        default: value["_default"],
-        branding_title: value["brandingTitle"],
-        branding_logo: value["brandingLogo"],
-        branding_favicon: value["brandingFavicon"],
-        branding_custom_css: value["brandingCustomCss"],
-        branding_default_flow_background: value["brandingDefaultFlowBackground"],
-        branding_map_tiles: value["brandingMapTiles"],
-        flow_authentication: value["flowAuthentication"],
-        flow_user_switch: value["flowUserSwitch"],
-        flow_invalidation: value["flowInvalidation"],
-        flow_recovery: value["flowRecovery"],
-        flow_unenrollment: value["flowUnenrollment"],
-        flow_user_settings: value["flowUserSettings"],
-        flow_device_code: value["flowDeviceCode"],
-        flow_lockdown: value["flowLockdown"],
-        flow_request: value["flowRequest"],
-        default_application: value["defaultApplication"],
-        web_certificate: value["webCertificate"],
-        client_certificates: value["clientCertificates"],
-        attributes: value["attributes"],
+        
+        'domain': value['domain'],
+        'default': value['_default'],
+        'branding_title': value['brandingTitle'],
+        'branding_logo': value['brandingLogo'],
+        'branding_favicon': value['brandingFavicon'],
+        'branding_custom_css': value['brandingCustomCss'],
+        'branding_default_flow_background': value['brandingDefaultFlowBackground'],
+        'branding_map_tiles': value['brandingMapTiles'],
+        'flow_authentication': value['flowAuthentication'],
+        'flow_user_switch': value['flowUserSwitch'],
+        'flow_invalidation': value['flowInvalidation'],
+        'flow_recovery': value['flowRecovery'],
+        'flow_unenrollment': value['flowUnenrollment'],
+        'flow_user_settings': value['flowUserSettings'],
+        'flow_device_code': value['flowDeviceCode'],
+        'flow_lockdown': value['flowLockdown'],
+        'flow_request': value['flowRequest'],
+        'default_application': value['defaultApplication'],
+        'web_certificate': value['webCertificate'],
+        'client_certificates': value['clientCertificates'],
+        'attributes': value['attributes'],
     };
 }
+

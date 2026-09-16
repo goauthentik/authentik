@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DigitsEnum = {
-    _6: "6",
-    _8: "8",
-    UnknownDefaultOpenApi: "11184809",
+    _6: '6',
+    _8: '8',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DigitsEnum = (typeof DigitsEnum)[keyof typeof DigitsEnum];
+export type DigitsEnum = typeof DigitsEnum[keyof typeof DigitsEnum];
+
 
 export function instanceOfDigitsEnum(value: any): boolean {
     for (const key in DigitsEnum) {
@@ -49,3 +50,4 @@ export function DigitsEnumToJSON(value?: DigitsEnum | null): any {
 export function DigitsEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DigitsEnum {
     return value as DigitsEnum;
 }
+

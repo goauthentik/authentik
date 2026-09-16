@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +11,60 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RACPropertyMapping } from "./RACPropertyMapping";
-import { RACPropertyMappingFromJSON, RACPropertyMappingToJSON } from "./RACPropertyMapping";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { RACPropertyMapping } from './RACPropertyMapping';
+import {
+    RACPropertyMappingFromJSON,
+    RACPropertyMappingToJSON,
+} from './RACPropertyMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRACPropertyMappingList
  */
 export interface PaginatedRACPropertyMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RACPropertyMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRACPropertyMappingList interface.
  */
-export function instanceOfPaginatedRACPropertyMappingList(
-    value: object,
-): value is PaginatedRACPropertyMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRACPropertyMappingList(value: object): value is PaginatedRACPropertyMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedRACPropertyMappingListFromJSON(
-    json: any,
-): PaginatedRACPropertyMappingList {
+export function PaginatedRACPropertyMappingListFromJSON(json: any): PaginatedRACPropertyMappingList {
     return PaginatedRACPropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedRACPropertyMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRACPropertyMappingList {
+export function PaginatedRACPropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRACPropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RACPropertyMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RACPropertyMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -73,17 +72,16 @@ export function PaginatedRACPropertyMappingListToJSON(json: any): PaginatedRACPr
     return PaginatedRACPropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedRACPropertyMappingListToJSONTyped(
-    value?: PaginatedRACPropertyMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRACPropertyMappingListToJSONTyped(value?: PaginatedRACPropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RACPropertyMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RACPropertyMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

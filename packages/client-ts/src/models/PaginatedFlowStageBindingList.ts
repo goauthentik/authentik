@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON, FlowStageBindingToJSON } from "./FlowStageBinding";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { FlowStageBinding } from './FlowStageBinding';
+import {
+    FlowStageBindingFromJSON,
+    FlowStageBindingToJSON,
+} from './FlowStageBinding';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedFlowStageBindingList
  */
 export interface PaginatedFlowStageBindingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<FlowStageBinding>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedFlowStageBindingList interface.
  */
-export function instanceOfPaginatedFlowStageBindingList(
-    value: object,
-): value is PaginatedFlowStageBindingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedFlowStageBindingList(value: object): value is PaginatedFlowStageBindingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedFlowStageBindingListFromJSON(json: any): PaginatedFlowS
     return PaginatedFlowStageBindingListFromJSONTyped(json, false);
 }
 
-export function PaginatedFlowStageBindingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedFlowStageBindingList {
+export function PaginatedFlowStageBindingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedFlowStageBindingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(FlowStageBindingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(FlowStageBindingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedFlowStageBindingListToJSON(json: any): PaginatedFlowSta
     return PaginatedFlowStageBindingListToJSONTyped(json, false);
 }
 
-export function PaginatedFlowStageBindingListToJSONTyped(
-    value?: PaginatedFlowStageBindingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedFlowStageBindingListToJSONTyped(value?: PaginatedFlowStageBindingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(FlowStageBindingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(FlowStageBindingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

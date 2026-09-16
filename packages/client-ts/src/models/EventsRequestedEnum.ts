@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +11,25 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const EventsRequestedEnum = {
-    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionRevoked:
-        "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeTokenClaimsChange:
-        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeCredentialChange:
-        "https://schemas.openid.net/secevent/caep/event-type/credential-change",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeAssuranceLevelChange:
-        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeDeviceComplianceChange:
-        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionEstablished:
-        "https://schemas.openid.net/secevent/caep/event-type/session-established",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionPresented:
-        "https://schemas.openid.net/secevent/caep/event-type/session-presented",
-    HttpsSchemasOpenidNetSeceventCaepEventTypeRiskLevelChange:
-        "https://schemas.openid.net/secevent/caep/event-type/risk-level-change",
-    HttpsSchemasOpenidNetSeceventSsfEventTypeVerification:
-        "https://schemas.openid.net/secevent/ssf/event-type/verification",
-    UnknownDefaultOpenApi: "11184809",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionRevoked: 'https://schemas.openid.net/secevent/caep/event-type/session-revoked',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeTokenClaimsChange: 'https://schemas.openid.net/secevent/caep/event-type/token-claims-change',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeCredentialChange: 'https://schemas.openid.net/secevent/caep/event-type/credential-change',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeAssuranceLevelChange: 'https://schemas.openid.net/secevent/caep/event-type/assurance-level-change',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeDeviceComplianceChange: 'https://schemas.openid.net/secevent/caep/event-type/device-compliance-change',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionEstablished: 'https://schemas.openid.net/secevent/caep/event-type/session-established',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionPresented: 'https://schemas.openid.net/secevent/caep/event-type/session-presented',
+    HttpsSchemasOpenidNetSeceventCaepEventTypeRiskLevelChange: 'https://schemas.openid.net/secevent/caep/event-type/risk-level-change',
+    HttpsSchemasOpenidNetSeceventSsfEventTypeVerification: 'https://schemas.openid.net/secevent/ssf/event-type/verification',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type EventsRequestedEnum = (typeof EventsRequestedEnum)[keyof typeof EventsRequestedEnum];
+export type EventsRequestedEnum = typeof EventsRequestedEnum[keyof typeof EventsRequestedEnum];
+
 
 export function instanceOfEventsRequestedEnum(value: any): boolean {
     for (const key in EventsRequestedEnum) {
@@ -54,10 +46,7 @@ export function EventsRequestedEnumFromJSON(json: any): EventsRequestedEnum {
     return EventsRequestedEnumFromJSONTyped(json, false);
 }
 
-export function EventsRequestedEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EventsRequestedEnum {
+export function EventsRequestedEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventsRequestedEnum {
     return json as EventsRequestedEnum;
 }
 
@@ -65,9 +54,7 @@ export function EventsRequestedEnumToJSON(value?: EventsRequestedEnum | null): a
     return value as any;
 }
 
-export function EventsRequestedEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): EventsRequestedEnum {
+export function EventsRequestedEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): EventsRequestedEnum {
     return value as EventsRequestedEnum;
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface EndpointAgentChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     response?: string | null;
 }
@@ -31,52 +30,38 @@ export interface EndpointAgentChallengeResponseRequest {
 /**
  * Check if a given object implements the EndpointAgentChallengeResponseRequest interface.
  */
-export function instanceOfEndpointAgentChallengeResponseRequest(
-    value: object,
-): value is EndpointAgentChallengeResponseRequest {
+export function instanceOfEndpointAgentChallengeResponseRequest(value: object): value is EndpointAgentChallengeResponseRequest {
     return true;
 }
 
-export function EndpointAgentChallengeResponseRequestFromJSON(
-    json: any,
-): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestFromJSON(json: any): EndpointAgentChallengeResponseRequest {
     return EndpointAgentChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointAgentChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        response:
-            json["response"] === undefined
-                ? undefined
-                : json["response"] === null
-                  ? null
-                  : json["response"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'response': json['response'] === undefined ? undefined : json['response'] === null ? null : json['response'],
     };
 }
 
-export function EndpointAgentChallengeResponseRequestToJSON(
-    json: any,
-): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestToJSON(json: any): EndpointAgentChallengeResponseRequest {
     return EndpointAgentChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeResponseRequestToJSONTyped(
-    value?: EndpointAgentChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EndpointAgentChallengeResponseRequestToJSONTyped(value?: EndpointAgentChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        response: value["response"],
+        
+        'component': value['component'],
+        'response': value['response'],
     };
 }
+

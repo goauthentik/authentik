@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * AuthenticatorEndpointGDTCStage Serializer
@@ -22,11 +23,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface AuthenticatorEndpointGDTCStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,7 +47,7 @@ export interface AuthenticatorEndpointGDTCStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -54,53 +55,27 @@ export interface AuthenticatorEndpointGDTCStage {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
-    credentials: { [key: string]: any };
+    credentials: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the AuthenticatorEndpointGDTCStage interface.
  */
-export function instanceOfAuthenticatorEndpointGDTCStage(
-    value: object,
-): value is AuthenticatorEndpointGDTCStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+export function instanceOfAuthenticatorEndpointGDTCStage(value: object): value is AuthenticatorEndpointGDTCStage {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('credentials' in value) || value['credentials'] === undefined) return false;
     return true;
 }
 
@@ -108,29 +83,22 @@ export function AuthenticatorEndpointGDTCStageFromJSON(json: any): Authenticator
     return AuthenticatorEndpointGDTCStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorEndpointGDTCStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorEndpointGDTCStage {
+export function AuthenticatorEndpointGDTCStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorEndpointGDTCStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        credentials: json["credentials"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'credentials': json['credentials'],
     };
 }
 
@@ -138,21 +106,17 @@ export function AuthenticatorEndpointGDTCStageToJSON(json: any): AuthenticatorEn
     return AuthenticatorEndpointGDTCStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorEndpointGDTCStageToJSONTyped(
-    value?: Omit<
-        AuthenticatorEndpointGDTCStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorEndpointGDTCStageToJSONTyped(value?: Omit<AuthenticatorEndpointGDTCStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        credentials: value["credentials"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'credentials': value['credentials'],
     };
 }
+

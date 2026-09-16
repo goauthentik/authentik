@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface RACProviderRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -31,13 +30,13 @@ export interface RACProviderRequest {
      */
     authorizationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
-    settings?: { [key: string]: any };
+    settings?: { [key: string]: any; };
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
      */
@@ -52,14 +51,8 @@ export interface RACProviderRequest {
  * Check if a given object implements the RACProviderRequest interface.
  */
 export function instanceOfRACProviderRequest(value: object): value is RACProviderRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
     return true;
 }
 
@@ -67,29 +60,19 @@ export function RACProviderRequestFromJSON(json: any): RACProviderRequest {
     return RACProviderRequestFromJSONTyped(json, false);
 }
 
-export function RACProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RACProviderRequest {
+export function RACProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RACProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        settings: json["settings"] == null ? undefined : json["settings"],
-        connectionExpiry: json["connection_expiry"] == null ? undefined : json["connection_expiry"],
-        deleteTokenOnDisconnect:
-            json["delete_token_on_disconnect"] == null
-                ? undefined
-                : json["delete_token_on_disconnect"],
+        
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'settings': json['settings'] == null ? undefined : json['settings'],
+        'connectionExpiry': json['connection_expiry'] == null ? undefined : json['connection_expiry'],
+        'deleteTokenOnDisconnect': json['delete_token_on_disconnect'] == null ? undefined : json['delete_token_on_disconnect'],
     };
 }
 
@@ -97,21 +80,20 @@ export function RACProviderRequestToJSON(json: any): RACProviderRequest {
     return RACProviderRequestToJSONTyped(json, false);
 }
 
-export function RACProviderRequestToJSONTyped(
-    value?: RACProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RACProviderRequestToJSONTyped(value?: RACProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        property_mappings: value["propertyMappings"],
-        settings: value["settings"],
-        connection_expiry: value["connectionExpiry"],
-        delete_token_on_disconnect: value["deleteTokenOnDisconnect"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'settings': value['settings'],
+        'connection_expiry': value['connectionExpiry'],
+        'delete_token_on_disconnect': value['deleteTokenOnDisconnect'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * WebAuthn Challenge
@@ -23,52 +25,38 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface AuthenticatorWebAuthnChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     pendingUser: string;
     /**
-     *
+     * 
      */
     pendingUserAvatar: string;
     /**
-     *
+     * 
      */
-    registration: { [key: string]: any };
+    registration: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the AuthenticatorWebAuthnChallenge interface.
  */
-export function instanceOfAuthenticatorWebAuthnChallenge(
-    value: object,
-): value is AuthenticatorWebAuthnChallenge {
-    if (
-        (!("pendingUser" in (value as Record<string, any>)) &&
-            !("pending_user" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUser"] === undefined &&
-            (value as Record<string, any>)["pending_user"] === undefined)
-    )
-        return false;
-    if (
-        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
-            !("pending_user_avatar" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
-            (value as Record<string, any>)["pending_user_avatar"] === undefined)
-    )
-        return false;
-    if (!("registration" in value) || value["registration"] === undefined) return false;
+export function instanceOfAuthenticatorWebAuthnChallenge(value: object): value is AuthenticatorWebAuthnChallenge {
+    if ((!('pendingUser' in (value as Record<string, any>)) && !('pending_user' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUser'] === undefined && (value as Record<string, any>)['pending_user'] === undefined)) return false;
+    if ((!('pendingUserAvatar' in (value as Record<string, any>)) && !('pending_user_avatar' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUserAvatar'] === undefined && (value as Record<string, any>)['pending_user_avatar'] === undefined)) return false;
+    if (!('registration' in value) || value['registration'] === undefined) return false;
     return true;
 }
 
@@ -76,21 +64,18 @@ export function AuthenticatorWebAuthnChallengeFromJSON(json: any): Authenticator
     return AuthenticatorWebAuthnChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorWebAuthnChallenge {
+export function AuthenticatorWebAuthnChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorWebAuthnChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        pendingUser: json["pending_user"],
-        pendingUserAvatar: json["pending_user_avatar"],
-        registration: json["registration"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'pendingUser': json['pending_user'],
+        'pendingUserAvatar': json['pending_user_avatar'],
+        'registration': json['registration'],
     };
 }
 
@@ -98,20 +83,19 @@ export function AuthenticatorWebAuthnChallengeToJSON(json: any): AuthenticatorWe
     return AuthenticatorWebAuthnChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnChallengeToJSONTyped(
-    value?: AuthenticatorWebAuthnChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorWebAuthnChallengeToJSONTyped(value?: AuthenticatorWebAuthnChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        pending_user: value["pendingUser"],
-        pending_user_avatar: value["pendingUserAvatar"],
-        registration: value["registration"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'pending_user': value['pendingUser'],
+        'pending_user_avatar': value['pendingUserAvatar'],
+        'registration': value['registration'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,21 +12,21 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface Worker
  */
 export interface Worker {
     /**
-     *
+     * 
      */
     workerId: string;
     /**
-     *
+     * 
      */
     version: string;
     /**
-     *
+     * 
      */
     versionMatching: boolean;
 }
@@ -36,21 +35,9 @@ export interface Worker {
  * Check if a given object implements the Worker interface.
  */
 export function instanceOfWorker(value: object): value is Worker {
-    if (
-        (!("workerId" in (value as Record<string, any>)) &&
-            !("worker_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["workerId"] === undefined &&
-            (value as Record<string, any>)["worker_id"] === undefined)
-    )
-        return false;
-    if (!("version" in value) || value["version"] === undefined) return false;
-    if (
-        (!("versionMatching" in (value as Record<string, any>)) &&
-            !("version_matching" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["versionMatching"] === undefined &&
-            (value as Record<string, any>)["version_matching"] === undefined)
-    )
-        return false;
+    if ((!('workerId' in (value as Record<string, any>)) && !('worker_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workerId'] === undefined && (value as Record<string, any>)['worker_id'] === undefined)) return false;
+    if (!('version' in value) || value['version'] === undefined) return false;
+    if ((!('versionMatching' in (value as Record<string, any>)) && !('version_matching' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionMatching'] === undefined && (value as Record<string, any>)['version_matching'] === undefined)) return false;
     return true;
 }
 
@@ -63,9 +50,10 @@ export function WorkerFromJSONTyped(json: any, ignoreDiscriminator: boolean): Wo
         return json;
     }
     return {
-        workerId: json["worker_id"],
-        version: json["version"],
-        versionMatching: json["version_matching"],
+        
+        'workerId': json['worker_id'],
+        'version': json['version'],
+        'versionMatching': json['version_matching'],
     };
 }
 
@@ -73,17 +61,16 @@ export function WorkerToJSON(json: any): Worker {
     return WorkerToJSONTyped(json, false);
 }
 
-export function WorkerToJSONTyped(
-    value?: Worker | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function WorkerToJSONTyped(value?: Worker | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        worker_id: value["workerId"],
-        version: value["version"],
-        version_matching: value["versionMatching"],
+        
+        'worker_id': value['workerId'],
+        'version': value['version'],
+        'version_matching': value['versionMatching'],
     };
 }
+

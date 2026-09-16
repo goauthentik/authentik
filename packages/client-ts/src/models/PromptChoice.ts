@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface PromptChoice {
     /**
-     *
+     * 
      */
     value: string;
     /**
-     *
+     * 
      */
     label: string;
 }
@@ -32,8 +31,8 @@ export interface PromptChoice {
  * Check if a given object implements the PromptChoice interface.
  */
 export function instanceOfPromptChoice(value: object): value is PromptChoice {
-    if (!("value" in value) || value["value"] === undefined) return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
+    if (!('value' in value) || value['value'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
     return true;
 }
 
@@ -46,8 +45,9 @@ export function PromptChoiceFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        value: json["value"],
-        label: json["label"],
+        
+        'value': json['value'],
+        'label': json['label'],
     };
 }
 
@@ -55,16 +55,15 @@ export function PromptChoiceToJSON(json: any): PromptChoice {
     return PromptChoiceToJSONTyped(json, false);
 }
 
-export function PromptChoiceToJSONTyped(
-    value?: PromptChoice | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PromptChoiceToJSONTyped(value?: PromptChoice | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        value: value["value"],
-        label: value["label"],
+        
+        'value': value['value'],
+        'label': value['label'],
     };
 }
+

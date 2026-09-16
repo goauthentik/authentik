@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,18 +11,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const TransportModeEnum = {
-    Local: "local",
-    Webhook: "webhook",
-    WebhookSlack: "webhook_slack",
-    Email: "email",
-    UnknownDefaultOpenApi: "11184809",
+    Local: 'local',
+    Webhook: 'webhook',
+    WebhookSlack: 'webhook_slack',
+    Email: 'email',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type TransportModeEnum = (typeof TransportModeEnum)[keyof typeof TransportModeEnum];
+export type TransportModeEnum = typeof TransportModeEnum[keyof typeof TransportModeEnum];
+
 
 export function instanceOfTransportModeEnum(value: any): boolean {
     for (const key in TransportModeEnum) {
@@ -40,10 +41,7 @@ export function TransportModeEnumFromJSON(json: any): TransportModeEnum {
     return TransportModeEnumFromJSONTyped(json, false);
 }
 
-export function TransportModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TransportModeEnum {
+export function TransportModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransportModeEnum {
     return json as TransportModeEnum;
 }
 
@@ -51,9 +49,7 @@ export function TransportModeEnumToJSON(value?: TransportModeEnum | null): any {
     return value as any;
 }
 
-export function TransportModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): TransportModeEnum {
+export function TransportModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): TransportModeEnum {
     return value as TransportModeEnum;
 }
+

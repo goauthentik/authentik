@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { DockerServiceConnection } from "./DockerServiceConnection";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { DockerServiceConnection } from './DockerServiceConnection';
 import {
     DockerServiceConnectionFromJSON,
     DockerServiceConnectionToJSON,
-} from "./DockerServiceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './DockerServiceConnection';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedDockerServiceConnectionList
  */
 export interface PaginatedDockerServiceConnectionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<DockerServiceConnection>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedDockerServiceConnectionList interface.
  */
-export function instanceOfPaginatedDockerServiceConnectionList(
-    value: object,
-): value is PaginatedDockerServiceConnectionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedDockerServiceConnectionList(value: object): value is PaginatedDockerServiceConnectionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedDockerServiceConnectionListFromJSON(
-    json: any,
-): PaginatedDockerServiceConnectionList {
+export function PaginatedDockerServiceConnectionListFromJSON(json: any): PaginatedDockerServiceConnectionList {
     return PaginatedDockerServiceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedDockerServiceConnectionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedDockerServiceConnectionList {
+export function PaginatedDockerServiceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDockerServiceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(DockerServiceConnectionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(DockerServiceConnectionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedDockerServiceConnectionListToJSON(
-    json: any,
-): PaginatedDockerServiceConnectionList {
+export function PaginatedDockerServiceConnectionListToJSON(json: any): PaginatedDockerServiceConnectionList {
     return PaginatedDockerServiceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedDockerServiceConnectionListToJSONTyped(
-    value?: PaginatedDockerServiceConnectionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedDockerServiceConnectionListToJSONTyped(value?: PaginatedDockerServiceConnectionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(DockerServiceConnectionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(DockerServiceConnectionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

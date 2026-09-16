@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface PatchedGroupKerberosSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +30,38 @@ export interface PatchedGroupKerberosSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupKerberosSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupKerberosSourceConnectionRequest(
-    value: object,
-): value is PatchedGroupKerberosSourceConnectionRequest {
+export function instanceOfPatchedGroupKerberosSourceConnectionRequest(value: object): value is PatchedGroupKerberosSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestFromJSON(json: any): PatchedGroupKerberosSourceConnectionRequest {
     return PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupKerberosSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestToJSON(
-    json: any,
-): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestToJSON(json: any): PatchedGroupKerberosSourceConnectionRequest {
     return PatchedGroupKerberosSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestToJSONTyped(
-    value?: PatchedGroupKerberosSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGroupKerberosSourceConnectionRequestToJSONTyped(value?: PatchedGroupKerberosSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

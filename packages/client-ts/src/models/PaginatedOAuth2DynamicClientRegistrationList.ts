@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { OAuth2DynamicClientRegistration } from "./OAuth2DynamicClientRegistration";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { OAuth2DynamicClientRegistration } from './OAuth2DynamicClientRegistration';
 import {
     OAuth2DynamicClientRegistrationFromJSON,
     OAuth2DynamicClientRegistrationToJSON,
-} from "./OAuth2DynamicClientRegistration";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './OAuth2DynamicClientRegistration';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedOAuth2DynamicClientRegistrationList
  */
 export interface PaginatedOAuth2DynamicClientRegistrationList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<OAuth2DynamicClientRegistration>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedOAuth2DynamicClientRegistrationList interface.
  */
-export function instanceOfPaginatedOAuth2DynamicClientRegistrationList(
-    value: object,
-): value is PaginatedOAuth2DynamicClientRegistrationList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedOAuth2DynamicClientRegistrationList(value: object): value is PaginatedOAuth2DynamicClientRegistrationList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedOAuth2DynamicClientRegistrationListFromJSON(
-    json: any,
-): PaginatedOAuth2DynamicClientRegistrationList {
+export function PaginatedOAuth2DynamicClientRegistrationListFromJSON(json: any): PaginatedOAuth2DynamicClientRegistrationList {
     return PaginatedOAuth2DynamicClientRegistrationListFromJSONTyped(json, false);
 }
 
-export function PaginatedOAuth2DynamicClientRegistrationListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedOAuth2DynamicClientRegistrationList {
+export function PaginatedOAuth2DynamicClientRegistrationListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedOAuth2DynamicClientRegistrationList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(OAuth2DynamicClientRegistrationFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(OAuth2DynamicClientRegistrationFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedOAuth2DynamicClientRegistrationListToJSON(
-    json: any,
-): PaginatedOAuth2DynamicClientRegistrationList {
+export function PaginatedOAuth2DynamicClientRegistrationListToJSON(json: any): PaginatedOAuth2DynamicClientRegistrationList {
     return PaginatedOAuth2DynamicClientRegistrationListToJSONTyped(json, false);
 }
 
-export function PaginatedOAuth2DynamicClientRegistrationListToJSONTyped(
-    value?: PaginatedOAuth2DynamicClientRegistrationList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedOAuth2DynamicClientRegistrationListToJSONTyped(value?: PaginatedOAuth2DynamicClientRegistrationList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(OAuth2DynamicClientRegistrationToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(OAuth2DynamicClientRegistrationToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

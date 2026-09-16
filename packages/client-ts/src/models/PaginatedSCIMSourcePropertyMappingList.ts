@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMSourcePropertyMapping } from "./SCIMSourcePropertyMapping";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { SCIMSourcePropertyMapping } from './SCIMSourcePropertyMapping';
 import {
     SCIMSourcePropertyMappingFromJSON,
     SCIMSourcePropertyMappingToJSON,
-} from "./SCIMSourcePropertyMapping";
+} from './SCIMSourcePropertyMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSCIMSourcePropertyMappingList
  */
 export interface PaginatedSCIMSourcePropertyMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SCIMSourcePropertyMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedSCIMSourcePropertyMappingList(
-    value: object,
-): value is PaginatedSCIMSourcePropertyMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedSCIMSourcePropertyMappingList(value: object): value is PaginatedSCIMSourcePropertyMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedSCIMSourcePropertyMappingListFromJSON(
-    json: any,
-): PaginatedSCIMSourcePropertyMappingList {
+export function PaginatedSCIMSourcePropertyMappingListFromJSON(json: any): PaginatedSCIMSourcePropertyMappingList {
     return PaginatedSCIMSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourcePropertyMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSCIMSourcePropertyMappingList {
+export function PaginatedSCIMSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SCIMSourcePropertyMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SCIMSourcePropertyMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedSCIMSourcePropertyMappingListToJSON(
-    json: any,
-): PaginatedSCIMSourcePropertyMappingList {
+export function PaginatedSCIMSourcePropertyMappingListToJSON(json: any): PaginatedSCIMSourcePropertyMappingList {
     return PaginatedSCIMSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourcePropertyMappingListToJSONTyped(
-    value?: PaginatedSCIMSourcePropertyMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSCIMSourcePropertyMappingListToJSONTyped(value?: PaginatedSCIMSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SCIMSourcePropertyMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SCIMSourcePropertyMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

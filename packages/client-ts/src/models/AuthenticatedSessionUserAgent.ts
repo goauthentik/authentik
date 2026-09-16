@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,21 +11,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatedSessionUserAgentDevice } from "./AuthenticatedSessionUserAgentDevice";
+import type { AuthenticatedSessionUserAgentDevice } from './AuthenticatedSessionUserAgentDevice';
 import {
     AuthenticatedSessionUserAgentDeviceFromJSON,
     AuthenticatedSessionUserAgentDeviceToJSON,
-} from "./AuthenticatedSessionUserAgentDevice";
-import type { AuthenticatedSessionUserAgentOs } from "./AuthenticatedSessionUserAgentOs";
-import {
-    AuthenticatedSessionUserAgentOsFromJSON,
-    AuthenticatedSessionUserAgentOsToJSON,
-} from "./AuthenticatedSessionUserAgentOs";
-import type { AuthenticatedSessionUserAgentUserAgent } from "./AuthenticatedSessionUserAgentUserAgent";
+} from './AuthenticatedSessionUserAgentDevice';
+import type { AuthenticatedSessionUserAgentUserAgent } from './AuthenticatedSessionUserAgentUserAgent';
 import {
     AuthenticatedSessionUserAgentUserAgentFromJSON,
     AuthenticatedSessionUserAgentUserAgentToJSON,
-} from "./AuthenticatedSessionUserAgentUserAgent";
+} from './AuthenticatedSessionUserAgentUserAgent';
+import type { AuthenticatedSessionUserAgentOs } from './AuthenticatedSessionUserAgentOs';
+import {
+    AuthenticatedSessionUserAgentOsFromJSON,
+    AuthenticatedSessionUserAgentOsToJSON,
+} from './AuthenticatedSessionUserAgentOs';
 
 /**
  * Get parsed user agent
@@ -35,19 +34,19 @@ import {
  */
 export interface AuthenticatedSessionUserAgent {
     /**
-     *
+     * 
      */
     device: AuthenticatedSessionUserAgentDevice;
     /**
-     *
+     * 
      */
     os: AuthenticatedSessionUserAgentOs;
     /**
-     *
+     * 
      */
     userAgent: AuthenticatedSessionUserAgentUserAgent;
     /**
-     *
+     * 
      */
     string: string;
 }
@@ -55,19 +54,11 @@ export interface AuthenticatedSessionUserAgent {
 /**
  * Check if a given object implements the AuthenticatedSessionUserAgent interface.
  */
-export function instanceOfAuthenticatedSessionUserAgent(
-    value: object,
-): value is AuthenticatedSessionUserAgent {
-    if (!("device" in value) || value["device"] === undefined) return false;
-    if (!("os" in value) || value["os"] === undefined) return false;
-    if (
-        (!("userAgent" in (value as Record<string, any>)) &&
-            !("user_agent" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userAgent"] === undefined &&
-            (value as Record<string, any>)["user_agent"] === undefined)
-    )
-        return false;
-    if (!("string" in value) || value["string"] === undefined) return false;
+export function instanceOfAuthenticatedSessionUserAgent(value: object): value is AuthenticatedSessionUserAgent {
+    if (!('device' in value) || value['device'] === undefined) return false;
+    if (!('os' in value) || value['os'] === undefined) return false;
+    if ((!('userAgent' in (value as Record<string, any>)) && !('user_agent' in (value as Record<string, any>))) || ((value as Record<string, any>)['userAgent'] === undefined && (value as Record<string, any>)['user_agent'] === undefined)) return false;
+    if (!('string' in value) || value['string'] === undefined) return false;
     return true;
 }
 
@@ -75,18 +66,16 @@ export function AuthenticatedSessionUserAgentFromJSON(json: any): AuthenticatedS
     return AuthenticatedSessionUserAgentFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSessionUserAgent {
+export function AuthenticatedSessionUserAgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionUserAgent {
     if (json == null) {
         return json;
     }
     return {
-        device: AuthenticatedSessionUserAgentDeviceFromJSON(json["device"]),
-        os: AuthenticatedSessionUserAgentOsFromJSON(json["os"]),
-        userAgent: AuthenticatedSessionUserAgentUserAgentFromJSON(json["user_agent"]),
-        string: json["string"],
+        
+        'device': AuthenticatedSessionUserAgentDeviceFromJSON(json['device']),
+        'os': AuthenticatedSessionUserAgentOsFromJSON(json['os']),
+        'userAgent': AuthenticatedSessionUserAgentUserAgentFromJSON(json['user_agent']),
+        'string': json['string'],
     };
 }
 
@@ -94,18 +83,17 @@ export function AuthenticatedSessionUserAgentToJSON(json: any): AuthenticatedSes
     return AuthenticatedSessionUserAgentToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentToJSONTyped(
-    value?: AuthenticatedSessionUserAgent | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionUserAgentToJSONTyped(value?: AuthenticatedSessionUserAgent | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device: AuthenticatedSessionUserAgentDeviceToJSON(value["device"]),
-        os: AuthenticatedSessionUserAgentOsToJSON(value["os"]),
-        user_agent: AuthenticatedSessionUserAgentUserAgentToJSON(value["userAgent"]),
-        string: value["string"],
+        
+        'device': AuthenticatedSessionUserAgentDeviceToJSON(value['device']),
+        'os': AuthenticatedSessionUserAgentOsToJSON(value['os']),
+        'user_agent': AuthenticatedSessionUserAgentUserAgentToJSON(value['userAgent']),
+        'string': value['string'],
     };
 }
+

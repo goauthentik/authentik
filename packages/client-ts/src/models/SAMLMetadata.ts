@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface SAMLMetadata {
     /**
-     *
+     * 
      */
     metadata: string;
     /**
-     *
+     * 
      */
     downloadUrl?: string | null;
 }
@@ -32,7 +31,7 @@ export interface SAMLMetadata {
  * Check if a given object implements the SAMLMetadata interface.
  */
 export function instanceOfSAMLMetadata(value: object): value is SAMLMetadata {
-    if (!("metadata" in value) || value["metadata"] === undefined) return false;
+    if (!('metadata' in value) || value['metadata'] === undefined) return false;
     return true;
 }
 
@@ -45,13 +44,9 @@ export function SAMLMetadataFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        metadata: json["metadata"],
-        downloadUrl:
-            json["download_url"] === undefined
-                ? undefined
-                : json["download_url"] === null
-                  ? null
-                  : json["download_url"],
+        
+        'metadata': json['metadata'],
+        'downloadUrl': json['download_url'] === undefined ? undefined : json['download_url'] === null ? null : json['download_url'],
     };
 }
 
@@ -59,16 +54,15 @@ export function SAMLMetadataToJSON(json: any): SAMLMetadata {
     return SAMLMetadataToJSONTyped(json, false);
 }
 
-export function SAMLMetadataToJSONTyped(
-    value?: SAMLMetadata | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SAMLMetadataToJSONTyped(value?: SAMLMetadata | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        metadata: value["metadata"],
-        download_url: value["downloadUrl"],
+        
+        'metadata': value['metadata'],
+        'download_url': value['downloadUrl'],
     };
 }
+

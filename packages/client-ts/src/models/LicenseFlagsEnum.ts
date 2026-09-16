@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const LicenseFlagsEnum = {
-    Trial: "trial",
-    NonProduction: "non_production",
-    UnknownDefaultOpenApi: "11184809",
+    Trial: 'trial',
+    NonProduction: 'non_production',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type LicenseFlagsEnum = (typeof LicenseFlagsEnum)[keyof typeof LicenseFlagsEnum];
+export type LicenseFlagsEnum = typeof LicenseFlagsEnum[keyof typeof LicenseFlagsEnum];
+
 
 export function instanceOfLicenseFlagsEnum(value: any): boolean {
     for (const key in LicenseFlagsEnum) {
@@ -38,10 +39,7 @@ export function LicenseFlagsEnumFromJSON(json: any): LicenseFlagsEnum {
     return LicenseFlagsEnumFromJSONTyped(json, false);
 }
 
-export function LicenseFlagsEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LicenseFlagsEnum {
+export function LicenseFlagsEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseFlagsEnum {
     return json as LicenseFlagsEnum;
 }
 
@@ -49,9 +47,7 @@ export function LicenseFlagsEnumToJSON(value?: LicenseFlagsEnum | null): any {
     return value as any;
 }
 
-export function LicenseFlagsEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): LicenseFlagsEnum {
+export function LicenseFlagsEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LicenseFlagsEnum {
     return value as LicenseFlagsEnum;
 }
+

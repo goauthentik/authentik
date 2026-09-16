@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,19 +11,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const OffboardingStatusEnum = {
-    Pending: "pending",
-    Completed: "completed",
-    Failed: "failed",
-    Canceled: "canceled",
-    UnknownDefaultOpenApi: "11184809",
+    Pending: 'pending',
+    Completed: 'completed',
+    Failed: 'failed',
+    Canceled: 'canceled',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type OffboardingStatusEnum =
-    (typeof OffboardingStatusEnum)[keyof typeof OffboardingStatusEnum];
+export type OffboardingStatusEnum = typeof OffboardingStatusEnum[keyof typeof OffboardingStatusEnum];
+
 
 export function instanceOfOffboardingStatusEnum(value: any): boolean {
     for (const key in OffboardingStatusEnum) {
@@ -41,10 +41,7 @@ export function OffboardingStatusEnumFromJSON(json: any): OffboardingStatusEnum 
     return OffboardingStatusEnumFromJSONTyped(json, false);
 }
 
-export function OffboardingStatusEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OffboardingStatusEnum {
+export function OffboardingStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): OffboardingStatusEnum {
     return json as OffboardingStatusEnum;
 }
 
@@ -52,9 +49,7 @@ export function OffboardingStatusEnumToJSON(value?: OffboardingStatusEnum | null
     return value as any;
 }
 
-export function OffboardingStatusEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): OffboardingStatusEnum {
+export function OffboardingStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): OffboardingStatusEnum {
     return value as OffboardingStatusEnum;
 }
+

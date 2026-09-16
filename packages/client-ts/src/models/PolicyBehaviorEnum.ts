@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const PolicyBehaviorEnum = {
-    Mirror: "mirror",
-    Copy: "copy",
-    None: "none",
-    UnknownDefaultOpenApi: "11184809",
+    Mirror: 'mirror',
+    Copy: 'copy',
+    None: 'none',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type PolicyBehaviorEnum = (typeof PolicyBehaviorEnum)[keyof typeof PolicyBehaviorEnum];
+export type PolicyBehaviorEnum = typeof PolicyBehaviorEnum[keyof typeof PolicyBehaviorEnum];
+
 
 export function instanceOfPolicyBehaviorEnum(value: any): boolean {
     for (const key in PolicyBehaviorEnum) {
@@ -39,10 +40,7 @@ export function PolicyBehaviorEnumFromJSON(json: any): PolicyBehaviorEnum {
     return PolicyBehaviorEnumFromJSONTyped(json, false);
 }
 
-export function PolicyBehaviorEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PolicyBehaviorEnum {
+export function PolicyBehaviorEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): PolicyBehaviorEnum {
     return json as PolicyBehaviorEnum;
 }
 
@@ -50,9 +48,7 @@ export function PolicyBehaviorEnumToJSON(value?: PolicyBehaviorEnum | null): any
     return value as any;
 }
 
-export function PolicyBehaviorEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): PolicyBehaviorEnum {
+export function PolicyBehaviorEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): PolicyBehaviorEnum {
     return value as PolicyBehaviorEnum;
 }
+

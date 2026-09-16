@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,33 +18,31 @@
  */
 export interface PatchedSCIMSourceGroupRequest {
     /**
-     *
+     * 
      */
     id?: string;
     /**
-     *
+     * 
      */
     externalId?: string;
     /**
-     *
+     * 
      */
     group?: string;
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PatchedSCIMSourceGroupRequest interface.
  */
-export function instanceOfPatchedSCIMSourceGroupRequest(
-    value: object,
-): value is PatchedSCIMSourceGroupRequest {
+export function instanceOfPatchedSCIMSourceGroupRequest(value: object): value is PatchedSCIMSourceGroupRequest {
     return true;
 }
 
@@ -53,19 +50,17 @@ export function PatchedSCIMSourceGroupRequestFromJSON(json: any): PatchedSCIMSou
     return PatchedSCIMSourceGroupRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourceGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSCIMSourceGroupRequest {
+export function PatchedSCIMSourceGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSCIMSourceGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"] == null ? undefined : json["id"],
-        externalId: json["external_id"] == null ? undefined : json["external_id"],
-        group: json["group"] == null ? undefined : json["group"],
-        source: json["source"] == null ? undefined : json["source"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'id': json['id'] == null ? undefined : json['id'],
+        'externalId': json['external_id'] == null ? undefined : json['external_id'],
+        'group': json['group'] == null ? undefined : json['group'],
+        'source': json['source'] == null ? undefined : json['source'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -73,19 +68,18 @@ export function PatchedSCIMSourceGroupRequestToJSON(json: any): PatchedSCIMSourc
     return PatchedSCIMSourceGroupRequestToJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourceGroupRequestToJSONTyped(
-    value?: PatchedSCIMSourceGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSCIMSourceGroupRequestToJSONTyped(value?: PatchedSCIMSourceGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        external_id: value["externalId"],
-        group: value["group"],
-        source: value["source"],
-        attributes: value["attributes"],
+        
+        'id': value['id'],
+        'external_id': value['externalId'],
+        'group': value['group'],
+        'source': value['source'],
+        'attributes': value['attributes'],
     };
 }
+

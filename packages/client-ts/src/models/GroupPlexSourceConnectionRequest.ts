@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface GroupPlexSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +30,40 @@ export interface GroupPlexSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupPlexSourceConnectionRequest interface.
  */
-export function instanceOfGroupPlexSourceConnectionRequest(
-    value: object,
-): value is GroupPlexSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfGroupPlexSourceConnectionRequest(value: object): value is GroupPlexSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function GroupPlexSourceConnectionRequestFromJSON(
-    json: any,
-): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestFromJSON(json: any): GroupPlexSourceConnectionRequest {
     return GroupPlexSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupPlexSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function GroupPlexSourceConnectionRequestToJSON(
-    json: any,
-): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestToJSON(json: any): GroupPlexSourceConnectionRequest {
     return GroupPlexSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionRequestToJSONTyped(
-    value?: GroupPlexSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupPlexSourceConnectionRequestToJSONTyped(value?: GroupPlexSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

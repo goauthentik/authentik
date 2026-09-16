@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * DummyStage Serializer
@@ -22,11 +23,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface DummyStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,11 +47,11 @@ export interface DummyStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     throwError?: boolean;
 }
@@ -59,37 +60,13 @@ export interface DummyStage {
  * Check if a given object implements the DummyStage interface.
  */
 export function instanceOfDummyStage(value: object): value is DummyStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -102,14 +79,15 @@ export function DummyStageFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        throwError: json["throw_error"] == null ? undefined : json["throw_error"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'throwError': json['throw_error'] == null ? undefined : json['throw_error'],
     };
 }
 
@@ -117,19 +95,15 @@ export function DummyStageToJSON(json: any): DummyStage {
     return DummyStageToJSONTyped(json, false);
 }
 
-export function DummyStageToJSONTyped(
-    value?: Omit<
-        DummyStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DummyStageToJSONTyped(value?: Omit<DummyStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        throw_error: value["throwError"],
+        
+        'name': value['name'],
+        'throw_error': value['throwError'],
     };
 }
+

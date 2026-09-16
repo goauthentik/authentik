@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,35 +18,35 @@
  */
 export interface TelegramChallengeResponseRequest {
     /**
-     *
+     * 
      */
     id: number;
     /**
-     *
+     * 
      */
     firstName?: string;
     /**
-     *
+     * 
      */
     lastName?: string;
     /**
-     *
+     * 
      */
     username?: string;
     /**
-     *
+     * 
      */
     photoUrl?: string;
     /**
-     *
+     * 
      */
     authDate: number;
     /**
-     *
+     * 
      */
     hash: string;
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -55,68 +54,53 @@ export interface TelegramChallengeResponseRequest {
 /**
  * Check if a given object implements the TelegramChallengeResponseRequest interface.
  */
-export function instanceOfTelegramChallengeResponseRequest(
-    value: object,
-): value is TelegramChallengeResponseRequest {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("authDate" in (value as Record<string, any>)) &&
-            !("auth_date" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authDate"] === undefined &&
-            (value as Record<string, any>)["auth_date"] === undefined)
-    )
-        return false;
-    if (!("hash" in value) || value["hash"] === undefined) return false;
+export function instanceOfTelegramChallengeResponseRequest(value: object): value is TelegramChallengeResponseRequest {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('authDate' in (value as Record<string, any>)) && !('auth_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['authDate'] === undefined && (value as Record<string, any>)['auth_date'] === undefined)) return false;
+    if (!('hash' in value) || value['hash'] === undefined) return false;
     return true;
 }
 
-export function TelegramChallengeResponseRequestFromJSON(
-    json: any,
-): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestFromJSON(json: any): TelegramChallengeResponseRequest {
     return TelegramChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function TelegramChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        firstName: json["first_name"] == null ? undefined : json["first_name"],
-        lastName: json["last_name"] == null ? undefined : json["last_name"],
-        username: json["username"] == null ? undefined : json["username"],
-        photoUrl: json["photo_url"] == null ? undefined : json["photo_url"],
-        authDate: json["auth_date"],
-        hash: json["hash"],
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'id': json['id'],
+        'firstName': json['first_name'] == null ? undefined : json['first_name'],
+        'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'username': json['username'] == null ? undefined : json['username'],
+        'photoUrl': json['photo_url'] == null ? undefined : json['photo_url'],
+        'authDate': json['auth_date'],
+        'hash': json['hash'],
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
-export function TelegramChallengeResponseRequestToJSON(
-    json: any,
-): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestToJSON(json: any): TelegramChallengeResponseRequest {
     return TelegramChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function TelegramChallengeResponseRequestToJSONTyped(
-    value?: TelegramChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramChallengeResponseRequestToJSONTyped(value?: TelegramChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        first_name: value["firstName"],
-        last_name: value["lastName"],
-        username: value["username"],
-        photo_url: value["photoUrl"],
-        auth_date: value["authDate"],
-        hash: value["hash"],
-        component: value["component"],
+        
+        'id': value['id'],
+        'first_name': value['firstName'],
+        'last_name': value['lastName'],
+        'username': value['username'],
+        'photo_url': value['photoUrl'],
+        'auth_date': value['authDate'],
+        'hash': value['hash'],
+        'component': value['component'],
     };
 }
+

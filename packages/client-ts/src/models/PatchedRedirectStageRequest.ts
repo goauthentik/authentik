@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
+import type { RedirectStageModeEnum } from './RedirectStageModeEnum';
 import {
     RedirectStageModeEnumFromJSON,
     RedirectStageModeEnumToJSON,
-} from "./RedirectStageModeEnum";
+} from './RedirectStageModeEnum';
 
 /**
  * RedirectStage Serializer
@@ -25,33 +24,33 @@ import {
  */
 export interface PatchedRedirectStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     keepContext?: boolean;
     /**
-     *
+     * 
      */
     mode?: RedirectStageModeEnum;
     /**
-     *
+     * 
      */
     targetStatic?: string;
     /**
-     *
+     * 
      */
     targetFlow?: string | null;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedRedirectStageRequest interface.
  */
-export function instanceOfPatchedRedirectStageRequest(
-    value: object,
-): value is PatchedRedirectStageRequest {
+export function instanceOfPatchedRedirectStageRequest(value: object): value is PatchedRedirectStageRequest {
     return true;
 }
 
@@ -59,24 +58,17 @@ export function PatchedRedirectStageRequestFromJSON(json: any): PatchedRedirectS
     return PatchedRedirectStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRedirectStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedRedirectStageRequest {
+export function PatchedRedirectStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRedirectStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        keepContext: json["keep_context"] == null ? undefined : json["keep_context"],
-        mode: json["mode"] == null ? undefined : RedirectStageModeEnumFromJSON(json["mode"]),
-        targetStatic: json["target_static"] == null ? undefined : json["target_static"],
-        targetFlow:
-            json["target_flow"] === undefined
-                ? undefined
-                : json["target_flow"] === null
-                  ? null
-                  : json["target_flow"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'keepContext': json['keep_context'] == null ? undefined : json['keep_context'],
+        'mode': json['mode'] == null ? undefined : RedirectStageModeEnumFromJSON(json['mode']),
+        'targetStatic': json['target_static'] == null ? undefined : json['target_static'],
+        'targetFlow': json['target_flow'] === undefined ? undefined : json['target_flow'] === null ? null : json['target_flow'],
     };
 }
 
@@ -84,19 +76,18 @@ export function PatchedRedirectStageRequestToJSON(json: any): PatchedRedirectSta
     return PatchedRedirectStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedRedirectStageRequestToJSONTyped(
-    value?: PatchedRedirectStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedRedirectStageRequestToJSONTyped(value?: PatchedRedirectStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        keep_context: value["keepContext"],
-        mode: RedirectStageModeEnumToJSON(value["mode"]),
-        target_static: value["targetStatic"],
-        target_flow: value["targetFlow"],
+        
+        'name': value['name'],
+        'keep_context': value['keepContext'],
+        'mode': RedirectStageModeEnumToJSON(value['mode']),
+        'target_static': value['targetStatic'],
+        'target_flow': value['targetFlow'],
     };
 }
+

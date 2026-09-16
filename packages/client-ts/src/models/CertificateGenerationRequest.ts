@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { AlgEnum } from "./AlgEnum";
-import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
+import type { AlgEnum } from './AlgEnum';
+import {
+    AlgEnumFromJSON,
+    AlgEnumToJSON,
+} from './AlgEnum';
 
 /**
  * Certificate generation parameters
@@ -22,43 +24,31 @@ import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
  */
 export interface CertificateGenerationRequest {
     /**
-     *
+     * 
      */
     commonName: string;
     /**
-     *
+     * 
      */
     subjectAltName?: string;
     /**
-     *
+     * 
      */
     validityDays: number;
     /**
-     *
+     * 
      */
     alg?: AlgEnum;
 }
 
+
+
 /**
  * Check if a given object implements the CertificateGenerationRequest interface.
  */
-export function instanceOfCertificateGenerationRequest(
-    value: object,
-): value is CertificateGenerationRequest {
-    if (
-        (!("commonName" in (value as Record<string, any>)) &&
-            !("common_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["commonName"] === undefined &&
-            (value as Record<string, any>)["common_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("validityDays" in (value as Record<string, any>)) &&
-            !("validity_days" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["validityDays"] === undefined &&
-            (value as Record<string, any>)["validity_days"] === undefined)
-    )
-        return false;
+export function instanceOfCertificateGenerationRequest(value: object): value is CertificateGenerationRequest {
+    if ((!('commonName' in (value as Record<string, any>)) && !('common_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['commonName'] === undefined && (value as Record<string, any>)['common_name'] === undefined)) return false;
+    if ((!('validityDays' in (value as Record<string, any>)) && !('validity_days' in (value as Record<string, any>))) || ((value as Record<string, any>)['validityDays'] === undefined && (value as Record<string, any>)['validity_days'] === undefined)) return false;
     return true;
 }
 
@@ -66,18 +56,16 @@ export function CertificateGenerationRequestFromJSON(json: any): CertificateGene
     return CertificateGenerationRequestFromJSONTyped(json, false);
 }
 
-export function CertificateGenerationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CertificateGenerationRequest {
+export function CertificateGenerationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateGenerationRequest {
     if (json == null) {
         return json;
     }
     return {
-        commonName: json["common_name"],
-        subjectAltName: json["subject_alt_name"] == null ? undefined : json["subject_alt_name"],
-        validityDays: json["validity_days"],
-        alg: json["alg"] == null ? undefined : AlgEnumFromJSON(json["alg"]),
+        
+        'commonName': json['common_name'],
+        'subjectAltName': json['subject_alt_name'] == null ? undefined : json['subject_alt_name'],
+        'validityDays': json['validity_days'],
+        'alg': json['alg'] == null ? undefined : AlgEnumFromJSON(json['alg']),
     };
 }
 
@@ -85,18 +73,17 @@ export function CertificateGenerationRequestToJSON(json: any): CertificateGenera
     return CertificateGenerationRequestToJSONTyped(json, false);
 }
 
-export function CertificateGenerationRequestToJSONTyped(
-    value?: CertificateGenerationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CertificateGenerationRequestToJSONTyped(value?: CertificateGenerationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        common_name: value["commonName"],
-        subject_alt_name: value["subjectAltName"],
-        validity_days: value["validityDays"],
-        alg: AlgEnumToJSON(value["alg"]),
+        
+        'common_name': value['commonName'],
+        'subject_alt_name': value['subjectAltName'],
+        'validity_days': value['validityDays'],
+        'alg': AlgEnumToJSON(value['alg']),
     };
 }
+

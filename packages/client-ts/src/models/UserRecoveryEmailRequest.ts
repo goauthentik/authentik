@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface UserRecoveryEmailRequest {
     /**
-     *
+     * 
      */
     tokenDuration?: string;
     /**
-     *
+     * 
      */
     emailStage: string;
 }
@@ -31,16 +30,8 @@ export interface UserRecoveryEmailRequest {
 /**
  * Check if a given object implements the UserRecoveryEmailRequest interface.
  */
-export function instanceOfUserRecoveryEmailRequest(
-    value: object,
-): value is UserRecoveryEmailRequest {
-    if (
-        (!("emailStage" in (value as Record<string, any>)) &&
-            !("email_stage" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["emailStage"] === undefined &&
-            (value as Record<string, any>)["email_stage"] === undefined)
-    )
-        return false;
+export function instanceOfUserRecoveryEmailRequest(value: object): value is UserRecoveryEmailRequest {
+    if ((!('emailStage' in (value as Record<string, any>)) && !('email_stage' in (value as Record<string, any>))) || ((value as Record<string, any>)['emailStage'] === undefined && (value as Record<string, any>)['email_stage'] === undefined)) return false;
     return true;
 }
 
@@ -48,16 +39,14 @@ export function UserRecoveryEmailRequestFromJSON(json: any): UserRecoveryEmailRe
     return UserRecoveryEmailRequestFromJSONTyped(json, false);
 }
 
-export function UserRecoveryEmailRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserRecoveryEmailRequest {
+export function UserRecoveryEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserRecoveryEmailRequest {
     if (json == null) {
         return json;
     }
     return {
-        tokenDuration: json["token_duration"] == null ? undefined : json["token_duration"],
-        emailStage: json["email_stage"],
+        
+        'tokenDuration': json['token_duration'] == null ? undefined : json['token_duration'],
+        'emailStage': json['email_stage'],
     };
 }
 
@@ -65,16 +54,15 @@ export function UserRecoveryEmailRequestToJSON(json: any): UserRecoveryEmailRequ
     return UserRecoveryEmailRequestToJSONTyped(json, false);
 }
 
-export function UserRecoveryEmailRequestToJSONTyped(
-    value?: UserRecoveryEmailRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserRecoveryEmailRequestToJSONTyped(value?: UserRecoveryEmailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        token_duration: value["tokenDuration"],
-        email_stage: value["emailStage"],
+        
+        'token_duration': value['tokenDuration'],
+        'email_stage': value['emailStage'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +11,49 @@
  * Do not edit the class manually.
  */
 
-import { type GlobalTaskStatus, GlobalTaskStatusFromJSON } from "../models/GlobalTaskStatus";
+import * as runtime from '../runtime';
+import {
+    type GlobalTaskStatus,
+    GlobalTaskStatusFromJSON,
+} from '../models/GlobalTaskStatus';
 import {
     type PaginatedScheduleList,
     PaginatedScheduleListFromJSON,
-} from "../models/PaginatedScheduleList";
-import { type PaginatedTaskList, PaginatedTaskListFromJSON } from "../models/PaginatedTaskList";
+} from '../models/PaginatedScheduleList';
+import {
+    type PaginatedTaskList,
+    PaginatedTaskListFromJSON,
+} from '../models/PaginatedTaskList';
 import {
     type PatchedScheduleRequest,
     PatchedScheduleRequestToJSON,
-} from "../models/PatchedScheduleRequest";
-import { type Schedule, ScheduleFromJSON } from "../models/Schedule";
-import { type ScheduleRequest, ScheduleRequestToJSON } from "../models/ScheduleRequest";
-import { type Task, TaskFromJSON } from "../models/Task";
-import { type TaskAggregatedStatusEnum } from "../models/TaskAggregatedStatusEnum";
-import { type TaskStatusEnum } from "../models/TaskStatusEnum";
-import { type Worker, WorkerFromJSON } from "../models/Worker";
-import * as runtime from "../runtime";
+} from '../models/PatchedScheduleRequest';
+import {
+    type Schedule,
+    ScheduleFromJSON,
+} from '../models/Schedule';
+import {
+    type ScheduleRequest,
+    ScheduleRequestToJSON,
+} from '../models/ScheduleRequest';
+import {
+    type Task,
+    TaskFromJSON,
+} from '../models/Task';
+import {
+    type TaskAggregatedStatusEnum,
+} from '../models/TaskAggregatedStatusEnum';
+import {
+    type TaskStatusEnum,
+} from '../models/TaskStatusEnum';
+import {
+    type Worker,
+    WorkerFromJSON,
+} from '../models/Worker';
 
 export interface TasksSchedulesListRequest {
     /**
-     *
+     * 
      */
     actorName?: string;
     /**
@@ -48,23 +69,23 @@ export interface TasksSchedulesListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     paused?: boolean;
     /**
-     *
+     * 
      */
     relObjContentTypeAppLabel?: string;
     /**
-     *
+     * 
      */
     relObjContentTypeModel?: string;
     /**
-     *
+     * 
      */
     relObjId?: string;
     /**
-     *
+     * 
      */
     relObjIdIsnull?: boolean;
     /**
@@ -79,7 +100,7 @@ export interface TasksSchedulesPartialUpdateRequest {
      */
     id: string;
     /**
-     *
+     * 
      */
     patchedScheduleRequest?: PatchedScheduleRequest;
 }
@@ -104,22 +125,22 @@ export interface TasksSchedulesUpdateRequest {
      */
     id: string;
     /**
-     *
+     * 
      */
     scheduleRequest: ScheduleRequest;
 }
 
 export interface TasksTasksListRequest {
     /**
-     *
+     * 
      */
     actorName?: string;
     /**
-     *
+     * 
      */
     aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
     /**
-     *
+     * 
      */
     messageId?: string;
     /**
@@ -139,23 +160,23 @@ export interface TasksTasksListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     queueName?: string;
     /**
-     *
+     * 
      */
     relObjContentTypeAppLabel?: string;
     /**
-     *
+     * 
      */
     relObjContentTypeModel?: string;
     /**
-     *
+     * 
      */
     relObjId?: string;
     /**
-     *
+     * 
      */
     relObjIdIsnull?: boolean;
     /**
@@ -163,7 +184,7 @@ export interface TasksTasksListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     state?: TaskStatusEnum;
 }
@@ -183,57 +204,54 @@ export interface TasksTasksRetryCreateRequest {
 }
 
 /**
- *
+ * 
  */
 export class TasksApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for tasksSchedulesList without sending the request
      */
-    async tasksSchedulesListRequestOpts(
-        requestParameters: TasksSchedulesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async tasksSchedulesListRequestOpts(requestParameters: TasksSchedulesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["actorName"] != null) {
-            queryParameters["actor_name"] = requestParameters["actorName"];
+        if (requestParameters['actorName'] != null) {
+            queryParameters['actor_name'] = requestParameters['actorName'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["paused"] != null) {
-            queryParameters["paused"] = requestParameters["paused"];
+        if (requestParameters['paused'] != null) {
+            queryParameters['paused'] = requestParameters['paused'];
         }
 
-        if (requestParameters["relObjContentTypeAppLabel"] != null) {
-            queryParameters["rel_obj_content_type__app_label"] =
-                requestParameters["relObjContentTypeAppLabel"];
+        if (requestParameters['relObjContentTypeAppLabel'] != null) {
+            queryParameters['rel_obj_content_type__app_label'] = requestParameters['relObjContentTypeAppLabel'];
         }
 
-        if (requestParameters["relObjContentTypeModel"] != null) {
-            queryParameters["rel_obj_content_type__model"] =
-                requestParameters["relObjContentTypeModel"];
+        if (requestParameters['relObjContentTypeModel'] != null) {
+            queryParameters['rel_obj_content_type__model'] = requestParameters['relObjContentTypeModel'];
         }
 
-        if (requestParameters["relObjId"] != null) {
-            queryParameters["rel_obj_id"] = requestParameters["relObjId"];
+        if (requestParameters['relObjId'] != null) {
+            queryParameters['rel_obj_id'] = requestParameters['relObjId'];
         }
 
-        if (requestParameters["relObjIdIsnull"] != null) {
-            queryParameters["rel_obj_id__isnull"] = requestParameters["relObjIdIsnull"];
+        if (requestParameters['relObjIdIsnull'] != null) {
+            queryParameters['rel_obj_id__isnull'] = requestParameters['relObjIdIsnull'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -251,7 +269,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -259,24 +277,16 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksSchedulesListRaw(
-        requestParameters: TasksSchedulesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedScheduleList>> {
+    async tasksSchedulesListRaw(requestParameters: TasksSchedulesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedScheduleList>> {
         const requestOptions = await this.tasksSchedulesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedScheduleListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedScheduleListFromJSON(jsonValue));
     }
 
     /**
      */
-    async tasksSchedulesList(
-        requestParameters: TasksSchedulesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedScheduleList> {
+    async tasksSchedulesList(requestParameters: TasksSchedulesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedScheduleList> {
         const response = await this.tasksSchedulesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -284,13 +294,11 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksSchedulesPartialUpdate without sending the request
      */
-    async tasksSchedulesPartialUpdateRequestOpts(
-        requestParameters: TasksSchedulesPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tasksSchedulesPartialUpdateRequestOpts(requestParameters: TasksSchedulesPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tasksSchedulesPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tasksSchedulesPartialUpdate().'
             );
         }
 
@@ -298,7 +306,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -310,23 +318,20 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedScheduleRequestToJSON(requestParameters["patchedScheduleRequest"]),
+            body: PatchedScheduleRequestToJSON(requestParameters['patchedScheduleRequest']),
         };
     }
 
     /**
      */
-    async tasksSchedulesPartialUpdateRaw(
-        requestParameters: TasksSchedulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Schedule>> {
+    async tasksSchedulesPartialUpdateRaw(requestParameters: TasksSchedulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Schedule>> {
         const requestOptions = await this.tasksSchedulesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -335,27 +340,19 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksSchedulesPartialUpdate(
-        requestParameters: TasksSchedulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Schedule> {
-        const response = await this.tasksSchedulesPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async tasksSchedulesPartialUpdate(requestParameters: TasksSchedulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Schedule> {
+        const response = await this.tasksSchedulesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for tasksSchedulesRetrieve without sending the request
      */
-    async tasksSchedulesRetrieveRequestOpts(
-        requestParameters: TasksSchedulesRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tasksSchedulesRetrieveRequestOpts(requestParameters: TasksSchedulesRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tasksSchedulesRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tasksSchedulesRetrieve().'
             );
         }
 
@@ -373,11 +370,11 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -385,10 +382,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksSchedulesRetrieveRaw(
-        requestParameters: TasksSchedulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Schedule>> {
+    async tasksSchedulesRetrieveRaw(requestParameters: TasksSchedulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Schedule>> {
         const requestOptions = await this.tasksSchedulesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -397,10 +391,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksSchedulesRetrieve(
-        requestParameters: TasksSchedulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Schedule> {
+    async tasksSchedulesRetrieve(requestParameters: TasksSchedulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Schedule> {
         const response = await this.tasksSchedulesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -408,13 +399,11 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksSchedulesSendCreate without sending the request
      */
-    async tasksSchedulesSendCreateRequestOpts(
-        requestParameters: TasksSchedulesSendCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tasksSchedulesSendCreateRequestOpts(requestParameters: TasksSchedulesSendCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tasksSchedulesSendCreate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tasksSchedulesSendCreate().'
             );
         }
 
@@ -432,11 +421,11 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/send/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -445,10 +434,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Trigger this schedule now
      */
-    async tasksSchedulesSendCreateRaw(
-        requestParameters: TasksSchedulesSendCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async tasksSchedulesSendCreateRaw(requestParameters: TasksSchedulesSendCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.tasksSchedulesSendCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -458,30 +444,25 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Trigger this schedule now
      */
-    async tasksSchedulesSendCreate(
-        requestParameters: TasksSchedulesSendCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async tasksSchedulesSendCreate(requestParameters: TasksSchedulesSendCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tasksSchedulesSendCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for tasksSchedulesUpdate without sending the request
      */
-    async tasksSchedulesUpdateRequestOpts(
-        requestParameters: TasksSchedulesUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tasksSchedulesUpdateRequestOpts(requestParameters: TasksSchedulesUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tasksSchedulesUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tasksSchedulesUpdate().'
             );
         }
 
-        if (requestParameters["scheduleRequest"] == null) {
+        if (requestParameters['scheduleRequest'] == null) {
             throw new runtime.RequiredError(
-                "scheduleRequest",
-                'Required parameter "scheduleRequest" was null or undefined when calling tasksSchedulesUpdate().',
+                'scheduleRequest',
+                'Required parameter "scheduleRequest" was null or undefined when calling tasksSchedulesUpdate().'
             );
         }
 
@@ -489,7 +470,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -501,23 +482,20 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ScheduleRequestToJSON(requestParameters["scheduleRequest"]),
+            body: ScheduleRequestToJSON(requestParameters['scheduleRequest']),
         };
     }
 
     /**
      */
-    async tasksSchedulesUpdateRaw(
-        requestParameters: TasksSchedulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Schedule>> {
+    async tasksSchedulesUpdateRaw(requestParameters: TasksSchedulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Schedule>> {
         const requestOptions = await this.tasksSchedulesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -526,10 +504,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksSchedulesUpdate(
-        requestParameters: TasksSchedulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Schedule> {
+    async tasksSchedulesUpdate(requestParameters: TasksSchedulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Schedule> {
         const response = await this.tasksSchedulesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -537,69 +512,63 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksTasksList without sending the request
      */
-    async tasksTasksListRequestOpts(
-        requestParameters: TasksTasksListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async tasksTasksListRequestOpts(requestParameters: TasksTasksListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["actorName"] != null) {
-            queryParameters["actor_name"] = requestParameters["actorName"];
+        if (requestParameters['actorName'] != null) {
+            queryParameters['actor_name'] = requestParameters['actorName'];
         }
 
-        if (requestParameters["aggregatedStatus"] != null) {
-            queryParameters["aggregated_status"] = requestParameters["aggregatedStatus"];
+        if (requestParameters['aggregatedStatus'] != null) {
+            queryParameters['aggregated_status'] = requestParameters['aggregatedStatus'];
         }
 
-        if (requestParameters["messageId"] != null) {
-            queryParameters["message_id"] = requestParameters["messageId"];
+        if (requestParameters['messageId'] != null) {
+            queryParameters['message_id'] = requestParameters['messageId'];
         }
 
-        if (requestParameters["messageIdIn"] != null) {
-            queryParameters["message_id__in"] = requestParameters["messageIdIn"]!.join(
-                runtime.COLLECTION_FORMATS["csv"],
-            );
+        if (requestParameters['messageIdIn'] != null) {
+            queryParameters['message_id__in'] = requestParameters['messageIdIn']!.join(runtime.COLLECTION_FORMATS["csv"]);
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["queueName"] != null) {
-            queryParameters["queue_name"] = requestParameters["queueName"];
+        if (requestParameters['queueName'] != null) {
+            queryParameters['queue_name'] = requestParameters['queueName'];
         }
 
-        if (requestParameters["relObjContentTypeAppLabel"] != null) {
-            queryParameters["rel_obj_content_type__app_label"] =
-                requestParameters["relObjContentTypeAppLabel"];
+        if (requestParameters['relObjContentTypeAppLabel'] != null) {
+            queryParameters['rel_obj_content_type__app_label'] = requestParameters['relObjContentTypeAppLabel'];
         }
 
-        if (requestParameters["relObjContentTypeModel"] != null) {
-            queryParameters["rel_obj_content_type__model"] =
-                requestParameters["relObjContentTypeModel"];
+        if (requestParameters['relObjContentTypeModel'] != null) {
+            queryParameters['rel_obj_content_type__model'] = requestParameters['relObjContentTypeModel'];
         }
 
-        if (requestParameters["relObjId"] != null) {
-            queryParameters["rel_obj_id"] = requestParameters["relObjId"];
+        if (requestParameters['relObjId'] != null) {
+            queryParameters['rel_obj_id'] = requestParameters['relObjId'];
         }
 
-        if (requestParameters["relObjIdIsnull"] != null) {
-            queryParameters["rel_obj_id__isnull"] = requestParameters["relObjIdIsnull"];
+        if (requestParameters['relObjIdIsnull'] != null) {
+            queryParameters['rel_obj_id__isnull'] = requestParameters['relObjIdIsnull'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["state"] != null) {
-            queryParameters["state"] = requestParameters["state"];
+        if (requestParameters['state'] != null) {
+            queryParameters['state'] = requestParameters['state'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -617,7 +586,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -625,24 +594,16 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksTasksListRaw(
-        requestParameters: TasksTasksListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedTaskList>> {
+    async tasksTasksListRaw(requestParameters: TasksTasksListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTaskList>> {
         const requestOptions = await this.tasksTasksListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedTaskListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTaskListFromJSON(jsonValue));
     }
 
     /**
      */
-    async tasksTasksList(
-        requestParameters: TasksTasksListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedTaskList> {
+    async tasksTasksList(requestParameters: TasksTasksListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTaskList> {
         const response = await this.tasksTasksListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -650,13 +611,11 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksTasksRetrieve without sending the request
      */
-    async tasksTasksRetrieveRequestOpts(
-        requestParameters: TasksTasksRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["messageId"] == null) {
+    async tasksTasksRetrieveRequestOpts(requestParameters: TasksTasksRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['messageId'] == null) {
             throw new runtime.RequiredError(
-                "messageId",
-                'Required parameter "messageId" was null or undefined when calling tasksTasksRetrieve().',
+                'messageId',
+                'Required parameter "messageId" was null or undefined when calling tasksTasksRetrieve().'
             );
         }
 
@@ -674,14 +633,11 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/tasks/{message_id}/`;
-        urlPath = urlPath.replace(
-            "{message_id}",
-            encodeURIComponent(String(requestParameters["messageId"])),
-        );
+        urlPath = urlPath.replace('{message_id}', encodeURIComponent(String(requestParameters['messageId'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -689,10 +645,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksTasksRetrieveRaw(
-        requestParameters: TasksTasksRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Task>> {
+    async tasksTasksRetrieveRaw(requestParameters: TasksTasksRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
         const requestOptions = await this.tasksTasksRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -701,10 +654,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async tasksTasksRetrieve(
-        requestParameters: TasksTasksRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Task> {
+    async tasksTasksRetrieve(requestParameters: TasksTasksRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.tasksTasksRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -712,13 +662,11 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksTasksRetryCreate without sending the request
      */
-    async tasksTasksRetryCreateRequestOpts(
-        requestParameters: TasksTasksRetryCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["messageId"] == null) {
+    async tasksTasksRetryCreateRequestOpts(requestParameters: TasksTasksRetryCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['messageId'] == null) {
             throw new runtime.RequiredError(
-                "messageId",
-                'Required parameter "messageId" was null or undefined when calling tasksTasksRetryCreate().',
+                'messageId',
+                'Required parameter "messageId" was null or undefined when calling tasksTasksRetryCreate().'
             );
         }
 
@@ -736,14 +684,11 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/tasks/{message_id}/retry/`;
-        urlPath = urlPath.replace(
-            "{message_id}",
-            encodeURIComponent(String(requestParameters["messageId"])),
-        );
+        urlPath = urlPath.replace('{message_id}', encodeURIComponent(String(requestParameters['messageId'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -752,10 +697,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Retry task
      */
-    async tasksTasksRetryCreateRaw(
-        requestParameters: TasksTasksRetryCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async tasksTasksRetryCreateRaw(requestParameters: TasksTasksRetryCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.tasksTasksRetryCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -765,10 +707,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Retry task
      */
-    async tasksTasksRetryCreate(
-        requestParameters: TasksTasksRetryCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async tasksTasksRetryCreate(requestParameters: TasksTasksRetryCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tasksTasksRetryCreateRaw(requestParameters, initOverrides);
     }
 
@@ -793,7 +732,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -802,23 +741,17 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Global status summary for all tasks
      */
-    async tasksTasksStatusRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GlobalTaskStatus>> {
+    async tasksTasksStatusRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GlobalTaskStatus>> {
         const requestOptions = await this.tasksTasksStatusRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GlobalTaskStatusFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GlobalTaskStatusFromJSON(jsonValue));
     }
 
     /**
      * Global status summary for all tasks
      */
-    async tasksTasksStatusRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GlobalTaskStatus> {
+    async tasksTasksStatusRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GlobalTaskStatus> {
         const response = await this.tasksTasksStatusRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -844,7 +777,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -853,9 +786,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Get currently connected worker count.
      */
-    async tasksWorkersListRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<Worker>>> {
+    async tasksWorkersListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Worker>>> {
         const requestOptions = await this.tasksWorkersListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -865,10 +796,9 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Get currently connected worker count.
      */
-    async tasksWorkersList(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<Worker>> {
+    async tasksWorkersList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Worker>> {
         const response = await this.tasksWorkersListRaw(initOverrides);
         return await response.value();
     }
+
 }

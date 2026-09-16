@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface GroupLDAPSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +30,40 @@ export interface GroupLDAPSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupLDAPSourceConnectionRequest interface.
  */
-export function instanceOfGroupLDAPSourceConnectionRequest(
-    value: object,
-): value is GroupLDAPSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfGroupLDAPSourceConnectionRequest(value: object): value is GroupLDAPSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function GroupLDAPSourceConnectionRequestFromJSON(
-    json: any,
-): GroupLDAPSourceConnectionRequest {
+export function GroupLDAPSourceConnectionRequestFromJSON(json: any): GroupLDAPSourceConnectionRequest {
     return GroupLDAPSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupLDAPSourceConnectionRequest {
+export function GroupLDAPSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupLDAPSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function GroupLDAPSourceConnectionRequestToJSON(
-    json: any,
-): GroupLDAPSourceConnectionRequest {
+export function GroupLDAPSourceConnectionRequestToJSON(json: any): GroupLDAPSourceConnectionRequest {
     return GroupLDAPSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionRequestToJSONTyped(
-    value?: GroupLDAPSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupLDAPSourceConnectionRequestToJSONTyped(value?: GroupLDAPSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

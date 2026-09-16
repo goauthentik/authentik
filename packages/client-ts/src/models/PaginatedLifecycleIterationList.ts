@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +11,60 @@
  * Do not edit the class manually.
  */
 
-import type { LifecycleIteration } from "./LifecycleIteration";
-import { LifecycleIterationFromJSON, LifecycleIterationToJSON } from "./LifecycleIteration";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { LifecycleIteration } from './LifecycleIteration';
+import {
+    LifecycleIterationFromJSON,
+    LifecycleIterationToJSON,
+} from './LifecycleIteration';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedLifecycleIterationList
  */
 export interface PaginatedLifecycleIterationList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<LifecycleIteration>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedLifecycleIterationList interface.
  */
-export function instanceOfPaginatedLifecycleIterationList(
-    value: object,
-): value is PaginatedLifecycleIterationList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedLifecycleIterationList(value: object): value is PaginatedLifecycleIterationList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedLifecycleIterationListFromJSON(
-    json: any,
-): PaginatedLifecycleIterationList {
+export function PaginatedLifecycleIterationListFromJSON(json: any): PaginatedLifecycleIterationList {
     return PaginatedLifecycleIterationListFromJSONTyped(json, false);
 }
 
-export function PaginatedLifecycleIterationListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedLifecycleIterationList {
+export function PaginatedLifecycleIterationListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLifecycleIterationList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(LifecycleIterationFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(LifecycleIterationFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -73,17 +72,16 @@ export function PaginatedLifecycleIterationListToJSON(json: any): PaginatedLifec
     return PaginatedLifecycleIterationListToJSONTyped(json, false);
 }
 
-export function PaginatedLifecycleIterationListToJSONTyped(
-    value?: PaginatedLifecycleIterationList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedLifecycleIterationListToJSONTyped(value?: PaginatedLifecycleIterationList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(LifecycleIterationToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(LifecycleIterationToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

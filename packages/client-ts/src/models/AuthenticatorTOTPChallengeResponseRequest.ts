@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface AuthenticatorTOTPChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     code: string;
 }
@@ -31,48 +30,39 @@ export interface AuthenticatorTOTPChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorTOTPChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorTOTPChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorTOTPChallengeResponseRequest {
-    if (!("code" in value) || value["code"] === undefined) return false;
+export function instanceOfAuthenticatorTOTPChallengeResponseRequest(value: object): value is AuthenticatorTOTPChallengeResponseRequest {
+    if (!('code' in value) || value['code'] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorTOTPChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorTOTPChallengeResponseRequest {
+export function AuthenticatorTOTPChallengeResponseRequestFromJSON(json: any): AuthenticatorTOTPChallengeResponseRequest {
     return AuthenticatorTOTPChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorTOTPChallengeResponseRequest {
+export function AuthenticatorTOTPChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorTOTPChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        code: json["code"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'code': json['code'],
     };
 }
 
-export function AuthenticatorTOTPChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorTOTPChallengeResponseRequest {
+export function AuthenticatorTOTPChallengeResponseRequestToJSON(json: any): AuthenticatorTOTPChallengeResponseRequest {
     return AuthenticatorTOTPChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorTOTPChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorTOTPChallengeResponseRequestToJSONTyped(value?: AuthenticatorTOTPChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        code: value["code"],
+        
+        'component': value['component'],
+        'code': value['code'],
     };
 }
+

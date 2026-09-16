@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,20 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
+import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from './UserMatchingModeEnum';
+import type { ThemedUrls } from './ThemedUrls';
+import {
+    ThemedUrlsFromJSON,
+} from './ThemedUrls';
 
 /**
  * Source Serializer
@@ -26,7 +33,7 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
  */
 export interface TelegramSource {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -38,7 +45,7 @@ export interface TelegramSource {
      */
     slug: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -54,11 +61,11 @@ export interface TelegramSource {
      */
     enrollmentFlow?: string | null;
     /**
-     *
+     * 
      */
     userPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     groupPropertyMappings?: Array<string>;
     /**
@@ -78,7 +85,7 @@ export interface TelegramSource {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
@@ -90,19 +97,19 @@ export interface TelegramSource {
      */
     readonly managed: string | null;
     /**
-     *
+     * 
      */
     userPathTemplate?: string;
     /**
-     *
+     * 
      */
     icon?: string;
     /**
-     *
+     * 
      */
     readonly iconUrl: string | null;
     /**
-     *
+     * 
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
@@ -119,64 +126,24 @@ export interface TelegramSource {
     preAuthenticationFlow: string;
 }
 
+
+
 /**
  * Check if a given object implements the TelegramSource interface.
  */
 export function instanceOfTelegramSource(value: object): value is TelegramSource {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("managed" in value) || value["managed"] === undefined) return false;
-    if (
-        (!("iconUrl" in (value as Record<string, any>)) &&
-            !("icon_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["iconUrl"] === undefined &&
-            (value as Record<string, any>)["icon_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("iconThemedUrls" in (value as Record<string, any>)) &&
-            !("icon_themed_urls" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["iconThemedUrls"] === undefined &&
-            (value as Record<string, any>)["icon_themed_urls"] === undefined)
-    )
-        return false;
-    if (
-        (!("botUsername" in (value as Record<string, any>)) &&
-            !("bot_username" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["botUsername"] === undefined &&
-            (value as Record<string, any>)["bot_username"] === undefined)
-    )
-        return false;
-    if (
-        (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
-            !("pre_authentication_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["preAuthenticationFlow"] === undefined &&
-            (value as Record<string, any>)["pre_authentication_flow"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('managed' in value) || value['managed'] === undefined) return false;
+    if ((!('iconUrl' in (value as Record<string, any>)) && !('icon_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['iconUrl'] === undefined && (value as Record<string, any>)['icon_url'] === undefined)) return false;
+    if ((!('iconThemedUrls' in (value as Record<string, any>)) && !('icon_themed_urls' in (value as Record<string, any>))) || ((value as Record<string, any>)['iconThemedUrls'] === undefined && (value as Record<string, any>)['icon_themed_urls'] === undefined)) return false;
+    if ((!('botUsername' in (value as Record<string, any>)) && !('bot_username' in (value as Record<string, any>))) || ((value as Record<string, any>)['botUsername'] === undefined && (value as Record<string, any>)['bot_username'] === undefined)) return false;
+    if ((!('preAuthenticationFlow' in (value as Record<string, any>)) && !('pre_authentication_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['preAuthenticationFlow'] === undefined && (value as Record<string, any>)['pre_authentication_flow'] === undefined)) return false;
     return true;
 }
 
@@ -184,57 +151,35 @@ export function TelegramSourceFromJSON(json: any): TelegramSource {
     return TelegramSourceFromJSONTyped(json, false);
 }
 
-export function TelegramSourceFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramSource {
+export function TelegramSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramSource {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        slug: json["slug"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        promoted: json["promoted"] == null ? undefined : json["promoted"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        enrollmentFlow:
-            json["enrollment_flow"] === undefined
-                ? undefined
-                : json["enrollment_flow"] === null
-                  ? null
-                  : json["enrollment_flow"],
-        userPropertyMappings:
-            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
-        groupPropertyMappings:
-            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        userMatchingMode:
-            json["user_matching_mode"] == null
-                ? undefined
-                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
-        managed: json["managed"],
-        userPathTemplate:
-            json["user_path_template"] == null ? undefined : json["user_path_template"],
-        icon: json["icon"] == null ? undefined : json["icon"],
-        iconUrl: json["icon_url"],
-        iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
-        botUsername: json["bot_username"],
-        requestMessageAccess:
-            json["request_message_access"] == null ? undefined : json["request_message_access"],
-        preAuthenticationFlow: json["pre_authentication_flow"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'slug': json['slug'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'promoted': json['promoted'] == null ? undefined : json['promoted'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'enrollmentFlow': json['enrollment_flow'] === undefined ? undefined : json['enrollment_flow'] === null ? null : json['enrollment_flow'],
+        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
+        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
+        'managed': json['managed'],
+        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        'icon': json['icon'] == null ? undefined : json['icon'],
+        'iconUrl': json['icon_url'],
+        'iconThemedUrls': ThemedUrlsFromJSON(json['icon_themed_urls']),
+        'botUsername': json['bot_username'],
+        'requestMessageAccess': json['request_message_access'] == null ? undefined : json['request_message_access'],
+        'preAuthenticationFlow': json['pre_authentication_flow'],
     };
 }
 
@@ -242,39 +187,28 @@ export function TelegramSourceToJSON(json: any): TelegramSource {
     return TelegramSourceToJSONTyped(json, false);
 }
 
-export function TelegramSourceToJSONTyped(
-    value?: Omit<
-        TelegramSource,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "managed"
-        | "iconUrl"
-        | "iconThemedUrls"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramSourceToJSONTyped(value?: Omit<TelegramSource, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'managed'|'iconUrl'|'iconThemedUrls'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        enabled: value["enabled"],
-        promoted: value["promoted"],
-        authentication_flow: value["authenticationFlow"],
-        enrollment_flow: value["enrollmentFlow"],
-        user_property_mappings: value["userPropertyMappings"],
-        group_property_mappings: value["groupPropertyMappings"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
-        user_path_template: value["userPathTemplate"],
-        icon: value["icon"],
-        bot_username: value["botUsername"],
-        request_message_access: value["requestMessageAccess"],
-        pre_authentication_flow: value["preAuthenticationFlow"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'enabled': value['enabled'],
+        'promoted': value['promoted'],
+        'authentication_flow': value['authenticationFlow'],
+        'enrollment_flow': value['enrollmentFlow'],
+        'user_property_mappings': value['userPropertyMappings'],
+        'group_property_mappings': value['groupPropertyMappings'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
+        'user_path_template': value['userPathTemplate'],
+        'icon': value['icon'],
+        'bot_username': value['botUsername'],
+        'request_message_access': value['requestMessageAccess'],
+        'pre_authentication_flow': value['preAuthenticationFlow'],
     };
 }
+

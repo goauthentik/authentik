@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Outpost } from "./Outpost";
-import { OutpostFromJSON, OutpostToJSON } from "./Outpost";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { Outpost } from './Outpost';
+import {
+    OutpostFromJSON,
+    OutpostToJSON,
+} from './Outpost';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedOutpostList
  */
 export interface PaginatedOutpostList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Outpost>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedOutpostList interface.
  */
 export function instanceOfPaginatedOutpostList(value: object): value is PaginatedOutpostList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedOutpostListFromJSON(json: any): PaginatedOutpostList {
     return PaginatedOutpostListFromJSONTyped(json, false);
 }
 
-export function PaginatedOutpostListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedOutpostList {
+export function PaginatedOutpostListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedOutpostList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(OutpostFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(OutpostFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedOutpostListToJSON(json: any): PaginatedOutpostList {
     return PaginatedOutpostListToJSONTyped(json, false);
 }
 
-export function PaginatedOutpostListToJSONTyped(
-    value?: PaginatedOutpostList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedOutpostListToJSONTyped(value?: PaginatedOutpostList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(OutpostToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(OutpostToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

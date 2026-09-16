@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const SAMLBindingsEnum = {
-    Redirect: "redirect",
-    Post: "post",
-    UnknownDefaultOpenApi: "11184809",
+    Redirect: 'redirect',
+    Post: 'post',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type SAMLBindingsEnum = (typeof SAMLBindingsEnum)[keyof typeof SAMLBindingsEnum];
+export type SAMLBindingsEnum = typeof SAMLBindingsEnum[keyof typeof SAMLBindingsEnum];
+
 
 export function instanceOfSAMLBindingsEnum(value: any): boolean {
     for (const key in SAMLBindingsEnum) {
@@ -38,10 +39,7 @@ export function SAMLBindingsEnumFromJSON(json: any): SAMLBindingsEnum {
     return SAMLBindingsEnumFromJSONTyped(json, false);
 }
 
-export function SAMLBindingsEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SAMLBindingsEnum {
+export function SAMLBindingsEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLBindingsEnum {
     return json as SAMLBindingsEnum;
 }
 
@@ -49,9 +47,7 @@ export function SAMLBindingsEnumToJSON(value?: SAMLBindingsEnum | null): any {
     return value as any;
 }
 
-export function SAMLBindingsEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): SAMLBindingsEnum {
+export function SAMLBindingsEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SAMLBindingsEnum {
     return value as SAMLBindingsEnum;
 }
+

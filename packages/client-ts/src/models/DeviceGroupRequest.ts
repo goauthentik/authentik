@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,17 +12,17 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface DeviceGroupRequest
  */
 export interface DeviceGroupRequest {
     /**
-     *
+     * 
      */
     id: string;
     /**
-     *
+     * 
      */
     name?: string;
 }
@@ -32,7 +31,7 @@ export interface DeviceGroupRequest {
  * Check if a given object implements the DeviceGroupRequest interface.
  */
 export function instanceOfDeviceGroupRequest(value: object): value is DeviceGroupRequest {
-    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -40,16 +39,14 @@ export function DeviceGroupRequestFromJSON(json: any): DeviceGroupRequest {
     return DeviceGroupRequestFromJSONTyped(json, false);
 }
 
-export function DeviceGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceGroupRequest {
+export function DeviceGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'id': json['id'],
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -57,16 +54,15 @@ export function DeviceGroupRequestToJSON(json: any): DeviceGroupRequest {
     return DeviceGroupRequestToJSONTyped(json, false);
 }
 
-export function DeviceGroupRequestToJSONTyped(
-    value?: DeviceGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceGroupRequestToJSONTyped(value?: DeviceGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        name: value["name"],
+        
+        'id': value['id'],
+        'name': value['name'],
     };
 }
+

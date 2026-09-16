@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,21 +12,21 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface ProcessRequest
  */
 export interface ProcessRequest {
     /**
-     *
+     * 
      */
     id: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     user?: string;
 }
@@ -36,8 +35,8 @@ export interface ProcessRequest {
  * Check if a given object implements the ProcessRequest interface.
  */
 export function instanceOfProcessRequest(value: object): value is ProcessRequest {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -45,17 +44,15 @@ export function ProcessRequestFromJSON(json: any): ProcessRequest {
     return ProcessRequestFromJSONTyped(json, false);
 }
 
-export function ProcessRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ProcessRequest {
+export function ProcessRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProcessRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        name: json["name"],
-        user: json["user"] == null ? undefined : json["user"],
+        
+        'id': json['id'],
+        'name': json['name'],
+        'user': json['user'] == null ? undefined : json['user'],
     };
 }
 
@@ -63,17 +60,16 @@ export function ProcessRequestToJSON(json: any): ProcessRequest {
     return ProcessRequestToJSONTyped(json, false);
 }
 
-export function ProcessRequestToJSONTyped(
-    value?: ProcessRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ProcessRequestToJSONTyped(value?: ProcessRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        name: value["name"],
-        user: value["user"],
+        
+        'id': value['id'],
+        'name': value['name'],
+        'user': value['user'],
     };
 }
+

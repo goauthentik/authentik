@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { GrantRequest } from "./GrantRequest";
-import { GrantRequestFromJSON } from "./GrantRequest";
+import type { GrantRequest } from './GrantRequest';
+import {
+    GrantRequestFromJSON,
+} from './GrantRequest';
 
 /**
  * Response to an agent's access request: the request it created, plus the URL to hand to
@@ -24,11 +25,11 @@ import { GrantRequestFromJSON } from "./GrantRequest";
  */
 export interface AgentGrantRequestCreated {
     /**
-     *
+     * 
      */
     readonly grantRequest: GrantRequest;
     /**
-     *
+     * 
      */
     readonly fulfillUrl: string;
 }
@@ -36,23 +37,9 @@ export interface AgentGrantRequestCreated {
 /**
  * Check if a given object implements the AgentGrantRequestCreated interface.
  */
-export function instanceOfAgentGrantRequestCreated(
-    value: object,
-): value is AgentGrantRequestCreated {
-    if (
-        (!("grantRequest" in (value as Record<string, any>)) &&
-            !("grant_request" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["grantRequest"] === undefined &&
-            (value as Record<string, any>)["grant_request"] === undefined)
-    )
-        return false;
-    if (
-        (!("fulfillUrl" in (value as Record<string, any>)) &&
-            !("fulfill_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fulfillUrl"] === undefined &&
-            (value as Record<string, any>)["fulfill_url"] === undefined)
-    )
-        return false;
+export function instanceOfAgentGrantRequestCreated(value: object): value is AgentGrantRequestCreated {
+    if ((!('grantRequest' in (value as Record<string, any>)) && !('grant_request' in (value as Record<string, any>))) || ((value as Record<string, any>)['grantRequest'] === undefined && (value as Record<string, any>)['grant_request'] === undefined)) return false;
+    if ((!('fulfillUrl' in (value as Record<string, any>)) && !('fulfill_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['fulfillUrl'] === undefined && (value as Record<string, any>)['fulfill_url'] === undefined)) return false;
     return true;
 }
 
@@ -60,16 +47,14 @@ export function AgentGrantRequestCreatedFromJSON(json: any): AgentGrantRequestCr
     return AgentGrantRequestCreatedFromJSONTyped(json, false);
 }
 
-export function AgentGrantRequestCreatedFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentGrantRequestCreated {
+export function AgentGrantRequestCreatedFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentGrantRequestCreated {
     if (json == null) {
         return json;
     }
     return {
-        grantRequest: GrantRequestFromJSON(json["grant_request"]),
-        fulfillUrl: json["fulfill_url"],
+        
+        'grantRequest': GrantRequestFromJSON(json['grant_request']),
+        'fulfillUrl': json['fulfill_url'],
     };
 }
 
@@ -77,13 +62,13 @@ export function AgentGrantRequestCreatedToJSON(json: any): AgentGrantRequestCrea
     return AgentGrantRequestCreatedToJSONTyped(json, false);
 }
 
-export function AgentGrantRequestCreatedToJSONTyped(
-    value?: Omit<AgentGrantRequestCreated, "grantRequest" | "fulfillUrl"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentGrantRequestCreatedToJSONTyped(value?: Omit<AgentGrantRequestCreated, 'grantRequest'|'fulfillUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

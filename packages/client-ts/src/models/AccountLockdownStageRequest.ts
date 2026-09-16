@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface AccountLockdownStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -47,10 +46,8 @@ export interface AccountLockdownStageRequest {
 /**
  * Check if a given object implements the AccountLockdownStageRequest interface.
  */
-export function instanceOfAccountLockdownStageRequest(
-    value: object,
-): value is AccountLockdownStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfAccountLockdownStageRequest(value: object): value is AccountLockdownStageRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -58,26 +55,18 @@ export function AccountLockdownStageRequestFromJSON(json: any): AccountLockdownS
     return AccountLockdownStageRequestFromJSONTyped(json, false);
 }
 
-export function AccountLockdownStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AccountLockdownStageRequest {
+export function AccountLockdownStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AccountLockdownStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        deactivateUser: json["deactivate_user"] == null ? undefined : json["deactivate_user"],
-        setUnusablePassword:
-            json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
-        deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
-        revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceCompletionFlow:
-            json["self_service_completion_flow"] === undefined
-                ? undefined
-                : json["self_service_completion_flow"] === null
-                  ? null
-                  : json["self_service_completion_flow"],
+        
+        'name': json['name'],
+        'deactivateUser': json['deactivate_user'] == null ? undefined : json['deactivate_user'],
+        'setUnusablePassword': json['set_unusable_password'] == null ? undefined : json['set_unusable_password'],
+        'deleteSessions': json['delete_sessions'] == null ? undefined : json['delete_sessions'],
+        'revokeTokens': json['revoke_tokens'] == null ? undefined : json['revoke_tokens'],
+        'selfServiceCompletionFlow': json['self_service_completion_flow'] === undefined ? undefined : json['self_service_completion_flow'] === null ? null : json['self_service_completion_flow'],
     };
 }
 
@@ -85,20 +74,19 @@ export function AccountLockdownStageRequestToJSON(json: any): AccountLockdownSta
     return AccountLockdownStageRequestToJSONTyped(json, false);
 }
 
-export function AccountLockdownStageRequestToJSONTyped(
-    value?: AccountLockdownStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AccountLockdownStageRequestToJSONTyped(value?: AccountLockdownStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deactivate_user: value["deactivateUser"],
-        set_unusable_password: value["setUnusablePassword"],
-        delete_sessions: value["deleteSessions"],
-        revoke_tokens: value["revokeTokens"],
-        self_service_completion_flow: value["selfServiceCompletionFlow"],
+        
+        'name': value['name'],
+        'deactivate_user': value['deactivateUser'],
+        'set_unusable_password': value['setUnusablePassword'],
+        'delete_sessions': value['deleteSessions'],
+        'revoke_tokens': value['revokeTokens'],
+        'self_service_completion_flow': value['selfServiceCompletionFlow'],
     };
 }
+

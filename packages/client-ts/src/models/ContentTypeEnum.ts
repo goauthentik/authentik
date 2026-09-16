@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ContentTypeEnum = {
-    AuthentikCoreApplication: "authentik_core.application",
-    AuthentikCoreGroup: "authentik_core.group",
-    AuthentikRbacRole: "authentik_rbac.role",
-    UnknownDefaultOpenApi: "11184809",
+    AuthentikCoreApplication: 'authentik_core.application',
+    AuthentikCoreGroup: 'authentik_core.group',
+    AuthentikRbacRole: 'authentik_rbac.role',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ContentTypeEnum = (typeof ContentTypeEnum)[keyof typeof ContentTypeEnum];
+export type ContentTypeEnum = typeof ContentTypeEnum[keyof typeof ContentTypeEnum];
+
 
 export function instanceOfContentTypeEnum(value: any): boolean {
     for (const key in ContentTypeEnum) {
@@ -39,10 +40,7 @@ export function ContentTypeEnumFromJSON(json: any): ContentTypeEnum {
     return ContentTypeEnumFromJSONTyped(json, false);
 }
 
-export function ContentTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ContentTypeEnum {
+export function ContentTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ContentTypeEnum {
     return json as ContentTypeEnum;
 }
 
@@ -50,9 +48,7 @@ export function ContentTypeEnumToJSON(value?: ContentTypeEnum | null): any {
     return value as any;
 }
 
-export function ContentTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ContentTypeEnum {
+export function ContentTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ContentTypeEnum {
     return value as ContentTypeEnum;
 }
+

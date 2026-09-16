@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorTOTPStage } from "./AuthenticatorTOTPStage";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { AuthenticatorTOTPStage } from './AuthenticatorTOTPStage';
 import {
     AuthenticatorTOTPStageFromJSON,
     AuthenticatorTOTPStageToJSON,
-} from "./AuthenticatorTOTPStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './AuthenticatorTOTPStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAuthenticatorTOTPStageList
  */
 export interface PaginatedAuthenticatorTOTPStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AuthenticatorTOTPStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorTOTPStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorTOTPStageList(
-    value: object,
-): value is PaginatedAuthenticatorTOTPStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorTOTPStageList(value: object): value is PaginatedAuthenticatorTOTPStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorTOTPStageListFromJSON(
-    json: any,
-): PaginatedAuthenticatorTOTPStageList {
+export function PaginatedAuthenticatorTOTPStageListFromJSON(json: any): PaginatedAuthenticatorTOTPStageList {
     return PaginatedAuthenticatorTOTPStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorTOTPStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAuthenticatorTOTPStageList {
+export function PaginatedAuthenticatorTOTPStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorTOTPStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AuthenticatorTOTPStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AuthenticatorTOTPStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAuthenticatorTOTPStageListToJSON(
-    json: any,
-): PaginatedAuthenticatorTOTPStageList {
+export function PaginatedAuthenticatorTOTPStageListToJSON(json: any): PaginatedAuthenticatorTOTPStageList {
     return PaginatedAuthenticatorTOTPStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorTOTPStageListToJSONTyped(
-    value?: PaginatedAuthenticatorTOTPStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAuthenticatorTOTPStageListToJSONTyped(value?: PaginatedAuthenticatorTOTPStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AuthenticatorTOTPStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AuthenticatorTOTPStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

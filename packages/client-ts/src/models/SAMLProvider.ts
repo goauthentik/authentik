@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,19 +11,31 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from './DigestAlgorithmEnum';
+import {
+    DigestAlgorithmEnumFromJSON,
+    DigestAlgorithmEnumToJSON,
+} from './DigestAlgorithmEnum';
+import type { SignatureAlgorithmEnum } from './SignatureAlgorithmEnum';
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from './SignatureAlgorithmEnum';
+import type { SAMLNameIDPolicyEnum } from './SAMLNameIDPolicyEnum';
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from './SAMLNameIDPolicyEnum';
+import type { SAMLLogoutMethods } from './SAMLLogoutMethods';
+import {
+    SAMLLogoutMethodsFromJSON,
+    SAMLLogoutMethodsToJSON,
+} from './SAMLLogoutMethods';
+import type { SAMLBindingsEnum } from './SAMLBindingsEnum';
+import {
+    SAMLBindingsEnumFromJSON,
+    SAMLBindingsEnumToJSON,
+} from './SAMLBindingsEnum';
 
 /**
  * SAMLProvider Serializer
@@ -33,11 +44,11 @@ import {
  */
 export interface SAMLProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -53,7 +64,7 @@ export interface SAMLProvider {
      */
     invalidationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -89,7 +100,7 @@ export interface SAMLProvider {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     acsUrl: string;
     /**
@@ -125,11 +136,11 @@ export interface SAMLProvider {
      */
     authnContextClassRefMapping?: string | null;
     /**
-     *
+     * 
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
-     *
+     * 
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
@@ -145,19 +156,19 @@ export interface SAMLProvider {
      */
     encryptionKp?: string | null;
     /**
-     *
+     * 
      */
     signAssertion?: boolean;
     /**
-     *
+     * 
      */
     signResponse?: boolean;
     /**
-     *
+     * 
      */
     signLogoutRequest?: boolean;
     /**
-     *
+     * 
      */
     signLogoutResponse?: boolean;
     /**
@@ -177,7 +188,7 @@ export interface SAMLProvider {
      */
     defaultRelayState?: string;
     /**
-     *
+     * 
      */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
@@ -218,146 +229,34 @@ export interface SAMLProvider {
     readonly urlSloRedirect: string;
 }
 
+
+
 /**
  * Check if a given object implements the SAMLProvider interface.
  */
 export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("acsUrl" in (value as Record<string, any>)) &&
-            !("acs_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["acsUrl"] === undefined &&
-            (value as Record<string, any>)["acs_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
-            !("url_download_metadata" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
-            (value as Record<string, any>)["url_download_metadata"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlIssuer" in (value as Record<string, any>)) &&
-            !("url_issuer" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlIssuer"] === undefined &&
-            (value as Record<string, any>)["url_issuer"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlUnified" in (value as Record<string, any>)) &&
-            !("url_unified" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlUnified"] === undefined &&
-            (value as Record<string, any>)["url_unified"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlUnifiedInit" in (value as Record<string, any>)) &&
-            !("url_unified_init" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlUnifiedInit"] === undefined &&
-            (value as Record<string, any>)["url_unified_init"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlSsoPost" in (value as Record<string, any>)) &&
-            !("url_sso_post" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlSsoPost"] === undefined &&
-            (value as Record<string, any>)["url_sso_post"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlSsoRedirect" in (value as Record<string, any>)) &&
-            !("url_sso_redirect" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlSsoRedirect"] === undefined &&
-            (value as Record<string, any>)["url_sso_redirect"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlSsoInit" in (value as Record<string, any>)) &&
-            !("url_sso_init" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlSsoInit"] === undefined &&
-            (value as Record<string, any>)["url_sso_init"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlSloPost" in (value as Record<string, any>)) &&
-            !("url_slo_post" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlSloPost"] === undefined &&
-            (value as Record<string, any>)["url_slo_post"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlSloRedirect" in (value as Record<string, any>)) &&
-            !("url_slo_redirect" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlSloRedirect"] === undefined &&
-            (value as Record<string, any>)["url_slo_redirect"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('invalidationFlow' in (value as Record<string, any>)) && !('invalidation_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['invalidationFlow'] === undefined && (value as Record<string, any>)['invalidation_flow'] === undefined)) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedApplicationSlug' in (value as Record<string, any>)) && !('assigned_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_application_slug'] === undefined)) return false;
+    if ((!('assignedApplicationName' in (value as Record<string, any>)) && !('assigned_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationName'] === undefined && (value as Record<string, any>)['assigned_application_name'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('acsUrl' in (value as Record<string, any>)) && !('acs_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['acsUrl'] === undefined && (value as Record<string, any>)['acs_url'] === undefined)) return false;
+    if ((!('urlDownloadMetadata' in (value as Record<string, any>)) && !('url_download_metadata' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlDownloadMetadata'] === undefined && (value as Record<string, any>)['url_download_metadata'] === undefined)) return false;
+    if ((!('urlIssuer' in (value as Record<string, any>)) && !('url_issuer' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlIssuer'] === undefined && (value as Record<string, any>)['url_issuer'] === undefined)) return false;
+    if ((!('urlUnified' in (value as Record<string, any>)) && !('url_unified' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlUnified'] === undefined && (value as Record<string, any>)['url_unified'] === undefined)) return false;
+    if ((!('urlUnifiedInit' in (value as Record<string, any>)) && !('url_unified_init' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlUnifiedInit'] === undefined && (value as Record<string, any>)['url_unified_init'] === undefined)) return false;
+    if ((!('urlSsoPost' in (value as Record<string, any>)) && !('url_sso_post' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlSsoPost'] === undefined && (value as Record<string, any>)['url_sso_post'] === undefined)) return false;
+    if ((!('urlSsoRedirect' in (value as Record<string, any>)) && !('url_sso_redirect' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlSsoRedirect'] === undefined && (value as Record<string, any>)['url_sso_redirect'] === undefined)) return false;
+    if ((!('urlSsoInit' in (value as Record<string, any>)) && !('url_sso_init' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlSsoInit'] === undefined && (value as Record<string, any>)['url_sso_init'] === undefined)) return false;
+    if ((!('urlSloPost' in (value as Record<string, any>)) && !('url_slo_post' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlSloPost'] === undefined && (value as Record<string, any>)['url_slo_post'] === undefined)) return false;
+    if ((!('urlSloRedirect' in (value as Record<string, any>)) && !('url_slo_redirect' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlSloRedirect'] === undefined && (value as Record<string, any>)['url_slo_redirect'] === undefined)) return false;
     return true;
 }
 
@@ -370,108 +269,53 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        component: json["component"],
-        assignedApplicationSlug: json["assigned_application_slug"],
-        assignedApplicationName: json["assigned_application_name"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        acsUrl: json["acs_url"],
-        slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
-        audience: json["audience"] == null ? undefined : json["audience"],
-        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
-        assertionValidNotBefore:
-            json["assertion_valid_not_before"] == null
-                ? undefined
-                : json["assertion_valid_not_before"],
-        assertionValidNotOnOrAfter:
-            json["assertion_valid_not_on_or_after"] == null
-                ? undefined
-                : json["assertion_valid_not_on_or_after"],
-        sessionValidNotOnOrAfter:
-            json["session_valid_not_on_or_after"] == null
-                ? undefined
-                : json["session_valid_not_on_or_after"],
-        nameIdMapping:
-            json["name_id_mapping"] === undefined
-                ? undefined
-                : json["name_id_mapping"] === null
-                  ? null
-                  : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] === undefined
-                ? undefined
-                : json["authn_context_class_ref_mapping"] === null
-                  ? null
-                  : json["authn_context_class_ref_mapping"],
-        digestAlgorithm:
-            json["digest_algorithm"] == null
-                ? undefined
-                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm:
-            json["signature_algorithm"] == null
-                ? undefined
-                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp:
-            json["signing_kp"] === undefined
-                ? undefined
-                : json["signing_kp"] === null
-                  ? null
-                  : json["signing_kp"],
-        verificationKp:
-            json["verification_kp"] === undefined
-                ? undefined
-                : json["verification_kp"] === null
-                  ? null
-                  : json["verification_kp"],
-        encryptionKp:
-            json["encryption_kp"] === undefined
-                ? undefined
-                : json["encryption_kp"] === null
-                  ? null
-                  : json["encryption_kp"],
-        signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
-        signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
-        signLogoutRequest:
-            json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
-        signLogoutResponse:
-            json["sign_logout_response"] == null ? undefined : json["sign_logout_response"],
-        spBinding:
-            json["sp_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sp_binding"]),
-        slsBinding:
-            json["sls_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sls_binding"]),
-        logoutMethod:
-            json["logout_method"] == null
-                ? undefined
-                : SAMLLogoutMethodsFromJSON(json["logout_method"]),
-        defaultRelayState:
-            json["default_relay_state"] == null ? undefined : json["default_relay_state"],
-        defaultNameIdPolicy:
-            json["default_name_id_policy"] == null
-                ? undefined
-                : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
-        urlDownloadMetadata: json["url_download_metadata"],
-        urlIssuer: json["url_issuer"],
-        urlUnified: json["url_unified"],
-        urlUnifiedInit: json["url_unified_init"],
-        urlSsoPost: json["url_sso_post"],
-        urlSsoRedirect: json["url_sso_redirect"],
-        urlSsoInit: json["url_sso_init"],
-        urlSloPost: json["url_slo_post"],
-        urlSloRedirect: json["url_slo_redirect"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'component': json['component'],
+        'assignedApplicationSlug': json['assigned_application_slug'],
+        'assignedApplicationName': json['assigned_application_name'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'acsUrl': json['acs_url'],
+        'slsUrl': json['sls_url'] == null ? undefined : json['sls_url'],
+        'audience': json['audience'] == null ? undefined : json['audience'],
+        'issuerOverride': json['issuer_override'] == null ? undefined : json['issuer_override'],
+        'assertionValidNotBefore': json['assertion_valid_not_before'] == null ? undefined : json['assertion_valid_not_before'],
+        'assertionValidNotOnOrAfter': json['assertion_valid_not_on_or_after'] == null ? undefined : json['assertion_valid_not_on_or_after'],
+        'sessionValidNotOnOrAfter': json['session_valid_not_on_or_after'] == null ? undefined : json['session_valid_not_on_or_after'],
+        'nameIdMapping': json['name_id_mapping'] === undefined ? undefined : json['name_id_mapping'] === null ? null : json['name_id_mapping'],
+        'authnContextClassRefMapping': json['authn_context_class_ref_mapping'] === undefined ? undefined : json['authn_context_class_ref_mapping'] === null ? null : json['authn_context_class_ref_mapping'],
+        'digestAlgorithm': json['digest_algorithm'] == null ? undefined : DigestAlgorithmEnumFromJSON(json['digest_algorithm']),
+        'signatureAlgorithm': json['signature_algorithm'] == null ? undefined : SignatureAlgorithmEnumFromJSON(json['signature_algorithm']),
+        'signingKp': json['signing_kp'] === undefined ? undefined : json['signing_kp'] === null ? null : json['signing_kp'],
+        'verificationKp': json['verification_kp'] === undefined ? undefined : json['verification_kp'] === null ? null : json['verification_kp'],
+        'encryptionKp': json['encryption_kp'] === undefined ? undefined : json['encryption_kp'] === null ? null : json['encryption_kp'],
+        'signAssertion': json['sign_assertion'] == null ? undefined : json['sign_assertion'],
+        'signResponse': json['sign_response'] == null ? undefined : json['sign_response'],
+        'signLogoutRequest': json['sign_logout_request'] == null ? undefined : json['sign_logout_request'],
+        'signLogoutResponse': json['sign_logout_response'] == null ? undefined : json['sign_logout_response'],
+        'spBinding': json['sp_binding'] == null ? undefined : SAMLBindingsEnumFromJSON(json['sp_binding']),
+        'slsBinding': json['sls_binding'] == null ? undefined : SAMLBindingsEnumFromJSON(json['sls_binding']),
+        'logoutMethod': json['logout_method'] == null ? undefined : SAMLLogoutMethodsFromJSON(json['logout_method']),
+        'defaultRelayState': json['default_relay_state'] == null ? undefined : json['default_relay_state'],
+        'defaultNameIdPolicy': json['default_name_id_policy'] == null ? undefined : SAMLNameIDPolicyEnumFromJSON(json['default_name_id_policy']),
+        'urlDownloadMetadata': json['url_download_metadata'],
+        'urlIssuer': json['url_issuer'],
+        'urlUnified': json['url_unified'],
+        'urlUnifiedInit': json['url_unified_init'],
+        'urlSsoPost': json['url_sso_post'],
+        'urlSsoRedirect': json['url_sso_redirect'],
+        'urlSsoInit': json['url_sso_init'],
+        'urlSloPost': json['url_slo_post'],
+        'urlSloRedirect': json['url_slo_redirect'],
     };
 }
 
@@ -479,62 +323,41 @@ export function SAMLProviderToJSON(json: any): SAMLProvider {
     return SAMLProviderToJSONTyped(json, false);
 }
 
-export function SAMLProviderToJSONTyped(
-    value?: Omit<
-        SAMLProvider,
-        | "pk"
-        | "component"
-        | "assignedApplicationSlug"
-        | "assignedApplicationName"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "urlDownloadMetadata"
-        | "urlIssuer"
-        | "urlUnified"
-        | "urlUnifiedInit"
-        | "urlSsoPost"
-        | "urlSsoRedirect"
-        | "urlSsoInit"
-        | "urlSloPost"
-        | "urlSloRedirect"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SAMLProviderToJSONTyped(value?: Omit<SAMLProvider, 'pk'|'component'|'assignedApplicationSlug'|'assignedApplicationName'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'|'urlDownloadMetadata'|'urlIssuer'|'urlUnified'|'urlUnifiedInit'|'urlSsoPost'|'urlSsoRedirect'|'urlSsoInit'|'urlSloPost'|'urlSloRedirect'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        acs_url: value["acsUrl"],
-        sls_url: value["slsUrl"],
-        audience: value["audience"],
-        issuer_override: value["issuerOverride"],
-        assertion_valid_not_before: value["assertionValidNotBefore"],
-        assertion_valid_not_on_or_after: value["assertionValidNotOnOrAfter"],
-        session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
-        name_id_mapping: value["nameIdMapping"],
-        authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
-        digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
-        signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
-        signing_kp: value["signingKp"],
-        verification_kp: value["verificationKp"],
-        encryption_kp: value["encryptionKp"],
-        sign_assertion: value["signAssertion"],
-        sign_response: value["signResponse"],
-        sign_logout_request: value["signLogoutRequest"],
-        sign_logout_response: value["signLogoutResponse"],
-        sp_binding: SAMLBindingsEnumToJSON(value["spBinding"]),
-        sls_binding: SAMLBindingsEnumToJSON(value["slsBinding"]),
-        logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
-        default_relay_state: value["defaultRelayState"],
-        default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'acs_url': value['acsUrl'],
+        'sls_url': value['slsUrl'],
+        'audience': value['audience'],
+        'issuer_override': value['issuerOverride'],
+        'assertion_valid_not_before': value['assertionValidNotBefore'],
+        'assertion_valid_not_on_or_after': value['assertionValidNotOnOrAfter'],
+        'session_valid_not_on_or_after': value['sessionValidNotOnOrAfter'],
+        'name_id_mapping': value['nameIdMapping'],
+        'authn_context_class_ref_mapping': value['authnContextClassRefMapping'],
+        'digest_algorithm': DigestAlgorithmEnumToJSON(value['digestAlgorithm']),
+        'signature_algorithm': SignatureAlgorithmEnumToJSON(value['signatureAlgorithm']),
+        'signing_kp': value['signingKp'],
+        'verification_kp': value['verificationKp'],
+        'encryption_kp': value['encryptionKp'],
+        'sign_assertion': value['signAssertion'],
+        'sign_response': value['signResponse'],
+        'sign_logout_request': value['signLogoutRequest'],
+        'sign_logout_response': value['signLogoutResponse'],
+        'sp_binding': SAMLBindingsEnumToJSON(value['spBinding']),
+        'sls_binding': SAMLBindingsEnumToJSON(value['slsBinding']),
+        'logout_method': SAMLLogoutMethodsToJSON(value['logoutMethod']),
+        'default_relay_state': value['defaultRelayState'],
+        'default_name_id_policy': SAMLNameIDPolicyEnumToJSON(value['defaultNameIdPolicy']),
     };
 }
+

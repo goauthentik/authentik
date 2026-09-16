@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const RedirectStageModeEnum = {
-    Static: "static",
-    Flow: "flow",
-    UnknownDefaultOpenApi: "11184809",
+    Static: 'static',
+    Flow: 'flow',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type RedirectStageModeEnum =
-    (typeof RedirectStageModeEnum)[keyof typeof RedirectStageModeEnum];
+export type RedirectStageModeEnum = typeof RedirectStageModeEnum[keyof typeof RedirectStageModeEnum];
+
 
 export function instanceOfRedirectStageModeEnum(value: any): boolean {
     for (const key in RedirectStageModeEnum) {
@@ -39,10 +39,7 @@ export function RedirectStageModeEnumFromJSON(json: any): RedirectStageModeEnum 
     return RedirectStageModeEnumFromJSONTyped(json, false);
 }
 
-export function RedirectStageModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RedirectStageModeEnum {
+export function RedirectStageModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectStageModeEnum {
     return json as RedirectStageModeEnum;
 }
 
@@ -50,9 +47,7 @@ export function RedirectStageModeEnumToJSON(value?: RedirectStageModeEnum | null
     return value as any;
 }
 
-export function RedirectStageModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): RedirectStageModeEnum {
+export function RedirectStageModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): RedirectStageModeEnum {
     return value as RedirectStageModeEnum;
 }
+

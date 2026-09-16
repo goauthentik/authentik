@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,80 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatedSession } from "./AuthenticatedSession";
-import { AuthenticatedSessionFromJSON, AuthenticatedSessionToJSON } from "./AuthenticatedSession";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { AuthenticatedSession } from './AuthenticatedSession';
+import {
+    AuthenticatedSessionFromJSON,
+    AuthenticatedSessionToJSON,
+} from './AuthenticatedSession';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAuthenticatedSessionList
  */
 export interface PaginatedAuthenticatedSessionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AuthenticatedSession>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatedSessionList interface.
  */
-export function instanceOfPaginatedAuthenticatedSessionList(
-    value: object,
-): value is PaginatedAuthenticatedSessionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAuthenticatedSessionList(value: object): value is PaginatedAuthenticatedSessionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatedSessionListFromJSON(
-    json: any,
-): PaginatedAuthenticatedSessionList {
+export function PaginatedAuthenticatedSessionListFromJSON(json: any): PaginatedAuthenticatedSessionList {
     return PaginatedAuthenticatedSessionListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatedSessionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAuthenticatedSessionList {
+export function PaginatedAuthenticatedSessionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatedSessionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AuthenticatedSessionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AuthenticatedSessionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAuthenticatedSessionListToJSON(
-    json: any,
-): PaginatedAuthenticatedSessionList {
+export function PaginatedAuthenticatedSessionListToJSON(json: any): PaginatedAuthenticatedSessionList {
     return PaginatedAuthenticatedSessionListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatedSessionListToJSONTyped(
-    value?: PaginatedAuthenticatedSessionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAuthenticatedSessionListToJSONTyped(value?: PaginatedAuthenticatedSessionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AuthenticatedSessionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AuthenticatedSessionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

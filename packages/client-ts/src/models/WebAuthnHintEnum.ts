@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const WebAuthnHintEnum = {
-    SecurityKey: "security-key",
-    ClientDevice: "client-device",
-    Hybrid: "hybrid",
-    UnknownDefaultOpenApi: "11184809",
+    SecurityKey: 'security-key',
+    ClientDevice: 'client-device',
+    Hybrid: 'hybrid',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type WebAuthnHintEnum = (typeof WebAuthnHintEnum)[keyof typeof WebAuthnHintEnum];
+export type WebAuthnHintEnum = typeof WebAuthnHintEnum[keyof typeof WebAuthnHintEnum];
+
 
 export function instanceOfWebAuthnHintEnum(value: any): boolean {
     for (const key in WebAuthnHintEnum) {
@@ -39,10 +40,7 @@ export function WebAuthnHintEnumFromJSON(json: any): WebAuthnHintEnum {
     return WebAuthnHintEnumFromJSONTyped(json, false);
 }
 
-export function WebAuthnHintEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): WebAuthnHintEnum {
+export function WebAuthnHintEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): WebAuthnHintEnum {
     return json as WebAuthnHintEnum;
 }
 
@@ -50,9 +48,7 @@ export function WebAuthnHintEnumToJSON(value?: WebAuthnHintEnum | null): any {
     return value as any;
 }
 
-export function WebAuthnHintEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): WebAuthnHintEnum {
+export function WebAuthnHintEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): WebAuthnHintEnum {
     return value as WebAuthnHintEnum;
 }
+

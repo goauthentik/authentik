@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { ResumeOnMatchFailuresEnum } from './ResumeOnMatchFailuresEnum';
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from './ResumeOnMatchFailuresEnum';
 
 /**
  * SourceStage Serializer
@@ -25,11 +24,11 @@ import {
  */
 export interface SourceStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
@@ -46,8 +45,8 @@ export interface SourceStageRequest {
  * Check if a given object implements the SourceStageRequest interface.
  */
 export function instanceOfSourceStageRequest(value: object): value is SourceStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -55,23 +54,16 @@ export function SourceStageRequestFromJSON(json: any): SourceStageRequest {
     return SourceStageRequestFromJSONTyped(json, false);
 }
 
-export function SourceStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SourceStageRequest {
+export function SourceStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SourceStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        source: json["source"],
-        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
-        resumeOnMatchFailures:
-            json["resume_on_match_failures"] == null
-                ? undefined
-                : (json["resume_on_match_failures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumFromJSON,
-                  ),
+        
+        'name': json['name'],
+        'source': json['source'],
+        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        'resumeOnMatchFailures': json['resume_on_match_failures'] == null ? undefined : ((json['resume_on_match_failures'] as Array<any>).map(ResumeOnMatchFailuresEnumFromJSON)),
     };
 }
 
@@ -79,23 +71,17 @@ export function SourceStageRequestToJSON(json: any): SourceStageRequest {
     return SourceStageRequestToJSONTyped(json, false);
 }
 
-export function SourceStageRequestToJSONTyped(
-    value?: SourceStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SourceStageRequestToJSONTyped(value?: SourceStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        source: value["source"],
-        resume_timeout: value["resumeTimeout"],
-        resume_on_match_failures:
-            value["resumeOnMatchFailures"] == null
-                ? undefined
-                : (value["resumeOnMatchFailures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumToJSON,
-                  ),
+        
+        'name': value['name'],
+        'source': value['source'],
+        'resume_timeout': value['resumeTimeout'],
+        'resume_on_match_failures': value['resumeOnMatchFailures'] == null ? undefined : ((value['resumeOnMatchFailures'] as Array<any>).map(ResumeOnMatchFailuresEnumToJSON)),
     };
 }
+

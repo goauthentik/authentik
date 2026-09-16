@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,19 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { RelatedTarget } from "./RelatedTarget";
-import { RelatedTargetFromJSON } from "./RelatedTarget";
-import type { RequestRule } from "./RequestRule";
-import { RequestRuleFromJSON } from "./RequestRule";
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
+import type { RelatedTarget } from './RelatedTarget';
+import {
+    RelatedTargetFromJSON,
+} from './RelatedTarget';
+import type { RequestRule } from './RequestRule';
+import {
+    RequestRuleFromJSON,
+} from './RequestRule';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -27,35 +33,35 @@ import { RequestRuleFromJSON } from "./RequestRule";
  */
 export interface RequestRuleBinding {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     rule: string;
     /**
-     *
+     * 
      */
     readonly ruleObj: RequestRule;
     /**
-     *
+     * 
      */
     target: string;
     /**
-     *
+     * 
      */
     readonly related: Array<string>;
     /**
-     *
+     * 
      */
     readonly relatedObj: Array<RelatedTarget>;
     /**
@@ -68,34 +74,18 @@ export interface RequestRuleBinding {
     expiryGrantedMax?: string;
 }
 
+
+
 /**
  * Check if a given object implements the RequestRuleBinding interface.
  */
 export function instanceOfRequestRuleBinding(value: object): value is RequestRuleBinding {
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("rule" in value) || value["rule"] === undefined) return false;
-    if (
-        (!("ruleObj" in (value as Record<string, any>)) &&
-            !("rule_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["ruleObj"] === undefined &&
-            (value as Record<string, any>)["rule_obj"] === undefined)
-    )
-        return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
-    if (!("related" in value) || value["related"] === undefined) return false;
-    if (
-        (!("relatedObj" in (value as Record<string, any>)) &&
-            !("related_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["relatedObj"] === undefined &&
-            (value as Record<string, any>)["related_obj"] === undefined)
-    )
-        return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('rule' in value) || value['rule'] === undefined) return false;
+    if ((!('ruleObj' in (value as Record<string, any>)) && !('rule_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['ruleObj'] === undefined && (value as Record<string, any>)['rule_obj'] === undefined)) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
+    if (!('related' in value) || value['related'] === undefined) return false;
+    if ((!('relatedObj' in (value as Record<string, any>)) && !('related_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['relatedObj'] === undefined && (value as Record<string, any>)['related_obj'] === undefined)) return false;
     return true;
 }
 
@@ -103,28 +93,22 @@ export function RequestRuleBindingFromJSON(json: any): RequestRuleBinding {
     return RequestRuleBindingFromJSONTyped(json, false);
 }
 
-export function RequestRuleBindingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestRuleBinding {
+export function RequestRuleBindingFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestRuleBinding {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        pbmUuid: json["pbm_uuid"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        rule: json["rule"],
-        ruleObj: RequestRuleFromJSON(json["rule_obj"]),
-        target: json["target"],
-        related: json["related"],
-        relatedObj: (json["related_obj"] as Array<any>).map(RelatedTargetFromJSON),
-        expiryPending: json["expiry_pending"] == null ? undefined : json["expiry_pending"],
-        expiryGrantedMax:
-            json["expiry_granted_max"] == null ? undefined : json["expiry_granted_max"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'pbmUuid': json['pbm_uuid'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'rule': json['rule'],
+        'ruleObj': RequestRuleFromJSON(json['rule_obj']),
+        'target': json['target'],
+        'related': json['related'],
+        'relatedObj': ((json['related_obj'] as Array<any>).map(RelatedTargetFromJSON)),
+        'expiryPending': json['expiry_pending'] == null ? undefined : json['expiry_pending'],
+        'expiryGrantedMax': json['expiry_granted_max'] == null ? undefined : json['expiry_granted_max'],
     };
 }
 
@@ -132,20 +116,19 @@ export function RequestRuleBindingToJSON(json: any): RequestRuleBinding {
     return RequestRuleBindingToJSONTyped(json, false);
 }
 
-export function RequestRuleBindingToJSONTyped(
-    value?: Omit<RequestRuleBinding, "pbmUuid" | "ruleObj" | "related" | "relatedObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestRuleBindingToJSONTyped(value?: Omit<RequestRuleBinding, 'pbmUuid'|'ruleObj'|'related'|'relatedObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        rule: value["rule"],
-        target: value["target"],
-        expiry_pending: value["expiryPending"],
-        expiry_granted_max: value["expiryGrantedMax"],
+        
+        'uuid': value['uuid'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'rule': value['rule'],
+        'target': value['target'],
+        'expiry_pending': value['expiryPending'],
+        'expiry_granted_max': value['expiryGrantedMax'],
     };
 }
+

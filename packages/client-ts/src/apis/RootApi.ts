@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,17 @@
  * Do not edit the class manually.
  */
 
-import { type Config, ConfigFromJSON } from "../models/Config";
-import * as runtime from "../runtime";
+import * as runtime from '../runtime';
+import {
+    type Config,
+    ConfigFromJSON,
+} from '../models/Config';
 
 /**
- *
+ * 
  */
 export class RootApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for rootConfigRetrieve without sending the request
      */
@@ -40,7 +43,7 @@ export class RootApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -49,9 +52,7 @@ export class RootApi extends runtime.BaseAPI {
     /**
      * Retrieve public configuration options
      */
-    async rootConfigRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Config>> {
+    async rootConfigRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Config>> {
         const requestOptions = await this.rootConfigRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -61,10 +62,9 @@ export class RootApi extends runtime.BaseAPI {
     /**
      * Retrieve public configuration options
      */
-    async rootConfigRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Config> {
+    async rootConfigRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Config> {
         const response = await this.rootConfigRetrieveRaw(initOverrides);
         return await response.value();
     }
+
 }

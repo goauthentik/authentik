@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * DenyStage Serializer
@@ -22,11 +23,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface DenyStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,11 +47,11 @@ export interface DenyStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     denyMessage?: string;
 }
@@ -59,37 +60,13 @@ export interface DenyStage {
  * Check if a given object implements the DenyStage interface.
  */
 export function instanceOfDenyStage(value: object): value is DenyStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -102,14 +79,15 @@ export function DenyStageFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        denyMessage: json["deny_message"] == null ? undefined : json["deny_message"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'denyMessage': json['deny_message'] == null ? undefined : json['deny_message'],
     };
 }
 
@@ -117,19 +95,15 @@ export function DenyStageToJSON(json: any): DenyStage {
     return DenyStageToJSONTyped(json, false);
 }
 
-export function DenyStageToJSONTyped(
-    value?: Omit<
-        DenyStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DenyStageToJSONTyped(value?: Omit<DenyStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deny_message: value["denyMessage"],
+        
+        'name': value['name'],
+        'deny_message': value['denyMessage'],
     };
 }
+

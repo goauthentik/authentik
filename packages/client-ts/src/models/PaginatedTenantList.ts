@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Tenant } from "./Tenant";
-import { TenantFromJSON, TenantToJSON } from "./Tenant";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { Tenant } from './Tenant';
+import {
+    TenantFromJSON,
+    TenantToJSON,
+} from './Tenant';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedTenantList
  */
 export interface PaginatedTenantList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Tenant>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedTenantList interface.
  */
 export function instanceOfPaginatedTenantList(value: object): value is PaginatedTenantList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedTenantListFromJSON(json: any): PaginatedTenantList {
     return PaginatedTenantListFromJSONTyped(json, false);
 }
 
-export function PaginatedTenantListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedTenantList {
+export function PaginatedTenantListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTenantList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(TenantFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(TenantFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedTenantListToJSON(json: any): PaginatedTenantList {
     return PaginatedTenantListToJSONTyped(json, false);
 }
 
-export function PaginatedTenantListToJSONTyped(
-    value?: PaginatedTenantList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedTenantListToJSONTyped(value?: PaginatedTenantList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(TenantToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(TenantToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

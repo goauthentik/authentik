@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { GroupKerberosSourceConnection } from "./GroupKerberosSourceConnection";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { GroupKerberosSourceConnection } from './GroupKerberosSourceConnection';
 import {
     GroupKerberosSourceConnectionFromJSON,
     GroupKerberosSourceConnectionToJSON,
-} from "./GroupKerberosSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './GroupKerberosSourceConnection';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedGroupKerberosSourceConnectionList
  */
 export interface PaginatedGroupKerberosSourceConnectionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<GroupKerberosSourceConnection>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupKerberosSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupKerberosSourceConnectionList(
-    value: object,
-): value is PaginatedGroupKerberosSourceConnectionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedGroupKerberosSourceConnectionList(value: object): value is PaginatedGroupKerberosSourceConnectionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupKerberosSourceConnectionListFromJSON(
-    json: any,
-): PaginatedGroupKerberosSourceConnectionList {
+export function PaginatedGroupKerberosSourceConnectionListFromJSON(json: any): PaginatedGroupKerberosSourceConnectionList {
     return PaginatedGroupKerberosSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupKerberosSourceConnectionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedGroupKerberosSourceConnectionList {
+export function PaginatedGroupKerberosSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupKerberosSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(GroupKerberosSourceConnectionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(GroupKerberosSourceConnectionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedGroupKerberosSourceConnectionListToJSON(
-    json: any,
-): PaginatedGroupKerberosSourceConnectionList {
+export function PaginatedGroupKerberosSourceConnectionListToJSON(json: any): PaginatedGroupKerberosSourceConnectionList {
     return PaginatedGroupKerberosSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupKerberosSourceConnectionListToJSONTyped(
-    value?: PaginatedGroupKerberosSourceConnectionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedGroupKerberosSourceConnectionListToJSONTyped(value?: PaginatedGroupKerberosSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(GroupKerberosSourceConnectionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(GroupKerberosSourceConnectionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

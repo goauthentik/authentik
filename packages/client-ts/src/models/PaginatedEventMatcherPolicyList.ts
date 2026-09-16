@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +11,60 @@
  * Do not edit the class manually.
  */
 
-import type { EventMatcherPolicy } from "./EventMatcherPolicy";
-import { EventMatcherPolicyFromJSON, EventMatcherPolicyToJSON } from "./EventMatcherPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { EventMatcherPolicy } from './EventMatcherPolicy';
+import {
+    EventMatcherPolicyFromJSON,
+    EventMatcherPolicyToJSON,
+} from './EventMatcherPolicy';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedEventMatcherPolicyList
  */
 export interface PaginatedEventMatcherPolicyList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<EventMatcherPolicy>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedEventMatcherPolicyList interface.
  */
-export function instanceOfPaginatedEventMatcherPolicyList(
-    value: object,
-): value is PaginatedEventMatcherPolicyList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedEventMatcherPolicyList(value: object): value is PaginatedEventMatcherPolicyList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedEventMatcherPolicyListFromJSON(
-    json: any,
-): PaginatedEventMatcherPolicyList {
+export function PaginatedEventMatcherPolicyListFromJSON(json: any): PaginatedEventMatcherPolicyList {
     return PaginatedEventMatcherPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedEventMatcherPolicyListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedEventMatcherPolicyList {
+export function PaginatedEventMatcherPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEventMatcherPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EventMatcherPolicyFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(EventMatcherPolicyFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -73,17 +72,16 @@ export function PaginatedEventMatcherPolicyListToJSON(json: any): PaginatedEvent
     return PaginatedEventMatcherPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedEventMatcherPolicyListToJSONTyped(
-    value?: PaginatedEventMatcherPolicyList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedEventMatcherPolicyListToJSONTyped(value?: PaginatedEventMatcherPolicyList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EventMatcherPolicyToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(EventMatcherPolicyToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

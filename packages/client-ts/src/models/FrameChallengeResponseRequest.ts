@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface FrameChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -27,9 +26,7 @@ export interface FrameChallengeResponseRequest {
 /**
  * Check if a given object implements the FrameChallengeResponseRequest interface.
  */
-export function instanceOfFrameChallengeResponseRequest(
-    value: object,
-): value is FrameChallengeResponseRequest {
+export function instanceOfFrameChallengeResponseRequest(value: object): value is FrameChallengeResponseRequest {
     return true;
 }
 
@@ -37,15 +34,13 @@ export function FrameChallengeResponseRequestFromJSON(json: any): FrameChallenge
     return FrameChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function FrameChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): FrameChallengeResponseRequest {
+export function FrameChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): FrameChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
@@ -53,15 +48,14 @@ export function FrameChallengeResponseRequestToJSON(json: any): FrameChallengeRe
     return FrameChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function FrameChallengeResponseRequestToJSONTyped(
-    value?: FrameChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FrameChallengeResponseRequestToJSONTyped(value?: FrameChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

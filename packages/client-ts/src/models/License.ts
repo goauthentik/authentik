@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from '../runtime';
 /**
  * License Serializer
  * @export
@@ -21,27 +19,27 @@ import { parseDateTime } from "../runtime";
  */
 export interface License {
     /**
-     *
+     * 
      */
     readonly licenseUuid: string;
     /**
-     *
+     * 
      */
     readonly name: string;
     /**
-     *
+     * 
      */
     key: string;
     /**
-     *
+     * 
      */
     readonly expiry: Date;
     /**
-     *
+     * 
      */
     readonly internalUsers: number;
     /**
-     *
+     * 
      */
     readonly externalUsers: number;
 }
@@ -50,30 +48,12 @@ export interface License {
  * Check if a given object implements the License interface.
  */
 export function instanceOfLicense(value: object): value is License {
-    if (
-        (!("licenseUuid" in (value as Record<string, any>)) &&
-            !("license_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["licenseUuid"] === undefined &&
-            (value as Record<string, any>)["license_uuid"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("key" in value) || value["key"] === undefined) return false;
-    if (!("expiry" in value) || value["expiry"] === undefined) return false;
-    if (
-        (!("internalUsers" in (value as Record<string, any>)) &&
-            !("internal_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["internalUsers"] === undefined &&
-            (value as Record<string, any>)["internal_users"] === undefined)
-    )
-        return false;
-    if (
-        (!("externalUsers" in (value as Record<string, any>)) &&
-            !("external_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalUsers"] === undefined &&
-            (value as Record<string, any>)["external_users"] === undefined)
-    )
-        return false;
+    if ((!('licenseUuid' in (value as Record<string, any>)) && !('license_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['licenseUuid'] === undefined && (value as Record<string, any>)['license_uuid'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!('expiry' in value) || value['expiry'] === undefined) return false;
+    if ((!('internalUsers' in (value as Record<string, any>)) && !('internal_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['internalUsers'] === undefined && (value as Record<string, any>)['internal_users'] === undefined)) return false;
+    if ((!('externalUsers' in (value as Record<string, any>)) && !('external_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalUsers'] === undefined && (value as Record<string, any>)['external_users'] === undefined)) return false;
     return true;
 }
 
@@ -86,12 +66,13 @@ export function LicenseFromJSONTyped(json: any, ignoreDiscriminator: boolean): L
         return json;
     }
     return {
-        licenseUuid: json["license_uuid"],
-        name: json["name"],
-        key: json["key"],
-        expiry: json["expiry"] == null ? json["expiry"] : parseDateTime(json["expiry"]),
-        internalUsers: json["internal_users"],
-        externalUsers: json["external_users"],
+        
+        'licenseUuid': json['license_uuid'],
+        'name': json['name'],
+        'key': json['key'],
+        'expiry': (json['expiry'] == null ? json['expiry'] : parseDateTime(json['expiry'])),
+        'internalUsers': json['internal_users'],
+        'externalUsers': json['external_users'],
     };
 }
 
@@ -99,18 +80,14 @@ export function LicenseToJSON(json: any): License {
     return LicenseToJSONTyped(json, false);
 }
 
-export function LicenseToJSONTyped(
-    value?: Omit<
-        License,
-        "licenseUuid" | "name" | "expiry" | "internalUsers" | "externalUsers"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LicenseToJSONTyped(value?: Omit<License, 'licenseUuid'|'name'|'expiry'|'internalUsers'|'externalUsers'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        key: value["key"],
+        
+        'key': value['key'],
     };
 }
+

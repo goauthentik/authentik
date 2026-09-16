@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedDummyPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,15 +26,15 @@ export interface PatchedDummyPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     result?: boolean;
     /**
-     *
+     * 
      */
     waitMin?: number;
     /**
-     *
+     * 
      */
     waitMax?: number;
 }
@@ -43,9 +42,7 @@ export interface PatchedDummyPolicyRequest {
 /**
  * Check if a given object implements the PatchedDummyPolicyRequest interface.
  */
-export function instanceOfPatchedDummyPolicyRequest(
-    value: object,
-): value is PatchedDummyPolicyRequest {
+export function instanceOfPatchedDummyPolicyRequest(value: object): value is PatchedDummyPolicyRequest {
     return true;
 }
 
@@ -53,19 +50,17 @@ export function PatchedDummyPolicyRequestFromJSON(json: any): PatchedDummyPolicy
     return PatchedDummyPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDummyPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedDummyPolicyRequest {
+export function PatchedDummyPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDummyPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        result: json["result"] == null ? undefined : json["result"],
-        waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
-        waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'result': json['result'] == null ? undefined : json['result'],
+        'waitMin': json['wait_min'] == null ? undefined : json['wait_min'],
+        'waitMax': json['wait_max'] == null ? undefined : json['wait_max'],
     };
 }
 
@@ -73,19 +68,18 @@ export function PatchedDummyPolicyRequestToJSON(json: any): PatchedDummyPolicyRe
     return PatchedDummyPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedDummyPolicyRequestToJSONTyped(
-    value?: PatchedDummyPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedDummyPolicyRequestToJSONTyped(value?: PatchedDummyPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        result: value["result"],
-        wait_min: value["waitMin"],
-        wait_max: value["waitMax"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'result': value['result'],
+        'wait_min': value['waitMin'],
+        'wait_max': value['waitMax'],
     };
 }
+

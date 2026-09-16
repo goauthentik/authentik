@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
 
 /**
  * GoogleWorkspaceProviderUser Serializer
@@ -22,55 +23,41 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface GoogleWorkspaceProviderUser {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     googleId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser;
     /**
-     *
+     * 
      */
     provider: number;
     /**
-     *
+     * 
      */
-    readonly attributes: { [key: string]: any };
+    readonly attributes: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the GoogleWorkspaceProviderUser interface.
  */
-export function instanceOfGoogleWorkspaceProviderUser(
-    value: object,
-): value is GoogleWorkspaceProviderUser {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("googleId" in (value as Record<string, any>)) &&
-            !("google_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["googleId"] === undefined &&
-            (value as Record<string, any>)["google_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("attributes" in value) || value["attributes"] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderUser(value: object): value is GoogleWorkspaceProviderUser {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('googleId' in (value as Record<string, any>)) && !('google_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['googleId'] === undefined && (value as Record<string, any>)['google_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if (!('attributes' in value) || value['attributes'] === undefined) return false;
     return true;
 }
 
@@ -78,20 +65,18 @@ export function GoogleWorkspaceProviderUserFromJSON(json: any): GoogleWorkspaceP
     return GoogleWorkspaceProviderUserFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleWorkspaceProviderUser {
+export function GoogleWorkspaceProviderUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderUser {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        googleId: json["google_id"],
-        user: json["user"],
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        provider: json["provider"],
-        attributes: json["attributes"],
+        
+        'id': json['id'],
+        'googleId': json['google_id'],
+        'user': json['user'],
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'provider': json['provider'],
+        'attributes': json['attributes'],
     };
 }
 
@@ -99,17 +84,16 @@ export function GoogleWorkspaceProviderUserToJSON(json: any): GoogleWorkspacePro
     return GoogleWorkspaceProviderUserToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserToJSONTyped(
-    value?: Omit<GoogleWorkspaceProviderUser, "id" | "userObj" | "attributes"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleWorkspaceProviderUserToJSONTyped(value?: Omit<GoogleWorkspaceProviderUser, 'id'|'userObj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        google_id: value["googleId"],
-        user: value["user"],
-        provider: value["provider"],
+        
+        'google_id': value['googleId'],
+        'user': value['user'],
+        'provider': value['provider'],
     };
 }
+

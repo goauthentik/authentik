@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,99 +11,138 @@
  * Do not edit the class manually.
  */
 
-import { type Device, DeviceFromJSON } from "../models/Device";
-import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice";
-import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest";
-import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice";
-import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest";
+import * as runtime from '../runtime';
+import {
+    type Device,
+    DeviceFromJSON,
+} from '../models/Device';
+import {
+    type DuoDevice,
+    DuoDeviceFromJSON,
+} from '../models/DuoDevice';
+import {
+    type DuoDeviceRequest,
+    DuoDeviceRequestToJSON,
+} from '../models/DuoDeviceRequest';
+import {
+    type EmailDevice,
+    EmailDeviceFromJSON,
+} from '../models/EmailDevice';
+import {
+    type EmailDeviceRequest,
+    EmailDeviceRequestToJSON,
+} from '../models/EmailDeviceRequest';
 import {
     type GoogleEndpointDevice,
     GoogleEndpointDeviceFromJSON,
-} from "../models/GoogleEndpointDevice";
+} from '../models/GoogleEndpointDevice';
 import {
     type GoogleEndpointDeviceRequest,
     GoogleEndpointDeviceRequestToJSON,
-} from "../models/GoogleEndpointDeviceRequest";
+} from '../models/GoogleEndpointDeviceRequest';
 import {
     type PaginatedDuoDeviceList,
     PaginatedDuoDeviceListFromJSON,
-} from "../models/PaginatedDuoDeviceList";
+} from '../models/PaginatedDuoDeviceList';
 import {
     type PaginatedEmailDeviceList,
     PaginatedEmailDeviceListFromJSON,
-} from "../models/PaginatedEmailDeviceList";
+} from '../models/PaginatedEmailDeviceList';
 import {
     type PaginatedGoogleEndpointDeviceList,
     PaginatedGoogleEndpointDeviceListFromJSON,
-} from "../models/PaginatedGoogleEndpointDeviceList";
+} from '../models/PaginatedGoogleEndpointDeviceList';
 import {
     type PaginatedSMSDeviceList,
     PaginatedSMSDeviceListFromJSON,
-} from "../models/PaginatedSMSDeviceList";
+} from '../models/PaginatedSMSDeviceList';
 import {
     type PaginatedStaticDeviceList,
     PaginatedStaticDeviceListFromJSON,
-} from "../models/PaginatedStaticDeviceList";
+} from '../models/PaginatedStaticDeviceList';
 import {
     type PaginatedTOTPDeviceList,
     PaginatedTOTPDeviceListFromJSON,
-} from "../models/PaginatedTOTPDeviceList";
+} from '../models/PaginatedTOTPDeviceList';
 import {
     type PaginatedWebAuthnDeviceList,
     PaginatedWebAuthnDeviceListFromJSON,
-} from "../models/PaginatedWebAuthnDeviceList";
+} from '../models/PaginatedWebAuthnDeviceList';
 import {
     type PatchedDuoDeviceRequest,
     PatchedDuoDeviceRequestToJSON,
-} from "../models/PatchedDuoDeviceRequest";
+} from '../models/PatchedDuoDeviceRequest';
 import {
     type PatchedEmailDeviceRequest,
     PatchedEmailDeviceRequestToJSON,
-} from "../models/PatchedEmailDeviceRequest";
+} from '../models/PatchedEmailDeviceRequest';
 import {
     type PatchedGoogleEndpointDeviceRequest,
     PatchedGoogleEndpointDeviceRequestToJSON,
-} from "../models/PatchedGoogleEndpointDeviceRequest";
+} from '../models/PatchedGoogleEndpointDeviceRequest';
 import {
     type PatchedSMSDeviceRequest,
     PatchedSMSDeviceRequestToJSON,
-} from "../models/PatchedSMSDeviceRequest";
+} from '../models/PatchedSMSDeviceRequest';
 import {
     type PatchedStaticDeviceRequest,
     PatchedStaticDeviceRequestToJSON,
-} from "../models/PatchedStaticDeviceRequest";
+} from '../models/PatchedStaticDeviceRequest';
 import {
     type PatchedTOTPDeviceRequest,
     PatchedTOTPDeviceRequestToJSON,
-} from "../models/PatchedTOTPDeviceRequest";
+} from '../models/PatchedTOTPDeviceRequest';
 import {
     type PatchedWebAuthnDeviceRequest,
     PatchedWebAuthnDeviceRequestToJSON,
-} from "../models/PatchedWebAuthnDeviceRequest";
-import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice";
-import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest";
-import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice";
-import { type StaticDeviceRequest, StaticDeviceRequestToJSON } from "../models/StaticDeviceRequest";
-import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice";
-import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice";
+} from '../models/PatchedWebAuthnDeviceRequest';
+import {
+    type SMSDevice,
+    SMSDeviceFromJSON,
+} from '../models/SMSDevice';
+import {
+    type SMSDeviceRequest,
+    SMSDeviceRequestToJSON,
+} from '../models/SMSDeviceRequest';
+import {
+    type StaticDevice,
+    StaticDeviceFromJSON,
+} from '../models/StaticDevice';
+import {
+    type StaticDeviceRequest,
+    StaticDeviceRequestToJSON,
+} from '../models/StaticDeviceRequest';
+import {
+    type TOTPDevice,
+    TOTPDeviceFromJSON,
+} from '../models/TOTPDevice';
+import {
+    type TOTPDeviceRequest,
+    TOTPDeviceRequestToJSON,
+} from '../models/TOTPDeviceRequest';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+} from '../models/UsedBy';
+import {
+    type WebAuthnDevice,
+    WebAuthnDeviceFromJSON,
+} from '../models/WebAuthnDevice';
 import {
     type WebAuthnDeviceRequest,
     WebAuthnDeviceRequestToJSON,
-} from "../models/WebAuthnDeviceRequest";
-import * as runtime from "../runtime";
+} from '../models/WebAuthnDeviceRequest';
 
 export interface AuthenticatorsAdminAllListRequest {
     /**
-     *
+     * 
      */
     user?: number;
 }
 
 export interface AuthenticatorsAdminDuoCreateRequest {
     /**
-     *
+     * 
      */
     duoDeviceRequest: DuoDeviceRequest;
 }
@@ -118,7 +156,7 @@ export interface AuthenticatorsAdminDuoDestroyRequest {
 
 export interface AuthenticatorsAdminDuoListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -145,7 +183,7 @@ export interface AuthenticatorsAdminDuoPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
@@ -163,14 +201,14 @@ export interface AuthenticatorsAdminDuoUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     duoDeviceRequest: DuoDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEmailCreateRequest {
     /**
-     *
+     * 
      */
     emailDeviceRequest: EmailDeviceRequest;
 }
@@ -184,7 +222,7 @@ export interface AuthenticatorsAdminEmailDestroyRequest {
 
 export interface AuthenticatorsAdminEmailListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -211,7 +249,7 @@ export interface AuthenticatorsAdminEmailPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
@@ -229,14 +267,14 @@ export interface AuthenticatorsAdminEmailUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     emailDeviceRequest: EmailDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEndpointCreateRequest {
     /**
-     *
+     * 
      */
     googleEndpointDeviceRequest: GoogleEndpointDeviceRequest;
 }
@@ -250,7 +288,7 @@ export interface AuthenticatorsAdminEndpointDestroyRequest {
 
 export interface AuthenticatorsAdminEndpointListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -277,7 +315,7 @@ export interface AuthenticatorsAdminEndpointPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedGoogleEndpointDeviceRequest?: PatchedGoogleEndpointDeviceRequest;
 }
@@ -295,14 +333,14 @@ export interface AuthenticatorsAdminEndpointUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     googleEndpointDeviceRequest: GoogleEndpointDeviceRequest;
 }
 
 export interface AuthenticatorsAdminSmsCreateRequest {
     /**
-     *
+     * 
      */
     sMSDeviceRequest: SMSDeviceRequest;
 }
@@ -316,7 +354,7 @@ export interface AuthenticatorsAdminSmsDestroyRequest {
 
 export interface AuthenticatorsAdminSmsListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -343,7 +381,7 @@ export interface AuthenticatorsAdminSmsPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
@@ -361,14 +399,14 @@ export interface AuthenticatorsAdminSmsUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
 export interface AuthenticatorsAdminStaticCreateRequest {
     /**
-     *
+     * 
      */
     staticDeviceRequest: StaticDeviceRequest;
 }
@@ -382,7 +420,7 @@ export interface AuthenticatorsAdminStaticDestroyRequest {
 
 export interface AuthenticatorsAdminStaticListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -409,7 +447,7 @@ export interface AuthenticatorsAdminStaticPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
@@ -427,14 +465,14 @@ export interface AuthenticatorsAdminStaticUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     staticDeviceRequest: StaticDeviceRequest;
 }
 
 export interface AuthenticatorsAdminTotpCreateRequest {
     /**
-     *
+     * 
      */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
@@ -448,7 +486,7 @@ export interface AuthenticatorsAdminTotpDestroyRequest {
 
 export interface AuthenticatorsAdminTotpListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -475,7 +513,7 @@ export interface AuthenticatorsAdminTotpPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
@@ -493,14 +531,14 @@ export interface AuthenticatorsAdminTotpUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
 export interface AuthenticatorsAdminWebauthnCreateRequest {
     /**
-     *
+     * 
      */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
@@ -514,7 +552,7 @@ export interface AuthenticatorsAdminWebauthnDestroyRequest {
 
 export interface AuthenticatorsAdminWebauthnListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -541,7 +579,7 @@ export interface AuthenticatorsAdminWebauthnPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
@@ -559,7 +597,7 @@ export interface AuthenticatorsAdminWebauthnUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
@@ -573,7 +611,7 @@ export interface AuthenticatorsDuoDestroyRequest {
 
 export interface AuthenticatorsDuoListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -600,7 +638,7 @@ export interface AuthenticatorsDuoPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
@@ -618,7 +656,7 @@ export interface AuthenticatorsDuoUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     duoDeviceRequest: DuoDeviceRequest;
 }
@@ -639,7 +677,7 @@ export interface AuthenticatorsEmailDestroyRequest {
 
 export interface AuthenticatorsEmailListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -666,7 +704,7 @@ export interface AuthenticatorsEmailPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
@@ -684,7 +722,7 @@ export interface AuthenticatorsEmailUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     emailDeviceRequest: EmailDeviceRequest;
 }
@@ -698,7 +736,7 @@ export interface AuthenticatorsEmailUsedByListRequest {
 
 export interface AuthenticatorsEndpointListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -742,7 +780,7 @@ export interface AuthenticatorsSmsDestroyRequest {
 
 export interface AuthenticatorsSmsListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -769,7 +807,7 @@ export interface AuthenticatorsSmsPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
@@ -787,7 +825,7 @@ export interface AuthenticatorsSmsUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     sMSDeviceRequest: SMSDeviceRequest;
 }
@@ -808,7 +846,7 @@ export interface AuthenticatorsStaticDestroyRequest {
 
 export interface AuthenticatorsStaticListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -835,7 +873,7 @@ export interface AuthenticatorsStaticPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
@@ -853,7 +891,7 @@ export interface AuthenticatorsStaticUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     staticDeviceRequest: StaticDeviceRequest;
 }
@@ -874,7 +912,7 @@ export interface AuthenticatorsTotpDestroyRequest {
 
 export interface AuthenticatorsTotpListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -901,7 +939,7 @@ export interface AuthenticatorsTotpPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
@@ -919,7 +957,7 @@ export interface AuthenticatorsTotpUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
@@ -940,7 +978,7 @@ export interface AuthenticatorsWebauthnDestroyRequest {
 
 export interface AuthenticatorsWebauthnListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -967,7 +1005,7 @@ export interface AuthenticatorsWebauthnPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
@@ -985,7 +1023,7 @@ export interface AuthenticatorsWebauthnUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
@@ -998,19 +1036,18 @@ export interface AuthenticatorsWebauthnUsedByListRequest {
 }
 
 /**
- *
+ * 
  */
 export class AuthenticatorsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for authenticatorsAdminAllList without sending the request
      */
-    async authenticatorsAdminAllListRequestOpts(
-        requestParameters: AuthenticatorsAdminAllListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminAllListRequestOpts(requestParameters: AuthenticatorsAdminAllListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["user"] != null) {
-            queryParameters["user"] = requestParameters["user"];
+        if (requestParameters['user'] != null) {
+            queryParameters['user'] = requestParameters['user'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1028,7 +1065,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1037,10 +1074,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get all devices for current user
      */
-    async authenticatorsAdminAllListRaw(
-        requestParameters: AuthenticatorsAdminAllListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<Device>>> {
+    async authenticatorsAdminAllListRaw(requestParameters: AuthenticatorsAdminAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Device>>> {
         const requestOptions = await this.authenticatorsAdminAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1050,10 +1084,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get all devices for current user
      */
-    async authenticatorsAdminAllList(
-        requestParameters: AuthenticatorsAdminAllListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<Device>> {
+    async authenticatorsAdminAllList(requestParameters: AuthenticatorsAdminAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Device>> {
         const response = await this.authenticatorsAdminAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1061,13 +1092,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsAdminDuoCreate without sending the request
      */
-    async authenticatorsAdminDuoCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["duoDeviceRequest"] == null) {
+    async authenticatorsAdminDuoCreateRequestOpts(requestParameters: AuthenticatorsAdminDuoCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['duoDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "duoDeviceRequest",
-                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsAdminDuoCreate().',
+                'duoDeviceRequest',
+                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsAdminDuoCreate().'
             );
         }
 
@@ -1075,7 +1104,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1090,22 +1119,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DuoDeviceRequestToJSON(requestParameters["duoDeviceRequest"]),
+            body: DuoDeviceRequestToJSON(requestParameters['duoDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoCreateRaw(
-        requestParameters: AuthenticatorsAdminDuoCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminDuoCreateRequestOpts(requestParameters);
+    async authenticatorsAdminDuoCreateRaw(requestParameters: AuthenticatorsAdminDuoCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
+        const requestOptions = await this.authenticatorsAdminDuoCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceFromJSON(jsonValue));
@@ -1114,27 +1139,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoCreate(
-        requestParameters: AuthenticatorsAdminDuoCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
-        const response = await this.authenticatorsAdminDuoCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminDuoCreate(requestParameters: AuthenticatorsAdminDuoCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
+        const response = await this.authenticatorsAdminDuoCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminDuoDestroy without sending the request
      */
-    async authenticatorsAdminDuoDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminDuoDestroyRequestOpts(requestParameters: AuthenticatorsAdminDuoDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoDestroy().'
             );
         }
 
@@ -1152,11 +1169,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1165,12 +1182,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoDestroyRaw(
-        requestParameters: AuthenticatorsAdminDuoDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminDuoDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminDuoDestroyRaw(requestParameters: AuthenticatorsAdminDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminDuoDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1179,39 +1192,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoDestroy(
-        requestParameters: AuthenticatorsAdminDuoDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminDuoDestroy(requestParameters: AuthenticatorsAdminDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminDuoDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminDuoList without sending the request
      */
-    async authenticatorsAdminDuoListRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminDuoListRequestOpts(requestParameters: AuthenticatorsAdminDuoListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1229,7 +1237,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1238,25 +1246,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoListRaw(
-        requestParameters: AuthenticatorsAdminDuoListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedDuoDeviceList>> {
+    async authenticatorsAdminDuoListRaw(requestParameters: AuthenticatorsAdminDuoListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDuoDeviceList>> {
         const requestOptions = await this.authenticatorsAdminDuoListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedDuoDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDuoDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoList(
-        requestParameters: AuthenticatorsAdminDuoListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedDuoDeviceList> {
+    async authenticatorsAdminDuoList(requestParameters: AuthenticatorsAdminDuoListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDuoDeviceList> {
         const response = await this.authenticatorsAdminDuoListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1264,13 +1264,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsAdminDuoPartialUpdate without sending the request
      */
-    async authenticatorsAdminDuoPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminDuoPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoPartialUpdate().'
             );
         }
 
@@ -1278,7 +1276,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1290,26 +1288,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDuoDeviceRequestToJSON(requestParameters["patchedDuoDeviceRequest"]),
+            body: PatchedDuoDeviceRequestToJSON(requestParameters['patchedDuoDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminDuoPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminDuoPartialUpdateRaw(requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
+        const requestOptions = await this.authenticatorsAdminDuoPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceFromJSON(jsonValue));
@@ -1318,27 +1312,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoPartialUpdate(
-        requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
-        const response = await this.authenticatorsAdminDuoPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminDuoPartialUpdate(requestParameters: AuthenticatorsAdminDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
+        const response = await this.authenticatorsAdminDuoPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminDuoRetrieve without sending the request
      */
-    async authenticatorsAdminDuoRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminDuoRetrieveRequestOpts(requestParameters: AuthenticatorsAdminDuoRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoRetrieve().'
             );
         }
 
@@ -1356,11 +1342,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1369,12 +1355,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoRetrieveRaw(
-        requestParameters: AuthenticatorsAdminDuoRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminDuoRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminDuoRetrieveRaw(requestParameters: AuthenticatorsAdminDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
+        const requestOptions = await this.authenticatorsAdminDuoRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceFromJSON(jsonValue));
@@ -1383,34 +1365,26 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoRetrieve(
-        requestParameters: AuthenticatorsAdminDuoRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
-        const response = await this.authenticatorsAdminDuoRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminDuoRetrieve(requestParameters: AuthenticatorsAdminDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
+        const response = await this.authenticatorsAdminDuoRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminDuoUpdate without sending the request
      */
-    async authenticatorsAdminDuoUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminDuoUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminDuoUpdateRequestOpts(requestParameters: AuthenticatorsAdminDuoUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminDuoUpdate().'
             );
         }
 
-        if (requestParameters["duoDeviceRequest"] == null) {
+        if (requestParameters['duoDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "duoDeviceRequest",
-                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsAdminDuoUpdate().',
+                'duoDeviceRequest',
+                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsAdminDuoUpdate().'
             );
         }
 
@@ -1418,7 +1392,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1430,26 +1404,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DuoDeviceRequestToJSON(requestParameters["duoDeviceRequest"]),
+            body: DuoDeviceRequestToJSON(requestParameters['duoDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoUpdateRaw(
-        requestParameters: AuthenticatorsAdminDuoUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminDuoUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminDuoUpdateRaw(requestParameters: AuthenticatorsAdminDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
+        const requestOptions = await this.authenticatorsAdminDuoUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceFromJSON(jsonValue));
@@ -1458,27 +1428,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices (for admins)
      */
-    async authenticatorsAdminDuoUpdate(
-        requestParameters: AuthenticatorsAdminDuoUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
-        const response = await this.authenticatorsAdminDuoUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminDuoUpdate(requestParameters: AuthenticatorsAdminDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
+        const response = await this.authenticatorsAdminDuoUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailCreate without sending the request
      */
-    async authenticatorsAdminEmailCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["emailDeviceRequest"] == null) {
+    async authenticatorsAdminEmailCreateRequestOpts(requestParameters: AuthenticatorsAdminEmailCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['emailDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "emailDeviceRequest",
-                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsAdminEmailCreate().',
+                'emailDeviceRequest',
+                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsAdminEmailCreate().'
             );
         }
 
@@ -1486,7 +1448,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1501,22 +1463,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EmailDeviceRequestToJSON(requestParameters["emailDeviceRequest"]),
+            body: EmailDeviceRequestToJSON(requestParameters['emailDeviceRequest']),
         };
     }
 
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailCreateRaw(
-        requestParameters: AuthenticatorsAdminEmailCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailCreateRequestOpts(requestParameters);
+    async authenticatorsAdminEmailCreateRaw(requestParameters: AuthenticatorsAdminEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
+        const requestOptions = await this.authenticatorsAdminEmailCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailDeviceFromJSON(jsonValue));
@@ -1525,27 +1483,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailCreate(
-        requestParameters: AuthenticatorsAdminEmailCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsAdminEmailCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEmailCreate(requestParameters: AuthenticatorsAdminEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsAdminEmailCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailDestroy without sending the request
      */
-    async authenticatorsAdminEmailDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminEmailDestroyRequestOpts(requestParameters: AuthenticatorsAdminEmailDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailDestroy().'
             );
         }
 
@@ -1563,11 +1513,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1576,12 +1526,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailDestroyRaw(
-        requestParameters: AuthenticatorsAdminEmailDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminEmailDestroyRaw(requestParameters: AuthenticatorsAdminEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminEmailDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1590,39 +1536,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailDestroy(
-        requestParameters: AuthenticatorsAdminEmailDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminEmailDestroy(requestParameters: AuthenticatorsAdminEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminEmailDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailList without sending the request
      */
-    async authenticatorsAdminEmailListRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminEmailListRequestOpts(requestParameters: AuthenticatorsAdminEmailListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1640,7 +1581,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1649,43 +1590,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailListRaw(
-        requestParameters: AuthenticatorsAdminEmailListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedEmailDeviceList>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailListRequestOpts(requestParameters);
+    async authenticatorsAdminEmailListRaw(requestParameters: AuthenticatorsAdminEmailListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEmailDeviceList>> {
+        const requestOptions = await this.authenticatorsAdminEmailListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedEmailDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEmailDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailList(
-        requestParameters: AuthenticatorsAdminEmailListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedEmailDeviceList> {
-        const response = await this.authenticatorsAdminEmailListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEmailList(requestParameters: AuthenticatorsAdminEmailListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEmailDeviceList> {
+        const response = await this.authenticatorsAdminEmailListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailPartialUpdate without sending the request
      */
-    async authenticatorsAdminEmailPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminEmailPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailPartialUpdate().'
             );
         }
 
@@ -1693,7 +1620,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1705,26 +1632,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEmailDeviceRequestToJSON(requestParameters["patchedEmailDeviceRequest"]),
+            body: PatchedEmailDeviceRequestToJSON(requestParameters['patchedEmailDeviceRequest']),
         };
     }
 
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminEmailPartialUpdateRaw(requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
+        const requestOptions = await this.authenticatorsAdminEmailPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailDeviceFromJSON(jsonValue));
@@ -1733,27 +1656,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailPartialUpdate(
-        requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsAdminEmailPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEmailPartialUpdate(requestParameters: AuthenticatorsAdminEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsAdminEmailPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailRetrieve without sending the request
      */
-    async authenticatorsAdminEmailRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminEmailRetrieveRequestOpts(requestParameters: AuthenticatorsAdminEmailRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailRetrieve().'
             );
         }
 
@@ -1771,11 +1686,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1784,12 +1699,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailRetrieveRaw(
-        requestParameters: AuthenticatorsAdminEmailRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminEmailRetrieveRaw(requestParameters: AuthenticatorsAdminEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
+        const requestOptions = await this.authenticatorsAdminEmailRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailDeviceFromJSON(jsonValue));
@@ -1798,34 +1709,26 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailRetrieve(
-        requestParameters: AuthenticatorsAdminEmailRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsAdminEmailRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEmailRetrieve(requestParameters: AuthenticatorsAdminEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsAdminEmailRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEmailUpdate without sending the request
      */
-    async authenticatorsAdminEmailUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminEmailUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminEmailUpdateRequestOpts(requestParameters: AuthenticatorsAdminEmailUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminEmailUpdate().'
             );
         }
 
-        if (requestParameters["emailDeviceRequest"] == null) {
+        if (requestParameters['emailDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "emailDeviceRequest",
-                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsAdminEmailUpdate().',
+                'emailDeviceRequest',
+                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsAdminEmailUpdate().'
             );
         }
 
@@ -1833,7 +1736,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1845,26 +1748,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: EmailDeviceRequestToJSON(requestParameters["emailDeviceRequest"]),
+            body: EmailDeviceRequestToJSON(requestParameters['emailDeviceRequest']),
         };
     }
 
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailUpdateRaw(
-        requestParameters: AuthenticatorsAdminEmailUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEmailUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminEmailUpdateRaw(requestParameters: AuthenticatorsAdminEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
+        const requestOptions = await this.authenticatorsAdminEmailUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailDeviceFromJSON(jsonValue));
@@ -1873,27 +1772,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices (for admins)
      */
-    async authenticatorsAdminEmailUpdate(
-        requestParameters: AuthenticatorsAdminEmailUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsAdminEmailUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEmailUpdate(requestParameters: AuthenticatorsAdminEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsAdminEmailUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointCreate without sending the request
      */
-    async authenticatorsAdminEndpointCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["googleEndpointDeviceRequest"] == null) {
+    async authenticatorsAdminEndpointCreateRequestOpts(requestParameters: AuthenticatorsAdminEndpointCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['googleEndpointDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "googleEndpointDeviceRequest",
-                'Required parameter "googleEndpointDeviceRequest" was null or undefined when calling authenticatorsAdminEndpointCreate().',
+                'googleEndpointDeviceRequest',
+                'Required parameter "googleEndpointDeviceRequest" was null or undefined when calling authenticatorsAdminEndpointCreate().'
             );
         }
 
@@ -1901,7 +1792,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1916,55 +1807,39 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleEndpointDeviceRequestToJSON(
-                requestParameters["googleEndpointDeviceRequest"],
-            ),
+            body: GoogleEndpointDeviceRequestToJSON(requestParameters['googleEndpointDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointCreateRaw(
-        requestParameters: AuthenticatorsAdminEndpointCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointCreateRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointCreateRaw(requestParameters: AuthenticatorsAdminEndpointCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
+        const requestOptions = await this.authenticatorsAdminEndpointCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleEndpointDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleEndpointDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointCreate(
-        requestParameters: AuthenticatorsAdminEndpointCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleEndpointDevice> {
-        const response = await this.authenticatorsAdminEndpointCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEndpointCreate(requestParameters: AuthenticatorsAdminEndpointCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleEndpointDevice> {
+        const response = await this.authenticatorsAdminEndpointCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointDestroy without sending the request
      */
-    async authenticatorsAdminEndpointDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsAdminEndpointDestroyRequestOpts(requestParameters: AuthenticatorsAdminEndpointDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointDestroy().'
             );
         }
 
@@ -1982,11 +1857,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/endpoint/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1995,12 +1870,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointDestroyRaw(
-        requestParameters: AuthenticatorsAdminEndpointDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointDestroyRaw(requestParameters: AuthenticatorsAdminEndpointDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminEndpointDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2009,39 +1880,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointDestroy(
-        requestParameters: AuthenticatorsAdminEndpointDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminEndpointDestroy(requestParameters: AuthenticatorsAdminEndpointDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminEndpointDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointList without sending the request
      */
-    async authenticatorsAdminEndpointListRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminEndpointListRequestOpts(requestParameters: AuthenticatorsAdminEndpointListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2059,7 +1925,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2068,43 +1934,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointListRaw(
-        requestParameters: AuthenticatorsAdminEndpointListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedGoogleEndpointDeviceList>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointListRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointListRaw(requestParameters: AuthenticatorsAdminEndpointListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleEndpointDeviceList>> {
+        const requestOptions = await this.authenticatorsAdminEndpointListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedGoogleEndpointDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleEndpointDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointList(
-        requestParameters: AuthenticatorsAdminEndpointListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedGoogleEndpointDeviceList> {
-        const response = await this.authenticatorsAdminEndpointListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEndpointList(requestParameters: AuthenticatorsAdminEndpointListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleEndpointDeviceList> {
+        const response = await this.authenticatorsAdminEndpointListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointPartialUpdate without sending the request
      */
-    async authenticatorsAdminEndpointPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsAdminEndpointPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointPartialUpdate().'
             );
         }
 
@@ -2112,7 +1964,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2124,59 +1976,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/endpoint/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGoogleEndpointDeviceRequestToJSON(
-                requestParameters["patchedGoogleEndpointDeviceRequest"],
-            ),
+            body: PatchedGoogleEndpointDeviceRequestToJSON(requestParameters['patchedGoogleEndpointDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointPartialUpdateRaw(requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
+        const requestOptions = await this.authenticatorsAdminEndpointPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleEndpointDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleEndpointDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointPartialUpdate(
-        requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleEndpointDevice> {
-        const response = await this.authenticatorsAdminEndpointPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEndpointPartialUpdate(requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleEndpointDevice> {
+        const response = await this.authenticatorsAdminEndpointPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointRetrieve without sending the request
      */
-    async authenticatorsAdminEndpointRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsAdminEndpointRetrieveRequestOpts(requestParameters: AuthenticatorsAdminEndpointRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointRetrieve().'
             );
         }
 
@@ -2194,11 +2030,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/endpoint/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2207,50 +2043,36 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointRetrieveRaw(
-        requestParameters: AuthenticatorsAdminEndpointRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointRetrieveRaw(requestParameters: AuthenticatorsAdminEndpointRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
+        const requestOptions = await this.authenticatorsAdminEndpointRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleEndpointDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleEndpointDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointRetrieve(
-        requestParameters: AuthenticatorsAdminEndpointRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleEndpointDevice> {
-        const response = await this.authenticatorsAdminEndpointRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEndpointRetrieve(requestParameters: AuthenticatorsAdminEndpointRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleEndpointDevice> {
+        const response = await this.authenticatorsAdminEndpointRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminEndpointUpdate without sending the request
      */
-    async authenticatorsAdminEndpointUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminEndpointUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsAdminEndpointUpdateRequestOpts(requestParameters: AuthenticatorsAdminEndpointUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsAdminEndpointUpdate().'
             );
         }
 
-        if (requestParameters["googleEndpointDeviceRequest"] == null) {
+        if (requestParameters['googleEndpointDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "googleEndpointDeviceRequest",
-                'Required parameter "googleEndpointDeviceRequest" was null or undefined when calling authenticatorsAdminEndpointUpdate().',
+                'googleEndpointDeviceRequest',
+                'Required parameter "googleEndpointDeviceRequest" was null or undefined when calling authenticatorsAdminEndpointUpdate().'
             );
         }
 
@@ -2258,7 +2080,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2270,59 +2092,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/endpoint/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleEndpointDeviceRequestToJSON(
-                requestParameters["googleEndpointDeviceRequest"],
-            ),
+            body: GoogleEndpointDeviceRequestToJSON(requestParameters['googleEndpointDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointUpdateRaw(
-        requestParameters: AuthenticatorsAdminEndpointUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminEndpointUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminEndpointUpdateRaw(requestParameters: AuthenticatorsAdminEndpointUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
+        const requestOptions = await this.authenticatorsAdminEndpointUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleEndpointDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleEndpointDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices (for admins)
      */
-    async authenticatorsAdminEndpointUpdate(
-        requestParameters: AuthenticatorsAdminEndpointUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleEndpointDevice> {
-        const response = await this.authenticatorsAdminEndpointUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminEndpointUpdate(requestParameters: AuthenticatorsAdminEndpointUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleEndpointDevice> {
+        const response = await this.authenticatorsAdminEndpointUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminSmsCreate without sending the request
      */
-    async authenticatorsAdminSmsCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["sMSDeviceRequest"] == null) {
+    async authenticatorsAdminSmsCreateRequestOpts(requestParameters: AuthenticatorsAdminSmsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['sMSDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "sMSDeviceRequest",
-                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsAdminSmsCreate().',
+                'sMSDeviceRequest',
+                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsAdminSmsCreate().'
             );
         }
 
@@ -2330,7 +2136,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2345,22 +2151,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SMSDeviceRequestToJSON(requestParameters["sMSDeviceRequest"]),
+            body: SMSDeviceRequestToJSON(requestParameters['sMSDeviceRequest']),
         };
     }
 
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsCreateRaw(
-        requestParameters: AuthenticatorsAdminSmsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminSmsCreateRequestOpts(requestParameters);
+    async authenticatorsAdminSmsCreateRaw(requestParameters: AuthenticatorsAdminSmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
+        const requestOptions = await this.authenticatorsAdminSmsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SMSDeviceFromJSON(jsonValue));
@@ -2369,27 +2171,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsCreate(
-        requestParameters: AuthenticatorsAdminSmsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
-        const response = await this.authenticatorsAdminSmsCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminSmsCreate(requestParameters: AuthenticatorsAdminSmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
+        const response = await this.authenticatorsAdminSmsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminSmsDestroy without sending the request
      */
-    async authenticatorsAdminSmsDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminSmsDestroyRequestOpts(requestParameters: AuthenticatorsAdminSmsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsDestroy().'
             );
         }
 
@@ -2407,11 +2201,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2420,12 +2214,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsDestroyRaw(
-        requestParameters: AuthenticatorsAdminSmsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminSmsDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminSmsDestroyRaw(requestParameters: AuthenticatorsAdminSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminSmsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2434,39 +2224,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsDestroy(
-        requestParameters: AuthenticatorsAdminSmsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminSmsDestroy(requestParameters: AuthenticatorsAdminSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminSmsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminSmsList without sending the request
      */
-    async authenticatorsAdminSmsListRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminSmsListRequestOpts(requestParameters: AuthenticatorsAdminSmsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2484,7 +2269,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2493,25 +2278,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsListRaw(
-        requestParameters: AuthenticatorsAdminSmsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSMSDeviceList>> {
+    async authenticatorsAdminSmsListRaw(requestParameters: AuthenticatorsAdminSmsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSMSDeviceList>> {
         const requestOptions = await this.authenticatorsAdminSmsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSMSDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSMSDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsList(
-        requestParameters: AuthenticatorsAdminSmsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSMSDeviceList> {
+    async authenticatorsAdminSmsList(requestParameters: AuthenticatorsAdminSmsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSMSDeviceList> {
         const response = await this.authenticatorsAdminSmsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2519,13 +2296,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsAdminSmsPartialUpdate without sending the request
      */
-    async authenticatorsAdminSmsPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminSmsPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsPartialUpdate().'
             );
         }
 
@@ -2533,7 +2308,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2545,26 +2320,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSMSDeviceRequestToJSON(requestParameters["patchedSMSDeviceRequest"]),
+            body: PatchedSMSDeviceRequestToJSON(requestParameters['patchedSMSDeviceRequest']),
         };
     }
 
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminSmsPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminSmsPartialUpdateRaw(requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
+        const requestOptions = await this.authenticatorsAdminSmsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SMSDeviceFromJSON(jsonValue));
@@ -2573,27 +2344,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsPartialUpdate(
-        requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
-        const response = await this.authenticatorsAdminSmsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminSmsPartialUpdate(requestParameters: AuthenticatorsAdminSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
+        const response = await this.authenticatorsAdminSmsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminSmsRetrieve without sending the request
      */
-    async authenticatorsAdminSmsRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminSmsRetrieveRequestOpts(requestParameters: AuthenticatorsAdminSmsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsRetrieve().'
             );
         }
 
@@ -2611,11 +2374,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2624,12 +2387,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsRetrieveRaw(
-        requestParameters: AuthenticatorsAdminSmsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminSmsRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminSmsRetrieveRaw(requestParameters: AuthenticatorsAdminSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
+        const requestOptions = await this.authenticatorsAdminSmsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SMSDeviceFromJSON(jsonValue));
@@ -2638,34 +2397,26 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsRetrieve(
-        requestParameters: AuthenticatorsAdminSmsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
-        const response = await this.authenticatorsAdminSmsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminSmsRetrieve(requestParameters: AuthenticatorsAdminSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
+        const response = await this.authenticatorsAdminSmsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminSmsUpdate without sending the request
      */
-    async authenticatorsAdminSmsUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminSmsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminSmsUpdateRequestOpts(requestParameters: AuthenticatorsAdminSmsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminSmsUpdate().'
             );
         }
 
-        if (requestParameters["sMSDeviceRequest"] == null) {
+        if (requestParameters['sMSDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "sMSDeviceRequest",
-                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsAdminSmsUpdate().',
+                'sMSDeviceRequest',
+                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsAdminSmsUpdate().'
             );
         }
 
@@ -2673,7 +2424,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2685,26 +2436,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SMSDeviceRequestToJSON(requestParameters["sMSDeviceRequest"]),
+            body: SMSDeviceRequestToJSON(requestParameters['sMSDeviceRequest']),
         };
     }
 
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsUpdateRaw(
-        requestParameters: AuthenticatorsAdminSmsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminSmsUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminSmsUpdateRaw(requestParameters: AuthenticatorsAdminSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
+        const requestOptions = await this.authenticatorsAdminSmsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SMSDeviceFromJSON(jsonValue));
@@ -2713,27 +2460,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices (for admins)
      */
-    async authenticatorsAdminSmsUpdate(
-        requestParameters: AuthenticatorsAdminSmsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
-        const response = await this.authenticatorsAdminSmsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminSmsUpdate(requestParameters: AuthenticatorsAdminSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
+        const response = await this.authenticatorsAdminSmsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticCreate without sending the request
      */
-    async authenticatorsAdminStaticCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["staticDeviceRequest"] == null) {
+    async authenticatorsAdminStaticCreateRequestOpts(requestParameters: AuthenticatorsAdminStaticCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['staticDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "staticDeviceRequest",
-                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsAdminStaticCreate().',
+                'staticDeviceRequest',
+                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsAdminStaticCreate().'
             );
         }
 
@@ -2741,7 +2480,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2756,53 +2495,39 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: StaticDeviceRequestToJSON(requestParameters["staticDeviceRequest"]),
+            body: StaticDeviceRequestToJSON(requestParameters['staticDeviceRequest']),
         };
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticCreateRaw(
-        requestParameters: AuthenticatorsAdminStaticCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticCreateRequestOpts(requestParameters);
+    async authenticatorsAdminStaticCreateRaw(requestParameters: AuthenticatorsAdminStaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsAdminStaticCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticCreate(
-        requestParameters: AuthenticatorsAdminStaticCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsAdminStaticCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminStaticCreate(requestParameters: AuthenticatorsAdminStaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsAdminStaticCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticDestroy without sending the request
      */
-    async authenticatorsAdminStaticDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminStaticDestroyRequestOpts(requestParameters: AuthenticatorsAdminStaticDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticDestroy().'
             );
         }
 
@@ -2820,11 +2545,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2833,12 +2558,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticDestroyRaw(
-        requestParameters: AuthenticatorsAdminStaticDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminStaticDestroyRaw(requestParameters: AuthenticatorsAdminStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminStaticDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2847,39 +2568,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticDestroy(
-        requestParameters: AuthenticatorsAdminStaticDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminStaticDestroy(requestParameters: AuthenticatorsAdminStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminStaticDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticList without sending the request
      */
-    async authenticatorsAdminStaticListRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminStaticListRequestOpts(requestParameters: AuthenticatorsAdminStaticListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2897,7 +2613,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2906,43 +2622,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticListRaw(
-        requestParameters: AuthenticatorsAdminStaticListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedStaticDeviceList>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticListRequestOpts(requestParameters);
+    async authenticatorsAdminStaticListRaw(requestParameters: AuthenticatorsAdminStaticListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedStaticDeviceList>> {
+        const requestOptions = await this.authenticatorsAdminStaticListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedStaticDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedStaticDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticList(
-        requestParameters: AuthenticatorsAdminStaticListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedStaticDeviceList> {
-        const response = await this.authenticatorsAdminStaticListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminStaticList(requestParameters: AuthenticatorsAdminStaticListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedStaticDeviceList> {
+        const response = await this.authenticatorsAdminStaticListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticPartialUpdate without sending the request
      */
-    async authenticatorsAdminStaticPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminStaticPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticPartialUpdate().'
             );
         }
 
@@ -2950,7 +2652,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2962,57 +2664,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedStaticDeviceRequestToJSON(requestParameters["patchedStaticDeviceRequest"]),
+            body: PatchedStaticDeviceRequestToJSON(requestParameters['patchedStaticDeviceRequest']),
         };
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminStaticPartialUpdateRaw(requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsAdminStaticPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticPartialUpdate(
-        requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsAdminStaticPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminStaticPartialUpdate(requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsAdminStaticPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticRetrieve without sending the request
      */
-    async authenticatorsAdminStaticRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminStaticRetrieveRequestOpts(requestParameters: AuthenticatorsAdminStaticRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticRetrieve().'
             );
         }
 
@@ -3030,11 +2718,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3043,50 +2731,36 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticRetrieveRaw(
-        requestParameters: AuthenticatorsAdminStaticRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminStaticRetrieveRaw(requestParameters: AuthenticatorsAdminStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsAdminStaticRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticRetrieve(
-        requestParameters: AuthenticatorsAdminStaticRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsAdminStaticRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminStaticRetrieve(requestParameters: AuthenticatorsAdminStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsAdminStaticRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminStaticUpdate without sending the request
      */
-    async authenticatorsAdminStaticUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminStaticUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminStaticUpdateRequestOpts(requestParameters: AuthenticatorsAdminStaticUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminStaticUpdate().'
             );
         }
 
-        if (requestParameters["staticDeviceRequest"] == null) {
+        if (requestParameters['staticDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "staticDeviceRequest",
-                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsAdminStaticUpdate().',
+                'staticDeviceRequest',
+                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsAdminStaticUpdate().'
             );
         }
 
@@ -3094,7 +2768,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3106,57 +2780,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: StaticDeviceRequestToJSON(requestParameters["staticDeviceRequest"]),
+            body: StaticDeviceRequestToJSON(requestParameters['staticDeviceRequest']),
         };
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticUpdateRaw(
-        requestParameters: AuthenticatorsAdminStaticUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminStaticUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminStaticUpdateRaw(requestParameters: AuthenticatorsAdminStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsAdminStaticUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices (for admins)
      */
-    async authenticatorsAdminStaticUpdate(
-        requestParameters: AuthenticatorsAdminStaticUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsAdminStaticUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminStaticUpdate(requestParameters: AuthenticatorsAdminStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsAdminStaticUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpCreate without sending the request
      */
-    async authenticatorsAdminTotpCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tOTPDeviceRequest"] == null) {
+    async authenticatorsAdminTotpCreateRequestOpts(requestParameters: AuthenticatorsAdminTotpCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tOTPDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "tOTPDeviceRequest",
-                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsAdminTotpCreate().',
+                'tOTPDeviceRequest',
+                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsAdminTotpCreate().'
             );
         }
 
@@ -3164,7 +2824,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3179,22 +2839,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TOTPDeviceRequestToJSON(requestParameters["tOTPDeviceRequest"]),
+            body: TOTPDeviceRequestToJSON(requestParameters['tOTPDeviceRequest']),
         };
     }
 
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpCreateRaw(
-        requestParameters: AuthenticatorsAdminTotpCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminTotpCreateRequestOpts(requestParameters);
+    async authenticatorsAdminTotpCreateRaw(requestParameters: AuthenticatorsAdminTotpCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
+        const requestOptions = await this.authenticatorsAdminTotpCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TOTPDeviceFromJSON(jsonValue));
@@ -3203,27 +2859,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpCreate(
-        requestParameters: AuthenticatorsAdminTotpCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
-        const response = await this.authenticatorsAdminTotpCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminTotpCreate(requestParameters: AuthenticatorsAdminTotpCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
+        const response = await this.authenticatorsAdminTotpCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpDestroy without sending the request
      */
-    async authenticatorsAdminTotpDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminTotpDestroyRequestOpts(requestParameters: AuthenticatorsAdminTotpDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpDestroy().'
             );
         }
 
@@ -3241,11 +2889,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3254,12 +2902,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpDestroyRaw(
-        requestParameters: AuthenticatorsAdminTotpDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminTotpDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminTotpDestroyRaw(requestParameters: AuthenticatorsAdminTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminTotpDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3268,39 +2912,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpDestroy(
-        requestParameters: AuthenticatorsAdminTotpDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminTotpDestroy(requestParameters: AuthenticatorsAdminTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminTotpDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpList without sending the request
      */
-    async authenticatorsAdminTotpListRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminTotpListRequestOpts(requestParameters: AuthenticatorsAdminTotpListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3318,7 +2957,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3327,42 +2966,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpListRaw(
-        requestParameters: AuthenticatorsAdminTotpListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedTOTPDeviceList>> {
+    async authenticatorsAdminTotpListRaw(requestParameters: AuthenticatorsAdminTotpListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTOTPDeviceList>> {
         const requestOptions = await this.authenticatorsAdminTotpListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedTOTPDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTOTPDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpList(
-        requestParameters: AuthenticatorsAdminTotpListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedTOTPDeviceList> {
-        const response = await this.authenticatorsAdminTotpListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminTotpList(requestParameters: AuthenticatorsAdminTotpListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTOTPDeviceList> {
+        const response = await this.authenticatorsAdminTotpListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpPartialUpdate without sending the request
      */
-    async authenticatorsAdminTotpPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminTotpPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpPartialUpdate().'
             );
         }
 
@@ -3370,7 +2996,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3382,26 +3008,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTOTPDeviceRequestToJSON(requestParameters["patchedTOTPDeviceRequest"]),
+            body: PatchedTOTPDeviceRequestToJSON(requestParameters['patchedTOTPDeviceRequest']),
         };
     }
 
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminTotpPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminTotpPartialUpdateRaw(requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
+        const requestOptions = await this.authenticatorsAdminTotpPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TOTPDeviceFromJSON(jsonValue));
@@ -3410,27 +3032,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpPartialUpdate(
-        requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
-        const response = await this.authenticatorsAdminTotpPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminTotpPartialUpdate(requestParameters: AuthenticatorsAdminTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
+        const response = await this.authenticatorsAdminTotpPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpRetrieve without sending the request
      */
-    async authenticatorsAdminTotpRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminTotpRetrieveRequestOpts(requestParameters: AuthenticatorsAdminTotpRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpRetrieve().'
             );
         }
 
@@ -3448,11 +3062,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3461,12 +3075,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpRetrieveRaw(
-        requestParameters: AuthenticatorsAdminTotpRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminTotpRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminTotpRetrieveRaw(requestParameters: AuthenticatorsAdminTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
+        const requestOptions = await this.authenticatorsAdminTotpRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TOTPDeviceFromJSON(jsonValue));
@@ -3475,34 +3085,26 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpRetrieve(
-        requestParameters: AuthenticatorsAdminTotpRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
-        const response = await this.authenticatorsAdminTotpRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminTotpRetrieve(requestParameters: AuthenticatorsAdminTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
+        const response = await this.authenticatorsAdminTotpRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminTotpUpdate without sending the request
      */
-    async authenticatorsAdminTotpUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminTotpUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminTotpUpdateRequestOpts(requestParameters: AuthenticatorsAdminTotpUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminTotpUpdate().'
             );
         }
 
-        if (requestParameters["tOTPDeviceRequest"] == null) {
+        if (requestParameters['tOTPDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "tOTPDeviceRequest",
-                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsAdminTotpUpdate().',
+                'tOTPDeviceRequest',
+                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsAdminTotpUpdate().'
             );
         }
 
@@ -3510,7 +3112,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3522,26 +3124,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TOTPDeviceRequestToJSON(requestParameters["tOTPDeviceRequest"]),
+            body: TOTPDeviceRequestToJSON(requestParameters['tOTPDeviceRequest']),
         };
     }
 
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpUpdateRaw(
-        requestParameters: AuthenticatorsAdminTotpUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminTotpUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminTotpUpdateRaw(requestParameters: AuthenticatorsAdminTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
+        const requestOptions = await this.authenticatorsAdminTotpUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TOTPDeviceFromJSON(jsonValue));
@@ -3550,27 +3148,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices (for admins)
      */
-    async authenticatorsAdminTotpUpdate(
-        requestParameters: AuthenticatorsAdminTotpUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
-        const response = await this.authenticatorsAdminTotpUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminTotpUpdate(requestParameters: AuthenticatorsAdminTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
+        const response = await this.authenticatorsAdminTotpUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnCreate without sending the request
      */
-    async authenticatorsAdminWebauthnCreateRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["webAuthnDeviceRequest"] == null) {
+    async authenticatorsAdminWebauthnCreateRequestOpts(requestParameters: AuthenticatorsAdminWebauthnCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['webAuthnDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "webAuthnDeviceRequest",
-                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsAdminWebauthnCreate().',
+                'webAuthnDeviceRequest',
+                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsAdminWebauthnCreate().'
             );
         }
 
@@ -3578,7 +3168,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3593,53 +3183,39 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: WebAuthnDeviceRequestToJSON(requestParameters["webAuthnDeviceRequest"]),
+            body: WebAuthnDeviceRequestToJSON(requestParameters['webAuthnDeviceRequest']),
         };
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnCreateRaw(
-        requestParameters: AuthenticatorsAdminWebauthnCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnCreateRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnCreateRaw(requestParameters: AuthenticatorsAdminWebauthnCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnCreate(
-        requestParameters: AuthenticatorsAdminWebauthnCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsAdminWebauthnCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminWebauthnCreate(requestParameters: AuthenticatorsAdminWebauthnCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsAdminWebauthnCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnDestroy without sending the request
      */
-    async authenticatorsAdminWebauthnDestroyRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminWebauthnDestroyRequestOpts(requestParameters: AuthenticatorsAdminWebauthnDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnDestroy().'
             );
         }
 
@@ -3657,11 +3233,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3670,12 +3246,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnDestroyRaw(
-        requestParameters: AuthenticatorsAdminWebauthnDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnDestroyRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnDestroyRaw(requestParameters: AuthenticatorsAdminWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3684,39 +3256,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnDestroy(
-        requestParameters: AuthenticatorsAdminWebauthnDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsAdminWebauthnDestroy(requestParameters: AuthenticatorsAdminWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsAdminWebauthnDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnList without sending the request
      */
-    async authenticatorsAdminWebauthnListRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsAdminWebauthnListRequestOpts(requestParameters: AuthenticatorsAdminWebauthnListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3734,7 +3301,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3743,43 +3310,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnListRaw(
-        requestParameters: AuthenticatorsAdminWebauthnListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceList>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnListRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnListRaw(requestParameters: AuthenticatorsAdminWebauthnListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceList>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedWebAuthnDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedWebAuthnDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnList(
-        requestParameters: AuthenticatorsAdminWebauthnListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedWebAuthnDeviceList> {
-        const response = await this.authenticatorsAdminWebauthnListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminWebauthnList(requestParameters: AuthenticatorsAdminWebauthnListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedWebAuthnDeviceList> {
+        const response = await this.authenticatorsAdminWebauthnListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnPartialUpdate without sending the request
      */
-    async authenticatorsAdminWebauthnPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminWebauthnPartialUpdateRequestOpts(requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnPartialUpdate().'
             );
         }
 
@@ -3787,7 +3340,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3799,59 +3352,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedWebAuthnDeviceRequestToJSON(
-                requestParameters["patchedWebAuthnDeviceRequest"],
-            ),
+            body: PatchedWebAuthnDeviceRequestToJSON(requestParameters['patchedWebAuthnDeviceRequest']),
         };
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnPartialUpdateRaw(
-        requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnPartialUpdateRaw(requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnPartialUpdate(
-        requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsAdminWebauthnPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminWebauthnPartialUpdate(requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsAdminWebauthnPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnRetrieve without sending the request
      */
-    async authenticatorsAdminWebauthnRetrieveRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminWebauthnRetrieveRequestOpts(requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnRetrieve().'
             );
         }
 
@@ -3869,11 +3406,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3882,50 +3419,36 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnRetrieveRaw(
-        requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnRetrieveRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnRetrieveRaw(requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnRetrieve(
-        requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsAdminWebauthnRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminWebauthnRetrieve(requestParameters: AuthenticatorsAdminWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsAdminWebauthnRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsAdminWebauthnUpdate without sending the request
      */
-    async authenticatorsAdminWebauthnUpdateRequestOpts(
-        requestParameters: AuthenticatorsAdminWebauthnUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsAdminWebauthnUpdateRequestOpts(requestParameters: AuthenticatorsAdminWebauthnUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsAdminWebauthnUpdate().'
             );
         }
 
-        if (requestParameters["webAuthnDeviceRequest"] == null) {
+        if (requestParameters['webAuthnDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "webAuthnDeviceRequest",
-                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsAdminWebauthnUpdate().',
+                'webAuthnDeviceRequest',
+                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsAdminWebauthnUpdate().'
             );
         }
 
@@ -3933,7 +3456,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3945,44 +3468,32 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/admin/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: WebAuthnDeviceRequestToJSON(requestParameters["webAuthnDeviceRequest"]),
+            body: WebAuthnDeviceRequestToJSON(requestParameters['webAuthnDeviceRequest']),
         };
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnUpdateRaw(
-        requestParameters: AuthenticatorsAdminWebauthnUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsAdminWebauthnUpdateRequestOpts(requestParameters);
+    async authenticatorsAdminWebauthnUpdateRaw(requestParameters: AuthenticatorsAdminWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsAdminWebauthnUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices (for admins)
      */
-    async authenticatorsAdminWebauthnUpdate(
-        requestParameters: AuthenticatorsAdminWebauthnUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsAdminWebauthnUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsAdminWebauthnUpdate(requestParameters: AuthenticatorsAdminWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsAdminWebauthnUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -4007,7 +3518,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4016,9 +3527,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get all devices for current user
      */
-    async authenticatorsAllListRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<Device>>> {
+    async authenticatorsAllListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Device>>> {
         const requestOptions = await this.authenticatorsAllListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4028,9 +3537,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get all devices for current user
      */
-    async authenticatorsAllList(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<Device>> {
+    async authenticatorsAllList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Device>> {
         const response = await this.authenticatorsAllListRaw(initOverrides);
         return await response.value();
     }
@@ -4038,13 +3545,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsDuoDestroy without sending the request
      */
-    async authenticatorsDuoDestroyRequestOpts(
-        requestParameters: AuthenticatorsDuoDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsDuoDestroyRequestOpts(requestParameters: AuthenticatorsDuoDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsDuoDestroy().'
             );
         }
 
@@ -4062,11 +3567,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4075,10 +3580,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoDestroyRaw(
-        requestParameters: AuthenticatorsDuoDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async authenticatorsDuoDestroyRaw(requestParameters: AuthenticatorsDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.authenticatorsDuoDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4088,39 +3590,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoDestroy(
-        requestParameters: AuthenticatorsDuoDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsDuoDestroy(requestParameters: AuthenticatorsDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsDuoDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsDuoList without sending the request
      */
-    async authenticatorsDuoListRequestOpts(
-        requestParameters: AuthenticatorsDuoListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsDuoListRequestOpts(requestParameters: AuthenticatorsDuoListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4138,7 +3635,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4147,25 +3644,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoListRaw(
-        requestParameters: AuthenticatorsDuoListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedDuoDeviceList>> {
+    async authenticatorsDuoListRaw(requestParameters: AuthenticatorsDuoListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDuoDeviceList>> {
         const requestOptions = await this.authenticatorsDuoListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedDuoDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDuoDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoList(
-        requestParameters: AuthenticatorsDuoListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedDuoDeviceList> {
+    async authenticatorsDuoList(requestParameters: AuthenticatorsDuoListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDuoDeviceList> {
         const response = await this.authenticatorsDuoListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4173,13 +3662,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsDuoPartialUpdate without sending the request
      */
-    async authenticatorsDuoPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsDuoPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsDuoPartialUpdateRequestOpts(requestParameters: AuthenticatorsDuoPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsDuoPartialUpdate().'
             );
         }
 
@@ -4187,7 +3674,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4199,26 +3686,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDuoDeviceRequestToJSON(requestParameters["patchedDuoDeviceRequest"]),
+            body: PatchedDuoDeviceRequestToJSON(requestParameters['patchedDuoDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoPartialUpdateRaw(
-        requestParameters: AuthenticatorsDuoPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
-        const requestOptions =
-            await this.authenticatorsDuoPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsDuoPartialUpdateRaw(requestParameters: AuthenticatorsDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
+        const requestOptions = await this.authenticatorsDuoPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceFromJSON(jsonValue));
@@ -4227,27 +3710,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoPartialUpdate(
-        requestParameters: AuthenticatorsDuoPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
-        const response = await this.authenticatorsDuoPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsDuoPartialUpdate(requestParameters: AuthenticatorsDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
+        const response = await this.authenticatorsDuoPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsDuoRetrieve without sending the request
      */
-    async authenticatorsDuoRetrieveRequestOpts(
-        requestParameters: AuthenticatorsDuoRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsDuoRetrieveRequestOpts(requestParameters: AuthenticatorsDuoRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsDuoRetrieve().'
             );
         }
 
@@ -4265,11 +3740,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4278,10 +3753,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoRetrieveRaw(
-        requestParameters: AuthenticatorsDuoRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
+    async authenticatorsDuoRetrieveRaw(requestParameters: AuthenticatorsDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
         const requestOptions = await this.authenticatorsDuoRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4291,10 +3763,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoRetrieve(
-        requestParameters: AuthenticatorsDuoRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
+    async authenticatorsDuoRetrieve(requestParameters: AuthenticatorsDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
         const response = await this.authenticatorsDuoRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4302,20 +3771,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsDuoUpdate without sending the request
      */
-    async authenticatorsDuoUpdateRequestOpts(
-        requestParameters: AuthenticatorsDuoUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsDuoUpdateRequestOpts(requestParameters: AuthenticatorsDuoUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsDuoUpdate().'
             );
         }
 
-        if (requestParameters["duoDeviceRequest"] == null) {
+        if (requestParameters['duoDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "duoDeviceRequest",
-                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsDuoUpdate().',
+                'duoDeviceRequest',
+                'Required parameter "duoDeviceRequest" was null or undefined when calling authenticatorsDuoUpdate().'
             );
         }
 
@@ -4323,7 +3790,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4335,24 +3802,21 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/duo/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DuoDeviceRequestToJSON(requestParameters["duoDeviceRequest"]),
+            body: DuoDeviceRequestToJSON(requestParameters['duoDeviceRequest']),
         };
     }
 
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoUpdateRaw(
-        requestParameters: AuthenticatorsDuoUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DuoDevice>> {
+    async authenticatorsDuoUpdateRaw(requestParameters: AuthenticatorsDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDevice>> {
         const requestOptions = await this.authenticatorsDuoUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4362,10 +3826,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Duo authenticator devices
      */
-    async authenticatorsDuoUpdate(
-        requestParameters: AuthenticatorsDuoUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DuoDevice> {
+    async authenticatorsDuoUpdate(requestParameters: AuthenticatorsDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDevice> {
         const response = await this.authenticatorsDuoUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4373,13 +3834,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsDuoUsedByList without sending the request
      */
-    async authenticatorsDuoUsedByListRequestOpts(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsDuoUsedByListRequestOpts(requestParameters: AuthenticatorsDuoUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsDuoUsedByList().'
             );
         }
 
@@ -4397,11 +3856,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/duo/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4410,10 +3869,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsDuoUsedByListRaw(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async authenticatorsDuoUsedByListRaw(requestParameters: AuthenticatorsDuoUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.authenticatorsDuoUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4423,27 +3879,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsDuoUsedByList(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsDuoUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsDuoUsedByList(requestParameters: AuthenticatorsDuoUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsDuoUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsEmailDestroy without sending the request
      */
-    async authenticatorsEmailDestroyRequestOpts(
-        requestParameters: AuthenticatorsEmailDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsEmailDestroyRequestOpts(requestParameters: AuthenticatorsEmailDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsEmailDestroy().'
             );
         }
 
@@ -4461,11 +3909,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4474,10 +3922,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailDestroyRaw(
-        requestParameters: AuthenticatorsEmailDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async authenticatorsEmailDestroyRaw(requestParameters: AuthenticatorsEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.authenticatorsEmailDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4487,39 +3932,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailDestroy(
-        requestParameters: AuthenticatorsEmailDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsEmailDestroy(requestParameters: AuthenticatorsEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsEmailDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsEmailList without sending the request
      */
-    async authenticatorsEmailListRequestOpts(
-        requestParameters: AuthenticatorsEmailListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsEmailListRequestOpts(requestParameters: AuthenticatorsEmailListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4537,7 +3977,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4546,25 +3986,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailListRaw(
-        requestParameters: AuthenticatorsEmailListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedEmailDeviceList>> {
+    async authenticatorsEmailListRaw(requestParameters: AuthenticatorsEmailListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEmailDeviceList>> {
         const requestOptions = await this.authenticatorsEmailListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedEmailDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEmailDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailList(
-        requestParameters: AuthenticatorsEmailListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedEmailDeviceList> {
+    async authenticatorsEmailList(requestParameters: AuthenticatorsEmailListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEmailDeviceList> {
         const response = await this.authenticatorsEmailListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4572,13 +4004,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsEmailPartialUpdate without sending the request
      */
-    async authenticatorsEmailPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsEmailPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsEmailPartialUpdateRequestOpts(requestParameters: AuthenticatorsEmailPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsEmailPartialUpdate().'
             );
         }
 
@@ -4586,7 +4016,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4598,26 +4028,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEmailDeviceRequestToJSON(requestParameters["patchedEmailDeviceRequest"]),
+            body: PatchedEmailDeviceRequestToJSON(requestParameters['patchedEmailDeviceRequest']),
         };
     }
 
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailPartialUpdateRaw(
-        requestParameters: AuthenticatorsEmailPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
-        const requestOptions =
-            await this.authenticatorsEmailPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsEmailPartialUpdateRaw(requestParameters: AuthenticatorsEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
+        const requestOptions = await this.authenticatorsEmailPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailDeviceFromJSON(jsonValue));
@@ -4626,27 +4052,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailPartialUpdate(
-        requestParameters: AuthenticatorsEmailPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsEmailPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsEmailPartialUpdate(requestParameters: AuthenticatorsEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsEmailPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsEmailRetrieve without sending the request
      */
-    async authenticatorsEmailRetrieveRequestOpts(
-        requestParameters: AuthenticatorsEmailRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsEmailRetrieveRequestOpts(requestParameters: AuthenticatorsEmailRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsEmailRetrieve().'
             );
         }
 
@@ -4664,11 +4082,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4677,10 +4095,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailRetrieveRaw(
-        requestParameters: AuthenticatorsEmailRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
+    async authenticatorsEmailRetrieveRaw(requestParameters: AuthenticatorsEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
         const requestOptions = await this.authenticatorsEmailRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4690,34 +4105,26 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailRetrieve(
-        requestParameters: AuthenticatorsEmailRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
-        const response = await this.authenticatorsEmailRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsEmailRetrieve(requestParameters: AuthenticatorsEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
+        const response = await this.authenticatorsEmailRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsEmailUpdate without sending the request
      */
-    async authenticatorsEmailUpdateRequestOpts(
-        requestParameters: AuthenticatorsEmailUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsEmailUpdateRequestOpts(requestParameters: AuthenticatorsEmailUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsEmailUpdate().'
             );
         }
 
-        if (requestParameters["emailDeviceRequest"] == null) {
+        if (requestParameters['emailDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "emailDeviceRequest",
-                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsEmailUpdate().',
+                'emailDeviceRequest',
+                'Required parameter "emailDeviceRequest" was null or undefined when calling authenticatorsEmailUpdate().'
             );
         }
 
@@ -4725,7 +4132,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4737,24 +4144,21 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/email/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: EmailDeviceRequestToJSON(requestParameters["emailDeviceRequest"]),
+            body: EmailDeviceRequestToJSON(requestParameters['emailDeviceRequest']),
         };
     }
 
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailUpdateRaw(
-        requestParameters: AuthenticatorsEmailUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<EmailDevice>> {
+    async authenticatorsEmailUpdateRaw(requestParameters: AuthenticatorsEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailDevice>> {
         const requestOptions = await this.authenticatorsEmailUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4764,10 +4168,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for email authenticator devices
      */
-    async authenticatorsEmailUpdate(
-        requestParameters: AuthenticatorsEmailUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<EmailDevice> {
+    async authenticatorsEmailUpdate(requestParameters: AuthenticatorsEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailDevice> {
         const response = await this.authenticatorsEmailUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4775,13 +4176,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsEmailUsedByList without sending the request
      */
-    async authenticatorsEmailUsedByListRequestOpts(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsEmailUsedByListRequestOpts(requestParameters: AuthenticatorsEmailUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsEmailUsedByList().'
             );
         }
 
@@ -4799,11 +4198,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/email/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4812,12 +4211,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsEmailUsedByListRaw(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsEmailUsedByListRequestOpts(requestParameters);
+    async authenticatorsEmailUsedByListRaw(requestParameters: AuthenticatorsEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.authenticatorsEmailUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4826,43 +4221,35 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsEmailUsedByList(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsEmailUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsEmailUsedByList(requestParameters: AuthenticatorsEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsEmailUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsEndpointList without sending the request
      */
-    async authenticatorsEndpointListRequestOpts(
-        requestParameters: AuthenticatorsEndpointListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsEndpointListRequestOpts(requestParameters: AuthenticatorsEndpointListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4880,7 +4267,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4889,25 +4276,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices
      */
-    async authenticatorsEndpointListRaw(
-        requestParameters: AuthenticatorsEndpointListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedGoogleEndpointDeviceList>> {
+    async authenticatorsEndpointListRaw(requestParameters: AuthenticatorsEndpointListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleEndpointDeviceList>> {
         const requestOptions = await this.authenticatorsEndpointListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedGoogleEndpointDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleEndpointDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices
      */
-    async authenticatorsEndpointList(
-        requestParameters: AuthenticatorsEndpointListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedGoogleEndpointDeviceList> {
+    async authenticatorsEndpointList(requestParameters: AuthenticatorsEndpointListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleEndpointDeviceList> {
         const response = await this.authenticatorsEndpointListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4915,13 +4294,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsEndpointRetrieve without sending the request
      */
-    async authenticatorsEndpointRetrieveRequestOpts(
-        requestParameters: AuthenticatorsEndpointRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsEndpointRetrieveRequestOpts(requestParameters: AuthenticatorsEndpointRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsEndpointRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsEndpointRetrieve().'
             );
         }
 
@@ -4939,11 +4316,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/endpoint/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4952,43 +4329,29 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for Endpoint authenticator devices
      */
-    async authenticatorsEndpointRetrieveRaw(
-        requestParameters: AuthenticatorsEndpointRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
-        const requestOptions =
-            await this.authenticatorsEndpointRetrieveRequestOpts(requestParameters);
+    async authenticatorsEndpointRetrieveRaw(requestParameters: AuthenticatorsEndpointRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleEndpointDevice>> {
+        const requestOptions = await this.authenticatorsEndpointRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleEndpointDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleEndpointDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for Endpoint authenticator devices
      */
-    async authenticatorsEndpointRetrieve(
-        requestParameters: AuthenticatorsEndpointRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleEndpointDevice> {
-        const response = await this.authenticatorsEndpointRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsEndpointRetrieve(requestParameters: AuthenticatorsEndpointRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleEndpointDevice> {
+        const response = await this.authenticatorsEndpointRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsEndpointUsedByList without sending the request
      */
-    async authenticatorsEndpointUsedByListRequestOpts(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async authenticatorsEndpointUsedByListRequestOpts(requestParameters: AuthenticatorsEndpointUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsEndpointUsedByList().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling authenticatorsEndpointUsedByList().'
             );
         }
 
@@ -5006,11 +4369,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/endpoint/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5019,12 +4382,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsEndpointUsedByListRaw(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsEndpointUsedByListRequestOpts(requestParameters);
+    async authenticatorsEndpointUsedByListRaw(requestParameters: AuthenticatorsEndpointUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.authenticatorsEndpointUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5033,27 +4392,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsEndpointUsedByList(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsEndpointUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsEndpointUsedByList(requestParameters: AuthenticatorsEndpointUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsEndpointUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsSmsDestroy without sending the request
      */
-    async authenticatorsSmsDestroyRequestOpts(
-        requestParameters: AuthenticatorsSmsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsSmsDestroyRequestOpts(requestParameters: AuthenticatorsSmsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsSmsDestroy().'
             );
         }
 
@@ -5071,11 +4422,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5084,10 +4435,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsDestroyRaw(
-        requestParameters: AuthenticatorsSmsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async authenticatorsSmsDestroyRaw(requestParameters: AuthenticatorsSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.authenticatorsSmsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5097,39 +4445,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsDestroy(
-        requestParameters: AuthenticatorsSmsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsSmsDestroy(requestParameters: AuthenticatorsSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsSmsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsSmsList without sending the request
      */
-    async authenticatorsSmsListRequestOpts(
-        requestParameters: AuthenticatorsSmsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsSmsListRequestOpts(requestParameters: AuthenticatorsSmsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5147,7 +4490,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5156,25 +4499,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsListRaw(
-        requestParameters: AuthenticatorsSmsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSMSDeviceList>> {
+    async authenticatorsSmsListRaw(requestParameters: AuthenticatorsSmsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSMSDeviceList>> {
         const requestOptions = await this.authenticatorsSmsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSMSDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSMSDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsList(
-        requestParameters: AuthenticatorsSmsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSMSDeviceList> {
+    async authenticatorsSmsList(requestParameters: AuthenticatorsSmsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSMSDeviceList> {
         const response = await this.authenticatorsSmsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5182,13 +4517,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsSmsPartialUpdate without sending the request
      */
-    async authenticatorsSmsPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsSmsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsSmsPartialUpdateRequestOpts(requestParameters: AuthenticatorsSmsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsSmsPartialUpdate().'
             );
         }
 
@@ -5196,7 +4529,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5208,26 +4541,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSMSDeviceRequestToJSON(requestParameters["patchedSMSDeviceRequest"]),
+            body: PatchedSMSDeviceRequestToJSON(requestParameters['patchedSMSDeviceRequest']),
         };
     }
 
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsPartialUpdateRaw(
-        requestParameters: AuthenticatorsSmsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
-        const requestOptions =
-            await this.authenticatorsSmsPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsSmsPartialUpdateRaw(requestParameters: AuthenticatorsSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
+        const requestOptions = await this.authenticatorsSmsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SMSDeviceFromJSON(jsonValue));
@@ -5236,27 +4565,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsPartialUpdate(
-        requestParameters: AuthenticatorsSmsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
-        const response = await this.authenticatorsSmsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsSmsPartialUpdate(requestParameters: AuthenticatorsSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
+        const response = await this.authenticatorsSmsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsSmsRetrieve without sending the request
      */
-    async authenticatorsSmsRetrieveRequestOpts(
-        requestParameters: AuthenticatorsSmsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsSmsRetrieveRequestOpts(requestParameters: AuthenticatorsSmsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsSmsRetrieve().'
             );
         }
 
@@ -5274,11 +4595,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5287,10 +4608,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsRetrieveRaw(
-        requestParameters: AuthenticatorsSmsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
+    async authenticatorsSmsRetrieveRaw(requestParameters: AuthenticatorsSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
         const requestOptions = await this.authenticatorsSmsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5300,10 +4618,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsRetrieve(
-        requestParameters: AuthenticatorsSmsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
+    async authenticatorsSmsRetrieve(requestParameters: AuthenticatorsSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
         const response = await this.authenticatorsSmsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5311,20 +4626,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsSmsUpdate without sending the request
      */
-    async authenticatorsSmsUpdateRequestOpts(
-        requestParameters: AuthenticatorsSmsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsSmsUpdateRequestOpts(requestParameters: AuthenticatorsSmsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsSmsUpdate().'
             );
         }
 
-        if (requestParameters["sMSDeviceRequest"] == null) {
+        if (requestParameters['sMSDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "sMSDeviceRequest",
-                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsSmsUpdate().',
+                'sMSDeviceRequest',
+                'Required parameter "sMSDeviceRequest" was null or undefined when calling authenticatorsSmsUpdate().'
             );
         }
 
@@ -5332,7 +4645,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5344,24 +4657,21 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/sms/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SMSDeviceRequestToJSON(requestParameters["sMSDeviceRequest"]),
+            body: SMSDeviceRequestToJSON(requestParameters['sMSDeviceRequest']),
         };
     }
 
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsUpdateRaw(
-        requestParameters: AuthenticatorsSmsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SMSDevice>> {
+    async authenticatorsSmsUpdateRaw(requestParameters: AuthenticatorsSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SMSDevice>> {
         const requestOptions = await this.authenticatorsSmsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5371,10 +4681,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for sms authenticator devices
      */
-    async authenticatorsSmsUpdate(
-        requestParameters: AuthenticatorsSmsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SMSDevice> {
+    async authenticatorsSmsUpdate(requestParameters: AuthenticatorsSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SMSDevice> {
         const response = await this.authenticatorsSmsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5382,13 +4689,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsSmsUsedByList without sending the request
      */
-    async authenticatorsSmsUsedByListRequestOpts(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsSmsUsedByListRequestOpts(requestParameters: AuthenticatorsSmsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsSmsUsedByList().'
             );
         }
 
@@ -5406,11 +4711,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/sms/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5419,10 +4724,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsSmsUsedByListRaw(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async authenticatorsSmsUsedByListRaw(requestParameters: AuthenticatorsSmsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.authenticatorsSmsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5432,27 +4734,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsSmsUsedByList(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsSmsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsSmsUsedByList(requestParameters: AuthenticatorsSmsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsSmsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsStaticDestroy without sending the request
      */
-    async authenticatorsStaticDestroyRequestOpts(
-        requestParameters: AuthenticatorsStaticDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsStaticDestroyRequestOpts(requestParameters: AuthenticatorsStaticDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsStaticDestroy().'
             );
         }
 
@@ -5470,11 +4764,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5483,10 +4777,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticDestroyRaw(
-        requestParameters: AuthenticatorsStaticDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async authenticatorsStaticDestroyRaw(requestParameters: AuthenticatorsStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.authenticatorsStaticDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5496,39 +4787,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticDestroy(
-        requestParameters: AuthenticatorsStaticDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsStaticDestroy(requestParameters: AuthenticatorsStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsStaticDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsStaticList without sending the request
      */
-    async authenticatorsStaticListRequestOpts(
-        requestParameters: AuthenticatorsStaticListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsStaticListRequestOpts(requestParameters: AuthenticatorsStaticListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5546,7 +4832,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5555,25 +4841,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticListRaw(
-        requestParameters: AuthenticatorsStaticListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedStaticDeviceList>> {
+    async authenticatorsStaticListRaw(requestParameters: AuthenticatorsStaticListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedStaticDeviceList>> {
         const requestOptions = await this.authenticatorsStaticListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedStaticDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedStaticDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticList(
-        requestParameters: AuthenticatorsStaticListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedStaticDeviceList> {
+    async authenticatorsStaticList(requestParameters: AuthenticatorsStaticListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedStaticDeviceList> {
         const response = await this.authenticatorsStaticListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5581,13 +4859,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsStaticPartialUpdate without sending the request
      */
-    async authenticatorsStaticPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsStaticPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsStaticPartialUpdateRequestOpts(requestParameters: AuthenticatorsStaticPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsStaticPartialUpdate().'
             );
         }
 
@@ -5595,7 +4871,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5607,57 +4883,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedStaticDeviceRequestToJSON(requestParameters["patchedStaticDeviceRequest"]),
+            body: PatchedStaticDeviceRequestToJSON(requestParameters['patchedStaticDeviceRequest']),
         };
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticPartialUpdateRaw(
-        requestParameters: AuthenticatorsStaticPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsStaticPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsStaticPartialUpdateRaw(requestParameters: AuthenticatorsStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsStaticPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticPartialUpdate(
-        requestParameters: AuthenticatorsStaticPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsStaticPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsStaticPartialUpdate(requestParameters: AuthenticatorsStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsStaticPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsStaticRetrieve without sending the request
      */
-    async authenticatorsStaticRetrieveRequestOpts(
-        requestParameters: AuthenticatorsStaticRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsStaticRetrieveRequestOpts(requestParameters: AuthenticatorsStaticRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsStaticRetrieve().'
             );
         }
 
@@ -5675,11 +4937,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5688,50 +4950,36 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticRetrieveRaw(
-        requestParameters: AuthenticatorsStaticRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
-        const requestOptions =
-            await this.authenticatorsStaticRetrieveRequestOpts(requestParameters);
+    async authenticatorsStaticRetrieveRaw(requestParameters: AuthenticatorsStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
+        const requestOptions = await this.authenticatorsStaticRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticRetrieve(
-        requestParameters: AuthenticatorsStaticRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
-        const response = await this.authenticatorsStaticRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsStaticRetrieve(requestParameters: AuthenticatorsStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
+        const response = await this.authenticatorsStaticRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsStaticUpdate without sending the request
      */
-    async authenticatorsStaticUpdateRequestOpts(
-        requestParameters: AuthenticatorsStaticUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsStaticUpdateRequestOpts(requestParameters: AuthenticatorsStaticUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsStaticUpdate().'
             );
         }
 
-        if (requestParameters["staticDeviceRequest"] == null) {
+        if (requestParameters['staticDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "staticDeviceRequest",
-                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsStaticUpdate().',
+                'staticDeviceRequest',
+                'Required parameter "staticDeviceRequest" was null or undefined when calling authenticatorsStaticUpdate().'
             );
         }
 
@@ -5739,7 +4987,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5751,39 +4999,31 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/static/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: StaticDeviceRequestToJSON(requestParameters["staticDeviceRequest"]),
+            body: StaticDeviceRequestToJSON(requestParameters['staticDeviceRequest']),
         };
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticUpdateRaw(
-        requestParameters: AuthenticatorsStaticUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<StaticDevice>> {
+    async authenticatorsStaticUpdateRaw(requestParameters: AuthenticatorsStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaticDevice>> {
         const requestOptions = await this.authenticatorsStaticUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            StaticDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaticDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for static authenticator devices
      */
-    async authenticatorsStaticUpdate(
-        requestParameters: AuthenticatorsStaticUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<StaticDevice> {
+    async authenticatorsStaticUpdate(requestParameters: AuthenticatorsStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaticDevice> {
         const response = await this.authenticatorsStaticUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5791,13 +5031,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsStaticUsedByList without sending the request
      */
-    async authenticatorsStaticUsedByListRequestOpts(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsStaticUsedByListRequestOpts(requestParameters: AuthenticatorsStaticUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsStaticUsedByList().'
             );
         }
 
@@ -5815,11 +5053,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/static/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5828,12 +5066,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsStaticUsedByListRaw(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsStaticUsedByListRequestOpts(requestParameters);
+    async authenticatorsStaticUsedByListRaw(requestParameters: AuthenticatorsStaticUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.authenticatorsStaticUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5842,27 +5076,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsStaticUsedByList(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsStaticUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsStaticUsedByList(requestParameters: AuthenticatorsStaticUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsStaticUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsTotpDestroy without sending the request
      */
-    async authenticatorsTotpDestroyRequestOpts(
-        requestParameters: AuthenticatorsTotpDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsTotpDestroyRequestOpts(requestParameters: AuthenticatorsTotpDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsTotpDestroy().'
             );
         }
 
@@ -5880,11 +5106,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5893,10 +5119,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpDestroyRaw(
-        requestParameters: AuthenticatorsTotpDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async authenticatorsTotpDestroyRaw(requestParameters: AuthenticatorsTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.authenticatorsTotpDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5906,39 +5129,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpDestroy(
-        requestParameters: AuthenticatorsTotpDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsTotpDestroy(requestParameters: AuthenticatorsTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsTotpDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsTotpList without sending the request
      */
-    async authenticatorsTotpListRequestOpts(
-        requestParameters: AuthenticatorsTotpListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsTotpListRequestOpts(requestParameters: AuthenticatorsTotpListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5956,7 +5174,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5965,25 +5183,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpListRaw(
-        requestParameters: AuthenticatorsTotpListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedTOTPDeviceList>> {
+    async authenticatorsTotpListRaw(requestParameters: AuthenticatorsTotpListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTOTPDeviceList>> {
         const requestOptions = await this.authenticatorsTotpListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedTOTPDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTOTPDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpList(
-        requestParameters: AuthenticatorsTotpListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedTOTPDeviceList> {
+    async authenticatorsTotpList(requestParameters: AuthenticatorsTotpListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTOTPDeviceList> {
         const response = await this.authenticatorsTotpListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5991,13 +5201,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsTotpPartialUpdate without sending the request
      */
-    async authenticatorsTotpPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsTotpPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsTotpPartialUpdateRequestOpts(requestParameters: AuthenticatorsTotpPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsTotpPartialUpdate().'
             );
         }
 
@@ -6005,7 +5213,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6017,26 +5225,22 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTOTPDeviceRequestToJSON(requestParameters["patchedTOTPDeviceRequest"]),
+            body: PatchedTOTPDeviceRequestToJSON(requestParameters['patchedTOTPDeviceRequest']),
         };
     }
 
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpPartialUpdateRaw(
-        requestParameters: AuthenticatorsTotpPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
-        const requestOptions =
-            await this.authenticatorsTotpPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsTotpPartialUpdateRaw(requestParameters: AuthenticatorsTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
+        const requestOptions = await this.authenticatorsTotpPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => TOTPDeviceFromJSON(jsonValue));
@@ -6045,27 +5249,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpPartialUpdate(
-        requestParameters: AuthenticatorsTotpPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
-        const response = await this.authenticatorsTotpPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsTotpPartialUpdate(requestParameters: AuthenticatorsTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
+        const response = await this.authenticatorsTotpPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsTotpRetrieve without sending the request
      */
-    async authenticatorsTotpRetrieveRequestOpts(
-        requestParameters: AuthenticatorsTotpRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsTotpRetrieveRequestOpts(requestParameters: AuthenticatorsTotpRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsTotpRetrieve().'
             );
         }
 
@@ -6083,11 +5279,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6096,10 +5292,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpRetrieveRaw(
-        requestParameters: AuthenticatorsTotpRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
+    async authenticatorsTotpRetrieveRaw(requestParameters: AuthenticatorsTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
         const requestOptions = await this.authenticatorsTotpRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6109,10 +5302,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpRetrieve(
-        requestParameters: AuthenticatorsTotpRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
+    async authenticatorsTotpRetrieve(requestParameters: AuthenticatorsTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
         const response = await this.authenticatorsTotpRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6120,20 +5310,18 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsTotpUpdate without sending the request
      */
-    async authenticatorsTotpUpdateRequestOpts(
-        requestParameters: AuthenticatorsTotpUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsTotpUpdateRequestOpts(requestParameters: AuthenticatorsTotpUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsTotpUpdate().'
             );
         }
 
-        if (requestParameters["tOTPDeviceRequest"] == null) {
+        if (requestParameters['tOTPDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "tOTPDeviceRequest",
-                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsTotpUpdate().',
+                'tOTPDeviceRequest',
+                'Required parameter "tOTPDeviceRequest" was null or undefined when calling authenticatorsTotpUpdate().'
             );
         }
 
@@ -6141,7 +5329,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6153,24 +5341,21 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/totp/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TOTPDeviceRequestToJSON(requestParameters["tOTPDeviceRequest"]),
+            body: TOTPDeviceRequestToJSON(requestParameters['tOTPDeviceRequest']),
         };
     }
 
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpUpdateRaw(
-        requestParameters: AuthenticatorsTotpUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TOTPDevice>> {
+    async authenticatorsTotpUpdateRaw(requestParameters: AuthenticatorsTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TOTPDevice>> {
         const requestOptions = await this.authenticatorsTotpUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6180,10 +5365,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for totp authenticator devices
      */
-    async authenticatorsTotpUpdate(
-        requestParameters: AuthenticatorsTotpUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TOTPDevice> {
+    async authenticatorsTotpUpdate(requestParameters: AuthenticatorsTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TOTPDevice> {
         const response = await this.authenticatorsTotpUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6191,13 +5373,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsTotpUsedByList without sending the request
      */
-    async authenticatorsTotpUsedByListRequestOpts(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsTotpUsedByListRequestOpts(requestParameters: AuthenticatorsTotpUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsTotpUsedByList().'
             );
         }
 
@@ -6215,11 +5395,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/totp/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6228,12 +5408,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsTotpUsedByListRaw(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsTotpUsedByListRequestOpts(requestParameters);
+    async authenticatorsTotpUsedByListRaw(requestParameters: AuthenticatorsTotpUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.authenticatorsTotpUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -6242,27 +5418,19 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsTotpUsedByList(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsTotpUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsTotpUsedByList(requestParameters: AuthenticatorsTotpUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsTotpUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsWebauthnDestroy without sending the request
      */
-    async authenticatorsWebauthnDestroyRequestOpts(
-        requestParameters: AuthenticatorsWebauthnDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsWebauthnDestroyRequestOpts(requestParameters: AuthenticatorsWebauthnDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnDestroy().'
             );
         }
 
@@ -6280,11 +5448,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6293,12 +5461,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnDestroyRaw(
-        requestParameters: AuthenticatorsWebauthnDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnDestroyRequestOpts(requestParameters);
+    async authenticatorsWebauthnDestroyRaw(requestParameters: AuthenticatorsWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.authenticatorsWebauthnDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -6307,39 +5471,34 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnDestroy(
-        requestParameters: AuthenticatorsWebauthnDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async authenticatorsWebauthnDestroy(requestParameters: AuthenticatorsWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.authenticatorsWebauthnDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for authenticatorsWebauthnList without sending the request
      */
-    async authenticatorsWebauthnListRequestOpts(
-        requestParameters: AuthenticatorsWebauthnListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async authenticatorsWebauthnListRequestOpts(requestParameters: AuthenticatorsWebauthnListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6357,7 +5516,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6366,25 +5525,17 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnListRaw(
-        requestParameters: AuthenticatorsWebauthnListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceList>> {
+    async authenticatorsWebauthnListRaw(requestParameters: AuthenticatorsWebauthnListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceList>> {
         const requestOptions = await this.authenticatorsWebauthnListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedWebAuthnDeviceListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedWebAuthnDeviceListFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnList(
-        requestParameters: AuthenticatorsWebauthnListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedWebAuthnDeviceList> {
+    async authenticatorsWebauthnList(requestParameters: AuthenticatorsWebauthnListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedWebAuthnDeviceList> {
         const response = await this.authenticatorsWebauthnListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6392,13 +5543,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsWebauthnPartialUpdate without sending the request
      */
-    async authenticatorsWebauthnPartialUpdateRequestOpts(
-        requestParameters: AuthenticatorsWebauthnPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsWebauthnPartialUpdateRequestOpts(requestParameters: AuthenticatorsWebauthnPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnPartialUpdate().'
             );
         }
 
@@ -6406,7 +5555,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6418,59 +5567,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedWebAuthnDeviceRequestToJSON(
-                requestParameters["patchedWebAuthnDeviceRequest"],
-            ),
+            body: PatchedWebAuthnDeviceRequestToJSON(requestParameters['patchedWebAuthnDeviceRequest']),
         };
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnPartialUpdateRaw(
-        requestParameters: AuthenticatorsWebauthnPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnPartialUpdateRequestOpts(requestParameters);
+    async authenticatorsWebauthnPartialUpdateRaw(requestParameters: AuthenticatorsWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsWebauthnPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnPartialUpdate(
-        requestParameters: AuthenticatorsWebauthnPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsWebauthnPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsWebauthnPartialUpdate(requestParameters: AuthenticatorsWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsWebauthnPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsWebauthnRetrieve without sending the request
      */
-    async authenticatorsWebauthnRetrieveRequestOpts(
-        requestParameters: AuthenticatorsWebauthnRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsWebauthnRetrieveRequestOpts(requestParameters: AuthenticatorsWebauthnRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnRetrieve().'
             );
         }
 
@@ -6488,11 +5621,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6501,50 +5634,36 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnRetrieveRaw(
-        requestParameters: AuthenticatorsWebauthnRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnRetrieveRequestOpts(requestParameters);
+    async authenticatorsWebauthnRetrieveRaw(requestParameters: AuthenticatorsWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsWebauthnRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnRetrieve(
-        requestParameters: AuthenticatorsWebauthnRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsWebauthnRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsWebauthnRetrieve(requestParameters: AuthenticatorsWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsWebauthnRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsWebauthnUpdate without sending the request
      */
-    async authenticatorsWebauthnUpdateRequestOpts(
-        requestParameters: AuthenticatorsWebauthnUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsWebauthnUpdateRequestOpts(requestParameters: AuthenticatorsWebauthnUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnUpdate().'
             );
         }
 
-        if (requestParameters["webAuthnDeviceRequest"] == null) {
+        if (requestParameters['webAuthnDeviceRequest'] == null) {
             throw new runtime.RequiredError(
-                "webAuthnDeviceRequest",
-                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsWebauthnUpdate().',
+                'webAuthnDeviceRequest',
+                'Required parameter "webAuthnDeviceRequest" was null or undefined when calling authenticatorsWebauthnUpdate().'
             );
         }
 
@@ -6552,7 +5671,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6564,57 +5683,43 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/webauthn/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: WebAuthnDeviceRequestToJSON(requestParameters["webAuthnDeviceRequest"]),
+            body: WebAuthnDeviceRequestToJSON(requestParameters['webAuthnDeviceRequest']),
         };
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnUpdateRaw(
-        requestParameters: AuthenticatorsWebauthnUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<WebAuthnDevice>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnUpdateRequestOpts(requestParameters);
+    async authenticatorsWebauthnUpdateRaw(requestParameters: AuthenticatorsWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDevice>> {
+        const requestOptions = await this.authenticatorsWebauthnUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            WebAuthnDeviceFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceFromJSON(jsonValue));
     }
 
     /**
      * Viewset for WebAuthn authenticator devices
      */
-    async authenticatorsWebauthnUpdate(
-        requestParameters: AuthenticatorsWebauthnUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<WebAuthnDevice> {
-        const response = await this.authenticatorsWebauthnUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsWebauthnUpdate(requestParameters: AuthenticatorsWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDevice> {
+        const response = await this.authenticatorsWebauthnUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for authenticatorsWebauthnUsedByList without sending the request
      */
-    async authenticatorsWebauthnUsedByListRequestOpts(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async authenticatorsWebauthnUsedByListRequestOpts(requestParameters: AuthenticatorsWebauthnUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnUsedByList().'
             );
         }
 
@@ -6632,11 +5737,11 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/authenticators/webauthn/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6645,12 +5750,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsWebauthnUsedByListRaw(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnUsedByListRequestOpts(requestParameters);
+    async authenticatorsWebauthnUsedByListRaw(requestParameters: AuthenticatorsWebauthnUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.authenticatorsWebauthnUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -6659,14 +5760,9 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async authenticatorsWebauthnUsedByList(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsWebauthnUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async authenticatorsWebauthnUsedByList(requestParameters: AuthenticatorsWebauthnUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.authenticatorsWebauthnUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

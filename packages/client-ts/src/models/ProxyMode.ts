@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ProxyMode = {
-    Proxy: "proxy",
-    ForwardSingle: "forward_single",
-    ForwardDomain: "forward_domain",
-    UnknownDefaultOpenApi: "11184809",
+    Proxy: 'proxy',
+    ForwardSingle: 'forward_single',
+    ForwardDomain: 'forward_domain',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ProxyMode = (typeof ProxyMode)[keyof typeof ProxyMode];
+export type ProxyMode = typeof ProxyMode[keyof typeof ProxyMode];
+
 
 export function instanceOfProxyMode(value: any): boolean {
     for (const key in ProxyMode) {
@@ -50,3 +51,4 @@ export function ProxyModeToJSON(value?: ProxyMode | null): any {
 export function ProxyModeToJSONTyped(value: any, ignoreDiscriminator: boolean): ProxyMode {
     return value as ProxyMode;
 }
+

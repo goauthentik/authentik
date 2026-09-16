@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
 
 /**
  * SCIMSourceUser Serializer
@@ -22,51 +23,39 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface SCIMSourceUser {
     /**
-     *
+     * 
      */
     id?: string;
     /**
-     *
+     * 
      */
     externalId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the SCIMSourceUser interface.
  */
 export function instanceOfSCIMSourceUser(value: object): value is SCIMSourceUser {
-    if (
-        (!("externalId" in (value as Record<string, any>)) &&
-            !("external_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalId"] === undefined &&
-            (value as Record<string, any>)["external_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if ((!('externalId' in (value as Record<string, any>)) && !('external_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalId'] === undefined && (value as Record<string, any>)['external_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -74,20 +63,18 @@ export function SCIMSourceUserFromJSON(json: any): SCIMSourceUser {
     return SCIMSourceUserFromJSONTyped(json, false);
 }
 
-export function SCIMSourceUserFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMSourceUser {
+export function SCIMSourceUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourceUser {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"] == null ? undefined : json["id"],
-        externalId: json["external_id"],
-        user: json["user"],
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        source: json["source"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'id': json['id'] == null ? undefined : json['id'],
+        'externalId': json['external_id'],
+        'user': json['user'],
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'source': json['source'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -95,19 +82,18 @@ export function SCIMSourceUserToJSON(json: any): SCIMSourceUser {
     return SCIMSourceUserToJSONTyped(json, false);
 }
 
-export function SCIMSourceUserToJSONTyped(
-    value?: Omit<SCIMSourceUser, "userObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMSourceUserToJSONTyped(value?: Omit<SCIMSourceUser, 'userObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        external_id: value["externalId"],
-        user: value["user"],
-        source: value["source"],
-        attributes: value["attributes"],
+        
+        'id': value['id'],
+        'external_id': value['externalId'],
+        'user': value['user'],
+        'source': value['source'],
+        'attributes': value['attributes'],
     };
 }
+

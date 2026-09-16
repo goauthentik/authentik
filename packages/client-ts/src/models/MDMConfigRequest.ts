@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceFactsOSFamily } from "./DeviceFactsOSFamily";
-import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./DeviceFactsOSFamily";
+import type { DeviceFactsOSFamily } from './DeviceFactsOSFamily';
+import {
+    DeviceFactsOSFamilyFromJSON,
+    DeviceFactsOSFamilyToJSON,
+} from './DeviceFactsOSFamily';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,27 +24,23 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
  */
 export interface MDMConfigRequest {
     /**
-     *
+     * 
      */
     platform: DeviceFactsOSFamily;
     /**
-     *
+     * 
      */
     enrollmentToken: string;
 }
+
+
 
 /**
  * Check if a given object implements the MDMConfigRequest interface.
  */
 export function instanceOfMDMConfigRequest(value: object): value is MDMConfigRequest {
-    if (!("platform" in value) || value["platform"] === undefined) return false;
-    if (
-        (!("enrollmentToken" in (value as Record<string, any>)) &&
-            !("enrollment_token" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["enrollmentToken"] === undefined &&
-            (value as Record<string, any>)["enrollment_token"] === undefined)
-    )
-        return false;
+    if (!('platform' in value) || value['platform'] === undefined) return false;
+    if ((!('enrollmentToken' in (value as Record<string, any>)) && !('enrollment_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['enrollmentToken'] === undefined && (value as Record<string, any>)['enrollment_token'] === undefined)) return false;
     return true;
 }
 
@@ -50,16 +48,14 @@ export function MDMConfigRequestFromJSON(json: any): MDMConfigRequest {
     return MDMConfigRequestFromJSONTyped(json, false);
 }
 
-export function MDMConfigRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MDMConfigRequest {
+export function MDMConfigRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MDMConfigRequest {
     if (json == null) {
         return json;
     }
     return {
-        platform: DeviceFactsOSFamilyFromJSON(json["platform"]),
-        enrollmentToken: json["enrollment_token"],
+        
+        'platform': DeviceFactsOSFamilyFromJSON(json['platform']),
+        'enrollmentToken': json['enrollment_token'],
     };
 }
 
@@ -67,16 +63,15 @@ export function MDMConfigRequestToJSON(json: any): MDMConfigRequest {
     return MDMConfigRequestToJSONTyped(json, false);
 }
 
-export function MDMConfigRequestToJSONTyped(
-    value?: MDMConfigRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MDMConfigRequestToJSONTyped(value?: MDMConfigRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        platform: DeviceFactsOSFamilyToJSON(value["platform"]),
-        enrollment_token: value["enrollmentToken"],
+        
+        'platform': DeviceFactsOSFamilyToJSON(value['platform']),
+        'enrollment_token': value['enrollmentToken'],
     };
 }
+

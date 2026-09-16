@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,23 +18,23 @@
  */
 export interface BlueprintInstanceRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     path?: string;
     /**
-     *
+     * 
      */
-    context?: { [key: string]: any };
+    context?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     content?: string;
 }
@@ -43,10 +42,8 @@ export interface BlueprintInstanceRequest {
 /**
  * Check if a given object implements the BlueprintInstanceRequest interface.
  */
-export function instanceOfBlueprintInstanceRequest(
-    value: object,
-): value is BlueprintInstanceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfBlueprintInstanceRequest(value: object): value is BlueprintInstanceRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -54,19 +51,17 @@ export function BlueprintInstanceRequestFromJSON(json: any): BlueprintInstanceRe
     return BlueprintInstanceRequestFromJSONTyped(json, false);
 }
 
-export function BlueprintInstanceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): BlueprintInstanceRequest {
+export function BlueprintInstanceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): BlueprintInstanceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        path: json["path"] == null ? undefined : json["path"],
-        context: json["context"] == null ? undefined : json["context"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        content: json["content"] == null ? undefined : json["content"],
+        
+        'name': json['name'],
+        'path': json['path'] == null ? undefined : json['path'],
+        'context': json['context'] == null ? undefined : json['context'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'content': json['content'] == null ? undefined : json['content'],
     };
 }
 
@@ -74,19 +69,18 @@ export function BlueprintInstanceRequestToJSON(json: any): BlueprintInstanceRequ
     return BlueprintInstanceRequestToJSONTyped(json, false);
 }
 
-export function BlueprintInstanceRequestToJSONTyped(
-    value?: BlueprintInstanceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function BlueprintInstanceRequestToJSONTyped(value?: BlueprintInstanceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        path: value["path"],
-        context: value["context"],
-        enabled: value["enabled"],
-        content: value["content"],
+        
+        'name': value['name'],
+        'path': value['path'],
+        'context': value['context'],
+        'enabled': value['enabled'],
+        'content': value['content'],
     };
 }
+

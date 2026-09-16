@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Agent } from "./Agent";
-import { AgentFromJSON, AgentToJSON } from "./Agent";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Agent } from './Agent';
+import {
+    AgentFromJSON,
+    AgentToJSON,
+} from './Agent';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAgentList
  */
 export interface PaginatedAgentList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Agent>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAgentList interface.
  */
 export function instanceOfPaginatedAgentList(value: object): value is PaginatedAgentList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedAgentListFromJSON(json: any): PaginatedAgentList {
     return PaginatedAgentListFromJSONTyped(json, false);
 }
 
-export function PaginatedAgentListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAgentList {
+export function PaginatedAgentListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAgentList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AgentFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AgentFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedAgentListToJSON(json: any): PaginatedAgentList {
     return PaginatedAgentListToJSONTyped(json, false);
 }
 
-export function PaginatedAgentListToJSONTyped(
-    value?: PaginatedAgentList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAgentListToJSONTyped(value?: PaginatedAgentList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AgentToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AgentToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

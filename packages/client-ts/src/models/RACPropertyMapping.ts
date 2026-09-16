@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface RACPropertyMapping {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -27,11 +26,11 @@ export interface RACPropertyMapping {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression?: string;
     /**
@@ -51,46 +50,22 @@ export interface RACPropertyMapping {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
-    staticSettings: { [key: string]: any };
+    staticSettings: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the RACPropertyMapping interface.
  */
 export function instanceOfRACPropertyMapping(value: object): value is RACPropertyMapping {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("staticSettings" in (value as Record<string, any>)) &&
-            !("static_settings" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["staticSettings"] === undefined &&
-            (value as Record<string, any>)["static_settings"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('staticSettings' in (value as Record<string, any>)) && !('static_settings' in (value as Record<string, any>))) || ((value as Record<string, any>)['staticSettings'] === undefined && (value as Record<string, any>)['static_settings'] === undefined)) return false;
     return true;
 }
 
@@ -98,28 +73,21 @@ export function RACPropertyMappingFromJSON(json: any): RACPropertyMapping {
     return RACPropertyMappingFromJSONTyped(json, false);
 }
 
-export function RACPropertyMappingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RACPropertyMapping {
+export function RACPropertyMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): RACPropertyMapping {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        staticSettings: json["static_settings"],
+        
+        'pk': json['pk'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'staticSettings': json['static_settings'],
     };
 }
 
@@ -127,21 +95,17 @@ export function RACPropertyMappingToJSON(json: any): RACPropertyMapping {
     return RACPropertyMappingToJSONTyped(json, false);
 }
 
-export function RACPropertyMappingToJSONTyped(
-    value?: Omit<
-        RACPropertyMapping,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RACPropertyMappingToJSONTyped(value?: Omit<RACPropertyMapping, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        static_settings: value["staticSettings"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'static_settings': value['staticSettings'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { TelegramSourcePropertyMapping } from "./TelegramSourcePropertyMapping";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { TelegramSourcePropertyMapping } from './TelegramSourcePropertyMapping';
 import {
     TelegramSourcePropertyMappingFromJSON,
     TelegramSourcePropertyMappingToJSON,
-} from "./TelegramSourcePropertyMapping";
+} from './TelegramSourcePropertyMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedTelegramSourcePropertyMappingList
  */
 export interface PaginatedTelegramSourcePropertyMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<TelegramSourcePropertyMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedTelegramSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedTelegramSourcePropertyMappingList(
-    value: object,
-): value is PaginatedTelegramSourcePropertyMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedTelegramSourcePropertyMappingList(value: object): value is PaginatedTelegramSourcePropertyMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedTelegramSourcePropertyMappingListFromJSON(
-    json: any,
-): PaginatedTelegramSourcePropertyMappingList {
+export function PaginatedTelegramSourcePropertyMappingListFromJSON(json: any): PaginatedTelegramSourcePropertyMappingList {
     return PaginatedTelegramSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedTelegramSourcePropertyMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedTelegramSourcePropertyMappingList {
+export function PaginatedTelegramSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTelegramSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(TelegramSourcePropertyMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(TelegramSourcePropertyMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedTelegramSourcePropertyMappingListToJSON(
-    json: any,
-): PaginatedTelegramSourcePropertyMappingList {
+export function PaginatedTelegramSourcePropertyMappingListToJSON(json: any): PaginatedTelegramSourcePropertyMappingList {
     return PaginatedTelegramSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedTelegramSourcePropertyMappingListToJSONTyped(
-    value?: PaginatedTelegramSourcePropertyMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedTelegramSourcePropertyMappingListToJSONTyped(value?: PaginatedTelegramSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(TelegramSourcePropertyMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(TelegramSourcePropertyMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

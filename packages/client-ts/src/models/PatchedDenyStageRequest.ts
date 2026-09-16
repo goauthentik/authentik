@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface PatchedDenyStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     denyMessage?: string;
 }
@@ -39,16 +38,14 @@ export function PatchedDenyStageRequestFromJSON(json: any): PatchedDenyStageRequ
     return PatchedDenyStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDenyStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedDenyStageRequest {
+export function PatchedDenyStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDenyStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        denyMessage: json["deny_message"] == null ? undefined : json["deny_message"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'denyMessage': json['deny_message'] == null ? undefined : json['deny_message'],
     };
 }
 
@@ -56,16 +53,15 @@ export function PatchedDenyStageRequestToJSON(json: any): PatchedDenyStageReques
     return PatchedDenyStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedDenyStageRequestToJSONTyped(
-    value?: PatchedDenyStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedDenyStageRequestToJSONTyped(value?: PatchedDenyStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deny_message: value["denyMessage"],
+        
+        'name': value['name'],
+        'deny_message': value['denyMessage'],
     };
 }
+

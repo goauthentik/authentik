@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,11 +22,11 @@ export interface PatchedSAMLSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,54 +34,40 @@ export interface PatchedSAMLSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedSAMLSourcePropertyMappingRequest interface.
  */
-export function instanceOfPatchedSAMLSourcePropertyMappingRequest(
-    value: object,
-): value is PatchedSAMLSourcePropertyMappingRequest {
+export function instanceOfPatchedSAMLSourcePropertyMappingRequest(value: object): value is PatchedSAMLSourcePropertyMappingRequest {
     return true;
 }
 
-export function PatchedSAMLSourcePropertyMappingRequestFromJSON(
-    json: any,
-): PatchedSAMLSourcePropertyMappingRequest {
+export function PatchedSAMLSourcePropertyMappingRequestFromJSON(json: any): PatchedSAMLSourcePropertyMappingRequest {
     return PatchedSAMLSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSAMLSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSAMLSourcePropertyMappingRequest {
+export function PatchedSAMLSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSAMLSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedSAMLSourcePropertyMappingRequestToJSON(
-    json: any,
-): PatchedSAMLSourcePropertyMappingRequest {
+export function PatchedSAMLSourcePropertyMappingRequestToJSON(json: any): PatchedSAMLSourcePropertyMappingRequest {
     return PatchedSAMLSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedSAMLSourcePropertyMappingRequestToJSONTyped(
-    value?: PatchedSAMLSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSAMLSourcePropertyMappingRequestToJSONTyped(value?: PatchedSAMLSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

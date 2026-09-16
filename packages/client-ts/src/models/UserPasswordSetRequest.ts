@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface UserPasswordSetRequest {
     /**
-     *
+     * 
      */
     password: string;
 }
@@ -28,7 +27,7 @@ export interface UserPasswordSetRequest {
  * Check if a given object implements the UserPasswordSetRequest interface.
  */
 export function instanceOfUserPasswordSetRequest(value: object): value is UserPasswordSetRequest {
-    if (!("password" in value) || value["password"] === undefined) return false;
+    if (!('password' in value) || value['password'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function UserPasswordSetRequestFromJSON(json: any): UserPasswordSetReques
     return UserPasswordSetRequestFromJSONTyped(json, false);
 }
 
-export function UserPasswordSetRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserPasswordSetRequest {
+export function UserPasswordSetRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserPasswordSetRequest {
     if (json == null) {
         return json;
     }
     return {
-        password: json["password"],
+        
+        'password': json['password'],
     };
 }
 
@@ -52,15 +49,14 @@ export function UserPasswordSetRequestToJSON(json: any): UserPasswordSetRequest 
     return UserPasswordSetRequestToJSONTyped(json, false);
 }
 
-export function UserPasswordSetRequestToJSONTyped(
-    value?: UserPasswordSetRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserPasswordSetRequestToJSONTyped(value?: UserPasswordSetRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        password: value["password"],
+        
+        'password': value['password'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface NotificationWebhookMapping {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,12 +34,10 @@ export interface NotificationWebhookMapping {
 /**
  * Check if a given object implements the NotificationWebhookMapping interface.
  */
-export function instanceOfNotificationWebhookMapping(
-    value: object,
-): value is NotificationWebhookMapping {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfNotificationWebhookMapping(value: object): value is NotificationWebhookMapping {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
@@ -48,17 +45,15 @@ export function NotificationWebhookMappingFromJSON(json: any): NotificationWebho
     return NotificationWebhookMappingFromJSONTyped(json, false);
 }
 
-export function NotificationWebhookMappingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationWebhookMapping {
+export function NotificationWebhookMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationWebhookMapping {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
@@ -66,16 +61,15 @@ export function NotificationWebhookMappingToJSON(json: any): NotificationWebhook
     return NotificationWebhookMappingToJSONTyped(json, false);
 }
 
-export function NotificationWebhookMappingToJSONTyped(
-    value?: Omit<NotificationWebhookMapping, "pk"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationWebhookMappingToJSONTyped(value?: Omit<NotificationWebhookMapping, 'pk'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        expression: value["expression"],
+        
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

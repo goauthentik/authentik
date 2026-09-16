@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,15 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
+import type { RedirectStageModeEnum } from './RedirectStageModeEnum';
 import {
     RedirectStageModeEnumFromJSON,
     RedirectStageModeEnumToJSON,
-} from "./RedirectStageModeEnum";
+} from './RedirectStageModeEnum';
 
 /**
  * RedirectStage Serializer
@@ -27,11 +28,11 @@ import {
  */
 export interface RedirectStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -51,63 +52,41 @@ export interface RedirectStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     keepContext?: boolean;
     /**
-     *
+     * 
      */
     mode: RedirectStageModeEnum;
     /**
-     *
+     * 
      */
     targetStatic?: string;
     /**
-     *
+     * 
      */
     targetFlow?: string | null;
 }
+
+
 
 /**
  * Check if a given object implements the RedirectStage interface.
  */
 export function instanceOfRedirectStage(value: object): value is RedirectStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("mode" in value) || value["mode"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('mode' in value) || value['mode'] === undefined) return false;
     return true;
 }
 
@@ -120,22 +99,18 @@ export function RedirectStageFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        keepContext: json["keep_context"] == null ? undefined : json["keep_context"],
-        mode: RedirectStageModeEnumFromJSON(json["mode"]),
-        targetStatic: json["target_static"] == null ? undefined : json["target_static"],
-        targetFlow:
-            json["target_flow"] === undefined
-                ? undefined
-                : json["target_flow"] === null
-                  ? null
-                  : json["target_flow"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'keepContext': json['keep_context'] == null ? undefined : json['keep_context'],
+        'mode': RedirectStageModeEnumFromJSON(json['mode']),
+        'targetStatic': json['target_static'] == null ? undefined : json['target_static'],
+        'targetFlow': json['target_flow'] === undefined ? undefined : json['target_flow'] === null ? null : json['target_flow'],
     };
 }
 
@@ -143,22 +118,18 @@ export function RedirectStageToJSON(json: any): RedirectStage {
     return RedirectStageToJSONTyped(json, false);
 }
 
-export function RedirectStageToJSONTyped(
-    value?: Omit<
-        RedirectStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RedirectStageToJSONTyped(value?: Omit<RedirectStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        keep_context: value["keepContext"],
-        mode: RedirectStageModeEnumToJSON(value["mode"]),
-        target_static: value["targetStatic"],
-        target_flow: value["targetFlow"],
+        
+        'name': value['name'],
+        'keep_context': value['keepContext'],
+        'mode': RedirectStageModeEnumToJSON(value['mode']),
+        'target_static': value['targetStatic'],
+        'target_flow': value['targetFlow'],
     };
 }
+

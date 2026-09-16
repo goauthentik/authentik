@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface UserRecoveryLinkRequest {
     /**
-     *
+     * 
      */
     tokenDuration?: string;
 }
@@ -35,15 +34,13 @@ export function UserRecoveryLinkRequestFromJSON(json: any): UserRecoveryLinkRequ
     return UserRecoveryLinkRequestFromJSONTyped(json, false);
 }
 
-export function UserRecoveryLinkRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserRecoveryLinkRequest {
+export function UserRecoveryLinkRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserRecoveryLinkRequest {
     if (json == null) {
         return json;
     }
     return {
-        tokenDuration: json["token_duration"] == null ? undefined : json["token_duration"],
+        
+        'tokenDuration': json['token_duration'] == null ? undefined : json['token_duration'],
     };
 }
 
@@ -51,15 +48,14 @@ export function UserRecoveryLinkRequestToJSON(json: any): UserRecoveryLinkReques
     return UserRecoveryLinkRequestToJSONTyped(json, false);
 }
 
-export function UserRecoveryLinkRequestToJSONTyped(
-    value?: UserRecoveryLinkRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserRecoveryLinkRequestToJSONTyped(value?: UserRecoveryLinkRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        token_duration: value["tokenDuration"],
+        
+        'token_duration': value['tokenDuration'],
     };
 }
+

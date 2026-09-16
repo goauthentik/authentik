@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const BindingTypeEnum = {
-    Redirect: "REDIRECT",
-    Post: "POST",
-    PostAuto: "POST_AUTO",
-    UnknownDefaultOpenApi: "11184809",
+    Redirect: 'REDIRECT',
+    Post: 'POST',
+    PostAuto: 'POST_AUTO',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type BindingTypeEnum = (typeof BindingTypeEnum)[keyof typeof BindingTypeEnum];
+export type BindingTypeEnum = typeof BindingTypeEnum[keyof typeof BindingTypeEnum];
+
 
 export function instanceOfBindingTypeEnum(value: any): boolean {
     for (const key in BindingTypeEnum) {
@@ -39,10 +40,7 @@ export function BindingTypeEnumFromJSON(json: any): BindingTypeEnum {
     return BindingTypeEnumFromJSONTyped(json, false);
 }
 
-export function BindingTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): BindingTypeEnum {
+export function BindingTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): BindingTypeEnum {
     return json as BindingTypeEnum;
 }
 
@@ -50,9 +48,7 @@ export function BindingTypeEnumToJSON(value?: BindingTypeEnum | null): any {
     return value as any;
 }
 
-export function BindingTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): BindingTypeEnum {
+export function BindingTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): BindingTypeEnum {
     return value as BindingTypeEnum;
 }
+

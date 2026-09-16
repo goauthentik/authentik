@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +11,31 @@
  * Do not edit the class manually.
  */
 
-import type { DuoResponseEnum } from "./DuoResponseEnum";
-import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum";
+import type { DuoResponseEnum } from './DuoResponseEnum';
+import {
+    DuoResponseEnumFromJSON,
+    DuoResponseEnumToJSON,
+} from './DuoResponseEnum';
 
 /**
- *
+ * 
  * @export
  * @interface DuoDeviceEnrollmentStatus
  */
 export interface DuoDeviceEnrollmentStatus {
     /**
-     *
+     * 
      */
     duoResponse: DuoResponseEnum;
 }
 
+
+
 /**
  * Check if a given object implements the DuoDeviceEnrollmentStatus interface.
  */
-export function instanceOfDuoDeviceEnrollmentStatus(
-    value: object,
-): value is DuoDeviceEnrollmentStatus {
-    if (
-        (!("duoResponse" in (value as Record<string, any>)) &&
-            !("duo_response" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["duoResponse"] === undefined &&
-            (value as Record<string, any>)["duo_response"] === undefined)
-    )
-        return false;
+export function instanceOfDuoDeviceEnrollmentStatus(value: object): value is DuoDeviceEnrollmentStatus {
+    if ((!('duoResponse' in (value as Record<string, any>)) && !('duo_response' in (value as Record<string, any>))) || ((value as Record<string, any>)['duoResponse'] === undefined && (value as Record<string, any>)['duo_response'] === undefined)) return false;
     return true;
 }
 
@@ -47,15 +43,13 @@ export function DuoDeviceEnrollmentStatusFromJSON(json: any): DuoDeviceEnrollmen
     return DuoDeviceEnrollmentStatusFromJSONTyped(json, false);
 }
 
-export function DuoDeviceEnrollmentStatusFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DuoDeviceEnrollmentStatus {
+export function DuoDeviceEnrollmentStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean): DuoDeviceEnrollmentStatus {
     if (json == null) {
         return json;
     }
     return {
-        duoResponse: DuoResponseEnumFromJSON(json["duo_response"]),
+        
+        'duoResponse': DuoResponseEnumFromJSON(json['duo_response']),
     };
 }
 
@@ -63,15 +57,14 @@ export function DuoDeviceEnrollmentStatusToJSON(json: any): DuoDeviceEnrollmentS
     return DuoDeviceEnrollmentStatusToJSONTyped(json, false);
 }
 
-export function DuoDeviceEnrollmentStatusToJSONTyped(
-    value?: DuoDeviceEnrollmentStatus | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DuoDeviceEnrollmentStatusToJSONTyped(value?: DuoDeviceEnrollmentStatus | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        duo_response: DuoResponseEnumToJSON(value["duoResponse"]),
+        
+        'duo_response': DuoResponseEnumToJSON(value['duoResponse']),
     };
 }
+

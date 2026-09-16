@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface GroupRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,19 +26,19 @@ export interface GroupRequest {
      */
     isSuperuser?: boolean;
     /**
-     *
+     * 
      */
     parents?: Array<string>;
     /**
-     *
+     * 
      */
     users?: Array<number>;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     roles?: Array<string>;
 }
@@ -48,7 +47,7 @@ export interface GroupRequest {
  * Check if a given object implements the GroupRequest interface.
  */
 export function instanceOfGroupRequest(value: object): value is GroupRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -61,12 +60,13 @@ export function GroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        name: json["name"],
-        isSuperuser: json["is_superuser"] == null ? undefined : json["is_superuser"],
-        parents: json["parents"] == null ? undefined : json["parents"],
-        users: json["users"] == null ? undefined : json["users"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        roles: json["roles"] == null ? undefined : json["roles"],
+        
+        'name': json['name'],
+        'isSuperuser': json['is_superuser'] == null ? undefined : json['is_superuser'],
+        'parents': json['parents'] == null ? undefined : json['parents'],
+        'users': json['users'] == null ? undefined : json['users'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'roles': json['roles'] == null ? undefined : json['roles'],
     };
 }
 
@@ -74,20 +74,19 @@ export function GroupRequestToJSON(json: any): GroupRequest {
     return GroupRequestToJSONTyped(json, false);
 }
 
-export function GroupRequestToJSONTyped(
-    value?: GroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupRequestToJSONTyped(value?: GroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        is_superuser: value["isSuperuser"],
-        parents: value["parents"],
-        users: value["users"],
-        attributes: value["attributes"],
-        roles: value["roles"],
+        
+        'name': value['name'],
+        'is_superuser': value['isSuperuser'],
+        'parents': value['parents'],
+        'users': value['users'],
+        'attributes': value['attributes'],
+        'roles': value['roles'],
     };
 }
+

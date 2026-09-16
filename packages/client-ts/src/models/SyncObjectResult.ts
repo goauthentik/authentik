@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { LogEvent } from "./LogEvent";
-import { LogEventFromJSON } from "./LogEvent";
+import type { LogEvent } from './LogEvent';
+import {
+    LogEventFromJSON,
+} from './LogEvent';
 
 /**
  * Result of a single object sync
@@ -22,7 +23,7 @@ import { LogEventFromJSON } from "./LogEvent";
  */
 export interface SyncObjectResult {
     /**
-     *
+     * 
      */
     readonly messages: Array<LogEvent>;
 }
@@ -31,7 +32,7 @@ export interface SyncObjectResult {
  * Check if a given object implements the SyncObjectResult interface.
  */
 export function instanceOfSyncObjectResult(value: object): value is SyncObjectResult {
-    if (!("messages" in value) || value["messages"] === undefined) return false;
+    if (!('messages' in value) || value['messages'] === undefined) return false;
     return true;
 }
 
@@ -39,15 +40,13 @@ export function SyncObjectResultFromJSON(json: any): SyncObjectResult {
     return SyncObjectResultFromJSONTyped(json, false);
 }
 
-export function SyncObjectResultFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SyncObjectResult {
+export function SyncObjectResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): SyncObjectResult {
     if (json == null) {
         return json;
     }
     return {
-        messages: (json["messages"] as Array<any>).map(LogEventFromJSON),
+        
+        'messages': ((json['messages'] as Array<any>).map(LogEventFromJSON)),
     };
 }
 
@@ -55,13 +54,13 @@ export function SyncObjectResultToJSON(json: any): SyncObjectResult {
     return SyncObjectResultToJSONTyped(json, false);
 }
 
-export function SyncObjectResultToJSONTyped(
-    value?: Omit<SyncObjectResult, "messages"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SyncObjectResultToJSONTyped(value?: Omit<SyncObjectResult, 'messages'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

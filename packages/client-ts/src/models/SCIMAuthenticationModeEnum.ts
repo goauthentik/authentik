@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,25 +11,24 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const SCIMAuthenticationModeEnum = {
-    Token: "token",
-    Oauth: "oauth",
-    OauthInteractive: "oauth_interactive",
-    UnknownDefaultOpenApi: "11184809",
+    Token: 'token',
+    Oauth: 'oauth',
+    OauthInteractive: 'oauth_interactive',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type SCIMAuthenticationModeEnum =
-    (typeof SCIMAuthenticationModeEnum)[keyof typeof SCIMAuthenticationModeEnum];
+export type SCIMAuthenticationModeEnum = typeof SCIMAuthenticationModeEnum[keyof typeof SCIMAuthenticationModeEnum];
+
 
 export function instanceOfSCIMAuthenticationModeEnum(value: any): boolean {
     for (const key in SCIMAuthenticationModeEnum) {
         if (Object.prototype.hasOwnProperty.call(SCIMAuthenticationModeEnum, key)) {
-            if (
-                SCIMAuthenticationModeEnum[key as keyof typeof SCIMAuthenticationModeEnum] === value
-            ) {
+            if (SCIMAuthenticationModeEnum[key as keyof typeof SCIMAuthenticationModeEnum] === value) {
                 return true;
             }
         }
@@ -42,10 +40,7 @@ export function SCIMAuthenticationModeEnumFromJSON(json: any): SCIMAuthenticatio
     return SCIMAuthenticationModeEnumFromJSONTyped(json, false);
 }
 
-export function SCIMAuthenticationModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMAuthenticationModeEnum {
+export function SCIMAuthenticationModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMAuthenticationModeEnum {
     return json as SCIMAuthenticationModeEnum;
 }
 
@@ -53,9 +48,7 @@ export function SCIMAuthenticationModeEnumToJSON(value?: SCIMAuthenticationModeE
     return value as any;
 }
 
-export function SCIMAuthenticationModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): SCIMAuthenticationModeEnum {
+export function SCIMAuthenticationModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SCIMAuthenticationModeEnum {
     return value as SCIMAuthenticationModeEnum;
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { GrantRequest } from "./GrantRequest";
-import { GrantRequestFromJSON, GrantRequestToJSON } from "./GrantRequest";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { GrantRequest } from './GrantRequest';
+import {
+    GrantRequestFromJSON,
+    GrantRequestToJSON,
+} from './GrantRequest';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedGrantRequestList
  */
 export interface PaginatedGrantRequestList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<GrantRequest>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedGrantRequestList interface.
  */
-export function instanceOfPaginatedGrantRequestList(
-    value: object,
-): value is PaginatedGrantRequestList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedGrantRequestList(value: object): value is PaginatedGrantRequestList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedGrantRequestListFromJSON(json: any): PaginatedGrantRequ
     return PaginatedGrantRequestListFromJSONTyped(json, false);
 }
 
-export function PaginatedGrantRequestListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedGrantRequestList {
+export function PaginatedGrantRequestListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGrantRequestList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(GrantRequestFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(GrantRequestFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedGrantRequestListToJSON(json: any): PaginatedGrantReques
     return PaginatedGrantRequestListToJSONTyped(json, false);
 }
 
-export function PaginatedGrantRequestListToJSONTyped(
-    value?: PaginatedGrantRequestList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedGrantRequestListToJSONTyped(value?: PaginatedGrantRequestList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(GrantRequestToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(GrantRequestToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

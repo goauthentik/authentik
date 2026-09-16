@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { SystemInfoRuntime } from "./SystemInfoRuntime";
-import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
+import { parseDateTime } from '../runtime';
+import type { SystemInfoRuntime } from './SystemInfoRuntime';
+import {
+    SystemInfoRuntimeFromJSON,
+    SystemInfoRuntimeToJSON,
+} from './SystemInfoRuntime';
 
 /**
  * Get system information.
@@ -25,7 +27,7 @@ export interface SystemInfo {
     /**
      * Get HTTP Request headers
      */
-    readonly httpHeaders: { [key: string]: string };
+    readonly httpHeaders: { [key: string]: string; };
     /**
      * Get HTTP host
      */
@@ -35,7 +37,7 @@ export interface SystemInfo {
      */
     readonly httpIsSecure: boolean;
     /**
-     *
+     * 
      */
     runtime: SystemInfoRuntime;
     /**
@@ -64,57 +66,15 @@ export interface SystemInfo {
  * Check if a given object implements the SystemInfo interface.
  */
 export function instanceOfSystemInfo(value: object): value is SystemInfo {
-    if (
-        (!("httpHeaders" in (value as Record<string, any>)) &&
-            !("http_headers" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["httpHeaders"] === undefined &&
-            (value as Record<string, any>)["http_headers"] === undefined)
-    )
-        return false;
-    if (
-        (!("httpHost" in (value as Record<string, any>)) &&
-            !("http_host" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["httpHost"] === undefined &&
-            (value as Record<string, any>)["http_host"] === undefined)
-    )
-        return false;
-    if (
-        (!("httpIsSecure" in (value as Record<string, any>)) &&
-            !("http_is_secure" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["httpIsSecure"] === undefined &&
-            (value as Record<string, any>)["http_is_secure"] === undefined)
-    )
-        return false;
-    if (!("runtime" in value) || value["runtime"] === undefined) return false;
-    if (!("brand" in value) || value["brand"] === undefined) return false;
-    if (
-        (!("serverTime" in (value as Record<string, any>)) &&
-            !("server_time" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["serverTime"] === undefined &&
-            (value as Record<string, any>)["server_time"] === undefined)
-    )
-        return false;
-    if (
-        (!("embeddedOutpostDisabled" in (value as Record<string, any>)) &&
-            !("embedded_outpost_disabled" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["embeddedOutpostDisabled"] === undefined &&
-            (value as Record<string, any>)["embedded_outpost_disabled"] === undefined)
-    )
-        return false;
-    if (
-        (!("embeddedOutpostHost" in (value as Record<string, any>)) &&
-            !("embedded_outpost_host" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["embeddedOutpostHost"] === undefined &&
-            (value as Record<string, any>)["embedded_outpost_host"] === undefined)
-    )
-        return false;
-    if (
-        (!("baseUrl" in (value as Record<string, any>)) &&
-            !("base_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["baseUrl"] === undefined &&
-            (value as Record<string, any>)["base_url"] === undefined)
-    )
-        return false;
+    if ((!('httpHeaders' in (value as Record<string, any>)) && !('http_headers' in (value as Record<string, any>))) || ((value as Record<string, any>)['httpHeaders'] === undefined && (value as Record<string, any>)['http_headers'] === undefined)) return false;
+    if ((!('httpHost' in (value as Record<string, any>)) && !('http_host' in (value as Record<string, any>))) || ((value as Record<string, any>)['httpHost'] === undefined && (value as Record<string, any>)['http_host'] === undefined)) return false;
+    if ((!('httpIsSecure' in (value as Record<string, any>)) && !('http_is_secure' in (value as Record<string, any>))) || ((value as Record<string, any>)['httpIsSecure'] === undefined && (value as Record<string, any>)['http_is_secure'] === undefined)) return false;
+    if (!('runtime' in value) || value['runtime'] === undefined) return false;
+    if (!('brand' in value) || value['brand'] === undefined) return false;
+    if ((!('serverTime' in (value as Record<string, any>)) && !('server_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['serverTime'] === undefined && (value as Record<string, any>)['server_time'] === undefined)) return false;
+    if ((!('embeddedOutpostDisabled' in (value as Record<string, any>)) && !('embedded_outpost_disabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['embeddedOutpostDisabled'] === undefined && (value as Record<string, any>)['embedded_outpost_disabled'] === undefined)) return false;
+    if ((!('embeddedOutpostHost' in (value as Record<string, any>)) && !('embedded_outpost_host' in (value as Record<string, any>))) || ((value as Record<string, any>)['embeddedOutpostHost'] === undefined && (value as Record<string, any>)['embedded_outpost_host'] === undefined)) return false;
+    if ((!('baseUrl' in (value as Record<string, any>)) && !('base_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['baseUrl'] === undefined && (value as Record<string, any>)['base_url'] === undefined)) return false;
     return true;
 }
 
@@ -127,16 +87,16 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        httpHeaders: json["http_headers"],
-        httpHost: json["http_host"],
-        httpIsSecure: json["http_is_secure"],
-        runtime: SystemInfoRuntimeFromJSON(json["runtime"]),
-        brand: json["brand"],
-        serverTime:
-            json["server_time"] == null ? json["server_time"] : parseDateTime(json["server_time"]),
-        embeddedOutpostDisabled: json["embedded_outpost_disabled"],
-        embeddedOutpostHost: json["embedded_outpost_host"],
-        baseUrl: json["base_url"],
+        
+        'httpHeaders': json['http_headers'],
+        'httpHost': json['http_host'],
+        'httpIsSecure': json['http_is_secure'],
+        'runtime': SystemInfoRuntimeFromJSON(json['runtime']),
+        'brand': json['brand'],
+        'serverTime': (json['server_time'] == null ? json['server_time'] : parseDateTime(json['server_time'])),
+        'embeddedOutpostDisabled': json['embedded_outpost_disabled'],
+        'embeddedOutpostHost': json['embedded_outpost_host'],
+        'baseUrl': json['base_url'],
     };
 }
 
@@ -144,25 +104,14 @@ export function SystemInfoToJSON(json: any): SystemInfo {
     return SystemInfoToJSONTyped(json, false);
 }
 
-export function SystemInfoToJSONTyped(
-    value?: Omit<
-        SystemInfo,
-        | "httpHeaders"
-        | "httpHost"
-        | "httpIsSecure"
-        | "brand"
-        | "serverTime"
-        | "embeddedOutpostDisabled"
-        | "embeddedOutpostHost"
-        | "baseUrl"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SystemInfoToJSONTyped(value?: Omit<SystemInfo, 'httpHeaders'|'httpHost'|'httpIsSecure'|'brand'|'serverTime'|'embeddedOutpostDisabled'|'embeddedOutpostHost'|'baseUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        runtime: SystemInfoRuntimeToJSON(value["runtime"]),
+        
+        'runtime': SystemInfoRuntimeToJSON(value['runtime']),
     };
 }
+

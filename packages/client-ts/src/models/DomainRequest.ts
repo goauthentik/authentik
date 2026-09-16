@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface DomainRequest {
     /**
-     *
+     * 
      */
     domain: string;
     /**
-     *
+     * 
      */
     isPrimary?: boolean;
     /**
-     *
+     * 
      */
     tenant: string;
 }
@@ -36,8 +35,8 @@ export interface DomainRequest {
  * Check if a given object implements the DomainRequest interface.
  */
 export function instanceOfDomainRequest(value: object): value is DomainRequest {
-    if (!("domain" in value) || value["domain"] === undefined) return false;
-    if (!("tenant" in value) || value["tenant"] === undefined) return false;
+    if (!('domain' in value) || value['domain'] === undefined) return false;
+    if (!('tenant' in value) || value['tenant'] === undefined) return false;
     return true;
 }
 
@@ -50,9 +49,10 @@ export function DomainRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        domain: json["domain"],
-        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
-        tenant: json["tenant"],
+        
+        'domain': json['domain'],
+        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
+        'tenant': json['tenant'],
     };
 }
 
@@ -60,17 +60,16 @@ export function DomainRequestToJSON(json: any): DomainRequest {
     return DomainRequestToJSONTyped(json, false);
 }
 
-export function DomainRequestToJSONTyped(
-    value?: DomainRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DomainRequestToJSONTyped(value?: DomainRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        domain: value["domain"],
-        is_primary: value["isPrimary"],
-        tenant: value["tenant"],
+        
+        'domain': value['domain'],
+        'is_primary': value['isPrimary'],
+        'tenant': value['tenant'],
     };
 }
+
