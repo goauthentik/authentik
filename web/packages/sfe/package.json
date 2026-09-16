@@ -9,8 +9,8 @@
     },
     "scripts": {
         "build": "rollup -c rollup.config.mjs --bundleConfigAsCjs",
-        "prettier": "prettier --cache --write -u .",
-        "prettier-check": "prettier --cache --check -u .",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint:oxfmt": "oxfmt --check .",
         "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
     },
     "dependencies": {

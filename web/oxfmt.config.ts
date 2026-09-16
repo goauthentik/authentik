@@ -11,4 +11,23 @@ const config = await import("@goauthentik/oxfmt-config-dev")
     })
     .then((module) => module.default);
 
-export default config;
+export default {
+    ...config,
+    // Carried over from the former .prettierignore.
+    ignorePatterns: [
+        "node_modules",
+        "coverage",
+        "dist",
+        "out",
+        "storybook-static",
+        ".storybook/css-import-maps*",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "**/LICENSE",
+        "**/*.min.js",
+        "**/*.min.css",
+        // Generated, and import order matters.
+        "src/locale-codes.ts",
+        "src/locales/**",
+    ],
+};

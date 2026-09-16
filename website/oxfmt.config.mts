@@ -13,5 +13,8 @@ export default {
         "help/**",
         "static/**",
         "scripts/docsmg/target/**",
+        "build",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
     ],
 };
