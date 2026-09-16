@@ -5661,6 +5661,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - {}
       responses:
         '201':
           description: No response body

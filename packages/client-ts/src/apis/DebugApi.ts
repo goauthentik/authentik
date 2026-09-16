@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -16,15 +14,9 @@ import { type ServerLogRequest, ServerLogRequestToJSON } from "../models/ServerL
 import * as runtime from "../runtime";
 
 export interface DebugLogCreateRequest {
-    /**
-     *
-     */
     serverLogRequest: ServerLogRequest;
 }
 
-/**
- *
- */
 export class DebugApi extends runtime.BaseAPI {
     /**
      * Creates request options for debugLogCreate without sending the request
@@ -54,7 +46,7 @@ export class DebugApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/debug/log/`;
+        const urlPath = `/debug/log/`;
 
         return {
             path: urlPath,
@@ -66,7 +58,8 @@ export class DebugApi extends runtime.BaseAPI {
     }
 
     /**
-     * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools aren\'t available.  Never available in production.
+     * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools
+     * aren't available. Never available in production.
      */
     async debugLogCreateRaw(
         requestParameters: DebugLogCreateRequest,
@@ -79,7 +72,8 @@ export class DebugApi extends runtime.BaseAPI {
     }
 
     /**
-     * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools aren\'t available.  Never available in production.
+     * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools
+     * aren't available. Never available in production.
      */
     async debugLogCreate(
         requestParameters: DebugLogCreateRequest,
