@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -30,20 +28,16 @@ import { SubModeEnumFromJSON, SubModeEnumToJSON } from "./SubModeEnum";
 
 /**
  * OAuth2Provider Serializer
+ *
  * @export
  * @interface OAuth2Provider
  */
 export interface OAuth2Provider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -54,9 +48,6 @@ export interface OAuth2Provider {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -91,23 +82,16 @@ export interface OAuth2Provider {
      */
     readonly metaModelName: string;
     /**
-     * Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+     * Confidential clients are capable of maintaining the confidentiality of their credentials.
+     * Public clients are incapable
      */
     clientType?: ClientTypeEnum;
-    /**
-     *
-     */
     grantTypes?: Array<GrantTypeEnum>;
-    /**
-     *
-     */
     clientId?: string;
-    /**
-     *
-     */
     secret?: string | null;
     /**
-     * Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
+     * Access codes not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     accessCodeValidity?: string;
     /**
@@ -119,11 +103,14 @@ export interface OAuth2Provider {
      */
     refreshTokenValidity?: string;
     /**
-     * When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).
+     * When refreshing a token, if the refresh token is valid for less than this duration, it will
+     * be renewed. When set to seconds=0, token will always be renewed. (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     refreshTokenThreshold?: string;
     /**
-     * Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
+     * Include User claims from scopes in the id_token, for applications that don't access the
+     * userinfo endpoint.
      */
     includeClaimsInIdToken?: boolean;
     /**
@@ -134,33 +121,22 @@ export interface OAuth2Provider {
      * Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
      */
     encryptionKey?: string | null;
-    /**
-     *
-     */
     redirectUris: Array<RedirectURI>;
-    /**
-     *
-     */
     logoutUri?: string;
     /**
      * Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
      */
     logoutMethod?: OAuth2ProviderLogoutMethodEnum;
     /**
-     * Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+     * Configure what data should be used as unique User Identifier. For most cases, the default
+     * should be fine.
      */
     subMode?: SubModeEnum;
     /**
      * Configure how the issuer field of the ID Token should be filled.
      */
     issuerMode?: IssuerModeEnum;
-    /**
-     *
-     */
     jwtFederationSources?: Array<string>;
-    /**
-     *
-     */
     jwtFederationProviders?: Array<number>;
 }
 

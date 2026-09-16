@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { torusIndex } from "#common/collections";
 import { PFSize } from "#common/enums";
 
@@ -23,11 +22,11 @@ import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
 
 import Fuse, { Expression } from "fuse.js";
+import { guard } from "lit-html/directives/guard.js";
+import { createRef, ref } from "lit-html/directives/ref.js";
 
 import { msg, str } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -64,6 +63,7 @@ export class AKCommandPaletteModal extends AKModal {
     public set value(nextValue: string) {
         if (!this.autofocusTarget.target) {
             this.initialValue = nextValue;
+
             return;
         }
 
@@ -258,7 +258,7 @@ export class AKCommandPaletteModal extends AKModal {
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async (data, event) => {
+                action: async (_data, event) => {
                     event?.stopPropagation();
 
                     const userPalette = this.ownerDocument.createElement(
@@ -370,6 +370,7 @@ export class AKCommandPaletteModal extends AKModal {
 
         // Build render-ordered list that matches the grouped display order.
         const grouped = Object.groupBy(filteredCommands, (command) => command.group || "");
+
         this.#renderOrderedCommands = Object.values(
             grouped,
         ).flat() as PaletteCommandDefinition<unknown>[];
@@ -420,6 +421,7 @@ export class AKCommandPaletteModal extends AKModal {
 
         if (!command) {
             this.logger.warn("No command found for index:", commandIndex);
+
             return;
         }
 
@@ -454,7 +456,9 @@ export class AKCommandPaletteModal extends AKModal {
         const visibleCommandsCount = this.filteredCommands.length;
 
         if (!this.open) return;
+
         if (!visibleCommandsCount) return;
+
         if (event.shiftKey || event.altKey) return;
 
         switch (event.key) {
@@ -570,28 +574,32 @@ export class AKCommandPaletteModal extends AKModal {
                                                 aria-labelledby="command-${currentIndex}-label"
                                                 aria-describedby="command-${currentIndex}-description"
                                             >
-                                                ${formattedPrefix
-                                                    ? html`<div
-                                                          part="command-item-prefix"
-                                                          id="command-${currentIndex}-prefix"
-                                                      >
-                                                          ${formattedPrefix}
-                                                      </div>`
-                                                    : null}
+                                                ${
+                                                    formattedPrefix
+                                                        ? html`<div
+                                                              part="command-item-prefix"
+                                                              id="command-${currentIndex}-prefix"
+                                                          >
+                                                              ${formattedPrefix}
+                                                          </div>`
+                                                        : null
+                                                }
                                                 <div
                                                     part="command-item-label"
                                                     id="command-${currentIndex}-label"
                                                 >
                                                     ${label}
                                                 </div>
-                                                ${suffix
-                                                    ? html`<div
-                                                          part="command-item-suffix"
-                                                          id="command-${currentIndex}-suffix"
-                                                      >
-                                                          ${suffix}
-                                                      </div>`
-                                                    : null}
+                                                ${
+                                                    suffix
+                                                        ? html`<div
+                                                              part="command-item-suffix"
+                                                              id="command-${currentIndex}-suffix"
+                                                          >
+                                                              ${suffix}
+                                                          </div>`
+                                                        : null
+                                                }
                                                 <div
                                                     part="command-item-description"
                                                     id="command-${currentIndex}-description"
@@ -624,9 +632,9 @@ export class AKCommandPaletteModal extends AKModal {
                 role="combobox"
                 aria-label=${msg("Command palette")}
                 aria-haspopup="listbox"
-                aria-activedescendant=${this.selectionIndex === -1
-                    ? ""
-                    : `command-${this.selectionIndex}`}
+                aria-activedescendant=${
+                    this.selectionIndex === -1 ? "" : `command-${this.selectionIndex}`
+                }
             >
                 <div part="command-field">
                     <label

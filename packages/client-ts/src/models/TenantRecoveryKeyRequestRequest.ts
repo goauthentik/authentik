@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Tenant recovery key creation request serializer
+ *
  * @export
  * @interface TenantRecoveryKeyRequestRequest
  */
 export interface TenantRecoveryKeyRequestRequest {
-    /**
-     *
-     */
     user: string;
-    /**
-     *
-     */
     durationDays: number;
 }
 

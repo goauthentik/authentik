@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -41,9 +39,6 @@ export interface ManagedBlueprintsApplyCreateRequest {
 }
 
 export interface ManagedBlueprintsCreateRequest {
-    /**
-     *
-     */
     blueprintInstanceRequest: BlueprintInstanceRequest;
 }
 
@@ -55,24 +50,12 @@ export interface ManagedBlueprintsDestroyRequest {
 }
 
 export interface ManagedBlueprintsImportCreateRequest {
-    /**
-     *
-     */
     file?: Blob;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     context?: string;
 }
 
 export interface ManagedBlueprintsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -86,9 +69,6 @@ export interface ManagedBlueprintsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     path?: string;
     /**
      * A search term.
@@ -101,9 +81,6 @@ export interface ManagedBlueprintsPartialUpdateRequest {
      * A UUID string identifying this Blueprint Instance.
      */
     instanceUuid: string;
-    /**
-     *
-     */
     patchedBlueprintInstanceRequest?: PatchedBlueprintInstanceRequest;
 }
 
@@ -119,9 +96,6 @@ export interface ManagedBlueprintsUpdateRequest {
      * A UUID string identifying this Blueprint Instance.
      */
     instanceUuid: string;
-    /**
-     *
-     */
     blueprintInstanceRequest: BlueprintInstanceRequest;
 }
 
@@ -133,23 +107,11 @@ export interface ManagedBlueprintsUsedByListRequest {
 }
 
 export interface ManagedBlueprintsValidateCreateRequest {
-    /**
-     *
-     */
     file?: Blob;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     context?: string;
 }
 
-/**
- *
- */
 export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsApplyCreate without sending the request
@@ -238,7 +200,7 @@ export class ManagedApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/managed/blueprints/available/`;
+        const urlPath = `/managed/blueprints/available/`;
 
         return {
             path: urlPath,
@@ -300,7 +262,7 @@ export class ManagedApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/managed/blueprints/`;
+        const urlPath = `/managed/blueprints/`;
 
         return {
             path: urlPath,
@@ -444,7 +406,7 @@ export class ManagedApi extends runtime.BaseAPI {
             formParams.append("context", requestParameters["context"] as any);
         }
 
-        let urlPath = `/managed/blueprints/import/`;
+        const urlPath = `/managed/blueprints/import/`;
 
         return {
             path: urlPath,
@@ -528,7 +490,7 @@ export class ManagedApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/managed/blueprints/`;
+        const urlPath = `/managed/blueprints/`;
 
         return {
             path: urlPath,
@@ -892,7 +854,7 @@ export class ManagedApi extends runtime.BaseAPI {
             formParams.append("context", requestParameters["context"] as any);
         }
 
-        let urlPath = `/managed/blueprints/validate/`;
+        const urlPath = `/managed/blueprints/validate/`;
 
         return {
             path: urlPath,

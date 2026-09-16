@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,50 +19,19 @@ import type { DeviceUserBinding } from "./DeviceUserBinding";
 import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
 
 /**
- *
  * @export
  * @interface EndpointDevice
  */
 export interface EndpointDevice {
-    /**
-     *
-     */
     deviceUuid?: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     accessGroup?: string | null;
-    /**
-     *
-     */
     accessGroupObj?: DeviceAccessGroup;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     readonly facts: DeviceFactSnapshot | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly primaryBindingObj: DeviceUserBinding | null;
 }
 

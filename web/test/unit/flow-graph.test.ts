@@ -231,6 +231,7 @@ describe("buildFlowGraph", () => {
 
     it("returns each node keyed by the mermaid id it was assigned", () => {
         const stage = makeNode("stage_0", DiagramNodeTypeEnum.Stage, { pk: "stage-pk" });
+
         const { nodes } = buildFlowGraph(
             makeGraph([makeNode("flow_start", DiagramNodeTypeEnum.FlowStart), stage], []),
         );
