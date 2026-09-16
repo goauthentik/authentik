@@ -76,12 +76,6 @@ class TokenView(View):
             return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
-        LOGGER.debug(
-            "token request",
-            version=version,
-            grant_type=grant_type,
-            post_keys=list(request.POST.keys()),
-        )
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
             .replace("+", "_")
@@ -98,10 +92,8 @@ class TokenView(View):
     def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
-        LOGGER.debug(
-            "token header", typ=header.get("typ"), kid=header.get("kid"), alg=header.get("alg")
-        )
         expected_kid = header["kid"]
+        LOGGER.debug("token header", typ=header.get("typ"), kid=expected_kid)
 
         self.device_connection = (
             AgentDeviceConnection.objects.filter(apple_sign_key_id=expected_kid)
@@ -112,19 +104,16 @@ class TokenView(View):
             LOGGER.warning("No device connection found for key ID", kid=expected_kid)
             return None
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
-        LOGGER.debug("got device", device=self.device_connection.device)
+        if not self.device_connection.apple_signing_key:
+            LOGGER.warning("Failed to issue token for device, no apple_signing_key")
+            raise ValidationError("Invalid request")
 
         kwargs = {"issuer": str(self.connector.pk)}
-        if header["typ"] in ("platformsso-key-request+jwt", "platformsso-key-exchange-request+jwt"):
-            pass
-        elif header["typ"] == "platformsso-login-request+jwt":
-            expected_aud = self.request.build_absolute_uri(
+        # Only login requests carry an audience claim, key requests/exchanges don't
+        if header["typ"] == "platformsso-login-request+jwt":
+            kwargs["audience"] = self.request.build_absolute_uri(
                 reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
             )
-            if not self.device_connection.apple_signing_key:
-                LOGGER.warning("Failed to issue token for device, no apple_signing_key")
-                raise ValidationError("Invalid request")
-            kwargs["audience"] = expected_aud
         # Properly decode the JWT with the key from the device
         decoded = decode(
             assertion, self.device_connection.apple_signing_key, algorithms=["ES256"], **kwargs
@@ -169,11 +158,10 @@ class TokenView(View):
         return device_user, decoded
 
     @staticmethod
-    def _ecdh_shared_key(cert_private_key_pem: str, other_publickey_b64: str) -> bytes:
-        """Compute an ECDH shared secret between our unlock cert's private key and the
-        device's ephemeral public key sent in the current request. The device regenerates
-        its side of this exchange per-request, so `other_publickey` must always come from
-        the request being handled, never a value cached from registration or a prior request."""
+    def ecdh_shared_key(cert_private_key_pem: str, other_publickey_b64: str) -> bytes:
+        """ECDH between our unlock key and the device's ephemeral public key. The device
+        regenerates its side per-request, so `other_publickey` must come from the request
+        being handled, never from registration or a previous request."""
         private_key = serialization.load_pem_private_key(
             cert_private_key_pem.encode(), password=None
         )
@@ -226,92 +214,93 @@ class TokenView(View):
             algorithm=JWTAlgorithms.from_private_key(kp.private_key),
         )
 
-    def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
-        LOGGER.debug(
-            "v1.0 login JWT payload",
-            jwt_keys=list(self.jwt_request.keys()),
-            has_other_publickey="other_publickey" in self.jwt_request,
-            has_key_context="key_context" in self.jwt_request,
-            grant_type=self.jwt_request.get("grant_type"),
-            additional_scopes=self.jwt_request.get("additionalScopes"),
-            scope=self.jwt_request.get("scope"),
-        )
-        if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
-            user = AgentDeviceUserBinding.objects.filter(
-                user__username=self.jwt_request["sub"]
-            ).first()
-        else:
-            try:
-                user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
-            except PyJWTError as exc:
-                LOGGER.warning("failed to validate inner assertion", exc=exc)
-                raise ValidationError("Invalid request") from None
-        id_token = self.create_id_token(user.user)
+    def login_response(self, user: User) -> JWEResponse:
+        """Build the shared login response for both the jwt-bearer and authorization_code
+        grants, optionally including the ECDH key material for lock-screen unlock."""
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
             connector=self.connector,
-            user=user.user,
+            user=user,
             device_token=self.nonce.device_token,
         )
-        response_body = {
+        body = {
             "refresh_token": auth_token.token,
-            "refresh_token_expires_in": int((auth_token.expires - now()).total_seconds()),
-            "id_token": id_token,
+            "refresh_token_expires_in": int((auth_token.expires - self.now).total_seconds()),
+            "id_token": self.create_id_token(user),
             "token_type": TOKEN_TYPE,
-            "session_key": self.create_auth_session(user.user),
+            "session_key": self.create_auth_session(user),
         }
-        scope = self.jwt_request.get("scope", "")
-        if "urn:apple:platformsso:auth:unlock" in scope:
+        if "urn:apple:platformsso:auth:unlock" in self.jwt_request.get("scope", ""):
             unlock_key = (
                 AppleUnlockKey.objects.filter(
-                    device_user__user=user.user,
+                    device_user__user=user,
                     device_user__target=self.device_connection.device,
                 )
                 .order_by("-expires")
                 .first()
             )
             other_publickey = self.jwt_request.get("other_publickey")
-            if unlock_key and other_publickey:
-                try:
-                    shared_key = self._ecdh_shared_key(unlock_key.private_key, other_publickey)
-                    response_body["key"] = b64encode(shared_key).decode()
-                    response_body["key_context"] = str(unlock_key.identifier)
-                    LOGGER.debug(
-                        "Computed unlock ECDH key",
-                        key_context=str(unlock_key.identifier),
-                        shared_key_len=len(shared_key),
-                    )
-                except Exception as exc:
-                    LOGGER.warning("Failed to compute unlock ECDH key", exc=exc)
-            else:
+            if not unlock_key or not other_publickey:
                 LOGGER.warning(
-                    "auth:unlock scope requested but no unlock key or other_publickey available",
-                    has_unlock_key=unlock_key is not None,
-                    has_other_publickey=bool(other_publickey),
+                    "auth:unlock requested without a provisioned key or public key", user=user
                 )
+            else:
+                body["key"] = b64encode(
+                    self.ecdh_shared_key(unlock_key.private_key, other_publickey)
+                ).decode()
+                body["key_context"] = str(unlock_key.identifier)
+                LOGGER.debug("Attached unlock key", key_context=unlock_key.identifier)
         return JWEResponse(
-            response_body,
+            body,
             device=self.device_connection,
             apv=self.jwt_request["jwe_crypto"]["apv"],
         )
 
-    def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
+    def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
+        if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
+            device_user = AgentDeviceUserBinding.objects.filter(
+                target=self.device_connection.device, user__username=self.jwt_request["sub"]
+            ).first()
+            if not device_user:
+                LOGGER.warning("No device user binding for token exchange")
+                raise ValidationError("Invalid request")
+        else:
+            try:
+                device_user, _ = self.validate_embedded_assertion(self.jwt_request["assertion"])
+            except PyJWTError as exc:
+                LOGGER.warning("failed to validate inner assertion", exc=exc)
+                raise ValidationError("Invalid request") from exc
+        return self.login_response(device_user.user)
+
+    def handle_v1_0_authorization_code(self) -> HttpResponse:
+        code = self.request.POST.get("code")
+        if not code:
+            return HttpResponse(status=400)
+        auth_code = AppleAuthorizationCode.objects.filter(
+            code=code,
+            connector=self.connector,
+        ).first()
+        if not auth_code:
+            LOGGER.warning("Authorization code not found")
+            return HttpResponse(status=400)
+        user = auth_code.user
+        auth_code.delete()
+        return self.login_response(user)
+
+    def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
         request_type = self.jwt_request.get("request_type")
-        LOGGER.debug(
-            "v2 request", request_type=request_type, jwt_keys=list(self.jwt_request.keys())
-        )
+        LOGGER.debug("v2.0 request", request_type=request_type)
         if request_type == "key_request":
-            return self._handle_key_request()
+            return self.handle_key_request()
         if request_type == "key_exchange":
-            return self._handle_key_exchange()
+            return self.handle_key_exchange()
         LOGGER.debug("Unknown request_type for v2.0", request_type=request_type)
         return HttpResponse(status=400)
 
-    def _validate_refresh_token(self) -> DeviceAuthenticationToken:
-        token = self.jwt_request.get("refresh_token")
+    def validate_refresh_token(self) -> DeviceAuthenticationToken:
         auth_token = (
             DeviceAuthenticationToken.objects.filter(
-                token=token,
+                token=self.jwt_request.get("refresh_token"),
                 device=self.device_connection.device,
             )
             .select_related("user")
@@ -319,24 +308,10 @@ class TokenView(View):
         )
         if not auth_token:
             raise ValidationError("Invalid refresh token")
-        if auth_token.expires < now():
-            auth_token.delete()
-            raise ValidationError("Expired refresh token")
         return auth_token
 
-    def _handle_key_request(self) -> HttpResponse:
-        auth_token = self._validate_refresh_token()
-        LOGGER.debug(
-            "key_request JWT payload keys",
-            jwt_keys=list(self.jwt_request.keys()),
-            has_other_publickey="other_publickey" in self.jwt_request,
-            key_purpose=self.jwt_request.get("key_purpose"),
-            jwe_crypto_keys=(
-                list(self.jwt_request.get("jwe_crypto", {}).keys())
-                if self.jwt_request.get("jwe_crypto")
-                else None
-            ),
-        )
+    def handle_key_request(self) -> HttpResponse:
+        auth_token = self.validate_refresh_token()
         device_user = AgentDeviceUserBinding.objects.filter(
             target=self.device_connection.device,
             user=auth_token.user,
@@ -346,21 +321,16 @@ class TokenView(View):
             return HttpResponse(status=400)
 
         expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
-
-        # Reuse an existing valid key so macOS sees the same public key hash and
-        # does not attempt to rotate (rotation requires the login-window XPC service).
-        existing = AppleUnlockKey.objects.filter(
-            device_user=device_user,
-            expires__gt=self.now,
-        ).first()
-
-        if existing and existing.certificate_der:
-            # Return the exact same certificate bytes so macOS sees an identical
-            # tokenID (SHA-1 of public key) and does not attempt key rotation,
-            # which would require com.apple.PlatformSSO.login.service-xpc.
-            cert_b64 = existing.certificate_der
-            unlock_key = existing
-            LOGGER.debug("Reusing existing unlock key", device=device_user.target)
+        # Return the same certificate bytes for as long as the key is valid, so macOS sees an
+        # identical tokenID (SHA-1 of the public key) and doesn't attempt to rotate the key,
+        # which would require com.apple.PlatformSSO.login.service-xpc.
+        unlock_key = (
+            AppleUnlockKey.objects.filter(device_user=device_user)
+            .exclude(certificate_der="")
+            .first()
+        )
+        if unlock_key:
+            LOGGER.debug("Reusing unlock key", key_context=unlock_key.identifier)
         else:
             private_key = generate_private_key(SECP256R1())
             subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)])
@@ -375,11 +345,11 @@ class TokenView(View):
                 .add_extension(
                     x509.KeyUsage(
                         digital_signature=True,
+                        key_agreement=True,
                         key_cert_sign=False,
                         content_commitment=False,
                         key_encipherment=False,
                         data_encipherment=False,
-                        key_agreement=True,
                         crl_sign=False,
                         encipher_only=False,
                         decipher_only=False,
@@ -392,11 +362,6 @@ class TokenView(View):
                 )
                 .sign(private_key, hashes.SHA256())
             )
-            cert_b64 = (
-                urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER))
-                .rstrip(b"=")
-                .decode()
-            )
             unlock_key = AppleUnlockKey.objects.create(
                 device_user=device_user,
                 private_key=private_key.private_bytes(
@@ -404,13 +369,15 @@ class TokenView(View):
                     format=serialization.PrivateFormat.PKCS8,
                     encryption_algorithm=serialization.NoEncryption(),
                 ).decode(),
-                certificate_der=cert_b64,
+                certificate_der=urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER))
+                .rstrip(b"=")
+                .decode(),
                 expires=expires_at,
             )
-            LOGGER.debug("Created unlock key", device=device_user.target)
+            LOGGER.debug("Created unlock key", key_context=unlock_key.identifier)
         return JWEResponse(
             {
-                "certificate": cert_b64,
+                "certificate": unlock_key.certificate_der,
                 "exp": int(expires_at.timestamp()),
                 "iat": int(self.now.timestamp()),
                 "key_context": str(unlock_key.identifier),
@@ -420,37 +387,30 @@ class TokenView(View):
             typ="platformsso-key-response+jwt",
         )
 
-    def _handle_key_exchange(self) -> HttpResponse:
-        LOGGER.debug("_handle_key_exchange called", jwt_keys=list(self.jwt_request.keys()))
-        auth_token = self._validate_refresh_token()
-
-        raw_context = self.jwt_request.get("key_context")
-        if not raw_context:
-            LOGGER.warning("Missing key_context in key exchange request")
-            return HttpResponse(status=400)
+    def handle_key_exchange(self) -> HttpResponse:
+        auth_token = self.validate_refresh_token()
         try:
-            key_context_uuid = UUID(raw_context)
+            key_context = UUID(self.jwt_request.get("key_context", ""))
         except ValueError:
-            LOGGER.warning("Invalid key_context UUID", key_context=raw_context)
+            LOGGER.warning("Missing or invalid key_context in key exchange request")
             return HttpResponse(status=400)
-
         unlock_key = AppleUnlockKey.objects.filter(
-            identifier=key_context_uuid,
+            identifier=key_context,
             device_user__user=auth_token.user,
             device_user__target=self.device_connection.device,
         ).first()
         if not unlock_key:
-            LOGGER.warning("No unlock key found for key_context", key_context=raw_context)
+            LOGGER.warning("No unlock key found for key_context", key_context=key_context)
             return HttpResponse(status=400)
 
-        shared_key = self._ecdh_shared_key(
-            unlock_key.private_key, self.jwt_request["other_publickey"]
-        )
         expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
-
         return JWEResponse(
             {
-                "key": b64encode(shared_key).decode(),
+                "key": b64encode(
+                    self.ecdh_shared_key(
+                        unlock_key.private_key, self.jwt_request["other_publickey"]
+                    )
+                ).decode(),
                 "exp": int(expires_at.timestamp()),
                 "iat": int(self.now.timestamp()),
                 "key_context": str(unlock_key.identifier),
@@ -458,42 +418,4 @@ class TokenView(View):
             device=self.device_connection,
             apv=self.jwt_request["jwe_crypto"]["apv"],
             typ="platformsso-key-response+jwt",
-        )
-
-    def handle_v1_0_authorization_code(self) -> HttpResponse:
-        code = self.request.POST.get("code")
-        if not code:
-            return HttpResponse(status=400)
-        auth_code = AppleAuthorizationCode.objects.filter(
-            code=code,
-            connector=self.connector,
-        ).first()
-        if not auth_code:
-            LOGGER.warning("Authorization code not found")
-            return HttpResponse(status=400)
-        if auth_code.expires < now():
-            auth_code.delete()
-            LOGGER.warning("Authorization code expired")
-            return HttpResponse(status=400)
-
-        user = auth_code.user
-        auth_code.delete()
-
-        id_token = self.create_id_token(user)
-        auth_token = DeviceAuthenticationToken.objects.create(
-            device=self.device_connection.device,
-            connector=self.connector,
-            user=user,
-            device_token=self.nonce.device_token,
-        )
-        return JWEResponse(
-            {
-                "refresh_token": auth_token.token,
-                "refresh_token_expires_in": int((auth_token.expires - now()).total_seconds()),
-                "id_token": id_token,
-                "token_type": TOKEN_TYPE,
-                "session_key": self.create_auth_session(user),
-            },
-            device=self.device_connection,
-            apv=self.jwt_request["jwe_crypto"]["apv"],
         )

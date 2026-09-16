@@ -102,13 +102,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
-        if (
-            !url.protocol.startsWith("http") ||
-            // Special case for apple PlatformSSO, we redirect to a non-http endpoint
-            // however it may take a second for the flow to finish, so we don't
-            // want to show a mis-leading "close" message
-            url.protocol.toLowerCase() !== "com.apple.platformsso"
-        ) {
+        // Apple Platform SSO redirects to a custom protocol, but takes a moment to finish,
+        // so keep showing the spinner instead of a misleading "close" message.
+        if (!url.protocol.startsWith("http") && url.protocol !== "com.apple.platformsso:") {
             return html`<ak-flow-card .challenge=${this.challenge}>
                 <ak-empty-state icon="fas fa-check"
                     ><span>${msg("You may close this page now.")}</span>

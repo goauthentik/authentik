@@ -25,11 +25,12 @@ urlpatterns = [
         name="authenticate",
     ),
     path(
-        "psso/<uuid:connector_uuid>/authorize/", AppleAuthorizeView.as_view(), name="psso-authorize"
+        "psso/<uuid:connector_uuid>/authorize/",
+        AppleAuthorizeView.as_view(),
+        name="psso-authorize",
     ),
-    path("psso/authorize/", AppleAuthorizeView.as_view(), name="psso-authorize"),
     path(
-        "psso/preauthenticate/",
+        "psso/<uuid:connector_uuid>/preauthenticate/",
         AppleAuthorizePreauthView.as_view(),
         name="psso-preauthenticate",
     ),

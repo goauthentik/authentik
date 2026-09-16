@@ -101,6 +101,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -124,8 +125,7 @@ class TestAppleToken(TestCase):
     @reconcile_app("authentik_crypto")
     def test_token_unlock_ecdh(self):
         """auth:unlock must derive the shared key from the request's own other_publickey,
-        not a value cached from device registration (regression test for a mismatched-key
-        bug that broke lock-screen unlock)."""
+        not from a value cached at device registration"""
         device_user = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
         unlock_private_key = ec.generate_private_key(curve=ec.SECP256R1())
         unlock_key = AppleUnlockKey.objects.create(
@@ -137,12 +137,14 @@ class TestAppleToken(TestCase):
             ).decode(),
         )
 
-        # Simulates the device's ephemeral key for this specific unlock exchange
+        # The device's ephemeral key for this specific unlock exchange
         device_ephemeral_key = ec.generate_private_key(curve=ec.SECP256R1())
         numbers = device_ephemeral_key.public_key().public_numbers()
         point = b"\x04" + numbers.x.to_bytes(32, "big") + numbers.y.to_bytes(32, "big")
         other_publickey = urlsafe_b64encode(point).rstrip(b"=").decode()
-        expected_shared_key = device_ephemeral_key.exchange(ec.ECDH(), unlock_private_key.public_key())
+        expected_shared_key = device_ephemeral_key.exchange(
+            ec.ECDH(), unlock_private_key.public_key()
+        )
 
         nonce = generate_id()
         AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
@@ -168,7 +170,7 @@ class TestAppleToken(TestCase):
                 },
             },
             self.apple_sign_key.private_key,
-            headers={"kid": self.apple_sign_key.kid},
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
         res = self.client.post(
@@ -199,6 +201,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": generate_id(),
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -245,6 +248,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -297,6 +301,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )

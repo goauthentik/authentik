@@ -583,7 +583,6 @@ def to_stage_response(
         # Redirects to the same URL usually indicate an Error within a form
         if request.get_full_path() == redirect_url:
             return source
-        print(redirect_url)
         LOGGER.debug(
             "converting to redirect challenge",
             to=str(redirect_url),
