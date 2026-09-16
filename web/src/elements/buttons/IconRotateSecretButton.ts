@@ -1,9 +1,10 @@
-import "#components/ak-hidden-text-input";
+import "#elements/SecretValue";
 import "#elements/dialogs/ak-modal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { PFSize } from "#common/enums";
 import { AKRefreshEvent } from "#common/events";
+import { docLink } from "#common/global";
 import { MessageLevel } from "#common/messages";
 
 import { renderModal } from "#elements/dialogs/utils";
@@ -50,14 +51,10 @@ export function IconRotateSecretButton({
 
                 if (result.value) {
                     await renderModal(
-                        html`<ak-hidden-text-input
+                        html`<ak-secret-value
                             label=${msg("New secret", { id: "secret-rotate.result.label" })}
                             value=${result.value}
-                            readonly
-                            revealed
-                            copyable
-                            input-hint="code"
-                        ></ak-hidden-text-input>`,
+                        ></ak-secret-value>`,
                         {
                             headline: msg("Secret rotated", { id: "secret-rotate.result.header" }),
                             invokerElement: invoker,
@@ -85,6 +82,16 @@ export function IconRotateSecretButton({
                         "This replaces the value for every object using this secret. Update any external systems that use it.",
                         { id: "secret-rotate.confirm.warning" },
                     )}
+                </p>
+                <p>
+                    <a
+                        href=${docLink("/sys-mgmt/secrets/rotation/")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >${msg("Learn about secret rotation", {
+                            id: "secret-rotate.confirm.docs.label",
+                        })}</a
+                    >
                 </p>
                 ${invoker.closest("form")
                     ? html`<p>
