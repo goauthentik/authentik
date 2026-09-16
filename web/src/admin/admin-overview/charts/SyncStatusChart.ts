@@ -105,7 +105,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             failed: metrics.failed,
             unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
             total: objects.pagination.count,
-            label: label,
+            label,
         };
     }
 

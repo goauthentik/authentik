@@ -2,17 +2,17 @@
  * @file Display details for a federated Kerberos Identity Source: Overview, Changelog, Permissions
  */
 
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
-import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncStatusCard";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -47,7 +47,7 @@ export class KerberosSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesKerberosRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;

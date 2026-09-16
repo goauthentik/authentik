@@ -58,12 +58,12 @@ export class PlexAPIClient {
         };
         const pinResponse = await fetch("https://plex.tv/api/v2/pins.json?strong=true", {
             method: "POST",
-            headers: headers,
+            headers,
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return {
             authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
-            pin: pin,
+            pin,
         };
     }
 
@@ -73,7 +73,7 @@ export class PlexAPIClient {
             "X-Plex-Client-Identifier": clientIdentifier,
         };
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
-            headers: headers,
+            headers,
         });
         if (pinResponse.status > 200) {
             throw new SentryIgnoredError("Invalid response code");

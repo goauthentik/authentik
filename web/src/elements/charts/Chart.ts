@@ -153,7 +153,7 @@ export abstract class AKChart<T> extends AKElement {
         return [];
     }
 
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+    timeTickCallback(_tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
         return formatElapsedTime(new Date(valueStamp.value));
     }
@@ -204,14 +204,16 @@ export abstract class AKChart<T> extends AKElement {
     render(): TemplateResult {
         return html`
             <div class="container">
-                ${this.error
-                    ? html`
-                          <ak-empty-state icon="fa-times"
-                              ><span>${msg("Failed to fetch data.")}</span>
-                              <p slot="body">${pluckErrorDetail(this.error)}</p>
-                          </ak-empty-state>
-                      `
-                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${
+                    this.error
+                        ? html`
+                              <ak-empty-state icon="fa-times"
+                                  ><span>${msg("Failed to fetch data.")}</span>
+                                  <p slot="body">${pluckErrorDetail(this.error)}</p>
+                              </ak-empty-state>
+                          `
+                        : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`
+                }
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
                 <canvas
                     role="img"

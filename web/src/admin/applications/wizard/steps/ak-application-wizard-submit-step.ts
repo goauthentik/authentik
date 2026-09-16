@@ -12,11 +12,11 @@ import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { providerRenderers } from "#admin/applications/wizard/steps/SubmitStepOverviewRenderers";
 import {
     isApplicationTransactionValidationError,
     OneOfProvider,
 } from "#admin/applications/wizard/steps/providers/shared";
-import { providerRenderers } from "#admin/applications/wizard/steps/SubmitStepOverviewRenderers";
 
 import {
     type ApplicationRequest,
@@ -55,7 +55,7 @@ type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 
 const providerMap: Map<string, StrictProviderModelEnum> = Object.values(ProviderModelEnum)
     .filter((value): value is StrictProviderModelEnum => {
-        return /^authentik_providers_/.test(value) && /provider$/.test(value);
+        return value.startsWith("authentik_providers_") && value.endsWith("provider");
     })
     .reduce((acc: Map<string, StrictProviderModelEnum>, value) => {
         const key = value.split(".")[1];

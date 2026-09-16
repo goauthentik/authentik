@@ -22,7 +22,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             throw new SentryIgnoredError("No form data");
         }
         return aki(ProvidersApi).providersSamlImportMetadataCreate({
-            file: file,
+            file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
             invalidationFlow: data.invalidationFlow || "",

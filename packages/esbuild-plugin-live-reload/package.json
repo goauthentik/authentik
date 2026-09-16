@@ -12,10 +12,14 @@
         "build": "npm run build:types && npm run build:docs",
         "build:docs": "typedoc",
         "build:types": "tsc -p .",
-        "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --cache --write -u .",
-        "prettier-check": "prettier --cache --check -u ."
+        "lint": "run-s lint:oxlint",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint-check": "run-s lint-check:oxlint",
+        "lint-check:oxlint": "oxlint --max-warnings=0"
     },
     "main": "index.js",
     "type": "module",
@@ -44,20 +48,17 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "catalog:",
-        "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/logger-js": "link:../logger-js",
-        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
         "esbuild": "catalog:",
-        "eslint": "catalog:",
-        "prettier": "catalog:",
-        "prettier-plugin-packagejson": "catalog:",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "typedoc": "^0.28.20",
         "typedoc-plugin-markdown": "^4.11.0",
-        "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "typescript": "catalog:"
     },
     "peerDependencies": {
         "@goauthentik/logger-js": "^3.0.0",
@@ -82,7 +83,6 @@
         }
     },
     "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "@goauthentik/prettier-config",
     "keywords": [
         "esbuild",
         "live-reload",
