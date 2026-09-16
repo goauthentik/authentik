@@ -74,7 +74,7 @@
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
         "typedoc": "^0.28.20",
-        "typedoc-plugin-markdown": "^4.11.0",
+        "typedoc-plugin-markdown": "^4.13.0",
         "typescript": "catalog:"
     },
     "peerDependencies": {
