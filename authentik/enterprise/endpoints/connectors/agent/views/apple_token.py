@@ -191,6 +191,12 @@ class TokenView(View):
         return session
 
     def create_id_token(self, user: User, **kwargs):
+        claims = kwargs.pop("claims", {})
+        # Only http(s) avatars are usable by the client, the initials fallback is an
+        # inline SVG data URI which macOS can't decode
+        avatar = user.avatar
+        if avatar.startswith(("http://", "https://")):
+            claims["picture"] = avatar
         issuer = self.request.build_absolute_uri(
             reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
         )
@@ -202,6 +208,7 @@ class TokenView(View):
                 (self.now + timedelta_from_string(self.connector.auth_session_duration)).timestamp()
             ),
             iat=int(now().timestamp()),
+            claims=claims,
             **kwargs,
         )
         kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
