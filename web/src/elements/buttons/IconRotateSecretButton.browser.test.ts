@@ -38,20 +38,25 @@ test.each([false, true])("rotation completes once even after navigation: %s", as
     await userEvent.keyboard("{Escape}");
     expect(dialog.open).toBe(true);
     expect(rotate).toHaveBeenCalledTimes(1);
+
     if (navigate) {
         window.dispatchEvent(new Event(RouterNavigateEvent.eventName));
         await vi.waitFor(() => expect(dialog.isConnected).toBe(false));
     }
+
     response.resolve({ value: navigate ? "replacement" : null });
     await vi.waitFor(() => expect(dialog.isConnected).toBe(false));
+
     if (navigate) {
         await vi.waitFor(() =>
             expect(document.querySelector("ak-secret-value")?.getAttribute("value")).toBe(
                 "replacement",
             ),
         );
+
         document.querySelector<HTMLDialogElement>("dialog[open]")!.close();
     }
+
     await vi.waitFor(() => expect(showMessage).toHaveBeenCalledTimes(1));
 });
 
@@ -61,21 +66,26 @@ test("rotation links documentation and masks the result in a styled field", asyn
     render(IconRotateSecretButton({ rotate }), container);
     container.querySelector("button")!.click();
     await vi.waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
+
     expect(document.querySelector<HTMLAnchorElement>("dialog a")?.href).toContain(
         "/sys-mgmt/secrets/rotation/",
     );
+
     document.querySelector<HTMLButtonElement>("dialog .pf-m-danger")!.click();
+
     await vi.waitFor(() =>
         expect(
             document.querySelector("ak-secret-value")?.shadowRoot?.querySelector("input"),
         ).toBeTruthy(),
     );
+
     const display = document.querySelector("ak-secret-value")!;
     const input = display.shadowRoot!.querySelector("input")!;
     expect(input.type).toBe("password");
     expect(input.value).toBe("replacement");
     expect(input.readOnly).toBe(true);
     await vi.waitFor(() => expect(input.getBoundingClientRect().width).toBeGreaterThan(0));
+
     expect(input.getBoundingClientRect().width).toBeGreaterThan(
         display.getBoundingClientRect().width * 0.65,
     );

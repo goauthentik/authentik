@@ -4,7 +4,6 @@ import "#components/ak-radio-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -72,6 +71,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
 
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
+
         if (changed.has("types") && !this.instance) {
             this.type = this.types[0];
         }
@@ -100,14 +100,17 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
 
     protected override async send(data: SecretRequest): Promise<unknown> {
         data.type = this.type;
+
         if (this.type === SecretTypeEnum.File) {
             const file = this.files<"value">().get("value");
+
             if (file) {
                 data.value = fromByteArray(new Uint8Array(await file.arrayBuffer()));
             } else {
                 delete data.value;
             }
         }
+
         return super.send(data);
     }
 
@@ -115,11 +118,13 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
         const label = this.instance
             ? msg("New value", { id: "secret.form.new-value.label" })
             : msg("Value", { id: "secret.form.value.label" });
+
         const help = this.instance
             ? msg("Leave empty to keep the current value.", {
                   id: "secret.form.new-value.description",
               })
             : "";
+
         switch (this.type) {
             case SecretTypeEnum.Multiline:
                 if (this.instance) {
@@ -165,8 +170,10 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                         />
                     </span>
                     <span class="secret-file-name" aria-live="polite"
-                        >${this.fileName ||
-                        msg("No file selected", { id: "secret.form.file.empty.label" })}</span
+                        >${
+                            this.fileName ||
+                            msg("No file selected", { id: "secret.form.file.empty.label" })
+                        }</span
                     >
                     ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
                 </ak-form-element-horizontal>`;
@@ -176,10 +183,12 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                     name="value"
                     ?revealed=${!this.instance}
                     input-hint="code"
-                    help=${help ||
-                    msg("Leave empty to generate a value.", {
-                        id: "secret.form.value.generate-description",
-                    })}
+                    help=${
+                        help ||
+                        msg("Leave empty to generate a value.", {
+                            id: "secret.form.value.generate-description",
+                        })
+                    }
                 ></ak-secret-text-input>`;
         }
     }
@@ -194,45 +203,47 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                 autocomplete="off"
                 spellcheck="false"
             ></ak-text-input>
-            ${this.instance || this.types.length === 1
-                ? nothing
-                : html`<ak-radio-input
-                      name="type"
-                      label=${msg("Type", { id: "secret.form.type.label" })}
-                      .value=${this.type}
-                      .options=${[
-                          {
-                              label: msg("Text", { id: "secret.type.text.label" }),
-                              value: SecretTypeEnum.Text,
-                              default: true,
-                              description: html`${msg(
-                                  "A single-line value. Can be generated and rotated.",
-                                  { id: "secret.type.text.description" },
-                              )}`,
-                          },
-                          {
-                              label: msg("Multi-line text", {
-                                  id: "secret.type.multiline.label",
-                              }),
-                              value: SecretTypeEnum.Multiline,
-                              description: html`${msg(
-                                  "A multi-line value, such as a PEM key or JSON.",
-                                  { id: "secret.type.multiline.description" },
-                              )}`,
-                          },
-                          {
-                              label: msg("File", { id: "secret.type.file.label" }),
-                              value: SecretTypeEnum.File,
-                              description: html`${msg("An uploaded file.", {
-                                  id: "secret.type.file.description",
-                              })}`,
-                          },
-                      ].filter((option) => this.types.includes(option.value))}
-                      @input=${(ev: InputEvent) => {
-                          this.type = (ev.currentTarget as AkRadioInput<SecretTypeEnum>).value;
-                          this.fileName = "";
-                      }}
-                  ></ak-radio-input> `}
+            ${
+                this.instance || this.types.length === 1
+                    ? nothing
+                    : html`<ak-radio-input
+                          name="type"
+                          label=${msg("Type", { id: "secret.form.type.label" })}
+                          .value=${this.type}
+                          .options=${[
+                              {
+                                  label: msg("Text", { id: "secret.type.text.label" }),
+                                  value: SecretTypeEnum.Text,
+                                  default: true,
+                                  description: html`${msg(
+                                      "A single-line value. Can be generated and rotated.",
+                                      { id: "secret.type.text.description" },
+                                  )}`,
+                              },
+                              {
+                                  label: msg("Multi-line text", {
+                                      id: "secret.type.multiline.label",
+                                  }),
+                                  value: SecretTypeEnum.Multiline,
+                                  description: html`${msg(
+                                      "A multi-line value, such as a PEM key or JSON.",
+                                      { id: "secret.type.multiline.description" },
+                                  )}`,
+                              },
+                              {
+                                  label: msg("File", { id: "secret.type.file.label" }),
+                                  value: SecretTypeEnum.File,
+                                  description: html`${msg("An uploaded file.", {
+                                      id: "secret.type.file.description",
+                                  })}`,
+                              },
+                          ].filter((option) => this.types.includes(option.value))}
+                          @input=${(ev: InputEvent) => {
+                              this.type = (ev.currentTarget as AkRadioInput<SecretTypeEnum>).value;
+                              this.fileName = "";
+                          }}
+                      ></ak-radio-input> `
+            }
             ${this.renderValueInput()}`;
     }
 }

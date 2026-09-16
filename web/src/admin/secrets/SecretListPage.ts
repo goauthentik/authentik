@@ -1,5 +1,4 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
@@ -56,10 +55,13 @@ export class SecretListPage extends TablePage<Secret> {
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         const count = this.selectedElements.length;
+
         return html`<ak-forms-delete-bulk
-            object-label=${count === 1
-                ? msg("Secret", { id: "secret.verbose-name" })
-                : msg("Secrets", { id: "secret.verbose-name-plural" })}
+            object-label=${
+                count === 1
+                    ? msg("Secret", { id: "secret.verbose-name" })
+                    : msg("Secrets", { id: "secret.verbose-name-plural" })
+            }
             .objects=${this.selectedElements}
             .metadata=${(item: Secret) => {
                 return [{ key: msg("Name", { id: "secret.list.column.name" }), value: item.name }];
@@ -95,20 +97,26 @@ export class SecretListPage extends TablePage<Secret> {
     protected override row(item: Secret): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${item.managed
-                    ? html`<small
-                          >${msg("Managed by authentik", { id: "secret.list.managed" })}</small
-                      >`
-                    : nothing}`,
+                ${
+                    item.managed
+                        ? html`<small
+                              >${msg("Managed by authentik", { id: "secret.list.managed" })}</small
+                          >`
+                        : nothing
+                }`,
             html`${this.typeLabel(item.type)}`,
             html`<div>
                 ${SecretValueButton(item)} ${IconEditButton(SecretForm, item.pk, item.name)}
-                ${item.type === SecretTypeEnum.Text
-                    ? IconRotateSecretButton({
-                          rotate: () =>
-                              aki(SecretsApi).secretsSecretsRotateCreate({ secretUuid: item.pk }),
-                      })
-                    : nothing}
+                ${
+                    item.type === SecretTypeEnum.Text
+                        ? IconRotateSecretButton({
+                              rotate: () =>
+                                  aki(SecretsApi).secretsSecretsRotateCreate({
+                                      secretUuid: item.pk,
+                                  }),
+                          })
+                        : nothing
+                }
                 ${IconPermissionButton(item.name, {
                     model: ModelEnum.AuthentikCryptoSecretsSecret,
                     objectPk: item.pk,
