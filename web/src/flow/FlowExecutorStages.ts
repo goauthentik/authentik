@@ -178,6 +178,10 @@ export const StageEntries: readonly StageEntry[] = [
         stage: "xak-flow-redirect",
         tag: "ak-stage-redirect",
     },
+    {
+        stage: "ak-stage-message",
+        fetch: () => import("#flow/stages/message/MessageStage"),
+    },
 ];
 
 export default StageEntries;
