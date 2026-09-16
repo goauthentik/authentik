@@ -1,10 +1,10 @@
 import { createRuntimeOverrides } from "./restrictions.js";
 import { WebComponentJsPlugins, WebComponentRules } from "./web-components.js";
 
+import type { DummyRuleMap, ExternalPluginEntry, OxlintConfig } from "oxlint";
+
 export * from "./restrictions.js";
 export * from "./web-components.js";
-
-export type OxlintConfig = Record<string, unknown>;
 
 export interface OxlintConfigOptions {
     /** The package namespace whose runtime boundaries are enforced, e.g. `@goauthentik`. */
@@ -18,7 +18,13 @@ export interface OxlintConfigOptions {
     lit?: boolean;
     /** Override the default ignore patterns. */
     ignorePatterns?: string[];
-    /** Extra config deep-merged last; an escape hatch for per-repo tweaks. */
+    /**
+     * Extra config merged in last; an escape hatch for per-repo tweaks.
+     *
+     * `rules` is merged into the base rule set and `overrides` is appended to the generated
+     * per-file overrides, so a caller relaxing one rule keeps the rest. Every other key replaces
+     * its base counterpart outright.
+     */
     overrides?: OxlintConfig;
 }
 
@@ -55,15 +61,16 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         overrides = {},
     } = options;
 
-    const plugins = ["typescript", "unicorn", "oxc", ...(react ? ["react"] : [])];
+    const reactDependencies = react ? (["react"] as const) : ([] as const);
+    const plugins: OxlintConfig["plugins"] = ["typescript", "unicorn", "oxc", ...reactDependencies];
 
-    const jsPlugins: unknown[] = ["@goauthentik/oxlint-config/plugin"];
+    const jsPlugins: ExternalPluginEntry[] = ["@goauthentik/oxlint-config/plugin"];
 
     if (lit) {
         jsPlugins.push(...WebComponentJsPlugins);
     }
 
-    const rules: Record<string, unknown> = {
+    const rules: DummyRuleMap = {
         // JavaScript
         "eqeqeq": ["error", "always", { null: "ignore" }],
         "prefer-const": "warn",
@@ -73,14 +80,16 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         "no-unused-vars": [
             "warn",
             {
+                fix: {
+                    imports: "safe-fix",
+                },
+
                 args: "all",
                 argsIgnorePattern: "^_",
                 caughtErrors: "all",
                 caughtErrorsIgnorePattern: "^_",
                 destructuredArrayIgnorePattern: "^_",
-                // Matches the prior ESLint config: unused vars are not reported (Prettier/oxfmt and TS
-                // already cover most cases); only unused args without a `_` prefix are flagged.
-                varsIgnorePattern: "^\\w",
+                varsIgnorePattern: "^_",
                 ignoreRestSiblings: true,
             },
         ],
@@ -98,14 +107,16 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         ...(lit ? WebComponentRules : {}),
     };
 
+    const { rules: ruleOverrides, overrides: fileOverrides, ...configOverrides } = overrides;
+
     return {
         plugins,
         jsPlugins,
         categories: { correctness: "error" },
         ignorePatterns,
-        rules,
-        overrides: createRuntimeOverrides(packageNamespace),
-        ...overrides,
+        ...configOverrides,
+        rules: { ...rules, ...ruleOverrides },
+        overrides: [...createRuntimeOverrides(packageNamespace), ...(fileOverrides ?? [])],
     };
 }
 

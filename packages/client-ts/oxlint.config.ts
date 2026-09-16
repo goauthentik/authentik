@@ -4,4 +4,14 @@
 
 import { createOxlintConfig } from "@goauthentik/oxlint-config";
 
-export default createOxlintConfig();
+const config = createOxlintConfig({
+    overrides: {
+        rules: {
+            "no-unused-vars": ["warn", { fix: { imports: "safe-fix" }, args: "none" }],
+            // The generated code often includes `== true` checks which we can't fix automatically.
+            "eqeqeq": "off",
+        },
+    },
+});
+
+export default config;
