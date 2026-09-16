@@ -32,6 +32,14 @@
     },
     "scripts": {
         "build": "tsc -p .",
+        "fix:oxfmt": "oxfmt --write .",
+        "fix:oxlint": "oxlint --fix",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:oxlint": "oxlint",
         "prepare": "tsc -p .",
         "verify": "node scripts/verify-fixtures.mjs"
     },
@@ -41,6 +49,9 @@
     },
     "devDependencies": {
         "@goauthentik/tsconfig": "link:../tsconfig",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "typescript": "catalog:"
     },
     "peerDependencies": {
