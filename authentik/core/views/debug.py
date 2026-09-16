@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse
 from django.views.generic import View
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import CharField
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -36,6 +37,8 @@ class ServerLogAPI(APIView):
         message = CharField()
 
     serializer_class = ServerLog
+    permission_classes = [AllowAny]
+    filter_backends = []
 
     @extend_schema(
         responses={
