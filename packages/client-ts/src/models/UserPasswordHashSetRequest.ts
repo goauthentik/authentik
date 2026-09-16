@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Payload to set a users' password hash directly
  * @export
@@ -19,7 +20,7 @@
  */
 export interface UserPasswordHashSetRequest {
     /**
-     *
+     * 
      */
     password: string;
 }
@@ -27,10 +28,8 @@ export interface UserPasswordHashSetRequest {
 /**
  * Check if a given object implements the UserPasswordHashSetRequest interface.
  */
-export function instanceOfUserPasswordHashSetRequest(
-    value: object,
-): value is UserPasswordHashSetRequest {
-    if (!("password" in value) || value["password"] === undefined) return false;
+export function instanceOfUserPasswordHashSetRequest(value: object): value is UserPasswordHashSetRequest {
+    if (!('password' in value) || value['password'] === undefined) return false;
     return true;
 }
 
@@ -38,15 +37,13 @@ export function UserPasswordHashSetRequestFromJSON(json: any): UserPasswordHashS
     return UserPasswordHashSetRequestFromJSONTyped(json, false);
 }
 
-export function UserPasswordHashSetRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserPasswordHashSetRequest {
+export function UserPasswordHashSetRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserPasswordHashSetRequest {
     if (json == null) {
         return json;
     }
     return {
-        password: json["password"],
+        
+        'password': json['password'],
     };
 }
 
@@ -54,15 +51,14 @@ export function UserPasswordHashSetRequestToJSON(json: any): UserPasswordHashSet
     return UserPasswordHashSetRequestToJSONTyped(json, false);
 }
 
-export function UserPasswordHashSetRequestToJSONTyped(
-    value?: UserPasswordHashSetRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserPasswordHashSetRequestToJSONTyped(value?: UserPasswordHashSetRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        password: value["password"],
+        
+        'password': value['password'],
     };
 }
+

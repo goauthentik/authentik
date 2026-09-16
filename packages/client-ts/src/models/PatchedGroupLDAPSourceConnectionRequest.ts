@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedGroupLDAPSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedGroupLDAPSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupLDAPSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupLDAPSourceConnectionRequest(
-    value: object,
-): value is PatchedGroupLDAPSourceConnectionRequest {
+export function instanceOfPatchedGroupLDAPSourceConnectionRequest(value: object): value is PatchedGroupLDAPSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestFromJSON(json: any): PatchedGroupLDAPSourceConnectionRequest {
     return PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupLDAPSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestToJSON(
-    json: any,
-): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestToJSON(json: any): PatchedGroupLDAPSourceConnectionRequest {
     return PatchedGroupLDAPSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestToJSONTyped(
-    value?: PatchedGroupLDAPSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGroupLDAPSourceConnectionRequestToJSONTyped(value?: PatchedGroupLDAPSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

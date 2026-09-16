@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Payload to create a service account
  * @export
@@ -21,15 +20,15 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface UserServiceAccountRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     createGroup?: boolean;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
@@ -41,10 +40,8 @@ export interface UserServiceAccountRequest {
 /**
  * Check if a given object implements the UserServiceAccountRequest interface.
  */
-export function instanceOfUserServiceAccountRequest(
-    value: object,
-): value is UserServiceAccountRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfUserServiceAccountRequest(value: object): value is UserServiceAccountRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -52,18 +49,16 @@ export function UserServiceAccountRequestFromJSON(json: any): UserServiceAccount
     return UserServiceAccountRequestFromJSONTyped(json, false);
 }
 
-export function UserServiceAccountRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserServiceAccountRequest {
+export function UserServiceAccountRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserServiceAccountRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        createGroup: json["create_group"] == null ? undefined : json["create_group"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
+        
+        'name': json['name'],
+        'createGroup': json['create_group'] == null ? undefined : json['create_group'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] == null ? undefined : (parseDateTime(json['expires'])),
     };
 }
 
@@ -71,18 +66,17 @@ export function UserServiceAccountRequestToJSON(json: any): UserServiceAccountRe
     return UserServiceAccountRequestToJSONTyped(json, false);
 }
 
-export function UserServiceAccountRequestToJSONTyped(
-    value?: UserServiceAccountRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserServiceAccountRequestToJSONTyped(value?: UserServiceAccountRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        create_group: value["createGroup"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'name': value['name'],
+        'create_group': value['createGroup'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for static device's tokens
  * @export
@@ -19,7 +20,7 @@
  */
 export interface StaticDeviceToken {
     /**
-     *
+     * 
      */
     token: string;
 }
@@ -28,7 +29,7 @@ export interface StaticDeviceToken {
  * Check if a given object implements the StaticDeviceToken interface.
  */
 export function instanceOfStaticDeviceToken(value: object): value is StaticDeviceToken {
-    if (!("token" in value) || value["token"] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +37,13 @@ export function StaticDeviceTokenFromJSON(json: any): StaticDeviceToken {
     return StaticDeviceTokenFromJSONTyped(json, false);
 }
 
-export function StaticDeviceTokenFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): StaticDeviceToken {
+export function StaticDeviceTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): StaticDeviceToken {
     if (json == null) {
         return json;
     }
     return {
-        token: json["token"],
+        
+        'token': json['token'],
     };
 }
 
@@ -52,15 +51,14 @@ export function StaticDeviceTokenToJSON(json: any): StaticDeviceToken {
     return StaticDeviceTokenToJSONTyped(json, false);
 }
 
-export function StaticDeviceTokenToJSONTyped(
-    value?: StaticDeviceToken | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function StaticDeviceTokenToJSONTyped(value?: StaticDeviceToken | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        token: value["token"],
+        
+        'token': value['token'],
     };
 }
+

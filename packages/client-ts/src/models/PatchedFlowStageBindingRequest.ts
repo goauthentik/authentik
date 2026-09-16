@@ -12,13 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum";
+import { mapValues } from '../runtime';
+import type { InvalidResponseActionEnum } from './InvalidResponseActionEnum';
 import {
     InvalidResponseActionEnumFromJSON,
+    InvalidResponseActionEnumFromJSONTyped,
     InvalidResponseActionEnumToJSON,
-} from "./InvalidResponseActionEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+    InvalidResponseActionEnumToJSONTyped,
+} from './InvalidResponseActionEnum';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
 
 /**
  * FlowStageBinding Serializer
@@ -27,11 +35,11 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface PatchedFlowStageBindingRequest {
     /**
-     *
+     * 
      */
     target?: string;
     /**
-     *
+     * 
      */
     stage?: string;
     /**
@@ -43,11 +51,11 @@ export interface PatchedFlowStageBindingRequest {
      */
     reEvaluatePolicies?: boolean;
     /**
-     *
+     * 
      */
     order?: number;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
@@ -56,12 +64,12 @@ export interface PatchedFlowStageBindingRequest {
     invalidResponseAction?: InvalidResponseActionEnum;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedFlowStageBindingRequest interface.
  */
-export function instanceOfPatchedFlowStageBindingRequest(
-    value: object,
-): value is PatchedFlowStageBindingRequest {
+export function instanceOfPatchedFlowStageBindingRequest(value: object): value is PatchedFlowStageBindingRequest {
     return true;
 }
 
@@ -69,28 +77,19 @@ export function PatchedFlowStageBindingRequestFromJSON(json: any): PatchedFlowSt
     return PatchedFlowStageBindingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedFlowStageBindingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedFlowStageBindingRequest {
+export function PatchedFlowStageBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedFlowStageBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        target: json["target"] == null ? undefined : json["target"],
-        stage: json["stage"] == null ? undefined : json["stage"],
-        evaluateOnPlan: json["evaluate_on_plan"] == null ? undefined : json["evaluate_on_plan"],
-        reEvaluatePolicies:
-            json["re_evaluate_policies"] == null ? undefined : json["re_evaluate_policies"],
-        order: json["order"] == null ? undefined : json["order"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        invalidResponseAction:
-            json["invalid_response_action"] == null
-                ? undefined
-                : InvalidResponseActionEnumFromJSON(json["invalid_response_action"]),
+        
+        'target': json['target'] == null ? undefined : json['target'],
+        'stage': json['stage'] == null ? undefined : json['stage'],
+        'evaluateOnPlan': json['evaluate_on_plan'] == null ? undefined : json['evaluate_on_plan'],
+        'reEvaluatePolicies': json['re_evaluate_policies'] == null ? undefined : json['re_evaluate_policies'],
+        'order': json['order'] == null ? undefined : json['order'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'invalidResponseAction': json['invalid_response_action'] == null ? undefined : InvalidResponseActionEnumFromJSON(json['invalid_response_action']),
     };
 }
 
@@ -98,21 +97,20 @@ export function PatchedFlowStageBindingRequestToJSON(json: any): PatchedFlowStag
     return PatchedFlowStageBindingRequestToJSONTyped(json, false);
 }
 
-export function PatchedFlowStageBindingRequestToJSONTyped(
-    value?: PatchedFlowStageBindingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedFlowStageBindingRequestToJSONTyped(value?: PatchedFlowStageBindingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        target: value["target"],
-        stage: value["stage"],
-        evaluate_on_plan: value["evaluateOnPlan"],
-        re_evaluate_policies: value["reEvaluatePolicies"],
-        order: value["order"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        invalid_response_action: InvalidResponseActionEnumToJSON(value["invalidResponseAction"]),
+        
+        'target': value['target'],
+        'stage': value['stage'],
+        'evaluate_on_plan': value['evaluateOnPlan'],
+        're_evaluate_policies': value['reEvaluatePolicies'],
+        'order': value['order'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'invalid_response_action': InvalidResponseActionEnumToJSON(value['invalidResponseAction']),
     };
 }
+

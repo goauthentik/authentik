@@ -12,18 +12,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ObjectAttributeTypeEnum = {
-    Text: "text",
-    Number: "number",
-    Boolean: "boolean",
-    UnknownDefaultOpenApi: "11184809",
+    Text: 'text',
+    Number: 'number',
+    Boolean: 'boolean',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ObjectAttributeTypeEnum =
-    (typeof ObjectAttributeTypeEnum)[keyof typeof ObjectAttributeTypeEnum];
+export type ObjectAttributeTypeEnum = typeof ObjectAttributeTypeEnum[keyof typeof ObjectAttributeTypeEnum];
+
 
 export function instanceOfObjectAttributeTypeEnum(value: any): boolean {
     for (const key in ObjectAttributeTypeEnum) {
@@ -40,10 +41,7 @@ export function ObjectAttributeTypeEnumFromJSON(json: any): ObjectAttributeTypeE
     return ObjectAttributeTypeEnumFromJSONTyped(json, false);
 }
 
-export function ObjectAttributeTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ObjectAttributeTypeEnum {
+export function ObjectAttributeTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ObjectAttributeTypeEnum {
     return json as ObjectAttributeTypeEnum;
 }
 
@@ -51,9 +49,7 @@ export function ObjectAttributeTypeEnumToJSON(value?: ObjectAttributeTypeEnum | 
     return value as any;
 }
 
-export function ObjectAttributeTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ObjectAttributeTypeEnum {
+export function ObjectAttributeTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ObjectAttributeTypeEnum {
     return value as ObjectAttributeTypeEnum;
 }
+

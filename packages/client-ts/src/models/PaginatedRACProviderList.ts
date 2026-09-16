@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RACProvider } from "./RACProvider";
-import { RACProviderFromJSON, RACProviderToJSON } from "./RACProvider";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { RACProvider } from './RACProvider';
+import {
+    RACProviderFromJSON,
+    RACProviderFromJSONTyped,
+    RACProviderToJSON,
+    RACProviderToJSONTyped,
+} from './RACProvider';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRACProviderList
  */
 export interface PaginatedRACProviderList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RACProvider>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRACProviderList interface.
  */
-export function instanceOfPaginatedRACProviderList(
-    value: object,
-): value is PaginatedRACProviderList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRACProviderList(value: object): value is PaginatedRACProviderList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedRACProviderListFromJSON(json: any): PaginatedRACProvide
     return PaginatedRACProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedRACProviderListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRACProviderList {
+export function PaginatedRACProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRACProviderList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RACProviderFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RACProviderFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedRACProviderListToJSON(json: any): PaginatedRACProviderL
     return PaginatedRACProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedRACProviderListToJSONTyped(
-    value?: PaginatedRACProviderList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRACProviderListToJSONTyped(value?: PaginatedRACProviderList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RACProviderToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RACProviderToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

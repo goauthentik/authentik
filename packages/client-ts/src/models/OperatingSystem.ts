@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceFactsOSFamily } from "./DeviceFactsOSFamily";
-import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./DeviceFactsOSFamily";
+import { mapValues } from '../runtime';
+import type { DeviceFactsOSFamily } from './DeviceFactsOSFamily';
+import {
+    DeviceFactsOSFamilyFromJSON,
+    DeviceFactsOSFamilyFromJSONTyped,
+    DeviceFactsOSFamilyToJSON,
+    DeviceFactsOSFamilyToJSONTyped,
+} from './DeviceFactsOSFamily';
 
 /**
  * For example:
@@ -26,7 +32,7 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
  */
 export interface OperatingSystem {
     /**
-     *
+     * 
      */
     family: DeviceFactsOSFamily;
     /**
@@ -38,16 +44,18 @@ export interface OperatingSystem {
      */
     version?: string;
     /**
-     *
+     * 
      */
     arch?: string;
 }
+
+
 
 /**
  * Check if a given object implements the OperatingSystem interface.
  */
 export function instanceOfOperatingSystem(value: object): value is OperatingSystem {
-    if (!("family" in value) || value["family"] === undefined) return false;
+    if (!('family' in value) || value['family'] === undefined) return false;
     return true;
 }
 
@@ -55,18 +63,16 @@ export function OperatingSystemFromJSON(json: any): OperatingSystem {
     return OperatingSystemFromJSONTyped(json, false);
 }
 
-export function OperatingSystemFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OperatingSystem {
+export function OperatingSystemFromJSONTyped(json: any, ignoreDiscriminator: boolean): OperatingSystem {
     if (json == null) {
         return json;
     }
     return {
-        family: DeviceFactsOSFamilyFromJSON(json["family"]),
-        name: json["name"] == null ? undefined : json["name"],
-        version: json["version"] == null ? undefined : json["version"],
-        arch: json["arch"] == null ? undefined : json["arch"],
+        
+        'family': DeviceFactsOSFamilyFromJSON(json['family']),
+        'name': json['name'] == null ? undefined : json['name'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'arch': json['arch'] == null ? undefined : json['arch'],
     };
 }
 
@@ -74,18 +80,17 @@ export function OperatingSystemToJSON(json: any): OperatingSystem {
     return OperatingSystemToJSONTyped(json, false);
 }
 
-export function OperatingSystemToJSONTyped(
-    value?: OperatingSystem | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OperatingSystemToJSONTyped(value?: OperatingSystem | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        family: DeviceFactsOSFamilyToJSON(value["family"]),
-        name: value["name"],
-        version: value["version"],
-        arch: value["arch"],
+        
+        'family': DeviceFactsOSFamilyToJSON(value['family']),
+        'name': value['name'],
+        'version': value['version'],
+        'arch': value['arch'],
     };
 }
+

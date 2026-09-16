@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for stages which can be selected by users
  * @export
@@ -19,19 +20,19 @@
  */
 export interface SelectableStage {
     /**
-     *
+     * 
      */
     pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     verboseName: string;
     /**
-     *
+     * 
      */
     metaModelName: string;
 }
@@ -40,22 +41,10 @@ export interface SelectableStage {
  * Check if a given object implements the SelectableStage interface.
  */
 export function instanceOfSelectableStage(value: object): value is SelectableStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
     return true;
 }
 
@@ -63,18 +52,16 @@ export function SelectableStageFromJSON(json: any): SelectableStage {
     return SelectableStageFromJSONTyped(json, false);
 }
 
-export function SelectableStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SelectableStage {
+export function SelectableStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): SelectableStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        verboseName: json["verbose_name"],
-        metaModelName: json["meta_model_name"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'verboseName': json['verbose_name'],
+        'metaModelName': json['meta_model_name'],
     };
 }
 
@@ -82,18 +69,17 @@ export function SelectableStageToJSON(json: any): SelectableStage {
     return SelectableStageToJSONTyped(json, false);
 }
 
-export function SelectableStageToJSONTyped(
-    value?: SelectableStage | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SelectableStageToJSONTyped(value?: SelectableStage | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        name: value["name"],
-        verbose_name: value["verboseName"],
-        meta_model_name: value["metaModelName"],
+        
+        'pk': value['pk'],
+        'name': value['name'],
+        'verbose_name': value['verboseName'],
+        'meta_model_name': value['metaModelName'],
     };
 }
+

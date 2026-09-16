@@ -12,14 +12,15 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface AppleIndependentSecureEnclave
  */
 export interface AppleIndependentSecureEnclave {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
@@ -27,15 +28,15 @@ export interface AppleIndependentSecureEnclave {
      */
     user: number;
     /**
-     *
+     * 
      */
     appleSecureEnclaveKey: string;
     /**
-     *
+     * 
      */
     appleEnclaveKeyId: string;
     /**
-     *
+     * 
      */
     deviceType: string;
 }
@@ -43,31 +44,11 @@ export interface AppleIndependentSecureEnclave {
 /**
  * Check if a given object implements the AppleIndependentSecureEnclave interface.
  */
-export function instanceOfAppleIndependentSecureEnclave(
-    value: object,
-): value is AppleIndependentSecureEnclave {
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("appleSecureEnclaveKey" in (value as Record<string, any>)) &&
-            !("apple_secure_enclave_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appleSecureEnclaveKey"] === undefined &&
-            (value as Record<string, any>)["apple_secure_enclave_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("appleEnclaveKeyId" in (value as Record<string, any>)) &&
-            !("apple_enclave_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appleEnclaveKeyId"] === undefined &&
-            (value as Record<string, any>)["apple_enclave_key_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceType" in (value as Record<string, any>)) &&
-            !("device_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceType"] === undefined &&
-            (value as Record<string, any>)["device_type"] === undefined)
-    )
-        return false;
+export function instanceOfAppleIndependentSecureEnclave(value: object): value is AppleIndependentSecureEnclave {
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('appleSecureEnclaveKey' in (value as Record<string, any>)) && !('apple_secure_enclave_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['appleSecureEnclaveKey'] === undefined && (value as Record<string, any>)['apple_secure_enclave_key'] === undefined)) return false;
+    if ((!('appleEnclaveKeyId' in (value as Record<string, any>)) && !('apple_enclave_key_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['appleEnclaveKeyId'] === undefined && (value as Record<string, any>)['apple_enclave_key_id'] === undefined)) return false;
+    if ((!('deviceType' in (value as Record<string, any>)) && !('device_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceType'] === undefined && (value as Record<string, any>)['device_type'] === undefined)) return false;
     return true;
 }
 
@@ -75,19 +56,17 @@ export function AppleIndependentSecureEnclaveFromJSON(json: any): AppleIndepende
     return AppleIndependentSecureEnclaveFromJSONTyped(json, false);
 }
 
-export function AppleIndependentSecureEnclaveFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AppleIndependentSecureEnclave {
+export function AppleIndependentSecureEnclaveFromJSONTyped(json: any, ignoreDiscriminator: boolean): AppleIndependentSecureEnclave {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        user: json["user"],
-        appleSecureEnclaveKey: json["apple_secure_enclave_key"],
-        appleEnclaveKeyId: json["apple_enclave_key_id"],
-        deviceType: json["device_type"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'user': json['user'],
+        'appleSecureEnclaveKey': json['apple_secure_enclave_key'],
+        'appleEnclaveKeyId': json['apple_enclave_key_id'],
+        'deviceType': json['device_type'],
     };
 }
 
@@ -95,19 +74,18 @@ export function AppleIndependentSecureEnclaveToJSON(json: any): AppleIndependent
     return AppleIndependentSecureEnclaveToJSONTyped(json, false);
 }
 
-export function AppleIndependentSecureEnclaveToJSONTyped(
-    value?: AppleIndependentSecureEnclave | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AppleIndependentSecureEnclaveToJSONTyped(value?: AppleIndependentSecureEnclave | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        user: value["user"],
-        apple_secure_enclave_key: value["appleSecureEnclaveKey"],
-        apple_enclave_key_id: value["appleEnclaveKeyId"],
-        device_type: value["deviceType"],
+        
+        'uuid': value['uuid'],
+        'user': value['user'],
+        'apple_secure_enclave_key': value['appleSecureEnclaveKey'],
+        'apple_enclave_key_id': value['appleEnclaveKeyId'],
+        'device_type': value['deviceType'],
     };
 }
+

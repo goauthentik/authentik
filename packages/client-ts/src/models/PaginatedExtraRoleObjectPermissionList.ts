@@ -12,83 +12,82 @@
  * Do not edit the class manually.
  */
 
-import type { ExtraRoleObjectPermission } from "./ExtraRoleObjectPermission";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { ExtraRoleObjectPermission } from './ExtraRoleObjectPermission';
 import {
     ExtraRoleObjectPermissionFromJSON,
+    ExtraRoleObjectPermissionFromJSONTyped,
     ExtraRoleObjectPermissionToJSON,
-} from "./ExtraRoleObjectPermission";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+    ExtraRoleObjectPermissionToJSONTyped,
+} from './ExtraRoleObjectPermission';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedExtraRoleObjectPermissionList
  */
 export interface PaginatedExtraRoleObjectPermissionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ExtraRoleObjectPermission>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedExtraRoleObjectPermissionList interface.
  */
-export function instanceOfPaginatedExtraRoleObjectPermissionList(
-    value: object,
-): value is PaginatedExtraRoleObjectPermissionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedExtraRoleObjectPermissionList(value: object): value is PaginatedExtraRoleObjectPermissionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedExtraRoleObjectPermissionListFromJSON(
-    json: any,
-): PaginatedExtraRoleObjectPermissionList {
+export function PaginatedExtraRoleObjectPermissionListFromJSON(json: any): PaginatedExtraRoleObjectPermissionList {
     return PaginatedExtraRoleObjectPermissionListFromJSONTyped(json, false);
 }
 
-export function PaginatedExtraRoleObjectPermissionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedExtraRoleObjectPermissionList {
+export function PaginatedExtraRoleObjectPermissionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedExtraRoleObjectPermissionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ExtraRoleObjectPermissionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ExtraRoleObjectPermissionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedExtraRoleObjectPermissionListToJSON(
-    json: any,
-): PaginatedExtraRoleObjectPermissionList {
+export function PaginatedExtraRoleObjectPermissionListToJSON(json: any): PaginatedExtraRoleObjectPermissionList {
     return PaginatedExtraRoleObjectPermissionListToJSONTyped(json, false);
 }
 
-export function PaginatedExtraRoleObjectPermissionListToJSONTyped(
-    value?: PaginatedExtraRoleObjectPermissionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedExtraRoleObjectPermissionListToJSONTyped(value?: PaginatedExtraRoleObjectPermissionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ExtraRoleObjectPermissionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ExtraRoleObjectPermissionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const UserSwitchActionEnum = {
-    Add: "add",
-    Switch: "switch",
-    UnknownDefaultOpenApi: "11184809",
+    Add: 'add',
+    Switch: 'switch',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type UserSwitchActionEnum = (typeof UserSwitchActionEnum)[keyof typeof UserSwitchActionEnum];
+export type UserSwitchActionEnum = typeof UserSwitchActionEnum[keyof typeof UserSwitchActionEnum];
+
 
 export function instanceOfUserSwitchActionEnum(value: any): boolean {
     for (const key in UserSwitchActionEnum) {
@@ -38,10 +40,7 @@ export function UserSwitchActionEnumFromJSON(json: any): UserSwitchActionEnum {
     return UserSwitchActionEnumFromJSONTyped(json, false);
 }
 
-export function UserSwitchActionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSwitchActionEnum {
+export function UserSwitchActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSwitchActionEnum {
     return json as UserSwitchActionEnum;
 }
 
@@ -49,9 +48,7 @@ export function UserSwitchActionEnumToJSON(value?: UserSwitchActionEnum | null):
     return value as any;
 }
 
-export function UserSwitchActionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): UserSwitchActionEnum {
+export function UserSwitchActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserSwitchActionEnum {
     return value as UserSwitchActionEnum;
 }
+

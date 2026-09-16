@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Generic API Error
  * @export
@@ -19,11 +20,11 @@
  */
 export interface GenericError {
     /**
-     *
+     * 
      */
     detail: string;
     /**
-     *
+     * 
      */
     code?: string;
 }
@@ -32,7 +33,7 @@ export interface GenericError {
  * Check if a given object implements the GenericError interface.
  */
 export function instanceOfGenericError(value: object): value is GenericError {
-    if (!("detail" in value) || value["detail"] === undefined) return false;
+    if (!('detail' in value) || value['detail'] === undefined) return false;
     return true;
 }
 
@@ -45,8 +46,9 @@ export function GenericErrorFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        detail: json["detail"],
-        code: json["code"] == null ? undefined : json["code"],
+        
+        'detail': json['detail'],
+        'code': json['code'] == null ? undefined : json['code'],
     };
 }
 
@@ -54,16 +56,15 @@ export function GenericErrorToJSON(json: any): GenericError {
     return GenericErrorToJSONTyped(json, false);
 }
 
-export function GenericErrorToJSONTyped(
-    value?: GenericError | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GenericErrorToJSONTyped(value?: GenericError | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        detail: value["detail"],
-        code: value["code"],
+        
+        'detail': value['detail'],
+        'code': value['code'],
     };
 }
+

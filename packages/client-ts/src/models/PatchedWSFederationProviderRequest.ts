@@ -12,17 +12,35 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import { mapValues } from '../runtime';
+import type { DigestAlgorithmEnum } from './DigestAlgorithmEnum';
+import {
+    DigestAlgorithmEnumFromJSON,
+    DigestAlgorithmEnumFromJSONTyped,
+    DigestAlgorithmEnumToJSON,
+    DigestAlgorithmEnumToJSONTyped,
+} from './DigestAlgorithmEnum';
+import type { SignatureAlgorithmEnum } from './SignatureAlgorithmEnum';
 import {
     SignatureAlgorithmEnumFromJSON,
+    SignatureAlgorithmEnumFromJSONTyped,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
-import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum";
-import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFedSAMLVersionEnum";
+    SignatureAlgorithmEnumToJSONTyped,
+} from './SignatureAlgorithmEnum';
+import type { SAMLNameIDPolicyEnum } from './SAMLNameIDPolicyEnum';
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumFromJSONTyped,
+    SAMLNameIDPolicyEnumToJSON,
+    SAMLNameIDPolicyEnumToJSONTyped,
+} from './SAMLNameIDPolicyEnum';
+import type { WSFedSAMLVersionEnum } from './WSFedSAMLVersionEnum';
+import {
+    WSFedSAMLVersionEnumFromJSON,
+    WSFedSAMLVersionEnumFromJSONTyped,
+    WSFedSAMLVersionEnumToJSON,
+    WSFedSAMLVersionEnumToJSONTyped,
+} from './WSFedSAMLVersionEnum';
 
 /**
  * WSFederationProvider Serializer
@@ -31,7 +49,7 @@ import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFe
  */
 export interface PatchedWSFederationProviderRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -47,15 +65,15 @@ export interface PatchedWSFederationProviderRequest {
      */
     invalidationFlow?: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     replyUrl?: string;
     /**
-     *
+     * 
      */
     wtrealm?: string;
     /**
@@ -83,11 +101,11 @@ export interface PatchedWSFederationProviderRequest {
      */
     samlVersion?: WSFedSAMLVersionEnum;
     /**
-     *
+     * 
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
-     *
+     * 
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
@@ -99,147 +117,92 @@ export interface PatchedWSFederationProviderRequest {
      */
     encryptionKp?: string | null;
     /**
-     *
+     * 
      */
     signAssertion?: boolean;
     /**
-     *
+     * 
      */
     signLogoutRequest?: boolean;
     /**
-     *
+     * 
      */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedWSFederationProviderRequest interface.
  */
-export function instanceOfPatchedWSFederationProviderRequest(
-    value: object,
-): value is PatchedWSFederationProviderRequest {
+export function instanceOfPatchedWSFederationProviderRequest(value: object): value is PatchedWSFederationProviderRequest {
     return true;
 }
 
-export function PatchedWSFederationProviderRequestFromJSON(
-    json: any,
-): PatchedWSFederationProviderRequest {
+export function PatchedWSFederationProviderRequestFromJSON(json: any): PatchedWSFederationProviderRequest {
     return PatchedWSFederationProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedWSFederationProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedWSFederationProviderRequest {
+export function PatchedWSFederationProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedWSFederationProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow:
-            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        replyUrl: json["reply_url"] == null ? undefined : json["reply_url"],
-        wtrealm: json["wtrealm"] == null ? undefined : json["wtrealm"],
-        assertionValidNotBefore:
-            json["assertion_valid_not_before"] == null
-                ? undefined
-                : json["assertion_valid_not_before"],
-        assertionValidNotOnOrAfter:
-            json["assertion_valid_not_on_or_after"] == null
-                ? undefined
-                : json["assertion_valid_not_on_or_after"],
-        sessionValidNotOnOrAfter:
-            json["session_valid_not_on_or_after"] == null
-                ? undefined
-                : json["session_valid_not_on_or_after"],
-        nameIdMapping:
-            json["name_id_mapping"] === undefined
-                ? undefined
-                : json["name_id_mapping"] === null
-                  ? null
-                  : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] === undefined
-                ? undefined
-                : json["authn_context_class_ref_mapping"] === null
-                  ? null
-                  : json["authn_context_class_ref_mapping"],
-        samlVersion:
-            json["saml_version"] == null
-                ? undefined
-                : WSFedSAMLVersionEnumFromJSON(json["saml_version"]),
-        digestAlgorithm:
-            json["digest_algorithm"] == null
-                ? undefined
-                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm:
-            json["signature_algorithm"] == null
-                ? undefined
-                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp:
-            json["signing_kp"] === undefined
-                ? undefined
-                : json["signing_kp"] === null
-                  ? null
-                  : json["signing_kp"],
-        encryptionKp:
-            json["encryption_kp"] === undefined
-                ? undefined
-                : json["encryption_kp"] === null
-                  ? null
-                  : json["encryption_kp"],
-        signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
-        signLogoutRequest:
-            json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
-        defaultNameIdPolicy:
-            json["default_name_id_policy"] == null
-                ? undefined
-                : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'] == null ? undefined : json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'replyUrl': json['reply_url'] == null ? undefined : json['reply_url'],
+        'wtrealm': json['wtrealm'] == null ? undefined : json['wtrealm'],
+        'assertionValidNotBefore': json['assertion_valid_not_before'] == null ? undefined : json['assertion_valid_not_before'],
+        'assertionValidNotOnOrAfter': json['assertion_valid_not_on_or_after'] == null ? undefined : json['assertion_valid_not_on_or_after'],
+        'sessionValidNotOnOrAfter': json['session_valid_not_on_or_after'] == null ? undefined : json['session_valid_not_on_or_after'],
+        'nameIdMapping': json['name_id_mapping'] === undefined ? undefined : json['name_id_mapping'] === null ? null : json['name_id_mapping'],
+        'authnContextClassRefMapping': json['authn_context_class_ref_mapping'] === undefined ? undefined : json['authn_context_class_ref_mapping'] === null ? null : json['authn_context_class_ref_mapping'],
+        'samlVersion': json['saml_version'] == null ? undefined : WSFedSAMLVersionEnumFromJSON(json['saml_version']),
+        'digestAlgorithm': json['digest_algorithm'] == null ? undefined : DigestAlgorithmEnumFromJSON(json['digest_algorithm']),
+        'signatureAlgorithm': json['signature_algorithm'] == null ? undefined : SignatureAlgorithmEnumFromJSON(json['signature_algorithm']),
+        'signingKp': json['signing_kp'] === undefined ? undefined : json['signing_kp'] === null ? null : json['signing_kp'],
+        'encryptionKp': json['encryption_kp'] === undefined ? undefined : json['encryption_kp'] === null ? null : json['encryption_kp'],
+        'signAssertion': json['sign_assertion'] == null ? undefined : json['sign_assertion'],
+        'signLogoutRequest': json['sign_logout_request'] == null ? undefined : json['sign_logout_request'],
+        'defaultNameIdPolicy': json['default_name_id_policy'] == null ? undefined : SAMLNameIDPolicyEnumFromJSON(json['default_name_id_policy']),
     };
 }
 
-export function PatchedWSFederationProviderRequestToJSON(
-    json: any,
-): PatchedWSFederationProviderRequest {
+export function PatchedWSFederationProviderRequestToJSON(json: any): PatchedWSFederationProviderRequest {
     return PatchedWSFederationProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedWSFederationProviderRequestToJSONTyped(
-    value?: PatchedWSFederationProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedWSFederationProviderRequestToJSONTyped(value?: PatchedWSFederationProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        reply_url: value["replyUrl"],
-        wtrealm: value["wtrealm"],
-        assertion_valid_not_before: value["assertionValidNotBefore"],
-        assertion_valid_not_on_or_after: value["assertionValidNotOnOrAfter"],
-        session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
-        name_id_mapping: value["nameIdMapping"],
-        authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
-        saml_version: WSFedSAMLVersionEnumToJSON(value["samlVersion"]),
-        digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
-        signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
-        signing_kp: value["signingKp"],
-        encryption_kp: value["encryptionKp"],
-        sign_assertion: value["signAssertion"],
-        sign_logout_request: value["signLogoutRequest"],
-        default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'reply_url': value['replyUrl'],
+        'wtrealm': value['wtrealm'],
+        'assertion_valid_not_before': value['assertionValidNotBefore'],
+        'assertion_valid_not_on_or_after': value['assertionValidNotOnOrAfter'],
+        'session_valid_not_on_or_after': value['sessionValidNotOnOrAfter'],
+        'name_id_mapping': value['nameIdMapping'],
+        'authn_context_class_ref_mapping': value['authnContextClassRefMapping'],
+        'saml_version': WSFedSAMLVersionEnumToJSON(value['samlVersion']),
+        'digest_algorithm': DigestAlgorithmEnumToJSON(value['digestAlgorithm']),
+        'signature_algorithm': SignatureAlgorithmEnumToJSON(value['signatureAlgorithm']),
+        'signing_kp': value['signingKp'],
+        'encryption_kp': value['encryptionKp'],
+        'sign_assertion': value['signAssertion'],
+        'sign_logout_request': value['signLogoutRequest'],
+        'default_name_id_policy': SAMLNameIDPolicyEnumToJSON(value['defaultNameIdPolicy']),
     };
 }
+

@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import { mapValues } from '../runtime';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
 
 /**
  * AccountLockdownStage Serializer
@@ -22,11 +28,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface AccountLockdownStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,7 +52,7 @@ export interface AccountLockdownStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -75,37 +81,13 @@ export interface AccountLockdownStage {
  * Check if a given object implements the AccountLockdownStage interface.
  */
 export function instanceOfAccountLockdownStage(value: object): value is AccountLockdownStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -113,32 +95,24 @@ export function AccountLockdownStageFromJSON(json: any): AccountLockdownStage {
     return AccountLockdownStageFromJSONTyped(json, false);
 }
 
-export function AccountLockdownStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AccountLockdownStage {
+export function AccountLockdownStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AccountLockdownStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        deactivateUser: json["deactivate_user"] == null ? undefined : json["deactivate_user"],
-        setUnusablePassword:
-            json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
-        deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
-        revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceCompletionFlow:
-            json["self_service_completion_flow"] === undefined
-                ? undefined
-                : json["self_service_completion_flow"] === null
-                  ? null
-                  : json["self_service_completion_flow"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'deactivateUser': json['deactivate_user'] == null ? undefined : json['deactivate_user'],
+        'setUnusablePassword': json['set_unusable_password'] == null ? undefined : json['set_unusable_password'],
+        'deleteSessions': json['delete_sessions'] == null ? undefined : json['delete_sessions'],
+        'revokeTokens': json['revoke_tokens'] == null ? undefined : json['revoke_tokens'],
+        'selfServiceCompletionFlow': json['self_service_completion_flow'] === undefined ? undefined : json['self_service_completion_flow'] === null ? null : json['self_service_completion_flow'],
     };
 }
 
@@ -146,23 +120,19 @@ export function AccountLockdownStageToJSON(json: any): AccountLockdownStage {
     return AccountLockdownStageToJSONTyped(json, false);
 }
 
-export function AccountLockdownStageToJSONTyped(
-    value?: Omit<
-        AccountLockdownStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AccountLockdownStageToJSONTyped(value?: Omit<AccountLockdownStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deactivate_user: value["deactivateUser"],
-        set_unusable_password: value["setUnusablePassword"],
-        delete_sessions: value["deleteSessions"],
-        revoke_tokens: value["revokeTokens"],
-        self_service_completion_flow: value["selfServiceCompletionFlow"],
+        
+        'name': value['name'],
+        'deactivate_user': value['deactivateUser'],
+        'set_unusable_password': value['setUnusablePassword'],
+        'delete_sessions': value['deleteSessions'],
+        'revoke_tokens': value['revokeTokens'],
+        'self_service_completion_flow': value['selfServiceCompletionFlow'],
     };
 }
+

@@ -12,20 +12,22 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DiagramEdgeTypeEnum = {
-    Proceed: "proceed",
-    Binding: "binding",
-    PolicyPassed: "policy-passed",
-    PolicyDenied: "policy-denied",
-    RequirementFulfilled: "requirement-fulfilled",
-    RequirementUnfulfilled: "requirement-unfulfilled",
-    UnknownDefaultOpenApi: "11184809",
+    Proceed: 'proceed',
+    Binding: 'binding',
+    PolicyPassed: 'policy-passed',
+    PolicyDenied: 'policy-denied',
+    RequirementFulfilled: 'requirement-fulfilled',
+    RequirementUnfulfilled: 'requirement-unfulfilled',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DiagramEdgeTypeEnum = (typeof DiagramEdgeTypeEnum)[keyof typeof DiagramEdgeTypeEnum];
+export type DiagramEdgeTypeEnum = typeof DiagramEdgeTypeEnum[keyof typeof DiagramEdgeTypeEnum];
+
 
 export function instanceOfDiagramEdgeTypeEnum(value: any): boolean {
     for (const key in DiagramEdgeTypeEnum) {
@@ -42,10 +44,7 @@ export function DiagramEdgeTypeEnumFromJSON(json: any): DiagramEdgeTypeEnum {
     return DiagramEdgeTypeEnumFromJSONTyped(json, false);
 }
 
-export function DiagramEdgeTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DiagramEdgeTypeEnum {
+export function DiagramEdgeTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DiagramEdgeTypeEnum {
     return json as DiagramEdgeTypeEnum;
 }
 
@@ -53,9 +52,7 @@ export function DiagramEdgeTypeEnumToJSON(value?: DiagramEdgeTypeEnum | null): a
     return value as any;
 }
 
-export function DiagramEdgeTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): DiagramEdgeTypeEnum {
+export function DiagramEdgeTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DiagramEdgeTypeEnum {
     return value as DiagramEdgeTypeEnum;
 }
+

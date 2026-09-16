@@ -12,58 +12,106 @@
  * Do not edit the class manually.
  */
 
-import { type InitialPermissions, InitialPermissionsFromJSON } from "../models/InitialPermissions";
+import * as runtime from '../runtime';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type InitialPermissions,
+    InitialPermissionsFromJSON,
+    InitialPermissionsToJSON,
+} from '../models/InitialPermissions';
 import {
     type InitialPermissionsRequest,
+    InitialPermissionsRequestFromJSON,
     InitialPermissionsRequestToJSON,
-} from "../models/InitialPermissionsRequest";
+} from '../models/InitialPermissionsRequest';
 import {
     type PaginatedExtraRoleObjectPermissionList,
     PaginatedExtraRoleObjectPermissionListFromJSON,
-} from "../models/PaginatedExtraRoleObjectPermissionList";
+    PaginatedExtraRoleObjectPermissionListToJSON,
+} from '../models/PaginatedExtraRoleObjectPermissionList';
 import {
     type PaginatedInitialPermissionsList,
     PaginatedInitialPermissionsListFromJSON,
-} from "../models/PaginatedInitialPermissionsList";
+    PaginatedInitialPermissionsListToJSON,
+} from '../models/PaginatedInitialPermissionsList';
 import {
     type PaginatedPermissionList,
     PaginatedPermissionListFromJSON,
-} from "../models/PaginatedPermissionList";
+    PaginatedPermissionListToJSON,
+} from '../models/PaginatedPermissionList';
 import {
     type PaginatedRoleAssignedObjectPermissionList,
     PaginatedRoleAssignedObjectPermissionListFromJSON,
-} from "../models/PaginatedRoleAssignedObjectPermissionList";
-import { type PaginatedRoleList, PaginatedRoleListFromJSON } from "../models/PaginatedRoleList";
+    PaginatedRoleAssignedObjectPermissionListToJSON,
+} from '../models/PaginatedRoleAssignedObjectPermissionList';
+import {
+    type PaginatedRoleList,
+    PaginatedRoleListFromJSON,
+    PaginatedRoleListToJSON,
+} from '../models/PaginatedRoleList';
 import {
     type PatchedInitialPermissionsRequest,
+    PatchedInitialPermissionsRequestFromJSON,
     PatchedInitialPermissionsRequestToJSON,
-} from "../models/PatchedInitialPermissionsRequest";
+} from '../models/PatchedInitialPermissionsRequest';
 import {
     type PatchedPermissionAssignRequest,
+    PatchedPermissionAssignRequestFromJSON,
     PatchedPermissionAssignRequestToJSON,
-} from "../models/PatchedPermissionAssignRequest";
-import { type PatchedRoleRequest, PatchedRoleRequestToJSON } from "../models/PatchedRoleRequest";
-import { type Permission, PermissionFromJSON } from "../models/Permission";
+} from '../models/PatchedPermissionAssignRequest';
+import {
+    type PatchedRoleRequest,
+    PatchedRoleRequestFromJSON,
+    PatchedRoleRequestToJSON,
+} from '../models/PatchedRoleRequest';
+import {
+    type Permission,
+    PermissionFromJSON,
+    PermissionToJSON,
+} from '../models/Permission';
 import {
     type PermissionAssignRequest,
+    PermissionAssignRequestFromJSON,
     PermissionAssignRequestToJSON,
-} from "../models/PermissionAssignRequest";
+} from '../models/PermissionAssignRequest';
 import {
     type PermissionAssignResult,
     PermissionAssignResultFromJSON,
-} from "../models/PermissionAssignResult";
-import { type Role, RoleFromJSON } from "../models/Role";
-import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+    PermissionAssignResultToJSON,
+} from '../models/PermissionAssignResult';
+import {
+    type Role,
+    RoleFromJSON,
+    RoleToJSON,
+} from '../models/Role';
+import {
+    type RoleRequest,
+    RoleRequestFromJSON,
+    RoleRequestToJSON,
+} from '../models/RoleRequest';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+    UsedByToJSON,
+} from '../models/UsedBy';
 import {
     type UserAccountSerializerForRoleRequest,
+    UserAccountSerializerForRoleRequestFromJSON,
     UserAccountSerializerForRoleRequestToJSON,
-} from "../models/UserAccountSerializerForRoleRequest";
-import * as runtime from "../runtime";
+} from '../models/UserAccountSerializerForRoleRequest';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface RbacInitialPermissionsCreateRequest {
     /**
-     *
+     * 
      */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
@@ -77,7 +125,7 @@ export interface RbacInitialPermissionsDestroyRequest {
 
 export interface RbacInitialPermissionsListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -104,7 +152,7 @@ export interface RbacInitialPermissionsPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedInitialPermissionsRequest?: PatchedInitialPermissionsRequest;
 }
@@ -122,7 +170,7 @@ export interface RbacInitialPermissionsUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
@@ -140,18 +188,18 @@ export interface RbacPermissionsAssignedByRolesAssignRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     permissionAssignRequest: PermissionAssignRequest;
 }
 
 export interface RbacPermissionsAssignedByRolesListRequest {
     /**
-     *
+     * 
      */
     model: string;
     /**
-     *
+     * 
      */
     objectPk?: string;
     /**
@@ -178,22 +226,22 @@ export interface RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedPermissionAssignRequest?: PatchedPermissionAssignRequest;
 }
 
 export interface RbacPermissionsListRequest {
     /**
-     *
+     * 
      */
     codename?: string;
     /**
-     *
+     * 
      */
     contentTypeAppLabel?: string;
     /**
-     *
+     * 
      */
     contentTypeModel?: string;
     /**
@@ -209,7 +257,7 @@ export interface RbacPermissionsListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     role?: string;
     /**
@@ -243,7 +291,7 @@ export interface RbacPermissionsRolesListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     uuid?: string;
 }
@@ -254,14 +302,14 @@ export interface RbacRolesAddUserCreateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
 
 export interface RbacRolesCreateRequest {
     /**
-     *
+     * 
      */
     roleRequest: RoleRequest;
 }
@@ -275,7 +323,7 @@ export interface RbacRolesDestroyRequest {
 
 export interface RbacRolesListRequest {
     /**
-     *
+     * 
      */
     groups?: string;
     /**
@@ -283,15 +331,15 @@ export interface RbacRolesListRequest {
      */
     inherited?: boolean;
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -311,7 +359,7 @@ export interface RbacRolesListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     users?: number;
 }
@@ -322,7 +370,7 @@ export interface RbacRolesPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedRoleRequest?: PatchedRoleRequest;
 }
@@ -333,7 +381,7 @@ export interface RbacRolesRemoveUserCreateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
@@ -351,7 +399,7 @@ export interface RbacRolesUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     roleRequest: RoleRequest;
 }
@@ -364,19 +412,18 @@ export interface RbacRolesUsedByListRequest {
 }
 
 /**
- *
+ * 
  */
 export class RbacApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for rbacInitialPermissionsCreate without sending the request
      */
-    async rbacInitialPermissionsCreateRequestOpts(
-        requestParameters: RbacInitialPermissionsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["initialPermissionsRequest"] == null) {
+    async rbacInitialPermissionsCreateRequestOpts(requestParameters: RbacInitialPermissionsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['initialPermissionsRequest'] == null) {
             throw new runtime.RequiredError(
-                "initialPermissionsRequest",
-                'Required parameter "initialPermissionsRequest" was null or undefined when calling rbacInitialPermissionsCreate().',
+                'initialPermissionsRequest',
+                'Required parameter "initialPermissionsRequest" was null or undefined when calling rbacInitialPermissionsCreate().'
             );
         }
 
@@ -384,7 +431,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -399,53 +446,39 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InitialPermissionsRequestToJSON(requestParameters["initialPermissionsRequest"]),
+            body: InitialPermissionsRequestToJSON(requestParameters['initialPermissionsRequest']),
         };
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsCreateRaw(
-        requestParameters: RbacInitialPermissionsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<InitialPermissions>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsCreateRequestOpts(requestParameters);
+    async rbacInitialPermissionsCreateRaw(requestParameters: RbacInitialPermissionsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InitialPermissions>> {
+        const requestOptions = await this.rbacInitialPermissionsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            InitialPermissionsFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => InitialPermissionsFromJSON(jsonValue));
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsCreate(
-        requestParameters: RbacInitialPermissionsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<InitialPermissions> {
-        const response = await this.rbacInitialPermissionsCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacInitialPermissionsCreate(requestParameters: RbacInitialPermissionsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InitialPermissions> {
+        const response = await this.rbacInitialPermissionsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacInitialPermissionsDestroy without sending the request
      */
-    async rbacInitialPermissionsDestroyRequestOpts(
-        requestParameters: RbacInitialPermissionsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacInitialPermissionsDestroyRequestOpts(requestParameters: RbacInitialPermissionsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsDestroy().'
             );
         }
 
@@ -463,11 +496,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -476,12 +509,8 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsDestroyRaw(
-        requestParameters: RbacInitialPermissionsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsDestroyRequestOpts(requestParameters);
+    async rbacInitialPermissionsDestroyRaw(requestParameters: RbacInitialPermissionsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.rbacInitialPermissionsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -490,39 +519,34 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsDestroy(
-        requestParameters: RbacInitialPermissionsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async rbacInitialPermissionsDestroy(requestParameters: RbacInitialPermissionsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.rbacInitialPermissionsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for rbacInitialPermissionsList without sending the request
      */
-    async rbacInitialPermissionsListRequestOpts(
-        requestParameters: RbacInitialPermissionsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async rbacInitialPermissionsListRequestOpts(requestParameters: RbacInitialPermissionsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -540,7 +564,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -549,25 +573,17 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsListRaw(
-        requestParameters: RbacInitialPermissionsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedInitialPermissionsList>> {
+    async rbacInitialPermissionsListRaw(requestParameters: RbacInitialPermissionsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedInitialPermissionsList>> {
         const requestOptions = await this.rbacInitialPermissionsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedInitialPermissionsListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedInitialPermissionsListFromJSON(jsonValue));
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsList(
-        requestParameters: RbacInitialPermissionsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedInitialPermissionsList> {
+    async rbacInitialPermissionsList(requestParameters: RbacInitialPermissionsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedInitialPermissionsList> {
         const response = await this.rbacInitialPermissionsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -575,13 +591,11 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacInitialPermissionsPartialUpdate without sending the request
      */
-    async rbacInitialPermissionsPartialUpdateRequestOpts(
-        requestParameters: RbacInitialPermissionsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacInitialPermissionsPartialUpdateRequestOpts(requestParameters: RbacInitialPermissionsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsPartialUpdate().'
             );
         }
 
@@ -589,7 +603,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -601,59 +615,43 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedInitialPermissionsRequestToJSON(
-                requestParameters["patchedInitialPermissionsRequest"],
-            ),
+            body: PatchedInitialPermissionsRequestToJSON(requestParameters['patchedInitialPermissionsRequest']),
         };
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsPartialUpdateRaw(
-        requestParameters: RbacInitialPermissionsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<InitialPermissions>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsPartialUpdateRequestOpts(requestParameters);
+    async rbacInitialPermissionsPartialUpdateRaw(requestParameters: RbacInitialPermissionsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InitialPermissions>> {
+        const requestOptions = await this.rbacInitialPermissionsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            InitialPermissionsFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => InitialPermissionsFromJSON(jsonValue));
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsPartialUpdate(
-        requestParameters: RbacInitialPermissionsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<InitialPermissions> {
-        const response = await this.rbacInitialPermissionsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacInitialPermissionsPartialUpdate(requestParameters: RbacInitialPermissionsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InitialPermissions> {
+        const response = await this.rbacInitialPermissionsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacInitialPermissionsRetrieve without sending the request
      */
-    async rbacInitialPermissionsRetrieveRequestOpts(
-        requestParameters: RbacInitialPermissionsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacInitialPermissionsRetrieveRequestOpts(requestParameters: RbacInitialPermissionsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsRetrieve().'
             );
         }
 
@@ -671,11 +669,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -684,50 +682,36 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsRetrieveRaw(
-        requestParameters: RbacInitialPermissionsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<InitialPermissions>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsRetrieveRequestOpts(requestParameters);
+    async rbacInitialPermissionsRetrieveRaw(requestParameters: RbacInitialPermissionsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InitialPermissions>> {
+        const requestOptions = await this.rbacInitialPermissionsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            InitialPermissionsFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => InitialPermissionsFromJSON(jsonValue));
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsRetrieve(
-        requestParameters: RbacInitialPermissionsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<InitialPermissions> {
-        const response = await this.rbacInitialPermissionsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacInitialPermissionsRetrieve(requestParameters: RbacInitialPermissionsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InitialPermissions> {
+        const response = await this.rbacInitialPermissionsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacInitialPermissionsUpdate without sending the request
      */
-    async rbacInitialPermissionsUpdateRequestOpts(
-        requestParameters: RbacInitialPermissionsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacInitialPermissionsUpdateRequestOpts(requestParameters: RbacInitialPermissionsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsUpdate().'
             );
         }
 
-        if (requestParameters["initialPermissionsRequest"] == null) {
+        if (requestParameters['initialPermissionsRequest'] == null) {
             throw new runtime.RequiredError(
-                "initialPermissionsRequest",
-                'Required parameter "initialPermissionsRequest" was null or undefined when calling rbacInitialPermissionsUpdate().',
+                'initialPermissionsRequest',
+                'Required parameter "initialPermissionsRequest" was null or undefined when calling rbacInitialPermissionsUpdate().'
             );
         }
 
@@ -735,7 +719,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -747,57 +731,43 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InitialPermissionsRequestToJSON(requestParameters["initialPermissionsRequest"]),
+            body: InitialPermissionsRequestToJSON(requestParameters['initialPermissionsRequest']),
         };
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsUpdateRaw(
-        requestParameters: RbacInitialPermissionsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<InitialPermissions>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsUpdateRequestOpts(requestParameters);
+    async rbacInitialPermissionsUpdateRaw(requestParameters: RbacInitialPermissionsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InitialPermissions>> {
+        const requestOptions = await this.rbacInitialPermissionsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            InitialPermissionsFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => InitialPermissionsFromJSON(jsonValue));
     }
 
     /**
      * InitialPermissions viewset
      */
-    async rbacInitialPermissionsUpdate(
-        requestParameters: RbacInitialPermissionsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<InitialPermissions> {
-        const response = await this.rbacInitialPermissionsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacInitialPermissionsUpdate(requestParameters: RbacInitialPermissionsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InitialPermissions> {
+        const response = await this.rbacInitialPermissionsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacInitialPermissionsUsedByList without sending the request
      */
-    async rbacInitialPermissionsUsedByListRequestOpts(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacInitialPermissionsUsedByListRequestOpts(requestParameters: RbacInitialPermissionsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsUsedByList().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsUsedByList().'
             );
         }
 
@@ -815,11 +785,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -828,12 +798,8 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async rbacInitialPermissionsUsedByListRaw(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsUsedByListRequestOpts(requestParameters);
+    async rbacInitialPermissionsUsedByListRaw(requestParameters: RbacInitialPermissionsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.rbacInitialPermissionsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -842,34 +808,26 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async rbacInitialPermissionsUsedByList(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.rbacInitialPermissionsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacInitialPermissionsUsedByList(requestParameters: RbacInitialPermissionsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.rbacInitialPermissionsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacPermissionsAssignedByRolesAssign without sending the request
      */
-    async rbacPermissionsAssignedByRolesAssignRequestOpts(
-        requestParameters: RbacPermissionsAssignedByRolesAssignRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacPermissionsAssignedByRolesAssignRequestOpts(requestParameters: RbacPermissionsAssignedByRolesAssignRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacPermissionsAssignedByRolesAssign().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacPermissionsAssignedByRolesAssign().'
             );
         }
 
-        if (requestParameters["permissionAssignRequest"] == null) {
+        if (requestParameters['permissionAssignRequest'] == null) {
             throw new runtime.RequiredError(
-                "permissionAssignRequest",
-                'Required parameter "permissionAssignRequest" was null or undefined when calling rbacPermissionsAssignedByRolesAssign().',
+                'permissionAssignRequest',
+                'Required parameter "permissionAssignRequest" was null or undefined when calling rbacPermissionsAssignedByRolesAssign().'
             );
         }
 
@@ -877,7 +835,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -889,84 +847,70 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/assigned_by_roles/{uuid}/assign/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PermissionAssignRequestToJSON(requestParameters["permissionAssignRequest"]),
+            body: PermissionAssignRequestToJSON(requestParameters['permissionAssignRequest']),
         };
     }
 
     /**
      * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
      */
-    async rbacPermissionsAssignedByRolesAssignRaw(
-        requestParameters: RbacPermissionsAssignedByRolesAssignRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<PermissionAssignResult>>> {
-        const requestOptions =
-            await this.rbacPermissionsAssignedByRolesAssignRequestOpts(requestParameters);
+    async rbacPermissionsAssignedByRolesAssignRaw(requestParameters: RbacPermissionsAssignedByRolesAssignRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<PermissionAssignResult>>> {
+        const requestOptions = await this.rbacPermissionsAssignedByRolesAssignRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(PermissionAssignResultFromJSON),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PermissionAssignResultFromJSON));
     }
 
     /**
      * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
      */
-    async rbacPermissionsAssignedByRolesAssign(
-        requestParameters: RbacPermissionsAssignedByRolesAssignRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<PermissionAssignResult>> {
-        const response = await this.rbacPermissionsAssignedByRolesAssignRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacPermissionsAssignedByRolesAssign(requestParameters: RbacPermissionsAssignedByRolesAssignRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<PermissionAssignResult>> {
+        const response = await this.rbacPermissionsAssignedByRolesAssignRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacPermissionsAssignedByRolesList without sending the request
      */
-    async rbacPermissionsAssignedByRolesListRequestOpts(
-        requestParameters: RbacPermissionsAssignedByRolesListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["model"] == null) {
+    async rbacPermissionsAssignedByRolesListRequestOpts(requestParameters: RbacPermissionsAssignedByRolesListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['model'] == null) {
             throw new runtime.RequiredError(
-                "model",
-                'Required parameter "model" was null or undefined when calling rbacPermissionsAssignedByRolesList().',
+                'model',
+                'Required parameter "model" was null or undefined when calling rbacPermissionsAssignedByRolesList().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["model"] != null) {
-            queryParameters["model"] = requestParameters["model"];
+        if (requestParameters['model'] != null) {
+            queryParameters['model'] = requestParameters['model'];
         }
 
-        if (requestParameters["objectPk"] != null) {
-            queryParameters["object_pk"] = requestParameters["objectPk"];
+        if (requestParameters['objectPk'] != null) {
+            queryParameters['object_pk'] = requestParameters['objectPk'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -984,7 +928,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -993,43 +937,29 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get assigned object permissions for a single object
      */
-    async rbacPermissionsAssignedByRolesListRaw(
-        requestParameters: RbacPermissionsAssignedByRolesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRoleAssignedObjectPermissionList>> {
-        const requestOptions =
-            await this.rbacPermissionsAssignedByRolesListRequestOpts(requestParameters);
+    async rbacPermissionsAssignedByRolesListRaw(requestParameters: RbacPermissionsAssignedByRolesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRoleAssignedObjectPermissionList>> {
+        const requestOptions = await this.rbacPermissionsAssignedByRolesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRoleAssignedObjectPermissionListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRoleAssignedObjectPermissionListFromJSON(jsonValue));
     }
 
     /**
      * Get assigned object permissions for a single object
      */
-    async rbacPermissionsAssignedByRolesList(
-        requestParameters: RbacPermissionsAssignedByRolesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRoleAssignedObjectPermissionList> {
-        const response = await this.rbacPermissionsAssignedByRolesListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacPermissionsAssignedByRolesList(requestParameters: RbacPermissionsAssignedByRolesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRoleAssignedObjectPermissionList> {
+        const response = await this.rbacPermissionsAssignedByRolesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for rbacPermissionsAssignedByRolesUnassignPartialUpdate without sending the request
      */
-    async rbacPermissionsAssignedByRolesUnassignPartialUpdateRequestOpts(
-        requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacPermissionsAssignedByRolesUnassignPartialUpdateRequestOpts(requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacPermissionsAssignedByRolesUnassignPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacPermissionsAssignedByRolesUnassignPartialUpdate().'
             );
         }
 
@@ -1037,7 +967,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1049,30 +979,22 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/assigned_by_roles/{uuid}/unassign/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPermissionAssignRequestToJSON(
-                requestParameters["patchedPermissionAssignRequest"],
-            ),
+            body: PatchedPermissionAssignRequestToJSON(requestParameters['patchedPermissionAssignRequest']),
         };
     }
 
     /**
      * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
      */
-    async rbacPermissionsAssignedByRolesUnassignPartialUpdateRaw(
-        requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.rbacPermissionsAssignedByRolesUnassignPartialUpdateRequestOpts(
-                requestParameters,
-            );
+    async rbacPermissionsAssignedByRolesUnassignPartialUpdateRaw(requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.rbacPermissionsAssignedByRolesUnassignPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1081,54 +1003,46 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
      */
-    async rbacPermissionsAssignedByRolesUnassignPartialUpdate(
-        requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
-        await this.rbacPermissionsAssignedByRolesUnassignPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async rbacPermissionsAssignedByRolesUnassignPartialUpdate(requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.rbacPermissionsAssignedByRolesUnassignPartialUpdateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for rbacPermissionsList without sending the request
      */
-    async rbacPermissionsListRequestOpts(
-        requestParameters: RbacPermissionsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async rbacPermissionsListRequestOpts(requestParameters: RbacPermissionsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["codename"] != null) {
-            queryParameters["codename"] = requestParameters["codename"];
+        if (requestParameters['codename'] != null) {
+            queryParameters['codename'] = requestParameters['codename'];
         }
 
-        if (requestParameters["contentTypeAppLabel"] != null) {
-            queryParameters["content_type__app_label"] = requestParameters["contentTypeAppLabel"];
+        if (requestParameters['contentTypeAppLabel'] != null) {
+            queryParameters['content_type__app_label'] = requestParameters['contentTypeAppLabel'];
         }
 
-        if (requestParameters["contentTypeModel"] != null) {
-            queryParameters["content_type__model"] = requestParameters["contentTypeModel"];
+        if (requestParameters['contentTypeModel'] != null) {
+            queryParameters['content_type__model'] = requestParameters['contentTypeModel'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["role"] != null) {
-            queryParameters["role"] = requestParameters["role"];
+        if (requestParameters['role'] != null) {
+            queryParameters['role'] = requestParameters['role'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1146,7 +1060,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1155,25 +1069,17 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Read-only list of all permissions, filterable by model and app
      */
-    async rbacPermissionsListRaw(
-        requestParameters: RbacPermissionsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedPermissionList>> {
+    async rbacPermissionsListRaw(requestParameters: RbacPermissionsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPermissionList>> {
         const requestOptions = await this.rbacPermissionsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedPermissionListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPermissionListFromJSON(jsonValue));
     }
 
     /**
      * Read-only list of all permissions, filterable by model and app
      */
-    async rbacPermissionsList(
-        requestParameters: RbacPermissionsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedPermissionList> {
+    async rbacPermissionsList(requestParameters: RbacPermissionsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPermissionList> {
         const response = await this.rbacPermissionsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1181,13 +1087,11 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacPermissionsRetrieve without sending the request
      */
-    async rbacPermissionsRetrieveRequestOpts(
-        requestParameters: RbacPermissionsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async rbacPermissionsRetrieveRequestOpts(requestParameters: RbacPermissionsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacPermissionsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling rbacPermissionsRetrieve().'
             );
         }
 
@@ -1205,11 +1109,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1218,10 +1122,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Read-only list of all permissions, filterable by model and app
      */
-    async rbacPermissionsRetrieveRaw(
-        requestParameters: RbacPermissionsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Permission>> {
+    async rbacPermissionsRetrieveRaw(requestParameters: RbacPermissionsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Permission>> {
         const requestOptions = await this.rbacPermissionsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1231,10 +1132,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Read-only list of all permissions, filterable by model and app
      */
-    async rbacPermissionsRetrieve(
-        requestParameters: RbacPermissionsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Permission> {
+    async rbacPermissionsRetrieve(requestParameters: RbacPermissionsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Permission> {
         const response = await this.rbacPermissionsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1242,29 +1140,27 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacPermissionsRolesList without sending the request
      */
-    async rbacPermissionsRolesListRequestOpts(
-        requestParameters: RbacPermissionsRolesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async rbacPermissionsRolesListRequestOpts(requestParameters: RbacPermissionsRolesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["uuid"] != null) {
-            queryParameters["uuid"] = requestParameters["uuid"];
+        if (requestParameters['uuid'] != null) {
+            queryParameters['uuid'] = requestParameters['uuid'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1282,7 +1178,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1291,25 +1187,17 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get a role\'s assigned object permissions
      */
-    async rbacPermissionsRolesListRaw(
-        requestParameters: RbacPermissionsRolesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedExtraRoleObjectPermissionList>> {
+    async rbacPermissionsRolesListRaw(requestParameters: RbacPermissionsRolesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedExtraRoleObjectPermissionList>> {
         const requestOptions = await this.rbacPermissionsRolesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedExtraRoleObjectPermissionListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedExtraRoleObjectPermissionListFromJSON(jsonValue));
     }
 
     /**
      * Get a role\'s assigned object permissions
      */
-    async rbacPermissionsRolesList(
-        requestParameters: RbacPermissionsRolesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedExtraRoleObjectPermissionList> {
+    async rbacPermissionsRolesList(requestParameters: RbacPermissionsRolesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedExtraRoleObjectPermissionList> {
         const response = await this.rbacPermissionsRolesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1317,20 +1205,18 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesAddUserCreate without sending the request
      */
-    async rbacRolesAddUserCreateRequestOpts(
-        requestParameters: RbacRolesAddUserCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesAddUserCreateRequestOpts(requestParameters: RbacRolesAddUserCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesAddUserCreate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesAddUserCreate().'
             );
         }
 
-        if (requestParameters["userAccountSerializerForRoleRequest"] == null) {
+        if (requestParameters['userAccountSerializerForRoleRequest'] == null) {
             throw new runtime.RequiredError(
-                "userAccountSerializerForRoleRequest",
-                'Required parameter "userAccountSerializerForRoleRequest" was null or undefined when calling rbacRolesAddUserCreate().',
+                'userAccountSerializerForRoleRequest',
+                'Required parameter "userAccountSerializerForRoleRequest" was null or undefined when calling rbacRolesAddUserCreate().'
             );
         }
 
@@ -1338,7 +1224,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1350,26 +1236,21 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/add_user/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: UserAccountSerializerForRoleRequestToJSON(
-                requestParameters["userAccountSerializerForRoleRequest"],
-            ),
+            body: UserAccountSerializerForRoleRequestToJSON(requestParameters['userAccountSerializerForRoleRequest']),
         };
     }
 
     /**
      * Add user to role
      */
-    async rbacRolesAddUserCreateRaw(
-        requestParameters: RbacRolesAddUserCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async rbacRolesAddUserCreateRaw(requestParameters: RbacRolesAddUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.rbacRolesAddUserCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1379,23 +1260,18 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Add user to role
      */
-    async rbacRolesAddUserCreate(
-        requestParameters: RbacRolesAddUserCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async rbacRolesAddUserCreate(requestParameters: RbacRolesAddUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.rbacRolesAddUserCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for rbacRolesCreate without sending the request
      */
-    async rbacRolesCreateRequestOpts(
-        requestParameters: RbacRolesCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["roleRequest"] == null) {
+    async rbacRolesCreateRequestOpts(requestParameters: RbacRolesCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['roleRequest'] == null) {
             throw new runtime.RequiredError(
-                "roleRequest",
-                'Required parameter "roleRequest" was null or undefined when calling rbacRolesCreate().',
+                'roleRequest',
+                'Required parameter "roleRequest" was null or undefined when calling rbacRolesCreate().'
             );
         }
 
@@ -1403,7 +1279,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1418,20 +1294,17 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RoleRequestToJSON(requestParameters["roleRequest"]),
+            body: RoleRequestToJSON(requestParameters['roleRequest']),
         };
     }
 
     /**
      * Role viewset
      */
-    async rbacRolesCreateRaw(
-        requestParameters: RbacRolesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Role>> {
+    async rbacRolesCreateRaw(requestParameters: RbacRolesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Role>> {
         const requestOptions = await this.rbacRolesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1441,10 +1314,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesCreate(
-        requestParameters: RbacRolesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Role> {
+    async rbacRolesCreate(requestParameters: RbacRolesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Role> {
         const response = await this.rbacRolesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1452,13 +1322,11 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesDestroy without sending the request
      */
-    async rbacRolesDestroyRequestOpts(
-        requestParameters: RbacRolesDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesDestroyRequestOpts(requestParameters: RbacRolesDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesDestroy().'
             );
         }
 
@@ -1476,11 +1344,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1489,10 +1357,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesDestroyRaw(
-        requestParameters: RbacRolesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async rbacRolesDestroyRaw(requestParameters: RbacRolesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.rbacRolesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1502,59 +1367,54 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesDestroy(
-        requestParameters: RbacRolesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async rbacRolesDestroy(requestParameters: RbacRolesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.rbacRolesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for rbacRolesList without sending the request
      */
-    async rbacRolesListRequestOpts(
-        requestParameters: RbacRolesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async rbacRolesListRequestOpts(requestParameters: RbacRolesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["groups"] != null) {
-            queryParameters["groups"] = requestParameters["groups"];
+        if (requestParameters['groups'] != null) {
+            queryParameters['groups'] = requestParameters['groups'];
         }
 
-        if (requestParameters["inherited"] != null) {
-            queryParameters["inherited"] = requestParameters["inherited"];
+        if (requestParameters['inherited'] != null) {
+            queryParameters['inherited'] = requestParameters['inherited'];
         }
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["users"] != null) {
-            queryParameters["users"] = requestParameters["users"];
+        if (requestParameters['users'] != null) {
+            queryParameters['users'] = requestParameters['users'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1572,7 +1432,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1581,25 +1441,17 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesListRaw(
-        requestParameters: RbacRolesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRoleList>> {
+    async rbacRolesListRaw(requestParameters: RbacRolesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRoleList>> {
         const requestOptions = await this.rbacRolesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRoleListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRoleListFromJSON(jsonValue));
     }
 
     /**
      * Role viewset
      */
-    async rbacRolesList(
-        requestParameters: RbacRolesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRoleList> {
+    async rbacRolesList(requestParameters: RbacRolesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRoleList> {
         const response = await this.rbacRolesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1607,13 +1459,11 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesPartialUpdate without sending the request
      */
-    async rbacRolesPartialUpdateRequestOpts(
-        requestParameters: RbacRolesPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesPartialUpdateRequestOpts(requestParameters: RbacRolesPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesPartialUpdate().'
             );
         }
 
@@ -1621,7 +1471,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1633,24 +1483,21 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRoleRequestToJSON(requestParameters["patchedRoleRequest"]),
+            body: PatchedRoleRequestToJSON(requestParameters['patchedRoleRequest']),
         };
     }
 
     /**
      * Role viewset
      */
-    async rbacRolesPartialUpdateRaw(
-        requestParameters: RbacRolesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Role>> {
+    async rbacRolesPartialUpdateRaw(requestParameters: RbacRolesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Role>> {
         const requestOptions = await this.rbacRolesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1660,10 +1507,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesPartialUpdate(
-        requestParameters: RbacRolesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Role> {
+    async rbacRolesPartialUpdate(requestParameters: RbacRolesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Role> {
         const response = await this.rbacRolesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1671,20 +1515,18 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesRemoveUserCreate without sending the request
      */
-    async rbacRolesRemoveUserCreateRequestOpts(
-        requestParameters: RbacRolesRemoveUserCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesRemoveUserCreateRequestOpts(requestParameters: RbacRolesRemoveUserCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesRemoveUserCreate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesRemoveUserCreate().'
             );
         }
 
-        if (requestParameters["userAccountSerializerForRoleRequest"] == null) {
+        if (requestParameters['userAccountSerializerForRoleRequest'] == null) {
             throw new runtime.RequiredError(
-                "userAccountSerializerForRoleRequest",
-                'Required parameter "userAccountSerializerForRoleRequest" was null or undefined when calling rbacRolesRemoveUserCreate().',
+                'userAccountSerializerForRoleRequest',
+                'Required parameter "userAccountSerializerForRoleRequest" was null or undefined when calling rbacRolesRemoveUserCreate().'
             );
         }
 
@@ -1692,7 +1534,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1704,26 +1546,21 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/remove_user/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: UserAccountSerializerForRoleRequestToJSON(
-                requestParameters["userAccountSerializerForRoleRequest"],
-            ),
+            body: UserAccountSerializerForRoleRequestToJSON(requestParameters['userAccountSerializerForRoleRequest']),
         };
     }
 
     /**
      * Remove user from role
      */
-    async rbacRolesRemoveUserCreateRaw(
-        requestParameters: RbacRolesRemoveUserCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async rbacRolesRemoveUserCreateRaw(requestParameters: RbacRolesRemoveUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.rbacRolesRemoveUserCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1733,23 +1570,18 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Remove user from role
      */
-    async rbacRolesRemoveUserCreate(
-        requestParameters: RbacRolesRemoveUserCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async rbacRolesRemoveUserCreate(requestParameters: RbacRolesRemoveUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.rbacRolesRemoveUserCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for rbacRolesRetrieve without sending the request
      */
-    async rbacRolesRetrieveRequestOpts(
-        requestParameters: RbacRolesRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesRetrieveRequestOpts(requestParameters: RbacRolesRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesRetrieve().'
             );
         }
 
@@ -1767,11 +1599,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1780,10 +1612,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesRetrieveRaw(
-        requestParameters: RbacRolesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Role>> {
+    async rbacRolesRetrieveRaw(requestParameters: RbacRolesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Role>> {
         const requestOptions = await this.rbacRolesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1793,10 +1622,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesRetrieve(
-        requestParameters: RbacRolesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Role> {
+    async rbacRolesRetrieve(requestParameters: RbacRolesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Role> {
         const response = await this.rbacRolesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1804,20 +1630,18 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesUpdate without sending the request
      */
-    async rbacRolesUpdateRequestOpts(
-        requestParameters: RbacRolesUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesUpdateRequestOpts(requestParameters: RbacRolesUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesUpdate().'
             );
         }
 
-        if (requestParameters["roleRequest"] == null) {
+        if (requestParameters['roleRequest'] == null) {
             throw new runtime.RequiredError(
-                "roleRequest",
-                'Required parameter "roleRequest" was null or undefined when calling rbacRolesUpdate().',
+                'roleRequest',
+                'Required parameter "roleRequest" was null or undefined when calling rbacRolesUpdate().'
             );
         }
 
@@ -1825,7 +1649,7 @@ export class RbacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1837,24 +1661,21 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RoleRequestToJSON(requestParameters["roleRequest"]),
+            body: RoleRequestToJSON(requestParameters['roleRequest']),
         };
     }
 
     /**
      * Role viewset
      */
-    async rbacRolesUpdateRaw(
-        requestParameters: RbacRolesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Role>> {
+    async rbacRolesUpdateRaw(requestParameters: RbacRolesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Role>> {
         const requestOptions = await this.rbacRolesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1864,10 +1685,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Role viewset
      */
-    async rbacRolesUpdate(
-        requestParameters: RbacRolesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Role> {
+    async rbacRolesUpdate(requestParameters: RbacRolesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Role> {
         const response = await this.rbacRolesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1875,13 +1693,11 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacRolesUsedByList without sending the request
      */
-    async rbacRolesUsedByListRequestOpts(
-        requestParameters: RbacRolesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async rbacRolesUsedByListRequestOpts(requestParameters: RbacRolesUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesUsedByList().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling rbacRolesUsedByList().'
             );
         }
 
@@ -1899,11 +1715,11 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1912,10 +1728,7 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async rbacRolesUsedByListRaw(
-        requestParameters: RbacRolesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async rbacRolesUsedByListRaw(requestParameters: RbacRolesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.rbacRolesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1925,11 +1738,9 @@ export class RbacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async rbacRolesUsedByList(
-        requestParameters: RbacRolesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
+    async rbacRolesUsedByList(requestParameters: RbacRolesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
         const response = await this.rbacRolesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

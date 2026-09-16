@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Response object of Event's top_per_user
  * @export
@@ -19,15 +20,15 @@
  */
 export interface EventTopPerUser {
     /**
-     *
+     * 
      */
-    application: { [key: string]: any };
+    application: { [key: string]: any; };
     /**
-     *
+     * 
      */
     countedEvents: number;
     /**
-     *
+     * 
      */
     uniqueUsers: number;
 }
@@ -36,21 +37,9 @@ export interface EventTopPerUser {
  * Check if a given object implements the EventTopPerUser interface.
  */
 export function instanceOfEventTopPerUser(value: object): value is EventTopPerUser {
-    if (!("application" in value) || value["application"] === undefined) return false;
-    if (
-        (!("countedEvents" in (value as Record<string, any>)) &&
-            !("counted_events" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["countedEvents"] === undefined &&
-            (value as Record<string, any>)["counted_events"] === undefined)
-    )
-        return false;
-    if (
-        (!("uniqueUsers" in (value as Record<string, any>)) &&
-            !("unique_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["uniqueUsers"] === undefined &&
-            (value as Record<string, any>)["unique_users"] === undefined)
-    )
-        return false;
+    if (!('application' in value) || value['application'] === undefined) return false;
+    if ((!('countedEvents' in (value as Record<string, any>)) && !('counted_events' in (value as Record<string, any>))) || ((value as Record<string, any>)['countedEvents'] === undefined && (value as Record<string, any>)['counted_events'] === undefined)) return false;
+    if ((!('uniqueUsers' in (value as Record<string, any>)) && !('unique_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['uniqueUsers'] === undefined && (value as Record<string, any>)['unique_users'] === undefined)) return false;
     return true;
 }
 
@@ -58,17 +47,15 @@ export function EventTopPerUserFromJSON(json: any): EventTopPerUser {
     return EventTopPerUserFromJSONTyped(json, false);
 }
 
-export function EventTopPerUserFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EventTopPerUser {
+export function EventTopPerUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventTopPerUser {
     if (json == null) {
         return json;
     }
     return {
-        application: json["application"],
-        countedEvents: json["counted_events"],
-        uniqueUsers: json["unique_users"],
+        
+        'application': json['application'],
+        'countedEvents': json['counted_events'],
+        'uniqueUsers': json['unique_users'],
     };
 }
 
@@ -76,17 +63,16 @@ export function EventTopPerUserToJSON(json: any): EventTopPerUser {
     return EventTopPerUserToJSONTyped(json, false);
 }
 
-export function EventTopPerUserToJSONTyped(
-    value?: EventTopPerUser | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EventTopPerUserToJSONTyped(value?: EventTopPerUser | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        application: value["application"],
-        counted_events: value["countedEvents"],
-        unique_users: value["uniqueUsers"],
+        
+        'application': value['application'],
+        'counted_events': value['countedEvents'],
+        'unique_users': value['uniqueUsers'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Tenant recovery key creation request serializer
  * @export
@@ -19,11 +20,11 @@
  */
 export interface TenantRecoveryKeyRequestRequest {
     /**
-     *
+     * 
      */
     user: string;
     /**
-     *
+     * 
      */
     durationDays: number;
 }
@@ -31,36 +32,24 @@ export interface TenantRecoveryKeyRequestRequest {
 /**
  * Check if a given object implements the TenantRecoveryKeyRequestRequest interface.
  */
-export function instanceOfTenantRecoveryKeyRequestRequest(
-    value: object,
-): value is TenantRecoveryKeyRequestRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("durationDays" in (value as Record<string, any>)) &&
-            !("duration_days" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["durationDays"] === undefined &&
-            (value as Record<string, any>)["duration_days"] === undefined)
-    )
-        return false;
+export function instanceOfTenantRecoveryKeyRequestRequest(value: object): value is TenantRecoveryKeyRequestRequest {
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('durationDays' in (value as Record<string, any>)) && !('duration_days' in (value as Record<string, any>))) || ((value as Record<string, any>)['durationDays'] === undefined && (value as Record<string, any>)['duration_days'] === undefined)) return false;
     return true;
 }
 
-export function TenantRecoveryKeyRequestRequestFromJSON(
-    json: any,
-): TenantRecoveryKeyRequestRequest {
+export function TenantRecoveryKeyRequestRequestFromJSON(json: any): TenantRecoveryKeyRequestRequest {
     return TenantRecoveryKeyRequestRequestFromJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyRequestRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TenantRecoveryKeyRequestRequest {
+export function TenantRecoveryKeyRequestRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TenantRecoveryKeyRequestRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"],
-        durationDays: json["duration_days"],
+        
+        'user': json['user'],
+        'durationDays': json['duration_days'],
     };
 }
 
@@ -68,16 +57,15 @@ export function TenantRecoveryKeyRequestRequestToJSON(json: any): TenantRecovery
     return TenantRecoveryKeyRequestRequestToJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyRequestRequestToJSONTyped(
-    value?: TenantRecoveryKeyRequestRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TenantRecoveryKeyRequestRequestToJSONTyped(value?: TenantRecoveryKeyRequestRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        duration_days: value["durationDays"],
+        
+        'user': value['user'],
+        'duration_days': value['durationDays'],
     };
 }
+

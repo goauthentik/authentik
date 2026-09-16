@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * GoogleWorkspaceProviderUser Serializer
  * @export
@@ -19,15 +20,15 @@
  */
 export interface GoogleWorkspaceProviderUserRequest {
     /**
-     *
+     * 
      */
     googleId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     provider: number;
 }
@@ -35,58 +36,43 @@ export interface GoogleWorkspaceProviderUserRequest {
 /**
  * Check if a given object implements the GoogleWorkspaceProviderUserRequest interface.
  */
-export function instanceOfGoogleWorkspaceProviderUserRequest(
-    value: object,
-): value is GoogleWorkspaceProviderUserRequest {
-    if (
-        (!("googleId" in (value as Record<string, any>)) &&
-            !("google_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["googleId"] === undefined &&
-            (value as Record<string, any>)["google_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderUserRequest(value: object): value is GoogleWorkspaceProviderUserRequest {
+    if ((!('googleId' in (value as Record<string, any>)) && !('google_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['googleId'] === undefined && (value as Record<string, any>)['google_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
     return true;
 }
 
-export function GoogleWorkspaceProviderUserRequestFromJSON(
-    json: any,
-): GoogleWorkspaceProviderUserRequest {
+export function GoogleWorkspaceProviderUserRequestFromJSON(json: any): GoogleWorkspaceProviderUserRequest {
     return GoogleWorkspaceProviderUserRequestFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleWorkspaceProviderUserRequest {
+export function GoogleWorkspaceProviderUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderUserRequest {
     if (json == null) {
         return json;
     }
     return {
-        googleId: json["google_id"],
-        user: json["user"],
-        provider: json["provider"],
+        
+        'googleId': json['google_id'],
+        'user': json['user'],
+        'provider': json['provider'],
     };
 }
 
-export function GoogleWorkspaceProviderUserRequestToJSON(
-    json: any,
-): GoogleWorkspaceProviderUserRequest {
+export function GoogleWorkspaceProviderUserRequestToJSON(json: any): GoogleWorkspaceProviderUserRequest {
     return GoogleWorkspaceProviderUserRequestToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserRequestToJSONTyped(
-    value?: GoogleWorkspaceProviderUserRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleWorkspaceProviderUserRequestToJSONTyped(value?: GoogleWorkspaceProviderUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        google_id: value["googleId"],
-        user: value["user"],
-        provider: value["provider"],
+        
+        'google_id': value['googleId'],
+        'user': value['user'],
+        'provider': value['provider'],
     };
 }
+

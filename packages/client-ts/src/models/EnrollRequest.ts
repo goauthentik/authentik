@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
@@ -19,11 +20,11 @@
  */
 export interface EnrollRequest {
     /**
-     *
+     * 
      */
     deviceSerial: string;
     /**
-     *
+     * 
      */
     deviceName: string;
 }
@@ -32,20 +33,8 @@ export interface EnrollRequest {
  * Check if a given object implements the EnrollRequest interface.
  */
 export function instanceOfEnrollRequest(value: object): value is EnrollRequest {
-    if (
-        (!("deviceSerial" in (value as Record<string, any>)) &&
-            !("device_serial" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceSerial"] === undefined &&
-            (value as Record<string, any>)["device_serial"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceName" in (value as Record<string, any>)) &&
-            !("device_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceName"] === undefined &&
-            (value as Record<string, any>)["device_name"] === undefined)
-    )
-        return false;
+    if ((!('deviceSerial' in (value as Record<string, any>)) && !('device_serial' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceSerial'] === undefined && (value as Record<string, any>)['device_serial'] === undefined)) return false;
+    if ((!('deviceName' in (value as Record<string, any>)) && !('device_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceName'] === undefined && (value as Record<string, any>)['device_name'] === undefined)) return false;
     return true;
 }
 
@@ -58,8 +47,9 @@ export function EnrollRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        deviceSerial: json["device_serial"],
-        deviceName: json["device_name"],
+        
+        'deviceSerial': json['device_serial'],
+        'deviceName': json['device_name'],
     };
 }
 
@@ -67,16 +57,15 @@ export function EnrollRequestToJSON(json: any): EnrollRequest {
     return EnrollRequestToJSONTyped(json, false);
 }
 
-export function EnrollRequestToJSONTyped(
-    value?: EnrollRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EnrollRequestToJSONTyped(value?: EnrollRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_serial: value["deviceSerial"],
-        device_name: value["deviceName"],
+        
+        'device_serial': value['deviceSerial'],
+        'device_name': value['deviceName'],
     };
 }
+

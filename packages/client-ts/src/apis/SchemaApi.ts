@@ -12,39 +12,56 @@
  * Do not edit the class manually.
  */
 
-import { type FormatEnum } from "../models/FormatEnum";
-import { type LangEnum } from "../models/LangEnum";
-import * as runtime from "../runtime";
+import * as runtime from '../runtime';
+import {
+    type FormatEnum,
+    FormatEnumFromJSON,
+    FormatEnumToJSON,
+} from '../models/FormatEnum';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type LangEnum,
+    LangEnumFromJSON,
+    LangEnumToJSON,
+} from '../models/LangEnum';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface SchemaRetrieveRequest {
     /**
-     *
+     * 
      */
     format?: FormatEnum;
     /**
-     *
+     * 
      */
     lang?: LangEnum;
 }
 
 /**
- *
+ * 
  */
 export class SchemaApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for schemaRetrieve without sending the request
      */
-    async schemaRetrieveRequestOpts(
-        requestParameters: SchemaRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
+    async schemaRetrieveRequestOpts(requestParameters: SchemaRetrieveRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["format"] != null) {
-            queryParameters["format"] = requestParameters["format"];
+        if (requestParameters['format'] != null) {
+            queryParameters['format'] = requestParameters['format'];
         }
 
-        if (requestParameters["lang"] != null) {
-            queryParameters["lang"] = requestParameters["lang"];
+        if (requestParameters['lang'] != null) {
+            queryParameters['lang'] = requestParameters['lang'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -62,7 +79,7 @@ export class SchemaApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -71,10 +88,7 @@ export class SchemaApi extends runtime.BaseAPI {
     /**
      * OpenApi3 schema for this API. Format can be selected via content negotiation.  - YAML: application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
      */
-    async schemaRetrieveRaw(
-        requestParameters: SchemaRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<{ [key: string]: any }>> {
+    async schemaRetrieveRaw(requestParameters: SchemaRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         const requestOptions = await this.schemaRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -84,11 +98,9 @@ export class SchemaApi extends runtime.BaseAPI {
     /**
      * OpenApi3 schema for this API. Format can be selected via content negotiation.  - YAML: application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
      */
-    async schemaRetrieve(
-        requestParameters: SchemaRetrieveRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<{ [key: string]: any }> {
+    async schemaRetrieve(requestParameters: SchemaRetrieveRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: any; }> {
         const response = await this.schemaRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

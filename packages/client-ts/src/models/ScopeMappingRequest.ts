@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * ScopeMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface ScopeMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
     /**
@@ -44,15 +45,9 @@ export interface ScopeMappingRequest {
  * Check if a given object implements the ScopeMappingRequest interface.
  */
 export function instanceOfScopeMappingRequest(value: object): value is ScopeMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (
-        (!("scopeName" in (value as Record<string, any>)) &&
-            !("scope_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scopeName"] === undefined &&
-            (value as Record<string, any>)["scope_name"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if ((!('scopeName' in (value as Record<string, any>)) && !('scope_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['scopeName'] === undefined && (value as Record<string, any>)['scope_name'] === undefined)) return false;
     return true;
 }
 
@@ -60,24 +55,17 @@ export function ScopeMappingRequestFromJSON(json: any): ScopeMappingRequest {
     return ScopeMappingRequestFromJSONTyped(json, false);
 }
 
-export function ScopeMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ScopeMappingRequest {
+export function ScopeMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScopeMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
-        scopeName: json["scope_name"],
-        description: json["description"] == null ? undefined : json["description"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
+        'scopeName': json['scope_name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
@@ -85,19 +73,18 @@ export function ScopeMappingRequestToJSON(json: any): ScopeMappingRequest {
     return ScopeMappingRequestToJSONTyped(json, false);
 }
 
-export function ScopeMappingRequestToJSONTyped(
-    value?: ScopeMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ScopeMappingRequestToJSONTyped(value?: ScopeMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        scope_name: value["scopeName"],
-        description: value["description"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'scope_name': value['scopeName'],
+        'description': value['description'],
     };
 }
+

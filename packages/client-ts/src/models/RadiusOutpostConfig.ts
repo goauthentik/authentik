@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * RadiusProvider Serializer
  * @export
@@ -19,19 +20,19 @@
  */
 export interface RadiusOutpostConfig {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     applicationSlug: string;
     /**
-     *
+     * 
      */
     authFlowSlug: string;
     /**
@@ -47,7 +48,7 @@ export interface RadiusOutpostConfig {
      */
     mfaSupport?: boolean;
     /**
-     *
+     * 
      */
     certificate?: string | null;
 }
@@ -56,22 +57,10 @@ export interface RadiusOutpostConfig {
  * Check if a given object implements the RadiusOutpostConfig interface.
  */
 export function instanceOfRadiusOutpostConfig(value: object): value is RadiusOutpostConfig {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("applicationSlug" in (value as Record<string, any>)) &&
-            !("application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["applicationSlug"] === undefined &&
-            (value as Record<string, any>)["application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("authFlowSlug" in (value as Record<string, any>)) &&
-            !("auth_flow_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authFlowSlug"] === undefined &&
-            (value as Record<string, any>)["auth_flow_slug"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('applicationSlug' in (value as Record<string, any>)) && !('application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['applicationSlug'] === undefined && (value as Record<string, any>)['application_slug'] === undefined)) return false;
+    if ((!('authFlowSlug' in (value as Record<string, any>)) && !('auth_flow_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['authFlowSlug'] === undefined && (value as Record<string, any>)['auth_flow_slug'] === undefined)) return false;
     return true;
 }
 
@@ -79,27 +68,20 @@ export function RadiusOutpostConfigFromJSON(json: any): RadiusOutpostConfig {
     return RadiusOutpostConfigFromJSONTyped(json, false);
 }
 
-export function RadiusOutpostConfigFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RadiusOutpostConfig {
+export function RadiusOutpostConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): RadiusOutpostConfig {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        applicationSlug: json["application_slug"],
-        authFlowSlug: json["auth_flow_slug"],
-        clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
-        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
-        certificate:
-            json["certificate"] === undefined
-                ? undefined
-                : json["certificate"] === null
-                  ? null
-                  : json["certificate"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'applicationSlug': json['application_slug'],
+        'authFlowSlug': json['auth_flow_slug'],
+        'clientNetworks': json['client_networks'] == null ? undefined : json['client_networks'],
+        'sharedSecret': json['shared_secret'] == null ? undefined : json['shared_secret'],
+        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
+        'certificate': json['certificate'] === undefined ? undefined : json['certificate'] === null ? null : json['certificate'],
     };
 }
 
@@ -107,21 +89,20 @@ export function RadiusOutpostConfigToJSON(json: any): RadiusOutpostConfig {
     return RadiusOutpostConfigToJSONTyped(json, false);
 }
 
-export function RadiusOutpostConfigToJSONTyped(
-    value?: Omit<RadiusOutpostConfig, "pk"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RadiusOutpostConfigToJSONTyped(value?: Omit<RadiusOutpostConfig, 'pk'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        application_slug: value["applicationSlug"],
-        auth_flow_slug: value["authFlowSlug"],
-        client_networks: value["clientNetworks"],
-        shared_secret: value["sharedSecret"],
-        mfa_support: value["mfaSupport"],
-        certificate: value["certificate"],
+        
+        'name': value['name'],
+        'application_slug': value['applicationSlug'],
+        'auth_flow_slug': value['authFlowSlug'],
+        'client_networks': value['clientNetworks'],
+        'shared_secret': value['sharedSecret'],
+        'mfa_support': value['mfaSupport'],
+        'certificate': value['certificate'],
     };
 }
+

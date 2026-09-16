@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Result of a Property-mapping test
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PropertyMappingTestResult {
     /**
-     *
+     * 
      */
     readonly result: string;
     /**
-     *
+     * 
      */
     readonly successful: boolean;
 }
@@ -31,11 +32,9 @@ export interface PropertyMappingTestResult {
 /**
  * Check if a given object implements the PropertyMappingTestResult interface.
  */
-export function instanceOfPropertyMappingTestResult(
-    value: object,
-): value is PropertyMappingTestResult {
-    if (!("result" in value) || value["result"] === undefined) return false;
-    if (!("successful" in value) || value["successful"] === undefined) return false;
+export function instanceOfPropertyMappingTestResult(value: object): value is PropertyMappingTestResult {
+    if (!('result' in value) || value['result'] === undefined) return false;
+    if (!('successful' in value) || value['successful'] === undefined) return false;
     return true;
 }
 
@@ -43,16 +42,14 @@ export function PropertyMappingTestResultFromJSON(json: any): PropertyMappingTes
     return PropertyMappingTestResultFromJSONTyped(json, false);
 }
 
-export function PropertyMappingTestResultFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PropertyMappingTestResult {
+export function PropertyMappingTestResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): PropertyMappingTestResult {
     if (json == null) {
         return json;
     }
     return {
-        result: json["result"],
-        successful: json["successful"],
+        
+        'result': json['result'],
+        'successful': json['successful'],
     };
 }
 
@@ -60,13 +57,13 @@ export function PropertyMappingTestResultToJSON(json: any): PropertyMappingTestR
     return PropertyMappingTestResultToJSONTyped(json, false);
 }
 
-export function PropertyMappingTestResultToJSONTyped(
-    value?: Omit<PropertyMappingTestResult, "result" | "successful"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PropertyMappingTestResultToJSONTyped(value?: Omit<PropertyMappingTestResult, 'result'|'successful'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

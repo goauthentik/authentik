@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceFactsOSFamily } from "./DeviceFactsOSFamily";
-import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./DeviceFactsOSFamily";
+import { mapValues } from '../runtime';
+import type { DeviceFactsOSFamily } from './DeviceFactsOSFamily';
+import {
+    DeviceFactsOSFamilyFromJSON,
+    DeviceFactsOSFamilyFromJSONTyped,
+    DeviceFactsOSFamilyToJSON,
+    DeviceFactsOSFamilyToJSONTyped,
+} from './DeviceFactsOSFamily';
 
 /**
  * For example:
@@ -26,7 +32,7 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
  */
 export interface OperatingSystemRequest {
     /**
-     *
+     * 
      */
     family: DeviceFactsOSFamily;
     /**
@@ -38,16 +44,18 @@ export interface OperatingSystemRequest {
      */
     version?: string;
     /**
-     *
+     * 
      */
     arch?: string;
 }
+
+
 
 /**
  * Check if a given object implements the OperatingSystemRequest interface.
  */
 export function instanceOfOperatingSystemRequest(value: object): value is OperatingSystemRequest {
-    if (!("family" in value) || value["family"] === undefined) return false;
+    if (!('family' in value) || value['family'] === undefined) return false;
     return true;
 }
 
@@ -55,18 +63,16 @@ export function OperatingSystemRequestFromJSON(json: any): OperatingSystemReques
     return OperatingSystemRequestFromJSONTyped(json, false);
 }
 
-export function OperatingSystemRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OperatingSystemRequest {
+export function OperatingSystemRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OperatingSystemRequest {
     if (json == null) {
         return json;
     }
     return {
-        family: DeviceFactsOSFamilyFromJSON(json["family"]),
-        name: json["name"] == null ? undefined : json["name"],
-        version: json["version"] == null ? undefined : json["version"],
-        arch: json["arch"] == null ? undefined : json["arch"],
+        
+        'family': DeviceFactsOSFamilyFromJSON(json['family']),
+        'name': json['name'] == null ? undefined : json['name'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'arch': json['arch'] == null ? undefined : json['arch'],
     };
 }
 
@@ -74,18 +80,17 @@ export function OperatingSystemRequestToJSON(json: any): OperatingSystemRequest 
     return OperatingSystemRequestToJSONTyped(json, false);
 }
 
-export function OperatingSystemRequestToJSONTyped(
-    value?: OperatingSystemRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OperatingSystemRequestToJSONTyped(value?: OperatingSystemRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        family: DeviceFactsOSFamilyToJSON(value["family"]),
-        name: value["name"],
-        version: value["version"],
-        arch: value["arch"],
+        
+        'family': DeviceFactsOSFamilyToJSON(value['family']),
+        'name': value['name'],
+        'version': value['version'],
+        'arch': value['arch'],
     };
 }
+

@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import { mapValues } from '../runtime';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
 
 /**
  * Application Serializer
@@ -30,11 +36,11 @@ export interface ApplicationRequest {
      */
     slug: string;
     /**
-     *
+     * 
      */
     provider?: number | null;
     /**
-     *
+     * 
      */
     backchannelProviders?: Array<number>;
     /**
@@ -42,27 +48,27 @@ export interface ApplicationRequest {
      */
     openInNewTab?: boolean;
     /**
-     *
+     * 
      */
     metaLaunchUrl?: string;
     /**
-     *
+     * 
      */
     metaIcon?: string;
     /**
-     *
+     * 
      */
     metaDescription?: string;
     /**
-     *
+     * 
      */
     metaPublisher?: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -71,12 +77,14 @@ export interface ApplicationRequest {
     metaHide?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the ApplicationRequest interface.
  */
 export function instanceOfApplicationRequest(value: object): value is ApplicationRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -84,35 +92,24 @@ export function ApplicationRequestFromJSON(json: any): ApplicationRequest {
     return ApplicationRequestFromJSONTyped(json, false);
 }
 
-export function ApplicationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ApplicationRequest {
+export function ApplicationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApplicationRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        slug: json["slug"],
-        provider:
-            json["provider"] === undefined
-                ? undefined
-                : json["provider"] === null
-                  ? null
-                  : json["provider"],
-        backchannelProviders:
-            json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
-        openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
-        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
-        metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
-        metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
-        metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        group: json["group"] == null ? undefined : json["group"],
-        metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
+        
+        'name': json['name'],
+        'slug': json['slug'],
+        'provider': json['provider'] === undefined ? undefined : json['provider'] === null ? null : json['provider'],
+        'backchannelProviders': json['backchannel_providers'] == null ? undefined : json['backchannel_providers'],
+        'openInNewTab': json['open_in_new_tab'] == null ? undefined : json['open_in_new_tab'],
+        'metaLaunchUrl': json['meta_launch_url'] == null ? undefined : json['meta_launch_url'],
+        'metaIcon': json['meta_icon'] == null ? undefined : json['meta_icon'],
+        'metaDescription': json['meta_description'] == null ? undefined : json['meta_description'],
+        'metaPublisher': json['meta_publisher'] == null ? undefined : json['meta_publisher'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'metaHide': json['meta_hide'] == null ? undefined : json['meta_hide'],
     };
 }
 
@@ -120,26 +117,25 @@ export function ApplicationRequestToJSON(json: any): ApplicationRequest {
     return ApplicationRequestToJSONTyped(json, false);
 }
 
-export function ApplicationRequestToJSONTyped(
-    value?: ApplicationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ApplicationRequestToJSONTyped(value?: ApplicationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        provider: value["provider"],
-        backchannel_providers: value["backchannelProviders"],
-        open_in_new_tab: value["openInNewTab"],
-        meta_launch_url: value["metaLaunchUrl"],
-        meta_icon: value["metaIcon"],
-        meta_description: value["metaDescription"],
-        meta_publisher: value["metaPublisher"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        group: value["group"],
-        meta_hide: value["metaHide"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'provider': value['provider'],
+        'backchannel_providers': value['backchannelProviders'],
+        'open_in_new_tab': value['openInNewTab'],
+        'meta_launch_url': value['metaLaunchUrl'],
+        'meta_icon': value['metaIcon'],
+        'meta_description': value['metaDescription'],
+        'meta_publisher': value['metaPublisher'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'group': value['group'],
+        'meta_hide': value['metaHide'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * RadiusProvider Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface RadiusProviderRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -35,7 +36,7 @@ export interface RadiusProviderRequest {
      */
     invalidationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -51,7 +52,7 @@ export interface RadiusProviderRequest {
      */
     mfaSupport?: boolean;
     /**
-     *
+     * 
      */
     certificate?: string | null;
 }
@@ -60,21 +61,9 @@ export interface RadiusProviderRequest {
  * Check if a given object implements the RadiusProviderRequest interface.
  */
 export function instanceOfRadiusProviderRequest(value: object): value is RadiusProviderRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('invalidationFlow' in (value as Record<string, any>)) && !('invalidation_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['invalidationFlow'] === undefined && (value as Record<string, any>)['invalidation_flow'] === undefined)) return false;
     return true;
 }
 
@@ -82,33 +71,21 @@ export function RadiusProviderRequestFromJSON(json: any): RadiusProviderRequest 
     return RadiusProviderRequestFromJSONTyped(json, false);
 }
 
-export function RadiusProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RadiusProviderRequest {
+export function RadiusProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RadiusProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
-        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
-        certificate:
-            json["certificate"] === undefined
-                ? undefined
-                : json["certificate"] === null
-                  ? null
-                  : json["certificate"],
+        
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'clientNetworks': json['client_networks'] == null ? undefined : json['client_networks'],
+        'sharedSecret': json['shared_secret'] == null ? undefined : json['shared_secret'],
+        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
+        'certificate': json['certificate'] === undefined ? undefined : json['certificate'] === null ? null : json['certificate'],
     };
 }
 
@@ -116,23 +93,22 @@ export function RadiusProviderRequestToJSON(json: any): RadiusProviderRequest {
     return RadiusProviderRequestToJSONTyped(json, false);
 }
 
-export function RadiusProviderRequestToJSONTyped(
-    value?: RadiusProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RadiusProviderRequestToJSONTyped(value?: RadiusProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        client_networks: value["clientNetworks"],
-        shared_secret: value["sharedSecret"],
-        mfa_support: value["mfaSupport"],
-        certificate: value["certificate"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'client_networks': value['clientNetworks'],
+        'shared_secret': value['sharedSecret'],
+        'mfa_support': value['mfaSupport'],
+        'certificate': value['certificate'],
     };
 }
+

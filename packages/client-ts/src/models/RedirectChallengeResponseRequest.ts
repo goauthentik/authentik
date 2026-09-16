@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Redirect challenge response
  * @export
@@ -19,11 +20,11 @@
  */
 export interface RedirectChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     to: string;
 }
@@ -31,48 +32,39 @@ export interface RedirectChallengeResponseRequest {
 /**
  * Check if a given object implements the RedirectChallengeResponseRequest interface.
  */
-export function instanceOfRedirectChallengeResponseRequest(
-    value: object,
-): value is RedirectChallengeResponseRequest {
-    if (!("to" in value) || value["to"] === undefined) return false;
+export function instanceOfRedirectChallengeResponseRequest(value: object): value is RedirectChallengeResponseRequest {
+    if (!('to' in value) || value['to'] === undefined) return false;
     return true;
 }
 
-export function RedirectChallengeResponseRequestFromJSON(
-    json: any,
-): RedirectChallengeResponseRequest {
+export function RedirectChallengeResponseRequestFromJSON(json: any): RedirectChallengeResponseRequest {
     return RedirectChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function RedirectChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RedirectChallengeResponseRequest {
+export function RedirectChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        to: json["to"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'to': json['to'],
     };
 }
 
-export function RedirectChallengeResponseRequestToJSON(
-    json: any,
-): RedirectChallengeResponseRequest {
+export function RedirectChallengeResponseRequestToJSON(json: any): RedirectChallengeResponseRequest {
     return RedirectChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function RedirectChallengeResponseRequestToJSONTyped(
-    value?: RedirectChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RedirectChallengeResponseRequestToJSONTyped(value?: RedirectChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        to: value["to"],
+        
+        'component': value['component'],
+        'to': value['to'],
     };
 }
+

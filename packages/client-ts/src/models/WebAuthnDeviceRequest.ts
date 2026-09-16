@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for WebAuthn authenticator devices
  * @export
@@ -19,7 +20,7 @@
  */
 export interface WebAuthnDeviceRequest {
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -28,7 +29,7 @@ export interface WebAuthnDeviceRequest {
  * Check if a given object implements the WebAuthnDeviceRequest interface.
  */
 export function instanceOfWebAuthnDeviceRequest(value: object): value is WebAuthnDeviceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +37,13 @@ export function WebAuthnDeviceRequestFromJSON(json: any): WebAuthnDeviceRequest 
     return WebAuthnDeviceRequestFromJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): WebAuthnDeviceRequest {
+export function WebAuthnDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): WebAuthnDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +51,14 @@ export function WebAuthnDeviceRequestToJSON(json: any): WebAuthnDeviceRequest {
     return WebAuthnDeviceRequestToJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceRequestToJSONTyped(
-    value?: WebAuthnDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function WebAuthnDeviceRequestToJSONTyped(value?: WebAuthnDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Challenge for ending a session
@@ -23,43 +35,43 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface SessionEndChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     pendingUser: string;
     /**
-     *
+     * 
      */
     pendingUserAvatar: string;
     /**
-     *
+     * 
      */
     applicationName?: string;
     /**
-     *
+     * 
      */
     applicationLaunchUrl?: string;
     /**
-     *
+     * 
      */
     invalidationFlowUrl?: string;
     /**
-     *
+     * 
      */
     overviewUrl?: string;
     /**
-     *
+     * 
      */
     brandName: string;
 }
@@ -68,27 +80,9 @@ export interface SessionEndChallenge {
  * Check if a given object implements the SessionEndChallenge interface.
  */
 export function instanceOfSessionEndChallenge(value: object): value is SessionEndChallenge {
-    if (
-        (!("pendingUser" in (value as Record<string, any>)) &&
-            !("pending_user" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUser"] === undefined &&
-            (value as Record<string, any>)["pending_user"] === undefined)
-    )
-        return false;
-    if (
-        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
-            !("pending_user_avatar" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
-            (value as Record<string, any>)["pending_user_avatar"] === undefined)
-    )
-        return false;
-    if (
-        (!("brandName" in (value as Record<string, any>)) &&
-            !("brand_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["brandName"] === undefined &&
-            (value as Record<string, any>)["brand_name"] === undefined)
-    )
-        return false;
+    if ((!('pendingUser' in (value as Record<string, any>)) && !('pending_user' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUser'] === undefined && (value as Record<string, any>)['pending_user'] === undefined)) return false;
+    if ((!('pendingUserAvatar' in (value as Record<string, any>)) && !('pending_user_avatar' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUserAvatar'] === undefined && (value as Record<string, any>)['pending_user_avatar'] === undefined)) return false;
+    if ((!('brandName' in (value as Record<string, any>)) && !('brand_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['brandName'] === undefined && (value as Record<string, any>)['brand_name'] === undefined)) return false;
     return true;
 }
 
@@ -96,27 +90,22 @@ export function SessionEndChallengeFromJSON(json: any): SessionEndChallenge {
     return SessionEndChallengeFromJSONTyped(json, false);
 }
 
-export function SessionEndChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SessionEndChallenge {
+export function SessionEndChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): SessionEndChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        pendingUser: json["pending_user"],
-        pendingUserAvatar: json["pending_user_avatar"],
-        applicationName: json["application_name"] == null ? undefined : json["application_name"],
-        applicationLaunchUrl:
-            json["application_launch_url"] == null ? undefined : json["application_launch_url"],
-        invalidationFlowUrl:
-            json["invalidation_flow_url"] == null ? undefined : json["invalidation_flow_url"],
-        overviewUrl: json["overview_url"] == null ? undefined : json["overview_url"],
-        brandName: json["brand_name"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'pendingUser': json['pending_user'],
+        'pendingUserAvatar': json['pending_user_avatar'],
+        'applicationName': json['application_name'] == null ? undefined : json['application_name'],
+        'applicationLaunchUrl': json['application_launch_url'] == null ? undefined : json['application_launch_url'],
+        'invalidationFlowUrl': json['invalidation_flow_url'] == null ? undefined : json['invalidation_flow_url'],
+        'overviewUrl': json['overview_url'] == null ? undefined : json['overview_url'],
+        'brandName': json['brand_name'],
     };
 }
 
@@ -124,24 +113,23 @@ export function SessionEndChallengeToJSON(json: any): SessionEndChallenge {
     return SessionEndChallengeToJSONTyped(json, false);
 }
 
-export function SessionEndChallengeToJSONTyped(
-    value?: SessionEndChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SessionEndChallengeToJSONTyped(value?: SessionEndChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        pending_user: value["pendingUser"],
-        pending_user_avatar: value["pendingUserAvatar"],
-        application_name: value["applicationName"],
-        application_launch_url: value["applicationLaunchUrl"],
-        invalidation_flow_url: value["invalidationFlowUrl"],
-        overview_url: value["overviewUrl"],
-        brand_name: value["brandName"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'pending_user': value['pendingUser'],
+        'pending_user_avatar': value['pendingUserAvatar'],
+        'application_name': value['applicationName'],
+        'application_launch_url': value['applicationLaunchUrl'],
+        'invalidation_flow_url': value['invalidationFlowUrl'],
+        'overview_url': value['overviewUrl'],
+        'brand_name': value['brandName'],
     };
 }
+

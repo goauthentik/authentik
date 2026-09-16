@@ -12,29 +12,28 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface DeviceAccessGroupRequest
  */
 export interface DeviceAccessGroupRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the DeviceAccessGroupRequest interface.
  */
-export function instanceOfDeviceAccessGroupRequest(
-    value: object,
-): value is DeviceAccessGroupRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfDeviceAccessGroupRequest(value: object): value is DeviceAccessGroupRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -42,16 +41,14 @@ export function DeviceAccessGroupRequestFromJSON(json: any): DeviceAccessGroupRe
     return DeviceAccessGroupRequestFromJSONTyped(json, false);
 }
 
-export function DeviceAccessGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceAccessGroupRequest {
+export function DeviceAccessGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceAccessGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'name': json['name'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -59,16 +56,15 @@ export function DeviceAccessGroupRequestToJSON(json: any): DeviceAccessGroupRequ
     return DeviceAccessGroupRequestToJSONTyped(json, false);
 }
 
-export function DeviceAccessGroupRequestToJSONTyped(
-    value?: DeviceAccessGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceAccessGroupRequestToJSONTyped(value?: DeviceAccessGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        attributes: value["attributes"],
+        
+        'name': value['name'],
+        'attributes': value['attributes'],
     };
 }
+

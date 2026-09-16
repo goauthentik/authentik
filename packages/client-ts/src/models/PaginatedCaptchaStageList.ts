@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { CaptchaStage } from "./CaptchaStage";
-import { CaptchaStageFromJSON, CaptchaStageToJSON } from "./CaptchaStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { CaptchaStage } from './CaptchaStage';
+import {
+    CaptchaStageFromJSON,
+    CaptchaStageFromJSONTyped,
+    CaptchaStageToJSON,
+    CaptchaStageToJSONTyped,
+} from './CaptchaStage';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedCaptchaStageList
  */
 export interface PaginatedCaptchaStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<CaptchaStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedCaptchaStageList interface.
  */
-export function instanceOfPaginatedCaptchaStageList(
-    value: object,
-): value is PaginatedCaptchaStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedCaptchaStageList(value: object): value is PaginatedCaptchaStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedCaptchaStageListFromJSON(json: any): PaginatedCaptchaSt
     return PaginatedCaptchaStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedCaptchaStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedCaptchaStageList {
+export function PaginatedCaptchaStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedCaptchaStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(CaptchaStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(CaptchaStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedCaptchaStageListToJSON(json: any): PaginatedCaptchaStag
     return PaginatedCaptchaStageListToJSONTyped(json, false);
 }
 
-export function PaginatedCaptchaStageListToJSONTyped(
-    value?: PaginatedCaptchaStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedCaptchaStageListToJSONTyped(value?: PaginatedCaptchaStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(CaptchaStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(CaptchaStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

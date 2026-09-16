@@ -12,11 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import { mapValues } from '../runtime';
+import type { RequestContentTypeEnum } from './RequestContentTypeEnum';
 import {
     RequestContentTypeEnumFromJSON,
+    RequestContentTypeEnumFromJSONTyped,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+    RequestContentTypeEnumToJSONTyped,
+} from './RequestContentTypeEnum';
 
 /**
  * CaptchaStage Serializer
@@ -25,7 +28,7 @@ import {
  */
 export interface PatchedCaptchaStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -37,27 +40,27 @@ export interface PatchedCaptchaStageRequest {
      */
     privateKey?: string;
     /**
-     *
+     * 
      */
     jsUrl?: string;
     /**
-     *
+     * 
      */
     apiUrl?: string;
     /**
-     *
+     * 
      */
     requestContentType?: RequestContentTypeEnum;
     /**
-     *
+     * 
      */
     interactive?: boolean;
     /**
-     *
+     * 
      */
     scoreMinThreshold?: number;
     /**
-     *
+     * 
      */
     scoreMaxThreshold?: number;
     /**
@@ -66,12 +69,12 @@ export interface PatchedCaptchaStageRequest {
     errorOnInvalidScore?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedCaptchaStageRequest interface.
  */
-export function instanceOfPatchedCaptchaStageRequest(
-    value: object,
-): value is PatchedCaptchaStageRequest {
+export function instanceOfPatchedCaptchaStageRequest(value: object): value is PatchedCaptchaStageRequest {
     return true;
 }
 
@@ -79,30 +82,22 @@ export function PatchedCaptchaStageRequestFromJSON(json: any): PatchedCaptchaSta
     return PatchedCaptchaStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedCaptchaStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedCaptchaStageRequest {
+export function PatchedCaptchaStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedCaptchaStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        publicKey: json["public_key"] == null ? undefined : json["public_key"],
-        privateKey: json["private_key"] == null ? undefined : json["private_key"],
-        jsUrl: json["js_url"] == null ? undefined : json["js_url"],
-        apiUrl: json["api_url"] == null ? undefined : json["api_url"],
-        requestContentType:
-            json["request_content_type"] == null
-                ? undefined
-                : RequestContentTypeEnumFromJSON(json["request_content_type"]),
-        interactive: json["interactive"] == null ? undefined : json["interactive"],
-        scoreMinThreshold:
-            json["score_min_threshold"] == null ? undefined : json["score_min_threshold"],
-        scoreMaxThreshold:
-            json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
-        errorOnInvalidScore:
-            json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'publicKey': json['public_key'] == null ? undefined : json['public_key'],
+        'privateKey': json['private_key'] == null ? undefined : json['private_key'],
+        'jsUrl': json['js_url'] == null ? undefined : json['js_url'],
+        'apiUrl': json['api_url'] == null ? undefined : json['api_url'],
+        'requestContentType': json['request_content_type'] == null ? undefined : RequestContentTypeEnumFromJSON(json['request_content_type']),
+        'interactive': json['interactive'] == null ? undefined : json['interactive'],
+        'scoreMinThreshold': json['score_min_threshold'] == null ? undefined : json['score_min_threshold'],
+        'scoreMaxThreshold': json['score_max_threshold'] == null ? undefined : json['score_max_threshold'],
+        'errorOnInvalidScore': json['error_on_invalid_score'] == null ? undefined : json['error_on_invalid_score'],
     };
 }
 
@@ -110,24 +105,23 @@ export function PatchedCaptchaStageRequestToJSON(json: any): PatchedCaptchaStage
     return PatchedCaptchaStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedCaptchaStageRequestToJSONTyped(
-    value?: PatchedCaptchaStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedCaptchaStageRequestToJSONTyped(value?: PatchedCaptchaStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        public_key: value["publicKey"],
-        private_key: value["privateKey"],
-        js_url: value["jsUrl"],
-        api_url: value["apiUrl"],
-        request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),
-        interactive: value["interactive"],
-        score_min_threshold: value["scoreMinThreshold"],
-        score_max_threshold: value["scoreMaxThreshold"],
-        error_on_invalid_score: value["errorOnInvalidScore"],
+        
+        'name': value['name'],
+        'public_key': value['publicKey'],
+        'private_key': value['privateKey'],
+        'js_url': value['jsUrl'],
+        'api_url': value['apiUrl'],
+        'request_content_type': RequestContentTypeEnumToJSON(value['requestContentType']),
+        'interactive': value['interactive'],
+        'score_min_threshold': value['scoreMinThreshold'],
+        'score_max_threshold': value['scoreMaxThreshold'],
+        'error_on_invalid_score': value['errorOnInvalidScore'],
     };
 }
+

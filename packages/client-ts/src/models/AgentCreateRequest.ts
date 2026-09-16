@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
-import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBehaviorEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PolicyBehaviorEnum } from './PolicyBehaviorEnum';
+import {
+    PolicyBehaviorEnumFromJSON,
+    PolicyBehaviorEnumFromJSONTyped,
+    PolicyBehaviorEnumToJSON,
+    PolicyBehaviorEnumToJSONTyped,
+} from './PolicyBehaviorEnum';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -23,26 +28,28 @@ import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBe
  */
 export interface AgentCreateRequest {
     /**
-     *
+     * 
      */
     parent?: number;
     /**
-     *
+     * 
      */
     label?: string;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     policyBehavior?: PolicyBehaviorEnum;
 }
+
+
 
 /**
  * Check if a given object implements the AgentCreateRequest interface.
@@ -55,27 +62,17 @@ export function AgentCreateRequestFromJSON(json: any): AgentCreateRequest {
     return AgentCreateRequestFromJSONTyped(json, false);
 }
 
-export function AgentCreateRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentCreateRequest {
+export function AgentCreateRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentCreateRequest {
     if (json == null) {
         return json;
     }
     return {
-        parent: json["parent"] == null ? undefined : json["parent"],
-        label: json["label"] == null ? undefined : json["label"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        policyBehavior:
-            json["policy_behavior"] == null
-                ? undefined
-                : PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
+        
+        'parent': json['parent'] == null ? undefined : json['parent'],
+        'label': json['label'] == null ? undefined : json['label'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'policyBehavior': json['policy_behavior'] == null ? undefined : PolicyBehaviorEnumFromJSON(json['policy_behavior']),
     };
 }
 
@@ -83,19 +80,18 @@ export function AgentCreateRequestToJSON(json: any): AgentCreateRequest {
     return AgentCreateRequestToJSONTyped(json, false);
 }
 
-export function AgentCreateRequestToJSONTyped(
-    value?: AgentCreateRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentCreateRequestToJSONTyped(value?: AgentCreateRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        parent: value["parent"],
-        label: value["label"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        policy_behavior: PolicyBehaviorEnumToJSON(value["policyBehavior"]),
+        
+        'parent': value['parent'],
+        'label': value['label'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'policy_behavior': PolicyBehaviorEnumToJSON(value['policyBehavior']),
     };
 }
+

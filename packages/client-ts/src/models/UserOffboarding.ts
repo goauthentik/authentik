@@ -12,16 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { OffboardingActionEnum } from './OffboardingActionEnum';
 import {
     OffboardingActionEnumFromJSON,
+    OffboardingActionEnumFromJSONTyped,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
-import type { OffboardingStatusEnum } from "./OffboardingStatusEnum";
-import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+    OffboardingActionEnumToJSONTyped,
+} from './OffboardingActionEnum';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { OffboardingStatusEnum } from './OffboardingStatusEnum';
+import {
+    OffboardingStatusEnumFromJSON,
+    OffboardingStatusEnumFromJSONTyped,
+    OffboardingStatusEnumToJSON,
+    OffboardingStatusEnumToJSONTyped,
+} from './OffboardingStatusEnum';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -31,15 +43,15 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface UserOffboarding {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser;
     /**
@@ -47,7 +59,7 @@ export interface UserOffboarding {
      */
     scheduledAt: Date;
     /**
-     *
+     * 
      */
     action?: OffboardingActionEnum;
     /**
@@ -59,65 +71,37 @@ export interface UserOffboarding {
      */
     revokeTokens?: boolean;
     /**
-     *
+     * 
      */
     readonly status: OffboardingStatusEnum;
     /**
-     *
+     * 
      */
     readonly createdByObj: PartialUser;
     /**
-     *
+     * 
      */
     readonly createdAt: Date;
     /**
-     *
+     * 
      */
     readonly executedAt: Date | null;
 }
+
+
 
 /**
  * Check if a given object implements the UserOffboarding interface.
  */
 export function instanceOfUserOffboarding(value: object): value is UserOffboarding {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("scheduledAt" in (value as Record<string, any>)) &&
-            !("scheduled_at" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scheduledAt"] === undefined &&
-            (value as Record<string, any>)["scheduled_at"] === undefined)
-    )
-        return false;
-    if (!("status" in value) || value["status"] === undefined) return false;
-    if (
-        (!("createdByObj" in (value as Record<string, any>)) &&
-            !("created_by_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["createdByObj"] === undefined &&
-            (value as Record<string, any>)["created_by_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("createdAt" in (value as Record<string, any>)) &&
-            !("created_at" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["createdAt"] === undefined &&
-            (value as Record<string, any>)["created_at"] === undefined)
-    )
-        return false;
-    if (
-        (!("executedAt" in (value as Record<string, any>)) &&
-            !("executed_at" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["executedAt"] === undefined &&
-            (value as Record<string, any>)["executed_at"] === undefined)
-    )
-        return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if ((!('scheduledAt' in (value as Record<string, any>)) && !('scheduled_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['scheduledAt'] === undefined && (value as Record<string, any>)['scheduled_at'] === undefined)) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if ((!('createdByObj' in (value as Record<string, any>)) && !('created_by_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdByObj'] === undefined && (value as Record<string, any>)['created_by_obj'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('executedAt' in (value as Record<string, any>)) && !('executed_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['executedAt'] === undefined && (value as Record<string, any>)['executed_at'] === undefined)) return false;
     return true;
 }
 
@@ -125,29 +109,23 @@ export function UserOffboardingFromJSON(json: any): UserOffboarding {
     return UserOffboardingFromJSONTyped(json, false);
 }
 
-export function UserOffboardingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserOffboarding {
+export function UserOffboardingFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOffboarding {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        user: json["user"],
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        scheduledAt:
-            json["scheduled_at"] == null
-                ? json["scheduled_at"]
-                : parseDateTime(json["scheduled_at"]),
-        action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
-        revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
-        revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        status: OffboardingStatusEnumFromJSON(json["status"]),
-        createdByObj: PartialUserFromJSON(json["created_by_obj"]),
-        createdAt:
-            json["created_at"] == null ? json["created_at"] : parseDateTime(json["created_at"]),
-        executedAt: json["executed_at"] == null ? null : parseDateTime(json["executed_at"]),
+        
+        'id': json['id'],
+        'user': json['user'],
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'scheduledAt': (json['scheduled_at'] == null ? json['scheduled_at'] : parseDateTime(json['scheduled_at'])),
+        'action': json['action'] == null ? undefined : OffboardingActionEnumFromJSON(json['action']),
+        'revokeSessions': json['revoke_sessions'] == null ? undefined : json['revoke_sessions'],
+        'revokeTokens': json['revoke_tokens'] == null ? undefined : json['revoke_tokens'],
+        'status': OffboardingStatusEnumFromJSON(json['status']),
+        'createdByObj': PartialUserFromJSON(json['created_by_obj']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'executedAt': (json['executed_at'] == null ? null : parseDateTime(json['executed_at'])),
     };
 }
 
@@ -155,25 +133,18 @@ export function UserOffboardingToJSON(json: any): UserOffboarding {
     return UserOffboardingToJSONTyped(json, false);
 }
 
-export function UserOffboardingToJSONTyped(
-    value?: Omit<
-        UserOffboarding,
-        "id" | "userObj" | "status" | "createdByObj" | "createdAt" | "executedAt"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserOffboardingToJSONTyped(value?: Omit<UserOffboarding, 'id'|'userObj'|'status'|'createdByObj'|'createdAt'|'executedAt'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        scheduled_at:
-            value["scheduledAt"] == null
-                ? value["scheduledAt"]
-                : serializeDateTime(value["scheduledAt"]),
-        action: OffboardingActionEnumToJSON(value["action"]),
-        revoke_sessions: value["revokeSessions"],
-        revoke_tokens: value["revokeTokens"],
+        
+        'user': value['user'],
+        'scheduled_at': value['scheduledAt'] == null ? value['scheduledAt'] : serializeDateTime(value['scheduledAt']),
+        'action': OffboardingActionEnumToJSON(value['action']),
+        'revoke_sessions': value['revokeSessions'],
+        'revoke_tokens': value['revokeTokens'],
     };
 }
+

@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
-import type { User } from "./User";
-import { UserFromJSON } from "./User";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { IntentEnum } from './IntentEnum';
+import {
+    IntentEnumFromJSON,
+    IntentEnumFromJSONTyped,
+    IntentEnumToJSON,
+    IntentEnumToJSONTyped,
+} from './IntentEnum';
+import type { User } from './User';
+import {
+    UserFromJSON,
+    UserFromJSONTyped,
+    UserToJSON,
+    UserToJSONTyped,
+} from './User';
 
 /**
  * Token Serializer
@@ -25,7 +35,7 @@ import { UserFromJSON } from "./User";
  */
 export interface Token {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -33,48 +43,44 @@ export interface Token {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     intent?: IntentEnum;
     /**
-     *
+     * 
      */
     user?: number;
     /**
-     *
+     * 
      */
     readonly userObj: User;
     /**
-     *
+     * 
      */
     description?: string;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     expiring?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the Token interface.
  */
 export function instanceOfToken(value: object): value is Token {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
     return true;
 }
 
@@ -87,25 +93,16 @@ export function TokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tok
         return json;
     }
     return {
-        pk: json["pk"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        identifier: json["identifier"],
-        intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
-        user: json["user"] == null ? undefined : json["user"],
-        userObj: UserFromJSON(json["user_obj"]),
-        description: json["description"] == null ? undefined : json["description"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        
+        'pk': json['pk'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'identifier': json['identifier'],
+        'intent': json['intent'] == null ? undefined : IntentEnumFromJSON(json['intent']),
+        'user': json['user'] == null ? undefined : json['user'],
+        'userObj': UserFromJSON(json['user_obj']),
+        'description': json['description'] == null ? undefined : json['description'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
     };
 }
 
@@ -113,21 +110,20 @@ export function TokenToJSON(json: any): Token {
     return TokenToJSONTyped(json, false);
 }
 
-export function TokenToJSONTyped(
-    value?: Omit<Token, "pk" | "userObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TokenToJSONTyped(value?: Omit<Token, 'pk'|'userObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        identifier: value["identifier"],
-        intent: IntentEnumToJSON(value["intent"]),
-        user: value["user"],
-        description: value["description"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        expiring: value["expiring"],
+        
+        'managed': value['managed'],
+        'identifier': value['identifier'],
+        'intent': IntentEnumToJSON(value['intent']),
+        'user': value['user'],
+        'description': value['description'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'expiring': value['expiring'],
     };
 }
+

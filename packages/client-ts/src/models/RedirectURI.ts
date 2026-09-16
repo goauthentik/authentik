@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { MatchingModeEnum } from "./MatchingModeEnum";
-import { MatchingModeEnumFromJSON, MatchingModeEnumToJSON } from "./MatchingModeEnum";
-import type { RedirectURITypeEnum } from "./RedirectURITypeEnum";
-import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./RedirectURITypeEnum";
+import { mapValues } from '../runtime';
+import type { MatchingModeEnum } from './MatchingModeEnum';
+import {
+    MatchingModeEnumFromJSON,
+    MatchingModeEnumFromJSONTyped,
+    MatchingModeEnumToJSON,
+    MatchingModeEnumToJSONTyped,
+} from './MatchingModeEnum';
+import type { RedirectURITypeEnum } from './RedirectURITypeEnum';
+import {
+    RedirectURITypeEnumFromJSON,
+    RedirectURITypeEnumFromJSONTyped,
+    RedirectURITypeEnumToJSON,
+    RedirectURITypeEnumToJSONTyped,
+} from './RedirectURITypeEnum';
 
 /**
  * A single allowed redirect URI entry
@@ -24,31 +35,27 @@ import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./Redire
  */
 export interface RedirectURI {
     /**
-     *
+     * 
      */
     matchingMode: MatchingModeEnum;
     /**
-     *
+     * 
      */
     url: string;
     /**
-     *
+     * 
      */
     redirectUriType?: RedirectURITypeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the RedirectURI interface.
  */
 export function instanceOfRedirectURI(value: object): value is RedirectURI {
-    if (
-        (!("matchingMode" in (value as Record<string, any>)) &&
-            !("matching_mode" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["matchingMode"] === undefined &&
-            (value as Record<string, any>)["matching_mode"] === undefined)
-    )
-        return false;
-    if (!("url" in value) || value["url"] === undefined) return false;
+    if ((!('matchingMode' in (value as Record<string, any>)) && !('matching_mode' in (value as Record<string, any>))) || ((value as Record<string, any>)['matchingMode'] === undefined && (value as Record<string, any>)['matching_mode'] === undefined)) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -61,12 +68,10 @@ export function RedirectURIFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        matchingMode: MatchingModeEnumFromJSON(json["matching_mode"]),
-        url: json["url"],
-        redirectUriType:
-            json["redirect_uri_type"] == null
-                ? undefined
-                : RedirectURITypeEnumFromJSON(json["redirect_uri_type"]),
+        
+        'matchingMode': MatchingModeEnumFromJSON(json['matching_mode']),
+        'url': json['url'],
+        'redirectUriType': json['redirect_uri_type'] == null ? undefined : RedirectURITypeEnumFromJSON(json['redirect_uri_type']),
     };
 }
 
@@ -74,17 +79,16 @@ export function RedirectURIToJSON(json: any): RedirectURI {
     return RedirectURIToJSONTyped(json, false);
 }
 
-export function RedirectURIToJSONTyped(
-    value?: RedirectURI | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RedirectURIToJSONTyped(value?: RedirectURI | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        matching_mode: MatchingModeEnumToJSON(value["matchingMode"]),
-        url: value["url"],
-        redirect_uri_type: RedirectURITypeEnumToJSON(value["redirectUriType"]),
+        
+        'matching_mode': MatchingModeEnumToJSON(value['matchingMode']),
+        'url': value['url'],
+        'redirect_uri_type': RedirectURITypeEnumToJSON(value['redirectUriType']),
     };
 }
+

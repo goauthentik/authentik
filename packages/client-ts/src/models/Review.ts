@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -24,23 +29,23 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface Review {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     iteration: string;
     /**
-     *
+     * 
      */
     readonly reviewer: PartialUser;
     /**
-     *
+     * 
      */
     readonly timestamp: Date;
     /**
-     *
+     * 
      */
     note?: string | null;
 }
@@ -49,10 +54,10 @@ export interface Review {
  * Check if a given object implements the Review interface.
  */
 export function instanceOfReview(value: object): value is Review {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("iteration" in value) || value["iteration"] === undefined) return false;
-    if (!("reviewer" in value) || value["reviewer"] === undefined) return false;
-    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('iteration' in value) || value['iteration'] === undefined) return false;
+    if (!('reviewer' in value) || value['reviewer'] === undefined) return false;
+    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
     return true;
 }
 
@@ -65,11 +70,12 @@ export function ReviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         return json;
     }
     return {
-        id: json["id"],
-        iteration: json["iteration"],
-        reviewer: PartialUserFromJSON(json["reviewer"]),
-        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
-        note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
+        
+        'id': json['id'],
+        'iteration': json['iteration'],
+        'reviewer': PartialUserFromJSON(json['reviewer']),
+        'timestamp': (json['timestamp'] == null ? json['timestamp'] : parseDateTime(json['timestamp'])),
+        'note': json['note'] === undefined ? undefined : json['note'] === null ? null : json['note'],
     };
 }
 
@@ -77,16 +83,15 @@ export function ReviewToJSON(json: any): Review {
     return ReviewToJSONTyped(json, false);
 }
 
-export function ReviewToJSONTyped(
-    value?: Omit<Review, "id" | "reviewer" | "timestamp"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ReviewToJSONTyped(value?: Omit<Review, 'id'|'reviewer'|'timestamp'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        iteration: value["iteration"],
-        note: value["note"],
+        
+        'iteration': value['iteration'],
+        'note': value['note'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for Endpoint authenticator devices
  * @export
@@ -19,7 +20,7 @@
  */
 export interface GoogleEndpointDevice {
     /**
-     *
+     * 
      */
     pk?: string;
     /**
@@ -32,7 +33,7 @@ export interface GoogleEndpointDevice {
  * Check if a given object implements the GoogleEndpointDevice interface.
  */
 export function instanceOfGoogleEndpointDevice(value: object): value is GoogleEndpointDevice {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -40,16 +41,14 @@ export function GoogleEndpointDeviceFromJSON(json: any): GoogleEndpointDevice {
     return GoogleEndpointDeviceFromJSONTyped(json, false);
 }
 
-export function GoogleEndpointDeviceFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleEndpointDevice {
+export function GoogleEndpointDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleEndpointDevice {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"] == null ? undefined : json["pk"],
-        name: json["name"],
+        
+        'pk': json['pk'] == null ? undefined : json['pk'],
+        'name': json['name'],
     };
 }
 
@@ -57,16 +56,15 @@ export function GoogleEndpointDeviceToJSON(json: any): GoogleEndpointDevice {
     return GoogleEndpointDeviceToJSONTyped(json, false);
 }
 
-export function GoogleEndpointDeviceToJSONTyped(
-    value?: GoogleEndpointDevice | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleEndpointDeviceToJSONTyped(value?: GoogleEndpointDevice | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        name: value["name"],
+        
+        'pk': value['pk'],
+        'name': value['name'],
     };
 }
+

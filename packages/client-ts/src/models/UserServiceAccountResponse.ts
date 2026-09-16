@@ -12,30 +12,31 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface UserServiceAccountResponse
  */
 export interface UserServiceAccountResponse {
     /**
-     *
+     * 
      */
     username: string;
     /**
-     *
+     * 
      */
     token: string;
     /**
-     *
+     * 
      */
     userUid: string;
     /**
-     *
+     * 
      */
     userPk: number;
     /**
-     *
+     * 
      */
     groupPk?: string;
 }
@@ -43,25 +44,11 @@ export interface UserServiceAccountResponse {
 /**
  * Check if a given object implements the UserServiceAccountResponse interface.
  */
-export function instanceOfUserServiceAccountResponse(
-    value: object,
-): value is UserServiceAccountResponse {
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("token" in value) || value["token"] === undefined) return false;
-    if (
-        (!("userUid" in (value as Record<string, any>)) &&
-            !("user_uid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userUid"] === undefined &&
-            (value as Record<string, any>)["user_uid"] === undefined)
-    )
-        return false;
-    if (
-        (!("userPk" in (value as Record<string, any>)) &&
-            !("user_pk" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userPk"] === undefined &&
-            (value as Record<string, any>)["user_pk"] === undefined)
-    )
-        return false;
+export function instanceOfUserServiceAccountResponse(value: object): value is UserServiceAccountResponse {
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
+    if ((!('userUid' in (value as Record<string, any>)) && !('user_uid' in (value as Record<string, any>))) || ((value as Record<string, any>)['userUid'] === undefined && (value as Record<string, any>)['user_uid'] === undefined)) return false;
+    if ((!('userPk' in (value as Record<string, any>)) && !('user_pk' in (value as Record<string, any>))) || ((value as Record<string, any>)['userPk'] === undefined && (value as Record<string, any>)['user_pk'] === undefined)) return false;
     return true;
 }
 
@@ -69,19 +56,17 @@ export function UserServiceAccountResponseFromJSON(json: any): UserServiceAccoun
     return UserServiceAccountResponseFromJSONTyped(json, false);
 }
 
-export function UserServiceAccountResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserServiceAccountResponse {
+export function UserServiceAccountResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserServiceAccountResponse {
     if (json == null) {
         return json;
     }
     return {
-        username: json["username"],
-        token: json["token"],
-        userUid: json["user_uid"],
-        userPk: json["user_pk"],
-        groupPk: json["group_pk"] == null ? undefined : json["group_pk"],
+        
+        'username': json['username'],
+        'token': json['token'],
+        'userUid': json['user_uid'],
+        'userPk': json['user_pk'],
+        'groupPk': json['group_pk'] == null ? undefined : json['group_pk'],
     };
 }
 
@@ -89,19 +74,18 @@ export function UserServiceAccountResponseToJSON(json: any): UserServiceAccountR
     return UserServiceAccountResponseToJSONTyped(json, false);
 }
 
-export function UserServiceAccountResponseToJSONTyped(
-    value?: UserServiceAccountResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserServiceAccountResponseToJSONTyped(value?: UserServiceAccountResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        token: value["token"],
-        user_uid: value["userUid"],
-        user_pk: value["userPk"],
-        group_pk: value["groupPk"],
+        
+        'username': value['username'],
+        'token': value['token'],
+        'user_uid': value['userUid'],
+        'user_pk': value['userPk'],
+        'group_pk': value['groupPk'],
     };
 }
+

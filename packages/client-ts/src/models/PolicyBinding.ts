@@ -12,13 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { Policy } from "./Policy";
-import { PolicyFromJSON } from "./Policy";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { Policy } from './Policy';
+import {
+    PolicyFromJSON,
+    PolicyFromJSONTyped,
+    PolicyToJSON,
+    PolicyToJSONTyped,
+} from './Policy';
+import type { PartialGroup } from './PartialGroup';
+import {
+    PartialGroupFromJSON,
+    PartialGroupFromJSONTyped,
+    PartialGroupToJSON,
+    PartialGroupToJSONTyped,
+} from './PartialGroup';
 
 /**
  * PolicyBinding Serializer
@@ -27,35 +42,35 @@ import { PolicyFromJSON } from "./Policy";
  */
 export interface PolicyBinding {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     policy?: string | null;
     /**
-     *
+     * 
      */
     group?: string | null;
     /**
-     *
+     * 
      */
     user?: number | null;
     /**
-     *
+     * 
      */
     readonly policyObj: Policy | null;
     /**
-     *
+     * 
      */
     readonly groupObj: PartialGroup | null;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser | null;
     /**
-     *
+     * 
      */
     target: string;
     /**
@@ -63,11 +78,11 @@ export interface PolicyBinding {
      */
     negate?: boolean;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     order: number;
     /**
@@ -79,11 +94,11 @@ export interface PolicyBinding {
      */
     failureResult?: boolean;
     /**
-     *
+     * 
      */
     readonly expires: Date | null;
     /**
-     *
+     * 
      */
     readonly expiring: boolean;
 }
@@ -92,32 +107,14 @@ export interface PolicyBinding {
  * Check if a given object implements the PolicyBinding interface.
  */
 export function instanceOfPolicyBinding(value: object): value is PolicyBinding {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("policyObj" in (value as Record<string, any>)) &&
-            !("policy_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["policyObj"] === undefined &&
-            (value as Record<string, any>)["policy_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("groupObj" in (value as Record<string, any>)) &&
-            !("group_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["groupObj"] === undefined &&
-            (value as Record<string, any>)["group_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
-    if (!("order" in value) || value["order"] === undefined) return false;
-    if (!("expires" in value) || value["expires"] === undefined) return false;
-    if (!("expiring" in value) || value["expiring"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('policyObj' in (value as Record<string, any>)) && !('policy_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['policyObj'] === undefined && (value as Record<string, any>)['policy_obj'] === undefined)) return false;
+    if ((!('groupObj' in (value as Record<string, any>)) && !('group_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['groupObj'] === undefined && (value as Record<string, any>)['group_obj'] === undefined)) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
+    if (!('order' in value) || value['order'] === undefined) return false;
+    if (!('expires' in value) || value['expires'] === undefined) return false;
+    if (!('expiring' in value) || value['expiring'] === undefined) return false;
     return true;
 }
 
@@ -130,27 +127,22 @@ export function PolicyBindingFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        pk: json["pk"],
-        policy:
-            json["policy"] === undefined
-                ? undefined
-                : json["policy"] === null
-                  ? null
-                  : json["policy"],
-        group:
-            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
-        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
-        policyObj: PolicyFromJSON(json["policy_obj"]),
-        groupObj: PartialGroupFromJSON(json["group_obj"]),
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        target: json["target"],
-        negate: json["negate"] == null ? undefined : json["negate"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        order: json["order"],
-        timeout: json["timeout"] == null ? undefined : json["timeout"],
-        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
-        expiring: json["expiring"],
+        
+        'pk': json['pk'],
+        'policy': json['policy'] === undefined ? undefined : json['policy'] === null ? null : json['policy'],
+        'group': json['group'] === undefined ? undefined : json['group'] === null ? null : json['group'],
+        'user': json['user'] === undefined ? undefined : json['user'] === null ? null : json['user'],
+        'policyObj': PolicyFromJSON(json['policy_obj']),
+        'groupObj': PartialGroupFromJSON(json['group_obj']),
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'target': json['target'],
+        'negate': json['negate'] == null ? undefined : json['negate'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'order': json['order'],
+        'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
+        'expires': (json['expires'] == null ? null : parseDateTime(json['expires'])),
+        'expiring': json['expiring'],
     };
 }
 
@@ -158,26 +150,22 @@ export function PolicyBindingToJSON(json: any): PolicyBinding {
     return PolicyBindingToJSONTyped(json, false);
 }
 
-export function PolicyBindingToJSONTyped(
-    value?: Omit<
-        PolicyBinding,
-        "pk" | "policyObj" | "groupObj" | "userObj" | "expires" | "expiring"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PolicyBindingToJSONTyped(value?: Omit<PolicyBinding, 'pk'|'policyObj'|'groupObj'|'userObj'|'expires'|'expiring'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        policy: value["policy"],
-        group: value["group"],
-        user: value["user"],
-        target: value["target"],
-        negate: value["negate"],
-        enabled: value["enabled"],
-        order: value["order"],
-        timeout: value["timeout"],
-        failure_result: value["failureResult"],
+        
+        'policy': value['policy'],
+        'group': value['group'],
+        'user': value['user'],
+        'target': value['target'],
+        'negate': value['negate'],
+        'enabled': value['enabled'],
+        'order': value['order'],
+        'timeout': value['timeout'],
+        'failure_result': value['failureResult'],
     };
 }
+

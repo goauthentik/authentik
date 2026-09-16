@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Special challenge for apple-native authentication flow, which happens on the client.
@@ -23,31 +35,31 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface AppleLoginChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     clientId: string;
     /**
-     *
+     * 
      */
     scope: string;
     /**
-     *
+     * 
      */
     redirectUri: string;
     /**
-     *
+     * 
      */
     state: string;
 }
@@ -56,22 +68,10 @@ export interface AppleLoginChallenge {
  * Check if a given object implements the AppleLoginChallenge interface.
  */
 export function instanceOfAppleLoginChallenge(value: object): value is AppleLoginChallenge {
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (!("scope" in value) || value["scope"] === undefined) return false;
-    if (
-        (!("redirectUri" in (value as Record<string, any>)) &&
-            !("redirect_uri" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["redirectUri"] === undefined &&
-            (value as Record<string, any>)["redirect_uri"] === undefined)
-    )
-        return false;
-    if (!("state" in value) || value["state"] === undefined) return false;
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if (!('scope' in value) || value['scope'] === undefined) return false;
+    if ((!('redirectUri' in (value as Record<string, any>)) && !('redirect_uri' in (value as Record<string, any>))) || ((value as Record<string, any>)['redirectUri'] === undefined && (value as Record<string, any>)['redirect_uri'] === undefined)) return false;
+    if (!('state' in value) || value['state'] === undefined) return false;
     return true;
 }
 
@@ -79,22 +79,19 @@ export function AppleLoginChallengeFromJSON(json: any): AppleLoginChallenge {
     return AppleLoginChallengeFromJSONTyped(json, false);
 }
 
-export function AppleLoginChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AppleLoginChallenge {
+export function AppleLoginChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AppleLoginChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        clientId: json["client_id"],
-        scope: json["scope"],
-        redirectUri: json["redirect_uri"],
-        state: json["state"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'clientId': json['client_id'],
+        'scope': json['scope'],
+        'redirectUri': json['redirect_uri'],
+        'state': json['state'],
     };
 }
 
@@ -102,21 +99,20 @@ export function AppleLoginChallengeToJSON(json: any): AppleLoginChallenge {
     return AppleLoginChallengeToJSONTyped(json, false);
 }
 
-export function AppleLoginChallengeToJSONTyped(
-    value?: AppleLoginChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AppleLoginChallengeToJSONTyped(value?: AppleLoginChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        client_id: value["clientId"],
-        scope: value["scope"],
-        redirect_uri: value["redirectUri"],
-        state: value["state"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'client_id': value['clientId'],
+        'scope': value['scope'],
+        'redirect_uri': value['redirectUri'],
+        'state': value['state'],
     };
 }
+

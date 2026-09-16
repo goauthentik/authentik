@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMSource } from "./SCIMSource";
-import { SCIMSourceFromJSON, SCIMSourceToJSON } from "./SCIMSource";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { SCIMSource } from './SCIMSource';
+import {
+    SCIMSourceFromJSON,
+    SCIMSourceFromJSONTyped,
+    SCIMSourceToJSON,
+    SCIMSourceToJSONTyped,
+} from './SCIMSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSCIMSourceList
  */
 export interface PaginatedSCIMSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SCIMSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMSourceList interface.
  */
 export function instanceOfPaginatedSCIMSourceList(value: object): value is PaginatedSCIMSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedSCIMSourceListFromJSON(json: any): PaginatedSCIMSourceL
     return PaginatedSCIMSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSCIMSourceList {
+export function PaginatedSCIMSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SCIMSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SCIMSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedSCIMSourceListToJSON(json: any): PaginatedSCIMSourceLis
     return PaginatedSCIMSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceListToJSONTyped(
-    value?: PaginatedSCIMSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSCIMSourceListToJSONTyped(value?: PaginatedSCIMSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SCIMSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SCIMSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

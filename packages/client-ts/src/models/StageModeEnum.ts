@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const StageModeEnum = {
-    Optional: "optional",
-    Required: "required",
-    UnknownDefaultOpenApi: "11184809",
+    Optional: 'optional',
+    Required: 'required',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type StageModeEnum = (typeof StageModeEnum)[keyof typeof StageModeEnum];
+export type StageModeEnum = typeof StageModeEnum[keyof typeof StageModeEnum];
+
 
 export function instanceOfStageModeEnum(value: any): boolean {
     for (const key in StageModeEnum) {
@@ -49,3 +51,4 @@ export function StageModeEnumToJSON(value?: StageModeEnum | null): any {
 export function StageModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): StageModeEnum {
     return value as StageModeEnum;
 }
+

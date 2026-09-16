@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { Source } from './Source';
+import {
+    SourceFromJSON,
+    SourceFromJSONTyped,
+    SourceToJSON,
+    SourceToJSONTyped,
+} from './Source';
 
 /**
  * User source connection
@@ -23,35 +28,35 @@ import { SourceFromJSON } from "./Source";
  */
 export interface UserOAuthSourceConnection {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly user: number;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     readonly sourceObj: Source;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     expires?: Date;
 }
@@ -59,28 +64,14 @@ export interface UserOAuthSourceConnection {
 /**
  * Check if a given object implements the UserOAuthSourceConnection interface.
  */
-export function instanceOfUserOAuthSourceConnection(
-    value: object,
-): value is UserOAuthSourceConnection {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (
-        (!("sourceObj" in (value as Record<string, any>)) &&
-            !("source_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sourceObj"] === undefined &&
-            (value as Record<string, any>)["source_obj"] === undefined)
-    )
-        return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
+export function instanceOfUserOAuthSourceConnection(value: object): value is UserOAuthSourceConnection {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if ((!('sourceObj' in (value as Record<string, any>)) && !('source_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceObj'] === undefined && (value as Record<string, any>)['source_obj'] === undefined)) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
     return true;
 }
 
@@ -88,25 +79,20 @@ export function UserOAuthSourceConnectionFromJSON(json: any): UserOAuthSourceCon
     return UserOAuthSourceConnectionFromJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserOAuthSourceConnection {
+export function UserOAuthSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOAuthSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        user: json["user"],
-        source: json["source"],
-        sourceObj: SourceFromJSON(json["source_obj"]),
-        identifier: json["identifier"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
+        
+        'pk': json['pk'],
+        'user': json['user'],
+        'source': json['source'],
+        'sourceObj': SourceFromJSON(json['source_obj']),
+        'identifier': json['identifier'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'expires': json['expires'] == null ? undefined : (parseDateTime(json['expires'])),
     };
 }
 
@@ -114,20 +100,16 @@ export function UserOAuthSourceConnectionToJSON(json: any): UserOAuthSourceConne
     return UserOAuthSourceConnectionToJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionToJSONTyped(
-    value?: Omit<
-        UserOAuthSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserOAuthSourceConnectionToJSONTyped(value?: Omit<UserOAuthSourceConnection, 'pk'|'user'|'sourceObj'|'created'|'lastUpdated'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

@@ -12,30 +12,31 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface ContentType
  */
 export interface ContentType {
     /**
-     *
+     * 
      */
     readonly id: number;
     /**
-     *
+     * 
      */
     readonly appLabel: string;
     /**
-     *
+     * 
      */
     readonly model: string;
     /**
-     *
+     * 
      */
     readonly verboseNamePlural: string;
     /**
-     *
+     * 
      */
     readonly fullyQualifiedModel: string;
 }
@@ -44,29 +45,11 @@ export interface ContentType {
  * Check if a given object implements the ContentType interface.
  */
 export function instanceOfContentType(value: object): value is ContentType {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("appLabel" in (value as Record<string, any>)) &&
-            !("app_label" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appLabel"] === undefined &&
-            (value as Record<string, any>)["app_label"] === undefined)
-    )
-        return false;
-    if (!("model" in value) || value["model"] === undefined) return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("fullyQualifiedModel" in (value as Record<string, any>)) &&
-            !("fully_qualified_model" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fullyQualifiedModel"] === undefined &&
-            (value as Record<string, any>)["fully_qualified_model"] === undefined)
-    )
-        return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('appLabel' in (value as Record<string, any>)) && !('app_label' in (value as Record<string, any>))) || ((value as Record<string, any>)['appLabel'] === undefined && (value as Record<string, any>)['app_label'] === undefined)) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('fullyQualifiedModel' in (value as Record<string, any>)) && !('fully_qualified_model' in (value as Record<string, any>))) || ((value as Record<string, any>)['fullyQualifiedModel'] === undefined && (value as Record<string, any>)['fully_qualified_model'] === undefined)) return false;
     return true;
 }
 
@@ -79,11 +62,12 @@ export function ContentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        id: json["id"],
-        appLabel: json["app_label"],
-        model: json["model"],
-        verboseNamePlural: json["verbose_name_plural"],
-        fullyQualifiedModel: json["fully_qualified_model"],
+        
+        'id': json['id'],
+        'appLabel': json['app_label'],
+        'model': json['model'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'fullyQualifiedModel': json['fully_qualified_model'],
     };
 }
 
@@ -91,16 +75,13 @@ export function ContentTypeToJSON(json: any): ContentType {
     return ContentTypeToJSONTyped(json, false);
 }
 
-export function ContentTypeToJSONTyped(
-    value?: Omit<
-        ContentType,
-        "id" | "appLabel" | "model" | "verboseNamePlural" | "fullyQualifiedModel"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ContentTypeToJSONTyped(value?: Omit<ContentType, 'id'|'appLabel'|'model'|'verboseNamePlural'|'fullyQualifiedModel'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

@@ -12,43 +12,76 @@
  * Do not edit the class manually.
  */
 
-import { type Domain, DomainFromJSON } from "../models/Domain";
-import { type DomainRequest, DomainRequestToJSON } from "../models/DomainRequest";
+import * as runtime from '../runtime';
+import {
+    type Domain,
+    DomainFromJSON,
+    DomainToJSON,
+} from '../models/Domain';
+import {
+    type DomainRequest,
+    DomainRequestFromJSON,
+    DomainRequestToJSON,
+} from '../models/DomainRequest';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
 import {
     type PaginatedDomainList,
     PaginatedDomainListFromJSON,
-} from "../models/PaginatedDomainList";
+    PaginatedDomainListToJSON,
+} from '../models/PaginatedDomainList';
 import {
     type PaginatedTenantList,
     PaginatedTenantListFromJSON,
-} from "../models/PaginatedTenantList";
+    PaginatedTenantListToJSON,
+} from '../models/PaginatedTenantList';
 import {
     type PatchedDomainRequest,
+    PatchedDomainRequestFromJSON,
     PatchedDomainRequestToJSON,
-} from "../models/PatchedDomainRequest";
+} from '../models/PatchedDomainRequest';
 import {
     type PatchedTenantRequest,
+    PatchedTenantRequestFromJSON,
     PatchedTenantRequestToJSON,
-} from "../models/PatchedTenantRequest";
-import { type Tenant, TenantFromJSON } from "../models/Tenant";
+} from '../models/PatchedTenantRequest';
+import {
+    type Tenant,
+    TenantFromJSON,
+    TenantToJSON,
+} from '../models/Tenant';
 import {
     type TenantAdminGroupRequestRequest,
+    TenantAdminGroupRequestRequestFromJSON,
     TenantAdminGroupRequestRequestToJSON,
-} from "../models/TenantAdminGroupRequestRequest";
+} from '../models/TenantAdminGroupRequestRequest';
 import {
     type TenantRecoveryKeyRequestRequest,
+    TenantRecoveryKeyRequestRequestFromJSON,
     TenantRecoveryKeyRequestRequestToJSON,
-} from "../models/TenantRecoveryKeyRequestRequest";
+} from '../models/TenantRecoveryKeyRequestRequest';
 import {
     type TenantRecoveryKeyResponse,
     TenantRecoveryKeyResponseFromJSON,
-} from "../models/TenantRecoveryKeyResponse";
-import { type TenantRequest, TenantRequestToJSON } from "../models/TenantRequest";
-import * as runtime from "../runtime";
+    TenantRecoveryKeyResponseToJSON,
+} from '../models/TenantRecoveryKeyResponse';
+import {
+    type TenantRequest,
+    TenantRequestFromJSON,
+    TenantRequestToJSON,
+} from '../models/TenantRequest';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface TenantsDomainsCreateRequest {
     /**
-     *
+     * 
      */
     domainRequest: DomainRequest;
 }
@@ -85,7 +118,7 @@ export interface TenantsDomainsPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedDomainRequest?: PatchedDomainRequest;
 }
@@ -103,14 +136,14 @@ export interface TenantsDomainsUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     domainRequest: DomainRequest;
 }
 
 export interface TenantsTenantsCreateRequest {
     /**
-     *
+     * 
      */
     tenantRequest: TenantRequest;
 }
@@ -121,7 +154,7 @@ export interface TenantsTenantsCreateAdminGroupCreateRequest {
      */
     tenantUuid: string;
     /**
-     *
+     * 
      */
     tenantAdminGroupRequestRequest: TenantAdminGroupRequestRequest;
 }
@@ -132,7 +165,7 @@ export interface TenantsTenantsCreateRecoveryKeyCreateRequest {
      */
     tenantUuid: string;
     /**
-     *
+     * 
      */
     tenantRecoveryKeyRequestRequest: TenantRecoveryKeyRequestRequest;
 }
@@ -169,7 +202,7 @@ export interface TenantsTenantsPartialUpdateRequest {
      */
     tenantUuid: string;
     /**
-     *
+     * 
      */
     patchedTenantRequest?: PatchedTenantRequest;
 }
@@ -187,25 +220,24 @@ export interface TenantsTenantsUpdateRequest {
      */
     tenantUuid: string;
     /**
-     *
+     * 
      */
     tenantRequest: TenantRequest;
 }
 
 /**
- *
+ * 
  */
 export class TenantsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for tenantsDomainsCreate without sending the request
      */
-    async tenantsDomainsCreateRequestOpts(
-        requestParameters: TenantsDomainsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["domainRequest"] == null) {
+    async tenantsDomainsCreateRequestOpts(requestParameters: TenantsDomainsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['domainRequest'] == null) {
             throw new runtime.RequiredError(
-                "domainRequest",
-                'Required parameter "domainRequest" was null or undefined when calling tenantsDomainsCreate().',
+                'domainRequest',
+                'Required parameter "domainRequest" was null or undefined when calling tenantsDomainsCreate().'
             );
         }
 
@@ -213,26 +245,24 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/domains/`;
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DomainRequestToJSON(requestParameters["domainRequest"]),
+            body: DomainRequestToJSON(requestParameters['domainRequest']),
         };
     }
 
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsCreateRaw(
-        requestParameters: TenantsDomainsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Domain>> {
+    async tenantsDomainsCreateRaw(requestParameters: TenantsDomainsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Domain>> {
         const requestOptions = await this.tenantsDomainsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -242,10 +272,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsCreate(
-        requestParameters: TenantsDomainsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Domain> {
+    async tenantsDomainsCreate(requestParameters: TenantsDomainsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Domain> {
         const response = await this.tenantsDomainsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -253,13 +280,11 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsDomainsDestroy without sending the request
      */
-    async tenantsDomainsDestroyRequestOpts(
-        requestParameters: TenantsDomainsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tenantsDomainsDestroyRequestOpts(requestParameters: TenantsDomainsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tenantsDomainsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tenantsDomainsDestroy().'
             );
         }
 
@@ -267,12 +292,13 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
         let urlPath = `/tenants/domains/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -281,10 +307,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsDestroyRaw(
-        requestParameters: TenantsDomainsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async tenantsDomainsDestroyRaw(requestParameters: TenantsDomainsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.tenantsDomainsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -294,44 +317,40 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsDestroy(
-        requestParameters: TenantsDomainsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async tenantsDomainsDestroy(requestParameters: TenantsDomainsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tenantsDomainsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for tenantsDomainsList without sending the request
      */
-    async tenantsDomainsListRequestOpts(
-        requestParameters: TenantsDomainsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async tenantsDomainsListRequestOpts(requestParameters: TenantsDomainsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
 
         let urlPath = `/tenants/domains/`;
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -340,25 +359,17 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsListRaw(
-        requestParameters: TenantsDomainsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedDomainList>> {
+    async tenantsDomainsListRaw(requestParameters: TenantsDomainsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDomainList>> {
         const requestOptions = await this.tenantsDomainsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedDomainListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDomainListFromJSON(jsonValue));
     }
 
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsList(
-        requestParameters: TenantsDomainsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedDomainList> {
+    async tenantsDomainsList(requestParameters: TenantsDomainsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDomainList> {
         const response = await this.tenantsDomainsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -366,13 +377,11 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsDomainsPartialUpdate without sending the request
      */
-    async tenantsDomainsPartialUpdateRequestOpts(
-        requestParameters: TenantsDomainsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tenantsDomainsPartialUpdateRequestOpts(requestParameters: TenantsDomainsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tenantsDomainsPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tenantsDomainsPartialUpdate().'
             );
         }
 
@@ -380,27 +389,25 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/domains/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDomainRequestToJSON(requestParameters["patchedDomainRequest"]),
+            body: PatchedDomainRequestToJSON(requestParameters['patchedDomainRequest']),
         };
     }
 
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsPartialUpdateRaw(
-        requestParameters: TenantsDomainsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Domain>> {
+    async tenantsDomainsPartialUpdateRaw(requestParameters: TenantsDomainsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Domain>> {
         const requestOptions = await this.tenantsDomainsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -410,27 +417,19 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsPartialUpdate(
-        requestParameters: TenantsDomainsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Domain> {
-        const response = await this.tenantsDomainsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async tenantsDomainsPartialUpdate(requestParameters: TenantsDomainsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Domain> {
+        const response = await this.tenantsDomainsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for tenantsDomainsRetrieve without sending the request
      */
-    async tenantsDomainsRetrieveRequestOpts(
-        requestParameters: TenantsDomainsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tenantsDomainsRetrieveRequestOpts(requestParameters: TenantsDomainsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tenantsDomainsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tenantsDomainsRetrieve().'
             );
         }
 
@@ -438,12 +437,13 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
         let urlPath = `/tenants/domains/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -452,10 +452,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsRetrieveRaw(
-        requestParameters: TenantsDomainsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Domain>> {
+    async tenantsDomainsRetrieveRaw(requestParameters: TenantsDomainsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Domain>> {
         const requestOptions = await this.tenantsDomainsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -465,10 +462,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsRetrieve(
-        requestParameters: TenantsDomainsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Domain> {
+    async tenantsDomainsRetrieve(requestParameters: TenantsDomainsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Domain> {
         const response = await this.tenantsDomainsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -476,20 +470,18 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsDomainsUpdate without sending the request
      */
-    async tenantsDomainsUpdateRequestOpts(
-        requestParameters: TenantsDomainsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async tenantsDomainsUpdateRequestOpts(requestParameters: TenantsDomainsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling tenantsDomainsUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling tenantsDomainsUpdate().'
             );
         }
 
-        if (requestParameters["domainRequest"] == null) {
+        if (requestParameters['domainRequest'] == null) {
             throw new runtime.RequiredError(
-                "domainRequest",
-                'Required parameter "domainRequest" was null or undefined when calling tenantsDomainsUpdate().',
+                'domainRequest',
+                'Required parameter "domainRequest" was null or undefined when calling tenantsDomainsUpdate().'
             );
         }
 
@@ -497,27 +489,25 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/domains/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DomainRequestToJSON(requestParameters["domainRequest"]),
+            body: DomainRequestToJSON(requestParameters['domainRequest']),
         };
     }
 
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsUpdateRaw(
-        requestParameters: TenantsDomainsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Domain>> {
+    async tenantsDomainsUpdateRaw(requestParameters: TenantsDomainsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Domain>> {
         const requestOptions = await this.tenantsDomainsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -527,10 +517,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Domain ViewSet
      */
-    async tenantsDomainsUpdate(
-        requestParameters: TenantsDomainsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Domain> {
+    async tenantsDomainsUpdate(requestParameters: TenantsDomainsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Domain> {
         const response = await this.tenantsDomainsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -538,13 +525,11 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsTenantsCreate without sending the request
      */
-    async tenantsTenantsCreateRequestOpts(
-        requestParameters: TenantsTenantsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantRequest"] == null) {
+    async tenantsTenantsCreateRequestOpts(requestParameters: TenantsTenantsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantRequest'] == null) {
             throw new runtime.RequiredError(
-                "tenantRequest",
-                'Required parameter "tenantRequest" was null or undefined when calling tenantsTenantsCreate().',
+                'tenantRequest',
+                'Required parameter "tenantRequest" was null or undefined when calling tenantsTenantsCreate().'
             );
         }
 
@@ -552,26 +537,24 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/tenants/`;
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TenantRequestToJSON(requestParameters["tenantRequest"]),
+            body: TenantRequestToJSON(requestParameters['tenantRequest']),
         };
     }
 
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsCreateRaw(
-        requestParameters: TenantsTenantsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Tenant>> {
+    async tenantsTenantsCreateRaw(requestParameters: TenantsTenantsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Tenant>> {
         const requestOptions = await this.tenantsTenantsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -581,10 +564,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsCreate(
-        requestParameters: TenantsTenantsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Tenant> {
+    async tenantsTenantsCreate(requestParameters: TenantsTenantsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Tenant> {
         const response = await this.tenantsTenantsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -592,20 +572,18 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsTenantsCreateAdminGroupCreate without sending the request
      */
-    async tenantsTenantsCreateAdminGroupCreateRequestOpts(
-        requestParameters: TenantsTenantsCreateAdminGroupCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsCreateAdminGroupCreateRequestOpts(requestParameters: TenantsTenantsCreateAdminGroupCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsCreateAdminGroupCreate().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsCreateAdminGroupCreate().'
             );
         }
 
-        if (requestParameters["tenantAdminGroupRequestRequest"] == null) {
+        if (requestParameters['tenantAdminGroupRequestRequest'] == null) {
             throw new runtime.RequiredError(
-                "tenantAdminGroupRequestRequest",
-                'Required parameter "tenantAdminGroupRequestRequest" was null or undefined when calling tenantsTenantsCreateAdminGroupCreate().',
+                'tenantAdminGroupRequestRequest',
+                'Required parameter "tenantAdminGroupRequestRequest" was null or undefined when calling tenantsTenantsCreateAdminGroupCreate().'
             );
         }
 
@@ -613,34 +591,26 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/tenants/{tenant_uuid}/create_admin_group/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TenantAdminGroupRequestRequestToJSON(
-                requestParameters["tenantAdminGroupRequestRequest"],
-            ),
+            body: TenantAdminGroupRequestRequestToJSON(requestParameters['tenantAdminGroupRequestRequest']),
         };
     }
 
     /**
      * Create admin group and add user to it.
      */
-    async tenantsTenantsCreateAdminGroupCreateRaw(
-        requestParameters: TenantsTenantsCreateAdminGroupCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.tenantsTenantsCreateAdminGroupCreateRequestOpts(requestParameters);
+    async tenantsTenantsCreateAdminGroupCreateRaw(requestParameters: TenantsTenantsCreateAdminGroupCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.tenantsTenantsCreateAdminGroupCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -649,30 +619,25 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Create admin group and add user to it.
      */
-    async tenantsTenantsCreateAdminGroupCreate(
-        requestParameters: TenantsTenantsCreateAdminGroupCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async tenantsTenantsCreateAdminGroupCreate(requestParameters: TenantsTenantsCreateAdminGroupCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tenantsTenantsCreateAdminGroupCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for tenantsTenantsCreateRecoveryKeyCreate without sending the request
      */
-    async tenantsTenantsCreateRecoveryKeyCreateRequestOpts(
-        requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsCreateRecoveryKeyCreateRequestOpts(requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsCreateRecoveryKeyCreate().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsCreateRecoveryKeyCreate().'
             );
         }
 
-        if (requestParameters["tenantRecoveryKeyRequestRequest"] == null) {
+        if (requestParameters['tenantRecoveryKeyRequestRequest'] == null) {
             throw new runtime.RequiredError(
-                "tenantRecoveryKeyRequestRequest",
-                'Required parameter "tenantRecoveryKeyRequestRequest" was null or undefined when calling tenantsTenantsCreateRecoveryKeyCreate().',
+                'tenantRecoveryKeyRequestRequest',
+                'Required parameter "tenantRecoveryKeyRequestRequest" was null or undefined when calling tenantsTenantsCreateRecoveryKeyCreate().'
             );
         }
 
@@ -680,65 +645,47 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/tenants/{tenant_uuid}/create_recovery_key/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TenantRecoveryKeyRequestRequestToJSON(
-                requestParameters["tenantRecoveryKeyRequestRequest"],
-            ),
+            body: TenantRecoveryKeyRequestRequestToJSON(requestParameters['tenantRecoveryKeyRequestRequest']),
         };
     }
 
     /**
      * Create recovery key for user.
      */
-    async tenantsTenantsCreateRecoveryKeyCreateRaw(
-        requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TenantRecoveryKeyResponse>> {
-        const requestOptions =
-            await this.tenantsTenantsCreateRecoveryKeyCreateRequestOpts(requestParameters);
+    async tenantsTenantsCreateRecoveryKeyCreateRaw(requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantRecoveryKeyResponse>> {
+        const requestOptions = await this.tenantsTenantsCreateRecoveryKeyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            TenantRecoveryKeyResponseFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => TenantRecoveryKeyResponseFromJSON(jsonValue));
     }
 
     /**
      * Create recovery key for user.
      */
-    async tenantsTenantsCreateRecoveryKeyCreate(
-        requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TenantRecoveryKeyResponse> {
-        const response = await this.tenantsTenantsCreateRecoveryKeyCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async tenantsTenantsCreateRecoveryKeyCreate(requestParameters: TenantsTenantsCreateRecoveryKeyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantRecoveryKeyResponse> {
+        const response = await this.tenantsTenantsCreateRecoveryKeyCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for tenantsTenantsDestroy without sending the request
      */
-    async tenantsTenantsDestroyRequestOpts(
-        requestParameters: TenantsTenantsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsDestroyRequestOpts(requestParameters: TenantsTenantsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsDestroy().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsDestroy().'
             );
         }
 
@@ -746,15 +693,13 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
         let urlPath = `/tenants/tenants/{tenant_uuid}/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -763,10 +708,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsDestroyRaw(
-        requestParameters: TenantsTenantsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async tenantsTenantsDestroyRaw(requestParameters: TenantsTenantsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.tenantsTenantsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -776,44 +718,40 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsDestroy(
-        requestParameters: TenantsTenantsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async tenantsTenantsDestroy(requestParameters: TenantsTenantsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tenantsTenantsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for tenantsTenantsList without sending the request
      */
-    async tenantsTenantsListRequestOpts(
-        requestParameters: TenantsTenantsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async tenantsTenantsListRequestOpts(requestParameters: TenantsTenantsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
 
         let urlPath = `/tenants/tenants/`;
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -822,25 +760,17 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsListRaw(
-        requestParameters: TenantsTenantsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedTenantList>> {
+    async tenantsTenantsListRaw(requestParameters: TenantsTenantsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTenantList>> {
         const requestOptions = await this.tenantsTenantsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedTenantListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTenantListFromJSON(jsonValue));
     }
 
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsList(
-        requestParameters: TenantsTenantsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedTenantList> {
+    async tenantsTenantsList(requestParameters: TenantsTenantsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTenantList> {
         const response = await this.tenantsTenantsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -848,13 +778,11 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsTenantsPartialUpdate without sending the request
      */
-    async tenantsTenantsPartialUpdateRequestOpts(
-        requestParameters: TenantsTenantsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsPartialUpdateRequestOpts(requestParameters: TenantsTenantsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsPartialUpdate().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsPartialUpdate().'
             );
         }
 
@@ -862,30 +790,25 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/tenants/{tenant_uuid}/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTenantRequestToJSON(requestParameters["patchedTenantRequest"]),
+            body: PatchedTenantRequestToJSON(requestParameters['patchedTenantRequest']),
         };
     }
 
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsPartialUpdateRaw(
-        requestParameters: TenantsTenantsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Tenant>> {
+    async tenantsTenantsPartialUpdateRaw(requestParameters: TenantsTenantsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Tenant>> {
         const requestOptions = await this.tenantsTenantsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -895,27 +818,19 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsPartialUpdate(
-        requestParameters: TenantsTenantsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Tenant> {
-        const response = await this.tenantsTenantsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async tenantsTenantsPartialUpdate(requestParameters: TenantsTenantsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Tenant> {
+        const response = await this.tenantsTenantsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for tenantsTenantsRetrieve without sending the request
      */
-    async tenantsTenantsRetrieveRequestOpts(
-        requestParameters: TenantsTenantsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsRetrieveRequestOpts(requestParameters: TenantsTenantsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsRetrieve().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsRetrieve().'
             );
         }
 
@@ -923,15 +838,13 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
         let urlPath = `/tenants/tenants/{tenant_uuid}/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -940,10 +853,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsRetrieveRaw(
-        requestParameters: TenantsTenantsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Tenant>> {
+    async tenantsTenantsRetrieveRaw(requestParameters: TenantsTenantsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Tenant>> {
         const requestOptions = await this.tenantsTenantsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -953,10 +863,7 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsRetrieve(
-        requestParameters: TenantsTenantsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Tenant> {
+    async tenantsTenantsRetrieve(requestParameters: TenantsTenantsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Tenant> {
         const response = await this.tenantsTenantsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -964,20 +871,18 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsTenantsUpdate without sending the request
      */
-    async tenantsTenantsUpdateRequestOpts(
-        requestParameters: TenantsTenantsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tenantUuid"] == null) {
+    async tenantsTenantsUpdateRequestOpts(requestParameters: TenantsTenantsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantUuid'] == null) {
             throw new runtime.RequiredError(
-                "tenantUuid",
-                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsUpdate().',
+                'tenantUuid',
+                'Required parameter "tenantUuid" was null or undefined when calling tenantsTenantsUpdate().'
             );
         }
 
-        if (requestParameters["tenantRequest"] == null) {
+        if (requestParameters['tenantRequest'] == null) {
             throw new runtime.RequiredError(
-                "tenantRequest",
-                'Required parameter "tenantRequest" was null or undefined when calling tenantsTenantsUpdate().',
+                'tenantRequest',
+                'Required parameter "tenantRequest" was null or undefined when calling tenantsTenantsUpdate().'
             );
         }
 
@@ -985,30 +890,25 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
+
 
         let urlPath = `/tenants/tenants/{tenant_uuid}/`;
-        urlPath = urlPath.replace(
-            "{tenant_uuid}",
-            encodeURIComponent(String(requestParameters["tenantUuid"])),
-        );
+        urlPath = urlPath.replace('{tenant_uuid}', encodeURIComponent(String(requestParameters['tenantUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TenantRequestToJSON(requestParameters["tenantRequest"]),
+            body: TenantRequestToJSON(requestParameters['tenantRequest']),
         };
     }
 
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsUpdateRaw(
-        requestParameters: TenantsTenantsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Tenant>> {
+    async tenantsTenantsUpdateRaw(requestParameters: TenantsTenantsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Tenant>> {
         const requestOptions = await this.tenantsTenantsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1018,11 +918,9 @@ export class TenantsApi extends runtime.BaseAPI {
     /**
      * Tenant Viewset
      */
-    async tenantsTenantsUpdate(
-        requestParameters: TenantsTenantsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Tenant> {
+    async tenantsTenantsUpdate(requestParameters: TenantsTenantsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Tenant> {
         const response = await this.tenantsTenantsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

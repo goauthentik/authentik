@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const MatchingModeEnum = {
-    Strict: "strict",
-    Regex: "regex",
-    UnknownDefaultOpenApi: "11184809",
+    Strict: 'strict',
+    Regex: 'regex',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type MatchingModeEnum = (typeof MatchingModeEnum)[keyof typeof MatchingModeEnum];
+export type MatchingModeEnum = typeof MatchingModeEnum[keyof typeof MatchingModeEnum];
+
 
 export function instanceOfMatchingModeEnum(value: any): boolean {
     for (const key in MatchingModeEnum) {
@@ -38,10 +40,7 @@ export function MatchingModeEnumFromJSON(json: any): MatchingModeEnum {
     return MatchingModeEnumFromJSONTyped(json, false);
 }
 
-export function MatchingModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MatchingModeEnum {
+export function MatchingModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): MatchingModeEnum {
     return json as MatchingModeEnum;
 }
 
@@ -49,9 +48,7 @@ export function MatchingModeEnumToJSON(value?: MatchingModeEnum | null): any {
     return value as any;
 }
 
-export function MatchingModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): MatchingModeEnum {
+export function MatchingModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): MatchingModeEnum {
     return value as MatchingModeEnum;
 }
+

@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Group } from "./Group";
-import { GroupFromJSON, GroupToJSON } from "./Group";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Group } from './Group';
+import {
+    GroupFromJSON,
+    GroupFromJSONTyped,
+    GroupToJSON,
+    GroupToJSONTyped,
+} from './Group';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedGroupList
  */
 export interface PaginatedGroupList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Group>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupList interface.
  */
 export function instanceOfPaginatedGroupList(value: object): value is PaginatedGroupList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedGroupListFromJSON(json: any): PaginatedGroupList {
     return PaginatedGroupListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedGroupList {
+export function PaginatedGroupListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(GroupFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(GroupFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedGroupListToJSON(json: any): PaginatedGroupList {
     return PaginatedGroupListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupListToJSONTyped(
-    value?: PaginatedGroupList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedGroupListToJSONTyped(value?: PaginatedGroupList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(GroupToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(GroupToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Reputation Policy Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface ReputationPolicyRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,15 +28,15 @@ export interface ReputationPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     checkIp?: boolean;
     /**
-     *
+     * 
      */
     checkUsername?: boolean;
     /**
-     *
+     * 
      */
     threshold?: number;
 }
@@ -44,7 +45,7 @@ export interface ReputationPolicyRequest {
  * Check if a given object implements the ReputationPolicyRequest interface.
  */
 export function instanceOfReputationPolicyRequest(value: object): value is ReputationPolicyRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -52,19 +53,17 @@ export function ReputationPolicyRequestFromJSON(json: any): ReputationPolicyRequ
     return ReputationPolicyRequestFromJSONTyped(json, false);
 }
 
-export function ReputationPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ReputationPolicyRequest {
+export function ReputationPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ReputationPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
-        checkUsername: json["check_username"] == null ? undefined : json["check_username"],
-        threshold: json["threshold"] == null ? undefined : json["threshold"],
+        
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'checkIp': json['check_ip'] == null ? undefined : json['check_ip'],
+        'checkUsername': json['check_username'] == null ? undefined : json['check_username'],
+        'threshold': json['threshold'] == null ? undefined : json['threshold'],
     };
 }
 
@@ -72,19 +71,18 @@ export function ReputationPolicyRequestToJSON(json: any): ReputationPolicyReques
     return ReputationPolicyRequestToJSONTyped(json, false);
 }
 
-export function ReputationPolicyRequestToJSONTyped(
-    value?: ReputationPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ReputationPolicyRequestToJSONTyped(value?: ReputationPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        check_ip: value["checkIp"],
-        check_username: value["checkUsername"],
-        threshold: value["threshold"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'check_ip': value['checkIp'],
+        'check_username': value['checkUsername'],
+        'threshold': value['threshold'],
     };
 }
+

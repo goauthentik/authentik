@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
@@ -19,7 +20,7 @@
  */
 export interface AgentAuthenticationResponse {
     /**
-     *
+     * 
      */
     url: string;
 }
@@ -27,10 +28,8 @@ export interface AgentAuthenticationResponse {
 /**
  * Check if a given object implements the AgentAuthenticationResponse interface.
  */
-export function instanceOfAgentAuthenticationResponse(
-    value: object,
-): value is AgentAuthenticationResponse {
-    if (!("url" in value) || value["url"] === undefined) return false;
+export function instanceOfAgentAuthenticationResponse(value: object): value is AgentAuthenticationResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -38,15 +37,13 @@ export function AgentAuthenticationResponseFromJSON(json: any): AgentAuthenticat
     return AgentAuthenticationResponseFromJSONTyped(json, false);
 }
 
-export function AgentAuthenticationResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentAuthenticationResponse {
+export function AgentAuthenticationResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentAuthenticationResponse {
     if (json == null) {
         return json;
     }
     return {
-        url: json["url"],
+        
+        'url': json['url'],
     };
 }
 
@@ -54,15 +51,14 @@ export function AgentAuthenticationResponseToJSON(json: any): AgentAuthenticatio
     return AgentAuthenticationResponseToJSONTyped(json, false);
 }
 
-export function AgentAuthenticationResponseToJSONTyped(
-    value?: AgentAuthenticationResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentAuthenticationResponseToJSONTyped(value?: AgentAuthenticationResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        url: value["url"],
+        
+        'url': value['url'],
     };
 }
+

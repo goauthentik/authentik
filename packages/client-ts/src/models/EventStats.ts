@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Count of unique users in events and aggregated counts per specified deltas
  * @export
@@ -19,33 +20,21 @@
  */
 export interface EventStats {
     /**
-     *
+     * 
      */
     uniqueUsers: number;
     /**
-     *
+     * 
      */
-    countStep: { [key: string]: any };
+    countStep: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the EventStats interface.
  */
 export function instanceOfEventStats(value: object): value is EventStats {
-    if (
-        (!("uniqueUsers" in (value as Record<string, any>)) &&
-            !("unique_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["uniqueUsers"] === undefined &&
-            (value as Record<string, any>)["unique_users"] === undefined)
-    )
-        return false;
-    if (
-        (!("countStep" in (value as Record<string, any>)) &&
-            !("count_step" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["countStep"] === undefined &&
-            (value as Record<string, any>)["count_step"] === undefined)
-    )
-        return false;
+    if ((!('uniqueUsers' in (value as Record<string, any>)) && !('unique_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['uniqueUsers'] === undefined && (value as Record<string, any>)['unique_users'] === undefined)) return false;
+    if ((!('countStep' in (value as Record<string, any>)) && !('count_step' in (value as Record<string, any>))) || ((value as Record<string, any>)['countStep'] === undefined && (value as Record<string, any>)['count_step'] === undefined)) return false;
     return true;
 }
 
@@ -58,8 +47,9 @@ export function EventStatsFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        uniqueUsers: json["unique_users"],
-        countStep: json["count_step"],
+        
+        'uniqueUsers': json['unique_users'],
+        'countStep': json['count_step'],
     };
 }
 
@@ -67,16 +57,15 @@ export function EventStatsToJSON(json: any): EventStats {
     return EventStatsToJSONTyped(json, false);
 }
 
-export function EventStatsToJSONTyped(
-    value?: EventStats | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EventStatsToJSONTyped(value?: EventStats | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        unique_users: value["uniqueUsers"],
-        count_step: value["countStep"],
+        
+        'unique_users': value['uniqueUsers'],
+        'count_step': value['countStep'],
     };
 }
+

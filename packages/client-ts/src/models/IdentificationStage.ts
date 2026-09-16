@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserFieldsEnum } from "./UserFieldsEnum";
-import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
+import { mapValues } from '../runtime';
+import type { UserFieldsEnum } from './UserFieldsEnum';
+import {
+    UserFieldsEnumFromJSON,
+    UserFieldsEnumFromJSONTyped,
+    UserFieldsEnumToJSON,
+    UserFieldsEnumToJSONTyped,
+} from './UserFieldsEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
 
 /**
  * IdentificationStage Serializer
@@ -24,11 +35,11 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
  */
 export interface IdentificationStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -48,7 +59,7 @@ export interface IdentificationStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -88,7 +99,7 @@ export interface IdentificationStage {
      */
     sources?: Array<string>;
     /**
-     *
+     * 
      */
     showSourceLabels?: boolean;
     /**
@@ -109,37 +120,13 @@ export interface IdentificationStage {
  * Check if a given object implements the IdentificationStage interface.
  */
 export function instanceOfIdentificationStage(value: object): value is IdentificationStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -147,73 +134,32 @@ export function IdentificationStageFromJSON(json: any): IdentificationStage {
     return IdentificationStageFromJSONTyped(json, false);
 }
 
-export function IdentificationStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): IdentificationStage {
+export function IdentificationStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdentificationStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        userFields:
-            json["user_fields"] == null
-                ? undefined
-                : (json["user_fields"] as Array<any>).map(UserFieldsEnumFromJSON),
-        passwordStage:
-            json["password_stage"] === undefined
-                ? undefined
-                : json["password_stage"] === null
-                  ? null
-                  : json["password_stage"],
-        captchaStage:
-            json["captcha_stage"] === undefined
-                ? undefined
-                : json["captcha_stage"] === null
-                  ? null
-                  : json["captcha_stage"],
-        caseInsensitiveMatching:
-            json["case_insensitive_matching"] == null
-                ? undefined
-                : json["case_insensitive_matching"],
-        showMatchedUser: json["show_matched_user"] == null ? undefined : json["show_matched_user"],
-        enrollmentFlow:
-            json["enrollment_flow"] === undefined
-                ? undefined
-                : json["enrollment_flow"] === null
-                  ? null
-                  : json["enrollment_flow"],
-        recoveryFlow:
-            json["recovery_flow"] === undefined
-                ? undefined
-                : json["recovery_flow"] === null
-                  ? null
-                  : json["recovery_flow"],
-        passwordlessFlow:
-            json["passwordless_flow"] === undefined
-                ? undefined
-                : json["passwordless_flow"] === null
-                  ? null
-                  : json["passwordless_flow"],
-        sources: json["sources"] == null ? undefined : json["sources"],
-        showSourceLabels:
-            json["show_source_labels"] == null ? undefined : json["show_source_labels"],
-        pretendUserExists:
-            json["pretend_user_exists"] == null ? undefined : json["pretend_user_exists"],
-        enableRememberMe:
-            json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
-        webauthnStage:
-            json["webauthn_stage"] === undefined
-                ? undefined
-                : json["webauthn_stage"] === null
-                  ? null
-                  : json["webauthn_stage"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'userFields': json['user_fields'] == null ? undefined : ((json['user_fields'] as Array<any>).map(UserFieldsEnumFromJSON)),
+        'passwordStage': json['password_stage'] === undefined ? undefined : json['password_stage'] === null ? null : json['password_stage'],
+        'captchaStage': json['captcha_stage'] === undefined ? undefined : json['captcha_stage'] === null ? null : json['captcha_stage'],
+        'caseInsensitiveMatching': json['case_insensitive_matching'] == null ? undefined : json['case_insensitive_matching'],
+        'showMatchedUser': json['show_matched_user'] == null ? undefined : json['show_matched_user'],
+        'enrollmentFlow': json['enrollment_flow'] === undefined ? undefined : json['enrollment_flow'] === null ? null : json['enrollment_flow'],
+        'recoveryFlow': json['recovery_flow'] === undefined ? undefined : json['recovery_flow'] === null ? null : json['recovery_flow'],
+        'passwordlessFlow': json['passwordless_flow'] === undefined ? undefined : json['passwordless_flow'] === null ? null : json['passwordless_flow'],
+        'sources': json['sources'] == null ? undefined : json['sources'],
+        'showSourceLabels': json['show_source_labels'] == null ? undefined : json['show_source_labels'],
+        'pretendUserExists': json['pretend_user_exists'] == null ? undefined : json['pretend_user_exists'],
+        'enableRememberMe': json['enable_remember_me'] == null ? undefined : json['enable_remember_me'],
+        'webauthnStage': json['webauthn_stage'] === undefined ? undefined : json['webauthn_stage'] === null ? null : json['webauthn_stage'],
     };
 }
 
@@ -221,34 +167,27 @@ export function IdentificationStageToJSON(json: any): IdentificationStage {
     return IdentificationStageToJSONTyped(json, false);
 }
 
-export function IdentificationStageToJSONTyped(
-    value?: Omit<
-        IdentificationStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function IdentificationStageToJSONTyped(value?: Omit<IdentificationStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        user_fields:
-            value["userFields"] == null
-                ? undefined
-                : (value["userFields"] as Array<any>).map(UserFieldsEnumToJSON),
-        password_stage: value["passwordStage"],
-        captcha_stage: value["captchaStage"],
-        case_insensitive_matching: value["caseInsensitiveMatching"],
-        show_matched_user: value["showMatchedUser"],
-        enrollment_flow: value["enrollmentFlow"],
-        recovery_flow: value["recoveryFlow"],
-        passwordless_flow: value["passwordlessFlow"],
-        sources: value["sources"],
-        show_source_labels: value["showSourceLabels"],
-        pretend_user_exists: value["pretendUserExists"],
-        enable_remember_me: value["enableRememberMe"],
-        webauthn_stage: value["webauthnStage"],
+        
+        'name': value['name'],
+        'user_fields': value['userFields'] == null ? undefined : ((value['userFields'] as Array<any>).map(UserFieldsEnumToJSON)),
+        'password_stage': value['passwordStage'],
+        'captcha_stage': value['captchaStage'],
+        'case_insensitive_matching': value['caseInsensitiveMatching'],
+        'show_matched_user': value['showMatchedUser'],
+        'enrollment_flow': value['enrollmentFlow'],
+        'recovery_flow': value['recoveryFlow'],
+        'passwordless_flow': value['passwordlessFlow'],
+        'sources': value['sources'],
+        'show_source_labels': value['showSourceLabels'],
+        'pretend_user_exists': value['pretendUserExists'],
+        'enable_remember_me': value['enableRememberMe'],
+        'webauthn_stage': value['webauthnStage'],
     };
 }
+

@@ -12,12 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { TaskAggregatedStatusEnum } from './TaskAggregatedStatusEnum';
 import {
     TaskAggregatedStatusEnumFromJSON,
+    TaskAggregatedStatusEnumFromJSONTyped,
     TaskAggregatedStatusEnumToJSON,
-} from "./TaskAggregatedStatusEnum";
+    TaskAggregatedStatusEnumToJSONTyped,
+} from './TaskAggregatedStatusEnum';
 
 /**
  * Provider/source sync status
@@ -26,30 +28,26 @@ import {
  */
 export interface SyncStatus {
     /**
-     *
+     * 
      */
     isRunning: boolean;
     /**
-     *
+     * 
      */
     lastSuccessfulSync?: Date;
     /**
-     *
+     * 
      */
     lastSyncStatus?: TaskAggregatedStatusEnum;
 }
+
+
 
 /**
  * Check if a given object implements the SyncStatus interface.
  */
 export function instanceOfSyncStatus(value: object): value is SyncStatus {
-    if (
-        (!("isRunning" in (value as Record<string, any>)) &&
-            !("is_running" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isRunning"] === undefined &&
-            (value as Record<string, any>)["is_running"] === undefined)
-    )
-        return false;
+    if ((!('isRunning' in (value as Record<string, any>)) && !('is_running' in (value as Record<string, any>))) || ((value as Record<string, any>)['isRunning'] === undefined && (value as Record<string, any>)['is_running'] === undefined)) return false;
     return true;
 }
 
@@ -62,15 +60,10 @@ export function SyncStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        isRunning: json["is_running"],
-        lastSuccessfulSync:
-            json["last_successful_sync"] == null
-                ? undefined
-                : parseDateTime(json["last_successful_sync"]),
-        lastSyncStatus:
-            json["last_sync_status"] == null
-                ? undefined
-                : TaskAggregatedStatusEnumFromJSON(json["last_sync_status"]),
+        
+        'isRunning': json['is_running'],
+        'lastSuccessfulSync': json['last_successful_sync'] == null ? undefined : (parseDateTime(json['last_successful_sync'])),
+        'lastSyncStatus': json['last_sync_status'] == null ? undefined : TaskAggregatedStatusEnumFromJSON(json['last_sync_status']),
     };
 }
 
@@ -78,20 +71,16 @@ export function SyncStatusToJSON(json: any): SyncStatus {
     return SyncStatusToJSONTyped(json, false);
 }
 
-export function SyncStatusToJSONTyped(
-    value?: SyncStatus | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SyncStatusToJSONTyped(value?: SyncStatus | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        is_running: value["isRunning"],
-        last_successful_sync:
-            value["lastSuccessfulSync"] == null
-                ? value["lastSuccessfulSync"]
-                : serializeDateTime(value["lastSuccessfulSync"]),
-        last_sync_status: TaskAggregatedStatusEnumToJSON(value["lastSyncStatus"]),
+        
+        'is_running': value['isRunning'],
+        'last_successful_sync': value['lastSuccessfulSync'] == null ? value['lastSuccessfulSync'] : serializeDateTime(value['lastSuccessfulSync']),
+        'last_sync_status': TaskAggregatedStatusEnumToJSON(value['lastSyncStatus']),
     };
 }
+

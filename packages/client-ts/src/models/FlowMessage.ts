@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { FlowMessageLevelEnum } from "./FlowMessageLevelEnum";
-import { FlowMessageLevelEnumFromJSON, FlowMessageLevelEnumToJSON } from "./FlowMessageLevelEnum";
+import { mapValues } from '../runtime';
+import type { FlowMessageLevelEnum } from './FlowMessageLevelEnum';
+import {
+    FlowMessageLevelEnumFromJSON,
+    FlowMessageLevelEnumFromJSONTyped,
+    FlowMessageLevelEnumToJSON,
+    FlowMessageLevelEnumToJSONTyped,
+} from './FlowMessageLevelEnum';
 
 /**
  * Serializer for a django.contrib.messages message
@@ -22,21 +28,23 @@ import { FlowMessageLevelEnumFromJSON, FlowMessageLevelEnumToJSON } from "./Flow
  */
 export interface FlowMessage {
     /**
-     *
+     * 
      */
     level: FlowMessageLevelEnum;
     /**
-     *
+     * 
      */
     message: string;
 }
+
+
 
 /**
  * Check if a given object implements the FlowMessage interface.
  */
 export function instanceOfFlowMessage(value: object): value is FlowMessage {
-    if (!("level" in value) || value["level"] === undefined) return false;
-    if (!("message" in value) || value["message"] === undefined) return false;
+    if (!('level' in value) || value['level'] === undefined) return false;
+    if (!('message' in value) || value['message'] === undefined) return false;
     return true;
 }
 
@@ -49,8 +57,9 @@ export function FlowMessageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        level: FlowMessageLevelEnumFromJSON(json["level"]),
-        message: json["message"],
+        
+        'level': FlowMessageLevelEnumFromJSON(json['level']),
+        'message': json['message'],
     };
 }
 
@@ -58,16 +67,15 @@ export function FlowMessageToJSON(json: any): FlowMessage {
     return FlowMessageToJSONTyped(json, false);
 }
 
-export function FlowMessageToJSONTyped(
-    value?: FlowMessage | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FlowMessageToJSONTyped(value?: FlowMessage | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        level: FlowMessageLevelEnumToJSON(value["level"]),
-        message: value["message"],
+        
+        'level': FlowMessageLevelEnumToJSON(value['level']),
+        'message': value['message'],
     };
 }
+

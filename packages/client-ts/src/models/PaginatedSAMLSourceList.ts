@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SAMLSource } from "./SAMLSource";
-import { SAMLSourceFromJSON, SAMLSourceToJSON } from "./SAMLSource";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { SAMLSource } from './SAMLSource';
+import {
+    SAMLSourceFromJSON,
+    SAMLSourceFromJSONTyped,
+    SAMLSourceToJSON,
+    SAMLSourceToJSONTyped,
+} from './SAMLSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSAMLSourceList
  */
 export interface PaginatedSAMLSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SAMLSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSAMLSourceList interface.
  */
 export function instanceOfPaginatedSAMLSourceList(value: object): value is PaginatedSAMLSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedSAMLSourceListFromJSON(json: any): PaginatedSAMLSourceL
     return PaginatedSAMLSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedSAMLSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSAMLSourceList {
+export function PaginatedSAMLSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSAMLSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SAMLSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SAMLSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedSAMLSourceListToJSON(json: any): PaginatedSAMLSourceLis
     return PaginatedSAMLSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedSAMLSourceListToJSONTyped(
-    value?: PaginatedSAMLSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSAMLSourceListToJSONTyped(value?: PaginatedSAMLSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SAMLSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SAMLSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

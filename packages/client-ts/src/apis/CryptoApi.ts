@@ -12,31 +12,61 @@
  * Do not edit the class manually.
  */
 
-import { type CertificateData, CertificateDataFromJSON } from "../models/CertificateData";
+import * as runtime from '../runtime';
+import {
+    type CertificateData,
+    CertificateDataFromJSON,
+    CertificateDataToJSON,
+} from '../models/CertificateData';
 import {
     type CertificateGenerationRequest,
+    CertificateGenerationRequestFromJSON,
     CertificateGenerationRequestToJSON,
-} from "../models/CertificateGenerationRequest";
-import { type CertificateKeyPair, CertificateKeyPairFromJSON } from "../models/CertificateKeyPair";
+} from '../models/CertificateGenerationRequest';
+import {
+    type CertificateKeyPair,
+    CertificateKeyPairFromJSON,
+    CertificateKeyPairToJSON,
+} from '../models/CertificateKeyPair';
 import {
     type CertificateKeyPairRequest,
+    CertificateKeyPairRequestFromJSON,
     CertificateKeyPairRequestToJSON,
-} from "../models/CertificateKeyPairRequest";
-import { type KeyTypeEnum } from "../models/KeyTypeEnum";
+} from '../models/CertificateKeyPairRequest';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type KeyTypeEnum,
+    KeyTypeEnumFromJSON,
+    KeyTypeEnumToJSON,
+} from '../models/KeyTypeEnum';
 import {
     type PaginatedCertificateKeyPairList,
     PaginatedCertificateKeyPairListFromJSON,
-} from "../models/PaginatedCertificateKeyPairList";
+    PaginatedCertificateKeyPairListToJSON,
+} from '../models/PaginatedCertificateKeyPairList';
 import {
     type PatchedCertificateKeyPairRequest,
+    PatchedCertificateKeyPairRequestFromJSON,
     PatchedCertificateKeyPairRequestToJSON,
-} from "../models/PatchedCertificateKeyPairRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from '../models/PatchedCertificateKeyPairRequest';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+    UsedByToJSON,
+} from '../models/UsedBy';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface CryptoCertificatekeypairsCreateRequest {
     /**
-     *
+     * 
      */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
@@ -50,7 +80,7 @@ export interface CryptoCertificatekeypairsDestroyRequest {
 
 export interface CryptoCertificatekeypairsGenerateCreateRequest {
     /**
-     *
+     * 
      */
     certificateGenerationRequest: CertificateGenerationRequest;
 }
@@ -61,15 +91,15 @@ export interface CryptoCertificatekeypairsListRequest {
      */
     hasKey?: boolean;
     /**
-     *
+     * 
      */
     keyType?: Array<KeyTypeEnum>;
     /**
-     *
+     * 
      */
     managed?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -96,7 +126,7 @@ export interface CryptoCertificatekeypairsPartialUpdateRequest {
      */
     kpUuid: string;
     /**
-     *
+     * 
      */
     patchedCertificateKeyPairRequest?: PatchedCertificateKeyPairRequest;
 }
@@ -114,7 +144,7 @@ export interface CryptoCertificatekeypairsUpdateRequest {
      */
     kpUuid: string;
     /**
-     *
+     * 
      */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
@@ -132,7 +162,7 @@ export interface CryptoCertificatekeypairsViewCertificateRetrieveRequest {
      */
     kpUuid: string;
     /**
-     *
+     * 
      */
     download?: boolean;
 }
@@ -143,25 +173,24 @@ export interface CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest {
      */
     kpUuid: string;
     /**
-     *
+     * 
      */
     download?: boolean;
 }
 
 /**
- *
+ * 
  */
 export class CryptoApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for cryptoCertificatekeypairsCreate without sending the request
      */
-    async cryptoCertificatekeypairsCreateRequestOpts(
-        requestParameters: CryptoCertificatekeypairsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["certificateKeyPairRequest"] == null) {
+    async cryptoCertificatekeypairsCreateRequestOpts(requestParameters: CryptoCertificatekeypairsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['certificateKeyPairRequest'] == null) {
             throw new runtime.RequiredError(
-                "certificateKeyPairRequest",
-                'Required parameter "certificateKeyPairRequest" was null or undefined when calling cryptoCertificatekeypairsCreate().',
+                'certificateKeyPairRequest',
+                'Required parameter "certificateKeyPairRequest" was null or undefined when calling cryptoCertificatekeypairsCreate().'
             );
         }
 
@@ -169,7 +198,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -184,53 +213,39 @@ export class CryptoApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: CertificateKeyPairRequestToJSON(requestParameters["certificateKeyPairRequest"]),
+            body: CertificateKeyPairRequestToJSON(requestParameters['certificateKeyPairRequest']),
         };
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsCreateRaw(
-        requestParameters: CryptoCertificatekeypairsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateKeyPair>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsCreateRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsCreateRaw(requestParameters: CryptoCertificatekeypairsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateKeyPair>> {
+        const requestOptions = await this.cryptoCertificatekeypairsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateKeyPairFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateKeyPairFromJSON(jsonValue));
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsCreate(
-        requestParameters: CryptoCertificatekeypairsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateKeyPair> {
-        const response = await this.cryptoCertificatekeypairsCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsCreate(requestParameters: CryptoCertificatekeypairsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateKeyPair> {
+        const response = await this.cryptoCertificatekeypairsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsDestroy without sending the request
      */
-    async cryptoCertificatekeypairsDestroyRequestOpts(
-        requestParameters: CryptoCertificatekeypairsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsDestroyRequestOpts(requestParameters: CryptoCertificatekeypairsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsDestroy().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsDestroy().'
             );
         }
 
@@ -248,14 +263,11 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -264,12 +276,8 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsDestroyRaw(
-        requestParameters: CryptoCertificatekeypairsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsDestroyRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsDestroyRaw(requestParameters: CryptoCertificatekeypairsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.cryptoCertificatekeypairsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -278,23 +286,18 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsDestroy(
-        requestParameters: CryptoCertificatekeypairsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async cryptoCertificatekeypairsDestroy(requestParameters: CryptoCertificatekeypairsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.cryptoCertificatekeypairsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsGenerateCreate without sending the request
      */
-    async cryptoCertificatekeypairsGenerateCreateRequestOpts(
-        requestParameters: CryptoCertificatekeypairsGenerateCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["certificateGenerationRequest"] == null) {
+    async cryptoCertificatekeypairsGenerateCreateRequestOpts(requestParameters: CryptoCertificatekeypairsGenerateCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['certificateGenerationRequest'] == null) {
             throw new runtime.RequiredError(
-                "certificateGenerationRequest",
-                'Required parameter "certificateGenerationRequest" was null or undefined when calling cryptoCertificatekeypairsGenerateCreate().',
+                'certificateGenerationRequest',
+                'Required parameter "certificateGenerationRequest" was null or undefined when calling cryptoCertificatekeypairsGenerateCreate().'
             );
         }
 
@@ -302,7 +305,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -317,83 +320,67 @@ export class CryptoApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: CertificateGenerationRequestToJSON(
-                requestParameters["certificateGenerationRequest"],
-            ),
+            body: CertificateGenerationRequestToJSON(requestParameters['certificateGenerationRequest']),
         };
     }
 
     /**
      * Generate a new, self-signed certificate-key pair
      */
-    async cryptoCertificatekeypairsGenerateCreateRaw(
-        requestParameters: CryptoCertificatekeypairsGenerateCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateKeyPair>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsGenerateCreateRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsGenerateCreateRaw(requestParameters: CryptoCertificatekeypairsGenerateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateKeyPair>> {
+        const requestOptions = await this.cryptoCertificatekeypairsGenerateCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateKeyPairFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateKeyPairFromJSON(jsonValue));
     }
 
     /**
      * Generate a new, self-signed certificate-key pair
      */
-    async cryptoCertificatekeypairsGenerateCreate(
-        requestParameters: CryptoCertificatekeypairsGenerateCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateKeyPair> {
-        const response = await this.cryptoCertificatekeypairsGenerateCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsGenerateCreate(requestParameters: CryptoCertificatekeypairsGenerateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateKeyPair> {
+        const response = await this.cryptoCertificatekeypairsGenerateCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsList without sending the request
      */
-    async cryptoCertificatekeypairsListRequestOpts(
-        requestParameters: CryptoCertificatekeypairsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async cryptoCertificatekeypairsListRequestOpts(requestParameters: CryptoCertificatekeypairsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["hasKey"] != null) {
-            queryParameters["has_key"] = requestParameters["hasKey"];
+        if (requestParameters['hasKey'] != null) {
+            queryParameters['has_key'] = requestParameters['hasKey'];
         }
 
-        if (requestParameters["keyType"] != null) {
-            queryParameters["key_type"] = requestParameters["keyType"];
+        if (requestParameters['keyType'] != null) {
+            queryParameters['key_type'] = requestParameters['keyType'];
         }
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -411,7 +398,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -420,43 +407,29 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsListRaw(
-        requestParameters: CryptoCertificatekeypairsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedCertificateKeyPairList>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsListRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsListRaw(requestParameters: CryptoCertificatekeypairsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedCertificateKeyPairList>> {
+        const requestOptions = await this.cryptoCertificatekeypairsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedCertificateKeyPairListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedCertificateKeyPairListFromJSON(jsonValue));
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsList(
-        requestParameters: CryptoCertificatekeypairsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedCertificateKeyPairList> {
-        const response = await this.cryptoCertificatekeypairsListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsList(requestParameters: CryptoCertificatekeypairsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedCertificateKeyPairList> {
+        const response = await this.cryptoCertificatekeypairsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsPartialUpdate without sending the request
      */
-    async cryptoCertificatekeypairsPartialUpdateRequestOpts(
-        requestParameters: CryptoCertificatekeypairsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsPartialUpdateRequestOpts(requestParameters: CryptoCertificatekeypairsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsPartialUpdate().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsPartialUpdate().'
             );
         }
 
@@ -464,7 +437,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -476,62 +449,43 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedCertificateKeyPairRequestToJSON(
-                requestParameters["patchedCertificateKeyPairRequest"],
-            ),
+            body: PatchedCertificateKeyPairRequestToJSON(requestParameters['patchedCertificateKeyPairRequest']),
         };
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsPartialUpdateRaw(
-        requestParameters: CryptoCertificatekeypairsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateKeyPair>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsPartialUpdateRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsPartialUpdateRaw(requestParameters: CryptoCertificatekeypairsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateKeyPair>> {
+        const requestOptions = await this.cryptoCertificatekeypairsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateKeyPairFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateKeyPairFromJSON(jsonValue));
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsPartialUpdate(
-        requestParameters: CryptoCertificatekeypairsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateKeyPair> {
-        const response = await this.cryptoCertificatekeypairsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsPartialUpdate(requestParameters: CryptoCertificatekeypairsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateKeyPair> {
+        const response = await this.cryptoCertificatekeypairsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsRetrieve without sending the request
      */
-    async cryptoCertificatekeypairsRetrieveRequestOpts(
-        requestParameters: CryptoCertificatekeypairsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsRetrieveRequestOpts(requestParameters: CryptoCertificatekeypairsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsRetrieve().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsRetrieve().'
             );
         }
 
@@ -549,14 +503,11 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -565,50 +516,36 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsRetrieveRaw(
-        requestParameters: CryptoCertificatekeypairsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateKeyPair>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsRetrieveRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsRetrieveRaw(requestParameters: CryptoCertificatekeypairsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateKeyPair>> {
+        const requestOptions = await this.cryptoCertificatekeypairsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateKeyPairFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateKeyPairFromJSON(jsonValue));
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsRetrieve(
-        requestParameters: CryptoCertificatekeypairsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateKeyPair> {
-        const response = await this.cryptoCertificatekeypairsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsRetrieve(requestParameters: CryptoCertificatekeypairsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateKeyPair> {
+        const response = await this.cryptoCertificatekeypairsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsUpdate without sending the request
      */
-    async cryptoCertificatekeypairsUpdateRequestOpts(
-        requestParameters: CryptoCertificatekeypairsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsUpdateRequestOpts(requestParameters: CryptoCertificatekeypairsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsUpdate().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsUpdate().'
             );
         }
 
-        if (requestParameters["certificateKeyPairRequest"] == null) {
+        if (requestParameters['certificateKeyPairRequest'] == null) {
             throw new runtime.RequiredError(
-                "certificateKeyPairRequest",
-                'Required parameter "certificateKeyPairRequest" was null or undefined when calling cryptoCertificatekeypairsUpdate().',
+                'certificateKeyPairRequest',
+                'Required parameter "certificateKeyPairRequest" was null or undefined when calling cryptoCertificatekeypairsUpdate().'
             );
         }
 
@@ -616,7 +553,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -628,60 +565,43 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: CertificateKeyPairRequestToJSON(requestParameters["certificateKeyPairRequest"]),
+            body: CertificateKeyPairRequestToJSON(requestParameters['certificateKeyPairRequest']),
         };
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsUpdateRaw(
-        requestParameters: CryptoCertificatekeypairsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateKeyPair>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsUpdateRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsUpdateRaw(requestParameters: CryptoCertificatekeypairsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateKeyPair>> {
+        const requestOptions = await this.cryptoCertificatekeypairsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateKeyPairFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateKeyPairFromJSON(jsonValue));
     }
 
     /**
      * CertificateKeyPair Viewset
      */
-    async cryptoCertificatekeypairsUpdate(
-        requestParameters: CryptoCertificatekeypairsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateKeyPair> {
-        const response = await this.cryptoCertificatekeypairsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsUpdate(requestParameters: CryptoCertificatekeypairsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateKeyPair> {
+        const response = await this.cryptoCertificatekeypairsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsUsedByList without sending the request
      */
-    async cryptoCertificatekeypairsUsedByListRequestOpts(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsUsedByListRequestOpts(requestParameters: CryptoCertificatekeypairsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsUsedByList().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsUsedByList().'
             );
         }
 
@@ -699,14 +619,11 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -715,12 +632,8 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async cryptoCertificatekeypairsUsedByListRaw(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsUsedByListRequestOpts(requestParameters);
+    async cryptoCertificatekeypairsUsedByListRaw(requestParameters: CryptoCertificatekeypairsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.cryptoCertificatekeypairsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -729,34 +642,26 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async cryptoCertificatekeypairsUsedByList(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.cryptoCertificatekeypairsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsUsedByList(requestParameters: CryptoCertificatekeypairsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.cryptoCertificatekeypairsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsViewCertificateRetrieve without sending the request
      */
-    async cryptoCertificatekeypairsViewCertificateRetrieveRequestOpts(
-        requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsViewCertificateRetrieveRequestOpts(requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsViewCertificateRetrieve().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsViewCertificateRetrieve().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["download"] != null) {
-            queryParameters["download"] = requestParameters["download"];
+        if (requestParameters['download'] != null) {
+            queryParameters['download'] = requestParameters['download'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -771,14 +676,11 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/view_certificate/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -787,52 +689,36 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * Return certificate-key pairs certificate and log access
      */
-    async cryptoCertificatekeypairsViewCertificateRetrieveRaw(
-        requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateData>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsViewCertificateRetrieveRequestOpts(
-                requestParameters,
-            );
+    async cryptoCertificatekeypairsViewCertificateRetrieveRaw(requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateData>> {
+        const requestOptions = await this.cryptoCertificatekeypairsViewCertificateRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateDataFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateDataFromJSON(jsonValue));
     }
 
     /**
      * Return certificate-key pairs certificate and log access
      */
-    async cryptoCertificatekeypairsViewCertificateRetrieve(
-        requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateData> {
-        const response = await this.cryptoCertificatekeypairsViewCertificateRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsViewCertificateRetrieve(requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateData> {
+        const response = await this.cryptoCertificatekeypairsViewCertificateRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for cryptoCertificatekeypairsViewPrivateKeyRetrieve without sending the request
      */
-    async cryptoCertificatekeypairsViewPrivateKeyRetrieveRequestOpts(
-        requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
+    async cryptoCertificatekeypairsViewPrivateKeyRetrieveRequestOpts(requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kpUuid'] == null) {
             throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsViewPrivateKeyRetrieve().',
+                'kpUuid',
+                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsViewPrivateKeyRetrieve().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["download"] != null) {
-            queryParameters["download"] = requestParameters["download"];
+        if (requestParameters['download'] != null) {
+            queryParameters['download'] = requestParameters['download'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -847,14 +733,11 @@ export class CryptoApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/view_private_key/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
+        urlPath = urlPath.replace('{kp_uuid}', encodeURIComponent(String(requestParameters['kpUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -863,32 +746,19 @@ export class CryptoApi extends runtime.BaseAPI {
     /**
      * Return certificate-key pairs private key and log access
      */
-    async cryptoCertificatekeypairsViewPrivateKeyRetrieveRaw(
-        requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<CertificateData>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsViewPrivateKeyRetrieveRequestOpts(
-                requestParameters,
-            );
+    async cryptoCertificatekeypairsViewPrivateKeyRetrieveRaw(requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CertificateData>> {
+        const requestOptions = await this.cryptoCertificatekeypairsViewPrivateKeyRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            CertificateDataFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => CertificateDataFromJSON(jsonValue));
     }
 
     /**
      * Return certificate-key pairs private key and log access
      */
-    async cryptoCertificatekeypairsViewPrivateKeyRetrieve(
-        requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<CertificateData> {
-        const response = await this.cryptoCertificatekeypairsViewPrivateKeyRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async cryptoCertificatekeypairsViewPrivateKeyRetrieve(requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CertificateData> {
+        const response = await this.cryptoCertificatekeypairsViewPrivateKeyRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

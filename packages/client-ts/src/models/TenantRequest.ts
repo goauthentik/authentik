@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Tenant Serializer
  * @export
@@ -19,15 +20,15 @@
  */
 export interface TenantRequest {
     /**
-     *
+     * 
      */
     schemaName: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     ready?: boolean;
 }
@@ -36,14 +37,8 @@ export interface TenantRequest {
  * Check if a given object implements the TenantRequest interface.
  */
 export function instanceOfTenantRequest(value: object): value is TenantRequest {
-    if (
-        (!("schemaName" in (value as Record<string, any>)) &&
-            !("schema_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["schemaName"] === undefined &&
-            (value as Record<string, any>)["schema_name"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if ((!('schemaName' in (value as Record<string, any>)) && !('schema_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['schemaName'] === undefined && (value as Record<string, any>)['schema_name'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -56,9 +51,10 @@ export function TenantRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        schemaName: json["schema_name"],
-        name: json["name"],
-        ready: json["ready"] == null ? undefined : json["ready"],
+        
+        'schemaName': json['schema_name'],
+        'name': json['name'],
+        'ready': json['ready'] == null ? undefined : json['ready'],
     };
 }
 
@@ -66,17 +62,16 @@ export function TenantRequestToJSON(json: any): TenantRequest {
     return TenantRequestToJSONTyped(json, false);
 }
 
-export function TenantRequestToJSONTyped(
-    value?: TenantRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TenantRequestToJSONTyped(value?: TenantRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        schema_name: value["schemaName"],
-        name: value["name"],
-        ready: value["ready"],
+        
+        'schema_name': value['schemaName'],
+        'name': value['name'],
+        'ready': value['ready'],
     };
 }
+

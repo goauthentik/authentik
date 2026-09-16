@@ -12,22 +12,24 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DeviceFactsOSFamily = {
-    Linux: "linux",
-    Unix: "unix",
-    Bsd: "bsd",
-    Windows: "windows",
-    MacOs: "mac_os",
-    Android: "android",
-    IOs: "i_os",
-    Other: "other",
-    UnknownDefaultOpenApi: "11184809",
+    Linux: 'linux',
+    Unix: 'unix',
+    Bsd: 'bsd',
+    Windows: 'windows',
+    MacOs: 'mac_os',
+    Android: 'android',
+    IOs: 'i_os',
+    Other: 'other',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DeviceFactsOSFamily = (typeof DeviceFactsOSFamily)[keyof typeof DeviceFactsOSFamily];
+export type DeviceFactsOSFamily = typeof DeviceFactsOSFamily[keyof typeof DeviceFactsOSFamily];
+
 
 export function instanceOfDeviceFactsOSFamily(value: any): boolean {
     for (const key in DeviceFactsOSFamily) {
@@ -44,10 +46,7 @@ export function DeviceFactsOSFamilyFromJSON(json: any): DeviceFactsOSFamily {
     return DeviceFactsOSFamilyFromJSONTyped(json, false);
 }
 
-export function DeviceFactsOSFamilyFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceFactsOSFamily {
+export function DeviceFactsOSFamilyFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceFactsOSFamily {
     return json as DeviceFactsOSFamily;
 }
 
@@ -55,9 +54,7 @@ export function DeviceFactsOSFamilyToJSON(value?: DeviceFactsOSFamily | null): a
     return value as any;
 }
 
-export function DeviceFactsOSFamilyToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): DeviceFactsOSFamily {
+export function DeviceFactsOSFamilyToJSONTyped(value: any, ignoreDiscriminator: boolean): DeviceFactsOSFamily {
     return value as DeviceFactsOSFamily;
 }
+

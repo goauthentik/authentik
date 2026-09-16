@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Autosubmit challenge used to send and navigate a POST request
@@ -23,27 +35,27 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface AutosubmitChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     url: string;
     /**
-     *
+     * 
      */
-    attrs: { [key: string]: string };
+    attrs: { [key: string]: string; };
     /**
-     *
+     * 
      */
     title?: string;
 }
@@ -52,8 +64,8 @@ export interface AutosubmitChallenge {
  * Check if a given object implements the AutosubmitChallenge interface.
  */
 export function instanceOfAutosubmitChallenge(value: object): value is AutosubmitChallenge {
-    if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("attrs" in value) || value["attrs"] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!('attrs' in value) || value['attrs'] === undefined) return false;
     return true;
 }
 
@@ -61,21 +73,18 @@ export function AutosubmitChallengeFromJSON(json: any): AutosubmitChallenge {
     return AutosubmitChallengeFromJSONTyped(json, false);
 }
 
-export function AutosubmitChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AutosubmitChallenge {
+export function AutosubmitChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AutosubmitChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        url: json["url"],
-        attrs: json["attrs"],
-        title: json["title"] == null ? undefined : json["title"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'url': json['url'],
+        'attrs': json['attrs'],
+        'title': json['title'] == null ? undefined : json['title'],
     };
 }
 
@@ -83,20 +92,19 @@ export function AutosubmitChallengeToJSON(json: any): AutosubmitChallenge {
     return AutosubmitChallengeToJSONTyped(json, false);
 }
 
-export function AutosubmitChallengeToJSONTyped(
-    value?: AutosubmitChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AutosubmitChallengeToJSONTyped(value?: AutosubmitChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        url: value["url"],
-        attrs: value["attrs"],
-        title: value["title"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'url': value['url'],
+        'attrs': value['attrs'],
+        'title': value['title'],
     };
 }
+

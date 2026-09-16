@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * InitialPermissions serializer
  * @export
@@ -19,15 +20,15 @@
  */
 export interface InitialPermissionsRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     role: string;
     /**
-     *
+     * 
      */
     permissions?: Array<number>;
 }
@@ -35,11 +36,9 @@ export interface InitialPermissionsRequest {
 /**
  * Check if a given object implements the InitialPermissionsRequest interface.
  */
-export function instanceOfInitialPermissionsRequest(
-    value: object,
-): value is InitialPermissionsRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("role" in value) || value["role"] === undefined) return false;
+export function instanceOfInitialPermissionsRequest(value: object): value is InitialPermissionsRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('role' in value) || value['role'] === undefined) return false;
     return true;
 }
 
@@ -47,17 +46,15 @@ export function InitialPermissionsRequestFromJSON(json: any): InitialPermissions
     return InitialPermissionsRequestFromJSONTyped(json, false);
 }
 
-export function InitialPermissionsRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InitialPermissionsRequest {
+export function InitialPermissionsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): InitialPermissionsRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        role: json["role"],
-        permissions: json["permissions"] == null ? undefined : json["permissions"],
+        
+        'name': json['name'],
+        'role': json['role'],
+        'permissions': json['permissions'] == null ? undefined : json['permissions'],
     };
 }
 
@@ -65,17 +62,16 @@ export function InitialPermissionsRequestToJSON(json: any): InitialPermissionsRe
     return InitialPermissionsRequestToJSONTyped(json, false);
 }
 
-export function InitialPermissionsRequestToJSONTyped(
-    value?: InitialPermissionsRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InitialPermissionsRequestToJSONTyped(value?: InitialPermissionsRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        role: value["role"],
-        permissions: value["permissions"],
+        
+        'name': value['name'],
+        'role': value['role'],
+        'permissions': value['permissions'],
     };
 }
+

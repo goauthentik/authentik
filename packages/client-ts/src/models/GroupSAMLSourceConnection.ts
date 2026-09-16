@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { Source } from './Source';
+import {
+    SourceFromJSON,
+    SourceFromJSONTyped,
+    SourceToJSON,
+    SourceToJSONTyped,
+} from './Source';
 
 /**
  * Group Source Connection
@@ -23,31 +28,31 @@ import { SourceFromJSON } from "./Source";
  */
 export interface GroupSAMLSourceConnection {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly group: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     readonly sourceObj: Source;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
 }
@@ -55,28 +60,14 @@ export interface GroupSAMLSourceConnection {
 /**
  * Check if a given object implements the GroupSAMLSourceConnection interface.
  */
-export function instanceOfGroupSAMLSourceConnection(
-    value: object,
-): value is GroupSAMLSourceConnection {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (
-        (!("sourceObj" in (value as Record<string, any>)) &&
-            !("source_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sourceObj"] === undefined &&
-            (value as Record<string, any>)["source_obj"] === undefined)
-    )
-        return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
+export function instanceOfGroupSAMLSourceConnection(value: object): value is GroupSAMLSourceConnection {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('group' in value) || value['group'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if ((!('sourceObj' in (value as Record<string, any>)) && !('source_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceObj'] === undefined && (value as Record<string, any>)['source_obj'] === undefined)) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
     return true;
 }
 
@@ -84,24 +75,19 @@ export function GroupSAMLSourceConnectionFromJSON(json: any): GroupSAMLSourceCon
     return GroupSAMLSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupSAMLSourceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupSAMLSourceConnection {
+export function GroupSAMLSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupSAMLSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        group: json["group"],
-        source: json["source"],
-        sourceObj: SourceFromJSON(json["source_obj"]),
-        identifier: json["identifier"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
+        
+        'pk': json['pk'],
+        'group': json['group'],
+        'source': json['source'],
+        'sourceObj': SourceFromJSON(json['source_obj']),
+        'identifier': json['identifier'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
     };
 }
 
@@ -109,19 +95,15 @@ export function GroupSAMLSourceConnectionToJSON(json: any): GroupSAMLSourceConne
     return GroupSAMLSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupSAMLSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupSAMLSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupSAMLSourceConnectionToJSONTyped(value?: Omit<GroupSAMLSourceConnection, 'pk'|'group'|'sourceObj'|'created'|'lastUpdated'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

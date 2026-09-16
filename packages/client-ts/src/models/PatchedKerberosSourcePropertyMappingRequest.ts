@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Kerberos PropertyMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface PatchedKerberosSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,54 +36,40 @@ export interface PatchedKerberosSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedKerberosSourcePropertyMappingRequest interface.
  */
-export function instanceOfPatchedKerberosSourcePropertyMappingRequest(
-    value: object,
-): value is PatchedKerberosSourcePropertyMappingRequest {
+export function instanceOfPatchedKerberosSourcePropertyMappingRequest(value: object): value is PatchedKerberosSourcePropertyMappingRequest {
     return true;
 }
 
-export function PatchedKerberosSourcePropertyMappingRequestFromJSON(
-    json: any,
-): PatchedKerberosSourcePropertyMappingRequest {
+export function PatchedKerberosSourcePropertyMappingRequestFromJSON(json: any): PatchedKerberosSourcePropertyMappingRequest {
     return PatchedKerberosSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedKerberosSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedKerberosSourcePropertyMappingRequest {
+export function PatchedKerberosSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedKerberosSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedKerberosSourcePropertyMappingRequestToJSON(
-    json: any,
-): PatchedKerberosSourcePropertyMappingRequest {
+export function PatchedKerberosSourcePropertyMappingRequestToJSON(json: any): PatchedKerberosSourcePropertyMappingRequest {
     return PatchedKerberosSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedKerberosSourcePropertyMappingRequestToJSONTyped(
-    value?: PatchedKerberosSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedKerberosSourcePropertyMappingRequestToJSONTyped(value?: PatchedKerberosSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

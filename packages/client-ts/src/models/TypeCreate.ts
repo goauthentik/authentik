@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Types of an object that can be created
  * @export
@@ -19,31 +20,31 @@
  */
 export interface TypeCreate {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     description: string;
     /**
-     *
+     * 
      */
     component: string;
     /**
-     *
+     * 
      */
     modelName: string;
     /**
-     *
+     * 
      */
     iconUrl?: string;
     /**
-     *
+     * 
      */
     requiresEnterprise?: boolean;
     /**
-     *
+     * 
      */
     deprecated?: boolean;
 }
@@ -52,16 +53,10 @@ export interface TypeCreate {
  * Check if a given object implements the TypeCreate interface.
  */
 export function instanceOfTypeCreate(value: object): value is TypeCreate {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("description" in value) || value["description"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("modelName" in (value as Record<string, any>)) &&
-            !("model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["modelName"] === undefined &&
-            (value as Record<string, any>)["model_name"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('modelName' in (value as Record<string, any>)) && !('model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['modelName'] === undefined && (value as Record<string, any>)['model_name'] === undefined)) return false;
     return true;
 }
 
@@ -74,14 +69,14 @@ export function TypeCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        name: json["name"],
-        description: json["description"],
-        component: json["component"],
-        modelName: json["model_name"],
-        iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
-        requiresEnterprise:
-            json["requires_enterprise"] == null ? undefined : json["requires_enterprise"],
-        deprecated: json["deprecated"] == null ? undefined : json["deprecated"],
+        
+        'name': json['name'],
+        'description': json['description'],
+        'component': json['component'],
+        'modelName': json['model_name'],
+        'iconUrl': json['icon_url'] == null ? undefined : json['icon_url'],
+        'requiresEnterprise': json['requires_enterprise'] == null ? undefined : json['requires_enterprise'],
+        'deprecated': json['deprecated'] == null ? undefined : json['deprecated'],
     };
 }
 
@@ -89,21 +84,20 @@ export function TypeCreateToJSON(json: any): TypeCreate {
     return TypeCreateToJSONTyped(json, false);
 }
 
-export function TypeCreateToJSONTyped(
-    value?: TypeCreate | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TypeCreateToJSONTyped(value?: TypeCreate | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        description: value["description"],
-        component: value["component"],
-        model_name: value["modelName"],
-        icon_url: value["iconUrl"],
-        requires_enterprise: value["requiresEnterprise"],
-        deprecated: value["deprecated"],
+        
+        'name': value['name'],
+        'description': value['description'],
+        'component': value['component'],
+        'model_name': value['modelName'],
+        'icon_url': value['iconUrl'],
+        'requires_enterprise': value['requiresEnterprise'],
+        'deprecated': value['deprecated'],
     };
 }
+

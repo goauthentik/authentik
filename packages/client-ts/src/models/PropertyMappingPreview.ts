@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Preview how the current user is mapped via the property mappings selected in a provider
  * @export
@@ -19,16 +20,16 @@
  */
 export interface PropertyMappingPreview {
     /**
-     *
+     * 
      */
-    readonly preview: { [key: string]: any };
+    readonly preview: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PropertyMappingPreview interface.
  */
 export function instanceOfPropertyMappingPreview(value: object): value is PropertyMappingPreview {
-    if (!("preview" in value) || value["preview"] === undefined) return false;
+    if (!('preview' in value) || value['preview'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +37,13 @@ export function PropertyMappingPreviewFromJSON(json: any): PropertyMappingPrevie
     return PropertyMappingPreviewFromJSONTyped(json, false);
 }
 
-export function PropertyMappingPreviewFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PropertyMappingPreview {
+export function PropertyMappingPreviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): PropertyMappingPreview {
     if (json == null) {
         return json;
     }
     return {
-        preview: json["preview"],
+        
+        'preview': json['preview'],
     };
 }
 
@@ -52,13 +51,13 @@ export function PropertyMappingPreviewToJSON(json: any): PropertyMappingPreview 
     return PropertyMappingPreviewToJSONTyped(json, false);
 }
 
-export function PropertyMappingPreviewToJSONTyped(
-    value?: Omit<PropertyMappingPreview, "preview"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PropertyMappingPreviewToJSONTyped(value?: Omit<PropertyMappingPreview, 'preview'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

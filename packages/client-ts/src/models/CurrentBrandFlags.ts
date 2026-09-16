@@ -12,8 +12,9 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface CurrentBrandFlags
  */
@@ -28,13 +29,7 @@ export interface CurrentBrandFlags {
  * Check if a given object implements the CurrentBrandFlags interface.
  */
 export function instanceOfCurrentBrandFlags(value: object): value is CurrentBrandFlags {
-    if (
-        (!("flowsContinuousLogin" in (value as Record<string, any>)) &&
-            !("flows_continuous_login" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
-            (value as Record<string, any>)["flows_continuous_login"] === undefined)
-    )
-        return false;
+    if ((!('flowsContinuousLogin' in (value as Record<string, any>)) && !('flows_continuous_login' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowsContinuousLogin'] === undefined && (value as Record<string, any>)['flows_continuous_login'] === undefined)) return false;
     return true;
 }
 
@@ -42,15 +37,13 @@ export function CurrentBrandFlagsFromJSON(json: any): CurrentBrandFlags {
     return CurrentBrandFlagsFromJSONTyped(json, false);
 }
 
-export function CurrentBrandFlagsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CurrentBrandFlags {
+export function CurrentBrandFlagsFromJSONTyped(json: any, ignoreDiscriminator: boolean): CurrentBrandFlags {
     if (json == null) {
         return json;
     }
     return {
-        flowsContinuousLogin: json["flows_continuous_login"],
+        
+        'flowsContinuousLogin': json['flows_continuous_login'],
     };
 }
 
@@ -58,15 +51,14 @@ export function CurrentBrandFlagsToJSON(json: any): CurrentBrandFlags {
     return CurrentBrandFlagsToJSONTyped(json, false);
 }
 
-export function CurrentBrandFlagsToJSONTyped(
-    value?: CurrentBrandFlags | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CurrentBrandFlagsToJSONTyped(value?: CurrentBrandFlags | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flows_continuous_login: value["flowsContinuousLogin"],
+        
+        'flows_continuous_login': value['flowsContinuousLogin'],
     };
 }
+

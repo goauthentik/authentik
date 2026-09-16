@@ -12,30 +12,32 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ProviderTypeEnum = {
-    Openidconnect: "openidconnect",
-    Apple: "apple",
-    Discord: "discord",
-    Entraid: "entraid",
-    Facebook: "facebook",
-    Github: "github",
-    Gitlab: "gitlab",
-    Google: "google",
-    Mailcow: "mailcow",
-    Okta: "okta",
-    Patreon: "patreon",
-    Reddit: "reddit",
-    Slack: "slack",
-    Twitch: "twitch",
-    Twitter: "twitter",
-    Wechat: "wechat",
-    UnknownDefaultOpenApi: "11184809",
+    Openidconnect: 'openidconnect',
+    Apple: 'apple',
+    Discord: 'discord',
+    Entraid: 'entraid',
+    Facebook: 'facebook',
+    Github: 'github',
+    Gitlab: 'gitlab',
+    Google: 'google',
+    Mailcow: 'mailcow',
+    Okta: 'okta',
+    Patreon: 'patreon',
+    Reddit: 'reddit',
+    Slack: 'slack',
+    Twitch: 'twitch',
+    Twitter: 'twitter',
+    Wechat: 'wechat',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ProviderTypeEnum = (typeof ProviderTypeEnum)[keyof typeof ProviderTypeEnum];
+export type ProviderTypeEnum = typeof ProviderTypeEnum[keyof typeof ProviderTypeEnum];
+
 
 export function instanceOfProviderTypeEnum(value: any): boolean {
     for (const key in ProviderTypeEnum) {
@@ -52,10 +54,7 @@ export function ProviderTypeEnumFromJSON(json: any): ProviderTypeEnum {
     return ProviderTypeEnumFromJSONTyped(json, false);
 }
 
-export function ProviderTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ProviderTypeEnum {
+export function ProviderTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProviderTypeEnum {
     return json as ProviderTypeEnum;
 }
 
@@ -63,9 +62,7 @@ export function ProviderTypeEnumToJSON(value?: ProviderTypeEnum | null): any {
     return value as any;
 }
 
-export function ProviderTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ProviderTypeEnum {
+export function ProviderTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ProviderTypeEnum {
     return value as ProviderTypeEnum;
 }
+

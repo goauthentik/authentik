@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface UserKerberosSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +32,40 @@ export interface UserKerberosSourceConnectionRequest {
 /**
  * Check if a given object implements the UserKerberosSourceConnectionRequest interface.
  */
-export function instanceOfUserKerberosSourceConnectionRequest(
-    value: object,
-): value is UserKerberosSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfUserKerberosSourceConnectionRequest(value: object): value is UserKerberosSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function UserKerberosSourceConnectionRequestFromJSON(
-    json: any,
-): UserKerberosSourceConnectionRequest {
+export function UserKerberosSourceConnectionRequestFromJSON(json: any): UserKerberosSourceConnectionRequest {
     return UserKerberosSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserKerberosSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserKerberosSourceConnectionRequest {
+export function UserKerberosSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserKerberosSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function UserKerberosSourceConnectionRequestToJSON(
-    json: any,
-): UserKerberosSourceConnectionRequest {
+export function UserKerberosSourceConnectionRequestToJSON(json: any): UserKerberosSourceConnectionRequest {
     return UserKerberosSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserKerberosSourceConnectionRequestToJSONTyped(
-    value?: UserKerberosSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserKerberosSourceConnectionRequestToJSONTyped(value?: UserKerberosSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

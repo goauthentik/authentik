@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPSource } from "./LDAPSource";
-import { LDAPSourceFromJSON, LDAPSourceToJSON } from "./LDAPSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { LDAPSource } from './LDAPSource';
+import {
+    LDAPSourceFromJSON,
+    LDAPSourceFromJSONTyped,
+    LDAPSourceToJSON,
+    LDAPSourceToJSONTyped,
+} from './LDAPSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedLDAPSourceList
  */
 export interface PaginatedLDAPSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<LDAPSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedLDAPSourceList interface.
  */
 export function instanceOfPaginatedLDAPSourceList(value: object): value is PaginatedLDAPSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedLDAPSourceListFromJSON(json: any): PaginatedLDAPSourceL
     return PaginatedLDAPSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedLDAPSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedLDAPSourceList {
+export function PaginatedLDAPSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLDAPSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(LDAPSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(LDAPSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedLDAPSourceListToJSON(json: any): PaginatedLDAPSourceLis
     return PaginatedLDAPSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedLDAPSourceListToJSONTyped(
-    value?: PaginatedLDAPSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedLDAPSourceListToJSONTyped(value?: PaginatedLDAPSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(LDAPSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(LDAPSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

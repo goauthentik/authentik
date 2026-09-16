@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * AuthenticatorDuoStage Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PatchedAuthenticatorDuoStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,27 +28,27 @@ export interface PatchedAuthenticatorDuoStageRequest {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     clientId?: string;
     /**
-     *
+     * 
      */
     clientSecret?: string;
     /**
-     *
+     * 
      */
     apiHostname?: string;
     /**
-     *
+     * 
      */
     adminIntegrationKey?: string;
     /**
-     *
+     * 
      */
     adminSecretKey?: string;
 }
@@ -55,65 +56,50 @@ export interface PatchedAuthenticatorDuoStageRequest {
 /**
  * Check if a given object implements the PatchedAuthenticatorDuoStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorDuoStageRequest(
-    value: object,
-): value is PatchedAuthenticatorDuoStageRequest {
+export function instanceOfPatchedAuthenticatorDuoStageRequest(value: object): value is PatchedAuthenticatorDuoStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorDuoStageRequestFromJSON(
-    json: any,
-): PatchedAuthenticatorDuoStageRequest {
+export function PatchedAuthenticatorDuoStageRequestFromJSON(json: any): PatchedAuthenticatorDuoStageRequest {
     return PatchedAuthenticatorDuoStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorDuoStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedAuthenticatorDuoStageRequest {
+export function PatchedAuthenticatorDuoStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorDuoStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
-        apiHostname: json["api_hostname"] == null ? undefined : json["api_hostname"],
-        adminIntegrationKey:
-            json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
-        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'clientId': json['client_id'] == null ? undefined : json['client_id'],
+        'clientSecret': json['client_secret'] == null ? undefined : json['client_secret'],
+        'apiHostname': json['api_hostname'] == null ? undefined : json['api_hostname'],
+        'adminIntegrationKey': json['admin_integration_key'] == null ? undefined : json['admin_integration_key'],
+        'adminSecretKey': json['admin_secret_key'] == null ? undefined : json['admin_secret_key'],
     };
 }
 
-export function PatchedAuthenticatorDuoStageRequestToJSON(
-    json: any,
-): PatchedAuthenticatorDuoStageRequest {
+export function PatchedAuthenticatorDuoStageRequestToJSON(json: any): PatchedAuthenticatorDuoStageRequest {
     return PatchedAuthenticatorDuoStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorDuoStageRequestToJSONTyped(
-    value?: PatchedAuthenticatorDuoStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedAuthenticatorDuoStageRequestToJSONTyped(value?: PatchedAuthenticatorDuoStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        client_id: value["clientId"],
-        client_secret: value["clientSecret"],
-        api_hostname: value["apiHostname"],
-        admin_integration_key: value["adminIntegrationKey"],
-        admin_secret_key: value["adminSecretKey"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'client_id': value['clientId'],
+        'client_secret': value['clientSecret'],
+        'api_hostname': value['apiHostname'],
+        'admin_integration_key': value['adminIntegrationKey'],
+        'admin_secret_key': value['adminSecretKey'],
     };
 }
+

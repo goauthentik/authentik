@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import { mapValues } from '../runtime';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
 
 /**
  * Application Serializer
@@ -30,11 +36,11 @@ export interface PatchedApplicationRequest {
      */
     slug?: string;
     /**
-     *
+     * 
      */
     provider?: number | null;
     /**
-     *
+     * 
      */
     backchannelProviders?: Array<number>;
     /**
@@ -42,27 +48,27 @@ export interface PatchedApplicationRequest {
      */
     openInNewTab?: boolean;
     /**
-     *
+     * 
      */
     metaLaunchUrl?: string;
     /**
-     *
+     * 
      */
     metaIcon?: string;
     /**
-     *
+     * 
      */
     metaDescription?: string;
     /**
-     *
+     * 
      */
     metaPublisher?: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -71,12 +77,12 @@ export interface PatchedApplicationRequest {
     metaHide?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedApplicationRequest interface.
  */
-export function instanceOfPatchedApplicationRequest(
-    value: object,
-): value is PatchedApplicationRequest {
+export function instanceOfPatchedApplicationRequest(value: object): value is PatchedApplicationRequest {
     return true;
 }
 
@@ -84,35 +90,24 @@ export function PatchedApplicationRequestFromJSON(json: any): PatchedApplication
     return PatchedApplicationRequestFromJSONTyped(json, false);
 }
 
-export function PatchedApplicationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedApplicationRequest {
+export function PatchedApplicationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedApplicationRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        slug: json["slug"] == null ? undefined : json["slug"],
-        provider:
-            json["provider"] === undefined
-                ? undefined
-                : json["provider"] === null
-                  ? null
-                  : json["provider"],
-        backchannelProviders:
-            json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
-        openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
-        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
-        metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
-        metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
-        metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        group: json["group"] == null ? undefined : json["group"],
-        metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'slug': json['slug'] == null ? undefined : json['slug'],
+        'provider': json['provider'] === undefined ? undefined : json['provider'] === null ? null : json['provider'],
+        'backchannelProviders': json['backchannel_providers'] == null ? undefined : json['backchannel_providers'],
+        'openInNewTab': json['open_in_new_tab'] == null ? undefined : json['open_in_new_tab'],
+        'metaLaunchUrl': json['meta_launch_url'] == null ? undefined : json['meta_launch_url'],
+        'metaIcon': json['meta_icon'] == null ? undefined : json['meta_icon'],
+        'metaDescription': json['meta_description'] == null ? undefined : json['meta_description'],
+        'metaPublisher': json['meta_publisher'] == null ? undefined : json['meta_publisher'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'metaHide': json['meta_hide'] == null ? undefined : json['meta_hide'],
     };
 }
 
@@ -120,26 +115,25 @@ export function PatchedApplicationRequestToJSON(json: any): PatchedApplicationRe
     return PatchedApplicationRequestToJSONTyped(json, false);
 }
 
-export function PatchedApplicationRequestToJSONTyped(
-    value?: PatchedApplicationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedApplicationRequestToJSONTyped(value?: PatchedApplicationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        provider: value["provider"],
-        backchannel_providers: value["backchannelProviders"],
-        open_in_new_tab: value["openInNewTab"],
-        meta_launch_url: value["metaLaunchUrl"],
-        meta_icon: value["metaIcon"],
-        meta_description: value["metaDescription"],
-        meta_publisher: value["metaPublisher"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        group: value["group"],
-        meta_hide: value["metaHide"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'provider': value['provider'],
+        'backchannel_providers': value['backchannelProviders'],
+        'open_in_new_tab': value['openInNewTab'],
+        'meta_launch_url': value['metaLaunchUrl'],
+        'meta_icon': value['metaIcon'],
+        'meta_description': value['metaDescription'],
+        'meta_publisher': value['metaPublisher'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'group': value['group'],
+        'meta_hide': value['metaHide'],
     };
 }
+

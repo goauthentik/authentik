@@ -12,83 +12,82 @@
  * Do not edit the class manually.
  */
 
-import type { AppleIndependentSecureEnclave } from "./AppleIndependentSecureEnclave";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { AppleIndependentSecureEnclave } from './AppleIndependentSecureEnclave';
 import {
     AppleIndependentSecureEnclaveFromJSON,
+    AppleIndependentSecureEnclaveFromJSONTyped,
     AppleIndependentSecureEnclaveToJSON,
-} from "./AppleIndependentSecureEnclave";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+    AppleIndependentSecureEnclaveToJSONTyped,
+} from './AppleIndependentSecureEnclave';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAppleIndependentSecureEnclaveList
  */
 export interface PaginatedAppleIndependentSecureEnclaveList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AppleIndependentSecureEnclave>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAppleIndependentSecureEnclaveList interface.
  */
-export function instanceOfPaginatedAppleIndependentSecureEnclaveList(
-    value: object,
-): value is PaginatedAppleIndependentSecureEnclaveList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAppleIndependentSecureEnclaveList(value: object): value is PaginatedAppleIndependentSecureEnclaveList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAppleIndependentSecureEnclaveListFromJSON(
-    json: any,
-): PaginatedAppleIndependentSecureEnclaveList {
+export function PaginatedAppleIndependentSecureEnclaveListFromJSON(json: any): PaginatedAppleIndependentSecureEnclaveList {
     return PaginatedAppleIndependentSecureEnclaveListFromJSONTyped(json, false);
 }
 
-export function PaginatedAppleIndependentSecureEnclaveListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAppleIndependentSecureEnclaveList {
+export function PaginatedAppleIndependentSecureEnclaveListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAppleIndependentSecureEnclaveList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AppleIndependentSecureEnclaveFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AppleIndependentSecureEnclaveFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAppleIndependentSecureEnclaveListToJSON(
-    json: any,
-): PaginatedAppleIndependentSecureEnclaveList {
+export function PaginatedAppleIndependentSecureEnclaveListToJSON(json: any): PaginatedAppleIndependentSecureEnclaveList {
     return PaginatedAppleIndependentSecureEnclaveListToJSONTyped(json, false);
 }
 
-export function PaginatedAppleIndependentSecureEnclaveListToJSONTyped(
-    value?: PaginatedAppleIndependentSecureEnclaveList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAppleIndependentSecureEnclaveListToJSONTyped(value?: PaginatedAppleIndependentSecureEnclaveList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AppleIndependentSecureEnclaveToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AppleIndependentSecureEnclaveToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

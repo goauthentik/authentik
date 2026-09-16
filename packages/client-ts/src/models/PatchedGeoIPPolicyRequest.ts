@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
+import { mapValues } from '../runtime';
+import type { CountryCodeEnum } from './CountryCodeEnum';
+import {
+    CountryCodeEnumFromJSON,
+    CountryCodeEnumFromJSONTyped,
+    CountryCodeEnumToJSON,
+    CountryCodeEnumToJSONTyped,
+} from './CountryCodeEnum';
 
 /**
  * GeoIP Policy Serializer
@@ -22,7 +28,7 @@ import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnu
  */
 export interface PatchedGeoIPPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -30,35 +36,35 @@ export interface PatchedGeoIPPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     asns?: Array<number>;
     /**
-     *
+     * 
      */
     countries?: Array<CountryCodeEnum>;
     /**
-     *
+     * 
      */
     checkHistoryDistance?: boolean;
     /**
-     *
+     * 
      */
     historyMaxDistanceKm?: number;
     /**
-     *
+     * 
      */
     distanceToleranceKm?: number;
     /**
-     *
+     * 
      */
     historyLoginCount?: number;
     /**
-     *
+     * 
      */
     checkImpossibleTravel?: boolean;
     /**
-     *
+     * 
      */
     impossibleToleranceKm?: number;
 }
@@ -66,9 +72,7 @@ export interface PatchedGeoIPPolicyRequest {
 /**
  * Check if a given object implements the PatchedGeoIPPolicyRequest interface.
  */
-export function instanceOfPatchedGeoIPPolicyRequest(
-    value: object,
-): value is PatchedGeoIPPolicyRequest {
+export function instanceOfPatchedGeoIPPolicyRequest(value: object): value is PatchedGeoIPPolicyRequest {
     return true;
 }
 
@@ -76,33 +80,22 @@ export function PatchedGeoIPPolicyRequestFromJSON(json: any): PatchedGeoIPPolicy
     return PatchedGeoIPPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGeoIPPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGeoIPPolicyRequest {
+export function PatchedGeoIPPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGeoIPPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        asns: json["asns"] == null ? undefined : json["asns"],
-        countries:
-            json["countries"] == null
-                ? undefined
-                : (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
-        checkHistoryDistance:
-            json["check_history_distance"] == null ? undefined : json["check_history_distance"],
-        historyMaxDistanceKm:
-            json["history_max_distance_km"] == null ? undefined : json["history_max_distance_km"],
-        distanceToleranceKm:
-            json["distance_tolerance_km"] == null ? undefined : json["distance_tolerance_km"],
-        historyLoginCount:
-            json["history_login_count"] == null ? undefined : json["history_login_count"],
-        checkImpossibleTravel:
-            json["check_impossible_travel"] == null ? undefined : json["check_impossible_travel"],
-        impossibleToleranceKm:
-            json["impossible_tolerance_km"] == null ? undefined : json["impossible_tolerance_km"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'asns': json['asns'] == null ? undefined : json['asns'],
+        'countries': json['countries'] == null ? undefined : ((json['countries'] as Array<any>).map(CountryCodeEnumFromJSON)),
+        'checkHistoryDistance': json['check_history_distance'] == null ? undefined : json['check_history_distance'],
+        'historyMaxDistanceKm': json['history_max_distance_km'] == null ? undefined : json['history_max_distance_km'],
+        'distanceToleranceKm': json['distance_tolerance_km'] == null ? undefined : json['distance_tolerance_km'],
+        'historyLoginCount': json['history_login_count'] == null ? undefined : json['history_login_count'],
+        'checkImpossibleTravel': json['check_impossible_travel'] == null ? undefined : json['check_impossible_travel'],
+        'impossibleToleranceKm': json['impossible_tolerance_km'] == null ? undefined : json['impossible_tolerance_km'],
     };
 }
 
@@ -110,27 +103,23 @@ export function PatchedGeoIPPolicyRequestToJSON(json: any): PatchedGeoIPPolicyRe
     return PatchedGeoIPPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedGeoIPPolicyRequestToJSONTyped(
-    value?: PatchedGeoIPPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGeoIPPolicyRequestToJSONTyped(value?: PatchedGeoIPPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        asns: value["asns"],
-        countries:
-            value["countries"] == null
-                ? undefined
-                : (value["countries"] as Array<any>).map(CountryCodeEnumToJSON),
-        check_history_distance: value["checkHistoryDistance"],
-        history_max_distance_km: value["historyMaxDistanceKm"],
-        distance_tolerance_km: value["distanceToleranceKm"],
-        history_login_count: value["historyLoginCount"],
-        check_impossible_travel: value["checkImpossibleTravel"],
-        impossible_tolerance_km: value["impossibleToleranceKm"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'asns': value['asns'],
+        'countries': value['countries'] == null ? undefined : ((value['countries'] as Array<any>).map(CountryCodeEnumToJSON)),
+        'check_history_distance': value['checkHistoryDistance'],
+        'history_max_distance_km': value['historyMaxDistanceKm'],
+        'distance_tolerance_km': value['distanceToleranceKm'],
+        'history_login_count': value['historyLoginCount'],
+        'check_impossible_travel': value['checkImpossibleTravel'],
+        'impossible_tolerance_km': value['impossibleToleranceKm'],
     };
 }
+

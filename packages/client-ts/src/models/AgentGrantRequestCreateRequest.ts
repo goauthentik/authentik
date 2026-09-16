@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Body for an agent requesting access for itself. Deliberately narrower than
  * `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
@@ -21,7 +22,7 @@
  */
 export interface AgentGrantRequestCreateRequest {
     /**
-     *
+     * 
      */
     pbms: Array<string>;
 }
@@ -29,10 +30,8 @@ export interface AgentGrantRequestCreateRequest {
 /**
  * Check if a given object implements the AgentGrantRequestCreateRequest interface.
  */
-export function instanceOfAgentGrantRequestCreateRequest(
-    value: object,
-): value is AgentGrantRequestCreateRequest {
-    if (!("pbms" in value) || value["pbms"] === undefined) return false;
+export function instanceOfAgentGrantRequestCreateRequest(value: object): value is AgentGrantRequestCreateRequest {
+    if (!('pbms' in value) || value['pbms'] === undefined) return false;
     return true;
 }
 
@@ -40,15 +39,13 @@ export function AgentGrantRequestCreateRequestFromJSON(json: any): AgentGrantReq
     return AgentGrantRequestCreateRequestFromJSONTyped(json, false);
 }
 
-export function AgentGrantRequestCreateRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentGrantRequestCreateRequest {
+export function AgentGrantRequestCreateRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentGrantRequestCreateRequest {
     if (json == null) {
         return json;
     }
     return {
-        pbms: json["pbms"],
+        
+        'pbms': json['pbms'],
     };
 }
 
@@ -56,15 +53,14 @@ export function AgentGrantRequestCreateRequestToJSON(json: any): AgentGrantReque
     return AgentGrantRequestCreateRequestToJSONTyped(json, false);
 }
 
-export function AgentGrantRequestCreateRequestToJSONTyped(
-    value?: AgentGrantRequestCreateRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentGrantRequestCreateRequestToJSONTyped(value?: AgentGrantRequestCreateRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pbms: value["pbms"],
+        
+        'pbms': value['pbms'],
     };
 }
+

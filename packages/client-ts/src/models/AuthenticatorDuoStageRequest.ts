@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * AuthenticatorDuoStage Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface AuthenticatorDuoStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,27 +28,27 @@ export interface AuthenticatorDuoStageRequest {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     clientId: string;
     /**
-     *
+     * 
      */
     clientSecret: string;
     /**
-     *
+     * 
      */
     apiHostname: string;
     /**
-     *
+     * 
      */
     adminIntegrationKey?: string;
     /**
-     *
+     * 
      */
     adminSecretKey?: string;
 }
@@ -55,31 +56,11 @@ export interface AuthenticatorDuoStageRequest {
 /**
  * Check if a given object implements the AuthenticatorDuoStageRequest interface.
  */
-export function instanceOfAuthenticatorDuoStageRequest(
-    value: object,
-): value is AuthenticatorDuoStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("clientSecret" in (value as Record<string, any>)) &&
-            !("client_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientSecret"] === undefined &&
-            (value as Record<string, any>)["client_secret"] === undefined)
-    )
-        return false;
-    if (
-        (!("apiHostname" in (value as Record<string, any>)) &&
-            !("api_hostname" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["apiHostname"] === undefined &&
-            (value as Record<string, any>)["api_hostname"] === undefined)
-    )
-        return false;
+export function instanceOfAuthenticatorDuoStageRequest(value: object): value is AuthenticatorDuoStageRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if ((!('clientSecret' in (value as Record<string, any>)) && !('client_secret' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientSecret'] === undefined && (value as Record<string, any>)['client_secret'] === undefined)) return false;
+    if ((!('apiHostname' in (value as Record<string, any>)) && !('api_hostname' in (value as Record<string, any>))) || ((value as Record<string, any>)['apiHostname'] === undefined && (value as Record<string, any>)['api_hostname'] === undefined)) return false;
     return true;
 }
 
@@ -87,28 +68,20 @@ export function AuthenticatorDuoStageRequestFromJSON(json: any): AuthenticatorDu
     return AuthenticatorDuoStageRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorDuoStageRequest {
+export function AuthenticatorDuoStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        clientId: json["client_id"],
-        clientSecret: json["client_secret"],
-        apiHostname: json["api_hostname"],
-        adminIntegrationKey:
-            json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
-        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
+        
+        'name': json['name'],
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'clientId': json['client_id'],
+        'clientSecret': json['client_secret'],
+        'apiHostname': json['api_hostname'],
+        'adminIntegrationKey': json['admin_integration_key'] == null ? undefined : json['admin_integration_key'],
+        'adminSecretKey': json['admin_secret_key'] == null ? undefined : json['admin_secret_key'],
     };
 }
 
@@ -116,22 +89,21 @@ export function AuthenticatorDuoStageRequestToJSON(json: any): AuthenticatorDuoS
     return AuthenticatorDuoStageRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageRequestToJSONTyped(
-    value?: AuthenticatorDuoStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorDuoStageRequestToJSONTyped(value?: AuthenticatorDuoStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        client_id: value["clientId"],
-        client_secret: value["clientSecret"],
-        api_hostname: value["apiHostname"],
-        admin_integration_key: value["adminIntegrationKey"],
-        admin_secret_key: value["adminSecretKey"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'client_id': value['clientId'],
+        'client_secret': value['clientSecret'],
+        'api_hostname': value['apiHostname'],
+        'admin_integration_key': value['adminIntegrationKey'],
+        'admin_secret_key': value['adminSecretKey'],
     };
 }
+

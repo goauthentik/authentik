@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * rest_framework Serializer for OIDC Configuration
  * @export
@@ -19,47 +20,47 @@
  */
 export interface OpenIDConnectConfiguration {
     /**
-     *
+     * 
      */
     issuer: string;
     /**
-     *
+     * 
      */
     authorizationEndpoint: string;
     /**
-     *
+     * 
      */
     tokenEndpoint: string;
     /**
-     *
+     * 
      */
     userinfoEndpoint: string;
     /**
-     *
+     * 
      */
     endSessionEndpoint: string;
     /**
-     *
+     * 
      */
     introspectionEndpoint: string;
     /**
-     *
+     * 
      */
     jwksUri: string;
     /**
-     *
+     * 
      */
     responseTypesSupported: Array<string>;
     /**
-     *
+     * 
      */
     idTokenSigningAlgValuesSupported: Array<string>;
     /**
-     *
+     * 
      */
     subjectTypesSupported: Array<string>;
     /**
-     *
+     * 
      */
     tokenEndpointAuthMethodsSupported: Array<string>;
 }
@@ -67,80 +68,18 @@ export interface OpenIDConnectConfiguration {
 /**
  * Check if a given object implements the OpenIDConnectConfiguration interface.
  */
-export function instanceOfOpenIDConnectConfiguration(
-    value: object,
-): value is OpenIDConnectConfiguration {
-    if (!("issuer" in value) || value["issuer"] === undefined) return false;
-    if (
-        (!("authorizationEndpoint" in (value as Record<string, any>)) &&
-            !("authorization_endpoint" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationEndpoint"] === undefined &&
-            (value as Record<string, any>)["authorization_endpoint"] === undefined)
-    )
-        return false;
-    if (
-        (!("tokenEndpoint" in (value as Record<string, any>)) &&
-            !("token_endpoint" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenEndpoint"] === undefined &&
-            (value as Record<string, any>)["token_endpoint"] === undefined)
-    )
-        return false;
-    if (
-        (!("userinfoEndpoint" in (value as Record<string, any>)) &&
-            !("userinfo_endpoint" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userinfoEndpoint"] === undefined &&
-            (value as Record<string, any>)["userinfo_endpoint"] === undefined)
-    )
-        return false;
-    if (
-        (!("endSessionEndpoint" in (value as Record<string, any>)) &&
-            !("end_session_endpoint" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["endSessionEndpoint"] === undefined &&
-            (value as Record<string, any>)["end_session_endpoint"] === undefined)
-    )
-        return false;
-    if (
-        (!("introspectionEndpoint" in (value as Record<string, any>)) &&
-            !("introspection_endpoint" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["introspectionEndpoint"] === undefined &&
-            (value as Record<string, any>)["introspection_endpoint"] === undefined)
-    )
-        return false;
-    if (
-        (!("jwksUri" in (value as Record<string, any>)) &&
-            !("jwks_uri" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["jwksUri"] === undefined &&
-            (value as Record<string, any>)["jwks_uri"] === undefined)
-    )
-        return false;
-    if (
-        (!("responseTypesSupported" in (value as Record<string, any>)) &&
-            !("response_types_supported" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["responseTypesSupported"] === undefined &&
-            (value as Record<string, any>)["response_types_supported"] === undefined)
-    )
-        return false;
-    if (
-        (!("idTokenSigningAlgValuesSupported" in (value as Record<string, any>)) &&
-            !("id_token_signing_alg_values_supported" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["idTokenSigningAlgValuesSupported"] === undefined &&
-            (value as Record<string, any>)["id_token_signing_alg_values_supported"] === undefined)
-    )
-        return false;
-    if (
-        (!("subjectTypesSupported" in (value as Record<string, any>)) &&
-            !("subject_types_supported" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["subjectTypesSupported"] === undefined &&
-            (value as Record<string, any>)["subject_types_supported"] === undefined)
-    )
-        return false;
-    if (
-        (!("tokenEndpointAuthMethodsSupported" in (value as Record<string, any>)) &&
-            !("token_endpoint_auth_methods_supported" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenEndpointAuthMethodsSupported"] === undefined &&
-            (value as Record<string, any>)["token_endpoint_auth_methods_supported"] === undefined)
-    )
-        return false;
+export function instanceOfOpenIDConnectConfiguration(value: object): value is OpenIDConnectConfiguration {
+    if (!('issuer' in value) || value['issuer'] === undefined) return false;
+    if ((!('authorizationEndpoint' in (value as Record<string, any>)) && !('authorization_endpoint' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationEndpoint'] === undefined && (value as Record<string, any>)['authorization_endpoint'] === undefined)) return false;
+    if ((!('tokenEndpoint' in (value as Record<string, any>)) && !('token_endpoint' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenEndpoint'] === undefined && (value as Record<string, any>)['token_endpoint'] === undefined)) return false;
+    if ((!('userinfoEndpoint' in (value as Record<string, any>)) && !('userinfo_endpoint' in (value as Record<string, any>))) || ((value as Record<string, any>)['userinfoEndpoint'] === undefined && (value as Record<string, any>)['userinfo_endpoint'] === undefined)) return false;
+    if ((!('endSessionEndpoint' in (value as Record<string, any>)) && !('end_session_endpoint' in (value as Record<string, any>))) || ((value as Record<string, any>)['endSessionEndpoint'] === undefined && (value as Record<string, any>)['end_session_endpoint'] === undefined)) return false;
+    if ((!('introspectionEndpoint' in (value as Record<string, any>)) && !('introspection_endpoint' in (value as Record<string, any>))) || ((value as Record<string, any>)['introspectionEndpoint'] === undefined && (value as Record<string, any>)['introspection_endpoint'] === undefined)) return false;
+    if ((!('jwksUri' in (value as Record<string, any>)) && !('jwks_uri' in (value as Record<string, any>))) || ((value as Record<string, any>)['jwksUri'] === undefined && (value as Record<string, any>)['jwks_uri'] === undefined)) return false;
+    if ((!('responseTypesSupported' in (value as Record<string, any>)) && !('response_types_supported' in (value as Record<string, any>))) || ((value as Record<string, any>)['responseTypesSupported'] === undefined && (value as Record<string, any>)['response_types_supported'] === undefined)) return false;
+    if ((!('idTokenSigningAlgValuesSupported' in (value as Record<string, any>)) && !('id_token_signing_alg_values_supported' in (value as Record<string, any>))) || ((value as Record<string, any>)['idTokenSigningAlgValuesSupported'] === undefined && (value as Record<string, any>)['id_token_signing_alg_values_supported'] === undefined)) return false;
+    if ((!('subjectTypesSupported' in (value as Record<string, any>)) && !('subject_types_supported' in (value as Record<string, any>))) || ((value as Record<string, any>)['subjectTypesSupported'] === undefined && (value as Record<string, any>)['subject_types_supported'] === undefined)) return false;
+    if ((!('tokenEndpointAuthMethodsSupported' in (value as Record<string, any>)) && !('token_endpoint_auth_methods_supported' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenEndpointAuthMethodsSupported'] === undefined && (value as Record<string, any>)['token_endpoint_auth_methods_supported'] === undefined)) return false;
     return true;
 }
 
@@ -148,25 +87,23 @@ export function OpenIDConnectConfigurationFromJSON(json: any): OpenIDConnectConf
     return OpenIDConnectConfigurationFromJSONTyped(json, false);
 }
 
-export function OpenIDConnectConfigurationFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OpenIDConnectConfiguration {
+export function OpenIDConnectConfigurationFromJSONTyped(json: any, ignoreDiscriminator: boolean): OpenIDConnectConfiguration {
     if (json == null) {
         return json;
     }
     return {
-        issuer: json["issuer"],
-        authorizationEndpoint: json["authorization_endpoint"],
-        tokenEndpoint: json["token_endpoint"],
-        userinfoEndpoint: json["userinfo_endpoint"],
-        endSessionEndpoint: json["end_session_endpoint"],
-        introspectionEndpoint: json["introspection_endpoint"],
-        jwksUri: json["jwks_uri"],
-        responseTypesSupported: json["response_types_supported"],
-        idTokenSigningAlgValuesSupported: json["id_token_signing_alg_values_supported"],
-        subjectTypesSupported: json["subject_types_supported"],
-        tokenEndpointAuthMethodsSupported: json["token_endpoint_auth_methods_supported"],
+        
+        'issuer': json['issuer'],
+        'authorizationEndpoint': json['authorization_endpoint'],
+        'tokenEndpoint': json['token_endpoint'],
+        'userinfoEndpoint': json['userinfo_endpoint'],
+        'endSessionEndpoint': json['end_session_endpoint'],
+        'introspectionEndpoint': json['introspection_endpoint'],
+        'jwksUri': json['jwks_uri'],
+        'responseTypesSupported': json['response_types_supported'],
+        'idTokenSigningAlgValuesSupported': json['id_token_signing_alg_values_supported'],
+        'subjectTypesSupported': json['subject_types_supported'],
+        'tokenEndpointAuthMethodsSupported': json['token_endpoint_auth_methods_supported'],
     };
 }
 
@@ -174,25 +111,24 @@ export function OpenIDConnectConfigurationToJSON(json: any): OpenIDConnectConfig
     return OpenIDConnectConfigurationToJSONTyped(json, false);
 }
 
-export function OpenIDConnectConfigurationToJSONTyped(
-    value?: OpenIDConnectConfiguration | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OpenIDConnectConfigurationToJSONTyped(value?: OpenIDConnectConfiguration | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        issuer: value["issuer"],
-        authorization_endpoint: value["authorizationEndpoint"],
-        token_endpoint: value["tokenEndpoint"],
-        userinfo_endpoint: value["userinfoEndpoint"],
-        end_session_endpoint: value["endSessionEndpoint"],
-        introspection_endpoint: value["introspectionEndpoint"],
-        jwks_uri: value["jwksUri"],
-        response_types_supported: value["responseTypesSupported"],
-        id_token_signing_alg_values_supported: value["idTokenSigningAlgValuesSupported"],
-        subject_types_supported: value["subjectTypesSupported"],
-        token_endpoint_auth_methods_supported: value["tokenEndpointAuthMethodsSupported"],
+        
+        'issuer': value['issuer'],
+        'authorization_endpoint': value['authorizationEndpoint'],
+        'token_endpoint': value['tokenEndpoint'],
+        'userinfo_endpoint': value['userinfoEndpoint'],
+        'end_session_endpoint': value['endSessionEndpoint'],
+        'introspection_endpoint': value['introspectionEndpoint'],
+        'jwks_uri': value['jwksUri'],
+        'response_types_supported': value['responseTypesSupported'],
+        'id_token_signing_alg_values_supported': value['idTokenSigningAlgValuesSupported'],
+        'subject_types_supported': value['subjectTypesSupported'],
+        'token_endpoint_auth_methods_supported': value['tokenEndpointAuthMethodsSupported'],
     };
 }
+

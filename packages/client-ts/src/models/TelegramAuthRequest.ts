@@ -12,38 +12,39 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface TelegramAuthRequest
  */
 export interface TelegramAuthRequest {
     /**
-     *
+     * 
      */
     id: number;
     /**
-     *
+     * 
      */
     firstName?: string;
     /**
-     *
+     * 
      */
     lastName?: string;
     /**
-     *
+     * 
      */
     username?: string;
     /**
-     *
+     * 
      */
     photoUrl?: string;
     /**
-     *
+     * 
      */
     authDate: number;
     /**
-     *
+     * 
      */
     hash: string;
 }
@@ -52,15 +53,9 @@ export interface TelegramAuthRequest {
  * Check if a given object implements the TelegramAuthRequest interface.
  */
 export function instanceOfTelegramAuthRequest(value: object): value is TelegramAuthRequest {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("authDate" in (value as Record<string, any>)) &&
-            !("auth_date" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authDate"] === undefined &&
-            (value as Record<string, any>)["auth_date"] === undefined)
-    )
-        return false;
-    if (!("hash" in value) || value["hash"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('authDate' in (value as Record<string, any>)) && !('auth_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['authDate'] === undefined && (value as Record<string, any>)['auth_date'] === undefined)) return false;
+    if (!('hash' in value) || value['hash'] === undefined) return false;
     return true;
 }
 
@@ -68,21 +63,19 @@ export function TelegramAuthRequestFromJSON(json: any): TelegramAuthRequest {
     return TelegramAuthRequestFromJSONTyped(json, false);
 }
 
-export function TelegramAuthRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramAuthRequest {
+export function TelegramAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramAuthRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        firstName: json["first_name"] == null ? undefined : json["first_name"],
-        lastName: json["last_name"] == null ? undefined : json["last_name"],
-        username: json["username"] == null ? undefined : json["username"],
-        photoUrl: json["photo_url"] == null ? undefined : json["photo_url"],
-        authDate: json["auth_date"],
-        hash: json["hash"],
+        
+        'id': json['id'],
+        'firstName': json['first_name'] == null ? undefined : json['first_name'],
+        'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'username': json['username'] == null ? undefined : json['username'],
+        'photoUrl': json['photo_url'] == null ? undefined : json['photo_url'],
+        'authDate': json['auth_date'],
+        'hash': json['hash'],
     };
 }
 
@@ -90,21 +83,20 @@ export function TelegramAuthRequestToJSON(json: any): TelegramAuthRequest {
     return TelegramAuthRequestToJSONTyped(json, false);
 }
 
-export function TelegramAuthRequestToJSONTyped(
-    value?: TelegramAuthRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramAuthRequestToJSONTyped(value?: TelegramAuthRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        first_name: value["firstName"],
-        last_name: value["lastName"],
-        username: value["username"],
-        photo_url: value["photoUrl"],
-        auth_date: value["authDate"],
-        hash: value["hash"],
+        
+        'id': value['id'],
+        'first_name': value['firstName'],
+        'last_name': value['lastName'],
+        'username': value['username'],
+        'photo_url': value['photoUrl'],
+        'auth_date': value['authDate'],
+        'hash': value['hash'],
     };
 }
+

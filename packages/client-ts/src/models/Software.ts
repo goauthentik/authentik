@@ -12,26 +12,27 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface Software
  */
 export interface Software {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     version?: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     path?: string;
 }
@@ -40,8 +41,8 @@ export interface Software {
  * Check if a given object implements the Software interface.
  */
 export function instanceOfSoftware(value: object): value is Software {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -54,10 +55,11 @@ export function SoftwareFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        name: json["name"],
-        version: json["version"] == null ? undefined : json["version"],
-        source: json["source"],
-        path: json["path"] == null ? undefined : json["path"],
+        
+        'name': json['name'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'source': json['source'],
+        'path': json['path'] == null ? undefined : json['path'],
     };
 }
 
@@ -65,18 +67,17 @@ export function SoftwareToJSON(json: any): Software {
     return SoftwareToJSONTyped(json, false);
 }
 
-export function SoftwareToJSONTyped(
-    value?: Software | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SoftwareToJSONTyped(value?: Software | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        version: value["version"],
-        source: value["source"],
-        path: value["path"],
+        
+        'name': value['name'],
+        'version': value['version'],
+        'source': value['source'],
+        'path': value['path'],
     };
 }
+

@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Challenge shown to the user in identification stage
@@ -23,23 +35,23 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface PlexAuthenticationChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     clientId: string;
     /**
-     *
+     * 
      */
     slug: string;
 }
@@ -47,17 +59,9 @@ export interface PlexAuthenticationChallenge {
 /**
  * Check if a given object implements the PlexAuthenticationChallenge interface.
  */
-export function instanceOfPlexAuthenticationChallenge(
-    value: object,
-): value is PlexAuthenticationChallenge {
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
+export function instanceOfPlexAuthenticationChallenge(value: object): value is PlexAuthenticationChallenge {
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -65,20 +69,17 @@ export function PlexAuthenticationChallengeFromJSON(json: any): PlexAuthenticati
     return PlexAuthenticationChallengeFromJSONTyped(json, false);
 }
 
-export function PlexAuthenticationChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PlexAuthenticationChallenge {
+export function PlexAuthenticationChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlexAuthenticationChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        clientId: json["client_id"],
-        slug: json["slug"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'clientId': json['client_id'],
+        'slug': json['slug'],
     };
 }
 
@@ -86,19 +87,18 @@ export function PlexAuthenticationChallengeToJSON(json: any): PlexAuthentication
     return PlexAuthenticationChallengeToJSONTyped(json, false);
 }
 
-export function PlexAuthenticationChallengeToJSONTyped(
-    value?: PlexAuthenticationChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PlexAuthenticationChallengeToJSONTyped(value?: PlexAuthenticationChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        client_id: value["clientId"],
-        slug: value["slug"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'client_id': value['clientId'],
+        'slug': value['slug'],
     };
 }
+

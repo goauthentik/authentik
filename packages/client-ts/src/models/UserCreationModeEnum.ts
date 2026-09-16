@@ -12,17 +12,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const UserCreationModeEnum = {
-    NeverCreate: "never_create",
-    CreateWhenRequired: "create_when_required",
-    AlwaysCreate: "always_create",
-    UnknownDefaultOpenApi: "11184809",
+    NeverCreate: 'never_create',
+    CreateWhenRequired: 'create_when_required',
+    AlwaysCreate: 'always_create',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type UserCreationModeEnum = (typeof UserCreationModeEnum)[keyof typeof UserCreationModeEnum];
+export type UserCreationModeEnum = typeof UserCreationModeEnum[keyof typeof UserCreationModeEnum];
+
 
 export function instanceOfUserCreationModeEnum(value: any): boolean {
     for (const key in UserCreationModeEnum) {
@@ -39,10 +41,7 @@ export function UserCreationModeEnumFromJSON(json: any): UserCreationModeEnum {
     return UserCreationModeEnumFromJSONTyped(json, false);
 }
 
-export function UserCreationModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserCreationModeEnum {
+export function UserCreationModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserCreationModeEnum {
     return json as UserCreationModeEnum;
 }
 
@@ -50,9 +49,7 @@ export function UserCreationModeEnumToJSON(value?: UserCreationModeEnum | null):
     return value as any;
 }
 
-export function UserCreationModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): UserCreationModeEnum {
+export function UserCreationModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserCreationModeEnum {
     return value as UserCreationModeEnum;
 }
+

@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ServiceConnection } from "./ServiceConnection";
-import { ServiceConnectionFromJSON, ServiceConnectionToJSON } from "./ServiceConnection";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { ServiceConnection } from './ServiceConnection';
+import {
+    ServiceConnectionFromJSON,
+    ServiceConnectionFromJSONTyped,
+    ServiceConnectionToJSON,
+    ServiceConnectionToJSONTyped,
+} from './ServiceConnection';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedServiceConnectionList
  */
 export interface PaginatedServiceConnectionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ServiceConnection>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedServiceConnectionList interface.
  */
-export function instanceOfPaginatedServiceConnectionList(
-    value: object,
-): value is PaginatedServiceConnectionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedServiceConnectionList(value: object): value is PaginatedServiceConnectionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedServiceConnectionListFromJSON(json: any): PaginatedServ
     return PaginatedServiceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedServiceConnectionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedServiceConnectionList {
+export function PaginatedServiceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedServiceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ServiceConnectionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ServiceConnectionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedServiceConnectionListToJSON(json: any): PaginatedServic
     return PaginatedServiceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedServiceConnectionListToJSONTyped(
-    value?: PaginatedServiceConnectionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedServiceConnectionListToJSONTyped(value?: PaginatedServiceConnectionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ServiceConnectionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ServiceConnectionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

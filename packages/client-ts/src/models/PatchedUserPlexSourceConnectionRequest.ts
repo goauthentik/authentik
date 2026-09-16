@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,15 +20,15 @@
  */
 export interface PatchedUserPlexSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
     /**
-     *
+     * 
      */
     plexToken?: string;
 }
@@ -35,49 +36,40 @@ export interface PatchedUserPlexSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserPlexSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserPlexSourceConnectionRequest(
-    value: object,
-): value is PatchedUserPlexSourceConnectionRequest {
+export function instanceOfPatchedUserPlexSourceConnectionRequest(value: object): value is PatchedUserPlexSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserPlexSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedUserPlexSourceConnectionRequest {
+export function PatchedUserPlexSourceConnectionRequestFromJSON(json: any): PatchedUserPlexSourceConnectionRequest {
     return PatchedUserPlexSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserPlexSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserPlexSourceConnectionRequest {
+export function PatchedUserPlexSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserPlexSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
-        plexToken: json["plex_token"] == null ? undefined : json["plex_token"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        'plexToken': json['plex_token'] == null ? undefined : json['plex_token'],
     };
 }
 
-export function PatchedUserPlexSourceConnectionRequestToJSON(
-    json: any,
-): PatchedUserPlexSourceConnectionRequest {
+export function PatchedUserPlexSourceConnectionRequestToJSON(json: any): PatchedUserPlexSourceConnectionRequest {
     return PatchedUserPlexSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserPlexSourceConnectionRequestToJSONTyped(
-    value?: PatchedUserPlexSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserPlexSourceConnectionRequestToJSONTyped(value?: PatchedUserPlexSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
-        plex_token: value["plexToken"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
+        'plex_token': value['plexToken'],
     };
 }
+

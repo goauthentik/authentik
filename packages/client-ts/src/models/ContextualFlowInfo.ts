@@ -12,15 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfoLayoutEnum } from "./ContextualFlowInfoLayoutEnum";
+import { mapValues } from '../runtime';
+import type { ThemedUrls } from './ThemedUrls';
+import {
+    ThemedUrlsFromJSON,
+    ThemedUrlsFromJSONTyped,
+    ThemedUrlsToJSON,
+    ThemedUrlsToJSONTyped,
+} from './ThemedUrls';
+import type { ContextualFlowInfoLayoutEnum } from './ContextualFlowInfoLayoutEnum';
 import {
     ContextualFlowInfoLayoutEnumFromJSON,
+    ContextualFlowInfoLayoutEnumFromJSONTyped,
     ContextualFlowInfoLayoutEnumToJSON,
-} from "./ContextualFlowInfoLayoutEnum";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
+    ContextualFlowInfoLayoutEnumToJSONTyped,
+} from './ContextualFlowInfoLayoutEnum';
+import type { FlowMessage } from './FlowMessage';
+import {
+    FlowMessageFromJSON,
+    FlowMessageFromJSONTyped,
+    FlowMessageToJSON,
+    FlowMessageToJSONTyped,
+} from './FlowMessage';
 
 /**
  * Contextual flow information for a challenge
@@ -29,43 +42,39 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
  */
 export interface ContextualFlowInfo {
     /**
-     *
+     * 
      */
     title?: string;
     /**
-     *
+     * 
      */
     background?: string;
     /**
-     *
+     * 
      */
     backgroundThemedUrls?: ThemedUrls | null;
     /**
-     *
+     * 
      */
     cancelUrl: string;
     /**
-     *
+     * 
      */
     layout: ContextualFlowInfoLayoutEnum;
     /**
-     *
+     * 
      */
     messages?: Array<FlowMessage>;
 }
+
+
 
 /**
  * Check if a given object implements the ContextualFlowInfo interface.
  */
 export function instanceOfContextualFlowInfo(value: object): value is ContextualFlowInfo {
-    if (
-        (!("cancelUrl" in (value as Record<string, any>)) &&
-            !("cancel_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["cancelUrl"] === undefined &&
-            (value as Record<string, any>)["cancel_url"] === undefined)
-    )
-        return false;
-    if (!("layout" in value) || value["layout"] === undefined) return false;
+    if ((!('cancelUrl' in (value as Record<string, any>)) && !('cancel_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['cancelUrl'] === undefined && (value as Record<string, any>)['cancel_url'] === undefined)) return false;
+    if (!('layout' in value) || value['layout'] === undefined) return false;
     return true;
 }
 
@@ -73,28 +82,18 @@ export function ContextualFlowInfoFromJSON(json: any): ContextualFlowInfo {
     return ContextualFlowInfoFromJSONTyped(json, false);
 }
 
-export function ContextualFlowInfoFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ContextualFlowInfo {
+export function ContextualFlowInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean): ContextualFlowInfo {
     if (json == null) {
         return json;
     }
     return {
-        title: json["title"] == null ? undefined : json["title"],
-        background: json["background"] == null ? undefined : json["background"],
-        backgroundThemedUrls:
-            json["background_themed_urls"] === undefined
-                ? undefined
-                : json["background_themed_urls"] === null
-                  ? null
-                  : ThemedUrlsFromJSON(json["background_themed_urls"]),
-        cancelUrl: json["cancel_url"],
-        layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
+        
+        'title': json['title'] == null ? undefined : json['title'],
+        'background': json['background'] == null ? undefined : json['background'],
+        'backgroundThemedUrls': json['background_themed_urls'] === undefined ? undefined : json['background_themed_urls'] === null ? null : ThemedUrlsFromJSON(json['background_themed_urls']),
+        'cancelUrl': json['cancel_url'],
+        'layout': ContextualFlowInfoLayoutEnumFromJSON(json['layout']),
+        'messages': json['messages'] == null ? undefined : ((json['messages'] as Array<any>).map(FlowMessageFromJSON)),
     };
 }
 
@@ -102,23 +101,19 @@ export function ContextualFlowInfoToJSON(json: any): ContextualFlowInfo {
     return ContextualFlowInfoToJSONTyped(json, false);
 }
 
-export function ContextualFlowInfoToJSONTyped(
-    value?: ContextualFlowInfo | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ContextualFlowInfoToJSONTyped(value?: ContextualFlowInfo | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        title: value["title"],
-        background: value["background"],
-        background_themed_urls: ThemedUrlsToJSON(value["backgroundThemedUrls"]),
-        cancel_url: value["cancelUrl"],
-        layout: ContextualFlowInfoLayoutEnumToJSON(value["layout"]),
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
+        
+        'title': value['title'],
+        'background': value['background'],
+        'background_themed_urls': ThemedUrlsToJSON(value['backgroundThemedUrls']),
+        'cancel_url': value['cancelUrl'],
+        'layout': ContextualFlowInfoLayoutEnumToJSON(value['layout']),
+        'messages': value['messages'] == null ? undefined : ((value['messages'] as Array<any>).map(FlowMessageToJSON)),
     };
 }
+

@@ -12,18 +12,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const GroupMatchingModeEnum = {
-    Identifier: "identifier",
-    NameLink: "name_link",
-    NameDeny: "name_deny",
-    UnknownDefaultOpenApi: "11184809",
+    Identifier: 'identifier',
+    NameLink: 'name_link',
+    NameDeny: 'name_deny',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type GroupMatchingModeEnum =
-    (typeof GroupMatchingModeEnum)[keyof typeof GroupMatchingModeEnum];
+export type GroupMatchingModeEnum = typeof GroupMatchingModeEnum[keyof typeof GroupMatchingModeEnum];
+
 
 export function instanceOfGroupMatchingModeEnum(value: any): boolean {
     for (const key in GroupMatchingModeEnum) {
@@ -40,10 +41,7 @@ export function GroupMatchingModeEnumFromJSON(json: any): GroupMatchingModeEnum 
     return GroupMatchingModeEnumFromJSONTyped(json, false);
 }
 
-export function GroupMatchingModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupMatchingModeEnum {
+export function GroupMatchingModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupMatchingModeEnum {
     return json as GroupMatchingModeEnum;
 }
 
@@ -51,9 +49,7 @@ export function GroupMatchingModeEnumToJSON(value?: GroupMatchingModeEnum | null
     return value as any;
 }
 
-export function GroupMatchingModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): GroupMatchingModeEnum {
+export function GroupMatchingModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): GroupMatchingModeEnum {
     return value as GroupMatchingModeEnum;
 }
+

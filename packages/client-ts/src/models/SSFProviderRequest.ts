@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SSFProvider Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface SSFProviderRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,15 +28,15 @@ export interface SSFProviderRequest {
      */
     signingKey: string;
     /**
-     *
+     * 
      */
     oidcAuthProviders?: Array<number>;
     /**
-     *
+     * 
      */
     eventRetention?: string;
     /**
-     *
+     * 
      */
     pushVerifyCertificates?: boolean;
 }
@@ -44,14 +45,8 @@ export interface SSFProviderRequest {
  * Check if a given object implements the SSFProviderRequest interface.
  */
 export function instanceOfSSFProviderRequest(value: object): value is SSFProviderRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("signingKey" in (value as Record<string, any>)) &&
-            !("signing_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signingKey"] === undefined &&
-            (value as Record<string, any>)["signing_key"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('signingKey' in (value as Record<string, any>)) && !('signing_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['signingKey'] === undefined && (value as Record<string, any>)['signing_key'] === undefined)) return false;
     return true;
 }
 
@@ -59,21 +54,17 @@ export function SSFProviderRequestFromJSON(json: any): SSFProviderRequest {
     return SSFProviderRequestFromJSONTyped(json, false);
 }
 
-export function SSFProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SSFProviderRequest {
+export function SSFProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SSFProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        signingKey: json["signing_key"],
-        oidcAuthProviders:
-            json["oidc_auth_providers"] == null ? undefined : json["oidc_auth_providers"],
-        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
-        pushVerifyCertificates:
-            json["push_verify_certificates"] == null ? undefined : json["push_verify_certificates"],
+        
+        'name': json['name'],
+        'signingKey': json['signing_key'],
+        'oidcAuthProviders': json['oidc_auth_providers'] == null ? undefined : json['oidc_auth_providers'],
+        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        'pushVerifyCertificates': json['push_verify_certificates'] == null ? undefined : json['push_verify_certificates'],
     };
 }
 
@@ -81,19 +72,18 @@ export function SSFProviderRequestToJSON(json: any): SSFProviderRequest {
     return SSFProviderRequestToJSONTyped(json, false);
 }
 
-export function SSFProviderRequestToJSONTyped(
-    value?: SSFProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SSFProviderRequestToJSONTyped(value?: SSFProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        signing_key: value["signingKey"],
-        oidc_auth_providers: value["oidcAuthProviders"],
-        event_retention: value["eventRetention"],
-        push_verify_certificates: value["pushVerifyCertificates"],
+        
+        'name': value['name'],
+        'signing_key': value['signingKey'],
+        'oidc_auth_providers': value['oidcAuthProviders'],
+        'event_retention': value['eventRetention'],
+        'push_verify_certificates': value['pushVerifyCertificates'],
     };
 }
+

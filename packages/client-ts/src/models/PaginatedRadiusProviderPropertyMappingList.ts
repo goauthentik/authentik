@@ -12,83 +12,82 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RadiusProviderPropertyMapping } from "./RadiusProviderPropertyMapping";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { RadiusProviderPropertyMapping } from './RadiusProviderPropertyMapping';
 import {
     RadiusProviderPropertyMappingFromJSON,
+    RadiusProviderPropertyMappingFromJSONTyped,
     RadiusProviderPropertyMappingToJSON,
-} from "./RadiusProviderPropertyMapping";
+    RadiusProviderPropertyMappingToJSONTyped,
+} from './RadiusProviderPropertyMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRadiusProviderPropertyMappingList
  */
 export interface PaginatedRadiusProviderPropertyMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RadiusProviderPropertyMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRadiusProviderPropertyMappingList interface.
  */
-export function instanceOfPaginatedRadiusProviderPropertyMappingList(
-    value: object,
-): value is PaginatedRadiusProviderPropertyMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRadiusProviderPropertyMappingList(value: object): value is PaginatedRadiusProviderPropertyMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedRadiusProviderPropertyMappingListFromJSON(
-    json: any,
-): PaginatedRadiusProviderPropertyMappingList {
+export function PaginatedRadiusProviderPropertyMappingListFromJSON(json: any): PaginatedRadiusProviderPropertyMappingList {
     return PaginatedRadiusProviderPropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedRadiusProviderPropertyMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRadiusProviderPropertyMappingList {
+export function PaginatedRadiusProviderPropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRadiusProviderPropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RadiusProviderPropertyMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RadiusProviderPropertyMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedRadiusProviderPropertyMappingListToJSON(
-    json: any,
-): PaginatedRadiusProviderPropertyMappingList {
+export function PaginatedRadiusProviderPropertyMappingListToJSON(json: any): PaginatedRadiusProviderPropertyMappingList {
     return PaginatedRadiusProviderPropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedRadiusProviderPropertyMappingListToJSONTyped(
-    value?: PaginatedRadiusProviderPropertyMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRadiusProviderPropertyMappingListToJSONTyped(value?: PaginatedRadiusProviderPropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RadiusProviderPropertyMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RadiusProviderPropertyMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

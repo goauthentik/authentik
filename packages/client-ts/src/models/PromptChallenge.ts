@@ -12,11 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { StagePrompt } from "./StagePrompt";
-import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
+import type { StagePrompt } from './StagePrompt';
+import {
+    StagePromptFromJSON,
+    StagePromptFromJSONTyped,
+    StagePromptToJSON,
+    StagePromptToJSONTyped,
+} from './StagePrompt';
 
 /**
  * Initial challenge being sent, define fields
@@ -25,19 +42,19 @@ import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt";
  */
 export interface PromptChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     fields: Array<StagePrompt>;
 }
@@ -46,7 +63,7 @@ export interface PromptChallenge {
  * Check if a given object implements the PromptChallenge interface.
  */
 export function instanceOfPromptChallenge(value: object): value is PromptChallenge {
-    if (!("fields" in value) || value["fields"] === undefined) return false;
+    if (!('fields' in value) || value['fields'] === undefined) return false;
     return true;
 }
 
@@ -54,19 +71,16 @@ export function PromptChallengeFromJSON(json: any): PromptChallenge {
     return PromptChallengeFromJSONTyped(json, false);
 }
 
-export function PromptChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PromptChallenge {
+export function PromptChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): PromptChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        fields: (json["fields"] as Array<any>).map(StagePromptFromJSON),
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'fields': ((json['fields'] as Array<any>).map(StagePromptFromJSON)),
     };
 }
 
@@ -74,18 +88,17 @@ export function PromptChallengeToJSON(json: any): PromptChallenge {
     return PromptChallengeToJSONTyped(json, false);
 }
 
-export function PromptChallengeToJSONTyped(
-    value?: PromptChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PromptChallengeToJSONTyped(value?: PromptChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        fields: (value["fields"] as Array<any>).map(StagePromptToJSON),
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'fields': ((value['fields'] as Array<any>).map(StagePromptToJSON)),
     };
 }
+

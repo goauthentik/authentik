@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SMS Challenge response, device is set by get_response_instance
  * @export
@@ -19,15 +20,15 @@
  */
 export interface AuthenticatorSMSChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     code?: string;
     /**
-     *
+     * 
      */
     phoneNumber?: string;
 }
@@ -35,49 +36,40 @@ export interface AuthenticatorSMSChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorSMSChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorSMSChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorSMSChallengeResponseRequest {
+export function instanceOfAuthenticatorSMSChallengeResponseRequest(value: object): value is AuthenticatorSMSChallengeResponseRequest {
     return true;
 }
 
-export function AuthenticatorSMSChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorSMSChallengeResponseRequest {
+export function AuthenticatorSMSChallengeResponseRequestFromJSON(json: any): AuthenticatorSMSChallengeResponseRequest {
     return AuthenticatorSMSChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorSMSChallengeResponseRequest {
+export function AuthenticatorSMSChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorSMSChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        code: json["code"] == null ? undefined : json["code"],
-        phoneNumber: json["phone_number"] == null ? undefined : json["phone_number"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'code': json['code'] == null ? undefined : json['code'],
+        'phoneNumber': json['phone_number'] == null ? undefined : json['phone_number'],
     };
 }
 
-export function AuthenticatorSMSChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorSMSChallengeResponseRequest {
+export function AuthenticatorSMSChallengeResponseRequestToJSON(json: any): AuthenticatorSMSChallengeResponseRequest {
     return AuthenticatorSMSChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorSMSChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorSMSChallengeResponseRequestToJSONTyped(value?: AuthenticatorSMSChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        code: value["code"],
-        phone_number: value["phoneNumber"],
+        
+        'component': value['component'],
+        'code': value['code'],
+        'phone_number': value['phoneNumber'],
     };
 }
+

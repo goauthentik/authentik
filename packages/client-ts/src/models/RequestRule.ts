@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationModeEnum } from "./NotificationModeEnum";
-import { NotificationModeEnumFromJSON, NotificationModeEnumToJSON } from "./NotificationModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import { mapValues } from '../runtime';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
+import type { NotificationModeEnum } from './NotificationModeEnum';
+import {
+    NotificationModeEnumFromJSON,
+    NotificationModeEnumFromJSONTyped,
+    NotificationModeEnumToJSON,
+    NotificationModeEnumToJSONTyped,
+} from './NotificationModeEnum';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -25,60 +36,56 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface RequestRule {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly targets: Array<string>;
     /**
-     *
+     * 
      */
     notificationTransports?: Array<string>;
     /**
-     *
+     * 
      */
     notificationMode?: NotificationModeEnum;
     /**
-     *
+     * 
      */
     minReviewers?: number;
     /**
-     *
+     * 
      */
     minReviewersIsPerGroup?: boolean;
     /**
-     *
+     * 
      */
     requestFlow?: string | null;
 }
+
+
 
 /**
  * Check if a given object implements the RequestRule interface.
  */
 export function instanceOfRequestRule(value: object): value is RequestRule {
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("targets" in value) || value["targets"] === undefined) return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('targets' in value) || value['targets'] === undefined) return false;
     return true;
 }
 
@@ -91,31 +98,17 @@ export function RequestRuleFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        pbmUuid: json["pbm_uuid"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        name: json["name"],
-        targets: json["targets"],
-        notificationTransports:
-            json["notification_transports"] == null ? undefined : json["notification_transports"],
-        notificationMode:
-            json["notification_mode"] == null
-                ? undefined
-                : NotificationModeEnumFromJSON(json["notification_mode"]),
-        minReviewers: json["min_reviewers"] == null ? undefined : json["min_reviewers"],
-        minReviewersIsPerGroup:
-            json["min_reviewers_is_per_group"] == null
-                ? undefined
-                : json["min_reviewers_is_per_group"],
-        requestFlow:
-            json["request_flow"] === undefined
-                ? undefined
-                : json["request_flow"] === null
-                  ? null
-                  : json["request_flow"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'pbmUuid': json['pbm_uuid'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'name': json['name'],
+        'targets': json['targets'],
+        'notificationTransports': json['notification_transports'] == null ? undefined : json['notification_transports'],
+        'notificationMode': json['notification_mode'] == null ? undefined : NotificationModeEnumFromJSON(json['notification_mode']),
+        'minReviewers': json['min_reviewers'] == null ? undefined : json['min_reviewers'],
+        'minReviewersIsPerGroup': json['min_reviewers_is_per_group'] == null ? undefined : json['min_reviewers_is_per_group'],
+        'requestFlow': json['request_flow'] === undefined ? undefined : json['request_flow'] === null ? null : json['request_flow'],
     };
 }
 
@@ -123,22 +116,21 @@ export function RequestRuleToJSON(json: any): RequestRule {
     return RequestRuleToJSONTyped(json, false);
 }
 
-export function RequestRuleToJSONTyped(
-    value?: Omit<RequestRule, "pbmUuid" | "targets"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestRuleToJSONTyped(value?: Omit<RequestRule, 'pbmUuid'|'targets'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        name: value["name"],
-        notification_transports: value["notificationTransports"],
-        notification_mode: NotificationModeEnumToJSON(value["notificationMode"]),
-        min_reviewers: value["minReviewers"],
-        min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
-        request_flow: value["requestFlow"],
+        
+        'uuid': value['uuid'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'name': value['name'],
+        'notification_transports': value['notificationTransports'],
+        'notification_mode': NotificationModeEnumToJSON(value['notificationMode']),
+        'min_reviewers': value['minReviewers'],
+        'min_reviewers_is_per_group': value['minReviewersIsPerGroup'],
+        'request_flow': value['requestFlow'],
     };
 }
+

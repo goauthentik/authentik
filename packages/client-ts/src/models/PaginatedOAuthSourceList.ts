@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { OAuthSource } from "./OAuthSource";
-import { OAuthSourceFromJSON, OAuthSourceToJSON } from "./OAuthSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { OAuthSource } from './OAuthSource';
+import {
+    OAuthSourceFromJSON,
+    OAuthSourceFromJSONTyped,
+    OAuthSourceToJSON,
+    OAuthSourceToJSONTyped,
+} from './OAuthSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedOAuthSourceList
  */
 export interface PaginatedOAuthSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<OAuthSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedOAuthSourceList interface.
  */
-export function instanceOfPaginatedOAuthSourceList(
-    value: object,
-): value is PaginatedOAuthSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedOAuthSourceList(value: object): value is PaginatedOAuthSourceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedOAuthSourceListFromJSON(json: any): PaginatedOAuthSourc
     return PaginatedOAuthSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedOAuthSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedOAuthSourceList {
+export function PaginatedOAuthSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedOAuthSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(OAuthSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(OAuthSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedOAuthSourceListToJSON(json: any): PaginatedOAuthSourceL
     return PaginatedOAuthSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedOAuthSourceListToJSONTyped(
-    value?: PaginatedOAuthSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedOAuthSourceListToJSONTyped(value?: PaginatedOAuthSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(OAuthSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(OAuthSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

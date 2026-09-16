@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
@@ -19,11 +20,11 @@
  */
 export interface AgentTokenResponse {
     /**
-     *
+     * 
      */
     token: string;
     /**
-     *
+     * 
      */
     expiresIn?: number;
 }
@@ -32,7 +33,7 @@ export interface AgentTokenResponse {
  * Check if a given object implements the AgentTokenResponse interface.
  */
 export function instanceOfAgentTokenResponse(value: object): value is AgentTokenResponse {
-    if (!("token" in value) || value["token"] === undefined) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
@@ -40,16 +41,14 @@ export function AgentTokenResponseFromJSON(json: any): AgentTokenResponse {
     return AgentTokenResponseFromJSONTyped(json, false);
 }
 
-export function AgentTokenResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentTokenResponse {
+export function AgentTokenResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentTokenResponse {
     if (json == null) {
         return json;
     }
     return {
-        token: json["token"],
-        expiresIn: json["expires_in"] == null ? undefined : json["expires_in"],
+        
+        'token': json['token'],
+        'expiresIn': json['expires_in'] == null ? undefined : json['expires_in'],
     };
 }
 
@@ -57,16 +56,15 @@ export function AgentTokenResponseToJSON(json: any): AgentTokenResponse {
     return AgentTokenResponseToJSONTyped(json, false);
 }
 
-export function AgentTokenResponseToJSONTyped(
-    value?: AgentTokenResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentTokenResponseToJSONTyped(value?: AgentTokenResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        token: value["token"],
-        expires_in: value["expiresIn"],
+        
+        'token': value['token'],
+        'expires_in': value['expiresIn'],
     };
 }
+

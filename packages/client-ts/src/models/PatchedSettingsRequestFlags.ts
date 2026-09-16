@@ -12,8 +12,9 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface PatchedSettingsRequestFlags
  */
@@ -35,30 +36,10 @@ export interface PatchedSettingsRequestFlags {
 /**
  * Check if a given object implements the PatchedSettingsRequestFlags interface.
  */
-export function instanceOfPatchedSettingsRequestFlags(
-    value: object,
-): value is PatchedSettingsRequestFlags {
-    if (
-        (!("coreDefaultAppAccess" in (value as Record<string, any>)) &&
-            !("core_default_app_access" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["coreDefaultAppAccess"] === undefined &&
-            (value as Record<string, any>)["core_default_app_access"] === undefined)
-    )
-        return false;
-    if (
-        (!("enterpriseAuditIncludeExpandedDiff" in (value as Record<string, any>)) &&
-            !("enterprise_audit_include_expanded_diff" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["enterpriseAuditIncludeExpandedDiff"] === undefined &&
-            (value as Record<string, any>)["enterprise_audit_include_expanded_diff"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowsContinuousLogin" in (value as Record<string, any>)) &&
-            !("flows_continuous_login" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
-            (value as Record<string, any>)["flows_continuous_login"] === undefined)
-    )
-        return false;
+export function instanceOfPatchedSettingsRequestFlags(value: object): value is PatchedSettingsRequestFlags {
+    if ((!('coreDefaultAppAccess' in (value as Record<string, any>)) && !('core_default_app_access' in (value as Record<string, any>))) || ((value as Record<string, any>)['coreDefaultAppAccess'] === undefined && (value as Record<string, any>)['core_default_app_access'] === undefined)) return false;
+    if ((!('enterpriseAuditIncludeExpandedDiff' in (value as Record<string, any>)) && !('enterprise_audit_include_expanded_diff' in (value as Record<string, any>))) || ((value as Record<string, any>)['enterpriseAuditIncludeExpandedDiff'] === undefined && (value as Record<string, any>)['enterprise_audit_include_expanded_diff'] === undefined)) return false;
+    if ((!('flowsContinuousLogin' in (value as Record<string, any>)) && !('flows_continuous_login' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowsContinuousLogin'] === undefined && (value as Record<string, any>)['flows_continuous_login'] === undefined)) return false;
     return true;
 }
 
@@ -66,17 +47,15 @@ export function PatchedSettingsRequestFlagsFromJSON(json: any): PatchedSettingsR
     return PatchedSettingsRequestFlagsFromJSONTyped(json, false);
 }
 
-export function PatchedSettingsRequestFlagsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSettingsRequestFlags {
+export function PatchedSettingsRequestFlagsFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSettingsRequestFlags {
     if (json == null) {
         return json;
     }
     return {
-        coreDefaultAppAccess: json["core_default_app_access"],
-        enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
-        flowsContinuousLogin: json["flows_continuous_login"],
+        
+        'coreDefaultAppAccess': json['core_default_app_access'],
+        'enterpriseAuditIncludeExpandedDiff': json['enterprise_audit_include_expanded_diff'],
+        'flowsContinuousLogin': json['flows_continuous_login'],
     };
 }
 
@@ -84,17 +63,16 @@ export function PatchedSettingsRequestFlagsToJSON(json: any): PatchedSettingsReq
     return PatchedSettingsRequestFlagsToJSONTyped(json, false);
 }
 
-export function PatchedSettingsRequestFlagsToJSONTyped(
-    value?: PatchedSettingsRequestFlags | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSettingsRequestFlagsToJSONTyped(value?: PatchedSettingsRequestFlags | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        core_default_app_access: value["coreDefaultAppAccess"],
-        enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
-        flows_continuous_login: value["flowsContinuousLogin"],
+        
+        'core_default_app_access': value['coreDefaultAppAccess'],
+        'enterprise_audit_include_expanded_diff': value['enterpriseAuditIncludeExpandedDiff'],
+        'flows_continuous_login': value['flowsContinuousLogin'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * TelegramSourcePropertyMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface PatchedTelegramSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,54 +36,40 @@ export interface PatchedTelegramSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedTelegramSourcePropertyMappingRequest interface.
  */
-export function instanceOfPatchedTelegramSourcePropertyMappingRequest(
-    value: object,
-): value is PatchedTelegramSourcePropertyMappingRequest {
+export function instanceOfPatchedTelegramSourcePropertyMappingRequest(value: object): value is PatchedTelegramSourcePropertyMappingRequest {
     return true;
 }
 
-export function PatchedTelegramSourcePropertyMappingRequestFromJSON(
-    json: any,
-): PatchedTelegramSourcePropertyMappingRequest {
+export function PatchedTelegramSourcePropertyMappingRequestFromJSON(json: any): PatchedTelegramSourcePropertyMappingRequest {
     return PatchedTelegramSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedTelegramSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedTelegramSourcePropertyMappingRequest {
+export function PatchedTelegramSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedTelegramSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedTelegramSourcePropertyMappingRequestToJSON(
-    json: any,
-): PatchedTelegramSourcePropertyMappingRequest {
+export function PatchedTelegramSourcePropertyMappingRequestToJSON(json: any): PatchedTelegramSourcePropertyMappingRequest {
     return PatchedTelegramSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedTelegramSourcePropertyMappingRequestToJSONTyped(
-    value?: PatchedTelegramSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedTelegramSourcePropertyMappingRequestToJSONTyped(value?: PatchedTelegramSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

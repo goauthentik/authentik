@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode";
-import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode";
+import { mapValues } from '../runtime';
+import type { LDAPAPIAccessMode } from './LDAPAPIAccessMode';
+import {
+    LDAPAPIAccessModeFromJSON,
+    LDAPAPIAccessModeFromJSONTyped,
+    LDAPAPIAccessModeToJSON,
+    LDAPAPIAccessModeToJSONTyped,
+} from './LDAPAPIAccessMode';
 
 /**
  * LDAPProvider Serializer
@@ -22,11 +28,11 @@ import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAcc
  */
 export interface LDAPProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -42,7 +48,7 @@ export interface LDAPProvider {
      */
     invalidationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -82,11 +88,11 @@ export interface LDAPProvider {
      */
     baseDn?: string;
     /**
-     *
+     * 
      */
     certificate?: string | null;
     /**
-     *
+     * 
      */
     tlsServerName?: string;
     /**
@@ -98,15 +104,15 @@ export interface LDAPProvider {
      */
     gidStartNumber?: number;
     /**
-     *
+     * 
      */
     readonly outpostSet: Array<string>;
     /**
-     *
+     * 
      */
     searchMode?: LDAPAPIAccessMode;
     /**
-     *
+     * 
      */
     bindMode?: LDAPAPIAccessMode;
     /**
@@ -115,83 +121,25 @@ export interface LDAPProvider {
     mfaSupport?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the LDAPProvider interface.
  */
 export function instanceOfLDAPProvider(value: object): value is LDAPProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("outpostSet" in (value as Record<string, any>)) &&
-            !("outpost_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["outpostSet"] === undefined &&
-            (value as Record<string, any>)["outpost_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('invalidationFlow' in (value as Record<string, any>)) && !('invalidation_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['invalidationFlow'] === undefined && (value as Record<string, any>)['invalidation_flow'] === undefined)) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedApplicationSlug' in (value as Record<string, any>)) && !('assigned_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_application_slug'] === undefined)) return false;
+    if ((!('assignedApplicationName' in (value as Record<string, any>)) && !('assigned_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationName'] === undefined && (value as Record<string, any>)['assigned_application_name'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('outpostSet' in (value as Record<string, any>)) && !('outpost_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['outpostSet'] === undefined && (value as Record<string, any>)['outpost_set'] === undefined)) return false;
     return true;
 }
 
@@ -204,43 +152,30 @@ export function LDAPProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        component: json["component"],
-        assignedApplicationSlug: json["assigned_application_slug"],
-        assignedApplicationName: json["assigned_application_name"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
-        certificate:
-            json["certificate"] === undefined
-                ? undefined
-                : json["certificate"] === null
-                  ? null
-                  : json["certificate"],
-        tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
-        uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
-        gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],
-        outpostSet: json["outpost_set"],
-        searchMode:
-            json["search_mode"] == null
-                ? undefined
-                : LDAPAPIAccessModeFromJSON(json["search_mode"]),
-        bindMode:
-            json["bind_mode"] == null ? undefined : LDAPAPIAccessModeFromJSON(json["bind_mode"]),
-        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'component': json['component'],
+        'assignedApplicationSlug': json['assigned_application_slug'],
+        'assignedApplicationName': json['assigned_application_name'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'baseDn': json['base_dn'] == null ? undefined : json['base_dn'],
+        'certificate': json['certificate'] === undefined ? undefined : json['certificate'] === null ? null : json['certificate'],
+        'tlsServerName': json['tls_server_name'] == null ? undefined : json['tls_server_name'],
+        'uidStartNumber': json['uid_start_number'] == null ? undefined : json['uid_start_number'],
+        'gidStartNumber': json['gid_start_number'] == null ? undefined : json['gid_start_number'],
+        'outpostSet': json['outpost_set'],
+        'searchMode': json['search_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['search_mode']),
+        'bindMode': json['bind_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['bind_mode']),
+        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
     };
 }
 
@@ -248,39 +183,26 @@ export function LDAPProviderToJSON(json: any): LDAPProvider {
     return LDAPProviderToJSONTyped(json, false);
 }
 
-export function LDAPProviderToJSONTyped(
-    value?: Omit<
-        LDAPProvider,
-        | "pk"
-        | "component"
-        | "assignedApplicationSlug"
-        | "assignedApplicationName"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "outpostSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LDAPProviderToJSONTyped(value?: Omit<LDAPProvider, 'pk'|'component'|'assignedApplicationSlug'|'assignedApplicationName'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'|'outpostSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        base_dn: value["baseDn"],
-        certificate: value["certificate"],
-        tls_server_name: value["tlsServerName"],
-        uid_start_number: value["uidStartNumber"],
-        gid_start_number: value["gidStartNumber"],
-        search_mode: LDAPAPIAccessModeToJSON(value["searchMode"]),
-        bind_mode: LDAPAPIAccessModeToJSON(value["bindMode"]),
-        mfa_support: value["mfaSupport"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'base_dn': value['baseDn'],
+        'certificate': value['certificate'],
+        'tls_server_name': value['tlsServerName'],
+        'uid_start_number': value['uidStartNumber'],
+        'gid_start_number': value['gidStartNumber'],
+        'search_mode': LDAPAPIAccessModeToJSON(value['searchMode']),
+        'bind_mode': LDAPAPIAccessModeToJSON(value['bindMode']),
+        'mfa_support': value['mfaSupport'],
     };
 }
+

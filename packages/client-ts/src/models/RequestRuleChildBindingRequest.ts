@@ -12,22 +12,23 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface RequestRuleChildBindingRequest
  */
 export interface RequestRuleChildBindingRequest {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     binding: string;
     /**
-     *
+     * 
      */
     target: string;
 }
@@ -35,11 +36,9 @@ export interface RequestRuleChildBindingRequest {
 /**
  * Check if a given object implements the RequestRuleChildBindingRequest interface.
  */
-export function instanceOfRequestRuleChildBindingRequest(
-    value: object,
-): value is RequestRuleChildBindingRequest {
-    if (!("binding" in value) || value["binding"] === undefined) return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
+export function instanceOfRequestRuleChildBindingRequest(value: object): value is RequestRuleChildBindingRequest {
+    if (!('binding' in value) || value['binding'] === undefined) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
     return true;
 }
 
@@ -47,17 +46,15 @@ export function RequestRuleChildBindingRequestFromJSON(json: any): RequestRuleCh
     return RequestRuleChildBindingRequestFromJSONTyped(json, false);
 }
 
-export function RequestRuleChildBindingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestRuleChildBindingRequest {
+export function RequestRuleChildBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestRuleChildBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        binding: json["binding"],
-        target: json["target"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'binding': json['binding'],
+        'target': json['target'],
     };
 }
 
@@ -65,17 +62,16 @@ export function RequestRuleChildBindingRequestToJSON(json: any): RequestRuleChil
     return RequestRuleChildBindingRequestToJSONTyped(json, false);
 }
 
-export function RequestRuleChildBindingRequestToJSONTyped(
-    value?: RequestRuleChildBindingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestRuleChildBindingRequestToJSONTyped(value?: RequestRuleChildBindingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        binding: value["binding"],
-        target: value["target"],
+        
+        'uuid': value['uuid'],
+        'binding': value['binding'],
+        'target': value['target'],
     };
 }
+

@@ -12,17 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const RequestContentTypeEnum = {
-    ApplicationXWwwFormUrlencoded: "application/x-www-form-urlencoded",
-    ApplicationJson: "application/json",
-    UnknownDefaultOpenApi: "11184809",
+    ApplicationXWwwFormUrlencoded: 'application/x-www-form-urlencoded',
+    ApplicationJson: 'application/json',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type RequestContentTypeEnum =
-    (typeof RequestContentTypeEnum)[keyof typeof RequestContentTypeEnum];
+export type RequestContentTypeEnum = typeof RequestContentTypeEnum[keyof typeof RequestContentTypeEnum];
+
 
 export function instanceOfRequestContentTypeEnum(value: any): boolean {
     for (const key in RequestContentTypeEnum) {
@@ -39,10 +40,7 @@ export function RequestContentTypeEnumFromJSON(json: any): RequestContentTypeEnu
     return RequestContentTypeEnumFromJSONTyped(json, false);
 }
 
-export function RequestContentTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestContentTypeEnum {
+export function RequestContentTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestContentTypeEnum {
     return json as RequestContentTypeEnum;
 }
 
@@ -50,9 +48,7 @@ export function RequestContentTypeEnumToJSON(value?: RequestContentTypeEnum | nu
     return value as any;
 }
 
-export function RequestContentTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): RequestContentTypeEnum {
+export function RequestContentTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): RequestContentTypeEnum {
     return value as RequestContentTypeEnum;
 }
+

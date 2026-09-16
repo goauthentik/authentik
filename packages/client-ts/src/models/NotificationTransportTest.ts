@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Notification test serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface NotificationTransportTest {
     /**
-     *
+     * 
      */
     messages: Array<string>;
 }
@@ -27,10 +28,8 @@ export interface NotificationTransportTest {
 /**
  * Check if a given object implements the NotificationTransportTest interface.
  */
-export function instanceOfNotificationTransportTest(
-    value: object,
-): value is NotificationTransportTest {
-    if (!("messages" in value) || value["messages"] === undefined) return false;
+export function instanceOfNotificationTransportTest(value: object): value is NotificationTransportTest {
+    if (!('messages' in value) || value['messages'] === undefined) return false;
     return true;
 }
 
@@ -38,15 +37,13 @@ export function NotificationTransportTestFromJSON(json: any): NotificationTransp
     return NotificationTransportTestFromJSONTyped(json, false);
 }
 
-export function NotificationTransportTestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationTransportTest {
+export function NotificationTransportTestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationTransportTest {
     if (json == null) {
         return json;
     }
     return {
-        messages: json["messages"],
+        
+        'messages': json['messages'],
     };
 }
 
@@ -54,15 +51,14 @@ export function NotificationTransportTestToJSON(json: any): NotificationTranspor
     return NotificationTransportTestToJSONTyped(json, false);
 }
 
-export function NotificationTransportTestToJSONTyped(
-    value?: NotificationTransportTest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationTransportTestToJSONTyped(value?: NotificationTransportTest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        messages: value["messages"],
+        
+        'messages': value['messages'],
     };
 }
+

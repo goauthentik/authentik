@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Pseudo class for duo response
  * @export
@@ -19,7 +20,7 @@
  */
 export interface AuthenticatorDuoChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -27,45 +28,36 @@ export interface AuthenticatorDuoChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorDuoChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorDuoChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorDuoChallengeResponseRequest {
+export function instanceOfAuthenticatorDuoChallengeResponseRequest(value: object): value is AuthenticatorDuoChallengeResponseRequest {
     return true;
 }
 
-export function AuthenticatorDuoChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorDuoChallengeResponseRequest {
+export function AuthenticatorDuoChallengeResponseRequestFromJSON(json: any): AuthenticatorDuoChallengeResponseRequest {
     return AuthenticatorDuoChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorDuoChallengeResponseRequest {
+export function AuthenticatorDuoChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
-export function AuthenticatorDuoChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorDuoChallengeResponseRequest {
+export function AuthenticatorDuoChallengeResponseRequestToJSON(json: any): AuthenticatorDuoChallengeResponseRequest {
     return AuthenticatorDuoChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorDuoChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorDuoChallengeResponseRequestToJSONTyped(value?: AuthenticatorDuoChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

@@ -12,11 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags";
+import { mapValues } from '../runtime';
+import type { PatchedSettingsRequestFlags } from './PatchedSettingsRequestFlags';
 import {
     PatchedSettingsRequestFlagsFromJSON,
+    PatchedSettingsRequestFlagsFromJSONTyped,
     PatchedSettingsRequestFlagsToJSON,
-} from "./PatchedSettingsRequestFlags";
+    PatchedSettingsRequestFlagsToJSONTyped,
+} from './PatchedSettingsRequestFlags';
 
 /**
  * Settings Serializer
@@ -57,7 +60,7 @@ export interface PatchedSettingsRequest {
      */
     reputationUpperLimit?: number;
     /**
-     *
+     * 
      */
     footerLinks?: any | null;
     /**
@@ -89,7 +92,7 @@ export interface PatchedSettingsRequest {
      */
     paginationMaxPageSize?: number;
     /**
-     *
+     * 
      */
     flags?: PatchedSettingsRequestFlags;
 }
@@ -105,55 +108,29 @@ export function PatchedSettingsRequestFromJSON(json: any): PatchedSettingsReques
     return PatchedSettingsRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSettingsRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSettingsRequest {
+export function PatchedSettingsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSettingsRequest {
     if (json == null) {
         return json;
     }
     return {
-        avatars: json["avatars"] == null ? undefined : json["avatars"],
-        baseUrl: json["base_url"] == null ? undefined : json["base_url"],
-        defaultUserChangeName:
-            json["default_user_change_name"] == null ? undefined : json["default_user_change_name"],
-        defaultUserChangeEmail:
-            json["default_user_change_email"] == null
-                ? undefined
-                : json["default_user_change_email"],
-        defaultUserChangeUsername:
-            json["default_user_change_username"] == null
-                ? undefined
-                : json["default_user_change_username"],
-        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
-        reputationLowerLimit:
-            json["reputation_lower_limit"] == null ? undefined : json["reputation_lower_limit"],
-        reputationUpperLimit:
-            json["reputation_upper_limit"] == null ? undefined : json["reputation_upper_limit"],
-        footerLinks:
-            json["footer_links"] === undefined
-                ? undefined
-                : json["footer_links"] === null
-                  ? null
-                  : json["footer_links"],
-        gdprCompliance: json["gdpr_compliance"] == null ? undefined : json["gdpr_compliance"],
-        impersonation: json["impersonation"] == null ? undefined : json["impersonation"],
-        impersonationRequireReason:
-            json["impersonation_require_reason"] == null
-                ? undefined
-                : json["impersonation_require_reason"],
-        defaultTokenDuration:
-            json["default_token_duration"] == null ? undefined : json["default_token_duration"],
-        defaultTokenLength:
-            json["default_token_length"] == null ? undefined : json["default_token_length"],
-        paginationDefaultPageSize:
-            json["pagination_default_page_size"] == null
-                ? undefined
-                : json["pagination_default_page_size"],
-        paginationMaxPageSize:
-            json["pagination_max_page_size"] == null ? undefined : json["pagination_max_page_size"],
-        flags:
-            json["flags"] == null ? undefined : PatchedSettingsRequestFlagsFromJSON(json["flags"]),
+        
+        'avatars': json['avatars'] == null ? undefined : json['avatars'],
+        'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
+        'defaultUserChangeName': json['default_user_change_name'] == null ? undefined : json['default_user_change_name'],
+        'defaultUserChangeEmail': json['default_user_change_email'] == null ? undefined : json['default_user_change_email'],
+        'defaultUserChangeUsername': json['default_user_change_username'] == null ? undefined : json['default_user_change_username'],
+        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        'reputationLowerLimit': json['reputation_lower_limit'] == null ? undefined : json['reputation_lower_limit'],
+        'reputationUpperLimit': json['reputation_upper_limit'] == null ? undefined : json['reputation_upper_limit'],
+        'footerLinks': json['footer_links'] === undefined ? undefined : json['footer_links'] === null ? null : json['footer_links'],
+        'gdprCompliance': json['gdpr_compliance'] == null ? undefined : json['gdpr_compliance'],
+        'impersonation': json['impersonation'] == null ? undefined : json['impersonation'],
+        'impersonationRequireReason': json['impersonation_require_reason'] == null ? undefined : json['impersonation_require_reason'],
+        'defaultTokenDuration': json['default_token_duration'] == null ? undefined : json['default_token_duration'],
+        'defaultTokenLength': json['default_token_length'] == null ? undefined : json['default_token_length'],
+        'paginationDefaultPageSize': json['pagination_default_page_size'] == null ? undefined : json['pagination_default_page_size'],
+        'paginationMaxPageSize': json['pagination_max_page_size'] == null ? undefined : json['pagination_max_page_size'],
+        'flags': json['flags'] == null ? undefined : PatchedSettingsRequestFlagsFromJSON(json['flags']),
     };
 }
 
@@ -161,31 +138,30 @@ export function PatchedSettingsRequestToJSON(json: any): PatchedSettingsRequest 
     return PatchedSettingsRequestToJSONTyped(json, false);
 }
 
-export function PatchedSettingsRequestToJSONTyped(
-    value?: PatchedSettingsRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSettingsRequestToJSONTyped(value?: PatchedSettingsRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        avatars: value["avatars"],
-        base_url: value["baseUrl"],
-        default_user_change_name: value["defaultUserChangeName"],
-        default_user_change_email: value["defaultUserChangeEmail"],
-        default_user_change_username: value["defaultUserChangeUsername"],
-        event_retention: value["eventRetention"],
-        reputation_lower_limit: value["reputationLowerLimit"],
-        reputation_upper_limit: value["reputationUpperLimit"],
-        footer_links: value["footerLinks"],
-        gdpr_compliance: value["gdprCompliance"],
-        impersonation: value["impersonation"],
-        impersonation_require_reason: value["impersonationRequireReason"],
-        default_token_duration: value["defaultTokenDuration"],
-        default_token_length: value["defaultTokenLength"],
-        pagination_default_page_size: value["paginationDefaultPageSize"],
-        pagination_max_page_size: value["paginationMaxPageSize"],
-        flags: PatchedSettingsRequestFlagsToJSON(value["flags"]),
+        
+        'avatars': value['avatars'],
+        'base_url': value['baseUrl'],
+        'default_user_change_name': value['defaultUserChangeName'],
+        'default_user_change_email': value['defaultUserChangeEmail'],
+        'default_user_change_username': value['defaultUserChangeUsername'],
+        'event_retention': value['eventRetention'],
+        'reputation_lower_limit': value['reputationLowerLimit'],
+        'reputation_upper_limit': value['reputationUpperLimit'],
+        'footer_links': value['footerLinks'],
+        'gdpr_compliance': value['gdprCompliance'],
+        'impersonation': value['impersonation'],
+        'impersonation_require_reason': value['impersonationRequireReason'],
+        'default_token_duration': value['defaultTokenDuration'],
+        'default_token_length': value['defaultTokenLength'],
+        'pagination_default_page_size': value['paginationDefaultPageSize'],
+        'pagination_max_page_size': value['paginationMaxPageSize'],
+        'flags': PatchedSettingsRequestFlagsToJSON(value['flags']),
     };
 }
+

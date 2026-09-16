@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SCIMSourceUser Serializer
  * @export
@@ -19,40 +20,34 @@
  */
 export interface SCIMSourceUserRequest {
     /**
-     *
+     * 
      */
     id?: string;
     /**
-     *
+     * 
      */
     externalId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the SCIMSourceUserRequest interface.
  */
 export function instanceOfSCIMSourceUserRequest(value: object): value is SCIMSourceUserRequest {
-    if (
-        (!("externalId" in (value as Record<string, any>)) &&
-            !("external_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalId"] === undefined &&
-            (value as Record<string, any>)["external_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if ((!('externalId' in (value as Record<string, any>)) && !('external_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalId'] === undefined && (value as Record<string, any>)['external_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -60,19 +55,17 @@ export function SCIMSourceUserRequestFromJSON(json: any): SCIMSourceUserRequest 
     return SCIMSourceUserRequestFromJSONTyped(json, false);
 }
 
-export function SCIMSourceUserRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMSourceUserRequest {
+export function SCIMSourceUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourceUserRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"] == null ? undefined : json["id"],
-        externalId: json["external_id"],
-        user: json["user"],
-        source: json["source"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'id': json['id'] == null ? undefined : json['id'],
+        'externalId': json['external_id'],
+        'user': json['user'],
+        'source': json['source'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -80,19 +73,18 @@ export function SCIMSourceUserRequestToJSON(json: any): SCIMSourceUserRequest {
     return SCIMSourceUserRequestToJSONTyped(json, false);
 }
 
-export function SCIMSourceUserRequestToJSONTyped(
-    value?: SCIMSourceUserRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMSourceUserRequestToJSONTyped(value?: SCIMSourceUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        external_id: value["externalId"],
-        user: value["user"],
-        source: value["source"],
-        attributes: value["attributes"],
+        
+        'id': value['id'],
+        'external_id': value['externalId'],
+        'user': value['user'],
+        'source': value['source'],
+        'attributes': value['attributes'],
     };
 }
+

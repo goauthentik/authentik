@@ -12,22 +12,23 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface PatchedRequestRuleChildBindingRequest
  */
 export interface PatchedRequestRuleChildBindingRequest {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     binding?: string;
     /**
-     *
+     * 
      */
     target?: string;
 }
@@ -35,49 +36,40 @@ export interface PatchedRequestRuleChildBindingRequest {
 /**
  * Check if a given object implements the PatchedRequestRuleChildBindingRequest interface.
  */
-export function instanceOfPatchedRequestRuleChildBindingRequest(
-    value: object,
-): value is PatchedRequestRuleChildBindingRequest {
+export function instanceOfPatchedRequestRuleChildBindingRequest(value: object): value is PatchedRequestRuleChildBindingRequest {
     return true;
 }
 
-export function PatchedRequestRuleChildBindingRequestFromJSON(
-    json: any,
-): PatchedRequestRuleChildBindingRequest {
+export function PatchedRequestRuleChildBindingRequestFromJSON(json: any): PatchedRequestRuleChildBindingRequest {
     return PatchedRequestRuleChildBindingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRequestRuleChildBindingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedRequestRuleChildBindingRequest {
+export function PatchedRequestRuleChildBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRequestRuleChildBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        binding: json["binding"] == null ? undefined : json["binding"],
-        target: json["target"] == null ? undefined : json["target"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'binding': json['binding'] == null ? undefined : json['binding'],
+        'target': json['target'] == null ? undefined : json['target'],
     };
 }
 
-export function PatchedRequestRuleChildBindingRequestToJSON(
-    json: any,
-): PatchedRequestRuleChildBindingRequest {
+export function PatchedRequestRuleChildBindingRequestToJSON(json: any): PatchedRequestRuleChildBindingRequest {
     return PatchedRequestRuleChildBindingRequestToJSONTyped(json, false);
 }
 
-export function PatchedRequestRuleChildBindingRequestToJSONTyped(
-    value?: PatchedRequestRuleChildBindingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedRequestRuleChildBindingRequestToJSONTyped(value?: PatchedRequestRuleChildBindingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        binding: value["binding"],
-        target: value["target"],
+        
+        'uuid': value['uuid'],
+        'binding': value['binding'],
+        'target': value['target'],
     };
 }
+

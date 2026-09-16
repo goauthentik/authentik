@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * ApplicationEntitlement Serializer
  * @export
@@ -19,36 +20,30 @@
  */
 export interface ApplicationEntitlement {
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     app: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the ApplicationEntitlement interface.
  */
 export function instanceOfApplicationEntitlement(value: object): value is ApplicationEntitlement {
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("app" in value) || value["app"] === undefined) return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('app' in value) || value['app'] === undefined) return false;
     return true;
 }
 
@@ -56,18 +51,16 @@ export function ApplicationEntitlementFromJSON(json: any): ApplicationEntitlemen
     return ApplicationEntitlementFromJSONTyped(json, false);
 }
 
-export function ApplicationEntitlementFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ApplicationEntitlement {
+export function ApplicationEntitlementFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApplicationEntitlement {
     if (json == null) {
         return json;
     }
     return {
-        pbmUuid: json["pbm_uuid"],
-        name: json["name"],
-        app: json["app"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'pbmUuid': json['pbm_uuid'],
+        'name': json['name'],
+        'app': json['app'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -75,17 +68,16 @@ export function ApplicationEntitlementToJSON(json: any): ApplicationEntitlement 
     return ApplicationEntitlementToJSONTyped(json, false);
 }
 
-export function ApplicationEntitlementToJSONTyped(
-    value?: Omit<ApplicationEntitlement, "pbmUuid"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ApplicationEntitlementToJSONTyped(value?: Omit<ApplicationEntitlement, 'pbmUuid'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        app: value["app"],
-        attributes: value["attributes"],
+        
+        'name': value['name'],
+        'app': value['app'],
+        'attributes': value['attributes'],
     };
 }
+

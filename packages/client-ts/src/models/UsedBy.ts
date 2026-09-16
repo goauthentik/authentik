@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { UsedByActionEnum } from "./UsedByActionEnum";
-import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByActionEnum";
+import { mapValues } from '../runtime';
+import type { UsedByActionEnum } from './UsedByActionEnum';
+import {
+    UsedByActionEnumFromJSON,
+    UsedByActionEnumFromJSONTyped,
+    UsedByActionEnumToJSON,
+    UsedByActionEnumToJSONTyped,
+} from './UsedByActionEnum';
 
 /**
  * A list of all objects referencing the queried object
@@ -22,42 +28,38 @@ import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByAction
  */
 export interface UsedBy {
     /**
-     *
+     * 
      */
     app: string;
     /**
-     *
+     * 
      */
     modelName: string;
     /**
-     *
+     * 
      */
     pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     action: UsedByActionEnum;
 }
+
+
 
 /**
  * Check if a given object implements the UsedBy interface.
  */
 export function instanceOfUsedBy(value: object): value is UsedBy {
-    if (!("app" in value) || value["app"] === undefined) return false;
-    if (
-        (!("modelName" in (value as Record<string, any>)) &&
-            !("model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["modelName"] === undefined &&
-            (value as Record<string, any>)["model_name"] === undefined)
-    )
-        return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("action" in value) || value["action"] === undefined) return false;
+    if (!('app' in value) || value['app'] === undefined) return false;
+    if ((!('modelName' in (value as Record<string, any>)) && !('model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['modelName'] === undefined && (value as Record<string, any>)['model_name'] === undefined)) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('action' in value) || value['action'] === undefined) return false;
     return true;
 }
 
@@ -70,11 +72,12 @@ export function UsedByFromJSONTyped(json: any, ignoreDiscriminator: boolean): Us
         return json;
     }
     return {
-        app: json["app"],
-        modelName: json["model_name"],
-        pk: json["pk"],
-        name: json["name"],
-        action: UsedByActionEnumFromJSON(json["action"]),
+        
+        'app': json['app'],
+        'modelName': json['model_name'],
+        'pk': json['pk'],
+        'name': json['name'],
+        'action': UsedByActionEnumFromJSON(json['action']),
     };
 }
 
@@ -82,19 +85,18 @@ export function UsedByToJSON(json: any): UsedBy {
     return UsedByToJSONTyped(json, false);
 }
 
-export function UsedByToJSONTyped(
-    value?: UsedBy | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UsedByToJSONTyped(value?: UsedBy | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        app: value["app"],
-        model_name: value["modelName"],
-        pk: value["pk"],
-        name: value["name"],
-        action: UsedByActionEnumToJSON(value["action"]),
+        
+        'app': value['app'],
+        'model_name': value['modelName'],
+        'pk': value['pk'],
+        'name': value['name'],
+        'action': UsedByActionEnumToJSON(value['action']),
     };
 }
+

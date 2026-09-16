@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SSFProvider } from "./SSFProvider";
-import { SSFProviderFromJSON, SSFProviderToJSON } from "./SSFProvider";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { SSFProvider } from './SSFProvider';
+import {
+    SSFProviderFromJSON,
+    SSFProviderFromJSONTyped,
+    SSFProviderToJSON,
+    SSFProviderToJSONTyped,
+} from './SSFProvider';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSSFProviderList
  */
 export interface PaginatedSSFProviderList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SSFProvider>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSSFProviderList interface.
  */
-export function instanceOfPaginatedSSFProviderList(
-    value: object,
-): value is PaginatedSSFProviderList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedSSFProviderList(value: object): value is PaginatedSSFProviderList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedSSFProviderListFromJSON(json: any): PaginatedSSFProvide
     return PaginatedSSFProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedSSFProviderListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSSFProviderList {
+export function PaginatedSSFProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSSFProviderList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SSFProviderFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SSFProviderFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedSSFProviderListToJSON(json: any): PaginatedSSFProviderL
     return PaginatedSSFProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedSSFProviderListToJSONTyped(
-    value?: PaginatedSSFProviderList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSSFProviderListToJSONTyped(value?: PaginatedSSFProviderList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SSFProviderToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SSFProviderToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

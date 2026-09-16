@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { ConnectionToken } from "./ConnectionToken";
-import { ConnectionTokenFromJSON, ConnectionTokenToJSON } from "./ConnectionToken";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { ConnectionToken } from './ConnectionToken';
+import {
+    ConnectionTokenFromJSON,
+    ConnectionTokenFromJSONTyped,
+    ConnectionTokenToJSON,
+    ConnectionTokenToJSONTyped,
+} from './ConnectionToken';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedConnectionTokenList
  */
 export interface PaginatedConnectionTokenList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ConnectionToken>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedConnectionTokenList interface.
  */
-export function instanceOfPaginatedConnectionTokenList(
-    value: object,
-): value is PaginatedConnectionTokenList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedConnectionTokenList(value: object): value is PaginatedConnectionTokenList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedConnectionTokenListFromJSON(json: any): PaginatedConnec
     return PaginatedConnectionTokenListFromJSONTyped(json, false);
 }
 
-export function PaginatedConnectionTokenListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedConnectionTokenList {
+export function PaginatedConnectionTokenListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedConnectionTokenList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ConnectionTokenFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ConnectionTokenFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedConnectionTokenListToJSON(json: any): PaginatedConnecti
     return PaginatedConnectionTokenListToJSONTyped(json, false);
 }
 
-export function PaginatedConnectionTokenListToJSONTyped(
-    value?: PaginatedConnectionTokenList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedConnectionTokenListToJSONTyped(value?: PaginatedConnectionTokenList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ConnectionTokenToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ConnectionTokenToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

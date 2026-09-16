@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { TransportModeEnum } from "./TransportModeEnum";
-import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
+import { mapValues } from '../runtime';
+import type { TransportModeEnum } from './TransportModeEnum';
+import {
+    TransportModeEnumFromJSON,
+    TransportModeEnumFromJSONTyped,
+    TransportModeEnumToJSON,
+    TransportModeEnumToJSONTyped,
+} from './TransportModeEnum';
 
 /**
  * NotificationTransport Serializer
@@ -22,15 +28,15 @@ import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportM
  */
 export interface NotificationTransport {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     mode?: TransportModeEnum;
     /**
@@ -38,7 +44,7 @@ export interface NotificationTransport {
      */
     readonly modeVerbose: string;
     /**
-     *
+     * 
      */
     webhookUrl?: string;
     /**
@@ -54,11 +60,11 @@ export interface NotificationTransport {
      */
     webhookMappingHeaders?: string | null;
     /**
-     *
+     * 
      */
     emailSubjectPrefix?: string;
     /**
-     *
+     * 
      */
     emailTemplate?: string;
     /**
@@ -67,19 +73,15 @@ export interface NotificationTransport {
     sendOnce?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the NotificationTransport interface.
  */
 export function instanceOfNotificationTransport(value: object): value is NotificationTransport {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("modeVerbose" in (value as Record<string, any>)) &&
-            !("mode_verbose" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["modeVerbose"] === undefined &&
-            (value as Record<string, any>)["mode_verbose"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('modeVerbose' in (value as Record<string, any>)) && !('mode_verbose' in (value as Record<string, any>))) || ((value as Record<string, any>)['modeVerbose'] === undefined && (value as Record<string, any>)['mode_verbose'] === undefined)) return false;
     return true;
 }
 
@@ -87,41 +89,23 @@ export function NotificationTransportFromJSON(json: any): NotificationTransport 
     return NotificationTransportFromJSONTyped(json, false);
 }
 
-export function NotificationTransportFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationTransport {
+export function NotificationTransportFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationTransport {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
-        modeVerbose: json["mode_verbose"],
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
-        webhookCa:
-            json["webhook_ca"] === undefined
-                ? undefined
-                : json["webhook_ca"] === null
-                  ? null
-                  : json["webhook_ca"],
-        webhookMappingBody:
-            json["webhook_mapping_body"] === undefined
-                ? undefined
-                : json["webhook_mapping_body"] === null
-                  ? null
-                  : json["webhook_mapping_body"],
-        webhookMappingHeaders:
-            json["webhook_mapping_headers"] === undefined
-                ? undefined
-                : json["webhook_mapping_headers"] === null
-                  ? null
-                  : json["webhook_mapping_headers"],
-        emailSubjectPrefix:
-            json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
-        emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
-        sendOnce: json["send_once"] == null ? undefined : json["send_once"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'mode': json['mode'] == null ? undefined : TransportModeEnumFromJSON(json['mode']),
+        'modeVerbose': json['mode_verbose'],
+        'webhookUrl': json['webhook_url'] == null ? undefined : json['webhook_url'],
+        'webhookCa': json['webhook_ca'] === undefined ? undefined : json['webhook_ca'] === null ? null : json['webhook_ca'],
+        'webhookMappingBody': json['webhook_mapping_body'] === undefined ? undefined : json['webhook_mapping_body'] === null ? null : json['webhook_mapping_body'],
+        'webhookMappingHeaders': json['webhook_mapping_headers'] === undefined ? undefined : json['webhook_mapping_headers'] === null ? null : json['webhook_mapping_headers'],
+        'emailSubjectPrefix': json['email_subject_prefix'] == null ? undefined : json['email_subject_prefix'],
+        'emailTemplate': json['email_template'] == null ? undefined : json['email_template'],
+        'sendOnce': json['send_once'] == null ? undefined : json['send_once'],
     };
 }
 
@@ -129,23 +113,22 @@ export function NotificationTransportToJSON(json: any): NotificationTransport {
     return NotificationTransportToJSONTyped(json, false);
 }
 
-export function NotificationTransportToJSONTyped(
-    value?: Omit<NotificationTransport, "pk" | "modeVerbose"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationTransportToJSONTyped(value?: Omit<NotificationTransport, 'pk'|'modeVerbose'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mode: TransportModeEnumToJSON(value["mode"]),
-        webhook_url: value["webhookUrl"],
-        webhook_ca: value["webhookCa"],
-        webhook_mapping_body: value["webhookMappingBody"],
-        webhook_mapping_headers: value["webhookMappingHeaders"],
-        email_subject_prefix: value["emailSubjectPrefix"],
-        email_template: value["emailTemplate"],
-        send_once: value["sendOnce"],
+        
+        'name': value['name'],
+        'mode': TransportModeEnumToJSON(value['mode']),
+        'webhook_url': value['webhookUrl'],
+        'webhook_ca': value['webhookCa'],
+        'webhook_mapping_body': value['webhookMappingBody'],
+        'webhook_mapping_headers': value['webhookMappingHeaders'],
+        'email_subject_prefix': value['emailSubjectPrefix'],
+        'email_template': value['emailTemplate'],
+        'send_once': value['sendOnce'],
     };
 }
+

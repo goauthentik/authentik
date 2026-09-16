@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { Group } from "./Group";
-import { GroupFromJSON } from "./Group";
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
+import { mapValues } from '../runtime';
+import type { Group } from './Group';
+import {
+    GroupFromJSON,
+    GroupFromJSONTyped,
+    GroupToJSON,
+    GroupToJSONTyped,
+} from './Group';
+import type { SeverityEnum } from './SeverityEnum';
+import {
+    SeverityEnumFromJSON,
+    SeverityEnumFromJSONTyped,
+    SeverityEnumToJSON,
+    SeverityEnumToJSONTyped,
+} from './SeverityEnum';
 
 /**
  * NotificationRule Serializer
@@ -24,11 +35,11 @@ import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
  */
 export interface NotificationRule {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -44,7 +55,7 @@ export interface NotificationRule {
      */
     destinationGroup?: string | null;
     /**
-     *
+     * 
      */
     readonly destinationGroupObj: Group | null;
     /**
@@ -53,19 +64,15 @@ export interface NotificationRule {
     destinationEventUser?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the NotificationRule interface.
  */
 export function instanceOfNotificationRule(value: object): value is NotificationRule {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("destinationGroupObj" in (value as Record<string, any>)) &&
-            !("destination_group_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["destinationGroupObj"] === undefined &&
-            (value as Record<string, any>)["destination_group_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('destinationGroupObj' in (value as Record<string, any>)) && !('destination_group_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['destinationGroupObj'] === undefined && (value as Record<string, any>)['destination_group_obj'] === undefined)) return false;
     return true;
 }
 
@@ -73,27 +80,19 @@ export function NotificationRuleFromJSON(json: any): NotificationRule {
     return NotificationRuleFromJSONTyped(json, false);
 }
 
-export function NotificationRuleFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationRule {
+export function NotificationRuleFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationRule {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        transports: json["transports"] == null ? undefined : json["transports"],
-        severity: json["severity"] == null ? undefined : SeverityEnumFromJSON(json["severity"]),
-        destinationGroup:
-            json["destination_group"] === undefined
-                ? undefined
-                : json["destination_group"] === null
-                  ? null
-                  : json["destination_group"],
-        destinationGroupObj: GroupFromJSON(json["destination_group_obj"]),
-        destinationEventUser:
-            json["destination_event_user"] == null ? undefined : json["destination_event_user"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'transports': json['transports'] == null ? undefined : json['transports'],
+        'severity': json['severity'] == null ? undefined : SeverityEnumFromJSON(json['severity']),
+        'destinationGroup': json['destination_group'] === undefined ? undefined : json['destination_group'] === null ? null : json['destination_group'],
+        'destinationGroupObj': GroupFromJSON(json['destination_group_obj']),
+        'destinationEventUser': json['destination_event_user'] == null ? undefined : json['destination_event_user'],
     };
 }
 
@@ -101,19 +100,18 @@ export function NotificationRuleToJSON(json: any): NotificationRule {
     return NotificationRuleToJSONTyped(json, false);
 }
 
-export function NotificationRuleToJSONTyped(
-    value?: Omit<NotificationRule, "pk" | "destinationGroupObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationRuleToJSONTyped(value?: Omit<NotificationRule, 'pk'|'destinationGroupObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        transports: value["transports"],
-        severity: SeverityEnumToJSON(value["severity"]),
-        destination_group: value["destinationGroup"],
-        destination_event_user: value["destinationEventUser"],
+        
+        'name': value['name'],
+        'transports': value['transports'],
+        'severity': SeverityEnumToJSON(value['severity']),
+        'destination_group': value['destinationGroup'],
+        'destination_event_user': value['destinationEventUser'],
     };
 }
+

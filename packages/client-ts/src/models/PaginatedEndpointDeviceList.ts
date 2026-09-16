@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { EndpointDevice } from "./EndpointDevice";
-import { EndpointDeviceFromJSON, EndpointDeviceToJSON } from "./EndpointDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { EndpointDevice } from './EndpointDevice';
+import {
+    EndpointDeviceFromJSON,
+    EndpointDeviceFromJSONTyped,
+    EndpointDeviceToJSON,
+    EndpointDeviceToJSONTyped,
+} from './EndpointDevice';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedEndpointDeviceList
  */
 export interface PaginatedEndpointDeviceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<EndpointDevice>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedEndpointDeviceList interface.
  */
-export function instanceOfPaginatedEndpointDeviceList(
-    value: object,
-): value is PaginatedEndpointDeviceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedEndpointDeviceList(value: object): value is PaginatedEndpointDeviceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedEndpointDeviceListFromJSON(json: any): PaginatedEndpoin
     return PaginatedEndpointDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedEndpointDeviceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedEndpointDeviceList {
+export function PaginatedEndpointDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEndpointDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EndpointDeviceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(EndpointDeviceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedEndpointDeviceListToJSON(json: any): PaginatedEndpointD
     return PaginatedEndpointDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedEndpointDeviceListToJSONTyped(
-    value?: PaginatedEndpointDeviceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedEndpointDeviceListToJSONTyped(value?: PaginatedEndpointDeviceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EndpointDeviceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(EndpointDeviceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

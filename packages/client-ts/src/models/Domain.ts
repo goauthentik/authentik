@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Domain Serializer
  * @export
@@ -19,19 +20,19 @@
  */
 export interface Domain {
     /**
-     *
+     * 
      */
     readonly id: number;
     /**
-     *
+     * 
      */
     domain: string;
     /**
-     *
+     * 
      */
     isPrimary?: boolean;
     /**
-     *
+     * 
      */
     tenant: string;
 }
@@ -40,9 +41,9 @@ export interface Domain {
  * Check if a given object implements the Domain interface.
  */
 export function instanceOfDomain(value: object): value is Domain {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("domain" in value) || value["domain"] === undefined) return false;
-    if (!("tenant" in value) || value["tenant"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('domain' in value) || value['domain'] === undefined) return false;
+    if (!('tenant' in value) || value['tenant'] === undefined) return false;
     return true;
 }
 
@@ -55,10 +56,11 @@ export function DomainFromJSONTyped(json: any, ignoreDiscriminator: boolean): Do
         return json;
     }
     return {
-        id: json["id"],
-        domain: json["domain"],
-        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
-        tenant: json["tenant"],
+        
+        'id': json['id'],
+        'domain': json['domain'],
+        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
+        'tenant': json['tenant'],
     };
 }
 
@@ -66,17 +68,16 @@ export function DomainToJSON(json: any): Domain {
     return DomainToJSONTyped(json, false);
 }
 
-export function DomainToJSONTyped(
-    value?: Omit<Domain, "id"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DomainToJSONTyped(value?: Omit<Domain, 'id'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        domain: value["domain"],
-        is_primary: value["isPrimary"],
-        tenant: value["tenant"],
+        
+        'domain': value['domain'],
+        'is_primary': value['isPrimary'],
+        'tenant': value['tenant'],
     };
 }
+

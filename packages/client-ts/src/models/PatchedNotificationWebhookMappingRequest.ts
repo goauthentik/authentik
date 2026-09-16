@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * NotificationWebhookMapping Serializer
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedNotificationWebhookMappingRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedNotificationWebhookMappingRequest {
 /**
  * Check if a given object implements the PatchedNotificationWebhookMappingRequest interface.
  */
-export function instanceOfPatchedNotificationWebhookMappingRequest(
-    value: object,
-): value is PatchedNotificationWebhookMappingRequest {
+export function instanceOfPatchedNotificationWebhookMappingRequest(value: object): value is PatchedNotificationWebhookMappingRequest {
     return true;
 }
 
-export function PatchedNotificationWebhookMappingRequestFromJSON(
-    json: any,
-): PatchedNotificationWebhookMappingRequest {
+export function PatchedNotificationWebhookMappingRequestFromJSON(json: any): PatchedNotificationWebhookMappingRequest {
     return PatchedNotificationWebhookMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedNotificationWebhookMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedNotificationWebhookMappingRequest {
+export function PatchedNotificationWebhookMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedNotificationWebhookMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedNotificationWebhookMappingRequestToJSON(
-    json: any,
-): PatchedNotificationWebhookMappingRequest {
+export function PatchedNotificationWebhookMappingRequestToJSON(json: any): PatchedNotificationWebhookMappingRequest {
     return PatchedNotificationWebhookMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedNotificationWebhookMappingRequestToJSONTyped(
-    value?: PatchedNotificationWebhookMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedNotificationWebhookMappingRequestToJSONTyped(value?: PatchedNotificationWebhookMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        expression: value["expression"],
+        
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

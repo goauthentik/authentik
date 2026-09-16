@@ -12,11 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
+import { mapValues } from '../runtime';
+import type { OutgoingSyncDeleteAction } from './OutgoingSyncDeleteAction';
 import {
     OutgoingSyncDeleteActionFromJSON,
+    OutgoingSyncDeleteActionFromJSONTyped,
     OutgoingSyncDeleteActionToJSON,
-} from "./OutgoingSyncDeleteAction";
+    OutgoingSyncDeleteActionToJSONTyped,
+} from './OutgoingSyncDeleteAction';
 
 /**
  * MicrosoftEntraProvider Serializer
@@ -25,15 +28,15 @@ import {
  */
 export interface MicrosoftEntraProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -65,27 +68,27 @@ export interface MicrosoftEntraProvider {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     clientId: string;
     /**
-     *
+     * 
      */
     tenantId: string;
     /**
-     *
+     * 
      */
     excludeUsersServiceAccount?: boolean;
     /**
-     *
+     * 
      */
     filterGroup?: string | null;
     /**
-     *
+     * 
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     *
+     * 
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
@@ -106,62 +109,22 @@ export interface MicrosoftEntraProvider {
     dryRun?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the MicrosoftEntraProvider interface.
  */
 export function instanceOfMicrosoftEntraProvider(value: object): value is MicrosoftEntraProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("tenantId" in (value as Record<string, any>)) &&
-            !("tenant_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tenantId"] === undefined &&
-            (value as Record<string, any>)["tenant_id"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     return true;
 }
 
@@ -169,49 +132,32 @@ export function MicrosoftEntraProviderFromJSON(json: any): MicrosoftEntraProvide
     return MicrosoftEntraProviderFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MicrosoftEntraProvider {
+export function MicrosoftEntraProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProvider {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        propertyMappingsGroup:
-            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
-        component: json["component"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        clientId: json["client_id"],
-        tenantId: json["tenant_id"],
-        excludeUsersServiceAccount:
-            json["exclude_users_service_account"] == null
-                ? undefined
-                : json["exclude_users_service_account"],
-        filterGroup:
-            json["filter_group"] === undefined
-                ? undefined
-                : json["filter_group"] === null
-                  ? null
-                  : json["filter_group"],
-        userDeleteAction:
-            json["user_delete_action"] == null
-                ? undefined
-                : OutgoingSyncDeleteActionFromJSON(json["user_delete_action"]),
-        groupDeleteAction:
-            json["group_delete_action"] == null
-                ? undefined
-                : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
-        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
-        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
-        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
-        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
+        'component': json['component'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'clientId': json['client_id'],
+        'tenantId': json['tenant_id'],
+        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
+        'filterGroup': json['filter_group'] === undefined ? undefined : json['filter_group'] === null ? null : json['filter_group'],
+        'userDeleteAction': json['user_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['user_delete_action']),
+        'groupDeleteAction': json['group_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['group_delete_action']),
+        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
+        'discoveryEnabled': json['discovery_enabled'] == null ? undefined : json['discovery_enabled'],
+        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
+        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
     };
 }
 
@@ -219,36 +165,26 @@ export function MicrosoftEntraProviderToJSON(json: any): MicrosoftEntraProvider 
     return MicrosoftEntraProviderToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderToJSONTyped(
-    value?: Omit<
-        MicrosoftEntraProvider,
-        | "pk"
-        | "component"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MicrosoftEntraProviderToJSONTyped(value?: Omit<MicrosoftEntraProvider, 'pk'|'component'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        property_mappings: value["propertyMappings"],
-        property_mappings_group: value["propertyMappingsGroup"],
-        client_id: value["clientId"],
-        tenant_id: value["tenantId"],
-        exclude_users_service_account: value["excludeUsersServiceAccount"],
-        filter_group: value["filterGroup"],
-        user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
-        group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
-        sync_page_size: value["syncPageSize"],
-        discovery_enabled: value["discoveryEnabled"],
-        sync_page_timeout: value["syncPageTimeout"],
-        dry_run: value["dryRun"],
+        
+        'name': value['name'],
+        'property_mappings': value['propertyMappings'],
+        'property_mappings_group': value['propertyMappingsGroup'],
+        'client_id': value['clientId'],
+        'tenant_id': value['tenantId'],
+        'exclude_users_service_account': value['excludeUsersServiceAccount'],
+        'filter_group': value['filterGroup'],
+        'user_delete_action': OutgoingSyncDeleteActionToJSON(value['userDeleteAction']),
+        'group_delete_action': OutgoingSyncDeleteActionToJSON(value['groupDeleteAction']),
+        'sync_page_size': value['syncPageSize'],
+        'discovery_enabled': value['discoveryEnabled'],
+        'sync_page_timeout': value['syncPageTimeout'],
+        'dry_run': value['dryRun'],
     };
 }
+

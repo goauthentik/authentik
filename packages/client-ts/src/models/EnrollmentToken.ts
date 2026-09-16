@@ -12,42 +12,47 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { DeviceAccessGroup } from './DeviceAccessGroup';
+import {
+    DeviceAccessGroupFromJSON,
+    DeviceAccessGroupFromJSONTyped,
+    DeviceAccessGroupToJSON,
+    DeviceAccessGroupToJSONTyped,
+} from './DeviceAccessGroup';
 
 /**
- *
+ * 
  * @export
  * @interface EnrollmentToken
  */
 export interface EnrollmentToken {
     /**
-     *
+     * 
      */
     readonly tokenUuid: string;
     /**
-     *
+     * 
      */
     deviceGroup?: string | null;
     /**
-     *
+     * 
      */
     readonly deviceGroupObj: DeviceAccessGroup | null;
     /**
-     *
+     * 
      */
     connector: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
 }
@@ -56,22 +61,10 @@ export interface EnrollmentToken {
  * Check if a given object implements the EnrollmentToken interface.
  */
 export function instanceOfEnrollmentToken(value: object): value is EnrollmentToken {
-    if (
-        (!("tokenUuid" in (value as Record<string, any>)) &&
-            !("token_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenUuid"] === undefined &&
-            (value as Record<string, any>)["token_uuid"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceGroupObj" in (value as Record<string, any>)) &&
-            !("device_group_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceGroupObj"] === undefined &&
-            (value as Record<string, any>)["device_group_obj"] === undefined)
-    )
-        return false;
-    if (!("connector" in value) || value["connector"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if ((!('tokenUuid' in (value as Record<string, any>)) && !('token_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenUuid'] === undefined && (value as Record<string, any>)['token_uuid'] === undefined)) return false;
+    if ((!('deviceGroupObj' in (value as Record<string, any>)) && !('device_group_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceGroupObj'] === undefined && (value as Record<string, any>)['device_group_obj'] === undefined)) return false;
+    if (!('connector' in value) || value['connector'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -79,31 +72,19 @@ export function EnrollmentTokenFromJSON(json: any): EnrollmentToken {
     return EnrollmentTokenFromJSONTyped(json, false);
 }
 
-export function EnrollmentTokenFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EnrollmentToken {
+export function EnrollmentTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): EnrollmentToken {
     if (json == null) {
         return json;
     }
     return {
-        tokenUuid: json["token_uuid"],
-        deviceGroup:
-            json["device_group"] === undefined
-                ? undefined
-                : json["device_group"] === null
-                  ? null
-                  : json["device_group"],
-        deviceGroupObj: DeviceAccessGroupFromJSON(json["device_group_obj"]),
-        connector: json["connector"],
-        name: json["name"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
+        
+        'tokenUuid': json['token_uuid'],
+        'deviceGroup': json['device_group'] === undefined ? undefined : json['device_group'] === null ? null : json['device_group'],
+        'deviceGroupObj': DeviceAccessGroupFromJSON(json['device_group_obj']),
+        'connector': json['connector'],
+        'name': json['name'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
     };
 }
 
@@ -111,19 +92,18 @@ export function EnrollmentTokenToJSON(json: any): EnrollmentToken {
     return EnrollmentTokenToJSONTyped(json, false);
 }
 
-export function EnrollmentTokenToJSONTyped(
-    value?: Omit<EnrollmentToken, "tokenUuid" | "deviceGroupObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EnrollmentTokenToJSONTyped(value?: Omit<EnrollmentToken, 'tokenUuid'|'deviceGroupObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_group: value["deviceGroup"],
-        connector: value["connector"],
-        name: value["name"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'device_group': value['deviceGroup'],
+        'connector': value['connector'],
+        'name': value['name'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

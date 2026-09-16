@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { User } from './User';
+import {
+    UserFromJSON,
+    UserFromJSONTyped,
+    UserToJSON,
+    UserToJSONTyped,
+} from './User';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedUserList
  */
 export interface PaginatedUserList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<User>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedUserList interface.
  */
 export function instanceOfPaginatedUserList(value: object): value is PaginatedUserList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedUserListFromJSON(json: any): PaginatedUserList {
     return PaginatedUserListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedUserList {
+export function PaginatedUserListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(UserFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(UserFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedUserListToJSON(json: any): PaginatedUserList {
     return PaginatedUserListToJSONTyped(json, false);
 }
 
-export function PaginatedUserListToJSONTyped(
-    value?: PaginatedUserList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedUserListToJSONTyped(value?: PaginatedUserList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(UserToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(UserToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

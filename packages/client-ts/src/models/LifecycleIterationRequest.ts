@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { ContentTypeEnum } from "./ContentTypeEnum";
-import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
+import { mapValues } from '../runtime';
+import type { ContentTypeEnum } from './ContentTypeEnum';
+import {
+    ContentTypeEnumFromJSON,
+    ContentTypeEnumFromJSONTyped,
+    ContentTypeEnumToJSON,
+    ContentTypeEnumToJSONTyped,
+} from './ContentTypeEnum';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -23,24 +29,18 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
  */
 export interface LifecycleIterationRequest {
     /**
-     *
+     * 
      */
     contentType: ContentTypeEnum;
 }
 
+
+
 /**
  * Check if a given object implements the LifecycleIterationRequest interface.
  */
-export function instanceOfLifecycleIterationRequest(
-    value: object,
-): value is LifecycleIterationRequest {
-    if (
-        (!("contentType" in (value as Record<string, any>)) &&
-            !("content_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["contentType"] === undefined &&
-            (value as Record<string, any>)["content_type"] === undefined)
-    )
-        return false;
+export function instanceOfLifecycleIterationRequest(value: object): value is LifecycleIterationRequest {
+    if ((!('contentType' in (value as Record<string, any>)) && !('content_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['contentType'] === undefined && (value as Record<string, any>)['content_type'] === undefined)) return false;
     return true;
 }
 
@@ -48,15 +48,13 @@ export function LifecycleIterationRequestFromJSON(json: any): LifecycleIteration
     return LifecycleIterationRequestFromJSONTyped(json, false);
 }
 
-export function LifecycleIterationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LifecycleIterationRequest {
+export function LifecycleIterationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): LifecycleIterationRequest {
     if (json == null) {
         return json;
     }
     return {
-        contentType: ContentTypeEnumFromJSON(json["content_type"]),
+        
+        'contentType': ContentTypeEnumFromJSON(json['content_type']),
     };
 }
 
@@ -64,15 +62,14 @@ export function LifecycleIterationRequestToJSON(json: any): LifecycleIterationRe
     return LifecycleIterationRequestToJSONTyped(json, false);
 }
 
-export function LifecycleIterationRequestToJSONTyped(
-    value?: LifecycleIterationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LifecycleIterationRequestToJSONTyped(value?: LifecycleIterationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        content_type: ContentTypeEnumToJSON(value["contentType"]),
+        
+        'content_type': ContentTypeEnumToJSON(value['contentType']),
     };
 }
+

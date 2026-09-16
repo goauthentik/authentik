@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Notification } from "./Notification";
-import { NotificationFromJSON, NotificationToJSON } from "./Notification";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { Notification } from './Notification';
+import {
+    NotificationFromJSON,
+    NotificationFromJSONTyped,
+    NotificationToJSON,
+    NotificationToJSONTyped,
+} from './Notification';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedNotificationList
  */
 export interface PaginatedNotificationList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Notification>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedNotificationList interface.
  */
-export function instanceOfPaginatedNotificationList(
-    value: object,
-): value is PaginatedNotificationList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedNotificationList(value: object): value is PaginatedNotificationList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedNotificationListFromJSON(json: any): PaginatedNotificat
     return PaginatedNotificationListFromJSONTyped(json, false);
 }
 
-export function PaginatedNotificationListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedNotificationList {
+export function PaginatedNotificationListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedNotificationList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(NotificationFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(NotificationFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedNotificationListToJSON(json: any): PaginatedNotificatio
     return PaginatedNotificationListToJSONTyped(json, false);
 }
 
-export function PaginatedNotificationListToJSONTyped(
-    value?: PaginatedNotificationList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedNotificationListToJSONTyped(value?: PaginatedNotificationList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(NotificationToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(NotificationToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

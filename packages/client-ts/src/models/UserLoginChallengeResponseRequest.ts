@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User login challenge
  * @export
@@ -19,11 +20,11 @@
  */
 export interface UserLoginChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     rememberMe: boolean;
 }
@@ -31,54 +32,39 @@ export interface UserLoginChallengeResponseRequest {
 /**
  * Check if a given object implements the UserLoginChallengeResponseRequest interface.
  */
-export function instanceOfUserLoginChallengeResponseRequest(
-    value: object,
-): value is UserLoginChallengeResponseRequest {
-    if (
-        (!("rememberMe" in (value as Record<string, any>)) &&
-            !("remember_me" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["rememberMe"] === undefined &&
-            (value as Record<string, any>)["remember_me"] === undefined)
-    )
-        return false;
+export function instanceOfUserLoginChallengeResponseRequest(value: object): value is UserLoginChallengeResponseRequest {
+    if ((!('rememberMe' in (value as Record<string, any>)) && !('remember_me' in (value as Record<string, any>))) || ((value as Record<string, any>)['rememberMe'] === undefined && (value as Record<string, any>)['remember_me'] === undefined)) return false;
     return true;
 }
 
-export function UserLoginChallengeResponseRequestFromJSON(
-    json: any,
-): UserLoginChallengeResponseRequest {
+export function UserLoginChallengeResponseRequestFromJSON(json: any): UserLoginChallengeResponseRequest {
     return UserLoginChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function UserLoginChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserLoginChallengeResponseRequest {
+export function UserLoginChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLoginChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        rememberMe: json["remember_me"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'rememberMe': json['remember_me'],
     };
 }
 
-export function UserLoginChallengeResponseRequestToJSON(
-    json: any,
-): UserLoginChallengeResponseRequest {
+export function UserLoginChallengeResponseRequestToJSON(json: any): UserLoginChallengeResponseRequest {
     return UserLoginChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function UserLoginChallengeResponseRequestToJSONTyped(
-    value?: UserLoginChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserLoginChallengeResponseRequestToJSONTyped(value?: UserLoginChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        remember_me: value["rememberMe"],
+        
+        'component': value['component'],
+        'remember_me': value['rememberMe'],
     };
 }
+

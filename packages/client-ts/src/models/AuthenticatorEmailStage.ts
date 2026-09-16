@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import { mapValues } from '../runtime';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
 
 /**
  * AuthenticatorEmailStage Serializer
@@ -22,11 +28,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface AuthenticatorEmailStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -46,7 +52,7 @@ export interface AuthenticatorEmailStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -54,7 +60,7 @@ export interface AuthenticatorEmailStage {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
@@ -62,35 +68,35 @@ export interface AuthenticatorEmailStage {
      */
     useGlobalSettings?: boolean;
     /**
-     *
+     * 
      */
     host?: string;
     /**
-     *
+     * 
      */
     port?: number;
     /**
-     *
+     * 
      */
     username?: string;
     /**
-     *
+     * 
      */
     useTls?: boolean;
     /**
-     *
+     * 
      */
     useSsl?: boolean;
     /**
-     *
+     * 
      */
     timeout?: number;
     /**
-     *
+     * 
      */
     fromAddress?: string;
     /**
-     *
+     * 
      */
     subject?: string;
     /**
@@ -98,7 +104,7 @@ export interface AuthenticatorEmailStage {
      */
     tokenExpiry?: string;
     /**
-     *
+     * 
      */
     template?: string;
 }
@@ -107,37 +113,13 @@ export interface AuthenticatorEmailStage {
  * Check if a given object implements the AuthenticatorEmailStage interface.
  */
 export function instanceOfAuthenticatorEmailStage(value: object): value is AuthenticatorEmailStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -145,40 +127,32 @@ export function AuthenticatorEmailStageFromJSON(json: any): AuthenticatorEmailSt
     return AuthenticatorEmailStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorEmailStage {
+export function AuthenticatorEmailStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorEmailStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        useGlobalSettings:
-            json["use_global_settings"] == null ? undefined : json["use_global_settings"],
-        host: json["host"] == null ? undefined : json["host"],
-        port: json["port"] == null ? undefined : json["port"],
-        username: json["username"] == null ? undefined : json["username"],
-        useTls: json["use_tls"] == null ? undefined : json["use_tls"],
-        useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
-        timeout: json["timeout"] == null ? undefined : json["timeout"],
-        fromAddress: json["from_address"] == null ? undefined : json["from_address"],
-        subject: json["subject"] == null ? undefined : json["subject"],
-        tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
-        template: json["template"] == null ? undefined : json["template"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'useGlobalSettings': json['use_global_settings'] == null ? undefined : json['use_global_settings'],
+        'host': json['host'] == null ? undefined : json['host'],
+        'port': json['port'] == null ? undefined : json['port'],
+        'username': json['username'] == null ? undefined : json['username'],
+        'useTls': json['use_tls'] == null ? undefined : json['use_tls'],
+        'useSsl': json['use_ssl'] == null ? undefined : json['use_ssl'],
+        'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'fromAddress': json['from_address'] == null ? undefined : json['from_address'],
+        'subject': json['subject'] == null ? undefined : json['subject'],
+        'tokenExpiry': json['token_expiry'] == null ? undefined : json['token_expiry'],
+        'template': json['template'] == null ? undefined : json['template'],
     };
 }
 
@@ -186,31 +160,27 @@ export function AuthenticatorEmailStageToJSON(json: any): AuthenticatorEmailStag
     return AuthenticatorEmailStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailStageToJSONTyped(
-    value?: Omit<
-        AuthenticatorEmailStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorEmailStageToJSONTyped(value?: Omit<AuthenticatorEmailStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        use_global_settings: value["useGlobalSettings"],
-        host: value["host"],
-        port: value["port"],
-        username: value["username"],
-        use_tls: value["useTls"],
-        use_ssl: value["useSsl"],
-        timeout: value["timeout"],
-        from_address: value["fromAddress"],
-        subject: value["subject"],
-        token_expiry: value["tokenExpiry"],
-        template: value["template"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'use_global_settings': value['useGlobalSettings'],
+        'host': value['host'],
+        'port': value['port'],
+        'username': value['username'],
+        'use_tls': value['useTls'],
+        'use_ssl': value['useSsl'],
+        'timeout': value['timeout'],
+        'from_address': value['fromAddress'],
+        'subject': value['subject'],
+        'token_expiry': value['tokenExpiry'],
+        'template': value['template'],
     };
 }
+

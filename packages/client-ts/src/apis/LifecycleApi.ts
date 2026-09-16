@@ -12,57 +12,102 @@
  * Do not edit the class manually.
  */
 
-import { type LifecycleIteration, LifecycleIterationFromJSON } from "../models/LifecycleIteration";
+import * as runtime from '../runtime';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type LifecycleIteration,
+    LifecycleIterationFromJSON,
+    LifecycleIterationToJSON,
+} from '../models/LifecycleIteration';
 import {
     type LifecycleIterationRequest,
+    LifecycleIterationRequestFromJSON,
     LifecycleIterationRequestToJSON,
-} from "../models/LifecycleIterationRequest";
-import { type LifecycleRule, LifecycleRuleFromJSON } from "../models/LifecycleRule";
+} from '../models/LifecycleIterationRequest';
+import {
+    type LifecycleRule,
+    LifecycleRuleFromJSON,
+    LifecycleRuleToJSON,
+} from '../models/LifecycleRule';
 import {
     type LifecycleRuleRequest,
+    LifecycleRuleRequestFromJSON,
     LifecycleRuleRequestToJSON,
-} from "../models/LifecycleRuleRequest";
-import { type OffboardingActionEnum } from "../models/OffboardingActionEnum";
-import { type OffboardingStatusEnum } from "../models/OffboardingStatusEnum";
+} from '../models/LifecycleRuleRequest';
+import {
+    type OffboardingActionEnum,
+    OffboardingActionEnumFromJSON,
+    OffboardingActionEnumToJSON,
+} from '../models/OffboardingActionEnum';
+import {
+    type OffboardingStatusEnum,
+    OffboardingStatusEnumFromJSON,
+    OffboardingStatusEnumToJSON,
+} from '../models/OffboardingStatusEnum';
 import {
     type PaginatedLifecycleIterationList,
     PaginatedLifecycleIterationListFromJSON,
-} from "../models/PaginatedLifecycleIterationList";
+    PaginatedLifecycleIterationListToJSON,
+} from '../models/PaginatedLifecycleIterationList';
 import {
     type PaginatedLifecycleRuleList,
     PaginatedLifecycleRuleListFromJSON,
-} from "../models/PaginatedLifecycleRuleList";
+    PaginatedLifecycleRuleListToJSON,
+} from '../models/PaginatedLifecycleRuleList';
 import {
     type PaginatedUserOffboardingList,
     PaginatedUserOffboardingListFromJSON,
-} from "../models/PaginatedUserOffboardingList";
+    PaginatedUserOffboardingListToJSON,
+} from '../models/PaginatedUserOffboardingList';
 import {
     type PatchedLifecycleRuleRequest,
+    PatchedLifecycleRuleRequestFromJSON,
     PatchedLifecycleRuleRequestToJSON,
-} from "../models/PatchedLifecycleRuleRequest";
-import { type Review, ReviewFromJSON } from "../models/Review";
-import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
-import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
+} from '../models/PatchedLifecycleRuleRequest';
+import {
+    type Review,
+    ReviewFromJSON,
+    ReviewToJSON,
+} from '../models/Review';
+import {
+    type ReviewRequest,
+    ReviewRequestFromJSON,
+    ReviewRequestToJSON,
+} from '../models/ReviewRequest';
+import {
+    type UserOffboarding,
+    UserOffboardingFromJSON,
+    UserOffboardingToJSON,
+} from '../models/UserOffboarding';
 import {
     type UserOffboardingRequest,
+    UserOffboardingRequestFromJSON,
     UserOffboardingRequestToJSON,
-} from "../models/UserOffboardingRequest";
-import * as runtime from "../runtime";
+} from '../models/UserOffboardingRequest';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface LifecycleIterationsCreateRequest {
     /**
-     *
+     * 
      */
     lifecycleIterationRequest: LifecycleIterationRequest;
 }
 
 export interface LifecycleIterationsListLatestRequest {
     /**
-     *
+     * 
      */
     contentType: string;
     /**
-     *
+     * 
      */
     objectId: string;
     /**
@@ -74,7 +119,7 @@ export interface LifecycleIterationsListLatestRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     userIsReviewer?: boolean;
 }
@@ -97,21 +142,21 @@ export interface LifecycleIterationsListOpenRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     userIsReviewer?: boolean;
 }
 
 export interface LifecycleReviewsCreateRequest {
     /**
-     *
+     * 
      */
     reviewRequest: ReviewRequest;
 }
 
 export interface LifecycleRulesCreateRequest {
     /**
-     *
+     * 
      */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
@@ -125,7 +170,7 @@ export interface LifecycleRulesDestroyRequest {
 
 export interface LifecycleRulesListRequest {
     /**
-     *
+     * 
      */
     contentTypeModel?: string;
     /**
@@ -152,7 +197,7 @@ export interface LifecycleRulesPartialUpdateRequest {
      */
     id: string;
     /**
-     *
+     * 
      */
     patchedLifecycleRuleRequest?: PatchedLifecycleRuleRequest;
 }
@@ -170,14 +215,14 @@ export interface LifecycleRulesUpdateRequest {
      */
     id: string;
     /**
-     *
+     * 
      */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
 export interface LifecycleUserOffboardingCreateRequest {
     /**
-     *
+     * 
      */
     userOffboardingRequest: UserOffboardingRequest;
 }
@@ -191,7 +236,7 @@ export interface LifecycleUserOffboardingDestroyRequest {
 
 export interface LifecycleUserOffboardingListRequest {
     /**
-     *
+     * 
      */
     action?: OffboardingActionEnum;
     /**
@@ -211,11 +256,11 @@ export interface LifecycleUserOffboardingListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     status?: OffboardingStatusEnum;
     /**
-     *
+     * 
      */
     userUuid?: string;
 }
@@ -228,19 +273,18 @@ export interface LifecycleUserOffboardingRetrieveRequest {
 }
 
 /**
- *
+ * 
  */
 export class LifecycleApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for lifecycleIterationsCreate without sending the request
      */
-    async lifecycleIterationsCreateRequestOpts(
-        requestParameters: LifecycleIterationsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["lifecycleIterationRequest"] == null) {
+    async lifecycleIterationsCreateRequestOpts(requestParameters: LifecycleIterationsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['lifecycleIterationRequest'] == null) {
             throw new runtime.RequiredError(
-                "lifecycleIterationRequest",
-                'Required parameter "lifecycleIterationRequest" was null or undefined when calling lifecycleIterationsCreate().',
+                'lifecycleIterationRequest',
+                'Required parameter "lifecycleIterationRequest" was null or undefined when calling lifecycleIterationsCreate().'
             );
         }
 
@@ -248,7 +292,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -263,35 +307,27 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LifecycleIterationRequestToJSON(requestParameters["lifecycleIterationRequest"]),
+            body: LifecycleIterationRequestToJSON(requestParameters['lifecycleIterationRequest']),
         };
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsCreateRaw(
-        requestParameters: LifecycleIterationsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleIteration>> {
+    async lifecycleIterationsCreateRaw(requestParameters: LifecycleIterationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LifecycleIteration>> {
         const requestOptions = await this.lifecycleIterationsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleIterationFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LifecycleIterationFromJSON(jsonValue));
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsCreate(
-        requestParameters: LifecycleIterationsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleIteration> {
+    async lifecycleIterationsCreate(requestParameters: LifecycleIterationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LifecycleIteration> {
         const response = await this.lifecycleIterationsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -299,35 +335,33 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleIterationsListLatest without sending the request
      */
-    async lifecycleIterationsListLatestRequestOpts(
-        requestParameters: LifecycleIterationsListLatestRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["contentType"] == null) {
+    async lifecycleIterationsListLatestRequestOpts(requestParameters: LifecycleIterationsListLatestRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['contentType'] == null) {
             throw new runtime.RequiredError(
-                "contentType",
-                'Required parameter "contentType" was null or undefined when calling lifecycleIterationsListLatest().',
+                'contentType',
+                'Required parameter "contentType" was null or undefined when calling lifecycleIterationsListLatest().'
             );
         }
 
-        if (requestParameters["objectId"] == null) {
+        if (requestParameters['objectId'] == null) {
             throw new runtime.RequiredError(
-                "objectId",
-                'Required parameter "objectId" was null or undefined when calling lifecycleIterationsListLatest().',
+                'objectId',
+                'Required parameter "objectId" was null or undefined when calling lifecycleIterationsListLatest().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["userIsReviewer"] != null) {
-            queryParameters["user_is_reviewer"] = requestParameters["userIsReviewer"];
+        if (requestParameters['userIsReviewer'] != null) {
+            queryParameters['user_is_reviewer'] = requestParameters['userIsReviewer'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -342,18 +376,12 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/iterations/latest/{content_type}/{object_id}/`;
-        urlPath = urlPath.replace(
-            "{content_type}",
-            encodeURIComponent(String(requestParameters["contentType"])),
-        );
-        urlPath = urlPath.replace(
-            "{object_id}",
-            encodeURIComponent(String(requestParameters["objectId"])),
-        );
+        urlPath = urlPath.replace('{content_type}', encodeURIComponent(String(requestParameters['contentType'])));
+        urlPath = urlPath.replace('{object_id}', encodeURIComponent(String(requestParameters['objectId'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -362,59 +390,45 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsListLatestRaw(
-        requestParameters: LifecycleIterationsListLatestRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<LifecycleIteration>>> {
-        const requestOptions =
-            await this.lifecycleIterationsListLatestRequestOpts(requestParameters);
+    async lifecycleIterationsListLatestRaw(requestParameters: LifecycleIterationsListLatestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<LifecycleIteration>>> {
+        const requestOptions = await this.lifecycleIterationsListLatestRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(LifecycleIterationFromJSON),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(LifecycleIterationFromJSON));
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsListLatest(
-        requestParameters: LifecycleIterationsListLatestRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<LifecycleIteration>> {
-        const response = await this.lifecycleIterationsListLatestRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleIterationsListLatest(requestParameters: LifecycleIterationsListLatestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<LifecycleIteration>> {
+        const response = await this.lifecycleIterationsListLatestRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for lifecycleIterationsListOpen without sending the request
      */
-    async lifecycleIterationsListOpenRequestOpts(
-        requestParameters: LifecycleIterationsListOpenRequest,
-    ): Promise<runtime.RequestOpts> {
+    async lifecycleIterationsListOpenRequestOpts(requestParameters: LifecycleIterationsListOpenRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["userIsReviewer"] != null) {
-            queryParameters["user_is_reviewer"] = requestParameters["userIsReviewer"];
+        if (requestParameters['userIsReviewer'] != null) {
+            queryParameters['user_is_reviewer'] = requestParameters['userIsReviewer'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -432,7 +446,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -441,42 +455,29 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsListOpenRaw(
-        requestParameters: LifecycleIterationsListOpenRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedLifecycleIterationList>> {
+    async lifecycleIterationsListOpenRaw(requestParameters: LifecycleIterationsListOpenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLifecycleIterationList>> {
         const requestOptions = await this.lifecycleIterationsListOpenRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedLifecycleIterationListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLifecycleIterationListFromJSON(jsonValue));
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsListOpen(
-        requestParameters: LifecycleIterationsListOpenRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedLifecycleIterationList> {
-        const response = await this.lifecycleIterationsListOpenRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleIterationsListOpen(requestParameters: LifecycleIterationsListOpenRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLifecycleIterationList> {
+        const response = await this.lifecycleIterationsListOpenRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for lifecycleReviewsCreate without sending the request
      */
-    async lifecycleReviewsCreateRequestOpts(
-        requestParameters: LifecycleReviewsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["reviewRequest"] == null) {
+    async lifecycleReviewsCreateRequestOpts(requestParameters: LifecycleReviewsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['reviewRequest'] == null) {
             throw new runtime.RequiredError(
-                "reviewRequest",
-                'Required parameter "reviewRequest" was null or undefined when calling lifecycleReviewsCreate().',
+                'reviewRequest',
+                'Required parameter "reviewRequest" was null or undefined when calling lifecycleReviewsCreate().'
             );
         }
 
@@ -484,7 +485,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -499,20 +500,17 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ReviewRequestToJSON(requestParameters["reviewRequest"]),
+            body: ReviewRequestToJSON(requestParameters['reviewRequest']),
         };
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleReviewsCreateRaw(
-        requestParameters: LifecycleReviewsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Review>> {
+    async lifecycleReviewsCreateRaw(requestParameters: LifecycleReviewsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Review>> {
         const requestOptions = await this.lifecycleReviewsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -522,10 +520,7 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleReviewsCreate(
-        requestParameters: LifecycleReviewsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Review> {
+    async lifecycleReviewsCreate(requestParameters: LifecycleReviewsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Review> {
         const response = await this.lifecycleReviewsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -533,13 +528,11 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleRulesCreate without sending the request
      */
-    async lifecycleRulesCreateRequestOpts(
-        requestParameters: LifecycleRulesCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["lifecycleRuleRequest"] == null) {
+    async lifecycleRulesCreateRequestOpts(requestParameters: LifecycleRulesCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['lifecycleRuleRequest'] == null) {
             throw new runtime.RequiredError(
-                "lifecycleRuleRequest",
-                'Required parameter "lifecycleRuleRequest" was null or undefined when calling lifecycleRulesCreate().',
+                'lifecycleRuleRequest',
+                'Required parameter "lifecycleRuleRequest" was null or undefined when calling lifecycleRulesCreate().'
             );
         }
 
@@ -547,7 +540,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -562,33 +555,25 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LifecycleRuleRequestToJSON(requestParameters["lifecycleRuleRequest"]),
+            body: LifecycleRuleRequestToJSON(requestParameters['lifecycleRuleRequest']),
         };
     }
 
     /**
      */
-    async lifecycleRulesCreateRaw(
-        requestParameters: LifecycleRulesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleRule>> {
+    async lifecycleRulesCreateRaw(requestParameters: LifecycleRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LifecycleRule>> {
         const requestOptions = await this.lifecycleRulesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleRuleFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LifecycleRuleFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleRulesCreate(
-        requestParameters: LifecycleRulesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleRule> {
+    async lifecycleRulesCreate(requestParameters: LifecycleRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LifecycleRule> {
         const response = await this.lifecycleRulesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -596,13 +581,11 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleRulesDestroy without sending the request
      */
-    async lifecycleRulesDestroyRequestOpts(
-        requestParameters: LifecycleRulesDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleRulesDestroyRequestOpts(requestParameters: LifecycleRulesDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleRulesDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleRulesDestroy().'
             );
         }
 
@@ -620,11 +603,11 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/rules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -632,10 +615,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleRulesDestroyRaw(
-        requestParameters: LifecycleRulesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async lifecycleRulesDestroyRaw(requestParameters: LifecycleRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.lifecycleRulesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -644,39 +624,34 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleRulesDestroy(
-        requestParameters: LifecycleRulesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async lifecycleRulesDestroy(requestParameters: LifecycleRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.lifecycleRulesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for lifecycleRulesList without sending the request
      */
-    async lifecycleRulesListRequestOpts(
-        requestParameters: LifecycleRulesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async lifecycleRulesListRequestOpts(requestParameters: LifecycleRulesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["contentTypeModel"] != null) {
-            queryParameters["content_type__model"] = requestParameters["contentTypeModel"];
+        if (requestParameters['contentTypeModel'] != null) {
+            queryParameters['content_type__model'] = requestParameters['contentTypeModel'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -694,7 +669,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -702,24 +677,16 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleRulesListRaw(
-        requestParameters: LifecycleRulesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedLifecycleRuleList>> {
+    async lifecycleRulesListRaw(requestParameters: LifecycleRulesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLifecycleRuleList>> {
         const requestOptions = await this.lifecycleRulesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedLifecycleRuleListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLifecycleRuleListFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleRulesList(
-        requestParameters: LifecycleRulesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedLifecycleRuleList> {
+    async lifecycleRulesList(requestParameters: LifecycleRulesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLifecycleRuleList> {
         const response = await this.lifecycleRulesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -727,13 +694,11 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleRulesPartialUpdate without sending the request
      */
-    async lifecycleRulesPartialUpdateRequestOpts(
-        requestParameters: LifecycleRulesPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleRulesPartialUpdateRequestOpts(requestParameters: LifecycleRulesPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleRulesPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleRulesPartialUpdate().'
             );
         }
 
@@ -741,7 +706,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -753,56 +718,41 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/rules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedLifecycleRuleRequestToJSON(
-                requestParameters["patchedLifecycleRuleRequest"],
-            ),
+            body: PatchedLifecycleRuleRequestToJSON(requestParameters['patchedLifecycleRuleRequest']),
         };
     }
 
     /**
      */
-    async lifecycleRulesPartialUpdateRaw(
-        requestParameters: LifecycleRulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleRule>> {
+    async lifecycleRulesPartialUpdateRaw(requestParameters: LifecycleRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LifecycleRule>> {
         const requestOptions = await this.lifecycleRulesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleRuleFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LifecycleRuleFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleRulesPartialUpdate(
-        requestParameters: LifecycleRulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleRule> {
-        const response = await this.lifecycleRulesPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleRulesPartialUpdate(requestParameters: LifecycleRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LifecycleRule> {
+        const response = await this.lifecycleRulesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for lifecycleRulesRetrieve without sending the request
      */
-    async lifecycleRulesRetrieveRequestOpts(
-        requestParameters: LifecycleRulesRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleRulesRetrieveRequestOpts(requestParameters: LifecycleRulesRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleRulesRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleRulesRetrieve().'
             );
         }
 
@@ -820,11 +770,11 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/rules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -832,24 +782,16 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleRulesRetrieveRaw(
-        requestParameters: LifecycleRulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleRule>> {
+    async lifecycleRulesRetrieveRaw(requestParameters: LifecycleRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LifecycleRule>> {
         const requestOptions = await this.lifecycleRulesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleRuleFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LifecycleRuleFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleRulesRetrieve(
-        requestParameters: LifecycleRulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleRule> {
+    async lifecycleRulesRetrieve(requestParameters: LifecycleRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LifecycleRule> {
         const response = await this.lifecycleRulesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -857,20 +799,18 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleRulesUpdate without sending the request
      */
-    async lifecycleRulesUpdateRequestOpts(
-        requestParameters: LifecycleRulesUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleRulesUpdateRequestOpts(requestParameters: LifecycleRulesUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleRulesUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleRulesUpdate().'
             );
         }
 
-        if (requestParameters["lifecycleRuleRequest"] == null) {
+        if (requestParameters['lifecycleRuleRequest'] == null) {
             throw new runtime.RequiredError(
-                "lifecycleRuleRequest",
-                'Required parameter "lifecycleRuleRequest" was null or undefined when calling lifecycleRulesUpdate().',
+                'lifecycleRuleRequest',
+                'Required parameter "lifecycleRuleRequest" was null or undefined when calling lifecycleRulesUpdate().'
             );
         }
 
@@ -878,7 +818,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -890,37 +830,29 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/rules/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LifecycleRuleRequestToJSON(requestParameters["lifecycleRuleRequest"]),
+            body: LifecycleRuleRequestToJSON(requestParameters['lifecycleRuleRequest']),
         };
     }
 
     /**
      */
-    async lifecycleRulesUpdateRaw(
-        requestParameters: LifecycleRulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleRule>> {
+    async lifecycleRulesUpdateRaw(requestParameters: LifecycleRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LifecycleRule>> {
         const requestOptions = await this.lifecycleRulesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleRuleFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LifecycleRuleFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleRulesUpdate(
-        requestParameters: LifecycleRulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleRule> {
+    async lifecycleRulesUpdate(requestParameters: LifecycleRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LifecycleRule> {
         const response = await this.lifecycleRulesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -928,13 +860,11 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleUserOffboardingCreate without sending the request
      */
-    async lifecycleUserOffboardingCreateRequestOpts(
-        requestParameters: LifecycleUserOffboardingCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["userOffboardingRequest"] == null) {
+    async lifecycleUserOffboardingCreateRequestOpts(requestParameters: LifecycleUserOffboardingCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['userOffboardingRequest'] == null) {
             throw new runtime.RequiredError(
-                "userOffboardingRequest",
-                'Required parameter "userOffboardingRequest" was null or undefined when calling lifecycleUserOffboardingCreate().',
+                'userOffboardingRequest',
+                'Required parameter "userOffboardingRequest" was null or undefined when calling lifecycleUserOffboardingCreate().'
             );
         }
 
@@ -942,7 +872,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -957,51 +887,37 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: UserOffboardingRequestToJSON(requestParameters["userOffboardingRequest"]),
+            body: UserOffboardingRequestToJSON(requestParameters['userOffboardingRequest']),
         };
     }
 
     /**
      */
-    async lifecycleUserOffboardingCreateRaw(
-        requestParameters: LifecycleUserOffboardingCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<UserOffboarding>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingCreateRequestOpts(requestParameters);
+    async lifecycleUserOffboardingCreateRaw(requestParameters: LifecycleUserOffboardingCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions = await this.lifecycleUserOffboardingCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            UserOffboardingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserOffboardingFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleUserOffboardingCreate(
-        requestParameters: LifecycleUserOffboardingCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<UserOffboarding> {
-        const response = await this.lifecycleUserOffboardingCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleUserOffboardingCreate(requestParameters: LifecycleUserOffboardingCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for lifecycleUserOffboardingDestroy without sending the request
      */
-    async lifecycleUserOffboardingDestroyRequestOpts(
-        requestParameters: LifecycleUserOffboardingDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleUserOffboardingDestroyRequestOpts(requestParameters: LifecycleUserOffboardingDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingDestroy().'
             );
         }
 
@@ -1019,11 +935,11 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/user_offboarding/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1032,12 +948,8 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it. You cannot cancel an offboarding that targets you.
      */
-    async lifecycleUserOffboardingDestroyRaw(
-        requestParameters: LifecycleUserOffboardingDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingDestroyRequestOpts(requestParameters);
+    async lifecycleUserOffboardingDestroyRaw(requestParameters: LifecycleUserOffboardingDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.lifecycleUserOffboardingDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1046,47 +958,42 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it. You cannot cancel an offboarding that targets you.
      */
-    async lifecycleUserOffboardingDestroy(
-        requestParameters: LifecycleUserOffboardingDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async lifecycleUserOffboardingDestroy(requestParameters: LifecycleUserOffboardingDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.lifecycleUserOffboardingDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for lifecycleUserOffboardingList without sending the request
      */
-    async lifecycleUserOffboardingListRequestOpts(
-        requestParameters: LifecycleUserOffboardingListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async lifecycleUserOffboardingListRequestOpts(requestParameters: LifecycleUserOffboardingListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["action"] != null) {
-            queryParameters["action"] = requestParameters["action"];
+        if (requestParameters['action'] != null) {
+            queryParameters['action'] = requestParameters['action'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["status"] != null) {
-            queryParameters["status"] = requestParameters["status"];
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
         }
 
-        if (requestParameters["userUuid"] != null) {
-            queryParameters["user__uuid"] = requestParameters["userUuid"];
+        if (requestParameters['userUuid'] != null) {
+            queryParameters['user__uuid'] = requestParameters['userUuid'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1104,7 +1011,7 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1112,42 +1019,28 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleUserOffboardingListRaw(
-        requestParameters: LifecycleUserOffboardingListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedUserOffboardingList>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingListRequestOpts(requestParameters);
+    async lifecycleUserOffboardingListRaw(requestParameters: LifecycleUserOffboardingListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserOffboardingList>> {
+        const requestOptions = await this.lifecycleUserOffboardingListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedUserOffboardingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserOffboardingListFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleUserOffboardingList(
-        requestParameters: LifecycleUserOffboardingListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedUserOffboardingList> {
-        const response = await this.lifecycleUserOffboardingListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleUserOffboardingList(requestParameters: LifecycleUserOffboardingListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserOffboardingList> {
+        const response = await this.lifecycleUserOffboardingListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for lifecycleUserOffboardingRetrieve without sending the request
      */
-    async lifecycleUserOffboardingRetrieveRequestOpts(
-        requestParameters: LifecycleUserOffboardingRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async lifecycleUserOffboardingRetrieveRequestOpts(requestParameters: LifecycleUserOffboardingRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingRetrieve().'
             );
         }
 
@@ -1165,11 +1058,11 @@ export class LifecycleApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/lifecycle/user_offboarding/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1177,29 +1070,18 @@ export class LifecycleApi extends runtime.BaseAPI {
 
     /**
      */
-    async lifecycleUserOffboardingRetrieveRaw(
-        requestParameters: LifecycleUserOffboardingRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<UserOffboarding>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingRetrieveRequestOpts(requestParameters);
+    async lifecycleUserOffboardingRetrieveRaw(requestParameters: LifecycleUserOffboardingRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions = await this.lifecycleUserOffboardingRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            UserOffboardingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserOffboardingFromJSON(jsonValue));
     }
 
     /**
      */
-    async lifecycleUserOffboardingRetrieve(
-        requestParameters: LifecycleUserOffboardingRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<UserOffboarding> {
-        const response = await this.lifecycleUserOffboardingRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async lifecycleUserOffboardingRetrieve(requestParameters: LifecycleUserOffboardingRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

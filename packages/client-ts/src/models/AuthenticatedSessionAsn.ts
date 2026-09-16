@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Get ASN Data
  * @export
@@ -19,15 +20,15 @@
  */
 export interface AuthenticatedSessionAsn {
     /**
-     *
+     * 
      */
     asn: number | null;
     /**
-     *
+     * 
      */
     asOrg: string | null;
     /**
-     *
+     * 
      */
     network: string | null;
 }
@@ -36,15 +37,9 @@ export interface AuthenticatedSessionAsn {
  * Check if a given object implements the AuthenticatedSessionAsn interface.
  */
 export function instanceOfAuthenticatedSessionAsn(value: object): value is AuthenticatedSessionAsn {
-    if (!("asn" in value) || value["asn"] === undefined) return false;
-    if (
-        (!("asOrg" in (value as Record<string, any>)) &&
-            !("as_org" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["asOrg"] === undefined &&
-            (value as Record<string, any>)["as_org"] === undefined)
-    )
-        return false;
-    if (!("network" in value) || value["network"] === undefined) return false;
+    if (!('asn' in value) || value['asn'] === undefined) return false;
+    if ((!('asOrg' in (value as Record<string, any>)) && !('as_org' in (value as Record<string, any>))) || ((value as Record<string, any>)['asOrg'] === undefined && (value as Record<string, any>)['as_org'] === undefined)) return false;
+    if (!('network' in value) || value['network'] === undefined) return false;
     return true;
 }
 
@@ -52,17 +47,15 @@ export function AuthenticatedSessionAsnFromJSON(json: any): AuthenticatedSession
     return AuthenticatedSessionAsnFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionAsnFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSessionAsn {
+export function AuthenticatedSessionAsnFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionAsn {
     if (json == null) {
         return json;
     }
     return {
-        asn: json["asn"],
-        asOrg: json["as_org"],
-        network: json["network"],
+        
+        'asn': json['asn'],
+        'asOrg': json['as_org'],
+        'network': json['network'],
     };
 }
 
@@ -70,17 +63,16 @@ export function AuthenticatedSessionAsnToJSON(json: any): AuthenticatedSessionAs
     return AuthenticatedSessionAsnToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionAsnToJSONTyped(
-    value?: AuthenticatedSessionAsn | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionAsnToJSONTyped(value?: AuthenticatedSessionAsn | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        asn: value["asn"],
-        as_org: value["asOrg"],
-        network: value["network"],
+        
+        'asn': value['asn'],
+        'as_org': value['asOrg'],
+        'network': value['network'],
     };
 }
+

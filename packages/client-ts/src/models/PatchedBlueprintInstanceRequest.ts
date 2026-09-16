@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Info about a single blueprint instance file
  * @export
@@ -19,23 +20,23 @@
  */
 export interface PatchedBlueprintInstanceRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     path?: string;
     /**
-     *
+     * 
      */
-    context?: { [key: string]: any };
+    context?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     content?: string;
 }
@@ -43,31 +44,25 @@ export interface PatchedBlueprintInstanceRequest {
 /**
  * Check if a given object implements the PatchedBlueprintInstanceRequest interface.
  */
-export function instanceOfPatchedBlueprintInstanceRequest(
-    value: object,
-): value is PatchedBlueprintInstanceRequest {
+export function instanceOfPatchedBlueprintInstanceRequest(value: object): value is PatchedBlueprintInstanceRequest {
     return true;
 }
 
-export function PatchedBlueprintInstanceRequestFromJSON(
-    json: any,
-): PatchedBlueprintInstanceRequest {
+export function PatchedBlueprintInstanceRequestFromJSON(json: any): PatchedBlueprintInstanceRequest {
     return PatchedBlueprintInstanceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedBlueprintInstanceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedBlueprintInstanceRequest {
+export function PatchedBlueprintInstanceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedBlueprintInstanceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        path: json["path"] == null ? undefined : json["path"],
-        context: json["context"] == null ? undefined : json["context"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        content: json["content"] == null ? undefined : json["content"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'path': json['path'] == null ? undefined : json['path'],
+        'context': json['context'] == null ? undefined : json['context'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'content': json['content'] == null ? undefined : json['content'],
     };
 }
 
@@ -75,19 +70,18 @@ export function PatchedBlueprintInstanceRequestToJSON(json: any): PatchedBluepri
     return PatchedBlueprintInstanceRequestToJSONTyped(json, false);
 }
 
-export function PatchedBlueprintInstanceRequestToJSONTyped(
-    value?: PatchedBlueprintInstanceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedBlueprintInstanceRequestToJSONTyped(value?: PatchedBlueprintInstanceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        path: value["path"],
-        context: value["context"],
-        enabled: value["enabled"],
-        content: value["content"],
+        
+        'name': value['name'],
+        'path': value['path'],
+        'context': value['context'],
+        'enabled': value['enabled'],
+        'content': value['content'],
     };
 }
+

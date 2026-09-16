@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Role-bound object level permission
  * @export
@@ -19,27 +20,27 @@
  */
 export interface RoleObjectPermission {
     /**
-     *
+     * 
      */
     readonly id: number;
     /**
-     *
+     * 
      */
     readonly codename: string;
     /**
-     *
+     * 
      */
     readonly model: string;
     /**
-     *
+     * 
      */
     readonly appLabel: string;
     /**
-     *
+     * 
      */
     objectPk: string;
     /**
-     *
+     * 
      */
     readonly name: string;
 }
@@ -48,24 +49,12 @@ export interface RoleObjectPermission {
  * Check if a given object implements the RoleObjectPermission interface.
  */
 export function instanceOfRoleObjectPermission(value: object): value is RoleObjectPermission {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("codename" in value) || value["codename"] === undefined) return false;
-    if (!("model" in value) || value["model"] === undefined) return false;
-    if (
-        (!("appLabel" in (value as Record<string, any>)) &&
-            !("app_label" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appLabel"] === undefined &&
-            (value as Record<string, any>)["app_label"] === undefined)
-    )
-        return false;
-    if (
-        (!("objectPk" in (value as Record<string, any>)) &&
-            !("object_pk" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["objectPk"] === undefined &&
-            (value as Record<string, any>)["object_pk"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('codename' in value) || value['codename'] === undefined) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
+    if ((!('appLabel' in (value as Record<string, any>)) && !('app_label' in (value as Record<string, any>))) || ((value as Record<string, any>)['appLabel'] === undefined && (value as Record<string, any>)['app_label'] === undefined)) return false;
+    if ((!('objectPk' in (value as Record<string, any>)) && !('object_pk' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectPk'] === undefined && (value as Record<string, any>)['object_pk'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -73,20 +62,18 @@ export function RoleObjectPermissionFromJSON(json: any): RoleObjectPermission {
     return RoleObjectPermissionFromJSONTyped(json, false);
 }
 
-export function RoleObjectPermissionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RoleObjectPermission {
+export function RoleObjectPermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): RoleObjectPermission {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        codename: json["codename"],
-        model: json["model"],
-        appLabel: json["app_label"],
-        objectPk: json["object_pk"],
-        name: json["name"],
+        
+        'id': json['id'],
+        'codename': json['codename'],
+        'model': json['model'],
+        'appLabel': json['app_label'],
+        'objectPk': json['object_pk'],
+        'name': json['name'],
     };
 }
 
@@ -94,15 +81,14 @@ export function RoleObjectPermissionToJSON(json: any): RoleObjectPermission {
     return RoleObjectPermissionToJSONTyped(json, false);
 }
 
-export function RoleObjectPermissionToJSONTyped(
-    value?: Omit<RoleObjectPermission, "id" | "codename" | "model" | "appLabel" | "name"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RoleObjectPermissionToJSONTyped(value?: Omit<RoleObjectPermission, 'id'|'codename'|'model'|'appLabel'|'name'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        object_pk: value["objectPk"],
+        
+        'object_pk': value['objectPk'],
     };
 }
+

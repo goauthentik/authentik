@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Account adding/removing operations
  * @export
@@ -19,7 +20,7 @@
  */
 export interface UserAccountRequest {
     /**
-     *
+     * 
      */
     pk: number;
 }
@@ -28,7 +29,7 @@ export interface UserAccountRequest {
  * Check if a given object implements the UserAccountRequest interface.
  */
 export function instanceOfUserAccountRequest(value: object): value is UserAccountRequest {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +37,13 @@ export function UserAccountRequestFromJSON(json: any): UserAccountRequest {
     return UserAccountRequestFromJSONTyped(json, false);
 }
 
-export function UserAccountRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserAccountRequest {
+export function UserAccountRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserAccountRequest {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
+        
+        'pk': json['pk'],
     };
 }
 
@@ -52,15 +51,14 @@ export function UserAccountRequestToJSON(json: any): UserAccountRequest {
     return UserAccountRequestToJSONTyped(json, false);
 }
 
-export function UserAccountRequestToJSONTyped(
-    value?: UserAccountRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserAccountRequestToJSONTyped(value?: UserAccountRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
+        
+        'pk': value['pk'],
     };
 }
+

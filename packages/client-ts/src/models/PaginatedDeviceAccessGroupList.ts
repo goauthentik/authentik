@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { DeviceAccessGroup } from './DeviceAccessGroup';
+import {
+    DeviceAccessGroupFromJSON,
+    DeviceAccessGroupFromJSONTyped,
+    DeviceAccessGroupToJSON,
+    DeviceAccessGroupToJSONTyped,
+} from './DeviceAccessGroup';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedDeviceAccessGroupList
  */
 export interface PaginatedDeviceAccessGroupList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<DeviceAccessGroup>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedDeviceAccessGroupList interface.
  */
-export function instanceOfPaginatedDeviceAccessGroupList(
-    value: object,
-): value is PaginatedDeviceAccessGroupList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedDeviceAccessGroupList(value: object): value is PaginatedDeviceAccessGroupList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedDeviceAccessGroupListFromJSON(json: any): PaginatedDevi
     return PaginatedDeviceAccessGroupListFromJSONTyped(json, false);
 }
 
-export function PaginatedDeviceAccessGroupListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedDeviceAccessGroupList {
+export function PaginatedDeviceAccessGroupListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDeviceAccessGroupList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(DeviceAccessGroupFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(DeviceAccessGroupFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedDeviceAccessGroupListToJSON(json: any): PaginatedDevice
     return PaginatedDeviceAccessGroupListToJSONTyped(json, false);
 }
 
-export function PaginatedDeviceAccessGroupListToJSONTyped(
-    value?: PaginatedDeviceAccessGroupList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedDeviceAccessGroupListToJSONTyped(value?: PaginatedDeviceAccessGroupList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(DeviceAccessGroupToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(DeviceAccessGroupToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+
