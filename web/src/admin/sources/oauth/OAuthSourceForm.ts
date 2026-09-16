@@ -33,6 +33,7 @@ import {
     OAuthSourceRequest,
     PKCEMethodEnum,
     ProviderTypeEnum,
+    SecretTypeEnum,
     SourcesApi,
     SourceType,
     UsageEnum,
@@ -410,6 +411,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     </ak-form-element-horizontal>
                     <ak-secret-search-input
                         name="secret"
+                        .types=${[
+                            this.providerType?.name === ProviderTypeEnum.Apple
+                                ? SecretTypeEnum.Multiline
+                                : SecretTypeEnum.Text,
+                        ]}
                         label=${msg("Consumer secret")}
                         value=${ifPresent(this.instance?.secret)}
                         required

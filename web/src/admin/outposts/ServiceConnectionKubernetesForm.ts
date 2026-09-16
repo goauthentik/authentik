@@ -7,7 +7,7 @@ import { aki } from "#common/api/client";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
+import { KubernetesServiceConnection, OutpostsApi, SecretTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -59,6 +59,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             </ak-switch-input>
             <ak-secret-search-input
                 name="secret"
+                .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                 label=${msg("Kubeconfig", { id: "outpost.kubeconfig.label" })}
                 value=${ifPresent(this.instance?.secret)}
                 blankable

@@ -8,7 +8,7 @@ import { aki } from "#common/api/client";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { EndpointsApi, GoogleChromeConnector } from "@goauthentik/api";
+import { EndpointsApi, GoogleChromeConnector, SecretTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -59,6 +59,7 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
                 <div class="pf-c-form">
                     <ak-secret-search-input
                         name="secret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Credentials", { id: "google.credentials.label" })}
                         value=${ifPresent(this.instance?.secret)}
                         required

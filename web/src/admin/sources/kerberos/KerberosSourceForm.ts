@@ -28,6 +28,7 @@ import {
     KadminTypeEnum,
     KerberosSource,
     KerberosSourceRequest,
+    SecretTypeEnum,
     SourcesApi,
     SyncOutgoingTriggerModeEnum,
     UsageEnum,
@@ -260,20 +261,24 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="syncKeytabSecret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Sync keytab")}
                         value=${ifPresent(this.instance?.syncKeytabSecret)}
                         blankable
                         help=${msg(
-                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret, or a text secret containing base64 or TYPE:residual.",
+                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
+                            { id: "source.kerberos.form.sync-keytab.description" },
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="syncCcacheSecret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Sync credentials cache")}
                         value=${ifPresent(this.instance?.syncCcacheSecret)}
                         blankable
                         help=${msg(
-                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a file secret, or a text secret containing TYPE:residual.",
+                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",
+                            { id: "source.kerberos.form.sync-ccache.description" },
                         )}
                     ></ak-secret-search-input>
                 </div>
@@ -290,20 +295,24 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     ></ak-text-input>
                     <ak-secret-search-input
                         name="spnegoKeytabSecret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("SPNEGO keytab")}
                         value=${ifPresent(this.instance?.spnegoKeytabSecret)}
                         blankable
                         help=${msg(
-                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret, or a text secret containing base64 or TYPE:residual.",
+                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
+                            { id: "source.kerberos.form.spnego-keytab.description" },
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="spnegoCcacheSecret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("SPNEGO credentials cache")}
                         value=${ifPresent(this.instance?.spnegoCcacheSecret)}
                         blankable
                         help=${msg(
-                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a file secret, or a text secret containing TYPE:residual.",
+                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",
+                            { id: "source.kerberos.form.spnego-ccache.description" },
                         )}
                     ></ak-secret-search-input>
                 </div>
