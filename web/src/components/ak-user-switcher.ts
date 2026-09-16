@@ -175,7 +175,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 part="menu"
                 hidden
                 id="user-switcher-menu"
-                aria-labelled=${msg("User navigation menu", { id: "user-switcher.menu.label" })}
+                aria-label=${msg("User navigation menu", { id: "user-switcher.menu.label" })}
                 tabindex="-1"
             >
                 ${repeat(
