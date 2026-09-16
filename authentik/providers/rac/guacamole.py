@@ -102,7 +102,7 @@ class GuacamoleInstructionParser:
         self._buffer = ""
         raise GuacamoleProtocolError(message)
 
-    def split_internal(instructions: list[tuple[str, list[str]]]) -> tuple[list[str], str]:
+    def split_internal(self, instructions: list[tuple[str, list[str]]]) -> tuple[list[str], str]:
         """Split parsed instructions into tunnel ping responses and data to forward to guacd."""
         responses: list[str] = []
         forwarded: list[str] = []
