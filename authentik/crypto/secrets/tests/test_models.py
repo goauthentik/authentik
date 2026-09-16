@@ -1,5 +1,6 @@
 """Managed secret model tests."""
 
+from traceback import format_exception
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
@@ -65,6 +66,12 @@ class TestSecret(TestCase):
         secret = Secret.objects.create(name="unchanged", value="current")
         secret.replace_value("current")
         self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+
+    def test_parser_error_does_not_disclose_value(self):
+        secret = Secret(type=SecretType.MULTILINE, value="private-credential: [unterminated")
+        with self.assertRaises(ValueError) as error:
+            secret.get_json()
+        self.assertNotIn("private-credential", "".join(format_exception(error.exception)))
 
     def test_invalid_file_replacement_preserves_value(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, value="aGk=")

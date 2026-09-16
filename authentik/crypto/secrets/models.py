@@ -65,8 +65,8 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 b64decode(self.value, validate=True) if self.type == SecretType.FILE else self.value
             )
             data = safe_load(value)
-        except (BinasciiError, YAMLError, UnicodeError) as exc:
-            raise ValueError("Invalid JSON or YAML credential") from exc
+        except BinasciiError, YAMLError, UnicodeError:
+            raise ValueError("Invalid JSON or YAML credential") from None
         if not isinstance(data, dict):
             raise ValueError("Credential must be a JSON or YAML object")
         return data
