@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { PromptStage } from "./PromptStage";
-import { PromptStageFromJSON } from "./PromptStage";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import { mapValues } from '../runtime';
+import type { PromptStage } from './PromptStage';
+import {
+    PromptStageFromJSON,
+    PromptStageFromJSONTyped,
+    PromptStageToJSON,
+    PromptStageToJSONTyped,
+} from './PromptStage';
+import type { PromptTypeEnum } from './PromptTypeEnum';
+import {
+    PromptTypeEnumFromJSON,
+    PromptTypeEnumFromJSONTyped,
+    PromptTypeEnumToJSON,
+    PromptTypeEnumToJSONTyped,
+} from './PromptTypeEnum';
 
 /**
  * Prompt Serializer
@@ -24,11 +35,11 @@ import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
  */
 export interface Prompt {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -36,15 +47,15 @@ export interface Prompt {
      */
     fieldKey: string;
     /**
-     *
+     * 
      */
     label: string;
     /**
-     *
+     * 
      */
     type: PromptTypeEnum;
     /**
-     *
+     * 
      */
     required?: boolean;
     /**
@@ -56,49 +67,39 @@ export interface Prompt {
      */
     initialValue?: string;
     /**
-     *
+     * 
      */
     order?: number;
     /**
-     *
+     * 
      */
     readonly promptStagesObj: Array<PromptStage>;
     /**
-     *
+     * 
      */
     subText?: string;
     /**
-     *
+     * 
      */
     placeholderExpression?: boolean;
     /**
-     *
+     * 
      */
     initialValueExpression?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the Prompt interface.
  */
 export function instanceOfPrompt(value: object): value is Prompt {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("fieldKey" in (value as Record<string, any>)) &&
-            !("field_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fieldKey"] === undefined &&
-            (value as Record<string, any>)["field_key"] === undefined)
-    )
-        return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
-    if (
-        (!("promptStagesObj" in (value as Record<string, any>)) &&
-            !("prompt_stages_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["promptStagesObj"] === undefined &&
-            (value as Record<string, any>)["prompt_stages_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('fieldKey' in (value as Record<string, any>)) && !('field_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['fieldKey'] === undefined && (value as Record<string, any>)['field_key'] === undefined)) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if ((!('promptStagesObj' in (value as Record<string, any>)) && !('prompt_stages_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['promptStagesObj'] === undefined && (value as Record<string, any>)['prompt_stages_obj'] === undefined)) return false;
     return true;
 }
 
@@ -111,21 +112,20 @@ export function PromptFromJSONTyped(json: any, ignoreDiscriminator: boolean): Pr
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        fieldKey: json["field_key"],
-        label: json["label"],
-        type: PromptTypeEnumFromJSON(json["type"]),
-        required: json["required"] == null ? undefined : json["required"],
-        placeholder: json["placeholder"] == null ? undefined : json["placeholder"],
-        initialValue: json["initial_value"] == null ? undefined : json["initial_value"],
-        order: json["order"] == null ? undefined : json["order"],
-        promptStagesObj: (json["prompt_stages_obj"] as Array<any>).map(PromptStageFromJSON),
-        subText: json["sub_text"] == null ? undefined : json["sub_text"],
-        placeholderExpression:
-            json["placeholder_expression"] == null ? undefined : json["placeholder_expression"],
-        initialValueExpression:
-            json["initial_value_expression"] == null ? undefined : json["initial_value_expression"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'fieldKey': json['field_key'],
+        'label': json['label'],
+        'type': PromptTypeEnumFromJSON(json['type']),
+        'required': json['required'] == null ? undefined : json['required'],
+        'placeholder': json['placeholder'] == null ? undefined : json['placeholder'],
+        'initialValue': json['initial_value'] == null ? undefined : json['initial_value'],
+        'order': json['order'] == null ? undefined : json['order'],
+        'promptStagesObj': ((json['prompt_stages_obj'] as Array<any>).map(PromptStageFromJSON)),
+        'subText': json['sub_text'] == null ? undefined : json['sub_text'],
+        'placeholderExpression': json['placeholder_expression'] == null ? undefined : json['placeholder_expression'],
+        'initialValueExpression': json['initial_value_expression'] == null ? undefined : json['initial_value_expression'],
     };
 }
 
@@ -133,25 +133,24 @@ export function PromptToJSON(json: any): Prompt {
     return PromptToJSONTyped(json, false);
 }
 
-export function PromptToJSONTyped(
-    value?: Omit<Prompt, "pk" | "promptStagesObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PromptToJSONTyped(value?: Omit<Prompt, 'pk'|'promptStagesObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        field_key: value["fieldKey"],
-        label: value["label"],
-        type: PromptTypeEnumToJSON(value["type"]),
-        required: value["required"],
-        placeholder: value["placeholder"],
-        initial_value: value["initialValue"],
-        order: value["order"],
-        sub_text: value["subText"],
-        placeholder_expression: value["placeholderExpression"],
-        initial_value_expression: value["initialValueExpression"],
+        
+        'name': value['name'],
+        'field_key': value['fieldKey'],
+        'label': value['label'],
+        'type': PromptTypeEnumToJSON(value['type']),
+        'required': value['required'],
+        'placeholder': value['placeholder'],
+        'initial_value': value['initialValue'],
+        'order': value['order'],
+        'sub_text': value['subText'],
+        'placeholder_expression': value['placeholderExpression'],
+        'initial_value_expression': value['initialValueExpression'],
     };
 }
+

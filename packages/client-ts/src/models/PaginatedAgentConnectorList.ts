@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { AgentConnector } from "./AgentConnector";
-import { AgentConnectorFromJSON, AgentConnectorToJSON } from "./AgentConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { AgentConnector } from './AgentConnector';
+import {
+    AgentConnectorFromJSON,
+    AgentConnectorFromJSONTyped,
+    AgentConnectorToJSON,
+    AgentConnectorToJSONTyped,
+} from './AgentConnector';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAgentConnectorList
  */
 export interface PaginatedAgentConnectorList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AgentConnector>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAgentConnectorList interface.
  */
-export function instanceOfPaginatedAgentConnectorList(
-    value: object,
-): value is PaginatedAgentConnectorList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAgentConnectorList(value: object): value is PaginatedAgentConnectorList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedAgentConnectorListFromJSON(json: any): PaginatedAgentCo
     return PaginatedAgentConnectorListFromJSONTyped(json, false);
 }
 
-export function PaginatedAgentConnectorListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAgentConnectorList {
+export function PaginatedAgentConnectorListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAgentConnectorList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AgentConnectorFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AgentConnectorFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedAgentConnectorListToJSON(json: any): PaginatedAgentConn
     return PaginatedAgentConnectorListToJSONTyped(json, false);
 }
 
-export function PaginatedAgentConnectorListToJSONTyped(
-    value?: PaginatedAgentConnectorList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAgentConnectorListToJSONTyped(value?: PaginatedAgentConnectorList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AgentConnectorToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AgentConnectorToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

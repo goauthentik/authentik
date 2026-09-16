@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * TelegramSourcePropertyMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface TelegramSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,56 +36,42 @@ export interface TelegramSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the TelegramSourcePropertyMappingRequest interface.
  */
-export function instanceOfTelegramSourcePropertyMappingRequest(
-    value: object,
-): value is TelegramSourcePropertyMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfTelegramSourcePropertyMappingRequest(value: object): value is TelegramSourcePropertyMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
-export function TelegramSourcePropertyMappingRequestFromJSON(
-    json: any,
-): TelegramSourcePropertyMappingRequest {
+export function TelegramSourcePropertyMappingRequestFromJSON(json: any): TelegramSourcePropertyMappingRequest {
     return TelegramSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function TelegramSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramSourcePropertyMappingRequest {
+export function TelegramSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
-export function TelegramSourcePropertyMappingRequestToJSON(
-    json: any,
-): TelegramSourcePropertyMappingRequest {
+export function TelegramSourcePropertyMappingRequestToJSON(json: any): TelegramSourcePropertyMappingRequest {
     return TelegramSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function TelegramSourcePropertyMappingRequestToJSONTyped(
-    value?: TelegramSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramSourcePropertyMappingRequestToJSONTyped(value?: TelegramSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

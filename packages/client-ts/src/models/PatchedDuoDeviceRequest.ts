@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for Duo authenticator devices
  * @export
@@ -35,15 +36,13 @@ export function PatchedDuoDeviceRequestFromJSON(json: any): PatchedDuoDeviceRequ
     return PatchedDuoDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDuoDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedDuoDeviceRequest {
+export function PatchedDuoDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDuoDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -51,15 +50,14 @@ export function PatchedDuoDeviceRequestToJSON(json: any): PatchedDuoDeviceReques
     return PatchedDuoDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedDuoDeviceRequestToJSONTyped(
-    value?: PatchedDuoDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedDuoDeviceRequestToJSONTyped(value?: PatchedDuoDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

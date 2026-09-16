@@ -12,65 +12,106 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceGroup } from "./DeviceGroup";
-import { DeviceGroupFromJSON, DeviceGroupToJSON } from "./DeviceGroup";
-import type { DeviceUser } from "./DeviceUser";
-import { DeviceUserFromJSON, DeviceUserToJSON } from "./DeviceUser";
-import type { Disk } from "./Disk";
-import { DiskFromJSON, DiskToJSON } from "./Disk";
-import type { Hardware } from "./Hardware";
-import { HardwareFromJSON, HardwareToJSON } from "./Hardware";
-import type { Network } from "./Network";
-import { NetworkFromJSON, NetworkToJSON } from "./Network";
-import type { OperatingSystem } from "./OperatingSystem";
-import { OperatingSystemFromJSON, OperatingSystemToJSON } from "./OperatingSystem";
-import type { Process } from "./Process";
-import { ProcessFromJSON, ProcessToJSON } from "./Process";
-import type { Software } from "./Software";
-import { SoftwareFromJSON, SoftwareToJSON } from "./Software";
+import { mapValues } from '../runtime';
+import type { OperatingSystem } from './OperatingSystem';
+import {
+    OperatingSystemFromJSON,
+    OperatingSystemFromJSONTyped,
+    OperatingSystemToJSON,
+    OperatingSystemToJSONTyped,
+} from './OperatingSystem';
+import type { DeviceUser } from './DeviceUser';
+import {
+    DeviceUserFromJSON,
+    DeviceUserFromJSONTyped,
+    DeviceUserToJSON,
+    DeviceUserToJSONTyped,
+} from './DeviceUser';
+import type { Network } from './Network';
+import {
+    NetworkFromJSON,
+    NetworkFromJSONTyped,
+    NetworkToJSON,
+    NetworkToJSONTyped,
+} from './Network';
+import type { DeviceGroup } from './DeviceGroup';
+import {
+    DeviceGroupFromJSON,
+    DeviceGroupFromJSONTyped,
+    DeviceGroupToJSON,
+    DeviceGroupToJSONTyped,
+} from './DeviceGroup';
+import type { Hardware } from './Hardware';
+import {
+    HardwareFromJSON,
+    HardwareFromJSONTyped,
+    HardwareToJSON,
+    HardwareToJSONTyped,
+} from './Hardware';
+import type { Process } from './Process';
+import {
+    ProcessFromJSON,
+    ProcessFromJSONTyped,
+    ProcessToJSON,
+    ProcessToJSONTyped,
+} from './Process';
+import type { Software } from './Software';
+import {
+    SoftwareFromJSON,
+    SoftwareFromJSONTyped,
+    SoftwareToJSON,
+    SoftwareToJSONTyped,
+} from './Software';
+import type { Disk } from './Disk';
+import {
+    DiskFromJSON,
+    DiskFromJSONTyped,
+    DiskToJSON,
+    DiskToJSONTyped,
+} from './Disk';
 
 /**
- *
+ * 
  * @export
  * @interface DeviceFacts
  */
 export interface DeviceFacts {
     /**
-     *
+     * 
      */
     os?: OperatingSystem | null;
     /**
-     *
+     * 
      */
     disks?: Array<Disk> | null;
     /**
-     *
+     * 
      */
     network?: Network | null;
     /**
-     *
+     * 
      */
     hardware?: Hardware | null;
     /**
-     *
+     * 
      */
     software?: Array<Software> | null;
     /**
-     *
+     * 
      */
     processes?: Array<Process> | null;
     /**
-     *
+     * 
      */
     users?: Array<DeviceUser> | null;
     /**
-     *
+     * 
      */
     groups?: Array<DeviceGroup> | null;
     /**
-     *
+     * 
      */
-    vendor?: { [key: string]: any };
+    vendor?: { [key: string]: any; };
 }
 
 /**
@@ -89,55 +130,16 @@ export function DeviceFactsFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        os:
-            json["os"] === undefined
-                ? undefined
-                : json["os"] === null
-                  ? null
-                  : OperatingSystemFromJSON(json["os"]),
-        disks:
-            json["disks"] === undefined
-                ? undefined
-                : json["disks"] === null
-                  ? null
-                  : (json["disks"] as Array<any>).map(DiskFromJSON),
-        network:
-            json["network"] === undefined
-                ? undefined
-                : json["network"] === null
-                  ? null
-                  : NetworkFromJSON(json["network"]),
-        hardware:
-            json["hardware"] === undefined
-                ? undefined
-                : json["hardware"] === null
-                  ? null
-                  : HardwareFromJSON(json["hardware"]),
-        software:
-            json["software"] === undefined
-                ? undefined
-                : json["software"] === null
-                  ? null
-                  : (json["software"] as Array<any>).map(SoftwareFromJSON),
-        processes:
-            json["processes"] === undefined
-                ? undefined
-                : json["processes"] === null
-                  ? null
-                  : (json["processes"] as Array<any>).map(ProcessFromJSON),
-        users:
-            json["users"] === undefined
-                ? undefined
-                : json["users"] === null
-                  ? null
-                  : (json["users"] as Array<any>).map(DeviceUserFromJSON),
-        groups:
-            json["groups"] === undefined
-                ? undefined
-                : json["groups"] === null
-                  ? null
-                  : (json["groups"] as Array<any>).map(DeviceGroupFromJSON),
-        vendor: json["vendor"] == null ? undefined : json["vendor"],
+        
+        'os': json['os'] === undefined ? undefined : json['os'] === null ? null : OperatingSystemFromJSON(json['os']),
+        'disks': json['disks'] === undefined ? undefined : json['disks'] === null ? null : ((json['disks'] as Array<any>).map(DiskFromJSON)),
+        'network': json['network'] === undefined ? undefined : json['network'] === null ? null : NetworkFromJSON(json['network']),
+        'hardware': json['hardware'] === undefined ? undefined : json['hardware'] === null ? null : HardwareFromJSON(json['hardware']),
+        'software': json['software'] === undefined ? undefined : json['software'] === null ? null : ((json['software'] as Array<any>).map(SoftwareFromJSON)),
+        'processes': json['processes'] === undefined ? undefined : json['processes'] === null ? null : ((json['processes'] as Array<any>).map(ProcessFromJSON)),
+        'users': json['users'] === undefined ? undefined : json['users'] === null ? null : ((json['users'] as Array<any>).map(DeviceUserFromJSON)),
+        'groups': json['groups'] === undefined ? undefined : json['groups'] === null ? null : ((json['groups'] as Array<any>).map(DeviceGroupFromJSON)),
+        'vendor': json['vendor'] == null ? undefined : json['vendor'],
     };
 }
 
@@ -145,35 +147,22 @@ export function DeviceFactsToJSON(json: any): DeviceFacts {
     return DeviceFactsToJSONTyped(json, false);
 }
 
-export function DeviceFactsToJSONTyped(
-    value?: DeviceFacts | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceFactsToJSONTyped(value?: DeviceFacts | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        os: OperatingSystemToJSON(value["os"]),
-        disks: value["disks"] == null ? undefined : (value["disks"] as Array<any>).map(DiskToJSON),
-        network: NetworkToJSON(value["network"]),
-        hardware: HardwareToJSON(value["hardware"]),
-        software:
-            value["software"] == null
-                ? undefined
-                : (value["software"] as Array<any>).map(SoftwareToJSON),
-        processes:
-            value["processes"] == null
-                ? undefined
-                : (value["processes"] as Array<any>).map(ProcessToJSON),
-        users:
-            value["users"] == null
-                ? undefined
-                : (value["users"] as Array<any>).map(DeviceUserToJSON),
-        groups:
-            value["groups"] == null
-                ? undefined
-                : (value["groups"] as Array<any>).map(DeviceGroupToJSON),
-        vendor: value["vendor"],
+        
+        'os': OperatingSystemToJSON(value['os']),
+        'disks': value['disks'] == null ? undefined : ((value['disks'] as Array<any>).map(DiskToJSON)),
+        'network': NetworkToJSON(value['network']),
+        'hardware': HardwareToJSON(value['hardware']),
+        'software': value['software'] == null ? undefined : ((value['software'] as Array<any>).map(SoftwareToJSON)),
+        'processes': value['processes'] == null ? undefined : ((value['processes'] as Array<any>).map(ProcessToJSON)),
+        'users': value['users'] == null ? undefined : ((value['users'] as Array<any>).map(DeviceUserToJSON)),
+        'groups': value['groups'] == null ? undefined : ((value['groups'] as Array<any>).map(DeviceGroupToJSON)),
+        'vendor': value['vendor'],
     };
 }
+

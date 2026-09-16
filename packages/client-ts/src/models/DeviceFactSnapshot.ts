@@ -12,49 +12,61 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { DeviceFacts } from "./DeviceFacts";
-import { DeviceFactsFromJSON, DeviceFactsToJSON } from "./DeviceFacts";
-import type { VendorEnum } from "./VendorEnum";
-import { VendorEnumFromJSON } from "./VendorEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { VendorEnum } from './VendorEnum';
+import {
+    VendorEnumFromJSON,
+    VendorEnumFromJSONTyped,
+    VendorEnumToJSON,
+    VendorEnumToJSONTyped,
+} from './VendorEnum';
+import type { DeviceFacts } from './DeviceFacts';
+import {
+    DeviceFactsFromJSON,
+    DeviceFactsFromJSONTyped,
+    DeviceFactsToJSON,
+    DeviceFactsToJSONTyped,
+} from './DeviceFacts';
 
 /**
- *
+ * 
  * @export
  * @interface DeviceFactSnapshot
  */
 export interface DeviceFactSnapshot {
     /**
-     *
+     * 
      */
     data: DeviceFacts;
     /**
-     *
+     * 
      */
     connection: string;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     readonly expires: Date | null;
     /**
-     *
+     * 
      */
     readonly vendor: VendorEnum;
 }
+
+
 
 /**
  * Check if a given object implements the DeviceFactSnapshot interface.
  */
 export function instanceOfDeviceFactSnapshot(value: object): value is DeviceFactSnapshot {
-    if (!("data" in value) || value["data"] === undefined) return false;
-    if (!("connection" in value) || value["connection"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("expires" in value) || value["expires"] === undefined) return false;
-    if (!("vendor" in value) || value["vendor"] === undefined) return false;
+    if (!('data' in value) || value['data'] === undefined) return false;
+    if (!('connection' in value) || value['connection'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if (!('expires' in value) || value['expires'] === undefined) return false;
+    if (!('vendor' in value) || value['vendor'] === undefined) return false;
     return true;
 }
 
@@ -62,19 +74,17 @@ export function DeviceFactSnapshotFromJSON(json: any): DeviceFactSnapshot {
     return DeviceFactSnapshotFromJSONTyped(json, false);
 }
 
-export function DeviceFactSnapshotFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceFactSnapshot {
+export function DeviceFactSnapshotFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceFactSnapshot {
     if (json == null) {
         return json;
     }
     return {
-        data: DeviceFactsFromJSON(json["data"]),
-        connection: json["connection"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
-        vendor: VendorEnumFromJSON(json["vendor"]),
+        
+        'data': DeviceFactsFromJSON(json['data']),
+        'connection': json['connection'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'expires': (json['expires'] == null ? null : parseDateTime(json['expires'])),
+        'vendor': VendorEnumFromJSON(json['vendor']),
     };
 }
 
@@ -82,16 +92,15 @@ export function DeviceFactSnapshotToJSON(json: any): DeviceFactSnapshot {
     return DeviceFactSnapshotToJSONTyped(json, false);
 }
 
-export function DeviceFactSnapshotToJSONTyped(
-    value?: Omit<DeviceFactSnapshot, "created" | "expires" | "vendor"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceFactSnapshotToJSONTyped(value?: Omit<DeviceFactSnapshot, 'created'|'expires'|'vendor'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        data: DeviceFactsToJSON(value["data"]),
-        connection: value["connection"],
+        
+        'data': DeviceFactsToJSON(value['data']),
+        'connection': value['connection'],
     };
 }
+

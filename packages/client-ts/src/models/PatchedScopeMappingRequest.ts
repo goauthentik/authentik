@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * ScopeMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface PatchedScopeMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
     /**
@@ -43,9 +44,7 @@ export interface PatchedScopeMappingRequest {
 /**
  * Check if a given object implements the PatchedScopeMappingRequest interface.
  */
-export function instanceOfPatchedScopeMappingRequest(
-    value: object,
-): value is PatchedScopeMappingRequest {
+export function instanceOfPatchedScopeMappingRequest(value: object): value is PatchedScopeMappingRequest {
     return true;
 }
 
@@ -53,24 +52,17 @@ export function PatchedScopeMappingRequestFromJSON(json: any): PatchedScopeMappi
     return PatchedScopeMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedScopeMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedScopeMappingRequest {
+export function PatchedScopeMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedScopeMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
-        scopeName: json["scope_name"] == null ? undefined : json["scope_name"],
-        description: json["description"] == null ? undefined : json["description"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
+        'scopeName': json['scope_name'] == null ? undefined : json['scope_name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
@@ -78,19 +70,18 @@ export function PatchedScopeMappingRequestToJSON(json: any): PatchedScopeMapping
     return PatchedScopeMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedScopeMappingRequestToJSONTyped(
-    value?: PatchedScopeMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedScopeMappingRequestToJSONTyped(value?: PatchedScopeMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        scope_name: value["scopeName"],
-        description: value["description"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'scope_name': value['scopeName'],
+        'description': value['description'],
     };
 }
+

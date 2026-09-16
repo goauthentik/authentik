@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface UserTelegramSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +32,40 @@ export interface UserTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the UserTelegramSourceConnectionRequest interface.
  */
-export function instanceOfUserTelegramSourceConnectionRequest(
-    value: object,
-): value is UserTelegramSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfUserTelegramSourceConnectionRequest(value: object): value is UserTelegramSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function UserTelegramSourceConnectionRequestFromJSON(
-    json: any,
-): UserTelegramSourceConnectionRequest {
+export function UserTelegramSourceConnectionRequestFromJSON(json: any): UserTelegramSourceConnectionRequest {
     return UserTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserTelegramSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserTelegramSourceConnectionRequest {
+export function UserTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function UserTelegramSourceConnectionRequestToJSON(
-    json: any,
-): UserTelegramSourceConnectionRequest {
+export function UserTelegramSourceConnectionRequestToJSON(json: any): UserTelegramSourceConnectionRequest {
     return UserTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserTelegramSourceConnectionRequestToJSONTyped(
-    value?: UserTelegramSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserTelegramSourceConnectionRequestToJSONTyped(value?: UserTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

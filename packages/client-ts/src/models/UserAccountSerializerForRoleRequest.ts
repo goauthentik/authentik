@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Account adding/removing operations
  * @export
@@ -19,7 +20,7 @@
  */
 export interface UserAccountSerializerForRoleRequest {
     /**
-     *
+     * 
      */
     pk: number;
 }
@@ -27,46 +28,37 @@ export interface UserAccountSerializerForRoleRequest {
 /**
  * Check if a given object implements the UserAccountSerializerForRoleRequest interface.
  */
-export function instanceOfUserAccountSerializerForRoleRequest(
-    value: object,
-): value is UserAccountSerializerForRoleRequest {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
+export function instanceOfUserAccountSerializerForRoleRequest(value: object): value is UserAccountSerializerForRoleRequest {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
     return true;
 }
 
-export function UserAccountSerializerForRoleRequestFromJSON(
-    json: any,
-): UserAccountSerializerForRoleRequest {
+export function UserAccountSerializerForRoleRequestFromJSON(json: any): UserAccountSerializerForRoleRequest {
     return UserAccountSerializerForRoleRequestFromJSONTyped(json, false);
 }
 
-export function UserAccountSerializerForRoleRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserAccountSerializerForRoleRequest {
+export function UserAccountSerializerForRoleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserAccountSerializerForRoleRequest {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
+        
+        'pk': json['pk'],
     };
 }
 
-export function UserAccountSerializerForRoleRequestToJSON(
-    json: any,
-): UserAccountSerializerForRoleRequest {
+export function UserAccountSerializerForRoleRequestToJSON(json: any): UserAccountSerializerForRoleRequest {
     return UserAccountSerializerForRoleRequestToJSONTyped(json, false);
 }
 
-export function UserAccountSerializerForRoleRequestToJSONTyped(
-    value?: UserAccountSerializerForRoleRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserAccountSerializerForRoleRequestToJSONTyped(value?: UserAccountSerializerForRoleRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
+        
+        'pk': value['pk'],
     };
 }
+

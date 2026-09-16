@@ -12,18 +12,23 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
-import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { LastTaskStatusEnum } from './LastTaskStatusEnum';
+import {
+    LastTaskStatusEnumFromJSON,
+    LastTaskStatusEnumFromJSONTyped,
+    LastTaskStatusEnumToJSON,
+    LastTaskStatusEnumToJSONTyped,
+} from './LastTaskStatusEnum';
 
 /**
- *
+ * 
  * @export
  * @interface Schedule
  */
 export interface Schedule {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
@@ -31,7 +36,7 @@ export interface Schedule {
      */
     readonly identifier: string | null;
     /**
-     *
+     * 
      */
     readonly uid: string;
     /**
@@ -39,15 +44,15 @@ export interface Schedule {
      */
     readonly actorName: string;
     /**
-     *
+     * 
      */
     readonly relObjAppLabel: string;
     /**
-     *
+     * 
      */
     readonly relObjModel: string;
     /**
-     *
+     * 
      */
     relObjId?: string | null;
     /**
@@ -59,63 +64,35 @@ export interface Schedule {
      */
     paused?: boolean;
     /**
-     *
+     * 
      */
     readonly nextRun: Date;
     /**
-     *
+     * 
      */
     readonly description: string | null;
     /**
-     *
+     * 
      */
     readonly lastTaskStatus: LastTaskStatusEnum | null;
 }
+
+
 
 /**
  * Check if a given object implements the Schedule interface.
  */
 export function instanceOfSchedule(value: object): value is Schedule {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (
-        (!("actorName" in (value as Record<string, any>)) &&
-            !("actor_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["actorName"] === undefined &&
-            (value as Record<string, any>)["actor_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("relObjAppLabel" in (value as Record<string, any>)) &&
-            !("rel_obj_app_label" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["relObjAppLabel"] === undefined &&
-            (value as Record<string, any>)["rel_obj_app_label"] === undefined)
-    )
-        return false;
-    if (
-        (!("relObjModel" in (value as Record<string, any>)) &&
-            !("rel_obj_model" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["relObjModel"] === undefined &&
-            (value as Record<string, any>)["rel_obj_model"] === undefined)
-    )
-        return false;
-    if (!("crontab" in value) || value["crontab"] === undefined) return false;
-    if (
-        (!("nextRun" in (value as Record<string, any>)) &&
-            !("next_run" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["nextRun"] === undefined &&
-            (value as Record<string, any>)["next_run"] === undefined)
-    )
-        return false;
-    if (!("description" in value) || value["description"] === undefined) return false;
-    if (
-        (!("lastTaskStatus" in (value as Record<string, any>)) &&
-            !("last_task_status" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastTaskStatus"] === undefined &&
-            (value as Record<string, any>)["last_task_status"] === undefined)
-    )
-        return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('uid' in value) || value['uid'] === undefined) return false;
+    if ((!('actorName' in (value as Record<string, any>)) && !('actor_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['actorName'] === undefined && (value as Record<string, any>)['actor_name'] === undefined)) return false;
+    if ((!('relObjAppLabel' in (value as Record<string, any>)) && !('rel_obj_app_label' in (value as Record<string, any>))) || ((value as Record<string, any>)['relObjAppLabel'] === undefined && (value as Record<string, any>)['rel_obj_app_label'] === undefined)) return false;
+    if ((!('relObjModel' in (value as Record<string, any>)) && !('rel_obj_model' in (value as Record<string, any>))) || ((value as Record<string, any>)['relObjModel'] === undefined && (value as Record<string, any>)['rel_obj_model'] === undefined)) return false;
+    if (!('crontab' in value) || value['crontab'] === undefined) return false;
+    if ((!('nextRun' in (value as Record<string, any>)) && !('next_run' in (value as Record<string, any>))) || ((value as Record<string, any>)['nextRun'] === undefined && (value as Record<string, any>)['next_run'] === undefined)) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if ((!('lastTaskStatus' in (value as Record<string, any>)) && !('last_task_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastTaskStatus'] === undefined && (value as Record<string, any>)['last_task_status'] === undefined)) return false;
     return true;
 }
 
@@ -128,23 +105,19 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        id: json["id"],
-        identifier: json["identifier"],
-        uid: json["uid"],
-        actorName: json["actor_name"],
-        relObjAppLabel: json["rel_obj_app_label"],
-        relObjModel: json["rel_obj_model"],
-        relObjId:
-            json["rel_obj_id"] === undefined
-                ? undefined
-                : json["rel_obj_id"] === null
-                  ? null
-                  : json["rel_obj_id"],
-        crontab: json["crontab"],
-        paused: json["paused"] == null ? undefined : json["paused"],
-        nextRun: json["next_run"] == null ? json["next_run"] : parseDateTime(json["next_run"]),
-        description: json["description"],
-        lastTaskStatus: LastTaskStatusEnumFromJSON(json["last_task_status"]),
+        
+        'id': json['id'],
+        'identifier': json['identifier'],
+        'uid': json['uid'],
+        'actorName': json['actor_name'],
+        'relObjAppLabel': json['rel_obj_app_label'],
+        'relObjModel': json['rel_obj_model'],
+        'relObjId': json['rel_obj_id'] === undefined ? undefined : json['rel_obj_id'] === null ? null : json['rel_obj_id'],
+        'crontab': json['crontab'],
+        'paused': json['paused'] == null ? undefined : json['paused'],
+        'nextRun': (json['next_run'] == null ? json['next_run'] : parseDateTime(json['next_run'])),
+        'description': json['description'],
+        'lastTaskStatus': LastTaskStatusEnumFromJSON(json['last_task_status']),
     };
 }
 
@@ -152,28 +125,16 @@ export function ScheduleToJSON(json: any): Schedule {
     return ScheduleToJSONTyped(json, false);
 }
 
-export function ScheduleToJSONTyped(
-    value?: Omit<
-        Schedule,
-        | "id"
-        | "identifier"
-        | "uid"
-        | "actorName"
-        | "relObjAppLabel"
-        | "relObjModel"
-        | "nextRun"
-        | "description"
-        | "lastTaskStatus"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ScheduleToJSONTyped(value?: Omit<Schedule, 'id'|'identifier'|'uid'|'actorName'|'relObjAppLabel'|'relObjModel'|'nextRun'|'description'|'lastTaskStatus'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        rel_obj_id: value["relObjId"],
-        crontab: value["crontab"],
-        paused: value["paused"],
+        
+        'rel_obj_id': value['relObjId'],
+        'crontab': value['crontab'],
+        'paused': value['paused'],
     };
 }
+

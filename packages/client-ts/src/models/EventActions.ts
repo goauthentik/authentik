@@ -12,52 +12,54 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const EventActions = {
-    Login: "login",
-    LoginFailed: "login_failed",
-    Logout: "logout",
-    UserWrite: "user_write",
-    UserOffboarded: "user_offboarded",
-    SuspiciousRequest: "suspicious_request",
-    PasswordSet: "password_set",
-    SecretView: "secret_view",
-    SecretRotate: "secret_rotate",
-    InvitationUsed: "invitation_used",
-    AuthorizeApplication: "authorize_application",
-    SourceLinked: "source_linked",
-    ImpersonationStarted: "impersonation_started",
-    ImpersonationEnded: "impersonation_ended",
-    FlowExecution: "flow_execution",
-    PolicyExecution: "policy_execution",
-    PolicyException: "policy_exception",
-    PropertyMappingException: "property_mapping_exception",
-    SystemTaskExecution: "system_task_execution",
-    SystemTaskException: "system_task_exception",
-    SystemException: "system_exception",
-    ConfigurationError: "configuration_error",
-    ConfigurationWarning: "configuration_warning",
-    ModelCreated: "model_created",
-    ModelUpdated: "model_updated",
-    ModelDeleted: "model_deleted",
-    EmailSent: "email_sent",
-    UpdateAvailable: "update_available",
-    ExportReady: "export_ready",
-    ReviewInitiated: "review_initiated",
-    ReviewOverdue: "review_overdue",
-    ReviewAttested: "review_attested",
-    ReviewCompleted: "review_completed",
-    AccessRequestCreated: "access_request_created",
-    AccessRequestApproved: "access_request_approved",
-    AccessRequestDenied: "access_request_denied",
-    AccessRequestRevoked: "access_request_revoked",
-    Custom: "custom_",
-    UnknownDefaultOpenApi: "11184809",
+    Login: 'login',
+    LoginFailed: 'login_failed',
+    Logout: 'logout',
+    UserWrite: 'user_write',
+    UserOffboarded: 'user_offboarded',
+    SuspiciousRequest: 'suspicious_request',
+    PasswordSet: 'password_set',
+    SecretView: 'secret_view',
+    SecretRotate: 'secret_rotate',
+    InvitationUsed: 'invitation_used',
+    AuthorizeApplication: 'authorize_application',
+    SourceLinked: 'source_linked',
+    ImpersonationStarted: 'impersonation_started',
+    ImpersonationEnded: 'impersonation_ended',
+    FlowExecution: 'flow_execution',
+    PolicyExecution: 'policy_execution',
+    PolicyException: 'policy_exception',
+    PropertyMappingException: 'property_mapping_exception',
+    SystemTaskExecution: 'system_task_execution',
+    SystemTaskException: 'system_task_exception',
+    SystemException: 'system_exception',
+    ConfigurationError: 'configuration_error',
+    ConfigurationWarning: 'configuration_warning',
+    ModelCreated: 'model_created',
+    ModelUpdated: 'model_updated',
+    ModelDeleted: 'model_deleted',
+    EmailSent: 'email_sent',
+    UpdateAvailable: 'update_available',
+    ExportReady: 'export_ready',
+    ReviewInitiated: 'review_initiated',
+    ReviewOverdue: 'review_overdue',
+    ReviewAttested: 'review_attested',
+    ReviewCompleted: 'review_completed',
+    AccessRequestCreated: 'access_request_created',
+    AccessRequestApproved: 'access_request_approved',
+    AccessRequestDenied: 'access_request_denied',
+    AccessRequestRevoked: 'access_request_revoked',
+    Custom: 'custom_',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type EventActions = (typeof EventActions)[keyof typeof EventActions];
+export type EventActions = typeof EventActions[keyof typeof EventActions];
+
 
 export function instanceOfEventActions(value: any): boolean {
     for (const key in EventActions) {
@@ -85,3 +87,4 @@ export function EventActionsToJSON(value?: EventActions | null): any {
 export function EventActionsToJSONTyped(value: any, ignoreDiscriminator: boolean): EventActions {
     return value as EventActions;
 }
+

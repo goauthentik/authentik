@@ -12,31 +12,39 @@
  * Do not edit the class manually.
  */
 
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
+import { mapValues } from '../runtime';
+import type { CountryCodeEnum } from './CountryCodeEnum';
+import {
+    CountryCodeEnumFromJSON,
+    CountryCodeEnumFromJSONTyped,
+    CountryCodeEnumToJSON,
+    CountryCodeEnumToJSONTyped,
+} from './CountryCodeEnum';
 
 /**
- *
+ * 
  * @export
  * @interface DetailedCountry
  */
 export interface DetailedCountry {
     /**
-     *
+     * 
      */
     code: CountryCodeEnum;
     /**
-     *
+     * 
      */
     name: string;
 }
+
+
 
 /**
  * Check if a given object implements the DetailedCountry interface.
  */
 export function instanceOfDetailedCountry(value: object): value is DetailedCountry {
-    if (!("code" in value) || value["code"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('code' in value) || value['code'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -44,16 +52,14 @@ export function DetailedCountryFromJSON(json: any): DetailedCountry {
     return DetailedCountryFromJSONTyped(json, false);
 }
 
-export function DetailedCountryFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DetailedCountry {
+export function DetailedCountryFromJSONTyped(json: any, ignoreDiscriminator: boolean): DetailedCountry {
     if (json == null) {
         return json;
     }
     return {
-        code: CountryCodeEnumFromJSON(json["code"]),
-        name: json["name"],
+        
+        'code': CountryCodeEnumFromJSON(json['code']),
+        'name': json['name'],
     };
 }
 
@@ -61,16 +67,15 @@ export function DetailedCountryToJSON(json: any): DetailedCountry {
     return DetailedCountryToJSONTyped(json, false);
 }
 
-export function DetailedCountryToJSONTyped(
-    value?: DetailedCountry | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DetailedCountryToJSONTyped(value?: DetailedCountry | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        code: CountryCodeEnumToJSON(value["code"]),
-        name: value["name"],
+        
+        'code': CountryCodeEnumToJSON(value['code']),
+        'name': value['name'],
     };
 }
+

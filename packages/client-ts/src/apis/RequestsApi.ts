@@ -12,81 +12,133 @@
  * Do not edit the class manually.
  */
 
+import * as runtime from '../runtime';
+import {
+    type AgentGrantRequestCreateRequest,
+    AgentGrantRequestCreateRequestFromJSON,
+    AgentGrantRequestCreateRequestToJSON,
+} from '../models/AgentGrantRequestCreateRequest';
 import {
     type AgentGrantRequestCreated,
     AgentGrantRequestCreatedFromJSON,
-} from "../models/AgentGrantRequestCreated";
+    AgentGrantRequestCreatedToJSON,
+} from '../models/AgentGrantRequestCreated';
 import {
-    type AgentGrantRequestCreateRequest,
-    AgentGrantRequestCreateRequestToJSON,
-} from "../models/AgentGrantRequestCreateRequest";
-import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type GrantRequest,
+    GrantRequestFromJSON,
+    GrantRequestToJSON,
+} from '../models/GrantRequest';
 import {
     type GrantRequestCreateRequest,
+    GrantRequestCreateRequestFromJSON,
     GrantRequestCreateRequestToJSON,
-} from "../models/GrantRequestCreateRequest";
-import { type Link, LinkFromJSON } from "../models/Link";
+} from '../models/GrantRequestCreateRequest';
+import {
+    type Link,
+    LinkFromJSON,
+    LinkToJSON,
+} from '../models/Link';
 import {
     type PaginatedGrantRequestList,
     PaginatedGrantRequestListFromJSON,
-} from "../models/PaginatedGrantRequestList";
+    PaginatedGrantRequestListToJSON,
+} from '../models/PaginatedGrantRequestList';
 import {
     type PaginatedRequestRuleBindingList,
     PaginatedRequestRuleBindingListFromJSON,
-} from "../models/PaginatedRequestRuleBindingList";
+    PaginatedRequestRuleBindingListToJSON,
+} from '../models/PaginatedRequestRuleBindingList';
 import {
     type PaginatedRequestRuleChildBindingList,
     PaginatedRequestRuleChildBindingListFromJSON,
-} from "../models/PaginatedRequestRuleChildBindingList";
+    PaginatedRequestRuleChildBindingListToJSON,
+} from '../models/PaginatedRequestRuleChildBindingList';
 import {
     type PaginatedRequestRuleList,
     PaginatedRequestRuleListFromJSON,
-} from "../models/PaginatedRequestRuleList";
+    PaginatedRequestRuleListToJSON,
+} from '../models/PaginatedRequestRuleList';
 import {
     type PatchedGrantRequestFulfillRequest,
+    PatchedGrantRequestFulfillRequestFromJSON,
     PatchedGrantRequestFulfillRequestToJSON,
-} from "../models/PatchedGrantRequestFulfillRequest";
+} from '../models/PatchedGrantRequestFulfillRequest';
 import {
     type PatchedRequestRuleBindingRequest,
+    PatchedRequestRuleBindingRequestFromJSON,
     PatchedRequestRuleBindingRequestToJSON,
-} from "../models/PatchedRequestRuleBindingRequest";
+} from '../models/PatchedRequestRuleBindingRequest';
 import {
     type PatchedRequestRuleChildBindingRequest,
+    PatchedRequestRuleChildBindingRequestFromJSON,
     PatchedRequestRuleChildBindingRequestToJSON,
-} from "../models/PatchedRequestRuleChildBindingRequest";
+} from '../models/PatchedRequestRuleChildBindingRequest';
 import {
     type PatchedRequestRuleRequest,
+    PatchedRequestRuleRequestFromJSON,
     PatchedRequestRuleRequestToJSON,
-} from "../models/PatchedRequestRuleRequest";
-import { type RequestRule, RequestRuleFromJSON } from "../models/RequestRule";
-import { type RequestRuleBinding, RequestRuleBindingFromJSON } from "../models/RequestRuleBinding";
+} from '../models/PatchedRequestRuleRequest';
+import {
+    type RequestRule,
+    RequestRuleFromJSON,
+    RequestRuleToJSON,
+} from '../models/RequestRule';
+import {
+    type RequestRuleBinding,
+    RequestRuleBindingFromJSON,
+    RequestRuleBindingToJSON,
+} from '../models/RequestRuleBinding';
 import {
     type RequestRuleBindingRequest,
+    RequestRuleBindingRequestFromJSON,
     RequestRuleBindingRequestToJSON,
-} from "../models/RequestRuleBindingRequest";
+} from '../models/RequestRuleBindingRequest';
 import {
     type RequestRuleChildBinding,
     RequestRuleChildBindingFromJSON,
-} from "../models/RequestRuleChildBinding";
+    RequestRuleChildBindingToJSON,
+} from '../models/RequestRuleChildBinding';
 import {
     type RequestRuleChildBindingRequest,
+    RequestRuleChildBindingRequestFromJSON,
     RequestRuleChildBindingRequestToJSON,
-} from "../models/RequestRuleChildBindingRequest";
-import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
-import { type RequestStatus } from "../models/RequestStatus";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from '../models/RequestRuleChildBindingRequest';
+import {
+    type RequestRuleRequest,
+    RequestRuleRequestFromJSON,
+    RequestRuleRequestToJSON,
+} from '../models/RequestRuleRequest';
+import {
+    type RequestStatus,
+    RequestStatusFromJSON,
+    RequestStatusToJSON,
+} from '../models/RequestStatus';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+    UsedByToJSON,
+} from '../models/UsedBy';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface RequestsGrantRequestsAgentCreateRequest {
     /**
-     *
+     * 
      */
     agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsCreateRequest {
     /**
-     *
+     * 
      */
     grantRequestCreateRequest: GrantRequestCreateRequest;
 }
@@ -104,18 +156,18 @@ export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
 }
 
 export interface RequestsGrantRequestsListRequest {
     /**
-     *
+     * 
      */
     agentOwner?: number;
     /**
-     *
+     * 
      */
     createdBy?: number;
     /**
@@ -135,18 +187,18 @@ export interface RequestsGrantRequestsListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsPendingReviewListRequest {
     /**
-     *
+     * 
      */
     agentOwner?: number;
     /**
-     *
+     * 
      */
     createdBy?: number;
     /**
@@ -166,7 +218,7 @@ export interface RequestsGrantRequestsPendingReviewListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     status?: RequestStatus;
 }
@@ -187,7 +239,7 @@ export interface RequestsGrantRequestsRevokeDestroyRequest {
 
 export interface RequestsRuleBindingsCreateRequest {
     /**
-     *
+     * 
      */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
@@ -213,7 +265,7 @@ export interface RequestsRuleBindingsListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     rule?: string;
     /**
@@ -221,7 +273,7 @@ export interface RequestsRuleBindingsListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     target?: string;
 }
@@ -232,7 +284,7 @@ export interface RequestsRuleBindingsPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedRequestRuleBindingRequest?: PatchedRequestRuleBindingRequest;
 }
@@ -250,7 +302,7 @@ export interface RequestsRuleBindingsUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
@@ -264,7 +316,7 @@ export interface RequestsRuleBindingsUsedByListRequest {
 
 export interface RequestsRuleChildBindingsCreateRequest {
     /**
-     *
+     * 
      */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
@@ -278,7 +330,7 @@ export interface RequestsRuleChildBindingsDestroyRequest {
 
 export interface RequestsRuleChildBindingsListRequest {
     /**
-     *
+     * 
      */
     binding?: string;
     /**
@@ -298,7 +350,7 @@ export interface RequestsRuleChildBindingsListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     target?: string;
 }
@@ -309,7 +361,7 @@ export interface RequestsRuleChildBindingsPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedRequestRuleChildBindingRequest?: PatchedRequestRuleChildBindingRequest;
 }
@@ -327,7 +379,7 @@ export interface RequestsRuleChildBindingsUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
@@ -341,7 +393,7 @@ export interface RequestsRuleChildBindingsUsedByListRequest {
 
 export interface RequestsRulesCreateRequest {
     /**
-     *
+     * 
      */
     requestRuleRequest: RequestRuleRequest;
 }
@@ -355,7 +407,7 @@ export interface RequestsRulesDestroyRequest {
 
 export interface RequestsRulesListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -371,11 +423,11 @@ export interface RequestsRulesListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     pbmUuid?: string;
     /**
-     *
+     * 
      */
     requestFlowSlug?: string;
     /**
@@ -390,7 +442,7 @@ export interface RequestsRulesPartialUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     patchedRequestRuleRequest?: PatchedRequestRuleRequest;
 }
@@ -408,7 +460,7 @@ export interface RequestsRulesUpdateRequest {
      */
     uuid: string;
     /**
-     *
+     * 
      */
     requestRuleRequest: RequestRuleRequest;
 }
@@ -421,19 +473,18 @@ export interface RequestsRulesUsedByListRequest {
 }
 
 /**
- *
+ * 
  */
 export class RequestsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for requestsGrantRequestsAgentCreate without sending the request
      */
-    async requestsGrantRequestsAgentCreateRequestOpts(
-        requestParameters: RequestsGrantRequestsAgentCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["agentGrantRequestCreateRequest"] == null) {
+    async requestsGrantRequestsAgentCreateRequestOpts(requestParameters: RequestsGrantRequestsAgentCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['agentGrantRequestCreateRequest'] == null) {
             throw new runtime.RequiredError(
-                "agentGrantRequestCreateRequest",
-                'Required parameter "agentGrantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsAgentCreate().',
+                'agentGrantRequestCreateRequest',
+                'Required parameter "agentGrantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsAgentCreate().'
             );
         }
 
@@ -441,7 +492,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -456,55 +507,39 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: AgentGrantRequestCreateRequestToJSON(
-                requestParameters["agentGrantRequestCreateRequest"],
-            ),
+            body: AgentGrantRequestCreateRequestToJSON(requestParameters['agentGrantRequestCreateRequest']),
         };
     }
 
     /**
      * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
-    async requestsGrantRequestsAgentCreateRaw(
-        requestParameters: RequestsGrantRequestsAgentCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<AgentGrantRequestCreated>> {
-        const requestOptions =
-            await this.requestsGrantRequestsAgentCreateRequestOpts(requestParameters);
+    async requestsGrantRequestsAgentCreateRaw(requestParameters: RequestsGrantRequestsAgentCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AgentGrantRequestCreated>> {
+        const requestOptions = await this.requestsGrantRequestsAgentCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            AgentGrantRequestCreatedFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => AgentGrantRequestCreatedFromJSON(jsonValue));
     }
 
     /**
      * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
-    async requestsGrantRequestsAgentCreate(
-        requestParameters: RequestsGrantRequestsAgentCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<AgentGrantRequestCreated> {
-        const response = await this.requestsGrantRequestsAgentCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsGrantRequestsAgentCreate(requestParameters: RequestsGrantRequestsAgentCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AgentGrantRequestCreated> {
+        const response = await this.requestsGrantRequestsAgentCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsGrantRequestsCreate without sending the request
      */
-    async requestsGrantRequestsCreateRequestOpts(
-        requestParameters: RequestsGrantRequestsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["grantRequestCreateRequest"] == null) {
+    async requestsGrantRequestsCreateRequestOpts(requestParameters: RequestsGrantRequestsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['grantRequestCreateRequest'] == null) {
             throw new runtime.RequiredError(
-                "grantRequestCreateRequest",
-                'Required parameter "grantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsCreate().',
+                'grantRequestCreateRequest',
+                'Required parameter "grantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsCreate().'
             );
         }
 
@@ -512,7 +547,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -527,19 +562,16 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: GrantRequestCreateRequestToJSON(requestParameters["grantRequestCreateRequest"]),
+            body: GrantRequestCreateRequestToJSON(requestParameters['grantRequestCreateRequest']),
         };
     }
 
     /**
      */
-    async requestsGrantRequestsCreateRaw(
-        requestParameters: RequestsGrantRequestsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Link>> {
+    async requestsGrantRequestsCreateRaw(requestParameters: RequestsGrantRequestsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Link>> {
         const requestOptions = await this.requestsGrantRequestsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -548,27 +580,19 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsCreate(
-        requestParameters: RequestsGrantRequestsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Link> {
-        const response = await this.requestsGrantRequestsCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsGrantRequestsCreate(requestParameters: RequestsGrantRequestsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Link> {
+        const response = await this.requestsGrantRequestsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsGrantRequestsDestroy without sending the request
      */
-    async requestsGrantRequestsDestroyRequestOpts(
-        requestParameters: RequestsGrantRequestsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsGrantRequestsDestroyRequestOpts(requestParameters: RequestsGrantRequestsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsDestroy().'
             );
         }
 
@@ -586,11 +610,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/grant-requests/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -598,12 +622,8 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsDestroyRaw(
-        requestParameters: RequestsGrantRequestsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.requestsGrantRequestsDestroyRequestOpts(requestParameters);
+    async requestsGrantRequestsDestroyRaw(requestParameters: RequestsGrantRequestsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.requestsGrantRequestsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -611,23 +631,18 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsDestroy(
-        requestParameters: RequestsGrantRequestsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsGrantRequestsDestroy(requestParameters: RequestsGrantRequestsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsGrantRequestsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsGrantRequestsFulfillPartialUpdate without sending the request
      */
-    async requestsGrantRequestsFulfillPartialUpdateRequestOpts(
-        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsGrantRequestsFulfillPartialUpdateRequestOpts(requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsFulfillPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsFulfillPartialUpdate().'
             );
         }
 
@@ -635,7 +650,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -647,27 +662,21 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/grant-requests/{uuid}/fulfill/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGrantRequestFulfillRequestToJSON(
-                requestParameters["patchedGrantRequestFulfillRequest"],
-            ),
+            body: PatchedGrantRequestFulfillRequestToJSON(requestParameters['patchedGrantRequestFulfillRequest']),
         };
     }
 
     /**
      */
-    async requestsGrantRequestsFulfillPartialUpdateRaw(
-        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.requestsGrantRequestsFulfillPartialUpdateRequestOpts(requestParameters);
+    async requestsGrantRequestsFulfillPartialUpdateRaw(requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.requestsGrantRequestsFulfillPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -675,47 +684,42 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsFulfillPartialUpdate(
-        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsGrantRequestsFulfillPartialUpdate(requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsGrantRequestsFulfillPartialUpdateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsGrantRequestsList without sending the request
      */
-    async requestsGrantRequestsListRequestOpts(
-        requestParameters: RequestsGrantRequestsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async requestsGrantRequestsListRequestOpts(requestParameters: RequestsGrantRequestsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["agentOwner"] != null) {
-            queryParameters["agent_owner"] = requestParameters["agentOwner"];
+        if (requestParameters['agentOwner'] != null) {
+            queryParameters['agent_owner'] = requestParameters['agentOwner'];
         }
 
-        if (requestParameters["createdBy"] != null) {
-            queryParameters["created_by"] = requestParameters["createdBy"];
+        if (requestParameters['createdBy'] != null) {
+            queryParameters['created_by'] = requestParameters['createdBy'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["status"] != null) {
-            queryParameters["status"] = requestParameters["status"];
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -733,7 +737,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -741,24 +745,16 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsListRaw(
-        requestParameters: RequestsGrantRequestsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
+    async requestsGrantRequestsListRaw(requestParameters: RequestsGrantRequestsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
         const requestOptions = await this.requestsGrantRequestsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedGrantRequestListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGrantRequestListFromJSON(jsonValue));
     }
 
     /**
      */
-    async requestsGrantRequestsList(
-        requestParameters: RequestsGrantRequestsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedGrantRequestList> {
+    async requestsGrantRequestsList(requestParameters: RequestsGrantRequestsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGrantRequestList> {
         const response = await this.requestsGrantRequestsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -766,37 +762,35 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsGrantRequestsPendingReviewList without sending the request
      */
-    async requestsGrantRequestsPendingReviewListRequestOpts(
-        requestParameters: RequestsGrantRequestsPendingReviewListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async requestsGrantRequestsPendingReviewListRequestOpts(requestParameters: RequestsGrantRequestsPendingReviewListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["agentOwner"] != null) {
-            queryParameters["agent_owner"] = requestParameters["agentOwner"];
+        if (requestParameters['agentOwner'] != null) {
+            queryParameters['agent_owner'] = requestParameters['agentOwner'];
         }
 
-        if (requestParameters["createdBy"] != null) {
-            queryParameters["created_by"] = requestParameters["createdBy"];
+        if (requestParameters['createdBy'] != null) {
+            queryParameters['created_by'] = requestParameters['createdBy'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["status"] != null) {
-            queryParameters["status"] = requestParameters["status"];
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -814,7 +808,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -823,43 +817,29 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * List pending grant requests the current user is eligible to review.
      */
-    async requestsGrantRequestsPendingReviewListRaw(
-        requestParameters: RequestsGrantRequestsPendingReviewListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
-        const requestOptions =
-            await this.requestsGrantRequestsPendingReviewListRequestOpts(requestParameters);
+    async requestsGrantRequestsPendingReviewListRaw(requestParameters: RequestsGrantRequestsPendingReviewListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
+        const requestOptions = await this.requestsGrantRequestsPendingReviewListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedGrantRequestListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGrantRequestListFromJSON(jsonValue));
     }
 
     /**
      * List pending grant requests the current user is eligible to review.
      */
-    async requestsGrantRequestsPendingReviewList(
-        requestParameters: RequestsGrantRequestsPendingReviewListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedGrantRequestList> {
-        const response = await this.requestsGrantRequestsPendingReviewListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsGrantRequestsPendingReviewList(requestParameters: RequestsGrantRequestsPendingReviewListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGrantRequestList> {
+        const response = await this.requestsGrantRequestsPendingReviewListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsGrantRequestsRetrieve without sending the request
      */
-    async requestsGrantRequestsRetrieveRequestOpts(
-        requestParameters: RequestsGrantRequestsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsGrantRequestsRetrieveRequestOpts(requestParameters: RequestsGrantRequestsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRetrieve().'
             );
         }
 
@@ -877,11 +857,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/grant-requests/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -889,42 +869,28 @@ export class RequestsApi extends runtime.BaseAPI {
 
     /**
      */
-    async requestsGrantRequestsRetrieveRaw(
-        requestParameters: RequestsGrantRequestsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GrantRequest>> {
-        const requestOptions =
-            await this.requestsGrantRequestsRetrieveRequestOpts(requestParameters);
+    async requestsGrantRequestsRetrieveRaw(requestParameters: RequestsGrantRequestsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GrantRequest>> {
+        const requestOptions = await this.requestsGrantRequestsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GrantRequestFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GrantRequestFromJSON(jsonValue));
     }
 
     /**
      */
-    async requestsGrantRequestsRetrieve(
-        requestParameters: RequestsGrantRequestsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GrantRequest> {
-        const response = await this.requestsGrantRequestsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsGrantRequestsRetrieve(requestParameters: RequestsGrantRequestsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GrantRequest> {
+        const response = await this.requestsGrantRequestsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsGrantRequestsRevokeDestroy without sending the request
      */
-    async requestsGrantRequestsRevokeDestroyRequestOpts(
-        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsGrantRequestsRevokeDestroyRequestOpts(requestParameters: RequestsGrantRequestsRevokeDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRevokeDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRevokeDestroy().'
             );
         }
 
@@ -942,11 +908,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/grant-requests/{uuid}/revoke/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -955,12 +921,8 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
      */
-    async requestsGrantRequestsRevokeDestroyRaw(
-        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.requestsGrantRequestsRevokeDestroyRequestOpts(requestParameters);
+    async requestsGrantRequestsRevokeDestroyRaw(requestParameters: RequestsGrantRequestsRevokeDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.requestsGrantRequestsRevokeDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -969,23 +931,18 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
      */
-    async requestsGrantRequestsRevokeDestroy(
-        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsGrantRequestsRevokeDestroy(requestParameters: RequestsGrantRequestsRevokeDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsGrantRequestsRevokeDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsRuleBindingsCreate without sending the request
      */
-    async requestsRuleBindingsCreateRequestOpts(
-        requestParameters: RequestsRuleBindingsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["requestRuleBindingRequest"] == null) {
+    async requestsRuleBindingsCreateRequestOpts(requestParameters: RequestsRuleBindingsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['requestRuleBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleBindingRequest",
-                'Required parameter "requestRuleBindingRequest" was null or undefined when calling requestsRuleBindingsCreate().',
+                'requestRuleBindingRequest',
+                'Required parameter "requestRuleBindingRequest" was null or undefined when calling requestsRuleBindingsCreate().'
             );
         }
 
@@ -993,7 +950,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1008,35 +965,27 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleBindingRequestToJSON(requestParameters["requestRuleBindingRequest"]),
+            body: RequestRuleBindingRequestToJSON(requestParameters['requestRuleBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsCreateRaw(
-        requestParameters: RequestsRuleBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleBinding>> {
+    async requestsRuleBindingsCreateRaw(requestParameters: RequestsRuleBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleBinding>> {
         const requestOptions = await this.requestsRuleBindingsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsCreate(
-        requestParameters: RequestsRuleBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleBinding> {
+    async requestsRuleBindingsCreate(requestParameters: RequestsRuleBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleBinding> {
         const response = await this.requestsRuleBindingsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1044,13 +993,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRuleBindingsDestroy without sending the request
      */
-    async requestsRuleBindingsDestroyRequestOpts(
-        requestParameters: RequestsRuleBindingsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleBindingsDestroyRequestOpts(requestParameters: RequestsRuleBindingsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsDestroy().'
             );
         }
 
@@ -1068,11 +1015,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1081,10 +1028,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsDestroyRaw(
-        requestParameters: RequestsRuleBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async requestsRuleBindingsDestroyRaw(requestParameters: RequestsRuleBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.requestsRuleBindingsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1094,43 +1038,38 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsDestroy(
-        requestParameters: RequestsRuleBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsRuleBindingsDestroy(requestParameters: RequestsRuleBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsRuleBindingsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsRuleBindingsList without sending the request
      */
-    async requestsRuleBindingsListRequestOpts(
-        requestParameters: RequestsRuleBindingsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async requestsRuleBindingsListRequestOpts(requestParameters: RequestsRuleBindingsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["rule"] != null) {
-            queryParameters["rule"] = requestParameters["rule"];
+        if (requestParameters['rule'] != null) {
+            queryParameters['rule'] = requestParameters['rule'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["target"] != null) {
-            queryParameters["target"] = requestParameters["target"];
+        if (requestParameters['target'] != null) {
+            queryParameters['target'] = requestParameters['target'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1148,7 +1087,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1157,25 +1096,17 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsListRaw(
-        requestParameters: RequestsRuleBindingsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRequestRuleBindingList>> {
+    async requestsRuleBindingsListRaw(requestParameters: RequestsRuleBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRequestRuleBindingList>> {
         const requestOptions = await this.requestsRuleBindingsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRequestRuleBindingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRequestRuleBindingListFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsList(
-        requestParameters: RequestsRuleBindingsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRequestRuleBindingList> {
+    async requestsRuleBindingsList(requestParameters: RequestsRuleBindingsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRequestRuleBindingList> {
         const response = await this.requestsRuleBindingsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1183,13 +1114,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRuleBindingsPartialUpdate without sending the request
      */
-    async requestsRuleBindingsPartialUpdateRequestOpts(
-        requestParameters: RequestsRuleBindingsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleBindingsPartialUpdateRequestOpts(requestParameters: RequestsRuleBindingsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsPartialUpdate().'
             );
         }
 
@@ -1197,7 +1126,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1209,59 +1138,43 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRequestRuleBindingRequestToJSON(
-                requestParameters["patchedRequestRuleBindingRequest"],
-            ),
+            body: PatchedRequestRuleBindingRequestToJSON(requestParameters['patchedRequestRuleBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsPartialUpdateRaw(
-        requestParameters: RequestsRuleBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleBinding>> {
-        const requestOptions =
-            await this.requestsRuleBindingsPartialUpdateRequestOpts(requestParameters);
+    async requestsRuleBindingsPartialUpdateRaw(requestParameters: RequestsRuleBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleBinding>> {
+        const requestOptions = await this.requestsRuleBindingsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsPartialUpdate(
-        requestParameters: RequestsRuleBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleBinding> {
-        const response = await this.requestsRuleBindingsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleBindingsPartialUpdate(requestParameters: RequestsRuleBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleBinding> {
+        const response = await this.requestsRuleBindingsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleBindingsRetrieve without sending the request
      */
-    async requestsRuleBindingsRetrieveRequestOpts(
-        requestParameters: RequestsRuleBindingsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleBindingsRetrieveRequestOpts(requestParameters: RequestsRuleBindingsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsRetrieve().'
             );
         }
 
@@ -1279,11 +1192,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1292,50 +1205,36 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsRetrieveRaw(
-        requestParameters: RequestsRuleBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleBinding>> {
-        const requestOptions =
-            await this.requestsRuleBindingsRetrieveRequestOpts(requestParameters);
+    async requestsRuleBindingsRetrieveRaw(requestParameters: RequestsRuleBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleBinding>> {
+        const requestOptions = await this.requestsRuleBindingsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsRetrieve(
-        requestParameters: RequestsRuleBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleBinding> {
-        const response = await this.requestsRuleBindingsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleBindingsRetrieve(requestParameters: RequestsRuleBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleBinding> {
+        const response = await this.requestsRuleBindingsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleBindingsUpdate without sending the request
      */
-    async requestsRuleBindingsUpdateRequestOpts(
-        requestParameters: RequestsRuleBindingsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleBindingsUpdateRequestOpts(requestParameters: RequestsRuleBindingsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsUpdate().'
             );
         }
 
-        if (requestParameters["requestRuleBindingRequest"] == null) {
+        if (requestParameters['requestRuleBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleBindingRequest",
-                'Required parameter "requestRuleBindingRequest" was null or undefined when calling requestsRuleBindingsUpdate().',
+                'requestRuleBindingRequest',
+                'Required parameter "requestRuleBindingRequest" was null or undefined when calling requestsRuleBindingsUpdate().'
             );
         }
 
@@ -1343,7 +1242,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1355,39 +1254,31 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleBindingRequestToJSON(requestParameters["requestRuleBindingRequest"]),
+            body: RequestRuleBindingRequestToJSON(requestParameters['requestRuleBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsUpdateRaw(
-        requestParameters: RequestsRuleBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleBinding>> {
+    async requestsRuleBindingsUpdateRaw(requestParameters: RequestsRuleBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleBinding>> {
         const requestOptions = await this.requestsRuleBindingsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleBindingsUpdate(
-        requestParameters: RequestsRuleBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleBinding> {
+    async requestsRuleBindingsUpdate(requestParameters: RequestsRuleBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleBinding> {
         const response = await this.requestsRuleBindingsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1395,13 +1286,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRuleBindingsUsedByList without sending the request
      */
-    async requestsRuleBindingsUsedByListRequestOpts(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleBindingsUsedByListRequestOpts(requestParameters: RequestsRuleBindingsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsUsedByList().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsUsedByList().'
             );
         }
 
@@ -1419,11 +1308,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-bindings/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1432,12 +1321,8 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRuleBindingsUsedByListRaw(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.requestsRuleBindingsUsedByListRequestOpts(requestParameters);
+    async requestsRuleBindingsUsedByListRaw(requestParameters: RequestsRuleBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.requestsRuleBindingsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1446,27 +1331,19 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRuleBindingsUsedByList(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.requestsRuleBindingsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleBindingsUsedByList(requestParameters: RequestsRuleBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.requestsRuleBindingsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsCreate without sending the request
      */
-    async requestsRuleChildBindingsCreateRequestOpts(
-        requestParameters: RequestsRuleChildBindingsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["requestRuleChildBindingRequest"] == null) {
+    async requestsRuleChildBindingsCreateRequestOpts(requestParameters: RequestsRuleChildBindingsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['requestRuleChildBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleChildBindingRequest",
-                'Required parameter "requestRuleChildBindingRequest" was null or undefined when calling requestsRuleChildBindingsCreate().',
+                'requestRuleChildBindingRequest',
+                'Required parameter "requestRuleChildBindingRequest" was null or undefined when calling requestsRuleChildBindingsCreate().'
             );
         }
 
@@ -1474,7 +1351,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1489,55 +1366,39 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleChildBindingRequestToJSON(
-                requestParameters["requestRuleChildBindingRequest"],
-            ),
+            body: RequestRuleChildBindingRequestToJSON(requestParameters['requestRuleChildBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsCreateRaw(
-        requestParameters: RequestsRuleChildBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsCreateRequestOpts(requestParameters);
+    async requestsRuleChildBindingsCreateRaw(requestParameters: RequestsRuleChildBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
+        const requestOptions = await this.requestsRuleChildBindingsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleChildBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleChildBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsCreate(
-        requestParameters: RequestsRuleChildBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleChildBinding> {
-        const response = await this.requestsRuleChildBindingsCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsCreate(requestParameters: RequestsRuleChildBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleChildBinding> {
+        const response = await this.requestsRuleChildBindingsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsDestroy without sending the request
      */
-    async requestsRuleChildBindingsDestroyRequestOpts(
-        requestParameters: RequestsRuleChildBindingsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleChildBindingsDestroyRequestOpts(requestParameters: RequestsRuleChildBindingsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsDestroy().'
             );
         }
 
@@ -1555,11 +1416,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-child-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1568,12 +1429,8 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsDestroyRaw(
-        requestParameters: RequestsRuleChildBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsDestroyRequestOpts(requestParameters);
+    async requestsRuleChildBindingsDestroyRaw(requestParameters: RequestsRuleChildBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.requestsRuleChildBindingsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1582,43 +1439,38 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsDestroy(
-        requestParameters: RequestsRuleChildBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsRuleChildBindingsDestroy(requestParameters: RequestsRuleChildBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsRuleChildBindingsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsList without sending the request
      */
-    async requestsRuleChildBindingsListRequestOpts(
-        requestParameters: RequestsRuleChildBindingsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async requestsRuleChildBindingsListRequestOpts(requestParameters: RequestsRuleChildBindingsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["binding"] != null) {
-            queryParameters["binding"] = requestParameters["binding"];
+        if (requestParameters['binding'] != null) {
+            queryParameters['binding'] = requestParameters['binding'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["target"] != null) {
-            queryParameters["target"] = requestParameters["target"];
+        if (requestParameters['target'] != null) {
+            queryParameters['target'] = requestParameters['target'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1636,7 +1488,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1645,43 +1497,29 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsListRaw(
-        requestParameters: RequestsRuleChildBindingsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRequestRuleChildBindingList>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsListRequestOpts(requestParameters);
+    async requestsRuleChildBindingsListRaw(requestParameters: RequestsRuleChildBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRequestRuleChildBindingList>> {
+        const requestOptions = await this.requestsRuleChildBindingsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRequestRuleChildBindingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRequestRuleChildBindingListFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsList(
-        requestParameters: RequestsRuleChildBindingsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRequestRuleChildBindingList> {
-        const response = await this.requestsRuleChildBindingsListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsList(requestParameters: RequestsRuleChildBindingsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRequestRuleChildBindingList> {
+        const response = await this.requestsRuleChildBindingsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsPartialUpdate without sending the request
      */
-    async requestsRuleChildBindingsPartialUpdateRequestOpts(
-        requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleChildBindingsPartialUpdateRequestOpts(requestParameters: RequestsRuleChildBindingsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsPartialUpdate().'
             );
         }
 
@@ -1689,7 +1527,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1701,59 +1539,43 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-child-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRequestRuleChildBindingRequestToJSON(
-                requestParameters["patchedRequestRuleChildBindingRequest"],
-            ),
+            body: PatchedRequestRuleChildBindingRequestToJSON(requestParameters['patchedRequestRuleChildBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsPartialUpdateRaw(
-        requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsPartialUpdateRequestOpts(requestParameters);
+    async requestsRuleChildBindingsPartialUpdateRaw(requestParameters: RequestsRuleChildBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
+        const requestOptions = await this.requestsRuleChildBindingsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleChildBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleChildBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsPartialUpdate(
-        requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleChildBinding> {
-        const response = await this.requestsRuleChildBindingsPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsPartialUpdate(requestParameters: RequestsRuleChildBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleChildBinding> {
+        const response = await this.requestsRuleChildBindingsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsRetrieve without sending the request
      */
-    async requestsRuleChildBindingsRetrieveRequestOpts(
-        requestParameters: RequestsRuleChildBindingsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleChildBindingsRetrieveRequestOpts(requestParameters: RequestsRuleChildBindingsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsRetrieve().'
             );
         }
 
@@ -1771,11 +1593,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-child-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1784,50 +1606,36 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsRetrieveRaw(
-        requestParameters: RequestsRuleChildBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsRetrieveRequestOpts(requestParameters);
+    async requestsRuleChildBindingsRetrieveRaw(requestParameters: RequestsRuleChildBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
+        const requestOptions = await this.requestsRuleChildBindingsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleChildBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleChildBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsRetrieve(
-        requestParameters: RequestsRuleChildBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleChildBinding> {
-        const response = await this.requestsRuleChildBindingsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsRetrieve(requestParameters: RequestsRuleChildBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleChildBinding> {
+        const response = await this.requestsRuleChildBindingsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsUpdate without sending the request
      */
-    async requestsRuleChildBindingsUpdateRequestOpts(
-        requestParameters: RequestsRuleChildBindingsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleChildBindingsUpdateRequestOpts(requestParameters: RequestsRuleChildBindingsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsUpdate().'
             );
         }
 
-        if (requestParameters["requestRuleChildBindingRequest"] == null) {
+        if (requestParameters['requestRuleChildBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleChildBindingRequest",
-                'Required parameter "requestRuleChildBindingRequest" was null or undefined when calling requestsRuleChildBindingsUpdate().',
+                'requestRuleChildBindingRequest',
+                'Required parameter "requestRuleChildBindingRequest" was null or undefined when calling requestsRuleChildBindingsUpdate().'
             );
         }
 
@@ -1835,7 +1643,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1847,59 +1655,43 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-child-bindings/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleChildBindingRequestToJSON(
-                requestParameters["requestRuleChildBindingRequest"],
-            ),
+            body: RequestRuleChildBindingRequestToJSON(requestParameters['requestRuleChildBindingRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsUpdateRaw(
-        requestParameters: RequestsRuleChildBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsUpdateRequestOpts(requestParameters);
+    async requestsRuleChildBindingsUpdateRaw(requestParameters: RequestsRuleChildBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRuleChildBinding>> {
+        const requestOptions = await this.requestsRuleChildBindingsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RequestRuleChildBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleChildBindingFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRuleChildBindingsUpdate(
-        requestParameters: RequestsRuleChildBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRuleChildBinding> {
-        const response = await this.requestsRuleChildBindingsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsUpdate(requestParameters: RequestsRuleChildBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRuleChildBinding> {
+        const response = await this.requestsRuleChildBindingsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRuleChildBindingsUsedByList without sending the request
      */
-    async requestsRuleChildBindingsUsedByListRequestOpts(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRuleChildBindingsUsedByListRequestOpts(requestParameters: RequestsRuleChildBindingsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsUsedByList().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsUsedByList().'
             );
         }
 
@@ -1917,11 +1709,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rule-child-bindings/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1930,12 +1722,8 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRuleChildBindingsUsedByListRaw(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsUsedByListRequestOpts(requestParameters);
+    async requestsRuleChildBindingsUsedByListRaw(requestParameters: RequestsRuleChildBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.requestsRuleChildBindingsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1944,27 +1732,19 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRuleChildBindingsUsedByList(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.requestsRuleChildBindingsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async requestsRuleChildBindingsUsedByList(requestParameters: RequestsRuleChildBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.requestsRuleChildBindingsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for requestsRulesCreate without sending the request
      */
-    async requestsRulesCreateRequestOpts(
-        requestParameters: RequestsRulesCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["requestRuleRequest"] == null) {
+    async requestsRulesCreateRequestOpts(requestParameters: RequestsRulesCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['requestRuleRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleRequest",
-                'Required parameter "requestRuleRequest" was null or undefined when calling requestsRulesCreate().',
+                'requestRuleRequest',
+                'Required parameter "requestRuleRequest" was null or undefined when calling requestsRulesCreate().'
             );
         }
 
@@ -1972,7 +1752,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1987,20 +1767,17 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleRequestToJSON(requestParameters["requestRuleRequest"]),
+            body: RequestRuleRequestToJSON(requestParameters['requestRuleRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesCreateRaw(
-        requestParameters: RequestsRulesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRule>> {
+    async requestsRulesCreateRaw(requestParameters: RequestsRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRule>> {
         const requestOptions = await this.requestsRulesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2010,10 +1787,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesCreate(
-        requestParameters: RequestsRulesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRule> {
+    async requestsRulesCreate(requestParameters: RequestsRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRule> {
         const response = await this.requestsRulesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2021,13 +1795,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRulesDestroy without sending the request
      */
-    async requestsRulesDestroyRequestOpts(
-        requestParameters: RequestsRulesDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRulesDestroyRequestOpts(requestParameters: RequestsRulesDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRulesDestroy().'
             );
         }
 
@@ -2045,11 +1817,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rules/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2058,10 +1830,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesDestroyRaw(
-        requestParameters: RequestsRulesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async requestsRulesDestroyRaw(requestParameters: RequestsRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.requestsRulesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2071,47 +1840,42 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesDestroy(
-        requestParameters: RequestsRulesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async requestsRulesDestroy(requestParameters: RequestsRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.requestsRulesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for requestsRulesList without sending the request
      */
-    async requestsRulesListRequestOpts(
-        requestParameters: RequestsRulesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async requestsRulesListRequestOpts(requestParameters: RequestsRulesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["pbmUuid"] != null) {
-            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        if (requestParameters['pbmUuid'] != null) {
+            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
         }
 
-        if (requestParameters["requestFlowSlug"] != null) {
-            queryParameters["request_flow__slug"] = requestParameters["requestFlowSlug"];
+        if (requestParameters['requestFlowSlug'] != null) {
+            queryParameters['request_flow__slug'] = requestParameters['requestFlowSlug'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2129,7 +1893,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2138,25 +1902,17 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesListRaw(
-        requestParameters: RequestsRulesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRequestRuleList>> {
+    async requestsRulesListRaw(requestParameters: RequestsRulesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRequestRuleList>> {
         const requestOptions = await this.requestsRulesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRequestRuleListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRequestRuleListFromJSON(jsonValue));
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesList(
-        requestParameters: RequestsRulesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRequestRuleList> {
+    async requestsRulesList(requestParameters: RequestsRulesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRequestRuleList> {
         const response = await this.requestsRulesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2164,13 +1920,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRulesPartialUpdate without sending the request
      */
-    async requestsRulesPartialUpdateRequestOpts(
-        requestParameters: RequestsRulesPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRulesPartialUpdateRequestOpts(requestParameters: RequestsRulesPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesPartialUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRulesPartialUpdate().'
             );
         }
 
@@ -2178,7 +1932,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2190,24 +1944,21 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rules/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRequestRuleRequestToJSON(requestParameters["patchedRequestRuleRequest"]),
+            body: PatchedRequestRuleRequestToJSON(requestParameters['patchedRequestRuleRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesPartialUpdateRaw(
-        requestParameters: RequestsRulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRule>> {
+    async requestsRulesPartialUpdateRaw(requestParameters: RequestsRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRule>> {
         const requestOptions = await this.requestsRulesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2217,10 +1968,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesPartialUpdate(
-        requestParameters: RequestsRulesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRule> {
+    async requestsRulesPartialUpdate(requestParameters: RequestsRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRule> {
         const response = await this.requestsRulesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2228,13 +1976,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRulesRetrieve without sending the request
      */
-    async requestsRulesRetrieveRequestOpts(
-        requestParameters: RequestsRulesRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRulesRetrieveRequestOpts(requestParameters: RequestsRulesRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRulesRetrieve().'
             );
         }
 
@@ -2252,11 +1998,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rules/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2265,10 +2011,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesRetrieveRaw(
-        requestParameters: RequestsRulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRule>> {
+    async requestsRulesRetrieveRaw(requestParameters: RequestsRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRule>> {
         const requestOptions = await this.requestsRulesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2278,10 +2021,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesRetrieve(
-        requestParameters: RequestsRulesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRule> {
+    async requestsRulesRetrieve(requestParameters: RequestsRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRule> {
         const response = await this.requestsRulesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2289,20 +2029,18 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRulesUpdate without sending the request
      */
-    async requestsRulesUpdateRequestOpts(
-        requestParameters: RequestsRulesUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRulesUpdateRequestOpts(requestParameters: RequestsRulesUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesUpdate().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRulesUpdate().'
             );
         }
 
-        if (requestParameters["requestRuleRequest"] == null) {
+        if (requestParameters['requestRuleRequest'] == null) {
             throw new runtime.RequiredError(
-                "requestRuleRequest",
-                'Required parameter "requestRuleRequest" was null or undefined when calling requestsRulesUpdate().',
+                'requestRuleRequest',
+                'Required parameter "requestRuleRequest" was null or undefined when calling requestsRulesUpdate().'
             );
         }
 
@@ -2310,7 +2048,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2322,24 +2060,21 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rules/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestRuleRequestToJSON(requestParameters["requestRuleRequest"]),
+            body: RequestRuleRequestToJSON(requestParameters['requestRuleRequest']),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesUpdateRaw(
-        requestParameters: RequestsRulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RequestRule>> {
+    async requestsRulesUpdateRaw(requestParameters: RequestsRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RequestRule>> {
         const requestOptions = await this.requestsRulesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2349,10 +2084,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async requestsRulesUpdate(
-        requestParameters: RequestsRulesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RequestRule> {
+    async requestsRulesUpdate(requestParameters: RequestsRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RequestRule> {
         const response = await this.requestsRulesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2360,13 +2092,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsRulesUsedByList without sending the request
      */
-    async requestsRulesUsedByListRequestOpts(
-        requestParameters: RequestsRulesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async requestsRulesUsedByListRequestOpts(requestParameters: RequestsRulesUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesUsedByList().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling requestsRulesUsedByList().'
             );
         }
 
@@ -2384,11 +2114,11 @@ export class RequestsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/requests/rules/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2397,10 +2127,7 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRulesUsedByListRaw(
-        requestParameters: RequestsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async requestsRulesUsedByListRaw(requestParameters: RequestsRulesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.requestsRulesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2410,11 +2137,9 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async requestsRulesUsedByList(
-        requestParameters: RequestsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
+    async requestsRulesUsedByList(requestParameters: RequestsRulesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
         const response = await this.requestsRulesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

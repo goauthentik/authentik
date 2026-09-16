@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serialize Application info
  * @export
@@ -19,11 +20,11 @@
  */
 export interface App {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     label: string;
 }
@@ -32,8 +33,8 @@ export interface App {
  * Check if a given object implements the App interface.
  */
 export function instanceOfApp(value: object): value is App {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
     return true;
 }
 
@@ -46,8 +47,9 @@ export function AppFromJSONTyped(json: any, ignoreDiscriminator: boolean): App {
         return json;
     }
     return {
-        name: json["name"],
-        label: json["label"],
+        
+        'name': json['name'],
+        'label': json['label'],
     };
 }
 
@@ -61,7 +63,9 @@ export function AppToJSONTyped(value?: App | null, ignoreDiscriminator: boolean 
     }
 
     return {
-        name: value["name"],
-        label: value["label"],
+        
+        'name': value['name'],
+        'label': value['label'],
     };
 }
+

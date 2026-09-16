@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { GrantTypeEnum } from "./GrantTypeEnum";
-import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import { mapValues } from '../runtime';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
+import type { GrantTypeEnum } from './GrantTypeEnum';
+import {
+    GrantTypeEnumFromJSON,
+    GrantTypeEnumFromJSONTyped,
+    GrantTypeEnumToJSON,
+    GrantTypeEnumToJSONTyped,
+} from './GrantTypeEnum';
 
 /**
  * Serializer for OAuth2DynamicClientRegistration
@@ -24,11 +35,11 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface OAuth2DynamicClientRegistration {
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     provider: number;
     /**
@@ -40,7 +51,7 @@ export interface OAuth2DynamicClientRegistration {
      */
     overrideAuthorizationFlow?: string | null;
     /**
-     *
+     * 
      */
     overrideInvalidationFlow?: string | null;
     /**
@@ -60,76 +71,42 @@ export interface OAuth2DynamicClientRegistration {
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
 }
 
+
+
 /**
  * Check if a given object implements the OAuth2DynamicClientRegistration interface.
  */
-export function instanceOfOAuth2DynamicClientRegistration(
-    value: object,
-): value is OAuth2DynamicClientRegistration {
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
+export function instanceOfOAuth2DynamicClientRegistration(value: object): value is OAuth2DynamicClientRegistration {
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
     return true;
 }
 
-export function OAuth2DynamicClientRegistrationFromJSON(
-    json: any,
-): OAuth2DynamicClientRegistration {
+export function OAuth2DynamicClientRegistrationFromJSON(json: any): OAuth2DynamicClientRegistration {
     return OAuth2DynamicClientRegistrationFromJSONTyped(json, false);
 }
 
-export function OAuth2DynamicClientRegistrationFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OAuth2DynamicClientRegistration {
+export function OAuth2DynamicClientRegistrationFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuth2DynamicClientRegistration {
     if (json == null) {
         return json;
     }
     return {
-        pbmUuid: json["pbm_uuid"],
-        provider: json["provider"],
-        defaultApplicationGroup:
-            json["default_application_group"] == null
-                ? undefined
-                : json["default_application_group"],
-        overrideAuthorizationFlow:
-            json["override_authorization_flow"] === undefined
-                ? undefined
-                : json["override_authorization_flow"] === null
-                  ? null
-                  : json["override_authorization_flow"],
-        overrideInvalidationFlow:
-            json["override_invalidation_flow"] === undefined
-                ? undefined
-                : json["override_invalidation_flow"] === null
-                  ? null
-                  : json["override_invalidation_flow"],
-        overridePropertyMappings:
-            json["override_property_mappings"] == null
-                ? undefined
-                : json["override_property_mappings"],
-        accessTokenValidity:
-            json["access_token_validity"] == null ? undefined : json["access_token_validity"],
-        refreshTokenValidity:
-            json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
-        allowedGrantTypes:
-            json["allowed_grant_types"] == null
-                ? undefined
-                : (json["allowed_grant_types"] as Array<any>).map(GrantTypeEnumFromJSON),
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        
+        'pbmUuid': json['pbm_uuid'],
+        'provider': json['provider'],
+        'defaultApplicationGroup': json['default_application_group'] == null ? undefined : json['default_application_group'],
+        'overrideAuthorizationFlow': json['override_authorization_flow'] === undefined ? undefined : json['override_authorization_flow'] === null ? null : json['override_authorization_flow'],
+        'overrideInvalidationFlow': json['override_invalidation_flow'] === undefined ? undefined : json['override_invalidation_flow'] === null ? null : json['override_invalidation_flow'],
+        'overridePropertyMappings': json['override_property_mappings'] == null ? undefined : json['override_property_mappings'],
+        'accessTokenValidity': json['access_token_validity'] == null ? undefined : json['access_token_validity'],
+        'refreshTokenValidity': json['refresh_token_validity'] == null ? undefined : json['refresh_token_validity'],
+        'allowedGrantTypes': json['allowed_grant_types'] == null ? undefined : ((json['allowed_grant_types'] as Array<any>).map(GrantTypeEnumFromJSON)),
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
     };
 }
 
@@ -137,26 +114,22 @@ export function OAuth2DynamicClientRegistrationToJSON(json: any): OAuth2DynamicC
     return OAuth2DynamicClientRegistrationToJSONTyped(json, false);
 }
 
-export function OAuth2DynamicClientRegistrationToJSONTyped(
-    value?: Omit<OAuth2DynamicClientRegistration, "pbmUuid"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OAuth2DynamicClientRegistrationToJSONTyped(value?: Omit<OAuth2DynamicClientRegistration, 'pbmUuid'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        provider: value["provider"],
-        default_application_group: value["defaultApplicationGroup"],
-        override_authorization_flow: value["overrideAuthorizationFlow"],
-        override_invalidation_flow: value["overrideInvalidationFlow"],
-        override_property_mappings: value["overridePropertyMappings"],
-        access_token_validity: value["accessTokenValidity"],
-        refresh_token_validity: value["refreshTokenValidity"],
-        allowed_grant_types:
-            value["allowedGrantTypes"] == null
-                ? undefined
-                : (value["allowedGrantTypes"] as Array<any>).map(GrantTypeEnumToJSON),
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        
+        'provider': value['provider'],
+        'default_application_group': value['defaultApplicationGroup'],
+        'override_authorization_flow': value['overrideAuthorizationFlow'],
+        'override_invalidation_flow': value['overrideInvalidationFlow'],
+        'override_property_mappings': value['overridePropertyMappings'],
+        'access_token_validity': value['accessTokenValidity'],
+        'refresh_token_validity': value['refreshTokenValidity'],
+        'allowed_grant_types': value['allowedGrantTypes'] == null ? undefined : ((value['allowedGrantTypes'] as Array<any>).map(GrantTypeEnumToJSON)),
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
     };
 }
+

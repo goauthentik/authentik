@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentType } from "./ContentType";
-import { ContentTypeFromJSON } from "./ContentType";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { ContentType } from './ContentType';
+import {
+    ContentTypeFromJSON,
+    ContentTypeFromJSONTyped,
+    ContentTypeToJSON,
+    ContentTypeToJSONTyped,
+} from './ContentType';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -26,31 +36,31 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface DataExport {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     readonly requestedBy: PartialUser;
     /**
-     *
+     * 
      */
     readonly requestedOn: Date;
     /**
-     *
+     * 
      */
     readonly contentType: ContentType;
     /**
-     *
+     * 
      */
-    queryParams: { [key: string]: any };
+    queryParams: { [key: string]: any; };
     /**
-     *
+     * 
      */
     readonly fileUrl: string;
     /**
-     *
+     * 
      */
     readonly completed: boolean;
 }
@@ -59,43 +69,13 @@ export interface DataExport {
  * Check if a given object implements the DataExport interface.
  */
 export function instanceOfDataExport(value: object): value is DataExport {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("requestedBy" in (value as Record<string, any>)) &&
-            !("requested_by" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["requestedBy"] === undefined &&
-            (value as Record<string, any>)["requested_by"] === undefined)
-    )
-        return false;
-    if (
-        (!("requestedOn" in (value as Record<string, any>)) &&
-            !("requested_on" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["requestedOn"] === undefined &&
-            (value as Record<string, any>)["requested_on"] === undefined)
-    )
-        return false;
-    if (
-        (!("contentType" in (value as Record<string, any>)) &&
-            !("content_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["contentType"] === undefined &&
-            (value as Record<string, any>)["content_type"] === undefined)
-    )
-        return false;
-    if (
-        (!("queryParams" in (value as Record<string, any>)) &&
-            !("query_params" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["queryParams"] === undefined &&
-            (value as Record<string, any>)["query_params"] === undefined)
-    )
-        return false;
-    if (
-        (!("fileUrl" in (value as Record<string, any>)) &&
-            !("file_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fileUrl"] === undefined &&
-            (value as Record<string, any>)["file_url"] === undefined)
-    )
-        return false;
-    if (!("completed" in value) || value["completed"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('requestedBy' in (value as Record<string, any>)) && !('requested_by' in (value as Record<string, any>))) || ((value as Record<string, any>)['requestedBy'] === undefined && (value as Record<string, any>)['requested_by'] === undefined)) return false;
+    if ((!('requestedOn' in (value as Record<string, any>)) && !('requested_on' in (value as Record<string, any>))) || ((value as Record<string, any>)['requestedOn'] === undefined && (value as Record<string, any>)['requested_on'] === undefined)) return false;
+    if ((!('contentType' in (value as Record<string, any>)) && !('content_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['contentType'] === undefined && (value as Record<string, any>)['content_type'] === undefined)) return false;
+    if ((!('queryParams' in (value as Record<string, any>)) && !('query_params' in (value as Record<string, any>))) || ((value as Record<string, any>)['queryParams'] === undefined && (value as Record<string, any>)['query_params'] === undefined)) return false;
+    if ((!('fileUrl' in (value as Record<string, any>)) && !('file_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['fileUrl'] === undefined && (value as Record<string, any>)['file_url'] === undefined)) return false;
+    if (!('completed' in value) || value['completed'] === undefined) return false;
     return true;
 }
 
@@ -108,16 +88,14 @@ export function DataExportFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        id: json["id"],
-        requestedBy: PartialUserFromJSON(json["requested_by"]),
-        requestedOn:
-            json["requested_on"] == null
-                ? json["requested_on"]
-                : parseDateTime(json["requested_on"]),
-        contentType: ContentTypeFromJSON(json["content_type"]),
-        queryParams: json["query_params"],
-        fileUrl: json["file_url"],
-        completed: json["completed"],
+        
+        'id': json['id'],
+        'requestedBy': PartialUserFromJSON(json['requested_by']),
+        'requestedOn': (json['requested_on'] == null ? json['requested_on'] : parseDateTime(json['requested_on'])),
+        'contentType': ContentTypeFromJSON(json['content_type']),
+        'queryParams': json['query_params'],
+        'fileUrl': json['file_url'],
+        'completed': json['completed'],
     };
 }
 
@@ -125,18 +103,14 @@ export function DataExportToJSON(json: any): DataExport {
     return DataExportToJSONTyped(json, false);
 }
 
-export function DataExportToJSONTyped(
-    value?: Omit<
-        DataExport,
-        "id" | "requestedBy" | "requestedOn" | "contentType" | "fileUrl" | "completed"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DataExportToJSONTyped(value?: Omit<DataExport, 'id'|'requestedBy'|'requestedOn'|'contentType'|'fileUrl'|'completed'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        query_params: value["queryParams"],
+        
+        'query_params': value['queryParams'],
     };
 }
+

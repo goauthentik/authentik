@@ -12,21 +12,23 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const LicenseStatusEnum = {
-    Unlicensed: "unlicensed",
-    Valid: "valid",
-    Expired: "expired",
-    ExpirySoon: "expiry_soon",
-    LimitExceededAdmin: "limit_exceeded_admin",
-    LimitExceededUser: "limit_exceeded_user",
-    ReadOnly: "read_only",
-    UnknownDefaultOpenApi: "11184809",
+    Unlicensed: 'unlicensed',
+    Valid: 'valid',
+    Expired: 'expired',
+    ExpirySoon: 'expiry_soon',
+    LimitExceededAdmin: 'limit_exceeded_admin',
+    LimitExceededUser: 'limit_exceeded_user',
+    ReadOnly: 'read_only',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type LicenseStatusEnum = (typeof LicenseStatusEnum)[keyof typeof LicenseStatusEnum];
+export type LicenseStatusEnum = typeof LicenseStatusEnum[keyof typeof LicenseStatusEnum];
+
 
 export function instanceOfLicenseStatusEnum(value: any): boolean {
     for (const key in LicenseStatusEnum) {
@@ -43,10 +45,7 @@ export function LicenseStatusEnumFromJSON(json: any): LicenseStatusEnum {
     return LicenseStatusEnumFromJSONTyped(json, false);
 }
 
-export function LicenseStatusEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LicenseStatusEnum {
+export function LicenseStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseStatusEnum {
     return json as LicenseStatusEnum;
 }
 
@@ -54,9 +53,7 @@ export function LicenseStatusEnumToJSON(value?: LicenseStatusEnum | null): any {
     return value as any;
 }
 
-export function LicenseStatusEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): LicenseStatusEnum {
+export function LicenseStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LicenseStatusEnum {
     return value as LicenseStatusEnum;
 }
+

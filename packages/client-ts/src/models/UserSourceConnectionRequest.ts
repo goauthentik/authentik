@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface UserSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,11 +32,9 @@ export interface UserSourceConnectionRequest {
 /**
  * Check if a given object implements the UserSourceConnectionRequest interface.
  */
-export function instanceOfUserSourceConnectionRequest(
-    value: object,
-): value is UserSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfUserSourceConnectionRequest(value: object): value is UserSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
@@ -43,16 +42,14 @@ export function UserSourceConnectionRequestFromJSON(json: any): UserSourceConnec
     return UserSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSourceConnectionRequest {
+export function UserSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
@@ -60,16 +57,15 @@ export function UserSourceConnectionRequestToJSON(json: any): UserSourceConnecti
     return UserSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserSourceConnectionRequestToJSONTyped(
-    value?: UserSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSourceConnectionRequestToJSONTyped(value?: UserSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

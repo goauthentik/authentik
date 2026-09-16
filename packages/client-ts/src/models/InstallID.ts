@@ -12,14 +12,15 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface InstallID
  */
 export interface InstallID {
     /**
-     *
+     * 
      */
     installId: string;
 }
@@ -28,13 +29,7 @@ export interface InstallID {
  * Check if a given object implements the InstallID interface.
  */
 export function instanceOfInstallID(value: object): value is InstallID {
-    if (
-        (!("installId" in (value as Record<string, any>)) &&
-            !("install_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["installId"] === undefined &&
-            (value as Record<string, any>)["install_id"] === undefined)
-    )
-        return false;
+    if ((!('installId' in (value as Record<string, any>)) && !('install_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['installId'] === undefined && (value as Record<string, any>)['install_id'] === undefined)) return false;
     return true;
 }
 
@@ -47,7 +42,8 @@ export function InstallIDFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        installId: json["install_id"],
+        
+        'installId': json['install_id'],
     };
 }
 
@@ -55,15 +51,14 @@ export function InstallIDToJSON(json: any): InstallID {
     return InstallIDToJSONTyped(json, false);
 }
 
-export function InstallIDToJSONTyped(
-    value?: InstallID | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InstallIDToJSONTyped(value?: InstallID | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        install_id: value["installId"],
+        
+        'install_id': value['installId'],
     };
 }
+

@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { BlueprintInstance } from "./BlueprintInstance";
-import { BlueprintInstanceFromJSON, BlueprintInstanceToJSON } from "./BlueprintInstance";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { BlueprintInstance } from './BlueprintInstance';
+import {
+    BlueprintInstanceFromJSON,
+    BlueprintInstanceFromJSONTyped,
+    BlueprintInstanceToJSON,
+    BlueprintInstanceToJSONTyped,
+} from './BlueprintInstance';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedBlueprintInstanceList
  */
 export interface PaginatedBlueprintInstanceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<BlueprintInstance>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedBlueprintInstanceList interface.
  */
-export function instanceOfPaginatedBlueprintInstanceList(
-    value: object,
-): value is PaginatedBlueprintInstanceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedBlueprintInstanceList(value: object): value is PaginatedBlueprintInstanceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedBlueprintInstanceListFromJSON(json: any): PaginatedBlue
     return PaginatedBlueprintInstanceListFromJSONTyped(json, false);
 }
 
-export function PaginatedBlueprintInstanceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedBlueprintInstanceList {
+export function PaginatedBlueprintInstanceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedBlueprintInstanceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(BlueprintInstanceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(BlueprintInstanceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedBlueprintInstanceListToJSON(json: any): PaginatedBluepr
     return PaginatedBlueprintInstanceListToJSONTyped(json, false);
 }
 
-export function PaginatedBlueprintInstanceListToJSONTyped(
-    value?: PaginatedBlueprintInstanceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedBlueprintInstanceListToJSONTyped(value?: PaginatedBlueprintInstanceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(BlueprintInstanceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(BlueprintInstanceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

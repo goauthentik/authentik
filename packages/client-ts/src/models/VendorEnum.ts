@@ -12,18 +12,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const VendorEnum = {
-    GoauthentikIoMerged: "goauthentik.io/@merged",
-    GoauthentikIoPlatform: "goauthentik.io/platform",
-    FleetdmCom: "fleetdm.com",
-    ChromeGoogleCom: "chrome.google.com",
-    UnknownDefaultOpenApi: "11184809",
+    GoauthentikIoMerged: 'goauthentik.io/@merged',
+    GoauthentikIoPlatform: 'goauthentik.io/platform',
+    FleetdmCom: 'fleetdm.com',
+    ChromeGoogleCom: 'chrome.google.com',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type VendorEnum = (typeof VendorEnum)[keyof typeof VendorEnum];
+export type VendorEnum = typeof VendorEnum[keyof typeof VendorEnum];
+
 
 export function instanceOfVendorEnum(value: any): boolean {
     for (const key in VendorEnum) {
@@ -51,3 +53,4 @@ export function VendorEnumToJSON(value?: VendorEnum | null): any {
 export function VendorEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): VendorEnum {
     return value as VendorEnum;
 }
+

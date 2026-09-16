@@ -12,12 +12,27 @@
  * Do not edit the class manually.
  */
 
-import { type DataExport, DataExportFromJSON } from "../models/DataExport";
+import * as runtime from '../runtime';
+import {
+    type DataExport,
+    DataExportFromJSON,
+    DataExportToJSON,
+} from '../models/DataExport';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
 import {
     type PaginatedDataExportList,
     PaginatedDataExportListFromJSON,
-} from "../models/PaginatedDataExportList";
-import * as runtime from "../runtime";
+    PaginatedDataExportListToJSON,
+} from '../models/PaginatedDataExportList';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface ReportsExportsDestroyRequest {
     /**
@@ -53,19 +68,18 @@ export interface ReportsExportsRetrieveRequest {
 }
 
 /**
- *
+ * 
  */
 export class ReportsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for reportsExportsDestroy without sending the request
      */
-    async reportsExportsDestroyRequestOpts(
-        requestParameters: ReportsExportsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async reportsExportsDestroyRequestOpts(requestParameters: ReportsExportsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling reportsExportsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling reportsExportsDestroy().'
             );
         }
 
@@ -83,11 +97,11 @@ export class ReportsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/reports/exports/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -95,10 +109,7 @@ export class ReportsApi extends runtime.BaseAPI {
 
     /**
      */
-    async reportsExportsDestroyRaw(
-        requestParameters: ReportsExportsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async reportsExportsDestroyRaw(requestParameters: ReportsExportsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.reportsExportsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -107,35 +118,30 @@ export class ReportsApi extends runtime.BaseAPI {
 
     /**
      */
-    async reportsExportsDestroy(
-        requestParameters: ReportsExportsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async reportsExportsDestroy(requestParameters: ReportsExportsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.reportsExportsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for reportsExportsList without sending the request
      */
-    async reportsExportsListRequestOpts(
-        requestParameters: ReportsExportsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async reportsExportsListRequestOpts(requestParameters: ReportsExportsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -153,7 +159,7 @@ export class ReportsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -161,24 +167,16 @@ export class ReportsApi extends runtime.BaseAPI {
 
     /**
      */
-    async reportsExportsListRaw(
-        requestParameters: ReportsExportsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedDataExportList>> {
+    async reportsExportsListRaw(requestParameters: ReportsExportsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDataExportList>> {
         const requestOptions = await this.reportsExportsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedDataExportListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDataExportListFromJSON(jsonValue));
     }
 
     /**
      */
-    async reportsExportsList(
-        requestParameters: ReportsExportsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedDataExportList> {
+    async reportsExportsList(requestParameters: ReportsExportsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDataExportList> {
         const response = await this.reportsExportsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -186,13 +184,11 @@ export class ReportsApi extends runtime.BaseAPI {
     /**
      * Creates request options for reportsExportsRetrieve without sending the request
      */
-    async reportsExportsRetrieveRequestOpts(
-        requestParameters: ReportsExportsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async reportsExportsRetrieveRequestOpts(requestParameters: ReportsExportsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling reportsExportsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling reportsExportsRetrieve().'
             );
         }
 
@@ -210,11 +206,11 @@ export class ReportsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/reports/exports/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -222,10 +218,7 @@ export class ReportsApi extends runtime.BaseAPI {
 
     /**
      */
-    async reportsExportsRetrieveRaw(
-        requestParameters: ReportsExportsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<DataExport>> {
+    async reportsExportsRetrieveRaw(requestParameters: ReportsExportsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataExport>> {
         const requestOptions = await this.reportsExportsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -234,11 +227,9 @@ export class ReportsApi extends runtime.BaseAPI {
 
     /**
      */
-    async reportsExportsRetrieve(
-        requestParameters: ReportsExportsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<DataExport> {
+    async reportsExportsRetrieve(requestParameters: ReportsExportsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataExport> {
         const response = await this.reportsExportsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

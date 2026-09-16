@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { Permission } from "./Permission";
-import { PermissionFromJSON } from "./Permission";
+import { mapValues } from '../runtime';
+import type { Permission } from './Permission';
+import {
+    PermissionFromJSON,
+    PermissionFromJSONTyped,
+    PermissionToJSON,
+    PermissionToJSONTyped,
+} from './Permission';
 
 /**
  * InitialPermissions serializer
@@ -22,23 +28,23 @@ import { PermissionFromJSON } from "./Permission";
  */
 export interface InitialPermissions {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     role: string;
     /**
-     *
+     * 
      */
     permissions?: Array<number>;
     /**
-     *
+     * 
      */
     readonly permissionsObj: Array<Permission>;
 }
@@ -47,16 +53,10 @@ export interface InitialPermissions {
  * Check if a given object implements the InitialPermissions interface.
  */
 export function instanceOfInitialPermissions(value: object): value is InitialPermissions {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("role" in value) || value["role"] === undefined) return false;
-    if (
-        (!("permissionsObj" in (value as Record<string, any>)) &&
-            !("permissions_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["permissionsObj"] === undefined &&
-            (value as Record<string, any>)["permissions_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('role' in value) || value['role'] === undefined) return false;
+    if ((!('permissionsObj' in (value as Record<string, any>)) && !('permissions_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['permissionsObj'] === undefined && (value as Record<string, any>)['permissions_obj'] === undefined)) return false;
     return true;
 }
 
@@ -64,19 +64,17 @@ export function InitialPermissionsFromJSON(json: any): InitialPermissions {
     return InitialPermissionsFromJSONTyped(json, false);
 }
 
-export function InitialPermissionsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InitialPermissions {
+export function InitialPermissionsFromJSONTyped(json: any, ignoreDiscriminator: boolean): InitialPermissions {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        role: json["role"],
-        permissions: json["permissions"] == null ? undefined : json["permissions"],
-        permissionsObj: (json["permissions_obj"] as Array<any>).map(PermissionFromJSON),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'role': json['role'],
+        'permissions': json['permissions'] == null ? undefined : json['permissions'],
+        'permissionsObj': ((json['permissions_obj'] as Array<any>).map(PermissionFromJSON)),
     };
 }
 
@@ -84,17 +82,16 @@ export function InitialPermissionsToJSON(json: any): InitialPermissions {
     return InitialPermissionsToJSONTyped(json, false);
 }
 
-export function InitialPermissionsToJSONTyped(
-    value?: Omit<InitialPermissions, "pk" | "permissionsObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InitialPermissionsToJSONTyped(value?: Omit<InitialPermissions, 'pk'|'permissionsObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        role: value["role"],
-        permissions: value["permissions"],
+        
+        'name': value['name'],
+        'role': value['role'],
+        'permissions': value['permissions'],
     };
 }
+

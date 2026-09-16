@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Tenant admin group creation request serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface TenantAdminGroupRequestRequest {
     /**
-     *
+     * 
      */
     user: string;
 }
@@ -27,10 +28,8 @@ export interface TenantAdminGroupRequestRequest {
 /**
  * Check if a given object implements the TenantAdminGroupRequestRequest interface.
  */
-export function instanceOfTenantAdminGroupRequestRequest(
-    value: object,
-): value is TenantAdminGroupRequestRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
+export function instanceOfTenantAdminGroupRequestRequest(value: object): value is TenantAdminGroupRequestRequest {
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -38,15 +37,13 @@ export function TenantAdminGroupRequestRequestFromJSON(json: any): TenantAdminGr
     return TenantAdminGroupRequestRequestFromJSONTyped(json, false);
 }
 
-export function TenantAdminGroupRequestRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TenantAdminGroupRequestRequest {
+export function TenantAdminGroupRequestRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TenantAdminGroupRequestRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"],
+        
+        'user': json['user'],
     };
 }
 
@@ -54,15 +51,14 @@ export function TenantAdminGroupRequestRequestToJSON(json: any): TenantAdminGrou
     return TenantAdminGroupRequestRequestToJSONTyped(json, false);
 }
 
-export function TenantAdminGroupRequestRequestToJSONTyped(
-    value?: TenantAdminGroupRequestRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TenantAdminGroupRequestRequestToJSONTyped(value?: TenantAdminGroupRequestRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
+        
+        'user': value['user'],
     };
 }
+

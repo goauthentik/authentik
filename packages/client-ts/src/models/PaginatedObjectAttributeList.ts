@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttribute } from "./ObjectAttribute";
-import { ObjectAttributeFromJSON, ObjectAttributeToJSON } from "./ObjectAttribute";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { ObjectAttribute } from './ObjectAttribute';
+import {
+    ObjectAttributeFromJSON,
+    ObjectAttributeFromJSONTyped,
+    ObjectAttributeToJSON,
+    ObjectAttributeToJSONTyped,
+} from './ObjectAttribute';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedObjectAttributeList
  */
 export interface PaginatedObjectAttributeList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ObjectAttribute>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedObjectAttributeList interface.
  */
-export function instanceOfPaginatedObjectAttributeList(
-    value: object,
-): value is PaginatedObjectAttributeList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedObjectAttributeList(value: object): value is PaginatedObjectAttributeList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedObjectAttributeListFromJSON(json: any): PaginatedObject
     return PaginatedObjectAttributeListFromJSONTyped(json, false);
 }
 
-export function PaginatedObjectAttributeListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedObjectAttributeList {
+export function PaginatedObjectAttributeListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedObjectAttributeList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ObjectAttributeFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ObjectAttributeFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedObjectAttributeListToJSON(json: any): PaginatedObjectAt
     return PaginatedObjectAttributeListToJSONTyped(json, false);
 }
 
-export function PaginatedObjectAttributeListToJSONTyped(
-    value?: PaginatedObjectAttributeList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedObjectAttributeListToJSONTyped(value?: PaginatedObjectAttributeList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ObjectAttributeToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ObjectAttributeToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

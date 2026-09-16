@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedGroupTelegramSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedGroupTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupTelegramSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupTelegramSourceConnectionRequest(
-    value: object,
-): value is PatchedGroupTelegramSourceConnectionRequest {
+export function instanceOfPatchedGroupTelegramSourceConnectionRequest(value: object): value is PatchedGroupTelegramSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestFromJSON(json: any): PatchedGroupTelegramSourceConnectionRequest {
     return PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestToJSON(
-    json: any,
-): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestToJSON(json: any): PatchedGroupTelegramSourceConnectionRequest {
     return PatchedGroupTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestToJSONTyped(
-    value?: PatchedGroupTelegramSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGroupTelegramSourceConnectionRequestToJSONTyped(value?: PatchedGroupTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

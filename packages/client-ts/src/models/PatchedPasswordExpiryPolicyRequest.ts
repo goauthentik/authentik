@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Password Expiry Policy Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PatchedPasswordExpiryPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,11 +28,11 @@ export interface PatchedPasswordExpiryPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     days?: number;
     /**
-     *
+     * 
      */
     denyOnly?: boolean;
 }
@@ -39,51 +40,42 @@ export interface PatchedPasswordExpiryPolicyRequest {
 /**
  * Check if a given object implements the PatchedPasswordExpiryPolicyRequest interface.
  */
-export function instanceOfPatchedPasswordExpiryPolicyRequest(
-    value: object,
-): value is PatchedPasswordExpiryPolicyRequest {
+export function instanceOfPatchedPasswordExpiryPolicyRequest(value: object): value is PatchedPasswordExpiryPolicyRequest {
     return true;
 }
 
-export function PatchedPasswordExpiryPolicyRequestFromJSON(
-    json: any,
-): PatchedPasswordExpiryPolicyRequest {
+export function PatchedPasswordExpiryPolicyRequestFromJSON(json: any): PatchedPasswordExpiryPolicyRequest {
     return PatchedPasswordExpiryPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPasswordExpiryPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedPasswordExpiryPolicyRequest {
+export function PatchedPasswordExpiryPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPasswordExpiryPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        days: json["days"] == null ? undefined : json["days"],
-        denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'days': json['days'] == null ? undefined : json['days'],
+        'denyOnly': json['deny_only'] == null ? undefined : json['deny_only'],
     };
 }
 
-export function PatchedPasswordExpiryPolicyRequestToJSON(
-    json: any,
-): PatchedPasswordExpiryPolicyRequest {
+export function PatchedPasswordExpiryPolicyRequestToJSON(json: any): PatchedPasswordExpiryPolicyRequest {
     return PatchedPasswordExpiryPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedPasswordExpiryPolicyRequestToJSONTyped(
-    value?: PatchedPasswordExpiryPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedPasswordExpiryPolicyRequestToJSONTyped(value?: PatchedPasswordExpiryPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        days: value["days"],
-        deny_only: value["denyOnly"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'days': value['days'],
+        'deny_only': value['denyOnly'],
     };
 }
+

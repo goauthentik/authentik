@@ -12,14 +12,35 @@
  * Do not edit the class manually.
  */
 
-import type { CertAttributeEnum } from "./CertAttributeEnum";
-import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
-import type { UserAttributeEnum } from "./UserAttributeEnum";
-import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum";
+import { mapValues } from '../runtime';
+import type { StageModeEnum } from './StageModeEnum';
+import {
+    StageModeEnumFromJSON,
+    StageModeEnumFromJSONTyped,
+    StageModeEnumToJSON,
+    StageModeEnumToJSONTyped,
+} from './StageModeEnum';
+import type { CertAttributeEnum } from './CertAttributeEnum';
+import {
+    CertAttributeEnumFromJSON,
+    CertAttributeEnumFromJSONTyped,
+    CertAttributeEnumToJSON,
+    CertAttributeEnumToJSONTyped,
+} from './CertAttributeEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
+import type { UserAttributeEnum } from './UserAttributeEnum';
+import {
+    UserAttributeEnumFromJSON,
+    UserAttributeEnumFromJSONTyped,
+    UserAttributeEnumToJSON,
+    UserAttributeEnumToJSONTyped,
+} from './UserAttributeEnum';
 
 /**
  * MutualTLSStage Serializer
@@ -28,11 +49,11 @@ import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttrib
  */
 export interface MutualTLSStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -52,11 +73,11 @@ export interface MutualTLSStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     mode: StageModeEnum;
     /**
@@ -64,65 +85,31 @@ export interface MutualTLSStage {
      */
     certificateAuthorities?: Array<string>;
     /**
-     *
+     * 
      */
     certAttribute: CertAttributeEnum;
     /**
-     *
+     * 
      */
     userAttribute: UserAttributeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the MutualTLSStage interface.
  */
 export function instanceOfMutualTLSStage(value: object): value is MutualTLSStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("mode" in value) || value["mode"] === undefined) return false;
-    if (
-        (!("certAttribute" in (value as Record<string, any>)) &&
-            !("cert_attribute" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certAttribute"] === undefined &&
-            (value as Record<string, any>)["cert_attribute"] === undefined)
-    )
-        return false;
-    if (
-        (!("userAttribute" in (value as Record<string, any>)) &&
-            !("user_attribute" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userAttribute"] === undefined &&
-            (value as Record<string, any>)["user_attribute"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('mode' in value) || value['mode'] === undefined) return false;
+    if ((!('certAttribute' in (value as Record<string, any>)) && !('cert_attribute' in (value as Record<string, any>))) || ((value as Record<string, any>)['certAttribute'] === undefined && (value as Record<string, any>)['cert_attribute'] === undefined)) return false;
+    if ((!('userAttribute' in (value as Record<string, any>)) && !('user_attribute' in (value as Record<string, any>))) || ((value as Record<string, any>)['userAttribute'] === undefined && (value as Record<string, any>)['user_attribute'] === undefined)) return false;
     return true;
 }
 
@@ -130,26 +117,23 @@ export function MutualTLSStageFromJSON(json: any): MutualTLSStage {
     return MutualTLSStageFromJSONTyped(json, false);
 }
 
-export function MutualTLSStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MutualTLSStage {
+export function MutualTLSStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): MutualTLSStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        mode: StageModeEnumFromJSON(json["mode"]),
-        certificateAuthorities:
-            json["certificate_authorities"] == null ? undefined : json["certificate_authorities"],
-        certAttribute: CertAttributeEnumFromJSON(json["cert_attribute"]),
-        userAttribute: UserAttributeEnumFromJSON(json["user_attribute"]),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'mode': StageModeEnumFromJSON(json['mode']),
+        'certificateAuthorities': json['certificate_authorities'] == null ? undefined : json['certificate_authorities'],
+        'certAttribute': CertAttributeEnumFromJSON(json['cert_attribute']),
+        'userAttribute': UserAttributeEnumFromJSON(json['user_attribute']),
     };
 }
 
@@ -157,22 +141,18 @@ export function MutualTLSStageToJSON(json: any): MutualTLSStage {
     return MutualTLSStageToJSONTyped(json, false);
 }
 
-export function MutualTLSStageToJSONTyped(
-    value?: Omit<
-        MutualTLSStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MutualTLSStageToJSONTyped(value?: Omit<MutualTLSStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mode: StageModeEnumToJSON(value["mode"]),
-        certificate_authorities: value["certificateAuthorities"],
-        cert_attribute: CertAttributeEnumToJSON(value["certAttribute"]),
-        user_attribute: UserAttributeEnumToJSON(value["userAttribute"]),
+        
+        'name': value['name'],
+        'mode': StageModeEnumToJSON(value['mode']),
+        'certificate_authorities': value['certificateAuthorities'],
+        'cert_attribute': CertAttributeEnumToJSON(value['certAttribute']),
+        'user_attribute': UserAttributeEnumToJSON(value['userAttribute']),
     };
 }
+

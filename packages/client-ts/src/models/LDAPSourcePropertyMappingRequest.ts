@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * LDAP PropertyMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface LDAPSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,56 +36,42 @@ export interface LDAPSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the LDAPSourcePropertyMappingRequest interface.
  */
-export function instanceOfLDAPSourcePropertyMappingRequest(
-    value: object,
-): value is LDAPSourcePropertyMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfLDAPSourcePropertyMappingRequest(value: object): value is LDAPSourcePropertyMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
-export function LDAPSourcePropertyMappingRequestFromJSON(
-    json: any,
-): LDAPSourcePropertyMappingRequest {
+export function LDAPSourcePropertyMappingRequestFromJSON(json: any): LDAPSourcePropertyMappingRequest {
     return LDAPSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function LDAPSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LDAPSourcePropertyMappingRequest {
+export function LDAPSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): LDAPSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
-export function LDAPSourcePropertyMappingRequestToJSON(
-    json: any,
-): LDAPSourcePropertyMappingRequest {
+export function LDAPSourcePropertyMappingRequestToJSON(json: any): LDAPSourcePropertyMappingRequest {
     return LDAPSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function LDAPSourcePropertyMappingRequestToJSONTyped(
-    value?: LDAPSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LDAPSourcePropertyMappingRequestToJSONTyped(value?: LDAPSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

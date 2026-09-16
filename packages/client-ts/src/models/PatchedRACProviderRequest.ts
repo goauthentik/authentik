@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * RACProvider Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PatchedRACProviderRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -31,13 +32,13 @@ export interface PatchedRACProviderRequest {
      */
     authorizationFlow?: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
-    settings?: { [key: string]: any };
+    settings?: { [key: string]: any; };
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
      */
@@ -51,9 +52,7 @@ export interface PatchedRACProviderRequest {
 /**
  * Check if a given object implements the PatchedRACProviderRequest interface.
  */
-export function instanceOfPatchedRACProviderRequest(
-    value: object,
-): value is PatchedRACProviderRequest {
+export function instanceOfPatchedRACProviderRequest(value: object): value is PatchedRACProviderRequest {
     return true;
 }
 
@@ -61,30 +60,19 @@ export function PatchedRACProviderRequestFromJSON(json: any): PatchedRACProvider
     return PatchedRACProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRACProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedRACProviderRequest {
+export function PatchedRACProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRACProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow:
-            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        settings: json["settings"] == null ? undefined : json["settings"],
-        connectionExpiry: json["connection_expiry"] == null ? undefined : json["connection_expiry"],
-        deleteTokenOnDisconnect:
-            json["delete_token_on_disconnect"] == null
-                ? undefined
-                : json["delete_token_on_disconnect"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'settings': json['settings'] == null ? undefined : json['settings'],
+        'connectionExpiry': json['connection_expiry'] == null ? undefined : json['connection_expiry'],
+        'deleteTokenOnDisconnect': json['delete_token_on_disconnect'] == null ? undefined : json['delete_token_on_disconnect'],
     };
 }
 
@@ -92,21 +80,20 @@ export function PatchedRACProviderRequestToJSON(json: any): PatchedRACProviderRe
     return PatchedRACProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedRACProviderRequestToJSONTyped(
-    value?: PatchedRACProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedRACProviderRequestToJSONTyped(value?: PatchedRACProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        property_mappings: value["propertyMappings"],
-        settings: value["settings"],
-        connection_expiry: value["connectionExpiry"],
-        delete_token_on_disconnect: value["deleteTokenOnDisconnect"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'settings': value['settings'],
+        'connection_expiry': value['connectionExpiry'],
+        'delete_token_on_disconnect': value['deleteTokenOnDisconnect'],
     };
 }
+

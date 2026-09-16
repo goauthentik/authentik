@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Register Apple device via Platform SSO
  * @export
@@ -19,19 +20,19 @@
  */
 export interface AgentPSSODeviceRegistrationRequest {
     /**
-     *
+     * 
      */
     deviceSigningKey: string;
     /**
-     *
+     * 
      */
     deviceEncryptionKey: string;
     /**
-     *
+     * 
      */
     signKeyId: string;
     /**
-     *
+     * 
      */
     encKeyId: string;
 }
@@ -39,79 +40,46 @@ export interface AgentPSSODeviceRegistrationRequest {
 /**
  * Check if a given object implements the AgentPSSODeviceRegistrationRequest interface.
  */
-export function instanceOfAgentPSSODeviceRegistrationRequest(
-    value: object,
-): value is AgentPSSODeviceRegistrationRequest {
-    if (
-        (!("deviceSigningKey" in (value as Record<string, any>)) &&
-            !("device_signing_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceSigningKey"] === undefined &&
-            (value as Record<string, any>)["device_signing_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceEncryptionKey" in (value as Record<string, any>)) &&
-            !("device_encryption_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceEncryptionKey"] === undefined &&
-            (value as Record<string, any>)["device_encryption_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("signKeyId" in (value as Record<string, any>)) &&
-            !("sign_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signKeyId"] === undefined &&
-            (value as Record<string, any>)["sign_key_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("encKeyId" in (value as Record<string, any>)) &&
-            !("enc_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["encKeyId"] === undefined &&
-            (value as Record<string, any>)["enc_key_id"] === undefined)
-    )
-        return false;
+export function instanceOfAgentPSSODeviceRegistrationRequest(value: object): value is AgentPSSODeviceRegistrationRequest {
+    if ((!('deviceSigningKey' in (value as Record<string, any>)) && !('device_signing_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceSigningKey'] === undefined && (value as Record<string, any>)['device_signing_key'] === undefined)) return false;
+    if ((!('deviceEncryptionKey' in (value as Record<string, any>)) && !('device_encryption_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceEncryptionKey'] === undefined && (value as Record<string, any>)['device_encryption_key'] === undefined)) return false;
+    if ((!('signKeyId' in (value as Record<string, any>)) && !('sign_key_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['signKeyId'] === undefined && (value as Record<string, any>)['sign_key_id'] === undefined)) return false;
+    if ((!('encKeyId' in (value as Record<string, any>)) && !('enc_key_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['encKeyId'] === undefined && (value as Record<string, any>)['enc_key_id'] === undefined)) return false;
     return true;
 }
 
-export function AgentPSSODeviceRegistrationRequestFromJSON(
-    json: any,
-): AgentPSSODeviceRegistrationRequest {
+export function AgentPSSODeviceRegistrationRequestFromJSON(json: any): AgentPSSODeviceRegistrationRequest {
     return AgentPSSODeviceRegistrationRequestFromJSONTyped(json, false);
 }
 
-export function AgentPSSODeviceRegistrationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentPSSODeviceRegistrationRequest {
+export function AgentPSSODeviceRegistrationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentPSSODeviceRegistrationRequest {
     if (json == null) {
         return json;
     }
     return {
-        deviceSigningKey: json["device_signing_key"],
-        deviceEncryptionKey: json["device_encryption_key"],
-        signKeyId: json["sign_key_id"],
-        encKeyId: json["enc_key_id"],
+        
+        'deviceSigningKey': json['device_signing_key'],
+        'deviceEncryptionKey': json['device_encryption_key'],
+        'signKeyId': json['sign_key_id'],
+        'encKeyId': json['enc_key_id'],
     };
 }
 
-export function AgentPSSODeviceRegistrationRequestToJSON(
-    json: any,
-): AgentPSSODeviceRegistrationRequest {
+export function AgentPSSODeviceRegistrationRequestToJSON(json: any): AgentPSSODeviceRegistrationRequest {
     return AgentPSSODeviceRegistrationRequestToJSONTyped(json, false);
 }
 
-export function AgentPSSODeviceRegistrationRequestToJSONTyped(
-    value?: AgentPSSODeviceRegistrationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentPSSODeviceRegistrationRequestToJSONTyped(value?: AgentPSSODeviceRegistrationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_signing_key: value["deviceSigningKey"],
-        device_encryption_key: value["deviceEncryptionKey"],
-        sign_key_id: value["signKeyId"],
-        enc_key_id: value["encKeyId"],
+        
+        'device_signing_key': value['deviceSigningKey'],
+        'device_encryption_key': value['deviceEncryptionKey'],
+        'sign_key_id': value['signKeyId'],
+        'enc_key_id': value['encKeyId'],
     };
 }
+

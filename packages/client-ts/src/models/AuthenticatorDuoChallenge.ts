@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Duo Challenge
@@ -23,35 +35,35 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface AuthenticatorDuoChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     pendingUser: string;
     /**
-     *
+     * 
      */
     pendingUserAvatar: string;
     /**
-     *
+     * 
      */
     activationBarcode: string;
     /**
-     *
+     * 
      */
     activationCode: string;
     /**
-     *
+     * 
      */
     stageUuid: string;
 }
@@ -59,44 +71,12 @@ export interface AuthenticatorDuoChallenge {
 /**
  * Check if a given object implements the AuthenticatorDuoChallenge interface.
  */
-export function instanceOfAuthenticatorDuoChallenge(
-    value: object,
-): value is AuthenticatorDuoChallenge {
-    if (
-        (!("pendingUser" in (value as Record<string, any>)) &&
-            !("pending_user" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUser"] === undefined &&
-            (value as Record<string, any>)["pending_user"] === undefined)
-    )
-        return false;
-    if (
-        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
-            !("pending_user_avatar" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
-            (value as Record<string, any>)["pending_user_avatar"] === undefined)
-    )
-        return false;
-    if (
-        (!("activationBarcode" in (value as Record<string, any>)) &&
-            !("activation_barcode" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["activationBarcode"] === undefined &&
-            (value as Record<string, any>)["activation_barcode"] === undefined)
-    )
-        return false;
-    if (
-        (!("activationCode" in (value as Record<string, any>)) &&
-            !("activation_code" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["activationCode"] === undefined &&
-            (value as Record<string, any>)["activation_code"] === undefined)
-    )
-        return false;
-    if (
-        (!("stageUuid" in (value as Record<string, any>)) &&
-            !("stage_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["stageUuid"] === undefined &&
-            (value as Record<string, any>)["stage_uuid"] === undefined)
-    )
-        return false;
+export function instanceOfAuthenticatorDuoChallenge(value: object): value is AuthenticatorDuoChallenge {
+    if ((!('pendingUser' in (value as Record<string, any>)) && !('pending_user' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUser'] === undefined && (value as Record<string, any>)['pending_user'] === undefined)) return false;
+    if ((!('pendingUserAvatar' in (value as Record<string, any>)) && !('pending_user_avatar' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUserAvatar'] === undefined && (value as Record<string, any>)['pending_user_avatar'] === undefined)) return false;
+    if ((!('activationBarcode' in (value as Record<string, any>)) && !('activation_barcode' in (value as Record<string, any>))) || ((value as Record<string, any>)['activationBarcode'] === undefined && (value as Record<string, any>)['activation_barcode'] === undefined)) return false;
+    if ((!('activationCode' in (value as Record<string, any>)) && !('activation_code' in (value as Record<string, any>))) || ((value as Record<string, any>)['activationCode'] === undefined && (value as Record<string, any>)['activation_code'] === undefined)) return false;
+    if ((!('stageUuid' in (value as Record<string, any>)) && !('stage_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['stageUuid'] === undefined && (value as Record<string, any>)['stage_uuid'] === undefined)) return false;
     return true;
 }
 
@@ -104,23 +84,20 @@ export function AuthenticatorDuoChallengeFromJSON(json: any): AuthenticatorDuoCh
     return AuthenticatorDuoChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorDuoChallenge {
+export function AuthenticatorDuoChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        pendingUser: json["pending_user"],
-        pendingUserAvatar: json["pending_user_avatar"],
-        activationBarcode: json["activation_barcode"],
-        activationCode: json["activation_code"],
-        stageUuid: json["stage_uuid"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'pendingUser': json['pending_user'],
+        'pendingUserAvatar': json['pending_user_avatar'],
+        'activationBarcode': json['activation_barcode'],
+        'activationCode': json['activation_code'],
+        'stageUuid': json['stage_uuid'],
     };
 }
 
@@ -128,22 +105,21 @@ export function AuthenticatorDuoChallengeToJSON(json: any): AuthenticatorDuoChal
     return AuthenticatorDuoChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoChallengeToJSONTyped(
-    value?: AuthenticatorDuoChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorDuoChallengeToJSONTyped(value?: AuthenticatorDuoChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        pending_user: value["pendingUser"],
-        pending_user_avatar: value["pendingUserAvatar"],
-        activation_barcode: value["activationBarcode"],
-        activation_code: value["activationCode"],
-        stage_uuid: value["stageUuid"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'pending_user': value['pendingUser'],
+        'pending_user_avatar': value['pendingUserAvatar'],
+        'activation_barcode': value['activationBarcode'],
+        'activation_code': value['activationCode'],
+        'stage_uuid': value['stageUuid'],
     };
 }
+

@@ -12,11 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import { mapValues } from '../runtime';
+import type { RequestContentTypeEnum } from './RequestContentTypeEnum';
 import {
     RequestContentTypeEnumFromJSON,
+    RequestContentTypeEnumFromJSONTyped,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+    RequestContentTypeEnumToJSONTyped,
+} from './RequestContentTypeEnum';
 
 /**
  * CaptchaStage Serializer
@@ -25,7 +28,7 @@ import {
  */
 export interface CaptchaStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -37,27 +40,27 @@ export interface CaptchaStageRequest {
      */
     privateKey: string;
     /**
-     *
+     * 
      */
     jsUrl?: string;
     /**
-     *
+     * 
      */
     apiUrl?: string;
     /**
-     *
+     * 
      */
     requestContentType?: RequestContentTypeEnum;
     /**
-     *
+     * 
      */
     interactive?: boolean;
     /**
-     *
+     * 
      */
     scoreMinThreshold?: number;
     /**
-     *
+     * 
      */
     scoreMaxThreshold?: number;
     /**
@@ -66,25 +69,15 @@ export interface CaptchaStageRequest {
     errorOnInvalidScore?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the CaptchaStageRequest interface.
  */
 export function instanceOfCaptchaStageRequest(value: object): value is CaptchaStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("publicKey" in (value as Record<string, any>)) &&
-            !("public_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["publicKey"] === undefined &&
-            (value as Record<string, any>)["public_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("privateKey" in (value as Record<string, any>)) &&
-            !("private_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["privateKey"] === undefined &&
-            (value as Record<string, any>)["private_key"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('publicKey' in (value as Record<string, any>)) && !('public_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['publicKey'] === undefined && (value as Record<string, any>)['public_key'] === undefined)) return false;
+    if ((!('privateKey' in (value as Record<string, any>)) && !('private_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['privateKey'] === undefined && (value as Record<string, any>)['private_key'] === undefined)) return false;
     return true;
 }
 
@@ -92,30 +85,22 @@ export function CaptchaStageRequestFromJSON(json: any): CaptchaStageRequest {
     return CaptchaStageRequestFromJSONTyped(json, false);
 }
 
-export function CaptchaStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CaptchaStageRequest {
+export function CaptchaStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CaptchaStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        publicKey: json["public_key"],
-        privateKey: json["private_key"],
-        jsUrl: json["js_url"] == null ? undefined : json["js_url"],
-        apiUrl: json["api_url"] == null ? undefined : json["api_url"],
-        requestContentType:
-            json["request_content_type"] == null
-                ? undefined
-                : RequestContentTypeEnumFromJSON(json["request_content_type"]),
-        interactive: json["interactive"] == null ? undefined : json["interactive"],
-        scoreMinThreshold:
-            json["score_min_threshold"] == null ? undefined : json["score_min_threshold"],
-        scoreMaxThreshold:
-            json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
-        errorOnInvalidScore:
-            json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
+        
+        'name': json['name'],
+        'publicKey': json['public_key'],
+        'privateKey': json['private_key'],
+        'jsUrl': json['js_url'] == null ? undefined : json['js_url'],
+        'apiUrl': json['api_url'] == null ? undefined : json['api_url'],
+        'requestContentType': json['request_content_type'] == null ? undefined : RequestContentTypeEnumFromJSON(json['request_content_type']),
+        'interactive': json['interactive'] == null ? undefined : json['interactive'],
+        'scoreMinThreshold': json['score_min_threshold'] == null ? undefined : json['score_min_threshold'],
+        'scoreMaxThreshold': json['score_max_threshold'] == null ? undefined : json['score_max_threshold'],
+        'errorOnInvalidScore': json['error_on_invalid_score'] == null ? undefined : json['error_on_invalid_score'],
     };
 }
 
@@ -123,24 +108,23 @@ export function CaptchaStageRequestToJSON(json: any): CaptchaStageRequest {
     return CaptchaStageRequestToJSONTyped(json, false);
 }
 
-export function CaptchaStageRequestToJSONTyped(
-    value?: CaptchaStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CaptchaStageRequestToJSONTyped(value?: CaptchaStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        public_key: value["publicKey"],
-        private_key: value["privateKey"],
-        js_url: value["jsUrl"],
-        api_url: value["apiUrl"],
-        request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),
-        interactive: value["interactive"],
-        score_min_threshold: value["scoreMinThreshold"],
-        score_max_threshold: value["scoreMaxThreshold"],
-        error_on_invalid_score: value["errorOnInvalidScore"],
+        
+        'name': value['name'],
+        'public_key': value['publicKey'],
+        'private_key': value['privateKey'],
+        'js_url': value['jsUrl'],
+        'api_url': value['apiUrl'],
+        'request_content_type': RequestContentTypeEnumToJSON(value['requestContentType']),
+        'interactive': value['interactive'],
+        'score_min_threshold': value['scoreMinThreshold'],
+        'score_max_threshold': value['scoreMaxThreshold'],
+        'error_on_invalid_score': value['errorOnInvalidScore'],
     };
 }
+

@@ -12,26 +12,27 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const TaskAggregatedStatusEnum = {
-    WaitingForDependencies: "waiting_for_dependencies",
-    Queued: "queued",
-    Consumed: "consumed",
-    Preprocess: "preprocess",
-    Running: "running",
-    Postprocess: "postprocess",
-    Rejected: "rejected",
-    Done: "done",
-    Info: "info",
-    Warning: "warning",
-    Error: "error",
-    UnknownDefaultOpenApi: "11184809",
+    WaitingForDependencies: 'waiting_for_dependencies',
+    Queued: 'queued',
+    Consumed: 'consumed',
+    Preprocess: 'preprocess',
+    Running: 'running',
+    Postprocess: 'postprocess',
+    Rejected: 'rejected',
+    Done: 'done',
+    Info: 'info',
+    Warning: 'warning',
+    Error: 'error',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type TaskAggregatedStatusEnum =
-    (typeof TaskAggregatedStatusEnum)[keyof typeof TaskAggregatedStatusEnum];
+export type TaskAggregatedStatusEnum = typeof TaskAggregatedStatusEnum[keyof typeof TaskAggregatedStatusEnum];
+
 
 export function instanceOfTaskAggregatedStatusEnum(value: any): boolean {
     for (const key in TaskAggregatedStatusEnum) {
@@ -48,10 +49,7 @@ export function TaskAggregatedStatusEnumFromJSON(json: any): TaskAggregatedStatu
     return TaskAggregatedStatusEnumFromJSONTyped(json, false);
 }
 
-export function TaskAggregatedStatusEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TaskAggregatedStatusEnum {
+export function TaskAggregatedStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): TaskAggregatedStatusEnum {
     return json as TaskAggregatedStatusEnum;
 }
 
@@ -59,9 +57,7 @@ export function TaskAggregatedStatusEnumToJSON(value?: TaskAggregatedStatusEnum 
     return value as any;
 }
 
-export function TaskAggregatedStatusEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): TaskAggregatedStatusEnum {
+export function TaskAggregatedStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): TaskAggregatedStatusEnum {
     return value as TaskAggregatedStatusEnum;
 }
+

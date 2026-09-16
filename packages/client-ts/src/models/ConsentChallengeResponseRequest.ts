@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Consent challenge response, any valid response request is valid
  * @export
@@ -19,11 +20,11 @@
  */
 export interface ConsentChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     token: string;
 }
@@ -31,29 +32,23 @@ export interface ConsentChallengeResponseRequest {
 /**
  * Check if a given object implements the ConsentChallengeResponseRequest interface.
  */
-export function instanceOfConsentChallengeResponseRequest(
-    value: object,
-): value is ConsentChallengeResponseRequest {
-    if (!("token" in value) || value["token"] === undefined) return false;
+export function instanceOfConsentChallengeResponseRequest(value: object): value is ConsentChallengeResponseRequest {
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
-export function ConsentChallengeResponseRequestFromJSON(
-    json: any,
-): ConsentChallengeResponseRequest {
+export function ConsentChallengeResponseRequestFromJSON(json: any): ConsentChallengeResponseRequest {
     return ConsentChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function ConsentChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ConsentChallengeResponseRequest {
+export function ConsentChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        token: json["token"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'token': json['token'],
     };
 }
 
@@ -61,16 +56,15 @@ export function ConsentChallengeResponseRequestToJSON(json: any): ConsentChallen
     return ConsentChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function ConsentChallengeResponseRequestToJSONTyped(
-    value?: ConsentChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ConsentChallengeResponseRequestToJSONTyped(value?: ConsentChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        token: value["token"],
+        
+        'component': value['component'],
+        'token': value['token'],
     };
 }
+

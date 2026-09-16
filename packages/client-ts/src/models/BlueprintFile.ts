@@ -12,30 +12,35 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Metadata } from "./Metadata";
-import { MetadataFromJSON } from "./Metadata";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { Metadata } from './Metadata';
+import {
+    MetadataFromJSON,
+    MetadataFromJSONTyped,
+    MetadataToJSON,
+    MetadataToJSONTyped,
+} from './Metadata';
 
 /**
- *
+ * 
  * @export
  * @interface BlueprintFile
  */
 export interface BlueprintFile {
     /**
-     *
+     * 
      */
     path: string;
     /**
-     *
+     * 
      */
     lastM: Date;
     /**
-     *
+     * 
      */
     hash: string;
     /**
-     *
+     * 
      */
     readonly meta: Metadata;
 }
@@ -44,16 +49,10 @@ export interface BlueprintFile {
  * Check if a given object implements the BlueprintFile interface.
  */
 export function instanceOfBlueprintFile(value: object): value is BlueprintFile {
-    if (!("path" in value) || value["path"] === undefined) return false;
-    if (
-        (!("lastM" in (value as Record<string, any>)) &&
-            !("last_m" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastM"] === undefined &&
-            (value as Record<string, any>)["last_m"] === undefined)
-    )
-        return false;
-    if (!("hash" in value) || value["hash"] === undefined) return false;
-    if (!("meta" in value) || value["meta"] === undefined) return false;
+    if (!('path' in value) || value['path'] === undefined) return false;
+    if ((!('lastM' in (value as Record<string, any>)) && !('last_m' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastM'] === undefined && (value as Record<string, any>)['last_m'] === undefined)) return false;
+    if (!('hash' in value) || value['hash'] === undefined) return false;
+    if (!('meta' in value) || value['meta'] === undefined) return false;
     return true;
 }
 
@@ -66,10 +65,11 @@ export function BlueprintFileFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        path: json["path"],
-        lastM: json["last_m"] == null ? json["last_m"] : parseDateTime(json["last_m"]),
-        hash: json["hash"],
-        meta: MetadataFromJSON(json["meta"]),
+        
+        'path': json['path'],
+        'lastM': (json['last_m'] == null ? json['last_m'] : parseDateTime(json['last_m'])),
+        'hash': json['hash'],
+        'meta': MetadataFromJSON(json['meta']),
     };
 }
 
@@ -77,17 +77,16 @@ export function BlueprintFileToJSON(json: any): BlueprintFile {
     return BlueprintFileToJSONTyped(json, false);
 }
 
-export function BlueprintFileToJSONTyped(
-    value?: Omit<BlueprintFile, "meta"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function BlueprintFileToJSONTyped(value?: Omit<BlueprintFile, 'meta'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        path: value["path"],
-        last_m: value["lastM"] == null ? value["lastM"] : serializeDateTime(value["lastM"]),
-        hash: value["hash"],
+        
+        'path': value['path'],
+        'last_m': value['lastM'] == null ? value['lastM'] : serializeDateTime(value['lastM']),
+        'hash': value['hash'],
     };
 }
+

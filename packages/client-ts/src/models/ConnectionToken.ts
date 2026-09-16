@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { Endpoint } from "./Endpoint";
-import { EndpointFromJSON } from "./Endpoint";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RACProvider } from "./RACProvider";
-import { RACProviderFromJSON } from "./RACProvider";
+import { mapValues } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { Endpoint } from './Endpoint';
+import {
+    EndpointFromJSON,
+    EndpointFromJSONTyped,
+    EndpointToJSON,
+    EndpointToJSONTyped,
+} from './Endpoint';
+import type { RACProvider } from './RACProvider';
+import {
+    RACProviderFromJSON,
+    RACProviderFromJSONTyped,
+    RACProviderToJSON,
+    RACProviderToJSONTyped,
+} from './RACProvider';
 
 /**
  * ConnectionToken Serializer
@@ -26,27 +42,27 @@ import { RACProviderFromJSON } from "./RACProvider";
  */
 export interface ConnectionToken {
     /**
-     *
+     * 
      */
     pk?: string;
     /**
-     *
+     * 
      */
     provider: number;
     /**
-     *
+     * 
      */
     readonly providerObj: RACProvider;
     /**
-     *
+     * 
      */
     endpoint: string;
     /**
-     *
+     * 
      */
     readonly endpointObj: Endpoint;
     /**
-     *
+     * 
      */
     readonly user: PartialUser;
 }
@@ -55,23 +71,11 @@ export interface ConnectionToken {
  * Check if a given object implements the ConnectionToken interface.
  */
 export function instanceOfConnectionToken(value: object): value is ConnectionToken {
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (
-        (!("providerObj" in (value as Record<string, any>)) &&
-            !("provider_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["providerObj"] === undefined &&
-            (value as Record<string, any>)["provider_obj"] === undefined)
-    )
-        return false;
-    if (!("endpoint" in value) || value["endpoint"] === undefined) return false;
-    if (
-        (!("endpointObj" in (value as Record<string, any>)) &&
-            !("endpoint_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["endpointObj"] === undefined &&
-            (value as Record<string, any>)["endpoint_obj"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if ((!('providerObj' in (value as Record<string, any>)) && !('provider_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['providerObj'] === undefined && (value as Record<string, any>)['provider_obj'] === undefined)) return false;
+    if (!('endpoint' in value) || value['endpoint'] === undefined) return false;
+    if ((!('endpointObj' in (value as Record<string, any>)) && !('endpoint_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['endpointObj'] === undefined && (value as Record<string, any>)['endpoint_obj'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -79,20 +83,18 @@ export function ConnectionTokenFromJSON(json: any): ConnectionToken {
     return ConnectionTokenFromJSONTyped(json, false);
 }
 
-export function ConnectionTokenFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ConnectionToken {
+export function ConnectionTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConnectionToken {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"] == null ? undefined : json["pk"],
-        provider: json["provider"],
-        providerObj: RACProviderFromJSON(json["provider_obj"]),
-        endpoint: json["endpoint"],
-        endpointObj: EndpointFromJSON(json["endpoint_obj"]),
-        user: PartialUserFromJSON(json["user"]),
+        
+        'pk': json['pk'] == null ? undefined : json['pk'],
+        'provider': json['provider'],
+        'providerObj': RACProviderFromJSON(json['provider_obj']),
+        'endpoint': json['endpoint'],
+        'endpointObj': EndpointFromJSON(json['endpoint_obj']),
+        'user': PartialUserFromJSON(json['user']),
     };
 }
 
@@ -100,17 +102,16 @@ export function ConnectionTokenToJSON(json: any): ConnectionToken {
     return ConnectionTokenToJSONTyped(json, false);
 }
 
-export function ConnectionTokenToJSONTyped(
-    value?: Omit<ConnectionToken, "providerObj" | "endpointObj" | "user"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ConnectionTokenToJSONTyped(value?: Omit<ConnectionToken, 'providerObj'|'endpointObj'|'user'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        provider: value["provider"],
-        endpoint: value["endpoint"],
+        
+        'pk': value['pk'],
+        'provider': value['provider'],
+        'endpoint': value['endpoint'],
     };
 }
+

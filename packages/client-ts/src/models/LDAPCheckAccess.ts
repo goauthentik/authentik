@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyTestResult } from "./PolicyTestResult";
-import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestResult";
+import { mapValues } from '../runtime';
+import type { PolicyTestResult } from './PolicyTestResult';
+import {
+    PolicyTestResultFromJSON,
+    PolicyTestResultFromJSONTyped,
+    PolicyTestResultToJSON,
+    PolicyTestResultToJSONTyped,
+} from './PolicyTestResult';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,11 +28,11 @@ import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestRe
  */
 export interface LDAPCheckAccess {
     /**
-     *
+     * 
      */
     hasSearchPermission?: boolean;
     /**
-     *
+     * 
      */
     access: PolicyTestResult;
 }
@@ -35,7 +41,7 @@ export interface LDAPCheckAccess {
  * Check if a given object implements the LDAPCheckAccess interface.
  */
 export function instanceOfLDAPCheckAccess(value: object): value is LDAPCheckAccess {
-    if (!("access" in value) || value["access"] === undefined) return false;
+    if (!('access' in value) || value['access'] === undefined) return false;
     return true;
 }
 
@@ -43,17 +49,14 @@ export function LDAPCheckAccessFromJSON(json: any): LDAPCheckAccess {
     return LDAPCheckAccessFromJSONTyped(json, false);
 }
 
-export function LDAPCheckAccessFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LDAPCheckAccess {
+export function LDAPCheckAccessFromJSONTyped(json: any, ignoreDiscriminator: boolean): LDAPCheckAccess {
     if (json == null) {
         return json;
     }
     return {
-        hasSearchPermission:
-            json["has_search_permission"] == null ? undefined : json["has_search_permission"],
-        access: PolicyTestResultFromJSON(json["access"]),
+        
+        'hasSearchPermission': json['has_search_permission'] == null ? undefined : json['has_search_permission'],
+        'access': PolicyTestResultFromJSON(json['access']),
     };
 }
 
@@ -61,16 +64,15 @@ export function LDAPCheckAccessToJSON(json: any): LDAPCheckAccess {
     return LDAPCheckAccessToJSONTyped(json, false);
 }
 
-export function LDAPCheckAccessToJSONTyped(
-    value?: LDAPCheckAccess | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LDAPCheckAccessToJSONTyped(value?: LDAPCheckAccess | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        has_search_permission: value["hasSearchPermission"],
-        access: PolicyTestResultToJSON(value["access"]),
+        
+        'has_search_permission': value['hasSearchPermission'],
+        'access': PolicyTestResultToJSON(value['access']),
     };
 }
+

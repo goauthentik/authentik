@@ -12,22 +12,23 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface RequestRuleChildBinding
  */
 export interface RequestRuleChildBinding {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
-     *
+     * 
      */
     binding: string;
     /**
-     *
+     * 
      */
     target: string;
 }
@@ -36,8 +37,8 @@ export interface RequestRuleChildBinding {
  * Check if a given object implements the RequestRuleChildBinding interface.
  */
 export function instanceOfRequestRuleChildBinding(value: object): value is RequestRuleChildBinding {
-    if (!("binding" in value) || value["binding"] === undefined) return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
+    if (!('binding' in value) || value['binding'] === undefined) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
     return true;
 }
 
@@ -45,17 +46,15 @@ export function RequestRuleChildBindingFromJSON(json: any): RequestRuleChildBind
     return RequestRuleChildBindingFromJSONTyped(json, false);
 }
 
-export function RequestRuleChildBindingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestRuleChildBinding {
+export function RequestRuleChildBindingFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestRuleChildBinding {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        binding: json["binding"],
-        target: json["target"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'binding': json['binding'],
+        'target': json['target'],
     };
 }
 
@@ -63,17 +62,16 @@ export function RequestRuleChildBindingToJSON(json: any): RequestRuleChildBindin
     return RequestRuleChildBindingToJSONTyped(json, false);
 }
 
-export function RequestRuleChildBindingToJSONTyped(
-    value?: RequestRuleChildBinding | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestRuleChildBindingToJSONTyped(value?: RequestRuleChildBinding | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        binding: value["binding"],
-        target: value["target"],
+        
+        'uuid': value['uuid'],
+        'binding': value['binding'],
+        'target': value['target'],
     };
 }
+

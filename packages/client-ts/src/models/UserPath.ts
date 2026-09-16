@@ -12,14 +12,15 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface UserPath
  */
 export interface UserPath {
     /**
-     *
+     * 
      */
     readonly paths: Array<string>;
 }
@@ -28,7 +29,7 @@ export interface UserPath {
  * Check if a given object implements the UserPath interface.
  */
 export function instanceOfUserPath(value: object): value is UserPath {
-    if (!("paths" in value) || value["paths"] === undefined) return false;
+    if (!('paths' in value) || value['paths'] === undefined) return false;
     return true;
 }
 
@@ -41,7 +42,8 @@ export function UserPathFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        paths: json["paths"],
+        
+        'paths': json['paths'],
     };
 }
 
@@ -49,13 +51,13 @@ export function UserPathToJSON(json: any): UserPath {
     return UserPathToJSONTyped(json, false);
 }
 
-export function UserPathToJSONTyped(
-    value?: Omit<UserPath, "paths"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserPathToJSONTyped(value?: Omit<UserPath, 'paths'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

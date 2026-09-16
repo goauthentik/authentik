@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { EmailStage } from "./EmailStage";
-import { EmailStageFromJSON, EmailStageToJSON } from "./EmailStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { EmailStage } from './EmailStage';
+import {
+    EmailStageFromJSON,
+    EmailStageFromJSONTyped,
+    EmailStageToJSON,
+    EmailStageToJSONTyped,
+} from './EmailStage';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedEmailStageList
  */
 export interface PaginatedEmailStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<EmailStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedEmailStageList interface.
  */
 export function instanceOfPaginatedEmailStageList(value: object): value is PaginatedEmailStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedEmailStageListFromJSON(json: any): PaginatedEmailStageL
     return PaginatedEmailStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedEmailStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedEmailStageList {
+export function PaginatedEmailStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEmailStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EmailStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(EmailStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedEmailStageListToJSON(json: any): PaginatedEmailStageLis
     return PaginatedEmailStageListToJSONTyped(json, false);
 }
 
-export function PaginatedEmailStageListToJSONTyped(
-    value?: PaginatedEmailStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedEmailStageListToJSONTyped(value?: PaginatedEmailStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EmailStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(EmailStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

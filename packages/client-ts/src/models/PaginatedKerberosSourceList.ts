@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { KerberosSource } from "./KerberosSource";
-import { KerberosSourceFromJSON, KerberosSourceToJSON } from "./KerberosSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { KerberosSource } from './KerberosSource';
+import {
+    KerberosSourceFromJSON,
+    KerberosSourceFromJSONTyped,
+    KerberosSourceToJSON,
+    KerberosSourceToJSONTyped,
+} from './KerberosSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedKerberosSourceList
  */
 export interface PaginatedKerberosSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<KerberosSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedKerberosSourceList interface.
  */
-export function instanceOfPaginatedKerberosSourceList(
-    value: object,
-): value is PaginatedKerberosSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedKerberosSourceList(value: object): value is PaginatedKerberosSourceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedKerberosSourceListFromJSON(json: any): PaginatedKerbero
     return PaginatedKerberosSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedKerberosSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedKerberosSourceList {
+export function PaginatedKerberosSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedKerberosSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(KerberosSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(KerberosSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedKerberosSourceListToJSON(json: any): PaginatedKerberosS
     return PaginatedKerberosSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedKerberosSourceListToJSONTyped(
-    value?: PaginatedKerberosSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedKerberosSourceListToJSONTyped(value?: PaginatedKerberosSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(KerberosSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(KerberosSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

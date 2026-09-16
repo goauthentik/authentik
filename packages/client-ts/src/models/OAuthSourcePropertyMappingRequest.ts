@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * OAuthSourcePropertyMapping Serializer
  * @export
@@ -23,11 +24,11 @@ export interface OAuthSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,56 +36,42 @@ export interface OAuthSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the OAuthSourcePropertyMappingRequest interface.
  */
-export function instanceOfOAuthSourcePropertyMappingRequest(
-    value: object,
-): value is OAuthSourcePropertyMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfOAuthSourcePropertyMappingRequest(value: object): value is OAuthSourcePropertyMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
-export function OAuthSourcePropertyMappingRequestFromJSON(
-    json: any,
-): OAuthSourcePropertyMappingRequest {
+export function OAuthSourcePropertyMappingRequestFromJSON(json: any): OAuthSourcePropertyMappingRequest {
     return OAuthSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function OAuthSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OAuthSourcePropertyMappingRequest {
+export function OAuthSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuthSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
-export function OAuthSourcePropertyMappingRequestToJSON(
-    json: any,
-): OAuthSourcePropertyMappingRequest {
+export function OAuthSourcePropertyMappingRequestToJSON(json: any): OAuthSourcePropertyMappingRequest {
     return OAuthSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function OAuthSourcePropertyMappingRequestToJSONTyped(
-    value?: OAuthSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OAuthSourcePropertyMappingRequestToJSONTyped(value?: OAuthSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

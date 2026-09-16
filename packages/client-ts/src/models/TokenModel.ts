@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON, ProviderToJSON } from "./Provider";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { User } from './User';
+import {
+    UserFromJSON,
+    UserFromJSONTyped,
+    UserToJSON,
+    UserToJSONTyped,
+} from './User';
+import type { Provider } from './Provider';
+import {
+    ProviderFromJSON,
+    ProviderFromJSONTyped,
+    ProviderToJSON,
+    ProviderToJSONTyped,
+} from './Provider';
 
 /**
  * Serializer for BaseGrantModel and RefreshToken
@@ -25,15 +35,15 @@ import { UserFromJSON, UserToJSON } from "./User";
  */
 export interface TokenModel {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     provider: Provider;
     /**
-     *
+     * 
      */
     user: User;
     /**
@@ -41,11 +51,11 @@ export interface TokenModel {
      */
     readonly isExpired: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     scope: Array<string>;
     /**
@@ -53,7 +63,7 @@ export interface TokenModel {
      */
     readonly idToken: string;
     /**
-     *
+     * 
      */
     revoked?: boolean;
 }
@@ -62,24 +72,12 @@ export interface TokenModel {
  * Check if a given object implements the TokenModel interface.
  */
 export function instanceOfTokenModel(value: object): value is TokenModel {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("isExpired" in (value as Record<string, any>)) &&
-            !("is_expired" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isExpired"] === undefined &&
-            (value as Record<string, any>)["is_expired"] === undefined)
-    )
-        return false;
-    if (!("scope" in value) || value["scope"] === undefined) return false;
-    if (
-        (!("idToken" in (value as Record<string, any>)) &&
-            !("id_token" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["idToken"] === undefined &&
-            (value as Record<string, any>)["id_token"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('isExpired' in (value as Record<string, any>)) && !('is_expired' in (value as Record<string, any>))) || ((value as Record<string, any>)['isExpired'] === undefined && (value as Record<string, any>)['is_expired'] === undefined)) return false;
+    if (!('scope' in value) || value['scope'] === undefined) return false;
+    if ((!('idToken' in (value as Record<string, any>)) && !('id_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['idToken'] === undefined && (value as Record<string, any>)['id_token'] === undefined)) return false;
     return true;
 }
 
@@ -92,19 +90,15 @@ export function TokenModelFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        pk: json["pk"],
-        provider: ProviderFromJSON(json["provider"]),
-        user: UserFromJSON(json["user"]),
-        isExpired: json["is_expired"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        scope: json["scope"],
-        idToken: json["id_token"],
-        revoked: json["revoked"] == null ? undefined : json["revoked"],
+        
+        'pk': json['pk'],
+        'provider': ProviderFromJSON(json['provider']),
+        'user': UserFromJSON(json['user']),
+        'isExpired': json['is_expired'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'scope': json['scope'],
+        'idToken': json['id_token'],
+        'revoked': json['revoked'] == null ? undefined : json['revoked'],
     };
 }
 
@@ -112,19 +106,18 @@ export function TokenModelToJSON(json: any): TokenModel {
     return TokenModelToJSONTyped(json, false);
 }
 
-export function TokenModelToJSONTyped(
-    value?: Omit<TokenModel, "pk" | "isExpired" | "idToken"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TokenModelToJSONTyped(value?: Omit<TokenModel, 'pk'|'isExpired'|'idToken'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        provider: ProviderToJSON(value["provider"]),
-        user: UserToJSON(value["user"]),
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        scope: value["scope"],
-        revoked: value["revoked"],
+        
+        'provider': ProviderToJSON(value['provider']),
+        'user': UserToJSON(value['user']),
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'scope': value['scope'],
+        'revoked': value['revoked'],
     };
 }
+

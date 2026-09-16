@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * AccountLockdownStage Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PatchedAccountLockdownStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -47,61 +48,46 @@ export interface PatchedAccountLockdownStageRequest {
 /**
  * Check if a given object implements the PatchedAccountLockdownStageRequest interface.
  */
-export function instanceOfPatchedAccountLockdownStageRequest(
-    value: object,
-): value is PatchedAccountLockdownStageRequest {
+export function instanceOfPatchedAccountLockdownStageRequest(value: object): value is PatchedAccountLockdownStageRequest {
     return true;
 }
 
-export function PatchedAccountLockdownStageRequestFromJSON(
-    json: any,
-): PatchedAccountLockdownStageRequest {
+export function PatchedAccountLockdownStageRequestFromJSON(json: any): PatchedAccountLockdownStageRequest {
     return PatchedAccountLockdownStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAccountLockdownStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedAccountLockdownStageRequest {
+export function PatchedAccountLockdownStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAccountLockdownStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        deactivateUser: json["deactivate_user"] == null ? undefined : json["deactivate_user"],
-        setUnusablePassword:
-            json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
-        deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
-        revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceCompletionFlow:
-            json["self_service_completion_flow"] === undefined
-                ? undefined
-                : json["self_service_completion_flow"] === null
-                  ? null
-                  : json["self_service_completion_flow"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'deactivateUser': json['deactivate_user'] == null ? undefined : json['deactivate_user'],
+        'setUnusablePassword': json['set_unusable_password'] == null ? undefined : json['set_unusable_password'],
+        'deleteSessions': json['delete_sessions'] == null ? undefined : json['delete_sessions'],
+        'revokeTokens': json['revoke_tokens'] == null ? undefined : json['revoke_tokens'],
+        'selfServiceCompletionFlow': json['self_service_completion_flow'] === undefined ? undefined : json['self_service_completion_flow'] === null ? null : json['self_service_completion_flow'],
     };
 }
 
-export function PatchedAccountLockdownStageRequestToJSON(
-    json: any,
-): PatchedAccountLockdownStageRequest {
+export function PatchedAccountLockdownStageRequestToJSON(json: any): PatchedAccountLockdownStageRequest {
     return PatchedAccountLockdownStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAccountLockdownStageRequestToJSONTyped(
-    value?: PatchedAccountLockdownStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedAccountLockdownStageRequestToJSONTyped(value?: PatchedAccountLockdownStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deactivate_user: value["deactivateUser"],
-        set_unusable_password: value["setUnusablePassword"],
-        delete_sessions: value["deleteSessions"],
-        revoke_tokens: value["revokeTokens"],
-        self_service_completion_flow: value["selfServiceCompletionFlow"],
+        
+        'name': value['name'],
+        'deactivate_user': value['deactivateUser'],
+        'set_unusable_password': value['setUnusablePassword'],
+        'delete_sessions': value['deleteSessions'],
+        'revoke_tokens': value['revokeTokens'],
+        'self_service_completion_flow': value['selfServiceCompletionFlow'],
     };
 }
+

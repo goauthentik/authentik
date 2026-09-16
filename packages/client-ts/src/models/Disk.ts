@@ -12,34 +12,35 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface Disk
  */
 export interface Disk {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     mountpoint: string;
     /**
-     *
+     * 
      */
     label?: string;
     /**
-     *
+     * 
      */
     capacityTotalBytes?: number;
     /**
-     *
+     * 
      */
     capacityUsedBytes?: number;
     /**
-     *
+     * 
      */
     encryptionEnabled?: boolean;
 }
@@ -48,8 +49,8 @@ export interface Disk {
  * Check if a given object implements the Disk interface.
  */
 export function instanceOfDisk(value: object): value is Disk {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("mountpoint" in value) || value["mountpoint"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('mountpoint' in value) || value['mountpoint'] === undefined) return false;
     return true;
 }
 
@@ -62,15 +63,13 @@ export function DiskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Disk
         return json;
     }
     return {
-        name: json["name"],
-        mountpoint: json["mountpoint"],
-        label: json["label"] == null ? undefined : json["label"],
-        capacityTotalBytes:
-            json["capacity_total_bytes"] == null ? undefined : json["capacity_total_bytes"],
-        capacityUsedBytes:
-            json["capacity_used_bytes"] == null ? undefined : json["capacity_used_bytes"],
-        encryptionEnabled:
-            json["encryption_enabled"] == null ? undefined : json["encryption_enabled"],
+        
+        'name': json['name'],
+        'mountpoint': json['mountpoint'],
+        'label': json['label'] == null ? undefined : json['label'],
+        'capacityTotalBytes': json['capacity_total_bytes'] == null ? undefined : json['capacity_total_bytes'],
+        'capacityUsedBytes': json['capacity_used_bytes'] == null ? undefined : json['capacity_used_bytes'],
+        'encryptionEnabled': json['encryption_enabled'] == null ? undefined : json['encryption_enabled'],
     };
 }
 
@@ -84,11 +83,13 @@ export function DiskToJSONTyped(value?: Disk | null, ignoreDiscriminator: boolea
     }
 
     return {
-        name: value["name"],
-        mountpoint: value["mountpoint"],
-        label: value["label"],
-        capacity_total_bytes: value["capacityTotalBytes"],
-        capacity_used_bytes: value["capacityUsedBytes"],
-        encryption_enabled: value["encryptionEnabled"],
+        
+        'name': value['name'],
+        'mountpoint': value['mountpoint'],
+        'label': value['label'],
+        'capacity_total_bytes': value['capacityTotalBytes'],
+        'capacity_used_bytes': value['capacityUsedBytes'],
+        'encryption_enabled': value['encryptionEnabled'],
     };
 }
+

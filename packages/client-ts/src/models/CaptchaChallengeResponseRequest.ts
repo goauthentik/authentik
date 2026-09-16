@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Validate captcha token
  * @export
@@ -19,11 +20,11 @@
  */
 export interface CaptchaChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     token: string;
 }
@@ -31,29 +32,23 @@ export interface CaptchaChallengeResponseRequest {
 /**
  * Check if a given object implements the CaptchaChallengeResponseRequest interface.
  */
-export function instanceOfCaptchaChallengeResponseRequest(
-    value: object,
-): value is CaptchaChallengeResponseRequest {
-    if (!("token" in value) || value["token"] === undefined) return false;
+export function instanceOfCaptchaChallengeResponseRequest(value: object): value is CaptchaChallengeResponseRequest {
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
-export function CaptchaChallengeResponseRequestFromJSON(
-    json: any,
-): CaptchaChallengeResponseRequest {
+export function CaptchaChallengeResponseRequestFromJSON(json: any): CaptchaChallengeResponseRequest {
     return CaptchaChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function CaptchaChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CaptchaChallengeResponseRequest {
+export function CaptchaChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CaptchaChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        token: json["token"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'token': json['token'],
     };
 }
 
@@ -61,16 +56,15 @@ export function CaptchaChallengeResponseRequestToJSON(json: any): CaptchaChallen
     return CaptchaChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function CaptchaChallengeResponseRequestToJSONTyped(
-    value?: CaptchaChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CaptchaChallengeResponseRequestToJSONTyped(value?: CaptchaChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        token: value["token"],
+        
+        'component': value['component'],
+        'token': value['token'],
     };
 }
+

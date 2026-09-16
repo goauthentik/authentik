@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * ScopeMapping Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface ScopeMapping {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -27,11 +28,11 @@ export interface ScopeMapping {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
     /**
@@ -64,38 +65,14 @@ export interface ScopeMapping {
  * Check if a given object implements the ScopeMapping interface.
  */
 export function instanceOfScopeMapping(value: object): value is ScopeMapping {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("scopeName" in (value as Record<string, any>)) &&
-            !("scope_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scopeName"] === undefined &&
-            (value as Record<string, any>)["scope_name"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('scopeName' in (value as Record<string, any>)) && !('scope_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['scopeName'] === undefined && (value as Record<string, any>)['scope_name'] === undefined)) return false;
     return true;
 }
 
@@ -108,21 +85,17 @@ export function ScopeMappingFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        scopeName: json["scope_name"],
-        description: json["description"] == null ? undefined : json["description"],
+        
+        'pk': json['pk'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'scopeName': json['scope_name'],
+        'description': json['description'] == null ? undefined : json['description'],
     };
 }
 
@@ -130,22 +103,18 @@ export function ScopeMappingToJSON(json: any): ScopeMapping {
     return ScopeMappingToJSONTyped(json, false);
 }
 
-export function ScopeMappingToJSONTyped(
-    value?: Omit<
-        ScopeMapping,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ScopeMappingToJSONTyped(value?: Omit<ScopeMapping, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        scope_name: value["scopeName"],
-        description: value["description"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'scope_name': value['scopeName'],
+        'description': value['description'],
     };
 }
+

@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const PolicyEngineMode = {
-    All: "all",
-    Any: "any",
-    UnknownDefaultOpenApi: "11184809",
+    All: 'all',
+    Any: 'any',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type PolicyEngineMode = (typeof PolicyEngineMode)[keyof typeof PolicyEngineMode];
+export type PolicyEngineMode = typeof PolicyEngineMode[keyof typeof PolicyEngineMode];
+
 
 export function instanceOfPolicyEngineMode(value: any): boolean {
     for (const key in PolicyEngineMode) {
@@ -38,10 +40,7 @@ export function PolicyEngineModeFromJSON(json: any): PolicyEngineMode {
     return PolicyEngineModeFromJSONTyped(json, false);
 }
 
-export function PolicyEngineModeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PolicyEngineMode {
+export function PolicyEngineModeFromJSONTyped(json: any, ignoreDiscriminator: boolean): PolicyEngineMode {
     return json as PolicyEngineMode;
 }
 
@@ -49,9 +48,7 @@ export function PolicyEngineModeToJSON(value?: PolicyEngineMode | null): any {
     return value as any;
 }
 
-export function PolicyEngineModeToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): PolicyEngineMode {
+export function PolicyEngineModeToJSONTyped(value: any, ignoreDiscriminator: boolean): PolicyEngineMode {
     return value as PolicyEngineMode;
 }
+

@@ -12,21 +12,23 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const AuthenticationEnum = {
-    None: "none",
-    RequireAuthenticated: "require_authenticated",
-    RequireUnauthenticated: "require_unauthenticated",
-    RequireSuperuser: "require_superuser",
-    RequireRedirect: "require_redirect",
-    RequireOutpost: "require_outpost",
-    RequireToken: "require_token",
-    UnknownDefaultOpenApi: "11184809",
+    None: 'none',
+    RequireAuthenticated: 'require_authenticated',
+    RequireUnauthenticated: 'require_unauthenticated',
+    RequireSuperuser: 'require_superuser',
+    RequireRedirect: 'require_redirect',
+    RequireOutpost: 'require_outpost',
+    RequireToken: 'require_token',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type AuthenticationEnum = (typeof AuthenticationEnum)[keyof typeof AuthenticationEnum];
+export type AuthenticationEnum = typeof AuthenticationEnum[keyof typeof AuthenticationEnum];
+
 
 export function instanceOfAuthenticationEnum(value: any): boolean {
     for (const key in AuthenticationEnum) {
@@ -43,10 +45,7 @@ export function AuthenticationEnumFromJSON(json: any): AuthenticationEnum {
     return AuthenticationEnumFromJSONTyped(json, false);
 }
 
-export function AuthenticationEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticationEnum {
+export function AuthenticationEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticationEnum {
     return json as AuthenticationEnum;
 }
 
@@ -54,9 +53,7 @@ export function AuthenticationEnumToJSON(value?: AuthenticationEnum | null): any
     return value as any;
 }
 
-export function AuthenticationEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): AuthenticationEnum {
+export function AuthenticationEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): AuthenticationEnum {
     return value as AuthenticationEnum;
 }
+

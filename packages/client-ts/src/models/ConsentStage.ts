@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentModeEnum } from "./ConsentModeEnum";
-import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import { mapValues } from '../runtime';
+import type { ConsentModeEnum } from './ConsentModeEnum';
+import {
+    ConsentModeEnumFromJSON,
+    ConsentModeEnumFromJSONTyped,
+    ConsentModeEnumToJSON,
+    ConsentModeEnumToJSONTyped,
+} from './ConsentModeEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
 
 /**
  * ConsentStage Serializer
@@ -24,11 +35,11 @@ import { FlowSetFromJSON } from "./FlowSet";
  */
 export interface ConsentStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -48,11 +59,11 @@ export interface ConsentStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     mode?: ConsentModeEnum;
     /**
@@ -61,41 +72,19 @@ export interface ConsentStage {
     consentExpireIn?: string;
 }
 
+
+
 /**
  * Check if a given object implements the ConsentStage interface.
  */
 export function instanceOfConsentStage(value: object): value is ConsentStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -108,15 +97,16 @@ export function ConsentStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        mode: json["mode"] == null ? undefined : ConsentModeEnumFromJSON(json["mode"]),
-        consentExpireIn: json["consent_expire_in"] == null ? undefined : json["consent_expire_in"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'mode': json['mode'] == null ? undefined : ConsentModeEnumFromJSON(json['mode']),
+        'consentExpireIn': json['consent_expire_in'] == null ? undefined : json['consent_expire_in'],
     };
 }
 
@@ -124,20 +114,16 @@ export function ConsentStageToJSON(json: any): ConsentStage {
     return ConsentStageToJSONTyped(json, false);
 }
 
-export function ConsentStageToJSONTyped(
-    value?: Omit<
-        ConsentStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ConsentStageToJSONTyped(value?: Omit<ConsentStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mode: ConsentModeEnumToJSON(value["mode"]),
-        consent_expire_in: value["consentExpireIn"],
+        
+        'name': value['name'],
+        'mode': ConsentModeEnumToJSON(value['mode']),
+        'consent_expire_in': value['consentExpireIn'],
     };
 }
+

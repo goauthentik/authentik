@@ -12,40 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RequestRule } from "./RequestRule";
-import { RequestRuleFromJSON, RequestRuleToJSON } from "./RequestRule";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { RequestRule } from './RequestRule';
+import {
+    RequestRuleFromJSON,
+    RequestRuleFromJSONTyped,
+    RequestRuleToJSON,
+    RequestRuleToJSONTyped,
+} from './RequestRule';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRequestRuleList
  */
 export interface PaginatedRequestRuleList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RequestRule>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRequestRuleList interface.
  */
-export function instanceOfPaginatedRequestRuleList(
-    value: object,
-): value is PaginatedRequestRuleList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRequestRuleList(value: object): value is PaginatedRequestRuleList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +62,15 @@ export function PaginatedRequestRuleListFromJSON(json: any): PaginatedRequestRul
     return PaginatedRequestRuleListFromJSONTyped(json, false);
 }
 
-export function PaginatedRequestRuleListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRequestRuleList {
+export function PaginatedRequestRuleListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRequestRuleList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RequestRuleFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RequestRuleFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +78,16 @@ export function PaginatedRequestRuleListToJSON(json: any): PaginatedRequestRuleL
     return PaginatedRequestRuleListToJSONTyped(json, false);
 }
 
-export function PaginatedRequestRuleListToJSONTyped(
-    value?: PaginatedRequestRuleList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRequestRuleListToJSONTyped(value?: PaginatedRequestRuleList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RequestRuleToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RequestRuleToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

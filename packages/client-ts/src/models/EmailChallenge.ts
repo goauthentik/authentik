@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Email challenge
@@ -23,17 +35,17 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface EmailChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
 }
 
 /**
@@ -47,18 +59,15 @@ export function EmailChallengeFromJSON(json: any): EmailChallenge {
     return EmailChallengeFromJSONTyped(json, false);
 }
 
-export function EmailChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EmailChallenge {
+export function EmailChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): EmailChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
     };
 }
 
@@ -66,17 +75,16 @@ export function EmailChallengeToJSON(json: any): EmailChallenge {
     return EmailChallengeToJSONTyped(json, false);
 }
 
-export function EmailChallengeToJSONTyped(
-    value?: EmailChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EmailChallengeToJSONTyped(value?: EmailChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
     };
 }
+

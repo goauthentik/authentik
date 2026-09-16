@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SSFStream } from "./SSFStream";
-import { SSFStreamFromJSON, SSFStreamToJSON } from "./SSFStream";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { SSFStream } from './SSFStream';
+import {
+    SSFStreamFromJSON,
+    SSFStreamFromJSONTyped,
+    SSFStreamToJSON,
+    SSFStreamToJSONTyped,
+} from './SSFStream';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSSFStreamList
  */
 export interface PaginatedSSFStreamList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SSFStream>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSSFStreamList interface.
  */
 export function instanceOfPaginatedSSFStreamList(value: object): value is PaginatedSSFStreamList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedSSFStreamListFromJSON(json: any): PaginatedSSFStreamLis
     return PaginatedSSFStreamListFromJSONTyped(json, false);
 }
 
-export function PaginatedSSFStreamListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSSFStreamList {
+export function PaginatedSSFStreamListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSSFStreamList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SSFStreamFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SSFStreamFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedSSFStreamListToJSON(json: any): PaginatedSSFStreamList 
     return PaginatedSSFStreamListToJSONTyped(json, false);
 }
 
-export function PaginatedSSFStreamListToJSONTyped(
-    value?: PaginatedSSFStreamList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSSFStreamListToJSONTyped(value?: PaginatedSSFStreamList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SSFStreamToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SSFStreamToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

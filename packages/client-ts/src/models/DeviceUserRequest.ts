@@ -12,26 +12,27 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface DeviceUserRequest
  */
 export interface DeviceUserRequest {
     /**
-     *
+     * 
      */
     id: string;
     /**
-     *
+     * 
      */
     username?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     home?: string;
 }
@@ -40,7 +41,7 @@ export interface DeviceUserRequest {
  * Check if a given object implements the DeviceUserRequest interface.
  */
 export function instanceOfDeviceUserRequest(value: object): value is DeviceUserRequest {
-    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -48,18 +49,16 @@ export function DeviceUserRequestFromJSON(json: any): DeviceUserRequest {
     return DeviceUserRequestFromJSONTyped(json, false);
 }
 
-export function DeviceUserRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceUserRequest {
+export function DeviceUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceUserRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        username: json["username"] == null ? undefined : json["username"],
-        name: json["name"] == null ? undefined : json["name"],
-        home: json["home"] == null ? undefined : json["home"],
+        
+        'id': json['id'],
+        'username': json['username'] == null ? undefined : json['username'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'home': json['home'] == null ? undefined : json['home'],
     };
 }
 
@@ -67,18 +66,17 @@ export function DeviceUserRequestToJSON(json: any): DeviceUserRequest {
     return DeviceUserRequestToJSONTyped(json, false);
 }
 
-export function DeviceUserRequestToJSONTyped(
-    value?: DeviceUserRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceUserRequestToJSONTyped(value?: DeviceUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        username: value["username"],
-        name: value["name"],
-        home: value["home"],
+        
+        'id': value['id'],
+        'username': value['username'],
+        'name': value['name'],
+        'home': value['home'],
     };
 }
+

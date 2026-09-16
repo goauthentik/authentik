@@ -12,44 +12,47 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import { mapValues } from '../runtime';
+import type { ObjectAttributeTypeEnum } from './ObjectAttributeTypeEnum';
 import {
     ObjectAttributeTypeEnumFromJSON,
+    ObjectAttributeTypeEnumFromJSONTyped,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+    ObjectAttributeTypeEnumToJSONTyped,
+} from './ObjectAttributeTypeEnum';
 
 /**
- *
+ * 
  * @export
  * @interface ObjectAttributeRequest
  */
 export interface ObjectAttributeRequest {
     /**
-     *
+     * 
      */
     objectType: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     key: string;
     /**
-     *
+     * 
      */
     label: string;
     /**
-     *
+     * 
      */
     regex?: string;
     /**
-     *
+     * 
      */
     type: ObjectAttributeTypeEnum;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -57,29 +60,25 @@ export interface ObjectAttributeRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     isUnique?: boolean;
     /**
-     *
+     * 
      */
     isRequired?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the ObjectAttributeRequest interface.
  */
 export function instanceOfObjectAttributeRequest(value: object): value is ObjectAttributeRequest {
-    if (
-        (!("objectType" in (value as Record<string, any>)) &&
-            !("object_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["objectType"] === undefined &&
-            (value as Record<string, any>)["object_type"] === undefined)
-    )
-        return false;
-    if (!("key" in value) || value["key"] === undefined) return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
+    if ((!('objectType' in (value as Record<string, any>)) && !('object_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectType'] === undefined && (value as Record<string, any>)['object_type'] === undefined)) return false;
+    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -87,29 +86,22 @@ export function ObjectAttributeRequestFromJSON(json: any): ObjectAttributeReques
     return ObjectAttributeRequestFromJSONTyped(json, false);
 }
 
-export function ObjectAttributeRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ObjectAttributeRequest {
+export function ObjectAttributeRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ObjectAttributeRequest {
     if (json == null) {
         return json;
     }
     return {
-        objectType: json["object_type"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        key: json["key"],
-        label: json["label"],
-        regex: json["regex"] == null ? undefined : json["regex"],
-        type: ObjectAttributeTypeEnumFromJSON(json["type"]),
-        group: json["group"] == null ? undefined : json["group"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
-        isRequired: json["is_required"] == null ? undefined : json["is_required"],
+        
+        'objectType': json['object_type'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'key': json['key'],
+        'label': json['label'],
+        'regex': json['regex'] == null ? undefined : json['regex'],
+        'type': ObjectAttributeTypeEnumFromJSON(json['type']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'isUnique': json['is_unique'] == null ? undefined : json['is_unique'],
+        'isRequired': json['is_required'] == null ? undefined : json['is_required'],
     };
 }
 
@@ -117,24 +109,23 @@ export function ObjectAttributeRequestToJSON(json: any): ObjectAttributeRequest 
     return ObjectAttributeRequestToJSONTyped(json, false);
 }
 
-export function ObjectAttributeRequestToJSONTyped(
-    value?: ObjectAttributeRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ObjectAttributeRequestToJSONTyped(value?: ObjectAttributeRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        object_type: value["objectType"],
-        enabled: value["enabled"],
-        key: value["key"],
-        label: value["label"],
-        regex: value["regex"],
-        type: ObjectAttributeTypeEnumToJSON(value["type"]),
-        group: value["group"],
-        managed: value["managed"],
-        is_unique: value["isUnique"],
-        is_required: value["isRequired"],
+        
+        'object_type': value['objectType'],
+        'enabled': value['enabled'],
+        'key': value['key'],
+        'label': value['label'],
+        'regex': value['regex'],
+        'type': ObjectAttributeTypeEnumToJSON(value['type']),
+        'group': value['group'],
+        'managed': value['managed'],
+        'is_unique': value['isUnique'],
+        'is_required': value['isRequired'],
     };
 }
+

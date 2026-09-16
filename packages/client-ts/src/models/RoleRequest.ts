@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Role serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface RoleRequest {
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -28,7 +29,7 @@ export interface RoleRequest {
  * Check if a given object implements the RoleRequest interface.
  */
 export function instanceOfRoleRequest(value: object): value is RoleRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -41,7 +42,8 @@ export function RoleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -49,15 +51,14 @@ export function RoleRequestToJSON(json: any): RoleRequest {
     return RoleRequestToJSONTyped(json, false);
 }
 
-export function RoleRequestToJSONTyped(
-    value?: RoleRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RoleRequestToJSONTyped(value?: RoleRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

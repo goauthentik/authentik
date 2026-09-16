@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Password Policy Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PasswordPolicyRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -31,43 +32,43 @@ export interface PasswordPolicyRequest {
      */
     passwordField?: string;
     /**
-     *
+     * 
      */
     amountDigits?: number;
     /**
-     *
+     * 
      */
     amountUppercase?: number;
     /**
-     *
+     * 
      */
     amountLowercase?: number;
     /**
-     *
+     * 
      */
     amountSymbols?: number;
     /**
-     *
+     * 
      */
     lengthMin?: number;
     /**
-     *
+     * 
      */
     symbolCharset?: string;
     /**
-     *
+     * 
      */
     errorMessage?: string;
     /**
-     *
+     * 
      */
     checkStaticRules?: boolean;
     /**
-     *
+     * 
      */
     checkHaveIBeenPwned?: boolean;
     /**
-     *
+     * 
      */
     checkZxcvbn?: boolean;
     /**
@@ -84,7 +85,7 @@ export interface PasswordPolicyRequest {
  * Check if a given object implements the PasswordPolicyRequest interface.
  */
 export function instanceOfPasswordPolicyRequest(value: object): value is PasswordPolicyRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -92,33 +93,27 @@ export function PasswordPolicyRequestFromJSON(json: any): PasswordPolicyRequest 
     return PasswordPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PasswordPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PasswordPolicyRequest {
+export function PasswordPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        passwordField: json["password_field"] == null ? undefined : json["password_field"],
-        amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
-        amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
-        amountLowercase: json["amount_lowercase"] == null ? undefined : json["amount_lowercase"],
-        amountSymbols: json["amount_symbols"] == null ? undefined : json["amount_symbols"],
-        lengthMin: json["length_min"] == null ? undefined : json["length_min"],
-        symbolCharset: json["symbol_charset"] == null ? undefined : json["symbol_charset"],
-        errorMessage: json["error_message"] == null ? undefined : json["error_message"],
-        checkStaticRules:
-            json["check_static_rules"] == null ? undefined : json["check_static_rules"],
-        checkHaveIBeenPwned:
-            json["check_have_i_been_pwned"] == null ? undefined : json["check_have_i_been_pwned"],
-        checkZxcvbn: json["check_zxcvbn"] == null ? undefined : json["check_zxcvbn"],
-        hibpAllowedCount:
-            json["hibp_allowed_count"] == null ? undefined : json["hibp_allowed_count"],
-        zxcvbnScoreThreshold:
-            json["zxcvbn_score_threshold"] == null ? undefined : json["zxcvbn_score_threshold"],
+        
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'passwordField': json['password_field'] == null ? undefined : json['password_field'],
+        'amountDigits': json['amount_digits'] == null ? undefined : json['amount_digits'],
+        'amountUppercase': json['amount_uppercase'] == null ? undefined : json['amount_uppercase'],
+        'amountLowercase': json['amount_lowercase'] == null ? undefined : json['amount_lowercase'],
+        'amountSymbols': json['amount_symbols'] == null ? undefined : json['amount_symbols'],
+        'lengthMin': json['length_min'] == null ? undefined : json['length_min'],
+        'symbolCharset': json['symbol_charset'] == null ? undefined : json['symbol_charset'],
+        'errorMessage': json['error_message'] == null ? undefined : json['error_message'],
+        'checkStaticRules': json['check_static_rules'] == null ? undefined : json['check_static_rules'],
+        'checkHaveIBeenPwned': json['check_have_i_been_pwned'] == null ? undefined : json['check_have_i_been_pwned'],
+        'checkZxcvbn': json['check_zxcvbn'] == null ? undefined : json['check_zxcvbn'],
+        'hibpAllowedCount': json['hibp_allowed_count'] == null ? undefined : json['hibp_allowed_count'],
+        'zxcvbnScoreThreshold': json['zxcvbn_score_threshold'] == null ? undefined : json['zxcvbn_score_threshold'],
     };
 }
 
@@ -126,29 +121,28 @@ export function PasswordPolicyRequestToJSON(json: any): PasswordPolicyRequest {
     return PasswordPolicyRequestToJSONTyped(json, false);
 }
 
-export function PasswordPolicyRequestToJSONTyped(
-    value?: PasswordPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PasswordPolicyRequestToJSONTyped(value?: PasswordPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        password_field: value["passwordField"],
-        amount_digits: value["amountDigits"],
-        amount_uppercase: value["amountUppercase"],
-        amount_lowercase: value["amountLowercase"],
-        amount_symbols: value["amountSymbols"],
-        length_min: value["lengthMin"],
-        symbol_charset: value["symbolCharset"],
-        error_message: value["errorMessage"],
-        check_static_rules: value["checkStaticRules"],
-        check_have_i_been_pwned: value["checkHaveIBeenPwned"],
-        check_zxcvbn: value["checkZxcvbn"],
-        hibp_allowed_count: value["hibpAllowedCount"],
-        zxcvbn_score_threshold: value["zxcvbnScoreThreshold"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'password_field': value['passwordField'],
+        'amount_digits': value['amountDigits'],
+        'amount_uppercase': value['amountUppercase'],
+        'amount_lowercase': value['amountLowercase'],
+        'amount_symbols': value['amountSymbols'],
+        'length_min': value['lengthMin'],
+        'symbol_charset': value['symbolCharset'],
+        'error_message': value['errorMessage'],
+        'check_static_rules': value['checkStaticRules'],
+        'check_have_i_been_pwned': value['checkHaveIBeenPwned'],
+        'check_zxcvbn': value['checkZxcvbn'],
+        'hibp_allowed_count': value['hibpAllowedCount'],
+        'zxcvbn_score_threshold': value['zxcvbnScoreThreshold'],
     };
 }
+

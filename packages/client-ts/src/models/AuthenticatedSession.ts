@@ -12,22 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { AuthenticatedSessionAsn } from "./AuthenticatedSessionAsn";
-import {
-    AuthenticatedSessionAsnFromJSON,
-    AuthenticatedSessionAsnToJSON,
-} from "./AuthenticatedSessionAsn";
-import type { AuthenticatedSessionGeoIp } from "./AuthenticatedSessionGeoIp";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { AuthenticatedSessionGeoIp } from './AuthenticatedSessionGeoIp';
 import {
     AuthenticatedSessionGeoIpFromJSON,
+    AuthenticatedSessionGeoIpFromJSONTyped,
     AuthenticatedSessionGeoIpToJSON,
-} from "./AuthenticatedSessionGeoIp";
-import type { AuthenticatedSessionUserAgent } from "./AuthenticatedSessionUserAgent";
+    AuthenticatedSessionGeoIpToJSONTyped,
+} from './AuthenticatedSessionGeoIp';
+import type { AuthenticatedSessionAsn } from './AuthenticatedSessionAsn';
+import {
+    AuthenticatedSessionAsnFromJSON,
+    AuthenticatedSessionAsnFromJSONTyped,
+    AuthenticatedSessionAsnToJSON,
+    AuthenticatedSessionAsnToJSONTyped,
+} from './AuthenticatedSessionAsn';
+import type { AuthenticatedSessionUserAgent } from './AuthenticatedSessionUserAgent';
 import {
     AuthenticatedSessionUserAgentFromJSON,
+    AuthenticatedSessionUserAgentFromJSONTyped,
     AuthenticatedSessionUserAgentToJSON,
-} from "./AuthenticatedSessionUserAgent";
+    AuthenticatedSessionUserAgentToJSONTyped,
+} from './AuthenticatedSessionUserAgent';
 
 /**
  * AuthenticatedSession Serializer
@@ -36,7 +42,7 @@ import {
  */
 export interface AuthenticatedSession {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
@@ -44,35 +50,35 @@ export interface AuthenticatedSession {
      */
     readonly current: boolean;
     /**
-     *
+     * 
      */
     userAgent: AuthenticatedSessionUserAgent;
     /**
-     *
+     * 
      */
     geoIp: AuthenticatedSessionGeoIp | null;
     /**
-     *
+     * 
      */
     asn: AuthenticatedSessionAsn | null;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly lastIp: string;
     /**
-     *
+     * 
      */
     readonly lastUserAgent: string;
     /**
-     *
+     * 
      */
     readonly lastUsed: Date;
     /**
-     *
+     * 
      */
     readonly expires: Date;
 }
@@ -81,45 +87,15 @@ export interface AuthenticatedSession {
  * Check if a given object implements the AuthenticatedSession interface.
  */
 export function instanceOfAuthenticatedSession(value: object): value is AuthenticatedSession {
-    if (!("current" in value) || value["current"] === undefined) return false;
-    if (
-        (!("userAgent" in (value as Record<string, any>)) &&
-            !("user_agent" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userAgent"] === undefined &&
-            (value as Record<string, any>)["user_agent"] === undefined)
-    )
-        return false;
-    if (
-        (!("geoIp" in (value as Record<string, any>)) &&
-            !("geo_ip" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["geoIp"] === undefined &&
-            (value as Record<string, any>)["geo_ip"] === undefined)
-    )
-        return false;
-    if (!("asn" in value) || value["asn"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("lastIp" in (value as Record<string, any>)) &&
-            !("last_ip" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastIp"] === undefined &&
-            (value as Record<string, any>)["last_ip"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUserAgent" in (value as Record<string, any>)) &&
-            !("last_user_agent" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUserAgent"] === undefined &&
-            (value as Record<string, any>)["last_user_agent"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUsed" in (value as Record<string, any>)) &&
-            !("last_used" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUsed"] === undefined &&
-            (value as Record<string, any>)["last_used"] === undefined)
-    )
-        return false;
-    if (!("expires" in value) || value["expires"] === undefined) return false;
+    if (!('current' in value) || value['current'] === undefined) return false;
+    if ((!('userAgent' in (value as Record<string, any>)) && !('user_agent' in (value as Record<string, any>))) || ((value as Record<string, any>)['userAgent'] === undefined && (value as Record<string, any>)['user_agent'] === undefined)) return false;
+    if ((!('geoIp' in (value as Record<string, any>)) && !('geo_ip' in (value as Record<string, any>))) || ((value as Record<string, any>)['geoIp'] === undefined && (value as Record<string, any>)['geo_ip'] === undefined)) return false;
+    if (!('asn' in value) || value['asn'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('lastIp' in (value as Record<string, any>)) && !('last_ip' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastIp'] === undefined && (value as Record<string, any>)['last_ip'] === undefined)) return false;
+    if ((!('lastUserAgent' in (value as Record<string, any>)) && !('last_user_agent' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUserAgent'] === undefined && (value as Record<string, any>)['last_user_agent'] === undefined)) return false;
+    if ((!('lastUsed' in (value as Record<string, any>)) && !('last_used' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUsed'] === undefined && (value as Record<string, any>)['last_used'] === undefined)) return false;
+    if (!('expires' in value) || value['expires'] === undefined) return false;
     return true;
 }
 
@@ -127,24 +103,22 @@ export function AuthenticatedSessionFromJSON(json: any): AuthenticatedSession {
     return AuthenticatedSessionFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSession {
+export function AuthenticatedSessionFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSession {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        current: json["current"],
-        userAgent: AuthenticatedSessionUserAgentFromJSON(json["user_agent"]),
-        geoIp: AuthenticatedSessionGeoIpFromJSON(json["geo_ip"]),
-        asn: AuthenticatedSessionAsnFromJSON(json["asn"]),
-        user: json["user"],
-        lastIp: json["last_ip"],
-        lastUserAgent: json["last_user_agent"],
-        lastUsed: json["last_used"] == null ? json["last_used"] : parseDateTime(json["last_used"]),
-        expires: json["expires"] == null ? json["expires"] : parseDateTime(json["expires"]),
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'current': json['current'],
+        'userAgent': AuthenticatedSessionUserAgentFromJSON(json['user_agent']),
+        'geoIp': AuthenticatedSessionGeoIpFromJSON(json['geo_ip']),
+        'asn': AuthenticatedSessionAsnFromJSON(json['asn']),
+        'user': json['user'],
+        'lastIp': json['last_ip'],
+        'lastUserAgent': json['last_user_agent'],
+        'lastUsed': (json['last_used'] == null ? json['last_used'] : parseDateTime(json['last_used'])),
+        'expires': (json['expires'] == null ? json['expires'] : parseDateTime(json['expires'])),
     };
 }
 
@@ -152,22 +126,18 @@ export function AuthenticatedSessionToJSON(json: any): AuthenticatedSession {
     return AuthenticatedSessionToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionToJSONTyped(
-    value?: Omit<
-        AuthenticatedSession,
-        "current" | "lastIp" | "lastUserAgent" | "lastUsed" | "expires"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionToJSONTyped(value?: Omit<AuthenticatedSession, 'current'|'lastIp'|'lastUserAgent'|'lastUsed'|'expires'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        user_agent: AuthenticatedSessionUserAgentToJSON(value["userAgent"]),
-        geo_ip: AuthenticatedSessionGeoIpToJSON(value["geoIp"]),
-        asn: AuthenticatedSessionAsnToJSON(value["asn"]),
-        user: value["user"],
+        
+        'uuid': value['uuid'],
+        'user_agent': AuthenticatedSessionUserAgentToJSON(value['userAgent']),
+        'geo_ip': AuthenticatedSessionGeoIpToJSON(value['geoIp']),
+        'asn': AuthenticatedSessionAsnToJSON(value['asn']),
+        'user': value['user'],
     };
 }
+

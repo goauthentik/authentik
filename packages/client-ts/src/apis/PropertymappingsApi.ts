@@ -12,247 +12,347 @@
  * Do not edit the class manually.
  */
 
+import * as runtime from '../runtime';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
 import {
     type GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderMappingFromJSON,
-} from "../models/GoogleWorkspaceProviderMapping";
+    GoogleWorkspaceProviderMappingToJSON,
+} from '../models/GoogleWorkspaceProviderMapping';
 import {
     type GoogleWorkspaceProviderMappingRequest,
+    GoogleWorkspaceProviderMappingRequestFromJSON,
     GoogleWorkspaceProviderMappingRequestToJSON,
-} from "../models/GoogleWorkspaceProviderMappingRequest";
+} from '../models/GoogleWorkspaceProviderMappingRequest';
 import {
     type KerberosSourcePropertyMapping,
     KerberosSourcePropertyMappingFromJSON,
-} from "../models/KerberosSourcePropertyMapping";
+    KerberosSourcePropertyMappingToJSON,
+} from '../models/KerberosSourcePropertyMapping';
 import {
     type KerberosSourcePropertyMappingRequest,
+    KerberosSourcePropertyMappingRequestFromJSON,
     KerberosSourcePropertyMappingRequestToJSON,
-} from "../models/KerberosSourcePropertyMappingRequest";
+} from '../models/KerberosSourcePropertyMappingRequest';
 import {
     type LDAPSourcePropertyMapping,
     LDAPSourcePropertyMappingFromJSON,
-} from "../models/LDAPSourcePropertyMapping";
+    LDAPSourcePropertyMappingToJSON,
+} from '../models/LDAPSourcePropertyMapping';
 import {
     type LDAPSourcePropertyMappingRequest,
+    LDAPSourcePropertyMappingRequestFromJSON,
     LDAPSourcePropertyMappingRequestToJSON,
-} from "../models/LDAPSourcePropertyMappingRequest";
+} from '../models/LDAPSourcePropertyMappingRequest';
 import {
     type MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderMappingFromJSON,
-} from "../models/MicrosoftEntraProviderMapping";
+    MicrosoftEntraProviderMappingToJSON,
+} from '../models/MicrosoftEntraProviderMapping';
 import {
     type MicrosoftEntraProviderMappingRequest,
+    MicrosoftEntraProviderMappingRequestFromJSON,
     MicrosoftEntraProviderMappingRequestToJSON,
-} from "../models/MicrosoftEntraProviderMappingRequest";
+} from '../models/MicrosoftEntraProviderMappingRequest';
 import {
     type NotificationWebhookMapping,
     NotificationWebhookMappingFromJSON,
-} from "../models/NotificationWebhookMapping";
+    NotificationWebhookMappingToJSON,
+} from '../models/NotificationWebhookMapping';
 import {
     type NotificationWebhookMappingRequest,
+    NotificationWebhookMappingRequestFromJSON,
     NotificationWebhookMappingRequestToJSON,
-} from "../models/NotificationWebhookMappingRequest";
+} from '../models/NotificationWebhookMappingRequest';
 import {
     type OAuthSourcePropertyMapping,
     OAuthSourcePropertyMappingFromJSON,
-} from "../models/OAuthSourcePropertyMapping";
+    OAuthSourcePropertyMappingToJSON,
+} from '../models/OAuthSourcePropertyMapping';
 import {
     type OAuthSourcePropertyMappingRequest,
+    OAuthSourcePropertyMappingRequestFromJSON,
     OAuthSourcePropertyMappingRequestToJSON,
-} from "../models/OAuthSourcePropertyMappingRequest";
+} from '../models/OAuthSourcePropertyMappingRequest';
 import {
     type PaginatedGoogleWorkspaceProviderMappingList,
     PaginatedGoogleWorkspaceProviderMappingListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderMappingList";
+    PaginatedGoogleWorkspaceProviderMappingListToJSON,
+} from '../models/PaginatedGoogleWorkspaceProviderMappingList';
 import {
     type PaginatedKerberosSourcePropertyMappingList,
     PaginatedKerberosSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedKerberosSourcePropertyMappingList";
+    PaginatedKerberosSourcePropertyMappingListToJSON,
+} from '../models/PaginatedKerberosSourcePropertyMappingList';
 import {
     type PaginatedLDAPSourcePropertyMappingList,
     PaginatedLDAPSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedLDAPSourcePropertyMappingList";
+    PaginatedLDAPSourcePropertyMappingListToJSON,
+} from '../models/PaginatedLDAPSourcePropertyMappingList';
 import {
     type PaginatedMicrosoftEntraProviderMappingList,
     PaginatedMicrosoftEntraProviderMappingListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderMappingList";
+    PaginatedMicrosoftEntraProviderMappingListToJSON,
+} from '../models/PaginatedMicrosoftEntraProviderMappingList';
 import {
     type PaginatedNotificationWebhookMappingList,
     PaginatedNotificationWebhookMappingListFromJSON,
-} from "../models/PaginatedNotificationWebhookMappingList";
+    PaginatedNotificationWebhookMappingListToJSON,
+} from '../models/PaginatedNotificationWebhookMappingList';
 import {
     type PaginatedOAuthSourcePropertyMappingList,
     PaginatedOAuthSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedOAuthSourcePropertyMappingList";
+    PaginatedOAuthSourcePropertyMappingListToJSON,
+} from '../models/PaginatedOAuthSourcePropertyMappingList';
 import {
     type PaginatedPlexSourcePropertyMappingList,
     PaginatedPlexSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedPlexSourcePropertyMappingList";
+    PaginatedPlexSourcePropertyMappingListToJSON,
+} from '../models/PaginatedPlexSourcePropertyMappingList';
 import {
     type PaginatedPropertyMappingList,
     PaginatedPropertyMappingListFromJSON,
-} from "../models/PaginatedPropertyMappingList";
+    PaginatedPropertyMappingListToJSON,
+} from '../models/PaginatedPropertyMappingList';
 import {
     type PaginatedRACPropertyMappingList,
     PaginatedRACPropertyMappingListFromJSON,
-} from "../models/PaginatedRACPropertyMappingList";
+    PaginatedRACPropertyMappingListToJSON,
+} from '../models/PaginatedRACPropertyMappingList';
 import {
     type PaginatedRadiusProviderPropertyMappingList,
     PaginatedRadiusProviderPropertyMappingListFromJSON,
-} from "../models/PaginatedRadiusProviderPropertyMappingList";
+    PaginatedRadiusProviderPropertyMappingListToJSON,
+} from '../models/PaginatedRadiusProviderPropertyMappingList';
 import {
     type PaginatedSAMLPropertyMappingList,
     PaginatedSAMLPropertyMappingListFromJSON,
-} from "../models/PaginatedSAMLPropertyMappingList";
+    PaginatedSAMLPropertyMappingListToJSON,
+} from '../models/PaginatedSAMLPropertyMappingList';
 import {
     type PaginatedSAMLSourcePropertyMappingList,
     PaginatedSAMLSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedSAMLSourcePropertyMappingList";
+    PaginatedSAMLSourcePropertyMappingListToJSON,
+} from '../models/PaginatedSAMLSourcePropertyMappingList';
 import {
     type PaginatedSCIMMappingList,
     PaginatedSCIMMappingListFromJSON,
-} from "../models/PaginatedSCIMMappingList";
+    PaginatedSCIMMappingListToJSON,
+} from '../models/PaginatedSCIMMappingList';
 import {
     type PaginatedSCIMSourcePropertyMappingList,
     PaginatedSCIMSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedSCIMSourcePropertyMappingList";
+    PaginatedSCIMSourcePropertyMappingListToJSON,
+} from '../models/PaginatedSCIMSourcePropertyMappingList';
 import {
     type PaginatedScopeMappingList,
     PaginatedScopeMappingListFromJSON,
-} from "../models/PaginatedScopeMappingList";
+    PaginatedScopeMappingListToJSON,
+} from '../models/PaginatedScopeMappingList';
 import {
     type PaginatedTelegramSourcePropertyMappingList,
     PaginatedTelegramSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedTelegramSourcePropertyMappingList";
+    PaginatedTelegramSourcePropertyMappingListToJSON,
+} from '../models/PaginatedTelegramSourcePropertyMappingList';
 import {
     type PatchedGoogleWorkspaceProviderMappingRequest,
+    PatchedGoogleWorkspaceProviderMappingRequestFromJSON,
     PatchedGoogleWorkspaceProviderMappingRequestToJSON,
-} from "../models/PatchedGoogleWorkspaceProviderMappingRequest";
+} from '../models/PatchedGoogleWorkspaceProviderMappingRequest';
 import {
     type PatchedKerberosSourcePropertyMappingRequest,
+    PatchedKerberosSourcePropertyMappingRequestFromJSON,
     PatchedKerberosSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedKerberosSourcePropertyMappingRequest";
+} from '../models/PatchedKerberosSourcePropertyMappingRequest';
 import {
     type PatchedLDAPSourcePropertyMappingRequest,
+    PatchedLDAPSourcePropertyMappingRequestFromJSON,
     PatchedLDAPSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedLDAPSourcePropertyMappingRequest";
+} from '../models/PatchedLDAPSourcePropertyMappingRequest';
 import {
     type PatchedMicrosoftEntraProviderMappingRequest,
+    PatchedMicrosoftEntraProviderMappingRequestFromJSON,
     PatchedMicrosoftEntraProviderMappingRequestToJSON,
-} from "../models/PatchedMicrosoftEntraProviderMappingRequest";
+} from '../models/PatchedMicrosoftEntraProviderMappingRequest';
 import {
     type PatchedNotificationWebhookMappingRequest,
+    PatchedNotificationWebhookMappingRequestFromJSON,
     PatchedNotificationWebhookMappingRequestToJSON,
-} from "../models/PatchedNotificationWebhookMappingRequest";
+} from '../models/PatchedNotificationWebhookMappingRequest';
 import {
     type PatchedOAuthSourcePropertyMappingRequest,
+    PatchedOAuthSourcePropertyMappingRequestFromJSON,
     PatchedOAuthSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedOAuthSourcePropertyMappingRequest";
+} from '../models/PatchedOAuthSourcePropertyMappingRequest';
 import {
     type PatchedPlexSourcePropertyMappingRequest,
+    PatchedPlexSourcePropertyMappingRequestFromJSON,
     PatchedPlexSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedPlexSourcePropertyMappingRequest";
+} from '../models/PatchedPlexSourcePropertyMappingRequest';
 import {
     type PatchedRACPropertyMappingRequest,
+    PatchedRACPropertyMappingRequestFromJSON,
     PatchedRACPropertyMappingRequestToJSON,
-} from "../models/PatchedRACPropertyMappingRequest";
+} from '../models/PatchedRACPropertyMappingRequest';
 import {
     type PatchedRadiusProviderPropertyMappingRequest,
+    PatchedRadiusProviderPropertyMappingRequestFromJSON,
     PatchedRadiusProviderPropertyMappingRequestToJSON,
-} from "../models/PatchedRadiusProviderPropertyMappingRequest";
+} from '../models/PatchedRadiusProviderPropertyMappingRequest';
 import {
     type PatchedSAMLPropertyMappingRequest,
+    PatchedSAMLPropertyMappingRequestFromJSON,
     PatchedSAMLPropertyMappingRequestToJSON,
-} from "../models/PatchedSAMLPropertyMappingRequest";
+} from '../models/PatchedSAMLPropertyMappingRequest';
 import {
     type PatchedSAMLSourcePropertyMappingRequest,
+    PatchedSAMLSourcePropertyMappingRequestFromJSON,
     PatchedSAMLSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedSAMLSourcePropertyMappingRequest";
+} from '../models/PatchedSAMLSourcePropertyMappingRequest';
 import {
     type PatchedSCIMMappingRequest,
+    PatchedSCIMMappingRequestFromJSON,
     PatchedSCIMMappingRequestToJSON,
-} from "../models/PatchedSCIMMappingRequest";
+} from '../models/PatchedSCIMMappingRequest';
 import {
     type PatchedSCIMSourcePropertyMappingRequest,
+    PatchedSCIMSourcePropertyMappingRequestFromJSON,
     PatchedSCIMSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedSCIMSourcePropertyMappingRequest";
+} from '../models/PatchedSCIMSourcePropertyMappingRequest';
 import {
     type PatchedScopeMappingRequest,
+    PatchedScopeMappingRequestFromJSON,
     PatchedScopeMappingRequestToJSON,
-} from "../models/PatchedScopeMappingRequest";
+} from '../models/PatchedScopeMappingRequest';
 import {
     type PatchedTelegramSourcePropertyMappingRequest,
+    PatchedTelegramSourcePropertyMappingRequestFromJSON,
     PatchedTelegramSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedTelegramSourcePropertyMappingRequest";
+} from '../models/PatchedTelegramSourcePropertyMappingRequest';
 import {
     type PlexSourcePropertyMapping,
     PlexSourcePropertyMappingFromJSON,
-} from "../models/PlexSourcePropertyMapping";
+    PlexSourcePropertyMappingToJSON,
+} from '../models/PlexSourcePropertyMapping';
 import {
     type PlexSourcePropertyMappingRequest,
+    PlexSourcePropertyMappingRequestFromJSON,
     PlexSourcePropertyMappingRequestToJSON,
-} from "../models/PlexSourcePropertyMappingRequest";
-import { type PropertyMapping, PropertyMappingFromJSON } from "../models/PropertyMapping";
+} from '../models/PlexSourcePropertyMappingRequest';
+import {
+    type PropertyMapping,
+    PropertyMappingFromJSON,
+    PropertyMappingToJSON,
+} from '../models/PropertyMapping';
 import {
     type PropertyMappingTestRequest,
+    PropertyMappingTestRequestFromJSON,
     PropertyMappingTestRequestToJSON,
-} from "../models/PropertyMappingTestRequest";
+} from '../models/PropertyMappingTestRequest';
 import {
     type PropertyMappingTestResult,
     PropertyMappingTestResultFromJSON,
-} from "../models/PropertyMappingTestResult";
-import { type RACPropertyMapping, RACPropertyMappingFromJSON } from "../models/RACPropertyMapping";
+    PropertyMappingTestResultToJSON,
+} from '../models/PropertyMappingTestResult';
+import {
+    type RACPropertyMapping,
+    RACPropertyMappingFromJSON,
+    RACPropertyMappingToJSON,
+} from '../models/RACPropertyMapping';
 import {
     type RACPropertyMappingRequest,
+    RACPropertyMappingRequestFromJSON,
     RACPropertyMappingRequestToJSON,
-} from "../models/RACPropertyMappingRequest";
+} from '../models/RACPropertyMappingRequest';
 import {
     type RadiusProviderPropertyMapping,
     RadiusProviderPropertyMappingFromJSON,
-} from "../models/RadiusProviderPropertyMapping";
+    RadiusProviderPropertyMappingToJSON,
+} from '../models/RadiusProviderPropertyMapping';
 import {
     type RadiusProviderPropertyMappingRequest,
+    RadiusProviderPropertyMappingRequestFromJSON,
     RadiusProviderPropertyMappingRequestToJSON,
-} from "../models/RadiusProviderPropertyMappingRequest";
+} from '../models/RadiusProviderPropertyMappingRequest';
 import {
     type SAMLPropertyMapping,
     SAMLPropertyMappingFromJSON,
-} from "../models/SAMLPropertyMapping";
+    SAMLPropertyMappingToJSON,
+} from '../models/SAMLPropertyMapping';
 import {
     type SAMLPropertyMappingRequest,
+    SAMLPropertyMappingRequestFromJSON,
     SAMLPropertyMappingRequestToJSON,
-} from "../models/SAMLPropertyMappingRequest";
+} from '../models/SAMLPropertyMappingRequest';
 import {
     type SAMLSourcePropertyMapping,
     SAMLSourcePropertyMappingFromJSON,
-} from "../models/SAMLSourcePropertyMapping";
+    SAMLSourcePropertyMappingToJSON,
+} from '../models/SAMLSourcePropertyMapping';
 import {
     type SAMLSourcePropertyMappingRequest,
+    SAMLSourcePropertyMappingRequestFromJSON,
     SAMLSourcePropertyMappingRequestToJSON,
-} from "../models/SAMLSourcePropertyMappingRequest";
-import { type SCIMMapping, SCIMMappingFromJSON } from "../models/SCIMMapping";
-import { type SCIMMappingRequest, SCIMMappingRequestToJSON } from "../models/SCIMMappingRequest";
+} from '../models/SAMLSourcePropertyMappingRequest';
+import {
+    type SCIMMapping,
+    SCIMMappingFromJSON,
+    SCIMMappingToJSON,
+} from '../models/SCIMMapping';
+import {
+    type SCIMMappingRequest,
+    SCIMMappingRequestFromJSON,
+    SCIMMappingRequestToJSON,
+} from '../models/SCIMMappingRequest';
 import {
     type SCIMSourcePropertyMapping,
     SCIMSourcePropertyMappingFromJSON,
-} from "../models/SCIMSourcePropertyMapping";
+    SCIMSourcePropertyMappingToJSON,
+} from '../models/SCIMSourcePropertyMapping';
 import {
     type SCIMSourcePropertyMappingRequest,
+    SCIMSourcePropertyMappingRequestFromJSON,
     SCIMSourcePropertyMappingRequestToJSON,
-} from "../models/SCIMSourcePropertyMappingRequest";
-import { type ScopeMapping, ScopeMappingFromJSON } from "../models/ScopeMapping";
-import { type ScopeMappingRequest, ScopeMappingRequestToJSON } from "../models/ScopeMappingRequest";
+} from '../models/SCIMSourcePropertyMappingRequest';
+import {
+    type ScopeMapping,
+    ScopeMappingFromJSON,
+    ScopeMappingToJSON,
+} from '../models/ScopeMapping';
+import {
+    type ScopeMappingRequest,
+    ScopeMappingRequestFromJSON,
+    ScopeMappingRequestToJSON,
+} from '../models/ScopeMappingRequest';
 import {
     type TelegramSourcePropertyMapping,
     TelegramSourcePropertyMappingFromJSON,
-} from "../models/TelegramSourcePropertyMapping";
+    TelegramSourcePropertyMappingToJSON,
+} from '../models/TelegramSourcePropertyMapping';
 import {
     type TelegramSourcePropertyMappingRequest,
+    TelegramSourcePropertyMappingRequestFromJSON,
     TelegramSourcePropertyMappingRequestToJSON,
-} from "../models/TelegramSourcePropertyMappingRequest";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from '../models/TelegramSourcePropertyMappingRequest';
+import {
+    type TypeCreate,
+    TypeCreateFromJSON,
+    TypeCreateToJSON,
+} from '../models/TypeCreate';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+    UsedByToJSON,
+} from '../models/UsedBy';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface PropertymappingsAllDestroyRequest {
     /**
@@ -263,15 +363,15 @@ export interface PropertymappingsAllDestroyRequest {
 
 export interface PropertymappingsAllListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -305,11 +405,11 @@ export interface PropertymappingsAllTestCreateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     formatResult?: boolean;
     /**
-     *
+     * 
      */
     propertyMappingTestRequest?: PropertyMappingTestRequest;
 }
@@ -323,7 +423,7 @@ export interface PropertymappingsAllUsedByListRequest {
 
 export interface PropertymappingsNotificationCreateRequest {
     /**
-     *
+     * 
      */
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
 }
@@ -337,7 +437,7 @@ export interface PropertymappingsNotificationDestroyRequest {
 
 export interface PropertymappingsNotificationListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -364,7 +464,7 @@ export interface PropertymappingsNotificationPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedNotificationWebhookMappingRequest?: PatchedNotificationWebhookMappingRequest;
 }
@@ -382,7 +482,7 @@ export interface PropertymappingsNotificationUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
 }
@@ -396,7 +496,7 @@ export interface PropertymappingsNotificationUsedByListRequest {
 
 export interface PropertymappingsProviderGoogleWorkspaceCreateRequest {
     /**
-     *
+     * 
      */
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
@@ -410,15 +510,15 @@ export interface PropertymappingsProviderGoogleWorkspaceDestroyRequest {
 
 export interface PropertymappingsProviderGoogleWorkspaceListRequest {
     /**
-     *
+     * 
      */
     expression?: string;
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -434,7 +534,7 @@ export interface PropertymappingsProviderGoogleWorkspaceListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     pmUuid?: string;
     /**
@@ -449,7 +549,7 @@ export interface PropertymappingsProviderGoogleWorkspacePartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedGoogleWorkspaceProviderMappingRequest?: PatchedGoogleWorkspaceProviderMappingRequest;
 }
@@ -467,7 +567,7 @@ export interface PropertymappingsProviderGoogleWorkspaceUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
@@ -481,7 +581,7 @@ export interface PropertymappingsProviderGoogleWorkspaceUsedByListRequest {
 
 export interface PropertymappingsProviderMicrosoftEntraCreateRequest {
     /**
-     *
+     * 
      */
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
@@ -495,15 +595,15 @@ export interface PropertymappingsProviderMicrosoftEntraDestroyRequest {
 
 export interface PropertymappingsProviderMicrosoftEntraListRequest {
     /**
-     *
+     * 
      */
     expression?: string;
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -519,7 +619,7 @@ export interface PropertymappingsProviderMicrosoftEntraListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     pmUuid?: string;
     /**
@@ -534,7 +634,7 @@ export interface PropertymappingsProviderMicrosoftEntraPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedMicrosoftEntraProviderMappingRequest?: PatchedMicrosoftEntraProviderMappingRequest;
 }
@@ -552,7 +652,7 @@ export interface PropertymappingsProviderMicrosoftEntraUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
@@ -566,7 +666,7 @@ export interface PropertymappingsProviderMicrosoftEntraUsedByListRequest {
 
 export interface PropertymappingsProviderRacCreateRequest {
     /**
-     *
+     * 
      */
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
@@ -580,11 +680,11 @@ export interface PropertymappingsProviderRacDestroyRequest {
 
 export interface PropertymappingsProviderRacListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -611,7 +711,7 @@ export interface PropertymappingsProviderRacPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedRACPropertyMappingRequest?: PatchedRACPropertyMappingRequest;
 }
@@ -629,7 +729,7 @@ export interface PropertymappingsProviderRacUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
@@ -643,7 +743,7 @@ export interface PropertymappingsProviderRacUsedByListRequest {
 
 export interface PropertymappingsProviderRadiusCreateRequest {
     /**
-     *
+     * 
      */
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
 }
@@ -657,15 +757,15 @@ export interface PropertymappingsProviderRadiusDestroyRequest {
 
 export interface PropertymappingsProviderRadiusListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -692,7 +792,7 @@ export interface PropertymappingsProviderRadiusPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedRadiusProviderPropertyMappingRequest?: PatchedRadiusProviderPropertyMappingRequest;
 }
@@ -710,7 +810,7 @@ export interface PropertymappingsProviderRadiusUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
 }
@@ -724,7 +824,7 @@ export interface PropertymappingsProviderRadiusUsedByListRequest {
 
 export interface PropertymappingsProviderSamlCreateRequest {
     /**
-     *
+     * 
      */
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
@@ -738,19 +838,19 @@ export interface PropertymappingsProviderSamlDestroyRequest {
 
 export interface PropertymappingsProviderSamlListRequest {
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -766,7 +866,7 @@ export interface PropertymappingsProviderSamlListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     samlName?: string;
     /**
@@ -781,7 +881,7 @@ export interface PropertymappingsProviderSamlPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedSAMLPropertyMappingRequest?: PatchedSAMLPropertyMappingRequest;
 }
@@ -799,7 +899,7 @@ export interface PropertymappingsProviderSamlUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
@@ -813,7 +913,7 @@ export interface PropertymappingsProviderSamlUsedByListRequest {
 
 export interface PropertymappingsProviderScimCreateRequest {
     /**
-     *
+     * 
      */
     sCIMMappingRequest: SCIMMappingRequest;
 }
@@ -827,15 +927,15 @@ export interface PropertymappingsProviderScimDestroyRequest {
 
 export interface PropertymappingsProviderScimListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -862,7 +962,7 @@ export interface PropertymappingsProviderScimPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedSCIMMappingRequest?: PatchedSCIMMappingRequest;
 }
@@ -880,7 +980,7 @@ export interface PropertymappingsProviderScimUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     sCIMMappingRequest: SCIMMappingRequest;
 }
@@ -894,7 +994,7 @@ export interface PropertymappingsProviderScimUsedByListRequest {
 
 export interface PropertymappingsProviderScopeCreateRequest {
     /**
-     *
+     * 
      */
     scopeMappingRequest: ScopeMappingRequest;
 }
@@ -908,15 +1008,15 @@ export interface PropertymappingsProviderScopeDestroyRequest {
 
 export interface PropertymappingsProviderScopeListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -932,7 +1032,7 @@ export interface PropertymappingsProviderScopeListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     scopeName?: string;
     /**
@@ -947,7 +1047,7 @@ export interface PropertymappingsProviderScopePartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedScopeMappingRequest?: PatchedScopeMappingRequest;
 }
@@ -965,7 +1065,7 @@ export interface PropertymappingsProviderScopeUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     scopeMappingRequest: ScopeMappingRequest;
 }
@@ -979,7 +1079,7 @@ export interface PropertymappingsProviderScopeUsedByListRequest {
 
 export interface PropertymappingsSourceKerberosCreateRequest {
     /**
-     *
+     * 
      */
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
@@ -993,15 +1093,15 @@ export interface PropertymappingsSourceKerberosDestroyRequest {
 
 export interface PropertymappingsSourceKerberosListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1028,7 +1128,7 @@ export interface PropertymappingsSourceKerberosPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedKerberosSourcePropertyMappingRequest?: PatchedKerberosSourcePropertyMappingRequest;
 }
@@ -1046,7 +1146,7 @@ export interface PropertymappingsSourceKerberosUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
@@ -1060,7 +1160,7 @@ export interface PropertymappingsSourceKerberosUsedByListRequest {
 
 export interface PropertymappingsSourceLdapCreateRequest {
     /**
-     *
+     * 
      */
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
@@ -1074,15 +1174,15 @@ export interface PropertymappingsSourceLdapDestroyRequest {
 
 export interface PropertymappingsSourceLdapListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1109,7 +1209,7 @@ export interface PropertymappingsSourceLdapPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedLDAPSourcePropertyMappingRequest?: PatchedLDAPSourcePropertyMappingRequest;
 }
@@ -1127,7 +1227,7 @@ export interface PropertymappingsSourceLdapUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
@@ -1141,7 +1241,7 @@ export interface PropertymappingsSourceLdapUsedByListRequest {
 
 export interface PropertymappingsSourceOauthCreateRequest {
     /**
-     *
+     * 
      */
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
@@ -1155,15 +1255,15 @@ export interface PropertymappingsSourceOauthDestroyRequest {
 
 export interface PropertymappingsSourceOauthListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1190,7 +1290,7 @@ export interface PropertymappingsSourceOauthPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedOAuthSourcePropertyMappingRequest?: PatchedOAuthSourcePropertyMappingRequest;
 }
@@ -1208,7 +1308,7 @@ export interface PropertymappingsSourceOauthUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
@@ -1222,7 +1322,7 @@ export interface PropertymappingsSourceOauthUsedByListRequest {
 
 export interface PropertymappingsSourcePlexCreateRequest {
     /**
-     *
+     * 
      */
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
@@ -1236,15 +1336,15 @@ export interface PropertymappingsSourcePlexDestroyRequest {
 
 export interface PropertymappingsSourcePlexListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1271,7 +1371,7 @@ export interface PropertymappingsSourcePlexPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedPlexSourcePropertyMappingRequest?: PatchedPlexSourcePropertyMappingRequest;
 }
@@ -1289,7 +1389,7 @@ export interface PropertymappingsSourcePlexUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
@@ -1303,7 +1403,7 @@ export interface PropertymappingsSourcePlexUsedByListRequest {
 
 export interface PropertymappingsSourceSamlCreateRequest {
     /**
-     *
+     * 
      */
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
@@ -1317,15 +1417,15 @@ export interface PropertymappingsSourceSamlDestroyRequest {
 
 export interface PropertymappingsSourceSamlListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1352,7 +1452,7 @@ export interface PropertymappingsSourceSamlPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedSAMLSourcePropertyMappingRequest?: PatchedSAMLSourcePropertyMappingRequest;
 }
@@ -1370,7 +1470,7 @@ export interface PropertymappingsSourceSamlUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
@@ -1384,7 +1484,7 @@ export interface PropertymappingsSourceSamlUsedByListRequest {
 
 export interface PropertymappingsSourceScimCreateRequest {
     /**
-     *
+     * 
      */
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
@@ -1398,15 +1498,15 @@ export interface PropertymappingsSourceScimDestroyRequest {
 
 export interface PropertymappingsSourceScimListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1433,7 +1533,7 @@ export interface PropertymappingsSourceScimPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedSCIMSourcePropertyMappingRequest?: PatchedSCIMSourcePropertyMappingRequest;
 }
@@ -1451,7 +1551,7 @@ export interface PropertymappingsSourceScimUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
@@ -1465,7 +1565,7 @@ export interface PropertymappingsSourceScimUsedByListRequest {
 
 export interface PropertymappingsSourceTelegramCreateRequest {
     /**
-     *
+     * 
      */
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
@@ -1479,15 +1579,15 @@ export interface PropertymappingsSourceTelegramDestroyRequest {
 
 export interface PropertymappingsSourceTelegramListRequest {
     /**
-     *
+     * 
      */
     managed?: Array<string>;
     /**
-     *
+     * 
      */
     managedIsnull?: boolean;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -1514,7 +1614,7 @@ export interface PropertymappingsSourceTelegramPartialUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     patchedTelegramSourcePropertyMappingRequest?: PatchedTelegramSourcePropertyMappingRequest;
 }
@@ -1532,7 +1632,7 @@ export interface PropertymappingsSourceTelegramUpdateRequest {
      */
     pmUuid: string;
     /**
-     *
+     * 
      */
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
@@ -1545,19 +1645,18 @@ export interface PropertymappingsSourceTelegramUsedByListRequest {
 }
 
 /**
- *
+ * 
  */
 export class PropertymappingsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for propertymappingsAllDestroy without sending the request
      */
-    async propertymappingsAllDestroyRequestOpts(
-        requestParameters: PropertymappingsAllDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsAllDestroyRequestOpts(requestParameters: PropertymappingsAllDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllDestroy().'
             );
         }
 
@@ -1575,14 +1674,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/all/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1591,10 +1687,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllDestroyRaw(
-        requestParameters: PropertymappingsAllDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async propertymappingsAllDestroyRaw(requestParameters: PropertymappingsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.propertymappingsAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1604,47 +1697,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllDestroy(
-        requestParameters: PropertymappingsAllDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsAllDestroy(requestParameters: PropertymappingsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsAllList without sending the request
      */
-    async propertymappingsAllListRequestOpts(
-        requestParameters: PropertymappingsAllListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsAllListRequestOpts(requestParameters: PropertymappingsAllListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1662,7 +1750,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1671,25 +1759,17 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllListRaw(
-        requestParameters: PropertymappingsAllListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedPropertyMappingList>> {
+    async propertymappingsAllListRaw(requestParameters: PropertymappingsAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPropertyMappingList>> {
         const requestOptions = await this.propertymappingsAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedPropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllList(
-        requestParameters: PropertymappingsAllListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedPropertyMappingList> {
+    async propertymappingsAllList(requestParameters: PropertymappingsAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPropertyMappingList> {
         const response = await this.propertymappingsAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1697,13 +1777,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Creates request options for propertymappingsAllRetrieve without sending the request
      */
-    async propertymappingsAllRetrieveRequestOpts(
-        requestParameters: PropertymappingsAllRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsAllRetrieveRequestOpts(requestParameters: PropertymappingsAllRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllRetrieve().'
             );
         }
 
@@ -1721,14 +1799,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/all/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1737,54 +1812,41 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllRetrieveRaw(
-        requestParameters: PropertymappingsAllRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PropertyMapping>> {
+    async propertymappingsAllRetrieveRaw(requestParameters: PropertymappingsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PropertyMapping>> {
         const requestOptions = await this.propertymappingsAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * PropertyMapping Viewset
      */
-    async propertymappingsAllRetrieve(
-        requestParameters: PropertymappingsAllRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PropertyMapping> {
-        const response = await this.propertymappingsAllRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsAllRetrieve(requestParameters: PropertymappingsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PropertyMapping> {
+        const response = await this.propertymappingsAllRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsAllTestCreate without sending the request
      */
-    async propertymappingsAllTestCreateRequestOpts(
-        requestParameters: PropertymappingsAllTestCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsAllTestCreateRequestOpts(requestParameters: PropertymappingsAllTestCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllTestCreate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllTestCreate().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["formatResult"] != null) {
-            queryParameters["format_result"] = requestParameters["formatResult"];
+        if (requestParameters['formatResult'] != null) {
+            queryParameters['format_result'] = requestParameters['formatResult'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1796,47 +1858,32 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/all/{pm_uuid}/test/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PropertyMappingTestRequestToJSON(requestParameters["propertyMappingTestRequest"]),
+            body: PropertyMappingTestRequestToJSON(requestParameters['propertyMappingTestRequest']),
         };
     }
 
     /**
      * Test Property Mapping
      */
-    async propertymappingsAllTestCreateRaw(
-        requestParameters: PropertymappingsAllTestCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PropertyMappingTestResult>> {
-        const requestOptions =
-            await this.propertymappingsAllTestCreateRequestOpts(requestParameters);
+    async propertymappingsAllTestCreateRaw(requestParameters: PropertymappingsAllTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PropertyMappingTestResult>> {
+        const requestOptions = await this.propertymappingsAllTestCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PropertyMappingTestResultFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PropertyMappingTestResultFromJSON(jsonValue));
     }
 
     /**
      * Test Property Mapping
      */
-    async propertymappingsAllTestCreate(
-        requestParameters: PropertymappingsAllTestCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PropertyMappingTestResult> {
-        const response = await this.propertymappingsAllTestCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsAllTestCreate(requestParameters: PropertymappingsAllTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PropertyMappingTestResult> {
+        const response = await this.propertymappingsAllTestCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1861,7 +1908,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1870,23 +1917,17 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async propertymappingsAllTypesListRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async propertymappingsAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.propertymappingsAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(TypeCreateFromJSON),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
     }
 
     /**
      * Get all creatable types
      */
-    async propertymappingsAllTypesList(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<TypeCreate>> {
+    async propertymappingsAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
         const response = await this.propertymappingsAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -1894,13 +1935,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Creates request options for propertymappingsAllUsedByList without sending the request
      */
-    async propertymappingsAllUsedByListRequestOpts(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsAllUsedByListRequestOpts(requestParameters: PropertymappingsAllUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllUsedByList().'
             );
         }
 
@@ -1918,14 +1957,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/all/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1934,12 +1970,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsAllUsedByListRaw(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsAllUsedByListRequestOpts(requestParameters);
+    async propertymappingsAllUsedByListRaw(requestParameters: PropertymappingsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1948,27 +1980,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsAllUsedByList(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsAllUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsAllUsedByList(requestParameters: PropertymappingsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationCreate without sending the request
      */
-    async propertymappingsNotificationCreateRequestOpts(
-        requestParameters: PropertymappingsNotificationCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["notificationWebhookMappingRequest"] == null) {
+    async propertymappingsNotificationCreateRequestOpts(requestParameters: PropertymappingsNotificationCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['notificationWebhookMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "notificationWebhookMappingRequest",
-                'Required parameter "notificationWebhookMappingRequest" was null or undefined when calling propertymappingsNotificationCreate().',
+                'notificationWebhookMappingRequest',
+                'Required parameter "notificationWebhookMappingRequest" was null or undefined when calling propertymappingsNotificationCreate().'
             );
         }
 
@@ -1976,7 +2000,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1991,55 +2015,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationWebhookMappingRequestToJSON(
-                requestParameters["notificationWebhookMappingRequest"],
-            ),
+            body: NotificationWebhookMappingRequestToJSON(requestParameters['notificationWebhookMappingRequest']),
         };
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationCreateRaw(
-        requestParameters: PropertymappingsNotificationCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
-        const requestOptions =
-            await this.propertymappingsNotificationCreateRequestOpts(requestParameters);
+    async propertymappingsNotificationCreateRaw(requestParameters: PropertymappingsNotificationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
+        const requestOptions = await this.propertymappingsNotificationCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            NotificationWebhookMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationWebhookMappingFromJSON(jsonValue));
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationCreate(
-        requestParameters: PropertymappingsNotificationCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<NotificationWebhookMapping> {
-        const response = await this.propertymappingsNotificationCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationCreate(requestParameters: PropertymappingsNotificationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationWebhookMapping> {
+        const response = await this.propertymappingsNotificationCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationDestroy without sending the request
      */
-    async propertymappingsNotificationDestroyRequestOpts(
-        requestParameters: PropertymappingsNotificationDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsNotificationDestroyRequestOpts(requestParameters: PropertymappingsNotificationDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationDestroy().'
             );
         }
 
@@ -2057,14 +2065,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/notification/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2073,12 +2078,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationDestroyRaw(
-        requestParameters: PropertymappingsNotificationDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsNotificationDestroyRequestOpts(requestParameters);
+    async propertymappingsNotificationDestroyRaw(requestParameters: PropertymappingsNotificationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsNotificationDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2087,39 +2088,34 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationDestroy(
-        requestParameters: PropertymappingsNotificationDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsNotificationDestroy(requestParameters: PropertymappingsNotificationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsNotificationDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsNotificationList without sending the request
      */
-    async propertymappingsNotificationListRequestOpts(
-        requestParameters: PropertymappingsNotificationListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsNotificationListRequestOpts(requestParameters: PropertymappingsNotificationListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2137,7 +2133,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2146,43 +2142,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationListRaw(
-        requestParameters: PropertymappingsNotificationListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedNotificationWebhookMappingList>> {
-        const requestOptions =
-            await this.propertymappingsNotificationListRequestOpts(requestParameters);
+    async propertymappingsNotificationListRaw(requestParameters: PropertymappingsNotificationListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedNotificationWebhookMappingList>> {
+        const requestOptions = await this.propertymappingsNotificationListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedNotificationWebhookMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedNotificationWebhookMappingListFromJSON(jsonValue));
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationList(
-        requestParameters: PropertymappingsNotificationListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedNotificationWebhookMappingList> {
-        const response = await this.propertymappingsNotificationListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationList(requestParameters: PropertymappingsNotificationListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedNotificationWebhookMappingList> {
+        const response = await this.propertymappingsNotificationListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationPartialUpdate without sending the request
      */
-    async propertymappingsNotificationPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsNotificationPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsNotificationPartialUpdateRequestOpts(requestParameters: PropertymappingsNotificationPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationPartialUpdate().'
             );
         }
 
@@ -2190,7 +2172,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2202,62 +2184,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/notification/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedNotificationWebhookMappingRequestToJSON(
-                requestParameters["patchedNotificationWebhookMappingRequest"],
-            ),
+            body: PatchedNotificationWebhookMappingRequestToJSON(requestParameters['patchedNotificationWebhookMappingRequest']),
         };
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationPartialUpdateRaw(
-        requestParameters: PropertymappingsNotificationPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
-        const requestOptions =
-            await this.propertymappingsNotificationPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsNotificationPartialUpdateRaw(requestParameters: PropertymappingsNotificationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
+        const requestOptions = await this.propertymappingsNotificationPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            NotificationWebhookMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationWebhookMappingFromJSON(jsonValue));
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationPartialUpdate(
-        requestParameters: PropertymappingsNotificationPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<NotificationWebhookMapping> {
-        const response = await this.propertymappingsNotificationPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationPartialUpdate(requestParameters: PropertymappingsNotificationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationWebhookMapping> {
+        const response = await this.propertymappingsNotificationPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationRetrieve without sending the request
      */
-    async propertymappingsNotificationRetrieveRequestOpts(
-        requestParameters: PropertymappingsNotificationRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsNotificationRetrieveRequestOpts(requestParameters: PropertymappingsNotificationRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationRetrieve().'
             );
         }
 
@@ -2275,14 +2238,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/notification/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2291,50 +2251,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationRetrieveRaw(
-        requestParameters: PropertymappingsNotificationRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
-        const requestOptions =
-            await this.propertymappingsNotificationRetrieveRequestOpts(requestParameters);
+    async propertymappingsNotificationRetrieveRaw(requestParameters: PropertymappingsNotificationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
+        const requestOptions = await this.propertymappingsNotificationRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            NotificationWebhookMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationWebhookMappingFromJSON(jsonValue));
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationRetrieve(
-        requestParameters: PropertymappingsNotificationRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<NotificationWebhookMapping> {
-        const response = await this.propertymappingsNotificationRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationRetrieve(requestParameters: PropertymappingsNotificationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationWebhookMapping> {
+        const response = await this.propertymappingsNotificationRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationUpdate without sending the request
      */
-    async propertymappingsNotificationUpdateRequestOpts(
-        requestParameters: PropertymappingsNotificationUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsNotificationUpdateRequestOpts(requestParameters: PropertymappingsNotificationUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationUpdate().'
             );
         }
 
-        if (requestParameters["notificationWebhookMappingRequest"] == null) {
+        if (requestParameters['notificationWebhookMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "notificationWebhookMappingRequest",
-                'Required parameter "notificationWebhookMappingRequest" was null or undefined when calling propertymappingsNotificationUpdate().',
+                'notificationWebhookMappingRequest',
+                'Required parameter "notificationWebhookMappingRequest" was null or undefined when calling propertymappingsNotificationUpdate().'
             );
         }
 
@@ -2342,7 +2288,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2354,62 +2300,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/notification/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationWebhookMappingRequestToJSON(
-                requestParameters["notificationWebhookMappingRequest"],
-            ),
+            body: NotificationWebhookMappingRequestToJSON(requestParameters['notificationWebhookMappingRequest']),
         };
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationUpdateRaw(
-        requestParameters: PropertymappingsNotificationUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
-        const requestOptions =
-            await this.propertymappingsNotificationUpdateRequestOpts(requestParameters);
+    async propertymappingsNotificationUpdateRaw(requestParameters: PropertymappingsNotificationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationWebhookMapping>> {
+        const requestOptions = await this.propertymappingsNotificationUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            NotificationWebhookMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationWebhookMappingFromJSON(jsonValue));
     }
 
     /**
      * NotificationWebhookMapping Viewset
      */
-    async propertymappingsNotificationUpdate(
-        requestParameters: PropertymappingsNotificationUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<NotificationWebhookMapping> {
-        const response = await this.propertymappingsNotificationUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationUpdate(requestParameters: PropertymappingsNotificationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationWebhookMapping> {
+        const response = await this.propertymappingsNotificationUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsNotificationUsedByList without sending the request
      */
-    async propertymappingsNotificationUsedByListRequestOpts(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsNotificationUsedByListRequestOpts(requestParameters: PropertymappingsNotificationUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationUsedByList().'
             );
         }
 
@@ -2427,14 +2354,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/notification/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2443,12 +2367,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsNotificationUsedByListRaw(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsNotificationUsedByListRequestOpts(requestParameters);
+    async propertymappingsNotificationUsedByListRaw(requestParameters: PropertymappingsNotificationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsNotificationUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2457,27 +2377,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsNotificationUsedByList(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsNotificationUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsNotificationUsedByList(requestParameters: PropertymappingsNotificationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsNotificationUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceCreate without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceCreateRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["googleWorkspaceProviderMappingRequest"] == null) {
+    async propertymappingsProviderGoogleWorkspaceCreateRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['googleWorkspaceProviderMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "googleWorkspaceProviderMappingRequest",
-                'Required parameter "googleWorkspaceProviderMappingRequest" was null or undefined when calling propertymappingsProviderGoogleWorkspaceCreate().',
+                'googleWorkspaceProviderMappingRequest',
+                'Required parameter "googleWorkspaceProviderMappingRequest" was null or undefined when calling propertymappingsProviderGoogleWorkspaceCreate().'
             );
         }
 
@@ -2485,7 +2397,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2500,55 +2412,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderMappingRequestToJSON(
-                requestParameters["googleWorkspaceProviderMappingRequest"],
-            ),
+            body: GoogleWorkspaceProviderMappingRequestToJSON(requestParameters['googleWorkspaceProviderMappingRequest']),
         };
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceCreateRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceCreateRequestOpts(requestParameters);
+    async propertymappingsProviderGoogleWorkspaceCreateRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleWorkspaceProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceCreate(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleWorkspaceProviderMapping> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceCreate(requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderMapping> {
+        const response = await this.propertymappingsProviderGoogleWorkspaceCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceDestroy without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderGoogleWorkspaceDestroyRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceDestroy().'
             );
         }
 
@@ -2566,14 +2462,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2582,12 +2475,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceDestroyRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderGoogleWorkspaceDestroyRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2596,54 +2485,46 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceDestroy(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
-        await this.propertymappingsProviderGoogleWorkspaceDestroyRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceDestroy(requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.propertymappingsProviderGoogleWorkspaceDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceList without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceListRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderGoogleWorkspaceListRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["expression"] != null) {
-            queryParameters["expression"] = requestParameters["expression"];
+        if (requestParameters['expression'] != null) {
+            queryParameters['expression'] = requestParameters['expression'];
         }
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["pmUuid"] != null) {
-            queryParameters["pm_uuid"] = requestParameters["pmUuid"];
+        if (requestParameters['pmUuid'] != null) {
+            queryParameters['pm_uuid'] = requestParameters['pmUuid'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2661,7 +2542,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2670,43 +2551,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceListRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceListRequestOpts(requestParameters);
+    async propertymappingsProviderGoogleWorkspaceListRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderMappingList>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedGoogleWorkspaceProviderMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleWorkspaceProviderMappingListFromJSON(jsonValue));
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceList(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedGoogleWorkspaceProviderMappingList> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceList(requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleWorkspaceProviderMappingList> {
+        const response = await this.propertymappingsProviderGoogleWorkspaceListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspacePartialUpdate without sending the request
      */
-    async propertymappingsProviderGoogleWorkspacePartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderGoogleWorkspacePartialUpdateRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspacePartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspacePartialUpdate().'
             );
         }
 
@@ -2714,7 +2581,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2726,64 +2593,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGoogleWorkspaceProviderMappingRequestToJSON(
-                requestParameters["patchedGoogleWorkspaceProviderMappingRequest"],
-            ),
+            body: PatchedGoogleWorkspaceProviderMappingRequestToJSON(requestParameters['patchedGoogleWorkspaceProviderMappingRequest']),
         };
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspacePartialUpdateRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspacePartialUpdateRequestOpts(
-                requestParameters,
-            );
+    async propertymappingsProviderGoogleWorkspacePartialUpdateRaw(requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspacePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleWorkspaceProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspacePartialUpdate(
-        requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleWorkspaceProviderMapping> {
-        const response = await this.propertymappingsProviderGoogleWorkspacePartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspacePartialUpdate(requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderMapping> {
+        const response = await this.propertymappingsProviderGoogleWorkspacePartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceRetrieve without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderGoogleWorkspaceRetrieveRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceRetrieve().'
             );
         }
 
@@ -2801,14 +2647,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2817,52 +2660,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceRetrieveRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceRetrieveRequestOpts(
-                requestParameters,
-            );
+    async propertymappingsProviderGoogleWorkspaceRetrieveRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleWorkspaceProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceRetrieve(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleWorkspaceProviderMapping> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceRetrieve(requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderMapping> {
+        const response = await this.propertymappingsProviderGoogleWorkspaceRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceUpdate without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderGoogleWorkspaceUpdateRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUpdate().'
             );
         }
 
-        if (requestParameters["googleWorkspaceProviderMappingRequest"] == null) {
+        if (requestParameters['googleWorkspaceProviderMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "googleWorkspaceProviderMappingRequest",
-                'Required parameter "googleWorkspaceProviderMappingRequest" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUpdate().',
+                'googleWorkspaceProviderMappingRequest',
+                'Required parameter "googleWorkspaceProviderMappingRequest" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUpdate().'
             );
         }
 
@@ -2870,7 +2697,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2882,62 +2709,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderMappingRequestToJSON(
-                requestParameters["googleWorkspaceProviderMappingRequest"],
-            ),
+            body: GoogleWorkspaceProviderMappingRequestToJSON(requestParameters['googleWorkspaceProviderMappingRequest']),
         };
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceUpdateRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderGoogleWorkspaceUpdateRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GoogleWorkspaceProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * GoogleWorkspaceProviderMapping Viewset
      */
-    async propertymappingsProviderGoogleWorkspaceUpdate(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GoogleWorkspaceProviderMapping> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceUpdate(requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderMapping> {
+        const response = await this.propertymappingsProviderGoogleWorkspaceUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderGoogleWorkspaceUsedByList without sending the request
      */
-    async propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUsedByList().'
             );
         }
 
@@ -2955,14 +2763,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2971,14 +2776,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderGoogleWorkspaceUsedByListRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(
-                requestParameters,
-            );
+    async propertymappingsProviderGoogleWorkspaceUsedByListRaw(requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2987,27 +2786,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderGoogleWorkspaceUsedByList(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderGoogleWorkspaceUsedByList(requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderGoogleWorkspaceUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraCreate without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraCreateRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["microsoftEntraProviderMappingRequest"] == null) {
+    async propertymappingsProviderMicrosoftEntraCreateRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['microsoftEntraProviderMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "microsoftEntraProviderMappingRequest",
-                'Required parameter "microsoftEntraProviderMappingRequest" was null or undefined when calling propertymappingsProviderMicrosoftEntraCreate().',
+                'microsoftEntraProviderMappingRequest',
+                'Required parameter "microsoftEntraProviderMappingRequest" was null or undefined when calling propertymappingsProviderMicrosoftEntraCreate().'
             );
         }
 
@@ -3015,7 +2806,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3030,55 +2821,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderMappingRequestToJSON(
-                requestParameters["microsoftEntraProviderMappingRequest"],
-            ),
+            body: MicrosoftEntraProviderMappingRequestToJSON(requestParameters['microsoftEntraProviderMappingRequest']),
         };
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraCreateRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraCreateRequestOpts(requestParameters);
+    async propertymappingsProviderMicrosoftEntraCreateRaw(requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            MicrosoftEntraProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraCreate(
-        requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<MicrosoftEntraProviderMapping> {
-        const response = await this.propertymappingsProviderMicrosoftEntraCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraCreate(requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderMapping> {
+        const response = await this.propertymappingsProviderMicrosoftEntraCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraDestroy without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderMicrosoftEntraDestroyRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraDestroy().'
             );
         }
 
@@ -3096,14 +2871,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3112,12 +2884,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraDestroyRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderMicrosoftEntraDestroyRaw(requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3126,54 +2894,46 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraDestroy(
-        requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
-        await this.propertymappingsProviderMicrosoftEntraDestroyRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraDestroy(requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.propertymappingsProviderMicrosoftEntraDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraList without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraListRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderMicrosoftEntraListRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["expression"] != null) {
-            queryParameters["expression"] = requestParameters["expression"];
+        if (requestParameters['expression'] != null) {
+            queryParameters['expression'] = requestParameters['expression'];
         }
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["pmUuid"] != null) {
-            queryParameters["pm_uuid"] = requestParameters["pmUuid"];
+        if (requestParameters['pmUuid'] != null) {
+            queryParameters['pm_uuid'] = requestParameters['pmUuid'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3191,7 +2951,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3200,43 +2960,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraListRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraListRequestOpts(requestParameters);
+    async propertymappingsProviderMicrosoftEntraListRaw(requestParameters: PropertymappingsProviderMicrosoftEntraListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderMappingList>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedMicrosoftEntraProviderMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedMicrosoftEntraProviderMappingListFromJSON(jsonValue));
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraList(
-        requestParameters: PropertymappingsProviderMicrosoftEntraListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedMicrosoftEntraProviderMappingList> {
-        const response = await this.propertymappingsProviderMicrosoftEntraListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraList(requestParameters: PropertymappingsProviderMicrosoftEntraListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedMicrosoftEntraProviderMappingList> {
+        const response = await this.propertymappingsProviderMicrosoftEntraListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraPartialUpdate without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderMicrosoftEntraPartialUpdateRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraPartialUpdate().'
             );
         }
 
@@ -3244,7 +2990,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3256,64 +3002,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedMicrosoftEntraProviderMappingRequestToJSON(
-                requestParameters["patchedMicrosoftEntraProviderMappingRequest"],
-            ),
+            body: PatchedMicrosoftEntraProviderMappingRequestToJSON(requestParameters['patchedMicrosoftEntraProviderMappingRequest']),
         };
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraPartialUpdateRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraPartialUpdateRequestOpts(
-                requestParameters,
-            );
+    async propertymappingsProviderMicrosoftEntraPartialUpdateRaw(requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            MicrosoftEntraProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraPartialUpdate(
-        requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<MicrosoftEntraProviderMapping> {
-        const response = await this.propertymappingsProviderMicrosoftEntraPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraPartialUpdate(requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderMapping> {
+        const response = await this.propertymappingsProviderMicrosoftEntraPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraRetrieve without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderMicrosoftEntraRetrieveRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraRetrieve().'
             );
         }
 
@@ -3331,14 +3056,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3347,50 +3069,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraRetrieveRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderMicrosoftEntraRetrieveRaw(requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            MicrosoftEntraProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraRetrieve(
-        requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<MicrosoftEntraProviderMapping> {
-        const response = await this.propertymappingsProviderMicrosoftEntraRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraRetrieve(requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderMapping> {
+        const response = await this.propertymappingsProviderMicrosoftEntraRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraUpdate without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderMicrosoftEntraUpdateRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraUpdate().'
             );
         }
 
-        if (requestParameters["microsoftEntraProviderMappingRequest"] == null) {
+        if (requestParameters['microsoftEntraProviderMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "microsoftEntraProviderMappingRequest",
-                'Required parameter "microsoftEntraProviderMappingRequest" was null or undefined when calling propertymappingsProviderMicrosoftEntraUpdate().',
+                'microsoftEntraProviderMappingRequest',
+                'Required parameter "microsoftEntraProviderMappingRequest" was null or undefined when calling propertymappingsProviderMicrosoftEntraUpdate().'
             );
         }
 
@@ -3398,7 +3106,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3410,62 +3118,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderMappingRequestToJSON(
-                requestParameters["microsoftEntraProviderMappingRequest"],
-            ),
+            body: MicrosoftEntraProviderMappingRequestToJSON(requestParameters['microsoftEntraProviderMappingRequest']),
         };
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraUpdateRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderMicrosoftEntraUpdateRaw(requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderMapping>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            MicrosoftEntraProviderMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderMappingFromJSON(jsonValue));
     }
 
     /**
      * MicrosoftEntraProviderMapping Viewset
      */
-    async propertymappingsProviderMicrosoftEntraUpdate(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<MicrosoftEntraProviderMapping> {
-        const response = await this.propertymappingsProviderMicrosoftEntraUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraUpdate(requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderMapping> {
+        const response = await this.propertymappingsProviderMicrosoftEntraUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderMicrosoftEntraUsedByList without sending the request
      */
-    async propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraUsedByList().'
             );
         }
 
@@ -3483,14 +3172,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3499,14 +3185,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderMicrosoftEntraUsedByListRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(
-                requestParameters,
-            );
+    async propertymappingsProviderMicrosoftEntraUsedByListRaw(requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3515,27 +3195,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderMicrosoftEntraUsedByList(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderMicrosoftEntraUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderMicrosoftEntraUsedByList(requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderMicrosoftEntraUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacCreate without sending the request
      */
-    async propertymappingsProviderRacCreateRequestOpts(
-        requestParameters: PropertymappingsProviderRacCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["rACPropertyMappingRequest"] == null) {
+    async propertymappingsProviderRacCreateRequestOpts(requestParameters: PropertymappingsProviderRacCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['rACPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "rACPropertyMappingRequest",
-                'Required parameter "rACPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRacCreate().',
+                'rACPropertyMappingRequest',
+                'Required parameter "rACPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRacCreate().'
             );
         }
 
@@ -3543,7 +3215,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3558,53 +3230,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RACPropertyMappingRequestToJSON(requestParameters["rACPropertyMappingRequest"]),
+            body: RACPropertyMappingRequestToJSON(requestParameters['rACPropertyMappingRequest']),
         };
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacCreateRaw(
-        requestParameters: PropertymappingsProviderRacCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RACPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacCreateRequestOpts(requestParameters);
+    async propertymappingsProviderRacCreateRaw(requestParameters: PropertymappingsProviderRacCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRacCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RACPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RACPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacCreate(
-        requestParameters: PropertymappingsProviderRacCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RACPropertyMapping> {
-        const response = await this.propertymappingsProviderRacCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacCreate(requestParameters: PropertymappingsProviderRacCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACPropertyMapping> {
+        const response = await this.propertymappingsProviderRacCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacDestroy without sending the request
      */
-    async propertymappingsProviderRacDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderRacDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRacDestroyRequestOpts(requestParameters: PropertymappingsProviderRacDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacDestroy().'
             );
         }
 
@@ -3622,14 +3280,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/rac/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3638,12 +3293,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacDestroyRaw(
-        requestParameters: PropertymappingsProviderRacDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderRacDestroyRaw(requestParameters: PropertymappingsProviderRacDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderRacDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3652,43 +3303,38 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacDestroy(
-        requestParameters: PropertymappingsProviderRacDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsProviderRacDestroy(requestParameters: PropertymappingsProviderRacDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsProviderRacDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderRacList without sending the request
      */
-    async propertymappingsProviderRacListRequestOpts(
-        requestParameters: PropertymappingsProviderRacListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderRacListRequestOpts(requestParameters: PropertymappingsProviderRacListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3706,7 +3352,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3715,43 +3361,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacListRaw(
-        requestParameters: PropertymappingsProviderRacListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRACPropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacListRequestOpts(requestParameters);
+    async propertymappingsProviderRacListRaw(requestParameters: PropertymappingsProviderRacListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRACPropertyMappingList>> {
+        const requestOptions = await this.propertymappingsProviderRacListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRACPropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRACPropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacList(
-        requestParameters: PropertymappingsProviderRacListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRACPropertyMappingList> {
-        const response = await this.propertymappingsProviderRacListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacList(requestParameters: PropertymappingsProviderRacListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRACPropertyMappingList> {
+        const response = await this.propertymappingsProviderRacListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacPartialUpdate without sending the request
      */
-    async propertymappingsProviderRacPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderRacPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRacPartialUpdateRequestOpts(requestParameters: PropertymappingsProviderRacPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacPartialUpdate().'
             );
         }
 
@@ -3759,7 +3391,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3771,62 +3403,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/rac/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRACPropertyMappingRequestToJSON(
-                requestParameters["patchedRACPropertyMappingRequest"],
-            ),
+            body: PatchedRACPropertyMappingRequestToJSON(requestParameters['patchedRACPropertyMappingRequest']),
         };
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacPartialUpdateRaw(
-        requestParameters: PropertymappingsProviderRacPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RACPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderRacPartialUpdateRaw(requestParameters: PropertymappingsProviderRacPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRacPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RACPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RACPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacPartialUpdate(
-        requestParameters: PropertymappingsProviderRacPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RACPropertyMapping> {
-        const response = await this.propertymappingsProviderRacPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacPartialUpdate(requestParameters: PropertymappingsProviderRacPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACPropertyMapping> {
+        const response = await this.propertymappingsProviderRacPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacRetrieve without sending the request
      */
-    async propertymappingsProviderRacRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderRacRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRacRetrieveRequestOpts(requestParameters: PropertymappingsProviderRacRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacRetrieve().'
             );
         }
 
@@ -3844,14 +3457,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/rac/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3860,50 +3470,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacRetrieveRaw(
-        requestParameters: PropertymappingsProviderRacRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RACPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderRacRetrieveRaw(requestParameters: PropertymappingsProviderRacRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRacRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RACPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RACPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacRetrieve(
-        requestParameters: PropertymappingsProviderRacRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RACPropertyMapping> {
-        const response = await this.propertymappingsProviderRacRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacRetrieve(requestParameters: PropertymappingsProviderRacRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACPropertyMapping> {
+        const response = await this.propertymappingsProviderRacRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacUpdate without sending the request
      */
-    async propertymappingsProviderRacUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderRacUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRacUpdateRequestOpts(requestParameters: PropertymappingsProviderRacUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacUpdate().'
             );
         }
 
-        if (requestParameters["rACPropertyMappingRequest"] == null) {
+        if (requestParameters['rACPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "rACPropertyMappingRequest",
-                'Required parameter "rACPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRacUpdate().',
+                'rACPropertyMappingRequest',
+                'Required parameter "rACPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRacUpdate().'
             );
         }
 
@@ -3911,7 +3507,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3923,60 +3519,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/rac/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RACPropertyMappingRequestToJSON(requestParameters["rACPropertyMappingRequest"]),
+            body: RACPropertyMappingRequestToJSON(requestParameters['rACPropertyMappingRequest']),
         };
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacUpdateRaw(
-        requestParameters: PropertymappingsProviderRacUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RACPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderRacUpdateRaw(requestParameters: PropertymappingsProviderRacUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRacUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RACPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RACPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RACPropertyMapping Viewset
      */
-    async propertymappingsProviderRacUpdate(
-        requestParameters: PropertymappingsProviderRacUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RACPropertyMapping> {
-        const response = await this.propertymappingsProviderRacUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacUpdate(requestParameters: PropertymappingsProviderRacUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACPropertyMapping> {
+        const response = await this.propertymappingsProviderRacUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRacUsedByList without sending the request
      */
-    async propertymappingsProviderRacUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRacUsedByListRequestOpts(requestParameters: PropertymappingsProviderRacUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacUsedByList().'
             );
         }
 
@@ -3994,14 +3573,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/rac/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4010,12 +3586,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderRacUsedByListRaw(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacUsedByListRequestOpts(requestParameters);
+    async propertymappingsProviderRacUsedByListRaw(requestParameters: PropertymappingsProviderRacUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderRacUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4024,27 +3596,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderRacUsedByList(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderRacUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRacUsedByList(requestParameters: PropertymappingsProviderRacUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderRacUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusCreate without sending the request
      */
-    async propertymappingsProviderRadiusCreateRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["radiusProviderPropertyMappingRequest"] == null) {
+    async propertymappingsProviderRadiusCreateRequestOpts(requestParameters: PropertymappingsProviderRadiusCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['radiusProviderPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "radiusProviderPropertyMappingRequest",
-                'Required parameter "radiusProviderPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRadiusCreate().',
+                'radiusProviderPropertyMappingRequest',
+                'Required parameter "radiusProviderPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRadiusCreate().'
             );
         }
 
@@ -4052,7 +3616,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4067,55 +3631,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RadiusProviderPropertyMappingRequestToJSON(
-                requestParameters["radiusProviderPropertyMappingRequest"],
-            ),
+            body: RadiusProviderPropertyMappingRequestToJSON(requestParameters['radiusProviderPropertyMappingRequest']),
         };
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusCreateRaw(
-        requestParameters: PropertymappingsProviderRadiusCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusCreateRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusCreateRaw(requestParameters: PropertymappingsProviderRadiusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRadiusCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RadiusProviderPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusCreate(
-        requestParameters: PropertymappingsProviderRadiusCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RadiusProviderPropertyMapping> {
-        const response = await this.propertymappingsProviderRadiusCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusCreate(requestParameters: PropertymappingsProviderRadiusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProviderPropertyMapping> {
+        const response = await this.propertymappingsProviderRadiusCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusDestroy without sending the request
      */
-    async propertymappingsProviderRadiusDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRadiusDestroyRequestOpts(requestParameters: PropertymappingsProviderRadiusDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusDestroy().'
             );
         }
 
@@ -4133,14 +3681,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/radius/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4149,12 +3694,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusDestroyRaw(
-        requestParameters: PropertymappingsProviderRadiusDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusDestroyRaw(requestParameters: PropertymappingsProviderRadiusDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderRadiusDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4163,47 +3704,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusDestroy(
-        requestParameters: PropertymappingsProviderRadiusDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsProviderRadiusDestroy(requestParameters: PropertymappingsProviderRadiusDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsProviderRadiusDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusList without sending the request
      */
-    async propertymappingsProviderRadiusListRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderRadiusListRequestOpts(requestParameters: PropertymappingsProviderRadiusListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4221,7 +3757,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4230,43 +3766,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusListRaw(
-        requestParameters: PropertymappingsProviderRadiusListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedRadiusProviderPropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusListRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusListRaw(requestParameters: PropertymappingsProviderRadiusListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRadiusProviderPropertyMappingList>> {
+        const requestOptions = await this.propertymappingsProviderRadiusListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedRadiusProviderPropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRadiusProviderPropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusList(
-        requestParameters: PropertymappingsProviderRadiusListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedRadiusProviderPropertyMappingList> {
-        const response = await this.propertymappingsProviderRadiusListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusList(requestParameters: PropertymappingsProviderRadiusListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRadiusProviderPropertyMappingList> {
+        const response = await this.propertymappingsProviderRadiusListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusPartialUpdate without sending the request
      */
-    async propertymappingsProviderRadiusPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRadiusPartialUpdateRequestOpts(requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusPartialUpdate().'
             );
         }
 
@@ -4274,7 +3796,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4286,62 +3808,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/radius/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRadiusProviderPropertyMappingRequestToJSON(
-                requestParameters["patchedRadiusProviderPropertyMappingRequest"],
-            ),
+            body: PatchedRadiusProviderPropertyMappingRequestToJSON(requestParameters['patchedRadiusProviderPropertyMappingRequest']),
         };
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusPartialUpdateRaw(
-        requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusPartialUpdateRaw(requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRadiusPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RadiusProviderPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusPartialUpdate(
-        requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RadiusProviderPropertyMapping> {
-        const response = await this.propertymappingsProviderRadiusPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusPartialUpdate(requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProviderPropertyMapping> {
+        const response = await this.propertymappingsProviderRadiusPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusRetrieve without sending the request
      */
-    async propertymappingsProviderRadiusRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRadiusRetrieveRequestOpts(requestParameters: PropertymappingsProviderRadiusRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusRetrieve().'
             );
         }
 
@@ -4359,14 +3862,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/radius/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4375,50 +3875,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusRetrieveRaw(
-        requestParameters: PropertymappingsProviderRadiusRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusRetrieveRaw(requestParameters: PropertymappingsProviderRadiusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRadiusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RadiusProviderPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusRetrieve(
-        requestParameters: PropertymappingsProviderRadiusRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RadiusProviderPropertyMapping> {
-        const response = await this.propertymappingsProviderRadiusRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusRetrieve(requestParameters: PropertymappingsProviderRadiusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProviderPropertyMapping> {
+        const response = await this.propertymappingsProviderRadiusRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusUpdate without sending the request
      */
-    async propertymappingsProviderRadiusUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRadiusUpdateRequestOpts(requestParameters: PropertymappingsProviderRadiusUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusUpdate().'
             );
         }
 
-        if (requestParameters["radiusProviderPropertyMappingRequest"] == null) {
+        if (requestParameters['radiusProviderPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "radiusProviderPropertyMappingRequest",
-                'Required parameter "radiusProviderPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRadiusUpdate().',
+                'radiusProviderPropertyMappingRequest',
+                'Required parameter "radiusProviderPropertyMappingRequest" was null or undefined when calling propertymappingsProviderRadiusUpdate().'
             );
         }
 
@@ -4426,7 +3912,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4438,62 +3924,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/radius/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RadiusProviderPropertyMappingRequestToJSON(
-                requestParameters["radiusProviderPropertyMappingRequest"],
-            ),
+            body: RadiusProviderPropertyMappingRequestToJSON(requestParameters['radiusProviderPropertyMappingRequest']),
         };
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusUpdateRaw(
-        requestParameters: PropertymappingsProviderRadiusUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusUpdateRaw(requestParameters: PropertymappingsProviderRadiusUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProviderPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderRadiusUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RadiusProviderPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * RadiusProviderPropertyMapping Viewset
      */
-    async propertymappingsProviderRadiusUpdate(
-        requestParameters: PropertymappingsProviderRadiusUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RadiusProviderPropertyMapping> {
-        const response = await this.propertymappingsProviderRadiusUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusUpdate(requestParameters: PropertymappingsProviderRadiusUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProviderPropertyMapping> {
+        const response = await this.propertymappingsProviderRadiusUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderRadiusUsedByList without sending the request
      */
-    async propertymappingsProviderRadiusUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderRadiusUsedByListRequestOpts(requestParameters: PropertymappingsProviderRadiusUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusUsedByList().'
             );
         }
 
@@ -4511,14 +3978,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/radius/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4527,12 +3991,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderRadiusUsedByListRaw(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusUsedByListRequestOpts(requestParameters);
+    async propertymappingsProviderRadiusUsedByListRaw(requestParameters: PropertymappingsProviderRadiusUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderRadiusUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4541,27 +4001,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderRadiusUsedByList(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderRadiusUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderRadiusUsedByList(requestParameters: PropertymappingsProviderRadiusUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderRadiusUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlCreate without sending the request
      */
-    async propertymappingsProviderSamlCreateRequestOpts(
-        requestParameters: PropertymappingsProviderSamlCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["sAMLPropertyMappingRequest"] == null) {
+    async propertymappingsProviderSamlCreateRequestOpts(requestParameters: PropertymappingsProviderSamlCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['sAMLPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sAMLPropertyMappingRequest",
-                'Required parameter "sAMLPropertyMappingRequest" was null or undefined when calling propertymappingsProviderSamlCreate().',
+                'sAMLPropertyMappingRequest',
+                'Required parameter "sAMLPropertyMappingRequest" was null or undefined when calling propertymappingsProviderSamlCreate().'
             );
         }
 
@@ -4569,7 +4021,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4584,53 +4036,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLPropertyMappingRequestToJSON(requestParameters["sAMLPropertyMappingRequest"]),
+            body: SAMLPropertyMappingRequestToJSON(requestParameters['sAMLPropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlCreateRaw(
-        requestParameters: PropertymappingsProviderSamlCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlCreateRequestOpts(requestParameters);
+    async propertymappingsProviderSamlCreateRaw(requestParameters: PropertymappingsProviderSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlCreate(
-        requestParameters: PropertymappingsProviderSamlCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLPropertyMapping> {
-        const response = await this.propertymappingsProviderSamlCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlCreate(requestParameters: PropertymappingsProviderSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLPropertyMapping> {
+        const response = await this.propertymappingsProviderSamlCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlDestroy without sending the request
      */
-    async propertymappingsProviderSamlDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderSamlDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderSamlDestroyRequestOpts(requestParameters: PropertymappingsProviderSamlDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlDestroy().'
             );
         }
 
@@ -4648,14 +4086,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4664,12 +4099,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlDestroyRaw(
-        requestParameters: PropertymappingsProviderSamlDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderSamlDestroyRaw(requestParameters: PropertymappingsProviderSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4678,55 +4109,50 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlDestroy(
-        requestParameters: PropertymappingsProviderSamlDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsProviderSamlDestroy(requestParameters: PropertymappingsProviderSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsProviderSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlList without sending the request
      */
-    async propertymappingsProviderSamlListRequestOpts(
-        requestParameters: PropertymappingsProviderSamlListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderSamlListRequestOpts(requestParameters: PropertymappingsProviderSamlListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["friendlyName"] != null) {
-            queryParameters["friendly_name"] = requestParameters["friendlyName"];
+        if (requestParameters['friendlyName'] != null) {
+            queryParameters['friendly_name'] = requestParameters['friendlyName'];
         }
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["samlName"] != null) {
-            queryParameters["saml_name"] = requestParameters["samlName"];
+        if (requestParameters['samlName'] != null) {
+            queryParameters['saml_name'] = requestParameters['samlName'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4744,7 +4170,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4753,43 +4179,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlListRaw(
-        requestParameters: PropertymappingsProviderSamlListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSAMLPropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlListRequestOpts(requestParameters);
+    async propertymappingsProviderSamlListRaw(requestParameters: PropertymappingsProviderSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSAMLPropertyMappingList>> {
+        const requestOptions = await this.propertymappingsProviderSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSAMLPropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSAMLPropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlList(
-        requestParameters: PropertymappingsProviderSamlListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSAMLPropertyMappingList> {
-        const response = await this.propertymappingsProviderSamlListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlList(requestParameters: PropertymappingsProviderSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSAMLPropertyMappingList> {
+        const response = await this.propertymappingsProviderSamlListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlPartialUpdate without sending the request
      */
-    async propertymappingsProviderSamlPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderSamlPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderSamlPartialUpdateRequestOpts(requestParameters: PropertymappingsProviderSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlPartialUpdate().'
             );
         }
 
@@ -4797,7 +4209,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4809,62 +4221,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSAMLPropertyMappingRequestToJSON(
-                requestParameters["patchedSAMLPropertyMappingRequest"],
-            ),
+            body: PatchedSAMLPropertyMappingRequestToJSON(requestParameters['patchedSAMLPropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlPartialUpdateRaw(
-        requestParameters: PropertymappingsProviderSamlPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderSamlPartialUpdateRaw(requestParameters: PropertymappingsProviderSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlPartialUpdate(
-        requestParameters: PropertymappingsProviderSamlPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLPropertyMapping> {
-        const response = await this.propertymappingsProviderSamlPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlPartialUpdate(requestParameters: PropertymappingsProviderSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLPropertyMapping> {
+        const response = await this.propertymappingsProviderSamlPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlRetrieve without sending the request
      */
-    async propertymappingsProviderSamlRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderSamlRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderSamlRetrieveRequestOpts(requestParameters: PropertymappingsProviderSamlRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlRetrieve().'
             );
         }
 
@@ -4882,14 +4275,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4898,50 +4288,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlRetrieveRaw(
-        requestParameters: PropertymappingsProviderSamlRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderSamlRetrieveRaw(requestParameters: PropertymappingsProviderSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlRetrieve(
-        requestParameters: PropertymappingsProviderSamlRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLPropertyMapping> {
-        const response = await this.propertymappingsProviderSamlRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlRetrieve(requestParameters: PropertymappingsProviderSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLPropertyMapping> {
+        const response = await this.propertymappingsProviderSamlRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlUpdate without sending the request
      */
-    async propertymappingsProviderSamlUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderSamlUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderSamlUpdateRequestOpts(requestParameters: PropertymappingsProviderSamlUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlUpdate().'
             );
         }
 
-        if (requestParameters["sAMLPropertyMappingRequest"] == null) {
+        if (requestParameters['sAMLPropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sAMLPropertyMappingRequest",
-                'Required parameter "sAMLPropertyMappingRequest" was null or undefined when calling propertymappingsProviderSamlUpdate().',
+                'sAMLPropertyMappingRequest',
+                'Required parameter "sAMLPropertyMappingRequest" was null or undefined when calling propertymappingsProviderSamlUpdate().'
             );
         }
 
@@ -4949,7 +4325,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4961,60 +4337,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLPropertyMappingRequestToJSON(requestParameters["sAMLPropertyMappingRequest"]),
+            body: SAMLPropertyMappingRequestToJSON(requestParameters['sAMLPropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlUpdateRaw(
-        requestParameters: PropertymappingsProviderSamlUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderSamlUpdateRaw(requestParameters: PropertymappingsProviderSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLPropertyMapping>> {
+        const requestOptions = await this.propertymappingsProviderSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLPropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLPropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLPropertyMapping Viewset
      */
-    async propertymappingsProviderSamlUpdate(
-        requestParameters: PropertymappingsProviderSamlUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLPropertyMapping> {
-        const response = await this.propertymappingsProviderSamlUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlUpdate(requestParameters: PropertymappingsProviderSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLPropertyMapping> {
+        const response = await this.propertymappingsProviderSamlUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderSamlUsedByList without sending the request
      */
-    async propertymappingsProviderSamlUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderSamlUsedByListRequestOpts(requestParameters: PropertymappingsProviderSamlUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlUsedByList().'
             );
         }
 
@@ -5032,14 +4391,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/saml/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5048,12 +4404,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderSamlUsedByListRaw(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlUsedByListRequestOpts(requestParameters);
+    async propertymappingsProviderSamlUsedByListRaw(requestParameters: PropertymappingsProviderSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5062,27 +4414,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderSamlUsedByList(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderSamlUsedByList(requestParameters: PropertymappingsProviderSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderSamlUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimCreate without sending the request
      */
-    async propertymappingsProviderScimCreateRequestOpts(
-        requestParameters: PropertymappingsProviderScimCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["sCIMMappingRequest"] == null) {
+    async propertymappingsProviderScimCreateRequestOpts(requestParameters: PropertymappingsProviderScimCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['sCIMMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sCIMMappingRequest",
-                'Required parameter "sCIMMappingRequest" was null or undefined when calling propertymappingsProviderScimCreate().',
+                'sCIMMappingRequest',
+                'Required parameter "sCIMMappingRequest" was null or undefined when calling propertymappingsProviderScimCreate().'
             );
         }
 
@@ -5090,7 +4434,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5105,22 +4449,18 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMMappingRequestToJSON(requestParameters["sCIMMappingRequest"]),
+            body: SCIMMappingRequestToJSON(requestParameters['sCIMMappingRequest']),
         };
     }
 
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimCreateRaw(
-        requestParameters: PropertymappingsProviderScimCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimCreateRequestOpts(requestParameters);
+    async propertymappingsProviderScimCreateRaw(requestParameters: PropertymappingsProviderScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMMapping>> {
+        const requestOptions = await this.propertymappingsProviderScimCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SCIMMappingFromJSON(jsonValue));
@@ -5129,27 +4469,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimCreate(
-        requestParameters: PropertymappingsProviderScimCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMMapping> {
-        const response = await this.propertymappingsProviderScimCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimCreate(requestParameters: PropertymappingsProviderScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMMapping> {
+        const response = await this.propertymappingsProviderScimCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimDestroy without sending the request
      */
-    async propertymappingsProviderScimDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderScimDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScimDestroyRequestOpts(requestParameters: PropertymappingsProviderScimDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimDestroy().'
             );
         }
 
@@ -5167,14 +4499,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5183,12 +4512,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimDestroyRaw(
-        requestParameters: PropertymappingsProviderScimDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderScimDestroyRaw(requestParameters: PropertymappingsProviderScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderScimDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -5197,47 +4522,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimDestroy(
-        requestParameters: PropertymappingsProviderScimDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsProviderScimDestroy(requestParameters: PropertymappingsProviderScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsProviderScimDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderScimList without sending the request
      */
-    async propertymappingsProviderScimListRequestOpts(
-        requestParameters: PropertymappingsProviderScimListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderScimListRequestOpts(requestParameters: PropertymappingsProviderScimListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5255,7 +4575,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5264,43 +4584,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimListRaw(
-        requestParameters: PropertymappingsProviderScimListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSCIMMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimListRequestOpts(requestParameters);
+    async propertymappingsProviderScimListRaw(requestParameters: PropertymappingsProviderScimListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMMappingList>> {
+        const requestOptions = await this.propertymappingsProviderScimListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSCIMMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMMappingListFromJSON(jsonValue));
     }
 
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimList(
-        requestParameters: PropertymappingsProviderScimListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSCIMMappingList> {
-        const response = await this.propertymappingsProviderScimListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimList(requestParameters: PropertymappingsProviderScimListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMMappingList> {
+        const response = await this.propertymappingsProviderScimListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimPartialUpdate without sending the request
      */
-    async propertymappingsProviderScimPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderScimPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScimPartialUpdateRequestOpts(requestParameters: PropertymappingsProviderScimPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimPartialUpdate().'
             );
         }
 
@@ -5308,7 +4614,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5320,29 +4626,22 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMMappingRequestToJSON(requestParameters["patchedSCIMMappingRequest"]),
+            body: PatchedSCIMMappingRequestToJSON(requestParameters['patchedSCIMMappingRequest']),
         };
     }
 
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimPartialUpdateRaw(
-        requestParameters: PropertymappingsProviderScimPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderScimPartialUpdateRaw(requestParameters: PropertymappingsProviderScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMMapping>> {
+        const requestOptions = await this.propertymappingsProviderScimPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SCIMMappingFromJSON(jsonValue));
@@ -5351,27 +4650,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimPartialUpdate(
-        requestParameters: PropertymappingsProviderScimPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMMapping> {
-        const response = await this.propertymappingsProviderScimPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimPartialUpdate(requestParameters: PropertymappingsProviderScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMMapping> {
+        const response = await this.propertymappingsProviderScimPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimRetrieve without sending the request
      */
-    async propertymappingsProviderScimRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderScimRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScimRetrieveRequestOpts(requestParameters: PropertymappingsProviderScimRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimRetrieve().'
             );
         }
 
@@ -5389,14 +4680,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5405,12 +4693,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimRetrieveRaw(
-        requestParameters: PropertymappingsProviderScimRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderScimRetrieveRaw(requestParameters: PropertymappingsProviderScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMMapping>> {
+        const requestOptions = await this.propertymappingsProviderScimRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SCIMMappingFromJSON(jsonValue));
@@ -5419,34 +4703,26 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimRetrieve(
-        requestParameters: PropertymappingsProviderScimRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMMapping> {
-        const response = await this.propertymappingsProviderScimRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimRetrieve(requestParameters: PropertymappingsProviderScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMMapping> {
+        const response = await this.propertymappingsProviderScimRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimUpdate without sending the request
      */
-    async propertymappingsProviderScimUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderScimUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScimUpdateRequestOpts(requestParameters: PropertymappingsProviderScimUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimUpdate().'
             );
         }
 
-        if (requestParameters["sCIMMappingRequest"] == null) {
+        if (requestParameters['sCIMMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sCIMMappingRequest",
-                'Required parameter "sCIMMappingRequest" was null or undefined when calling propertymappingsProviderScimUpdate().',
+                'sCIMMappingRequest',
+                'Required parameter "sCIMMappingRequest" was null or undefined when calling propertymappingsProviderScimUpdate().'
             );
         }
 
@@ -5454,7 +4730,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5466,29 +4742,22 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMMappingRequestToJSON(requestParameters["sCIMMappingRequest"]),
+            body: SCIMMappingRequestToJSON(requestParameters['sCIMMappingRequest']),
         };
     }
 
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimUpdateRaw(
-        requestParameters: PropertymappingsProviderScimUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderScimUpdateRaw(requestParameters: PropertymappingsProviderScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMMapping>> {
+        const requestOptions = await this.propertymappingsProviderScimUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SCIMMappingFromJSON(jsonValue));
@@ -5497,27 +4766,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMMapping Viewset
      */
-    async propertymappingsProviderScimUpdate(
-        requestParameters: PropertymappingsProviderScimUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMMapping> {
-        const response = await this.propertymappingsProviderScimUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimUpdate(requestParameters: PropertymappingsProviderScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMMapping> {
+        const response = await this.propertymappingsProviderScimUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScimUsedByList without sending the request
      */
-    async propertymappingsProviderScimUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScimUsedByListRequestOpts(requestParameters: PropertymappingsProviderScimUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimUsedByList().'
             );
         }
 
@@ -5535,14 +4796,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scim/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5551,12 +4809,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderScimUsedByListRaw(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimUsedByListRequestOpts(requestParameters);
+    async propertymappingsProviderScimUsedByListRaw(requestParameters: PropertymappingsProviderScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderScimUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5565,27 +4819,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderScimUsedByList(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderScimUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScimUsedByList(requestParameters: PropertymappingsProviderScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderScimUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeCreate without sending the request
      */
-    async propertymappingsProviderScopeCreateRequestOpts(
-        requestParameters: PropertymappingsProviderScopeCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["scopeMappingRequest"] == null) {
+    async propertymappingsProviderScopeCreateRequestOpts(requestParameters: PropertymappingsProviderScopeCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['scopeMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "scopeMappingRequest",
-                'Required parameter "scopeMappingRequest" was null or undefined when calling propertymappingsProviderScopeCreate().',
+                'scopeMappingRequest',
+                'Required parameter "scopeMappingRequest" was null or undefined when calling propertymappingsProviderScopeCreate().'
             );
         }
 
@@ -5593,7 +4839,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5608,53 +4854,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ScopeMappingRequestToJSON(requestParameters["scopeMappingRequest"]),
+            body: ScopeMappingRequestToJSON(requestParameters['scopeMappingRequest']),
         };
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeCreateRaw(
-        requestParameters: PropertymappingsProviderScopeCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ScopeMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeCreateRequestOpts(requestParameters);
+    async propertymappingsProviderScopeCreateRaw(requestParameters: PropertymappingsProviderScopeCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScopeMapping>> {
+        const requestOptions = await this.propertymappingsProviderScopeCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ScopeMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ScopeMappingFromJSON(jsonValue));
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeCreate(
-        requestParameters: PropertymappingsProviderScopeCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ScopeMapping> {
-        const response = await this.propertymappingsProviderScopeCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopeCreate(requestParameters: PropertymappingsProviderScopeCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScopeMapping> {
+        const response = await this.propertymappingsProviderScopeCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeDestroy without sending the request
      */
-    async propertymappingsProviderScopeDestroyRequestOpts(
-        requestParameters: PropertymappingsProviderScopeDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScopeDestroyRequestOpts(requestParameters: PropertymappingsProviderScopeDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeDestroy().'
             );
         }
 
@@ -5672,14 +4904,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scope/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5688,12 +4917,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeDestroyRaw(
-        requestParameters: PropertymappingsProviderScopeDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeDestroyRequestOpts(requestParameters);
+    async propertymappingsProviderScopeDestroyRaw(requestParameters: PropertymappingsProviderScopeDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsProviderScopeDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -5702,51 +4927,46 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeDestroy(
-        requestParameters: PropertymappingsProviderScopeDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsProviderScopeDestroy(requestParameters: PropertymappingsProviderScopeDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsProviderScopeDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeList without sending the request
      */
-    async propertymappingsProviderScopeListRequestOpts(
-        requestParameters: PropertymappingsProviderScopeListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsProviderScopeListRequestOpts(requestParameters: PropertymappingsProviderScopeListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["scopeName"] != null) {
-            queryParameters["scope_name"] = requestParameters["scopeName"];
+        if (requestParameters['scopeName'] != null) {
+            queryParameters['scope_name'] = requestParameters['scopeName'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5764,7 +4984,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5773,43 +4993,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeListRaw(
-        requestParameters: PropertymappingsProviderScopeListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedScopeMappingList>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeListRequestOpts(requestParameters);
+    async propertymappingsProviderScopeListRaw(requestParameters: PropertymappingsProviderScopeListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedScopeMappingList>> {
+        const requestOptions = await this.propertymappingsProviderScopeListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedScopeMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedScopeMappingListFromJSON(jsonValue));
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeList(
-        requestParameters: PropertymappingsProviderScopeListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedScopeMappingList> {
-        const response = await this.propertymappingsProviderScopeListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopeList(requestParameters: PropertymappingsProviderScopeListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedScopeMappingList> {
+        const response = await this.propertymappingsProviderScopeListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopePartialUpdate without sending the request
      */
-    async propertymappingsProviderScopePartialUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderScopePartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScopePartialUpdateRequestOpts(requestParameters: PropertymappingsProviderScopePartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopePartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopePartialUpdate().'
             );
         }
 
@@ -5817,7 +5023,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5829,60 +5035,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scope/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedScopeMappingRequestToJSON(requestParameters["patchedScopeMappingRequest"]),
+            body: PatchedScopeMappingRequestToJSON(requestParameters['patchedScopeMappingRequest']),
         };
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopePartialUpdateRaw(
-        requestParameters: PropertymappingsProviderScopePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ScopeMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopePartialUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderScopePartialUpdateRaw(requestParameters: PropertymappingsProviderScopePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScopeMapping>> {
+        const requestOptions = await this.propertymappingsProviderScopePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ScopeMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ScopeMappingFromJSON(jsonValue));
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopePartialUpdate(
-        requestParameters: PropertymappingsProviderScopePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ScopeMapping> {
-        const response = await this.propertymappingsProviderScopePartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopePartialUpdate(requestParameters: PropertymappingsProviderScopePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScopeMapping> {
+        const response = await this.propertymappingsProviderScopePartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeRetrieve without sending the request
      */
-    async propertymappingsProviderScopeRetrieveRequestOpts(
-        requestParameters: PropertymappingsProviderScopeRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScopeRetrieveRequestOpts(requestParameters: PropertymappingsProviderScopeRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeRetrieve().'
             );
         }
 
@@ -5900,14 +5089,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scope/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5916,50 +5102,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeRetrieveRaw(
-        requestParameters: PropertymappingsProviderScopeRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ScopeMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeRetrieveRequestOpts(requestParameters);
+    async propertymappingsProviderScopeRetrieveRaw(requestParameters: PropertymappingsProviderScopeRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScopeMapping>> {
+        const requestOptions = await this.propertymappingsProviderScopeRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ScopeMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ScopeMappingFromJSON(jsonValue));
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeRetrieve(
-        requestParameters: PropertymappingsProviderScopeRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ScopeMapping> {
-        const response = await this.propertymappingsProviderScopeRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopeRetrieve(requestParameters: PropertymappingsProviderScopeRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScopeMapping> {
+        const response = await this.propertymappingsProviderScopeRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeUpdate without sending the request
      */
-    async propertymappingsProviderScopeUpdateRequestOpts(
-        requestParameters: PropertymappingsProviderScopeUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScopeUpdateRequestOpts(requestParameters: PropertymappingsProviderScopeUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeUpdate().'
             );
         }
 
-        if (requestParameters["scopeMappingRequest"] == null) {
+        if (requestParameters['scopeMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "scopeMappingRequest",
-                'Required parameter "scopeMappingRequest" was null or undefined when calling propertymappingsProviderScopeUpdate().',
+                'scopeMappingRequest',
+                'Required parameter "scopeMappingRequest" was null or undefined when calling propertymappingsProviderScopeUpdate().'
             );
         }
 
@@ -5967,7 +5139,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5979,60 +5151,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scope/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ScopeMappingRequestToJSON(requestParameters["scopeMappingRequest"]),
+            body: ScopeMappingRequestToJSON(requestParameters['scopeMappingRequest']),
         };
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeUpdateRaw(
-        requestParameters: PropertymappingsProviderScopeUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ScopeMapping>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeUpdateRequestOpts(requestParameters);
+    async propertymappingsProviderScopeUpdateRaw(requestParameters: PropertymappingsProviderScopeUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScopeMapping>> {
+        const requestOptions = await this.propertymappingsProviderScopeUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ScopeMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ScopeMappingFromJSON(jsonValue));
     }
 
     /**
      * ScopeMapping Viewset
      */
-    async propertymappingsProviderScopeUpdate(
-        requestParameters: PropertymappingsProviderScopeUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ScopeMapping> {
-        const response = await this.propertymappingsProviderScopeUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopeUpdate(requestParameters: PropertymappingsProviderScopeUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScopeMapping> {
+        const response = await this.propertymappingsProviderScopeUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsProviderScopeUsedByList without sending the request
      */
-    async propertymappingsProviderScopeUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsProviderScopeUsedByListRequestOpts(requestParameters: PropertymappingsProviderScopeUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeUsedByList().'
             );
         }
 
@@ -6050,14 +5205,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/provider/scope/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6066,12 +5218,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderScopeUsedByListRaw(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeUsedByListRequestOpts(requestParameters);
+    async propertymappingsProviderScopeUsedByListRaw(requestParameters: PropertymappingsProviderScopeUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsProviderScopeUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -6080,27 +5228,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsProviderScopeUsedByList(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderScopeUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsProviderScopeUsedByList(requestParameters: PropertymappingsProviderScopeUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsProviderScopeUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosCreate without sending the request
      */
-    async propertymappingsSourceKerberosCreateRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kerberosSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceKerberosCreateRequestOpts(requestParameters: PropertymappingsSourceKerberosCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['kerberosSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "kerberosSourcePropertyMappingRequest",
-                'Required parameter "kerberosSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceKerberosCreate().',
+                'kerberosSourcePropertyMappingRequest',
+                'Required parameter "kerberosSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceKerberosCreate().'
             );
         }
 
@@ -6108,7 +5248,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6123,55 +5263,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: KerberosSourcePropertyMappingRequestToJSON(
-                requestParameters["kerberosSourcePropertyMappingRequest"],
-            ),
+            body: KerberosSourcePropertyMappingRequestToJSON(requestParameters['kerberosSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosCreateRaw(
-        requestParameters: PropertymappingsSourceKerberosCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosCreateRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosCreateRaw(requestParameters: PropertymappingsSourceKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceKerberosCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            KerberosSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosCreate(
-        requestParameters: PropertymappingsSourceKerberosCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<KerberosSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceKerberosCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosCreate(requestParameters: PropertymappingsSourceKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceKerberosCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosDestroy without sending the request
      */
-    async propertymappingsSourceKerberosDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceKerberosDestroyRequestOpts(requestParameters: PropertymappingsSourceKerberosDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosDestroy().'
             );
         }
 
@@ -6189,14 +5313,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6205,12 +5326,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosDestroyRaw(
-        requestParameters: PropertymappingsSourceKerberosDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosDestroyRaw(requestParameters: PropertymappingsSourceKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceKerberosDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -6219,47 +5336,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosDestroy(
-        requestParameters: PropertymappingsSourceKerberosDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceKerberosDestroy(requestParameters: PropertymappingsSourceKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceKerberosDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosList without sending the request
      */
-    async propertymappingsSourceKerberosListRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceKerberosListRequestOpts(requestParameters: PropertymappingsSourceKerberosListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6277,7 +5389,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6286,43 +5398,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosListRaw(
-        requestParameters: PropertymappingsSourceKerberosListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedKerberosSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosListRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosListRaw(requestParameters: PropertymappingsSourceKerberosListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedKerberosSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceKerberosListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedKerberosSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedKerberosSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosList(
-        requestParameters: PropertymappingsSourceKerberosListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedKerberosSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceKerberosListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosList(requestParameters: PropertymappingsSourceKerberosListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedKerberosSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceKerberosListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosPartialUpdate without sending the request
      */
-    async propertymappingsSourceKerberosPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceKerberosPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosPartialUpdate().'
             );
         }
 
@@ -6330,7 +5428,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6342,62 +5440,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedKerberosSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedKerberosSourcePropertyMappingRequest"],
-            ),
+            body: PatchedKerberosSourcePropertyMappingRequestToJSON(requestParameters['patchedKerberosSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosPartialUpdateRaw(requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceKerberosPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            KerberosSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosPartialUpdate(
-        requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<KerberosSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceKerberosPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosPartialUpdate(requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceKerberosPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosRetrieve without sending the request
      */
-    async propertymappingsSourceKerberosRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceKerberosRetrieveRequestOpts(requestParameters: PropertymappingsSourceKerberosRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosRetrieve().'
             );
         }
 
@@ -6415,14 +5494,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6431,50 +5507,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosRetrieveRaw(
-        requestParameters: PropertymappingsSourceKerberosRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosRetrieveRaw(requestParameters: PropertymappingsSourceKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceKerberosRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            KerberosSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosRetrieve(
-        requestParameters: PropertymappingsSourceKerberosRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<KerberosSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceKerberosRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosRetrieve(requestParameters: PropertymappingsSourceKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceKerberosRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosUpdate without sending the request
      */
-    async propertymappingsSourceKerberosUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceKerberosUpdateRequestOpts(requestParameters: PropertymappingsSourceKerberosUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosUpdate().'
             );
         }
 
-        if (requestParameters["kerberosSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['kerberosSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "kerberosSourcePropertyMappingRequest",
-                'Required parameter "kerberosSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceKerberosUpdate().',
+                'kerberosSourcePropertyMappingRequest',
+                'Required parameter "kerberosSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceKerberosUpdate().'
             );
         }
 
@@ -6482,7 +5544,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6494,62 +5556,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: KerberosSourcePropertyMappingRequestToJSON(
-                requestParameters["kerberosSourcePropertyMappingRequest"],
-            ),
+            body: KerberosSourcePropertyMappingRequestToJSON(requestParameters['kerberosSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosUpdateRaw(
-        requestParameters: PropertymappingsSourceKerberosUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosUpdateRaw(requestParameters: PropertymappingsSourceKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceKerberosUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            KerberosSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * KerberosSource PropertyMapping Viewset
      */
-    async propertymappingsSourceKerberosUpdate(
-        requestParameters: PropertymappingsSourceKerberosUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<KerberosSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceKerberosUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosUpdate(requestParameters: PropertymappingsSourceKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceKerberosUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceKerberosUsedByList without sending the request
      */
-    async propertymappingsSourceKerberosUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceKerberosUsedByListRequestOpts(requestParameters: PropertymappingsSourceKerberosUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosUsedByList().'
             );
         }
 
@@ -6567,14 +5610,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6583,12 +5623,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceKerberosUsedByListRaw(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceKerberosUsedByListRaw(requestParameters: PropertymappingsSourceKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceKerberosUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -6597,27 +5633,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceKerberosUsedByList(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceKerberosUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceKerberosUsedByList(requestParameters: PropertymappingsSourceKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceKerberosUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapCreate without sending the request
      */
-    async propertymappingsSourceLdapCreateRequestOpts(
-        requestParameters: PropertymappingsSourceLdapCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["lDAPSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceLdapCreateRequestOpts(requestParameters: PropertymappingsSourceLdapCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['lDAPSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "lDAPSourcePropertyMappingRequest",
-                'Required parameter "lDAPSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceLdapCreate().',
+                'lDAPSourcePropertyMappingRequest',
+                'Required parameter "lDAPSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceLdapCreate().'
             );
         }
 
@@ -6625,7 +5653,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6640,55 +5668,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPSourcePropertyMappingRequestToJSON(
-                requestParameters["lDAPSourcePropertyMappingRequest"],
-            ),
+            body: LDAPSourcePropertyMappingRequestToJSON(requestParameters['lDAPSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapCreateRaw(
-        requestParameters: PropertymappingsSourceLdapCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapCreateRequestOpts(requestParameters);
+    async propertymappingsSourceLdapCreateRaw(requestParameters: PropertymappingsSourceLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceLdapCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LDAPSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapCreate(
-        requestParameters: PropertymappingsSourceLdapCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LDAPSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceLdapCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapCreate(requestParameters: PropertymappingsSourceLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceLdapCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapDestroy without sending the request
      */
-    async propertymappingsSourceLdapDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceLdapDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceLdapDestroyRequestOpts(requestParameters: PropertymappingsSourceLdapDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapDestroy().'
             );
         }
 
@@ -6706,14 +5718,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/ldap/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6722,12 +5731,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapDestroyRaw(
-        requestParameters: PropertymappingsSourceLdapDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceLdapDestroyRaw(requestParameters: PropertymappingsSourceLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceLdapDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -6736,47 +5741,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapDestroy(
-        requestParameters: PropertymappingsSourceLdapDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceLdapDestroy(requestParameters: PropertymappingsSourceLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceLdapDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapList without sending the request
      */
-    async propertymappingsSourceLdapListRequestOpts(
-        requestParameters: PropertymappingsSourceLdapListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceLdapListRequestOpts(requestParameters: PropertymappingsSourceLdapListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6794,7 +5794,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6803,43 +5803,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapListRaw(
-        requestParameters: PropertymappingsSourceLdapListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedLDAPSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapListRequestOpts(requestParameters);
+    async propertymappingsSourceLdapListRaw(requestParameters: PropertymappingsSourceLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLDAPSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedLDAPSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLDAPSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapList(
-        requestParameters: PropertymappingsSourceLdapListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedLDAPSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceLdapListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapList(requestParameters: PropertymappingsSourceLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLDAPSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceLdapListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapPartialUpdate without sending the request
      */
-    async propertymappingsSourceLdapPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceLdapPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceLdapPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceLdapPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapPartialUpdate().'
             );
         }
 
@@ -6847,7 +5833,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6859,62 +5845,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/ldap/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedLDAPSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedLDAPSourcePropertyMappingRequest"],
-            ),
+            body: PatchedLDAPSourcePropertyMappingRequestToJSON(requestParameters['patchedLDAPSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceLdapPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceLdapPartialUpdateRaw(requestParameters: PropertymappingsSourceLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceLdapPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LDAPSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapPartialUpdate(
-        requestParameters: PropertymappingsSourceLdapPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LDAPSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceLdapPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapPartialUpdate(requestParameters: PropertymappingsSourceLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceLdapPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapRetrieve without sending the request
      */
-    async propertymappingsSourceLdapRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceLdapRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceLdapRetrieveRequestOpts(requestParameters: PropertymappingsSourceLdapRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapRetrieve().'
             );
         }
 
@@ -6932,14 +5899,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/ldap/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6948,50 +5912,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapRetrieveRaw(
-        requestParameters: PropertymappingsSourceLdapRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceLdapRetrieveRaw(requestParameters: PropertymappingsSourceLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceLdapRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LDAPSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapRetrieve(
-        requestParameters: PropertymappingsSourceLdapRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LDAPSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceLdapRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapRetrieve(requestParameters: PropertymappingsSourceLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceLdapRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapUpdate without sending the request
      */
-    async propertymappingsSourceLdapUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceLdapUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceLdapUpdateRequestOpts(requestParameters: PropertymappingsSourceLdapUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapUpdate().'
             );
         }
 
-        if (requestParameters["lDAPSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['lDAPSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "lDAPSourcePropertyMappingRequest",
-                'Required parameter "lDAPSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceLdapUpdate().',
+                'lDAPSourcePropertyMappingRequest',
+                'Required parameter "lDAPSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceLdapUpdate().'
             );
         }
 
@@ -6999,7 +5949,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7011,62 +5961,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/ldap/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPSourcePropertyMappingRequestToJSON(
-                requestParameters["lDAPSourcePropertyMappingRequest"],
-            ),
+            body: LDAPSourcePropertyMappingRequestToJSON(requestParameters['lDAPSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapUpdateRaw(
-        requestParameters: PropertymappingsSourceLdapUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceLdapUpdateRaw(requestParameters: PropertymappingsSourceLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceLdapUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LDAPSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * LDAP PropertyMapping Viewset
      */
-    async propertymappingsSourceLdapUpdate(
-        requestParameters: PropertymappingsSourceLdapUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LDAPSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceLdapUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapUpdate(requestParameters: PropertymappingsSourceLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceLdapUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceLdapUsedByList without sending the request
      */
-    async propertymappingsSourceLdapUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceLdapUsedByListRequestOpts(requestParameters: PropertymappingsSourceLdapUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapUsedByList().'
             );
         }
 
@@ -7084,14 +6015,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/ldap/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7100,12 +6028,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceLdapUsedByListRaw(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceLdapUsedByListRaw(requestParameters: PropertymappingsSourceLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceLdapUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -7114,27 +6038,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceLdapUsedByList(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceLdapUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceLdapUsedByList(requestParameters: PropertymappingsSourceLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceLdapUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthCreate without sending the request
      */
-    async propertymappingsSourceOauthCreateRequestOpts(
-        requestParameters: PropertymappingsSourceOauthCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["oAuthSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceOauthCreateRequestOpts(requestParameters: PropertymappingsSourceOauthCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['oAuthSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "oAuthSourcePropertyMappingRequest",
-                'Required parameter "oAuthSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceOauthCreate().',
+                'oAuthSourcePropertyMappingRequest',
+                'Required parameter "oAuthSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceOauthCreate().'
             );
         }
 
@@ -7142,7 +6058,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7157,55 +6073,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: OAuthSourcePropertyMappingRequestToJSON(
-                requestParameters["oAuthSourcePropertyMappingRequest"],
-            ),
+            body: OAuthSourcePropertyMappingRequestToJSON(requestParameters['oAuthSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthCreateRaw(
-        requestParameters: PropertymappingsSourceOauthCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthCreateRequestOpts(requestParameters);
+    async propertymappingsSourceOauthCreateRaw(requestParameters: PropertymappingsSourceOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceOauthCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            OAuthSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => OAuthSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthCreate(
-        requestParameters: PropertymappingsSourceOauthCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<OAuthSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceOauthCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthCreate(requestParameters: PropertymappingsSourceOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceOauthCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthDestroy without sending the request
      */
-    async propertymappingsSourceOauthDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceOauthDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceOauthDestroyRequestOpts(requestParameters: PropertymappingsSourceOauthDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthDestroy().'
             );
         }
 
@@ -7223,14 +6123,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/oauth/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7239,12 +6136,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthDestroyRaw(
-        requestParameters: PropertymappingsSourceOauthDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceOauthDestroyRaw(requestParameters: PropertymappingsSourceOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceOauthDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -7253,47 +6146,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthDestroy(
-        requestParameters: PropertymappingsSourceOauthDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceOauthDestroy(requestParameters: PropertymappingsSourceOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceOauthDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthList without sending the request
      */
-    async propertymappingsSourceOauthListRequestOpts(
-        requestParameters: PropertymappingsSourceOauthListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceOauthListRequestOpts(requestParameters: PropertymappingsSourceOauthListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7311,7 +6199,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7320,43 +6208,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthListRaw(
-        requestParameters: PropertymappingsSourceOauthListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedOAuthSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthListRequestOpts(requestParameters);
+    async propertymappingsSourceOauthListRaw(requestParameters: PropertymappingsSourceOauthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedOAuthSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceOauthListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedOAuthSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedOAuthSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthList(
-        requestParameters: PropertymappingsSourceOauthListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedOAuthSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceOauthListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthList(requestParameters: PropertymappingsSourceOauthListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedOAuthSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceOauthListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthPartialUpdate without sending the request
      */
-    async propertymappingsSourceOauthPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceOauthPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceOauthPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceOauthPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthPartialUpdate().'
             );
         }
 
@@ -7364,7 +6238,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7376,62 +6250,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/oauth/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedOAuthSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedOAuthSourcePropertyMappingRequest"],
-            ),
+            body: PatchedOAuthSourcePropertyMappingRequestToJSON(requestParameters['patchedOAuthSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceOauthPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceOauthPartialUpdateRaw(requestParameters: PropertymappingsSourceOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceOauthPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            OAuthSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => OAuthSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthPartialUpdate(
-        requestParameters: PropertymappingsSourceOauthPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<OAuthSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceOauthPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthPartialUpdate(requestParameters: PropertymappingsSourceOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceOauthPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthRetrieve without sending the request
      */
-    async propertymappingsSourceOauthRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceOauthRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceOauthRetrieveRequestOpts(requestParameters: PropertymappingsSourceOauthRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthRetrieve().'
             );
         }
 
@@ -7449,14 +6304,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/oauth/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7465,50 +6317,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthRetrieveRaw(
-        requestParameters: PropertymappingsSourceOauthRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceOauthRetrieveRaw(requestParameters: PropertymappingsSourceOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceOauthRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            OAuthSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => OAuthSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthRetrieve(
-        requestParameters: PropertymappingsSourceOauthRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<OAuthSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceOauthRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthRetrieve(requestParameters: PropertymappingsSourceOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceOauthRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthUpdate without sending the request
      */
-    async propertymappingsSourceOauthUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceOauthUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceOauthUpdateRequestOpts(requestParameters: PropertymappingsSourceOauthUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthUpdate().'
             );
         }
 
-        if (requestParameters["oAuthSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['oAuthSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "oAuthSourcePropertyMappingRequest",
-                'Required parameter "oAuthSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceOauthUpdate().',
+                'oAuthSourcePropertyMappingRequest',
+                'Required parameter "oAuthSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceOauthUpdate().'
             );
         }
 
@@ -7516,7 +6354,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7528,62 +6366,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/oauth/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: OAuthSourcePropertyMappingRequestToJSON(
-                requestParameters["oAuthSourcePropertyMappingRequest"],
-            ),
+            body: OAuthSourcePropertyMappingRequestToJSON(requestParameters['oAuthSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthUpdateRaw(
-        requestParameters: PropertymappingsSourceOauthUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceOauthUpdateRaw(requestParameters: PropertymappingsSourceOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceOauthUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            OAuthSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => OAuthSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * OAuthSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceOauthUpdate(
-        requestParameters: PropertymappingsSourceOauthUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<OAuthSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceOauthUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthUpdate(requestParameters: PropertymappingsSourceOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceOauthUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceOauthUsedByList without sending the request
      */
-    async propertymappingsSourceOauthUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceOauthUsedByListRequestOpts(requestParameters: PropertymappingsSourceOauthUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthUsedByList().'
             );
         }
 
@@ -7601,14 +6420,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/oauth/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7617,12 +6433,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceOauthUsedByListRaw(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceOauthUsedByListRaw(requestParameters: PropertymappingsSourceOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceOauthUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -7631,27 +6443,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceOauthUsedByList(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceOauthUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceOauthUsedByList(requestParameters: PropertymappingsSourceOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceOauthUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexCreate without sending the request
      */
-    async propertymappingsSourcePlexCreateRequestOpts(
-        requestParameters: PropertymappingsSourcePlexCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["plexSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourcePlexCreateRequestOpts(requestParameters: PropertymappingsSourcePlexCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['plexSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "plexSourcePropertyMappingRequest",
-                'Required parameter "plexSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourcePlexCreate().',
+                'plexSourcePropertyMappingRequest',
+                'Required parameter "plexSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourcePlexCreate().'
             );
         }
 
@@ -7659,7 +6463,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7674,55 +6478,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PlexSourcePropertyMappingRequestToJSON(
-                requestParameters["plexSourcePropertyMappingRequest"],
-            ),
+            body: PlexSourcePropertyMappingRequestToJSON(requestParameters['plexSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexCreateRaw(
-        requestParameters: PropertymappingsSourcePlexCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexCreateRequestOpts(requestParameters);
+    async propertymappingsSourcePlexCreateRaw(requestParameters: PropertymappingsSourcePlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourcePlexCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PlexSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PlexSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexCreate(
-        requestParameters: PropertymappingsSourcePlexCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PlexSourcePropertyMapping> {
-        const response = await this.propertymappingsSourcePlexCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexCreate(requestParameters: PropertymappingsSourcePlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSourcePropertyMapping> {
+        const response = await this.propertymappingsSourcePlexCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexDestroy without sending the request
      */
-    async propertymappingsSourcePlexDestroyRequestOpts(
-        requestParameters: PropertymappingsSourcePlexDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourcePlexDestroyRequestOpts(requestParameters: PropertymappingsSourcePlexDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexDestroy().'
             );
         }
 
@@ -7740,14 +6528,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/plex/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7756,12 +6541,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexDestroyRaw(
-        requestParameters: PropertymappingsSourcePlexDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexDestroyRequestOpts(requestParameters);
+    async propertymappingsSourcePlexDestroyRaw(requestParameters: PropertymappingsSourcePlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourcePlexDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -7770,47 +6551,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexDestroy(
-        requestParameters: PropertymappingsSourcePlexDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourcePlexDestroy(requestParameters: PropertymappingsSourcePlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourcePlexDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexList without sending the request
      */
-    async propertymappingsSourcePlexListRequestOpts(
-        requestParameters: PropertymappingsSourcePlexListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourcePlexListRequestOpts(requestParameters: PropertymappingsSourcePlexListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7828,7 +6604,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7837,43 +6613,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexListRaw(
-        requestParameters: PropertymappingsSourcePlexListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedPlexSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexListRequestOpts(requestParameters);
+    async propertymappingsSourcePlexListRaw(requestParameters: PropertymappingsSourcePlexListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPlexSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourcePlexListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedPlexSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPlexSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexList(
-        requestParameters: PropertymappingsSourcePlexListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedPlexSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourcePlexListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexList(requestParameters: PropertymappingsSourcePlexListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPlexSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourcePlexListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexPartialUpdate without sending the request
      */
-    async propertymappingsSourcePlexPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourcePlexPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourcePlexPartialUpdateRequestOpts(requestParameters: PropertymappingsSourcePlexPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexPartialUpdate().'
             );
         }
 
@@ -7881,7 +6643,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7893,62 +6655,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/plex/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPlexSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedPlexSourcePropertyMappingRequest"],
-            ),
+            body: PatchedPlexSourcePropertyMappingRequestToJSON(requestParameters['patchedPlexSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexPartialUpdateRaw(
-        requestParameters: PropertymappingsSourcePlexPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourcePlexPartialUpdateRaw(requestParameters: PropertymappingsSourcePlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourcePlexPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PlexSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PlexSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexPartialUpdate(
-        requestParameters: PropertymappingsSourcePlexPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PlexSourcePropertyMapping> {
-        const response = await this.propertymappingsSourcePlexPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexPartialUpdate(requestParameters: PropertymappingsSourcePlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSourcePropertyMapping> {
+        const response = await this.propertymappingsSourcePlexPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexRetrieve without sending the request
      */
-    async propertymappingsSourcePlexRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourcePlexRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourcePlexRetrieveRequestOpts(requestParameters: PropertymappingsSourcePlexRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexRetrieve().'
             );
         }
 
@@ -7966,14 +6709,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/plex/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7982,50 +6722,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexRetrieveRaw(
-        requestParameters: PropertymappingsSourcePlexRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourcePlexRetrieveRaw(requestParameters: PropertymappingsSourcePlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourcePlexRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PlexSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PlexSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexRetrieve(
-        requestParameters: PropertymappingsSourcePlexRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PlexSourcePropertyMapping> {
-        const response = await this.propertymappingsSourcePlexRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexRetrieve(requestParameters: PropertymappingsSourcePlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSourcePropertyMapping> {
+        const response = await this.propertymappingsSourcePlexRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexUpdate without sending the request
      */
-    async propertymappingsSourcePlexUpdateRequestOpts(
-        requestParameters: PropertymappingsSourcePlexUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourcePlexUpdateRequestOpts(requestParameters: PropertymappingsSourcePlexUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexUpdate().'
             );
         }
 
-        if (requestParameters["plexSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['plexSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "plexSourcePropertyMappingRequest",
-                'Required parameter "plexSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourcePlexUpdate().',
+                'plexSourcePropertyMappingRequest',
+                'Required parameter "plexSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourcePlexUpdate().'
             );
         }
 
@@ -8033,7 +6759,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8045,62 +6771,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/plex/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: PlexSourcePropertyMappingRequestToJSON(
-                requestParameters["plexSourcePropertyMappingRequest"],
-            ),
+            body: PlexSourcePropertyMappingRequestToJSON(requestParameters['plexSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexUpdateRaw(
-        requestParameters: PropertymappingsSourcePlexUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexUpdateRequestOpts(requestParameters);
+    async propertymappingsSourcePlexUpdateRaw(requestParameters: PropertymappingsSourcePlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourcePlexUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PlexSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PlexSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * PlexSourcePropertyMapping Viewset
      */
-    async propertymappingsSourcePlexUpdate(
-        requestParameters: PropertymappingsSourcePlexUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PlexSourcePropertyMapping> {
-        const response = await this.propertymappingsSourcePlexUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexUpdate(requestParameters: PropertymappingsSourcePlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSourcePropertyMapping> {
+        const response = await this.propertymappingsSourcePlexUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourcePlexUsedByList without sending the request
      */
-    async propertymappingsSourcePlexUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourcePlexUsedByListRequestOpts(requestParameters: PropertymappingsSourcePlexUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexUsedByList().'
             );
         }
 
@@ -8118,14 +6825,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/plex/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8134,12 +6838,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourcePlexUsedByListRaw(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourcePlexUsedByListRaw(requestParameters: PropertymappingsSourcePlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourcePlexUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -8148,27 +6848,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourcePlexUsedByList(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourcePlexUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourcePlexUsedByList(requestParameters: PropertymappingsSourcePlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourcePlexUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlCreate without sending the request
      */
-    async propertymappingsSourceSamlCreateRequestOpts(
-        requestParameters: PropertymappingsSourceSamlCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["sAMLSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceSamlCreateRequestOpts(requestParameters: PropertymappingsSourceSamlCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['sAMLSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sAMLSourcePropertyMappingRequest",
-                'Required parameter "sAMLSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceSamlCreate().',
+                'sAMLSourcePropertyMappingRequest',
+                'Required parameter "sAMLSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceSamlCreate().'
             );
         }
 
@@ -8176,7 +6868,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8191,55 +6883,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLSourcePropertyMappingRequestToJSON(
-                requestParameters["sAMLSourcePropertyMappingRequest"],
-            ),
+            body: SAMLSourcePropertyMappingRequestToJSON(requestParameters['sAMLSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlCreateRaw(
-        requestParameters: PropertymappingsSourceSamlCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlCreateRequestOpts(requestParameters);
+    async propertymappingsSourceSamlCreateRaw(requestParameters: PropertymappingsSourceSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlCreate(
-        requestParameters: PropertymappingsSourceSamlCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceSamlCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlCreate(requestParameters: PropertymappingsSourceSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceSamlCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlDestroy without sending the request
      */
-    async propertymappingsSourceSamlDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceSamlDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceSamlDestroyRequestOpts(requestParameters: PropertymappingsSourceSamlDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlDestroy().'
             );
         }
 
@@ -8257,14 +6933,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8273,12 +6946,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlDestroyRaw(
-        requestParameters: PropertymappingsSourceSamlDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceSamlDestroyRaw(requestParameters: PropertymappingsSourceSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -8287,47 +6956,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlDestroy(
-        requestParameters: PropertymappingsSourceSamlDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceSamlDestroy(requestParameters: PropertymappingsSourceSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlList without sending the request
      */
-    async propertymappingsSourceSamlListRequestOpts(
-        requestParameters: PropertymappingsSourceSamlListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceSamlListRequestOpts(requestParameters: PropertymappingsSourceSamlListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8345,7 +7009,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8354,43 +7018,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlListRaw(
-        requestParameters: PropertymappingsSourceSamlListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSAMLSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlListRequestOpts(requestParameters);
+    async propertymappingsSourceSamlListRaw(requestParameters: PropertymappingsSourceSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSAMLSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSAMLSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSAMLSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlList(
-        requestParameters: PropertymappingsSourceSamlListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSAMLSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceSamlListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlList(requestParameters: PropertymappingsSourceSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSAMLSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceSamlListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlPartialUpdate without sending the request
      */
-    async propertymappingsSourceSamlPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceSamlPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceSamlPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlPartialUpdate().'
             );
         }
 
@@ -8398,7 +7048,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8410,62 +7060,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSAMLSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedSAMLSourcePropertyMappingRequest"],
-            ),
+            body: PatchedSAMLSourcePropertyMappingRequestToJSON(requestParameters['patchedSAMLSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceSamlPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceSamlPartialUpdateRaw(requestParameters: PropertymappingsSourceSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlPartialUpdate(
-        requestParameters: PropertymappingsSourceSamlPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceSamlPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlPartialUpdate(requestParameters: PropertymappingsSourceSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceSamlPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlRetrieve without sending the request
      */
-    async propertymappingsSourceSamlRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceSamlRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceSamlRetrieveRequestOpts(requestParameters: PropertymappingsSourceSamlRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlRetrieve().'
             );
         }
 
@@ -8483,14 +7114,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8499,50 +7127,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlRetrieveRaw(
-        requestParameters: PropertymappingsSourceSamlRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceSamlRetrieveRaw(requestParameters: PropertymappingsSourceSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlRetrieve(
-        requestParameters: PropertymappingsSourceSamlRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceSamlRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlRetrieve(requestParameters: PropertymappingsSourceSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceSamlRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlUpdate without sending the request
      */
-    async propertymappingsSourceSamlUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceSamlUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceSamlUpdateRequestOpts(requestParameters: PropertymappingsSourceSamlUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlUpdate().'
             );
         }
 
-        if (requestParameters["sAMLSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['sAMLSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sAMLSourcePropertyMappingRequest",
-                'Required parameter "sAMLSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceSamlUpdate().',
+                'sAMLSourcePropertyMappingRequest',
+                'Required parameter "sAMLSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceSamlUpdate().'
             );
         }
 
@@ -8550,7 +7164,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8562,62 +7176,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/saml/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLSourcePropertyMappingRequestToJSON(
-                requestParameters["sAMLSourcePropertyMappingRequest"],
-            ),
+            body: SAMLSourcePropertyMappingRequestToJSON(requestParameters['sAMLSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlUpdateRaw(
-        requestParameters: PropertymappingsSourceSamlUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceSamlUpdateRaw(requestParameters: PropertymappingsSourceSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SAMLSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SAMLSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceSamlUpdate(
-        requestParameters: PropertymappingsSourceSamlUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SAMLSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceSamlUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlUpdate(requestParameters: PropertymappingsSourceSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceSamlUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceSamlUsedByList without sending the request
      */
-    async propertymappingsSourceSamlUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceSamlUsedByListRequestOpts(requestParameters: PropertymappingsSourceSamlUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlUsedByList().'
             );
         }
 
@@ -8635,14 +7230,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/saml/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8651,12 +7243,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceSamlUsedByListRaw(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceSamlUsedByListRaw(requestParameters: PropertymappingsSourceSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -8665,27 +7253,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceSamlUsedByList(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceSamlUsedByList(requestParameters: PropertymappingsSourceSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceSamlUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimCreate without sending the request
      */
-    async propertymappingsSourceScimCreateRequestOpts(
-        requestParameters: PropertymappingsSourceScimCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["sCIMSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceScimCreateRequestOpts(requestParameters: PropertymappingsSourceScimCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['sCIMSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sCIMSourcePropertyMappingRequest",
-                'Required parameter "sCIMSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceScimCreate().',
+                'sCIMSourcePropertyMappingRequest',
+                'Required parameter "sCIMSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceScimCreate().'
             );
         }
 
@@ -8693,7 +7273,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8708,55 +7288,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourcePropertyMappingRequestToJSON(
-                requestParameters["sCIMSourcePropertyMappingRequest"],
-            ),
+            body: SCIMSourcePropertyMappingRequestToJSON(requestParameters['sCIMSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimCreateRaw(
-        requestParameters: PropertymappingsSourceScimCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimCreateRequestOpts(requestParameters);
+    async propertymappingsSourceScimCreateRaw(requestParameters: PropertymappingsSourceScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceScimCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SCIMSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimCreate(
-        requestParameters: PropertymappingsSourceScimCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceScimCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimCreate(requestParameters: PropertymappingsSourceScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceScimCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimDestroy without sending the request
      */
-    async propertymappingsSourceScimDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceScimDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceScimDestroyRequestOpts(requestParameters: PropertymappingsSourceScimDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimDestroy().'
             );
         }
 
@@ -8774,14 +7338,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8790,12 +7351,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimDestroyRaw(
-        requestParameters: PropertymappingsSourceScimDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceScimDestroyRaw(requestParameters: PropertymappingsSourceScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceScimDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -8804,47 +7361,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimDestroy(
-        requestParameters: PropertymappingsSourceScimDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceScimDestroy(requestParameters: PropertymappingsSourceScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceScimDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceScimList without sending the request
      */
-    async propertymappingsSourceScimListRequestOpts(
-        requestParameters: PropertymappingsSourceScimListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceScimListRequestOpts(requestParameters: PropertymappingsSourceScimListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8862,7 +7414,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8871,43 +7423,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimListRaw(
-        requestParameters: PropertymappingsSourceScimListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSCIMSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimListRequestOpts(requestParameters);
+    async propertymappingsSourceScimListRaw(requestParameters: PropertymappingsSourceScimListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceScimListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSCIMSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimList(
-        requestParameters: PropertymappingsSourceScimListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSCIMSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceScimListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimList(requestParameters: PropertymappingsSourceScimListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceScimListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimPartialUpdate without sending the request
      */
-    async propertymappingsSourceScimPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceScimPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceScimPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceScimPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimPartialUpdate().'
             );
         }
 
@@ -8915,7 +7453,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8927,62 +7465,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedSCIMSourcePropertyMappingRequest"],
-            ),
+            body: PatchedSCIMSourcePropertyMappingRequestToJSON(requestParameters['patchedSCIMSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceScimPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceScimPartialUpdateRaw(requestParameters: PropertymappingsSourceScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceScimPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SCIMSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimPartialUpdate(
-        requestParameters: PropertymappingsSourceScimPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceScimPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimPartialUpdate(requestParameters: PropertymappingsSourceScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceScimPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimRetrieve without sending the request
      */
-    async propertymappingsSourceScimRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceScimRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceScimRetrieveRequestOpts(requestParameters: PropertymappingsSourceScimRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimRetrieve().'
             );
         }
 
@@ -9000,14 +7519,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9016,50 +7532,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimRetrieveRaw(
-        requestParameters: PropertymappingsSourceScimRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceScimRetrieveRaw(requestParameters: PropertymappingsSourceScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceScimRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SCIMSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimRetrieve(
-        requestParameters: PropertymappingsSourceScimRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceScimRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimRetrieve(requestParameters: PropertymappingsSourceScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceScimRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimUpdate without sending the request
      */
-    async propertymappingsSourceScimUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceScimUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceScimUpdateRequestOpts(requestParameters: PropertymappingsSourceScimUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimUpdate().'
             );
         }
 
-        if (requestParameters["sCIMSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['sCIMSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "sCIMSourcePropertyMappingRequest",
-                'Required parameter "sCIMSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceScimUpdate().',
+                'sCIMSourcePropertyMappingRequest',
+                'Required parameter "sCIMSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceScimUpdate().'
             );
         }
 
@@ -9067,7 +7569,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9079,62 +7581,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/scim/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourcePropertyMappingRequestToJSON(
-                requestParameters["sCIMSourcePropertyMappingRequest"],
-            ),
+            body: SCIMSourcePropertyMappingRequestToJSON(requestParameters['sCIMSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimUpdateRaw(
-        requestParameters: PropertymappingsSourceScimUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceScimUpdateRaw(requestParameters: PropertymappingsSourceScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceScimUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            SCIMSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * SCIMSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceScimUpdate(
-        requestParameters: PropertymappingsSourceScimUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SCIMSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceScimUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimUpdate(requestParameters: PropertymappingsSourceScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceScimUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceScimUsedByList without sending the request
      */
-    async propertymappingsSourceScimUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceScimUsedByListRequestOpts(requestParameters: PropertymappingsSourceScimUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimUsedByList().'
             );
         }
 
@@ -9152,14 +7635,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/scim/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9168,12 +7648,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceScimUsedByListRaw(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceScimUsedByListRaw(requestParameters: PropertymappingsSourceScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceScimUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9182,27 +7658,19 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceScimUsedByList(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceScimUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceScimUsedByList(requestParameters: PropertymappingsSourceScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceScimUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramCreate without sending the request
      */
-    async propertymappingsSourceTelegramCreateRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["telegramSourcePropertyMappingRequest"] == null) {
+    async propertymappingsSourceTelegramCreateRequestOpts(requestParameters: PropertymappingsSourceTelegramCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['telegramSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "telegramSourcePropertyMappingRequest",
-                'Required parameter "telegramSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceTelegramCreate().',
+                'telegramSourcePropertyMappingRequest',
+                'Required parameter "telegramSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceTelegramCreate().'
             );
         }
 
@@ -9210,7 +7678,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9225,55 +7693,39 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TelegramSourcePropertyMappingRequestToJSON(
-                requestParameters["telegramSourcePropertyMappingRequest"],
-            ),
+            body: TelegramSourcePropertyMappingRequestToJSON(requestParameters['telegramSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramCreateRaw(
-        requestParameters: PropertymappingsSourceTelegramCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramCreateRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramCreateRaw(requestParameters: PropertymappingsSourceTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceTelegramCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            TelegramSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramCreate(
-        requestParameters: PropertymappingsSourceTelegramCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TelegramSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceTelegramCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramCreate(requestParameters: PropertymappingsSourceTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceTelegramCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramDestroy without sending the request
      */
-    async propertymappingsSourceTelegramDestroyRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceTelegramDestroyRequestOpts(requestParameters: PropertymappingsSourceTelegramDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramDestroy().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramDestroy().'
             );
         }
 
@@ -9291,14 +7743,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/telegram/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9307,12 +7756,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramDestroyRaw(
-        requestParameters: PropertymappingsSourceTelegramDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramDestroyRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramDestroyRaw(requestParameters: PropertymappingsSourceTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.propertymappingsSourceTelegramDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -9321,47 +7766,42 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramDestroy(
-        requestParameters: PropertymappingsSourceTelegramDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async propertymappingsSourceTelegramDestroy(requestParameters: PropertymappingsSourceTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.propertymappingsSourceTelegramDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramList without sending the request
      */
-    async propertymappingsSourceTelegramListRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async propertymappingsSourceTelegramListRequestOpts(requestParameters: PropertymappingsSourceTelegramListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["managed"] != null) {
-            queryParameters["managed"] = requestParameters["managed"];
+        if (requestParameters['managed'] != null) {
+            queryParameters['managed'] = requestParameters['managed'];
         }
 
-        if (requestParameters["managedIsnull"] != null) {
-            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        if (requestParameters['managedIsnull'] != null) {
+            queryParameters['managed__isnull'] = requestParameters['managedIsnull'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9379,7 +7819,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9388,43 +7828,29 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramListRaw(
-        requestParameters: PropertymappingsSourceTelegramListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedTelegramSourcePropertyMappingList>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramListRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramListRaw(requestParameters: PropertymappingsSourceTelegramListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTelegramSourcePropertyMappingList>> {
+        const requestOptions = await this.propertymappingsSourceTelegramListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedTelegramSourcePropertyMappingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTelegramSourcePropertyMappingListFromJSON(jsonValue));
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramList(
-        requestParameters: PropertymappingsSourceTelegramListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedTelegramSourcePropertyMappingList> {
-        const response = await this.propertymappingsSourceTelegramListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramList(requestParameters: PropertymappingsSourceTelegramListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTelegramSourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceTelegramListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramPartialUpdate without sending the request
      */
-    async propertymappingsSourceTelegramPartialUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceTelegramPartialUpdateRequestOpts(requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramPartialUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramPartialUpdate().'
             );
         }
 
@@ -9432,7 +7858,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9444,62 +7870,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/telegram/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTelegramSourcePropertyMappingRequestToJSON(
-                requestParameters["patchedTelegramSourcePropertyMappingRequest"],
-            ),
+            body: PatchedTelegramSourcePropertyMappingRequestToJSON(requestParameters['patchedTelegramSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramPartialUpdateRaw(
-        requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramPartialUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramPartialUpdateRaw(requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceTelegramPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            TelegramSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramPartialUpdate(
-        requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TelegramSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceTelegramPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramPartialUpdate(requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceTelegramPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramRetrieve without sending the request
      */
-    async propertymappingsSourceTelegramRetrieveRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceTelegramRetrieveRequestOpts(requestParameters: PropertymappingsSourceTelegramRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramRetrieve().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramRetrieve().'
             );
         }
 
@@ -9517,14 +7924,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/telegram/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9533,50 +7937,36 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramRetrieveRaw(
-        requestParameters: PropertymappingsSourceTelegramRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramRetrieveRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramRetrieveRaw(requestParameters: PropertymappingsSourceTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceTelegramRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            TelegramSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramRetrieve(
-        requestParameters: PropertymappingsSourceTelegramRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TelegramSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceTelegramRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramRetrieve(requestParameters: PropertymappingsSourceTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceTelegramRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramUpdate without sending the request
      */
-    async propertymappingsSourceTelegramUpdateRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceTelegramUpdateRequestOpts(requestParameters: PropertymappingsSourceTelegramUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramUpdate().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramUpdate().'
             );
         }
 
-        if (requestParameters["telegramSourcePropertyMappingRequest"] == null) {
+        if (requestParameters['telegramSourcePropertyMappingRequest'] == null) {
             throw new runtime.RequiredError(
-                "telegramSourcePropertyMappingRequest",
-                'Required parameter "telegramSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceTelegramUpdate().',
+                'telegramSourcePropertyMappingRequest',
+                'Required parameter "telegramSourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceTelegramUpdate().'
             );
         }
 
@@ -9584,7 +7974,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9596,62 +7986,43 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/telegram/{pm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TelegramSourcePropertyMappingRequestToJSON(
-                requestParameters["telegramSourcePropertyMappingRequest"],
-            ),
+            body: TelegramSourcePropertyMappingRequestToJSON(requestParameters['telegramSourcePropertyMappingRequest']),
         };
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramUpdateRaw(
-        requestParameters: PropertymappingsSourceTelegramUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramUpdateRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramUpdateRaw(requestParameters: PropertymappingsSourceTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSourcePropertyMapping>> {
+        const requestOptions = await this.propertymappingsSourceTelegramUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            TelegramSourcePropertyMappingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourcePropertyMappingFromJSON(jsonValue));
     }
 
     /**
      * TelegramSourcePropertyMapping Viewset
      */
-    async propertymappingsSourceTelegramUpdate(
-        requestParameters: PropertymappingsSourceTelegramUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<TelegramSourcePropertyMapping> {
-        const response = await this.propertymappingsSourceTelegramUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramUpdate(requestParameters: PropertymappingsSourceTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSourcePropertyMapping> {
+        const response = await this.propertymappingsSourceTelegramUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for propertymappingsSourceTelegramUsedByList without sending the request
      */
-    async propertymappingsSourceTelegramUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
+    async propertymappingsSourceTelegramUsedByListRequestOpts(requestParameters: PropertymappingsSourceTelegramUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pmUuid'] == null) {
             throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramUsedByList().',
+                'pmUuid',
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramUsedByList().'
             );
         }
 
@@ -9669,14 +8040,11 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/propertymappings/source/telegram/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
+        urlPath = urlPath.replace('{pm_uuid}', encodeURIComponent(String(requestParameters['pmUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9685,12 +8053,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceTelegramUsedByListRaw(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramUsedByListRequestOpts(requestParameters);
+    async propertymappingsSourceTelegramUsedByListRaw(requestParameters: PropertymappingsSourceTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.propertymappingsSourceTelegramUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9699,14 +8063,9 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async propertymappingsSourceTelegramUsedByList(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceTelegramUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async propertymappingsSourceTelegramUsedByList(requestParameters: PropertymappingsSourceTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceTelegramUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

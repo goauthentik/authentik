@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Themed URLs - maps theme names to URLs for light and dark themes
  * @export
@@ -19,11 +20,11 @@
  */
 export interface ThemedUrls {
     /**
-     *
+     * 
      */
     light?: string | null;
     /**
-     *
+     * 
      */
     dark?: string | null;
 }
@@ -44,9 +45,9 @@ export function ThemedUrlsFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        light:
-            json["light"] === undefined ? undefined : json["light"] === null ? null : json["light"],
-        dark: json["dark"] === undefined ? undefined : json["dark"] === null ? null : json["dark"],
+        
+        'light': json['light'] === undefined ? undefined : json['light'] === null ? null : json['light'],
+        'dark': json['dark'] === undefined ? undefined : json['dark'] === null ? null : json['dark'],
     };
 }
 
@@ -54,16 +55,15 @@ export function ThemedUrlsToJSON(json: any): ThemedUrls {
     return ThemedUrlsToJSONTyped(json, false);
 }
 
-export function ThemedUrlsToJSONTyped(
-    value?: ThemedUrls | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ThemedUrlsToJSONTyped(value?: ThemedUrls | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        light: value["light"],
-        dark: value["dark"],
+        
+        'light': value['light'],
+        'dark': value['dark'],
     };
 }
+

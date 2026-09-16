@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedUserLDAPSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedUserLDAPSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserLDAPSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserLDAPSourceConnectionRequest(
-    value: object,
-): value is PatchedUserLDAPSourceConnectionRequest {
+export function instanceOfPatchedUserLDAPSourceConnectionRequest(value: object): value is PatchedUserLDAPSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserLDAPSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedUserLDAPSourceConnectionRequest {
+export function PatchedUserLDAPSourceConnectionRequestFromJSON(json: any): PatchedUserLDAPSourceConnectionRequest {
     return PatchedUserLDAPSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserLDAPSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserLDAPSourceConnectionRequest {
+export function PatchedUserLDAPSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserLDAPSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedUserLDAPSourceConnectionRequestToJSON(
-    json: any,
-): PatchedUserLDAPSourceConnectionRequest {
+export function PatchedUserLDAPSourceConnectionRequestToJSON(json: any): PatchedUserLDAPSourceConnectionRequest {
     return PatchedUserLDAPSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserLDAPSourceConnectionRequestToJSONTyped(
-    value?: PatchedUserLDAPSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserLDAPSourceConnectionRequestToJSONTyped(value?: PatchedUserLDAPSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

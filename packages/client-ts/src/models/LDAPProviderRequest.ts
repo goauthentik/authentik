@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode";
-import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode";
+import { mapValues } from '../runtime';
+import type { LDAPAPIAccessMode } from './LDAPAPIAccessMode';
+import {
+    LDAPAPIAccessModeFromJSON,
+    LDAPAPIAccessModeFromJSONTyped,
+    LDAPAPIAccessModeToJSON,
+    LDAPAPIAccessModeToJSONTyped,
+} from './LDAPAPIAccessMode';
 
 /**
  * LDAPProvider Serializer
@@ -22,7 +28,7 @@ import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAcc
  */
 export interface LDAPProviderRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -38,7 +44,7 @@ export interface LDAPProviderRequest {
      */
     invalidationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -46,11 +52,11 @@ export interface LDAPProviderRequest {
      */
     baseDn?: string;
     /**
-     *
+     * 
      */
     certificate?: string | null;
     /**
-     *
+     * 
      */
     tlsServerName?: string;
     /**
@@ -62,11 +68,11 @@ export interface LDAPProviderRequest {
      */
     gidStartNumber?: number;
     /**
-     *
+     * 
      */
     searchMode?: LDAPAPIAccessMode;
     /**
-     *
+     * 
      */
     bindMode?: LDAPAPIAccessMode;
     /**
@@ -75,25 +81,15 @@ export interface LDAPProviderRequest {
     mfaSupport?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the LDAPProviderRequest interface.
  */
 export function instanceOfLDAPProviderRequest(value: object): value is LDAPProviderRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('invalidationFlow' in (value as Record<string, any>)) && !('invalidation_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['invalidationFlow'] === undefined && (value as Record<string, any>)['invalidation_flow'] === undefined)) return false;
     return true;
 }
 
@@ -101,41 +97,25 @@ export function LDAPProviderRequestFromJSON(json: any): LDAPProviderRequest {
     return LDAPProviderRequestFromJSONTyped(json, false);
 }
 
-export function LDAPProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LDAPProviderRequest {
+export function LDAPProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): LDAPProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
-        certificate:
-            json["certificate"] === undefined
-                ? undefined
-                : json["certificate"] === null
-                  ? null
-                  : json["certificate"],
-        tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
-        uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
-        gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],
-        searchMode:
-            json["search_mode"] == null
-                ? undefined
-                : LDAPAPIAccessModeFromJSON(json["search_mode"]),
-        bindMode:
-            json["bind_mode"] == null ? undefined : LDAPAPIAccessModeFromJSON(json["bind_mode"]),
-        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
+        
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'baseDn': json['base_dn'] == null ? undefined : json['base_dn'],
+        'certificate': json['certificate'] === undefined ? undefined : json['certificate'] === null ? null : json['certificate'],
+        'tlsServerName': json['tls_server_name'] == null ? undefined : json['tls_server_name'],
+        'uidStartNumber': json['uid_start_number'] == null ? undefined : json['uid_start_number'],
+        'gidStartNumber': json['gid_start_number'] == null ? undefined : json['gid_start_number'],
+        'searchMode': json['search_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['search_mode']),
+        'bindMode': json['bind_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['bind_mode']),
+        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
     };
 }
 
@@ -143,27 +123,26 @@ export function LDAPProviderRequestToJSON(json: any): LDAPProviderRequest {
     return LDAPProviderRequestToJSONTyped(json, false);
 }
 
-export function LDAPProviderRequestToJSONTyped(
-    value?: LDAPProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LDAPProviderRequestToJSONTyped(value?: LDAPProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        base_dn: value["baseDn"],
-        certificate: value["certificate"],
-        tls_server_name: value["tlsServerName"],
-        uid_start_number: value["uidStartNumber"],
-        gid_start_number: value["gidStartNumber"],
-        search_mode: LDAPAPIAccessModeToJSON(value["searchMode"]),
-        bind_mode: LDAPAPIAccessModeToJSON(value["bindMode"]),
-        mfa_support: value["mfaSupport"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'base_dn': value['baseDn'],
+        'certificate': value['certificate'],
+        'tls_server_name': value['tlsServerName'],
+        'uid_start_number': value['uidStartNumber'],
+        'gid_start_number': value['gidStartNumber'],
+        'search_mode': LDAPAPIAccessModeToJSON(value['searchMode']),
+        'bind_mode': LDAPAPIAccessModeToJSON(value['bindMode']),
+        'mfa_support': value['mfaSupport'],
     };
 }
+

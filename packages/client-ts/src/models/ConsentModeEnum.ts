@@ -12,17 +12,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ConsentModeEnum = {
-    AlwaysRequire: "always_require",
-    Permanent: "permanent",
-    Expiring: "expiring",
-    UnknownDefaultOpenApi: "11184809",
+    AlwaysRequire: 'always_require',
+    Permanent: 'permanent',
+    Expiring: 'expiring',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ConsentModeEnum = (typeof ConsentModeEnum)[keyof typeof ConsentModeEnum];
+export type ConsentModeEnum = typeof ConsentModeEnum[keyof typeof ConsentModeEnum];
+
 
 export function instanceOfConsentModeEnum(value: any): boolean {
     for (const key in ConsentModeEnum) {
@@ -39,10 +41,7 @@ export function ConsentModeEnumFromJSON(json: any): ConsentModeEnum {
     return ConsentModeEnumFromJSONTyped(json, false);
 }
 
-export function ConsentModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ConsentModeEnum {
+export function ConsentModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentModeEnum {
     return json as ConsentModeEnum;
 }
 
@@ -50,9 +49,7 @@ export function ConsentModeEnumToJSON(value?: ConsentModeEnum | null): any {
     return value as any;
 }
 
-export function ConsentModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ConsentModeEnum {
+export function ConsentModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ConsentModeEnum {
     return value as ConsentModeEnum;
 }
+

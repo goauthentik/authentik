@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * GoogleWorkspaceProviderGroup Serializer
  * @export
@@ -19,15 +20,15 @@
  */
 export interface GoogleWorkspaceProviderGroupRequest {
     /**
-     *
+     * 
      */
     googleId: string;
     /**
-     *
+     * 
      */
     group: string;
     /**
-     *
+     * 
      */
     provider: number;
 }
@@ -35,58 +36,43 @@ export interface GoogleWorkspaceProviderGroupRequest {
 /**
  * Check if a given object implements the GoogleWorkspaceProviderGroupRequest interface.
  */
-export function instanceOfGoogleWorkspaceProviderGroupRequest(
-    value: object,
-): value is GoogleWorkspaceProviderGroupRequest {
-    if (
-        (!("googleId" in (value as Record<string, any>)) &&
-            !("google_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["googleId"] === undefined &&
-            (value as Record<string, any>)["google_id"] === undefined)
-    )
-        return false;
-    if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderGroupRequest(value: object): value is GoogleWorkspaceProviderGroupRequest {
+    if ((!('googleId' in (value as Record<string, any>)) && !('google_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['googleId'] === undefined && (value as Record<string, any>)['google_id'] === undefined)) return false;
+    if (!('group' in value) || value['group'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
     return true;
 }
 
-export function GoogleWorkspaceProviderGroupRequestFromJSON(
-    json: any,
-): GoogleWorkspaceProviderGroupRequest {
+export function GoogleWorkspaceProviderGroupRequestFromJSON(json: any): GoogleWorkspaceProviderGroupRequest {
     return GoogleWorkspaceProviderGroupRequestFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GoogleWorkspaceProviderGroupRequest {
+export function GoogleWorkspaceProviderGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        googleId: json["google_id"],
-        group: json["group"],
-        provider: json["provider"],
+        
+        'googleId': json['google_id'],
+        'group': json['group'],
+        'provider': json['provider'],
     };
 }
 
-export function GoogleWorkspaceProviderGroupRequestToJSON(
-    json: any,
-): GoogleWorkspaceProviderGroupRequest {
+export function GoogleWorkspaceProviderGroupRequestToJSON(json: any): GoogleWorkspaceProviderGroupRequest {
     return GoogleWorkspaceProviderGroupRequestToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderGroupRequestToJSONTyped(
-    value?: GoogleWorkspaceProviderGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GoogleWorkspaceProviderGroupRequestToJSONTyped(value?: GoogleWorkspaceProviderGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        google_id: value["googleId"],
-        group: value["group"],
-        provider: value["provider"],
+        
+        'google_id': value['googleId'],
+        'group': value['group'],
+        'provider': value['provider'],
     };
 }
+

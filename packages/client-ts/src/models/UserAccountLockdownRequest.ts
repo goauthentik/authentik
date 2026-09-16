@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Choose the target account before starting the lockdown flow.
  * @export
@@ -27,9 +28,7 @@ export interface UserAccountLockdownRequest {
 /**
  * Check if a given object implements the UserAccountLockdownRequest interface.
  */
-export function instanceOfUserAccountLockdownRequest(
-    value: object,
-): value is UserAccountLockdownRequest {
+export function instanceOfUserAccountLockdownRequest(value: object): value is UserAccountLockdownRequest {
     return true;
 }
 
@@ -37,15 +36,13 @@ export function UserAccountLockdownRequestFromJSON(json: any): UserAccountLockdo
     return UserAccountLockdownRequestFromJSONTyped(json, false);
 }
 
-export function UserAccountLockdownRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserAccountLockdownRequest {
+export function UserAccountLockdownRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserAccountLockdownRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
+        
+        'user': json['user'] === undefined ? undefined : json['user'] === null ? null : json['user'],
     };
 }
 
@@ -53,15 +50,14 @@ export function UserAccountLockdownRequestToJSON(json: any): UserAccountLockdown
     return UserAccountLockdownRequestToJSONTyped(json, false);
 }
 
-export function UserAccountLockdownRequestToJSONTyped(
-    value?: UserAccountLockdownRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserAccountLockdownRequestToJSONTyped(value?: UserAccountLockdownRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
+        
+        'user': value['user'],
     };
 }
+

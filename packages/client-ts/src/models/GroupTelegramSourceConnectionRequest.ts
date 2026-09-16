@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface GroupTelegramSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +32,40 @@ export interface GroupTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupTelegramSourceConnectionRequest interface.
  */
-export function instanceOfGroupTelegramSourceConnectionRequest(
-    value: object,
-): value is GroupTelegramSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfGroupTelegramSourceConnectionRequest(value: object): value is GroupTelegramSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function GroupTelegramSourceConnectionRequestFromJSON(
-    json: any,
-): GroupTelegramSourceConnectionRequest {
+export function GroupTelegramSourceConnectionRequestFromJSON(json: any): GroupTelegramSourceConnectionRequest {
     return GroupTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupTelegramSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupTelegramSourceConnectionRequest {
+export function GroupTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function GroupTelegramSourceConnectionRequestToJSON(
-    json: any,
-): GroupTelegramSourceConnectionRequest {
+export function GroupTelegramSourceConnectionRequestToJSON(json: any): GroupTelegramSourceConnectionRequest {
     return GroupTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupTelegramSourceConnectionRequestToJSONTyped(
-    value?: GroupTelegramSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupTelegramSourceConnectionRequestToJSONTyped(value?: GroupTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

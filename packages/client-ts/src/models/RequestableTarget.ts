@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { Application } from "./Application";
-import { ApplicationFromJSON } from "./Application";
+import { mapValues } from '../runtime';
+import type { Application } from './Application';
+import {
+    ApplicationFromJSON,
+    ApplicationFromJSONTyped,
+    ApplicationToJSON,
+    ApplicationToJSONTyped,
+} from './Application';
 
 /**
  * Generic representation of a single request target: whatever was actually
@@ -37,15 +43,15 @@ export interface RequestableTarget {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     readonly label: string;
     /**
-     *
+     * 
      */
     readonly parent: Application | null;
 }
@@ -54,36 +60,12 @@ export interface RequestableTarget {
  * Check if a given object implements the RequestableTarget interface.
  */
 export function instanceOfRequestableTarget(value: object): value is RequestableTarget {
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
-    if (!("parent" in value) || value["parent"] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
+    if (!('parent' in value) || value['parent'] === undefined) return false;
     return true;
 }
 
@@ -91,20 +73,18 @@ export function RequestableTargetFromJSON(json: any): RequestableTarget {
     return RequestableTargetFromJSONTyped(json, false);
 }
 
-export function RequestableTargetFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RequestableTarget {
+export function RequestableTargetFromJSONTyped(json: any, ignoreDiscriminator: boolean): RequestableTarget {
     if (json == null) {
         return json;
     }
     return {
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        pbmUuid: json["pbm_uuid"],
-        label: json["label"],
-        parent: ApplicationFromJSON(json["parent"]),
+        
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'pbmUuid': json['pbm_uuid'],
+        'label': json['label'],
+        'parent': ApplicationFromJSON(json['parent']),
     };
 }
 
@@ -112,16 +92,13 @@ export function RequestableTargetToJSON(json: any): RequestableTarget {
     return RequestableTargetToJSONTyped(json, false);
 }
 
-export function RequestableTargetToJSONTyped(
-    value?: Omit<
-        RequestableTarget,
-        "verboseName" | "verboseNamePlural" | "metaModelName" | "pbmUuid" | "label" | "parent"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RequestableTargetToJSONTyped(value?: Omit<RequestableTarget, 'verboseName'|'verboseNamePlural'|'metaModelName'|'pbmUuid'|'label'|'parent'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

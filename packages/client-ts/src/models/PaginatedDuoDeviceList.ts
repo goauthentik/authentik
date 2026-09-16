@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { DuoDevice } from "./DuoDevice";
-import { DuoDeviceFromJSON, DuoDeviceToJSON } from "./DuoDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { DuoDevice } from './DuoDevice';
+import {
+    DuoDeviceFromJSON,
+    DuoDeviceFromJSONTyped,
+    DuoDeviceToJSON,
+    DuoDeviceToJSONTyped,
+} from './DuoDevice';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedDuoDeviceList
  */
 export interface PaginatedDuoDeviceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<DuoDevice>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedDuoDeviceList interface.
  */
 export function instanceOfPaginatedDuoDeviceList(value: object): value is PaginatedDuoDeviceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedDuoDeviceListFromJSON(json: any): PaginatedDuoDeviceLis
     return PaginatedDuoDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedDuoDeviceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedDuoDeviceList {
+export function PaginatedDuoDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDuoDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(DuoDeviceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(DuoDeviceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedDuoDeviceListToJSON(json: any): PaginatedDuoDeviceList 
     return PaginatedDuoDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedDuoDeviceListToJSONTyped(
-    value?: PaginatedDuoDeviceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedDuoDeviceListToJSONTyped(value?: PaginatedDuoDeviceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(DuoDeviceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(DuoDeviceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

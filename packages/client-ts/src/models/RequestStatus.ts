@@ -12,18 +12,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const RequestStatus = {
-    Created: "created",
-    Approved: "approved",
-    Denied: "denied",
-    Revoked: "revoked",
-    UnknownDefaultOpenApi: "11184809",
+    Created: 'created',
+    Approved: 'approved',
+    Denied: 'denied',
+    Revoked: 'revoked',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
+export type RequestStatus = typeof RequestStatus[keyof typeof RequestStatus];
+
 
 export function instanceOfRequestStatus(value: any): boolean {
     for (const key in RequestStatus) {
@@ -51,3 +53,4 @@ export function RequestStatusToJSON(value?: RequestStatus | null): any {
 export function RequestStatusToJSONTyped(value: any, ignoreDiscriminator: boolean): RequestStatus {
     return value as RequestStatus;
 }
+

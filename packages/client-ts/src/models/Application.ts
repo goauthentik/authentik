@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import { mapValues } from '../runtime';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
+import type { ThemedUrls } from './ThemedUrls';
+import {
+    ThemedUrlsFromJSON,
+    ThemedUrlsFromJSONTyped,
+    ThemedUrlsToJSON,
+    ThemedUrlsToJSONTyped,
+} from './ThemedUrls';
+import type { Provider } from './Provider';
+import {
+    ProviderFromJSON,
+    ProviderFromJSONTyped,
+    ProviderToJSON,
+    ProviderToJSONTyped,
+} from './Provider';
 
 /**
  * Application Serializer
@@ -26,11 +42,11 @@ import { ThemedUrlsFromJSON } from "./ThemedUrls";
  */
 export interface Application {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
@@ -42,19 +58,19 @@ export interface Application {
      */
     slug: string;
     /**
-     *
+     * 
      */
     provider?: number | null;
     /**
-     *
+     * 
      */
     readonly providerObj: Provider | null;
     /**
-     *
+     * 
      */
     backchannelProviders?: Array<number>;
     /**
-     *
+     * 
      */
     readonly backchannelProvidersObj: Array<Provider>;
     /**
@@ -66,11 +82,11 @@ export interface Application {
      */
     openInNewTab?: boolean;
     /**
-     *
+     * 
      */
     metaLaunchUrl?: string;
     /**
-     *
+     * 
      */
     metaIcon?: string;
     /**
@@ -78,23 +94,23 @@ export interface Application {
      */
     readonly metaIconUrl: string | null;
     /**
-     *
+     * 
      */
     readonly metaIconThemedUrls: ThemedUrls | null;
     /**
-     *
+     * 
      */
     metaDescription?: string;
     /**
-     *
+     * 
      */
     metaPublisher?: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -103,55 +119,21 @@ export interface Application {
     metaHide?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the Application interface.
  */
 export function instanceOfApplication(value: object): value is Application {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (
-        (!("providerObj" in (value as Record<string, any>)) &&
-            !("provider_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["providerObj"] === undefined &&
-            (value as Record<string, any>)["provider_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("backchannelProvidersObj" in (value as Record<string, any>)) &&
-            !("backchannel_providers_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["backchannelProvidersObj"] === undefined &&
-            (value as Record<string, any>)["backchannel_providers_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("launchUrl" in (value as Record<string, any>)) &&
-            !("launch_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["launchUrl"] === undefined &&
-            (value as Record<string, any>)["launch_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaIconUrl" in (value as Record<string, any>)) &&
-            !("meta_icon_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaIconUrl"] === undefined &&
-            (value as Record<string, any>)["meta_icon_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaIconThemedUrls" in (value as Record<string, any>)) &&
-            !("meta_icon_themed_urls" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaIconThemedUrls"] === undefined &&
-            (value as Record<string, any>)["meta_icon_themed_urls"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if ((!('providerObj' in (value as Record<string, any>)) && !('provider_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['providerObj'] === undefined && (value as Record<string, any>)['provider_obj'] === undefined)) return false;
+    if ((!('backchannelProvidersObj' in (value as Record<string, any>)) && !('backchannel_providers_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['backchannelProvidersObj'] === undefined && (value as Record<string, any>)['backchannel_providers_obj'] === undefined)) return false;
+    if ((!('launchUrl' in (value as Record<string, any>)) && !('launch_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['launchUrl'] === undefined && (value as Record<string, any>)['launch_url'] === undefined)) return false;
+    if ((!('metaIconUrl' in (value as Record<string, any>)) && !('meta_icon_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaIconUrl'] === undefined && (value as Record<string, any>)['meta_icon_url'] === undefined)) return false;
+    if ((!('metaIconThemedUrls' in (value as Record<string, any>)) && !('meta_icon_themed_urls' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaIconThemedUrls'] === undefined && (value as Record<string, any>)['meta_icon_themed_urls'] === undefined)) return false;
     return true;
 }
 
@@ -164,36 +146,26 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        pk: json["pk"],
-        pbmUuid: json["pbm_uuid"],
-        name: json["name"],
-        slug: json["slug"],
-        provider:
-            json["provider"] === undefined
-                ? undefined
-                : json["provider"] === null
-                  ? null
-                  : json["provider"],
-        providerObj: ProviderFromJSON(json["provider_obj"]),
-        backchannelProviders:
-            json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
-        backchannelProvidersObj: (json["backchannel_providers_obj"] as Array<any>).map(
-            ProviderFromJSON,
-        ),
-        launchUrl: json["launch_url"],
-        openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
-        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
-        metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
-        metaIconUrl: json["meta_icon_url"],
-        metaIconThemedUrls: ThemedUrlsFromJSON(json["meta_icon_themed_urls"]),
-        metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
-        metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        group: json["group"] == null ? undefined : json["group"],
-        metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
+        
+        'pk': json['pk'],
+        'pbmUuid': json['pbm_uuid'],
+        'name': json['name'],
+        'slug': json['slug'],
+        'provider': json['provider'] === undefined ? undefined : json['provider'] === null ? null : json['provider'],
+        'providerObj': ProviderFromJSON(json['provider_obj']),
+        'backchannelProviders': json['backchannel_providers'] == null ? undefined : json['backchannel_providers'],
+        'backchannelProvidersObj': ((json['backchannel_providers_obj'] as Array<any>).map(ProviderFromJSON)),
+        'launchUrl': json['launch_url'],
+        'openInNewTab': json['open_in_new_tab'] == null ? undefined : json['open_in_new_tab'],
+        'metaLaunchUrl': json['meta_launch_url'] == null ? undefined : json['meta_launch_url'],
+        'metaIcon': json['meta_icon'] == null ? undefined : json['meta_icon'],
+        'metaIconUrl': json['meta_icon_url'],
+        'metaIconThemedUrls': ThemedUrlsFromJSON(json['meta_icon_themed_urls']),
+        'metaDescription': json['meta_description'] == null ? undefined : json['meta_description'],
+        'metaPublisher': json['meta_publisher'] == null ? undefined : json['meta_publisher'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'metaHide': json['meta_hide'] == null ? undefined : json['meta_hide'],
     };
 }
 
@@ -201,35 +173,25 @@ export function ApplicationToJSON(json: any): Application {
     return ApplicationToJSONTyped(json, false);
 }
 
-export function ApplicationToJSONTyped(
-    value?: Omit<
-        Application,
-        | "pk"
-        | "pbmUuid"
-        | "providerObj"
-        | "backchannelProvidersObj"
-        | "launchUrl"
-        | "metaIconUrl"
-        | "metaIconThemedUrls"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ApplicationToJSONTyped(value?: Omit<Application, 'pk'|'pbmUuid'|'providerObj'|'backchannelProvidersObj'|'launchUrl'|'metaIconUrl'|'metaIconThemedUrls'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        provider: value["provider"],
-        backchannel_providers: value["backchannelProviders"],
-        open_in_new_tab: value["openInNewTab"],
-        meta_launch_url: value["metaLaunchUrl"],
-        meta_icon: value["metaIcon"],
-        meta_description: value["metaDescription"],
-        meta_publisher: value["metaPublisher"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        group: value["group"],
-        meta_hide: value["metaHide"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'provider': value['provider'],
+        'backchannel_providers': value['backchannelProviders'],
+        'open_in_new_tab': value['openInNewTab'],
+        'meta_launch_url': value['metaLaunchUrl'],
+        'meta_icon': value['metaIcon'],
+        'meta_description': value['metaDescription'],
+        'meta_publisher': value['metaPublisher'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'group': value['group'],
+        'meta_hide': value['metaHide'],
     };
 }
+

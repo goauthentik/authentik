@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedGroupPlexSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedGroupPlexSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupPlexSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupPlexSourceConnectionRequest(
-    value: object,
-): value is PatchedGroupPlexSourceConnectionRequest {
+export function instanceOfPatchedGroupPlexSourceConnectionRequest(value: object): value is PatchedGroupPlexSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupPlexSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedGroupPlexSourceConnectionRequest {
+export function PatchedGroupPlexSourceConnectionRequestFromJSON(json: any): PatchedGroupPlexSourceConnectionRequest {
     return PatchedGroupPlexSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupPlexSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGroupPlexSourceConnectionRequest {
+export function PatchedGroupPlexSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupPlexSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedGroupPlexSourceConnectionRequestToJSON(
-    json: any,
-): PatchedGroupPlexSourceConnectionRequest {
+export function PatchedGroupPlexSourceConnectionRequestToJSON(json: any): PatchedGroupPlexSourceConnectionRequest {
     return PatchedGroupPlexSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupPlexSourceConnectionRequestToJSONTyped(
-    value?: PatchedGroupPlexSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGroupPlexSourceConnectionRequestToJSONTyped(value?: PatchedGroupPlexSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

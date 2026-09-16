@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for totp authenticator devices
  * @export
@@ -27,9 +28,7 @@ export interface PatchedTOTPDeviceRequest {
 /**
  * Check if a given object implements the PatchedTOTPDeviceRequest interface.
  */
-export function instanceOfPatchedTOTPDeviceRequest(
-    value: object,
-): value is PatchedTOTPDeviceRequest {
+export function instanceOfPatchedTOTPDeviceRequest(value: object): value is PatchedTOTPDeviceRequest {
     return true;
 }
 
@@ -37,15 +36,13 @@ export function PatchedTOTPDeviceRequestFromJSON(json: any): PatchedTOTPDeviceRe
     return PatchedTOTPDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedTOTPDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedTOTPDeviceRequest {
+export function PatchedTOTPDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedTOTPDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -53,15 +50,14 @@ export function PatchedTOTPDeviceRequestToJSON(json: any): PatchedTOTPDeviceRequ
     return PatchedTOTPDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedTOTPDeviceRequestToJSONTyped(
-    value?: PatchedTOTPDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedTOTPDeviceRequestToJSONTyped(value?: PatchedTOTPDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

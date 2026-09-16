@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { EventActions } from './EventActions';
+import {
+    EventActionsFromJSON,
+    EventActionsFromJSONTyped,
+    EventActionsToJSON,
+    EventActionsToJSONTyped,
+} from './EventActions';
 
 /**
  * Count of events of action created on day for a single event action
@@ -23,26 +28,28 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
  */
 export interface EventVolume {
     /**
-     *
+     * 
      */
     action: EventActions;
     /**
-     *
+     * 
      */
     time: Date;
     /**
-     *
+     * 
      */
     count: number;
 }
+
+
 
 /**
  * Check if a given object implements the EventVolume interface.
  */
 export function instanceOfEventVolume(value: object): value is EventVolume {
-    if (!("action" in value) || value["action"] === undefined) return false;
-    if (!("time" in value) || value["time"] === undefined) return false;
-    if (!("count" in value) || value["count"] === undefined) return false;
+    if (!('action' in value) || value['action'] === undefined) return false;
+    if (!('time' in value) || value['time'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
     return true;
 }
 
@@ -55,9 +62,10 @@ export function EventVolumeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        action: EventActionsFromJSON(json["action"]),
-        time: json["time"] == null ? json["time"] : parseDateTime(json["time"]),
-        count: json["count"],
+        
+        'action': EventActionsFromJSON(json['action']),
+        'time': (json['time'] == null ? json['time'] : parseDateTime(json['time'])),
+        'count': json['count'],
     };
 }
 
@@ -65,17 +73,16 @@ export function EventVolumeToJSON(json: any): EventVolume {
     return EventVolumeToJSONTyped(json, false);
 }
 
-export function EventVolumeToJSONTyped(
-    value?: EventVolume | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EventVolumeToJSONTyped(value?: EventVolume | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        action: EventActionsToJSON(value["action"]),
-        time: value["time"] == null ? value["time"] : serializeDateTime(value["time"]),
-        count: value["count"],
+        
+        'action': EventActionsToJSON(value['action']),
+        'time': value['time'] == null ? value['time'] : serializeDateTime(value['time']),
+        'count': value['count'],
     };
 }
+

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * KubernetesServiceConnection Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface KubernetesServiceConnectionRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -29,7 +30,7 @@ export interface KubernetesServiceConnectionRequest {
     /**
      * Paste your kubeconfig here. authentik will automatically use the currently selected context.
      */
-    kubeconfig?: { [key: string]: any };
+    kubeconfig?: { [key: string]: any; };
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -39,52 +40,43 @@ export interface KubernetesServiceConnectionRequest {
 /**
  * Check if a given object implements the KubernetesServiceConnectionRequest interface.
  */
-export function instanceOfKubernetesServiceConnectionRequest(
-    value: object,
-): value is KubernetesServiceConnectionRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfKubernetesServiceConnectionRequest(value: object): value is KubernetesServiceConnectionRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
-export function KubernetesServiceConnectionRequestFromJSON(
-    json: any,
-): KubernetesServiceConnectionRequest {
+export function KubernetesServiceConnectionRequestFromJSON(json: any): KubernetesServiceConnectionRequest {
     return KubernetesServiceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): KubernetesServiceConnectionRequest {
+export function KubernetesServiceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): KubernetesServiceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        local: json["local"] == null ? undefined : json["local"],
-        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
-        verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
+        
+        'name': json['name'],
+        'local': json['local'] == null ? undefined : json['local'],
+        'kubeconfig': json['kubeconfig'] == null ? undefined : json['kubeconfig'],
+        'verifySsl': json['verify_ssl'] == null ? undefined : json['verify_ssl'],
     };
 }
 
-export function KubernetesServiceConnectionRequestToJSON(
-    json: any,
-): KubernetesServiceConnectionRequest {
+export function KubernetesServiceConnectionRequestToJSON(json: any): KubernetesServiceConnectionRequest {
     return KubernetesServiceConnectionRequestToJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionRequestToJSONTyped(
-    value?: KubernetesServiceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function KubernetesServiceConnectionRequestToJSONTyped(value?: KubernetesServiceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        local: value["local"],
-        kubeconfig: value["kubeconfig"],
-        verify_ssl: value["verifySsl"],
+        
+        'name': value['name'],
+        'local': value['local'],
+        'kubeconfig': value['kubeconfig'],
+        'verify_ssl': value['verifySsl'],
     };
 }
+

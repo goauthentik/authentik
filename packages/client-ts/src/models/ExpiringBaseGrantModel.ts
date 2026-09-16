@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON, ProviderToJSON } from "./Provider";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { User } from './User';
+import {
+    UserFromJSON,
+    UserFromJSONTyped,
+    UserToJSON,
+    UserToJSONTyped,
+} from './User';
+import type { Provider } from './Provider';
+import {
+    ProviderFromJSON,
+    ProviderFromJSONTyped,
+    ProviderToJSON,
+    ProviderToJSONTyped,
+} from './Provider';
 
 /**
  * Serializer for BaseGrantModel and ExpiringBaseGrant
@@ -25,15 +35,15 @@ import { UserFromJSON, UserToJSON } from "./User";
  */
 export interface ExpiringBaseGrantModel {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     provider: Provider;
     /**
-     *
+     * 
      */
     user: User;
     /**
@@ -41,11 +51,11 @@ export interface ExpiringBaseGrantModel {
      */
     readonly isExpired: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     scope: Array<string>;
 }
@@ -54,17 +64,11 @@ export interface ExpiringBaseGrantModel {
  * Check if a given object implements the ExpiringBaseGrantModel interface.
  */
 export function instanceOfExpiringBaseGrantModel(value: object): value is ExpiringBaseGrantModel {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("isExpired" in (value as Record<string, any>)) &&
-            !("is_expired" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isExpired"] === undefined &&
-            (value as Record<string, any>)["is_expired"] === undefined)
-    )
-        return false;
-    if (!("scope" in value) || value["scope"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('isExpired' in (value as Record<string, any>)) && !('is_expired' in (value as Record<string, any>))) || ((value as Record<string, any>)['isExpired'] === undefined && (value as Record<string, any>)['is_expired'] === undefined)) return false;
+    if (!('scope' in value) || value['scope'] === undefined) return false;
     return true;
 }
 
@@ -72,25 +76,18 @@ export function ExpiringBaseGrantModelFromJSON(json: any): ExpiringBaseGrantMode
     return ExpiringBaseGrantModelFromJSONTyped(json, false);
 }
 
-export function ExpiringBaseGrantModelFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ExpiringBaseGrantModel {
+export function ExpiringBaseGrantModelFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExpiringBaseGrantModel {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        provider: ProviderFromJSON(json["provider"]),
-        user: UserFromJSON(json["user"]),
-        isExpired: json["is_expired"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        scope: json["scope"],
+        
+        'pk': json['pk'],
+        'provider': ProviderFromJSON(json['provider']),
+        'user': UserFromJSON(json['user']),
+        'isExpired': json['is_expired'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'scope': json['scope'],
     };
 }
 
@@ -98,18 +95,17 @@ export function ExpiringBaseGrantModelToJSON(json: any): ExpiringBaseGrantModel 
     return ExpiringBaseGrantModelToJSONTyped(json, false);
 }
 
-export function ExpiringBaseGrantModelToJSONTyped(
-    value?: Omit<ExpiringBaseGrantModel, "pk" | "isExpired"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ExpiringBaseGrantModelToJSONTyped(value?: Omit<ExpiringBaseGrantModel, 'pk'|'isExpired'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        provider: ProviderToJSON(value["provider"]),
-        user: UserToJSON(value["user"]),
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        scope: value["scope"],
+        
+        'provider': ProviderToJSON(value['provider']),
+        'user': UserToJSON(value['user']),
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'scope': value['scope'],
     };
 }
+

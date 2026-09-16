@@ -12,18 +12,19 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface UserSelfGroups
  */
 export interface UserSelfGroups {
     /**
-     *
+     * 
      */
     readonly name: string;
     /**
-     *
+     * 
      */
     readonly pk: string;
 }
@@ -32,8 +33,8 @@ export interface UserSelfGroups {
  * Check if a given object implements the UserSelfGroups interface.
  */
 export function instanceOfUserSelfGroups(value: object): value is UserSelfGroups {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
     return true;
 }
 
@@ -41,16 +42,14 @@ export function UserSelfGroupsFromJSON(json: any): UserSelfGroups {
     return UserSelfGroupsFromJSONTyped(json, false);
 }
 
-export function UserSelfGroupsFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSelfGroups {
+export function UserSelfGroupsFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSelfGroups {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        pk: json["pk"],
+        
+        'name': json['name'],
+        'pk': json['pk'],
     };
 }
 
@@ -58,13 +57,13 @@ export function UserSelfGroupsToJSON(json: any): UserSelfGroups {
     return UserSelfGroupsToJSONTyped(json, false);
 }
 
-export function UserSelfGroupsToJSONTyped(
-    value?: Omit<UserSelfGroups, "name" | "pk"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSelfGroupsToJSONTyped(value?: Omit<UserSelfGroups, 'name'|'pk'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

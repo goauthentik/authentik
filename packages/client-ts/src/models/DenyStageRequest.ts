@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * DenyStage Serializer
  * @export
@@ -19,11 +20,11 @@
  */
 export interface DenyStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     denyMessage?: string;
 }
@@ -32,7 +33,7 @@ export interface DenyStageRequest {
  * Check if a given object implements the DenyStageRequest interface.
  */
 export function instanceOfDenyStageRequest(value: object): value is DenyStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -40,16 +41,14 @@ export function DenyStageRequestFromJSON(json: any): DenyStageRequest {
     return DenyStageRequestFromJSONTyped(json, false);
 }
 
-export function DenyStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DenyStageRequest {
+export function DenyStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DenyStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        denyMessage: json["deny_message"] == null ? undefined : json["deny_message"],
+        
+        'name': json['name'],
+        'denyMessage': json['deny_message'] == null ? undefined : json['deny_message'],
     };
 }
 
@@ -57,16 +56,15 @@ export function DenyStageRequestToJSON(json: any): DenyStageRequest {
     return DenyStageRequestToJSONTyped(json, false);
 }
 
-export function DenyStageRequestToJSONTyped(
-    value?: DenyStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DenyStageRequestToJSONTyped(value?: DenyStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        deny_message: value["denyMessage"],
+        
+        'name': value['name'],
+        'deny_message': value['denyMessage'],
     };
 }
+

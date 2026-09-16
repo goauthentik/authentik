@@ -12,83 +12,82 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserTelegramSourceConnection } from "./UserTelegramSourceConnection";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { UserTelegramSourceConnection } from './UserTelegramSourceConnection';
 import {
     UserTelegramSourceConnectionFromJSON,
+    UserTelegramSourceConnectionFromJSONTyped,
     UserTelegramSourceConnectionToJSON,
-} from "./UserTelegramSourceConnection";
+    UserTelegramSourceConnectionToJSONTyped,
+} from './UserTelegramSourceConnection';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedUserTelegramSourceConnectionList
  */
 export interface PaginatedUserTelegramSourceConnectionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<UserTelegramSourceConnection>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedUserTelegramSourceConnectionList interface.
  */
-export function instanceOfPaginatedUserTelegramSourceConnectionList(
-    value: object,
-): value is PaginatedUserTelegramSourceConnectionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedUserTelegramSourceConnectionList(value: object): value is PaginatedUserTelegramSourceConnectionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedUserTelegramSourceConnectionListFromJSON(
-    json: any,
-): PaginatedUserTelegramSourceConnectionList {
+export function PaginatedUserTelegramSourceConnectionListFromJSON(json: any): PaginatedUserTelegramSourceConnectionList {
     return PaginatedUserTelegramSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserTelegramSourceConnectionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedUserTelegramSourceConnectionList {
+export function PaginatedUserTelegramSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserTelegramSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(UserTelegramSourceConnectionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(UserTelegramSourceConnectionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedUserTelegramSourceConnectionListToJSON(
-    json: any,
-): PaginatedUserTelegramSourceConnectionList {
+export function PaginatedUserTelegramSourceConnectionListToJSON(json: any): PaginatedUserTelegramSourceConnectionList {
     return PaginatedUserTelegramSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedUserTelegramSourceConnectionListToJSONTyped(
-    value?: PaginatedUserTelegramSourceConnectionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedUserTelegramSourceConnectionListToJSONTyped(value?: PaginatedUserTelegramSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(UserTelegramSourceConnectionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(UserTelegramSourceConnectionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

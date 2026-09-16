@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RelatedGroup } from "./RelatedGroup";
-import { RelatedGroupFromJSON } from "./RelatedGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
+import { mapValues } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { Role } from './Role';
+import {
+    RoleFromJSON,
+    RoleFromJSONTyped,
+    RoleToJSON,
+    RoleToJSONTyped,
+} from './Role';
+import type { RelatedGroup } from './RelatedGroup';
+import {
+    RelatedGroupFromJSON,
+    RelatedGroupFromJSONTyped,
+    RelatedGroupToJSON,
+    RelatedGroupToJSONTyped,
+} from './RelatedGroup';
 
 /**
  * Group Serializer
@@ -26,15 +42,15 @@ import { RoleFromJSON } from "./Role";
  */
 export interface Group {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     readonly numPk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -42,43 +58,43 @@ export interface Group {
      */
     isSuperuser?: boolean;
     /**
-     *
+     * 
      */
     parents?: Array<string>;
     /**
-     *
+     * 
      */
     readonly parentsObj: Array<RelatedGroup> | null;
     /**
-     *
+     * 
      */
     users?: Array<number>;
     /**
-     *
+     * 
      */
     readonly usersObj: Array<PartialUser> | null;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     roles?: Array<string>;
     /**
-     *
+     * 
      */
     readonly rolesObj: Array<Role>;
     /**
-     *
+     * 
      */
     readonly inheritedRolesObj: Array<Role> | null;
     /**
-     *
+     * 
      */
     readonly children: Array<string>;
     /**
-     *
+     * 
      */
     readonly childrenObj: Array<RelatedGroup> | null;
 }
@@ -87,51 +103,15 @@ export interface Group {
  * Check if a given object implements the Group interface.
  */
 export function instanceOfGroup(value: object): value is Group {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("numPk" in (value as Record<string, any>)) &&
-            !("num_pk" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["numPk"] === undefined &&
-            (value as Record<string, any>)["num_pk"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("parentsObj" in (value as Record<string, any>)) &&
-            !("parents_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["parentsObj"] === undefined &&
-            (value as Record<string, any>)["parents_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("usersObj" in (value as Record<string, any>)) &&
-            !("users_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["usersObj"] === undefined &&
-            (value as Record<string, any>)["users_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("rolesObj" in (value as Record<string, any>)) &&
-            !("roles_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["rolesObj"] === undefined &&
-            (value as Record<string, any>)["roles_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("inheritedRolesObj" in (value as Record<string, any>)) &&
-            !("inherited_roles_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["inheritedRolesObj"] === undefined &&
-            (value as Record<string, any>)["inherited_roles_obj"] === undefined)
-    )
-        return false;
-    if (!("children" in value) || value["children"] === undefined) return false;
-    if (
-        (!("childrenObj" in (value as Record<string, any>)) &&
-            !("children_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["childrenObj"] === undefined &&
-            (value as Record<string, any>)["children_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('numPk' in (value as Record<string, any>)) && !('num_pk' in (value as Record<string, any>))) || ((value as Record<string, any>)['numPk'] === undefined && (value as Record<string, any>)['num_pk'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('parentsObj' in (value as Record<string, any>)) && !('parents_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentsObj'] === undefined && (value as Record<string, any>)['parents_obj'] === undefined)) return false;
+    if ((!('usersObj' in (value as Record<string, any>)) && !('users_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['usersObj'] === undefined && (value as Record<string, any>)['users_obj'] === undefined)) return false;
+    if ((!('rolesObj' in (value as Record<string, any>)) && !('roles_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['rolesObj'] === undefined && (value as Record<string, any>)['roles_obj'] === undefined)) return false;
+    if ((!('inheritedRolesObj' in (value as Record<string, any>)) && !('inherited_roles_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['inheritedRolesObj'] === undefined && (value as Record<string, any>)['inherited_roles_obj'] === undefined)) return false;
+    if (!('children' in value) || value['children'] === undefined) return false;
+    if ((!('childrenObj' in (value as Record<string, any>)) && !('children_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['childrenObj'] === undefined && (value as Record<string, any>)['children_obj'] === undefined)) return false;
     return true;
 }
 
@@ -144,32 +124,21 @@ export function GroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): Gro
         return json;
     }
     return {
-        pk: json["pk"],
-        numPk: json["num_pk"],
-        name: json["name"],
-        isSuperuser: json["is_superuser"] == null ? undefined : json["is_superuser"],
-        parents: json["parents"] == null ? undefined : json["parents"],
-        parentsObj:
-            json["parents_obj"] == null
-                ? null
-                : (json["parents_obj"] as Array<any>).map(RelatedGroupFromJSON),
-        users: json["users"] == null ? undefined : json["users"],
-        usersObj:
-            json["users_obj"] == null
-                ? null
-                : (json["users_obj"] as Array<any>).map(PartialUserFromJSON),
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        roles: json["roles"] == null ? undefined : json["roles"],
-        rolesObj: (json["roles_obj"] as Array<any>).map(RoleFromJSON),
-        inheritedRolesObj:
-            json["inherited_roles_obj"] == null
-                ? null
-                : (json["inherited_roles_obj"] as Array<any>).map(RoleFromJSON),
-        children: json["children"],
-        childrenObj:
-            json["children_obj"] == null
-                ? null
-                : (json["children_obj"] as Array<any>).map(RelatedGroupFromJSON),
+        
+        'pk': json['pk'],
+        'numPk': json['num_pk'],
+        'name': json['name'],
+        'isSuperuser': json['is_superuser'] == null ? undefined : json['is_superuser'],
+        'parents': json['parents'] == null ? undefined : json['parents'],
+        'parentsObj': (json['parents_obj'] == null ? null : (json['parents_obj'] as Array<any>).map(RelatedGroupFromJSON)),
+        'users': json['users'] == null ? undefined : json['users'],
+        'usersObj': (json['users_obj'] == null ? null : (json['users_obj'] as Array<any>).map(PartialUserFromJSON)),
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'roles': json['roles'] == null ? undefined : json['roles'],
+        'rolesObj': ((json['roles_obj'] as Array<any>).map(RoleFromJSON)),
+        'inheritedRolesObj': (json['inherited_roles_obj'] == null ? null : (json['inherited_roles_obj'] as Array<any>).map(RoleFromJSON)),
+        'children': json['children'],
+        'childrenObj': (json['children_obj'] == null ? null : (json['children_obj'] as Array<any>).map(RelatedGroupFromJSON)),
     };
 }
 
@@ -177,30 +146,19 @@ export function GroupToJSON(json: any): Group {
     return GroupToJSONTyped(json, false);
 }
 
-export function GroupToJSONTyped(
-    value?: Omit<
-        Group,
-        | "pk"
-        | "numPk"
-        | "parentsObj"
-        | "usersObj"
-        | "rolesObj"
-        | "inheritedRolesObj"
-        | "children"
-        | "childrenObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupToJSONTyped(value?: Omit<Group, 'pk'|'numPk'|'parentsObj'|'usersObj'|'rolesObj'|'inheritedRolesObj'|'children'|'childrenObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        is_superuser: value["isSuperuser"],
-        parents: value["parents"],
-        users: value["users"],
-        attributes: value["attributes"],
-        roles: value["roles"],
+        
+        'name': value['name'],
+        'is_superuser': value['isSuperuser'],
+        'parents': value['parents'],
+        'users': value['users'],
+        'attributes': value['attributes'],
+        'roles': value['roles'],
     };
 }
+

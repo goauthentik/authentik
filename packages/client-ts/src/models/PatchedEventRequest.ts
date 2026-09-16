@@ -12,9 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { EventActions } from './EventActions';
+import {
+    EventActionsFromJSON,
+    EventActionsFromJSONTyped,
+    EventActionsToJSON,
+    EventActionsToJSONTyped,
+} from './EventActions';
 
 /**
  * Event Serializer
@@ -23,34 +28,36 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
  */
 export interface PatchedEventRequest {
     /**
-     *
+     * 
      */
-    user?: { [key: string]: any };
+    user?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     action?: EventActions;
     /**
-     *
+     * 
      */
     app?: string;
     /**
-     *
+     * 
      */
-    context?: { [key: string]: any };
+    context?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     clientIp?: string | null;
     /**
-     *
+     * 
      */
     expires?: Date;
     /**
-     *
+     * 
      */
-    brand?: { [key: string]: any };
+    brand?: { [key: string]: any; };
 }
+
+
 
 /**
  * Check if a given object implements the PatchedEventRequest interface.
@@ -63,26 +70,19 @@ export function PatchedEventRequestFromJSON(json: any): PatchedEventRequest {
     return PatchedEventRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEventRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedEventRequest {
+export function PatchedEventRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEventRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
-        action: json["action"] == null ? undefined : EventActionsFromJSON(json["action"]),
-        app: json["app"] == null ? undefined : json["app"],
-        context: json["context"] == null ? undefined : json["context"],
-        clientIp:
-            json["client_ip"] === undefined
-                ? undefined
-                : json["client_ip"] === null
-                  ? null
-                  : json["client_ip"],
-        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
-        brand: json["brand"] == null ? undefined : json["brand"],
+        
+        'user': json['user'] == null ? undefined : json['user'],
+        'action': json['action'] == null ? undefined : EventActionsFromJSON(json['action']),
+        'app': json['app'] == null ? undefined : json['app'],
+        'context': json['context'] == null ? undefined : json['context'],
+        'clientIp': json['client_ip'] === undefined ? undefined : json['client_ip'] === null ? null : json['client_ip'],
+        'expires': json['expires'] == null ? undefined : (parseDateTime(json['expires'])),
+        'brand': json['brand'] == null ? undefined : json['brand'],
     };
 }
 
@@ -90,21 +90,20 @@ export function PatchedEventRequestToJSON(json: any): PatchedEventRequest {
     return PatchedEventRequestToJSONTyped(json, false);
 }
 
-export function PatchedEventRequestToJSONTyped(
-    value?: PatchedEventRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedEventRequestToJSONTyped(value?: PatchedEventRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        action: EventActionsToJSON(value["action"]),
-        app: value["app"],
-        context: value["context"],
-        client_ip: value["clientIp"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        brand: value["brand"],
+        
+        'user': value['user'],
+        'action': EventActionsToJSON(value['action']),
+        'app': value['app'],
+        'context': value['context'],
+        'client_ip': value['clientIp'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'brand': value['brand'],
     };
 }
+

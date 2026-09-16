@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PartialGroup } from './PartialGroup';
+import {
+    PartialGroupFromJSON,
+    PartialGroupFromJSONTyped,
+    PartialGroupToJSON,
+    PartialGroupToJSONTyped,
+} from './PartialGroup';
+import type { Source } from './Source';
+import {
+    SourceFromJSON,
+    SourceFromJSONTyped,
+    SourceToJSON,
+    SourceToJSONTyped,
+} from './Source';
 
 /**
  * Group Source Connection
@@ -25,35 +35,35 @@ import { SourceFromJSON } from "./Source";
  */
 export interface GroupLDAPSourceConnection {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly group: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     readonly sourceObj: Source;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly groupObj: PartialGroup;
 }
@@ -61,35 +71,15 @@ export interface GroupLDAPSourceConnection {
 /**
  * Check if a given object implements the GroupLDAPSourceConnection interface.
  */
-export function instanceOfGroupLDAPSourceConnection(
-    value: object,
-): value is GroupLDAPSourceConnection {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (
-        (!("sourceObj" in (value as Record<string, any>)) &&
-            !("source_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sourceObj"] === undefined &&
-            (value as Record<string, any>)["source_obj"] === undefined)
-    )
-        return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (
-        (!("groupObj" in (value as Record<string, any>)) &&
-            !("group_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["groupObj"] === undefined &&
-            (value as Record<string, any>)["group_obj"] === undefined)
-    )
-        return false;
+export function instanceOfGroupLDAPSourceConnection(value: object): value is GroupLDAPSourceConnection {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('group' in value) || value['group'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if ((!('sourceObj' in (value as Record<string, any>)) && !('source_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceObj'] === undefined && (value as Record<string, any>)['source_obj'] === undefined)) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if ((!('groupObj' in (value as Record<string, any>)) && !('group_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['groupObj'] === undefined && (value as Record<string, any>)['group_obj'] === undefined)) return false;
     return true;
 }
 
@@ -97,25 +87,20 @@ export function GroupLDAPSourceConnectionFromJSON(json: any): GroupLDAPSourceCon
     return GroupLDAPSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupLDAPSourceConnection {
+export function GroupLDAPSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupLDAPSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        group: json["group"],
-        source: json["source"],
-        sourceObj: SourceFromJSON(json["source_obj"]),
-        identifier: json["identifier"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        
+        'pk': json['pk'],
+        'group': json['group'],
+        'source': json['source'],
+        'sourceObj': SourceFromJSON(json['source_obj']),
+        'identifier': json['identifier'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'groupObj': PartialGroupFromJSON(json['group_obj']),
     };
 }
 
@@ -123,19 +108,15 @@ export function GroupLDAPSourceConnectionToJSON(json: any): GroupLDAPSourceConne
     return GroupLDAPSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupLDAPSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated" | "groupObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupLDAPSourceConnectionToJSONTyped(value?: Omit<GroupLDAPSourceConnection, 'pk'|'group'|'sourceObj'|'created'|'lastUpdated'|'groupObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

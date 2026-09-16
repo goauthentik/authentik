@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Prompt } from "./Prompt";
-import { PromptFromJSON, PromptToJSON } from "./Prompt";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { Prompt } from './Prompt';
+import {
+    PromptFromJSON,
+    PromptFromJSONTyped,
+    PromptToJSON,
+    PromptToJSONTyped,
+} from './Prompt';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedPromptList
  */
 export interface PaginatedPromptList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Prompt>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedPromptList interface.
  */
 export function instanceOfPaginatedPromptList(value: object): value is PaginatedPromptList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedPromptListFromJSON(json: any): PaginatedPromptList {
     return PaginatedPromptListFromJSONTyped(json, false);
 }
 
-export function PaginatedPromptListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedPromptList {
+export function PaginatedPromptListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPromptList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(PromptFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(PromptFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedPromptListToJSON(json: any): PaginatedPromptList {
     return PaginatedPromptListToJSONTyped(json, false);
 }
 
-export function PaginatedPromptListToJSONTyped(
-    value?: PaginatedPromptList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedPromptListToJSONTyped(value?: PaginatedPromptList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(PromptToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(PromptToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

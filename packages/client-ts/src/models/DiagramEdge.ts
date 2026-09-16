@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { DiagramEdgeTypeEnum } from "./DiagramEdgeTypeEnum";
-import { DiagramEdgeTypeEnumFromJSON } from "./DiagramEdgeTypeEnum";
+import { mapValues } from '../runtime';
+import type { DiagramEdgeTypeEnum } from './DiagramEdgeTypeEnum';
+import {
+    DiagramEdgeTypeEnumFromJSON,
+    DiagramEdgeTypeEnumFromJSONTyped,
+    DiagramEdgeTypeEnumToJSON,
+    DiagramEdgeTypeEnumToJSONTyped,
+} from './DiagramEdgeTypeEnum';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,26 +28,28 @@ import { DiagramEdgeTypeEnumFromJSON } from "./DiagramEdgeTypeEnum";
  */
 export interface DiagramEdge {
     /**
-     *
+     * 
      */
     readonly origin: string;
     /**
-     *
+     * 
      */
     readonly target: string;
     /**
-     *
+     * 
      */
     readonly type: DiagramEdgeTypeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the DiagramEdge interface.
  */
 export function instanceOfDiagramEdge(value: object): value is DiagramEdge {
-    if (!("origin" in value) || value["origin"] === undefined) return false;
-    if (!("target" in value) || value["target"] === undefined) return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!('origin' in value) || value['origin'] === undefined) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -54,9 +62,10 @@ export function DiagramEdgeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        origin: json["origin"],
-        target: json["target"],
-        type: DiagramEdgeTypeEnumFromJSON(json["type"]),
+        
+        'origin': json['origin'],
+        'target': json['target'],
+        'type': DiagramEdgeTypeEnumFromJSON(json['type']),
     };
 }
 
@@ -64,13 +73,13 @@ export function DiagramEdgeToJSON(json: any): DiagramEdge {
     return DiagramEdgeToJSONTyped(json, false);
 }
 
-export function DiagramEdgeToJSONTyped(
-    value?: Omit<DiagramEdge, "origin" | "target" | "type"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DiagramEdgeToJSONTyped(value?: Omit<DiagramEdge, 'origin'|'target'|'type'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

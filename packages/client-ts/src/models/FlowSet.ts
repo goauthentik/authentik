@@ -12,14 +12,35 @@
  * Do not edit the class manually.
  */
 
-import type { DeniedActionEnum } from "./DeniedActionEnum";
-import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowLayoutEnum } from "./FlowLayoutEnum";
-import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import { mapValues } from '../runtime';
+import type { DeniedActionEnum } from './DeniedActionEnum';
+import {
+    DeniedActionEnumFromJSON,
+    DeniedActionEnumFromJSONTyped,
+    DeniedActionEnumToJSON,
+    DeniedActionEnumToJSONTyped,
+} from './DeniedActionEnum';
+import type { FlowLayoutEnum } from './FlowLayoutEnum';
+import {
+    FlowLayoutEnumFromJSON,
+    FlowLayoutEnumFromJSONTyped,
+    FlowLayoutEnumToJSON,
+    FlowLayoutEnumToJSONTyped,
+} from './FlowLayoutEnum';
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeFromJSONTyped,
+    PolicyEngineModeToJSON,
+    PolicyEngineModeToJSONTyped,
+} from './PolicyEngineMode';
+import type { FlowDesignationEnum } from './FlowDesignationEnum';
+import {
+    FlowDesignationEnumFromJSON,
+    FlowDesignationEnumFromJSONTyped,
+    FlowDesignationEnumToJSON,
+    FlowDesignationEnumToJSONTyped,
+} from './FlowDesignationEnum';
 
 /**
  * Stripped down flow serializer
@@ -28,15 +49,15 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface FlowSet {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     readonly policybindingmodelPtrId: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -56,7 +77,7 @@ export interface FlowSet {
      */
     readonly backgroundUrl: string;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
@@ -68,7 +89,7 @@ export interface FlowSet {
      */
     readonly exportUrl: string;
     /**
-     *
+     * 
      */
     layout?: FlowLayoutEnum;
     /**
@@ -77,36 +98,20 @@ export interface FlowSet {
     deniedAction?: DeniedActionEnum;
 }
 
+
+
 /**
  * Check if a given object implements the FlowSet interface.
  */
 export function instanceOfFlowSet(value: object): value is FlowSet {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("policybindingmodelPtrId" in (value as Record<string, any>)) &&
-            !("policybindingmodel_ptr_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["policybindingmodelPtrId"] === undefined &&
-            (value as Record<string, any>)["policybindingmodel_ptr_id"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("title" in value) || value["title"] === undefined) return false;
-    if (!("designation" in value) || value["designation"] === undefined) return false;
-    if (
-        (!("backgroundUrl" in (value as Record<string, any>)) &&
-            !("background_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["backgroundUrl"] === undefined &&
-            (value as Record<string, any>)["background_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("exportUrl" in (value as Record<string, any>)) &&
-            !("export_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["exportUrl"] === undefined &&
-            (value as Record<string, any>)["export_url"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('policybindingmodelPtrId' in (value as Record<string, any>)) && !('policybindingmodel_ptr_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['policybindingmodelPtrId'] === undefined && (value as Record<string, any>)['policybindingmodel_ptr_id'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('designation' in value) || value['designation'] === undefined) return false;
+    if ((!('backgroundUrl' in (value as Record<string, any>)) && !('background_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['backgroundUrl'] === undefined && (value as Record<string, any>)['background_url'] === undefined)) return false;
+    if ((!('exportUrl' in (value as Record<string, any>)) && !('export_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['exportUrl'] === undefined && (value as Record<string, any>)['export_url'] === undefined)) return false;
     return true;
 }
 
@@ -119,25 +124,19 @@ export function FlowSetFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
         return json;
     }
     return {
-        pk: json["pk"],
-        policybindingmodelPtrId: json["policybindingmodel_ptr_id"],
-        name: json["name"],
-        slug: json["slug"],
-        title: json["title"],
-        designation: FlowDesignationEnumFromJSON(json["designation"]),
-        backgroundUrl: json["background_url"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        compatibilityMode:
-            json["compatibility_mode"] == null ? undefined : json["compatibility_mode"],
-        exportUrl: json["export_url"],
-        layout: json["layout"] == null ? undefined : FlowLayoutEnumFromJSON(json["layout"]),
-        deniedAction:
-            json["denied_action"] == null
-                ? undefined
-                : DeniedActionEnumFromJSON(json["denied_action"]),
+        
+        'pk': json['pk'],
+        'policybindingmodelPtrId': json['policybindingmodel_ptr_id'],
+        'name': json['name'],
+        'slug': json['slug'],
+        'title': json['title'],
+        'designation': FlowDesignationEnumFromJSON(json['designation']),
+        'backgroundUrl': json['background_url'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'compatibilityMode': json['compatibility_mode'] == null ? undefined : json['compatibility_mode'],
+        'exportUrl': json['export_url'],
+        'layout': json['layout'] == null ? undefined : FlowLayoutEnumFromJSON(json['layout']),
+        'deniedAction': json['denied_action'] == null ? undefined : DeniedActionEnumFromJSON(json['denied_action']),
     };
 }
 
@@ -145,22 +144,21 @@ export function FlowSetToJSON(json: any): FlowSet {
     return FlowSetToJSONTyped(json, false);
 }
 
-export function FlowSetToJSONTyped(
-    value?: Omit<FlowSet, "pk" | "policybindingmodelPtrId" | "backgroundUrl" | "exportUrl"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FlowSetToJSONTyped(value?: Omit<FlowSet, 'pk'|'policybindingmodelPtrId'|'backgroundUrl'|'exportUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        title: value["title"],
-        designation: FlowDesignationEnumToJSON(value["designation"]),
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        compatibility_mode: value["compatibilityMode"],
-        layout: FlowLayoutEnumToJSON(value["layout"]),
-        denied_action: DeniedActionEnumToJSON(value["deniedAction"]),
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'title': value['title'],
+        'designation': FlowDesignationEnumToJSON(value['designation']),
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'compatibility_mode': value['compatibilityMode'],
+        'layout': FlowLayoutEnumToJSON(value['layout']),
+        'denied_action': DeniedActionEnumToJSON(value['deniedAction']),
     };
 }
+

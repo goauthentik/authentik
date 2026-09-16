@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { AppEnum } from "./AppEnum";
-import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import { mapValues } from '../runtime';
+import type { ModelEnum } from './ModelEnum';
+import {
+    ModelEnumFromJSON,
+    ModelEnumFromJSONTyped,
+    ModelEnumToJSON,
+    ModelEnumToJSONTyped,
+} from './ModelEnum';
+import type { AppEnum } from './AppEnum';
+import {
+    AppEnumFromJSON,
+    AppEnumFromJSONTyped,
+    AppEnumToJSON,
+    AppEnumToJSONTyped,
+} from './AppEnum';
+import type { EventActions } from './EventActions';
+import {
+    EventActionsFromJSON,
+    EventActionsFromJSONTyped,
+    EventActionsToJSON,
+    EventActionsToJSONTyped,
+} from './EventActions';
 
 /**
  * Event Matcher Policy Serializer
@@ -26,7 +42,7 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
  */
 export interface PatchedEventMatcherPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -50,86 +66,58 @@ export interface PatchedEventMatcherPolicyRequest {
      */
     model?: ModelEnum | null;
     /**
-     *
+     * 
      */
     query?: string | null;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedEventMatcherPolicyRequest interface.
  */
-export function instanceOfPatchedEventMatcherPolicyRequest(
-    value: object,
-): value is PatchedEventMatcherPolicyRequest {
+export function instanceOfPatchedEventMatcherPolicyRequest(value: object): value is PatchedEventMatcherPolicyRequest {
     return true;
 }
 
-export function PatchedEventMatcherPolicyRequestFromJSON(
-    json: any,
-): PatchedEventMatcherPolicyRequest {
+export function PatchedEventMatcherPolicyRequestFromJSON(json: any): PatchedEventMatcherPolicyRequest {
     return PatchedEventMatcherPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEventMatcherPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedEventMatcherPolicyRequest {
+export function PatchedEventMatcherPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEventMatcherPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        action:
-            json["action"] === undefined
-                ? undefined
-                : json["action"] === null
-                  ? null
-                  : EventActionsFromJSON(json["action"]),
-        clientIp:
-            json["client_ip"] === undefined
-                ? undefined
-                : json["client_ip"] === null
-                  ? null
-                  : json["client_ip"],
-        app:
-            json["app"] === undefined
-                ? undefined
-                : json["app"] === null
-                  ? null
-                  : AppEnumFromJSON(json["app"]),
-        model:
-            json["model"] === undefined
-                ? undefined
-                : json["model"] === null
-                  ? null
-                  : ModelEnumFromJSON(json["model"]),
-        query:
-            json["query"] === undefined ? undefined : json["query"] === null ? null : json["query"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'action': json['action'] === undefined ? undefined : json['action'] === null ? null : EventActionsFromJSON(json['action']),
+        'clientIp': json['client_ip'] === undefined ? undefined : json['client_ip'] === null ? null : json['client_ip'],
+        'app': json['app'] === undefined ? undefined : json['app'] === null ? null : AppEnumFromJSON(json['app']),
+        'model': json['model'] === undefined ? undefined : json['model'] === null ? null : ModelEnumFromJSON(json['model']),
+        'query': json['query'] === undefined ? undefined : json['query'] === null ? null : json['query'],
     };
 }
 
-export function PatchedEventMatcherPolicyRequestToJSON(
-    json: any,
-): PatchedEventMatcherPolicyRequest {
+export function PatchedEventMatcherPolicyRequestToJSON(json: any): PatchedEventMatcherPolicyRequest {
     return PatchedEventMatcherPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedEventMatcherPolicyRequestToJSONTyped(
-    value?: PatchedEventMatcherPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedEventMatcherPolicyRequestToJSONTyped(value?: PatchedEventMatcherPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        action: EventActionsToJSON(value["action"]),
-        client_ip: value["clientIp"],
-        app: AppEnumToJSON(value["app"]),
-        model: ModelEnumToJSON(value["model"]),
-        query: value["query"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'action': EventActionsToJSON(value['action']),
+        'client_ip': value['clientIp'],
+        'app': AppEnumToJSON(value['app']),
+        'model': ModelEnumToJSON(value['model']),
+        'query': value['query'],
     };
 }
+

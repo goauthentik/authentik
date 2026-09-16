@@ -12,18 +12,19 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
- *
+ * 
  * @export
  * @interface AuthenticatorDuoStageDeviceImportResponse
  */
 export interface AuthenticatorDuoStageDeviceImportResponse {
     /**
-     *
+     * 
      */
     readonly count: number;
     /**
-     *
+     * 
      */
     readonly error: string;
 }
@@ -31,46 +32,38 @@ export interface AuthenticatorDuoStageDeviceImportResponse {
 /**
  * Check if a given object implements the AuthenticatorDuoStageDeviceImportResponse interface.
  */
-export function instanceOfAuthenticatorDuoStageDeviceImportResponse(
-    value: object,
-): value is AuthenticatorDuoStageDeviceImportResponse {
-    if (!("count" in value) || value["count"] === undefined) return false;
-    if (!("error" in value) || value["error"] === undefined) return false;
+export function instanceOfAuthenticatorDuoStageDeviceImportResponse(value: object): value is AuthenticatorDuoStageDeviceImportResponse {
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('error' in value) || value['error'] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorDuoStageDeviceImportResponseFromJSON(
-    json: any,
-): AuthenticatorDuoStageDeviceImportResponse {
+export function AuthenticatorDuoStageDeviceImportResponseFromJSON(json: any): AuthenticatorDuoStageDeviceImportResponse {
     return AuthenticatorDuoStageDeviceImportResponseFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageDeviceImportResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorDuoStageDeviceImportResponse {
+export function AuthenticatorDuoStageDeviceImportResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoStageDeviceImportResponse {
     if (json == null) {
         return json;
     }
     return {
-        count: json["count"],
-        error: json["error"],
+        
+        'count': json['count'],
+        'error': json['error'],
     };
 }
 
-export function AuthenticatorDuoStageDeviceImportResponseToJSON(
-    json: any,
-): AuthenticatorDuoStageDeviceImportResponse {
+export function AuthenticatorDuoStageDeviceImportResponseToJSON(json: any): AuthenticatorDuoStageDeviceImportResponse {
     return AuthenticatorDuoStageDeviceImportResponseToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageDeviceImportResponseToJSONTyped(
-    value?: Omit<AuthenticatorDuoStageDeviceImportResponse, "count" | "error"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorDuoStageDeviceImportResponseToJSONTyped(value?: Omit<AuthenticatorDuoStageDeviceImportResponse, 'count'|'error'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

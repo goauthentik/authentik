@@ -12,21 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { NotConfiguredActionEnum } from "./NotConfiguredActionEnum";
+import { mapValues } from '../runtime';
+import type { WebAuthnHintEnum } from './WebAuthnHintEnum';
+import {
+    WebAuthnHintEnumFromJSON,
+    WebAuthnHintEnumFromJSONTyped,
+    WebAuthnHintEnumToJSON,
+    WebAuthnHintEnumToJSONTyped,
+} from './WebAuthnHintEnum';
+import type { WebAuthnDeviceType } from './WebAuthnDeviceType';
+import {
+    WebAuthnDeviceTypeFromJSON,
+    WebAuthnDeviceTypeFromJSONTyped,
+    WebAuthnDeviceTypeToJSON,
+    WebAuthnDeviceTypeToJSONTyped,
+} from './WebAuthnDeviceType';
+import type { UserVerificationEnum } from './UserVerificationEnum';
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumFromJSONTyped,
+    UserVerificationEnumToJSON,
+    UserVerificationEnumToJSONTyped,
+} from './UserVerificationEnum';
+import type { NotConfiguredActionEnum } from './NotConfiguredActionEnum';
 import {
     NotConfiguredActionEnumFromJSON,
+    NotConfiguredActionEnumFromJSONTyped,
     NotConfiguredActionEnumToJSON,
-} from "./NotConfiguredActionEnum";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+    NotConfiguredActionEnumToJSONTyped,
+} from './NotConfiguredActionEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
+import type { DeviceClassesEnum } from './DeviceClassesEnum';
+import {
+    DeviceClassesEnumFromJSON,
+    DeviceClassesEnumFromJSONTyped,
+    DeviceClassesEnumToJSON,
+    DeviceClassesEnumToJSONTyped,
+} from './DeviceClassesEnum';
 
 /**
  * AuthenticatorValidateStage Serializer
@@ -35,11 +63,11 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
  */
 export interface AuthenticatorValidateStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -59,11 +87,11 @@ export interface AuthenticatorValidateStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
@@ -83,79 +111,49 @@ export interface AuthenticatorValidateStage {
      */
     webauthnUserVerification?: UserVerificationEnum;
     /**
-     *
+     * 
      */
     webauthnHints?: Array<WebAuthnHintEnum>;
     /**
-     *
+     * 
      */
     webauthnAllowedDeviceTypes?: Array<string>;
     /**
-     *
+     * 
      */
     readonly webauthnAllowedDeviceTypesObj: Array<WebAuthnDeviceType>;
     /**
-     *
+     * 
      */
     emailOtpThrottlingFactor?: number;
     /**
-     *
+     * 
      */
     smsOtpThrottlingFactor?: number;
     /**
-     *
+     * 
      */
     totpOtpThrottlingFactor?: number;
     /**
-     *
+     * 
      */
     staticOtpThrottlingFactor?: number;
 }
 
+
+
 /**
  * Check if a given object implements the AuthenticatorValidateStage interface.
  */
-export function instanceOfAuthenticatorValidateStage(
-    value: object,
-): value is AuthenticatorValidateStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (
-        (!("webauthnAllowedDeviceTypesObj" in (value as Record<string, any>)) &&
-            !("webauthn_allowed_device_types_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["webauthnAllowedDeviceTypesObj"] === undefined &&
-            (value as Record<string, any>)["webauthn_allowed_device_types_obj"] === undefined)
-    )
-        return false;
+export function instanceOfAuthenticatorValidateStage(value: object): value is AuthenticatorValidateStage {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if ((!('webauthnAllowedDeviceTypesObj' in (value as Record<string, any>)) && !('webauthn_allowed_device_types_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['webauthnAllowedDeviceTypesObj'] === undefined && (value as Record<string, any>)['webauthn_allowed_device_types_obj'] === undefined)) return false;
     return true;
 }
 
@@ -163,64 +161,31 @@ export function AuthenticatorValidateStageFromJSON(json: any): AuthenticatorVali
     return AuthenticatorValidateStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorValidateStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorValidateStage {
+export function AuthenticatorValidateStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorValidateStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        notConfiguredAction:
-            json["not_configured_action"] == null
-                ? undefined
-                : NotConfiguredActionEnumFromJSON(json["not_configured_action"]),
-        deviceClasses:
-            json["device_classes"] == null
-                ? undefined
-                : (json["device_classes"] as Array<any>).map(DeviceClassesEnumFromJSON),
-        configurationStages:
-            json["configuration_stages"] == null ? undefined : json["configuration_stages"],
-        lastAuthThreshold:
-            json["last_auth_threshold"] == null ? undefined : json["last_auth_threshold"],
-        webauthnUserVerification:
-            json["webauthn_user_verification"] == null
-                ? undefined
-                : UserVerificationEnumFromJSON(json["webauthn_user_verification"]),
-        webauthnHints:
-            json["webauthn_hints"] == null
-                ? undefined
-                : (json["webauthn_hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
-        webauthnAllowedDeviceTypes:
-            json["webauthn_allowed_device_types"] == null
-                ? undefined
-                : json["webauthn_allowed_device_types"],
-        webauthnAllowedDeviceTypesObj: (
-            json["webauthn_allowed_device_types_obj"] as Array<any>
-        ).map(WebAuthnDeviceTypeFromJSON),
-        emailOtpThrottlingFactor:
-            json["email_otp_throttling_factor"] == null
-                ? undefined
-                : json["email_otp_throttling_factor"],
-        smsOtpThrottlingFactor:
-            json["sms_otp_throttling_factor"] == null
-                ? undefined
-                : json["sms_otp_throttling_factor"],
-        totpOtpThrottlingFactor:
-            json["totp_otp_throttling_factor"] == null
-                ? undefined
-                : json["totp_otp_throttling_factor"],
-        staticOtpThrottlingFactor:
-            json["static_otp_throttling_factor"] == null
-                ? undefined
-                : json["static_otp_throttling_factor"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'notConfiguredAction': json['not_configured_action'] == null ? undefined : NotConfiguredActionEnumFromJSON(json['not_configured_action']),
+        'deviceClasses': json['device_classes'] == null ? undefined : ((json['device_classes'] as Array<any>).map(DeviceClassesEnumFromJSON)),
+        'configurationStages': json['configuration_stages'] == null ? undefined : json['configuration_stages'],
+        'lastAuthThreshold': json['last_auth_threshold'] == null ? undefined : json['last_auth_threshold'],
+        'webauthnUserVerification': json['webauthn_user_verification'] == null ? undefined : UserVerificationEnumFromJSON(json['webauthn_user_verification']),
+        'webauthnHints': json['webauthn_hints'] == null ? undefined : ((json['webauthn_hints'] as Array<any>).map(WebAuthnHintEnumFromJSON)),
+        'webauthnAllowedDeviceTypes': json['webauthn_allowed_device_types'] == null ? undefined : json['webauthn_allowed_device_types'],
+        'webauthnAllowedDeviceTypesObj': ((json['webauthn_allowed_device_types_obj'] as Array<any>).map(WebAuthnDeviceTypeFromJSON)),
+        'emailOtpThrottlingFactor': json['email_otp_throttling_factor'] == null ? undefined : json['email_otp_throttling_factor'],
+        'smsOtpThrottlingFactor': json['sms_otp_throttling_factor'] == null ? undefined : json['sms_otp_throttling_factor'],
+        'totpOtpThrottlingFactor': json['totp_otp_throttling_factor'] == null ? undefined : json['totp_otp_throttling_factor'],
+        'staticOtpThrottlingFactor': json['static_otp_throttling_factor'] == null ? undefined : json['static_otp_throttling_factor'],
     };
 }
 
@@ -228,41 +193,25 @@ export function AuthenticatorValidateStageToJSON(json: any): AuthenticatorValida
     return AuthenticatorValidateStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorValidateStageToJSONTyped(
-    value?: Omit<
-        AuthenticatorValidateStage,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "flowSet"
-        | "webauthnAllowedDeviceTypesObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorValidateStageToJSONTyped(value?: Omit<AuthenticatorValidateStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'|'webauthnAllowedDeviceTypesObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        not_configured_action: NotConfiguredActionEnumToJSON(value["notConfiguredAction"]),
-        device_classes:
-            value["deviceClasses"] == null
-                ? undefined
-                : (value["deviceClasses"] as Array<any>).map(DeviceClassesEnumToJSON),
-        configuration_stages: value["configurationStages"],
-        last_auth_threshold: value["lastAuthThreshold"],
-        webauthn_user_verification: UserVerificationEnumToJSON(value["webauthnUserVerification"]),
-        webauthn_hints:
-            value["webauthnHints"] == null
-                ? undefined
-                : (value["webauthnHints"] as Array<any>).map(WebAuthnHintEnumToJSON),
-        webauthn_allowed_device_types: value["webauthnAllowedDeviceTypes"],
-        email_otp_throttling_factor: value["emailOtpThrottlingFactor"],
-        sms_otp_throttling_factor: value["smsOtpThrottlingFactor"],
-        totp_otp_throttling_factor: value["totpOtpThrottlingFactor"],
-        static_otp_throttling_factor: value["staticOtpThrottlingFactor"],
+        
+        'name': value['name'],
+        'not_configured_action': NotConfiguredActionEnumToJSON(value['notConfiguredAction']),
+        'device_classes': value['deviceClasses'] == null ? undefined : ((value['deviceClasses'] as Array<any>).map(DeviceClassesEnumToJSON)),
+        'configuration_stages': value['configurationStages'],
+        'last_auth_threshold': value['lastAuthThreshold'],
+        'webauthn_user_verification': UserVerificationEnumToJSON(value['webauthnUserVerification']),
+        'webauthn_hints': value['webauthnHints'] == null ? undefined : ((value['webauthnHints'] as Array<any>).map(WebAuthnHintEnumToJSON)),
+        'webauthn_allowed_device_types': value['webauthnAllowedDeviceTypes'],
+        'email_otp_throttling_factor': value['emailOtpThrottlingFactor'],
+        'sms_otp_throttling_factor': value['smsOtpThrottlingFactor'],
+        'totp_otp_throttling_factor': value['totpOtpThrottlingFactor'],
+        'static_otp_throttling_factor': value['staticOtpThrottlingFactor'],
     };
 }
+

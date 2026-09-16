@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Serializer for User settings for stages and sources
  * @export
@@ -19,23 +20,23 @@
  */
 export interface UserSetting {
     /**
-     *
+     * 
      */
     objectUid: string;
     /**
-     *
+     * 
      */
     component: string;
     /**
-     *
+     * 
      */
     title: string;
     /**
-     *
+     * 
      */
     configureUrl?: string;
     /**
-     *
+     * 
      */
     iconUrl?: string;
 }
@@ -44,15 +45,9 @@ export interface UserSetting {
  * Check if a given object implements the UserSetting interface.
  */
 export function instanceOfUserSetting(value: object): value is UserSetting {
-    if (
-        (!("objectUid" in (value as Record<string, any>)) &&
-            !("object_uid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["objectUid"] === undefined &&
-            (value as Record<string, any>)["object_uid"] === undefined)
-    )
-        return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("title" in value) || value["title"] === undefined) return false;
+    if ((!('objectUid' in (value as Record<string, any>)) && !('object_uid' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectUid'] === undefined && (value as Record<string, any>)['object_uid'] === undefined)) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -65,11 +60,12 @@ export function UserSettingFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        objectUid: json["object_uid"],
-        component: json["component"],
-        title: json["title"],
-        configureUrl: json["configure_url"] == null ? undefined : json["configure_url"],
-        iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
+        
+        'objectUid': json['object_uid'],
+        'component': json['component'],
+        'title': json['title'],
+        'configureUrl': json['configure_url'] == null ? undefined : json['configure_url'],
+        'iconUrl': json['icon_url'] == null ? undefined : json['icon_url'],
     };
 }
 
@@ -77,19 +73,18 @@ export function UserSettingToJSON(json: any): UserSetting {
     return UserSettingToJSONTyped(json, false);
 }
 
-export function UserSettingToJSONTyped(
-    value?: UserSetting | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSettingToJSONTyped(value?: UserSetting | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        object_uid: value["objectUid"],
-        component: value["component"],
-        title: value["title"],
-        configure_url: value["configureUrl"],
-        icon_url: value["iconUrl"],
+        
+        'object_uid': value['objectUid'],
+        'component': value['component'],
+        'title': value['title'],
+        'configure_url': value['configureUrl'],
+        'icon_url': value['iconUrl'],
     };
 }
+

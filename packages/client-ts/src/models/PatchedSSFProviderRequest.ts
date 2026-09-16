@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SSFProvider Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface PatchedSSFProviderRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,15 +28,15 @@ export interface PatchedSSFProviderRequest {
      */
     signingKey?: string;
     /**
-     *
+     * 
      */
     oidcAuthProviders?: Array<number>;
     /**
-     *
+     * 
      */
     eventRetention?: string;
     /**
-     *
+     * 
      */
     pushVerifyCertificates?: boolean;
 }
@@ -43,9 +44,7 @@ export interface PatchedSSFProviderRequest {
 /**
  * Check if a given object implements the PatchedSSFProviderRequest interface.
  */
-export function instanceOfPatchedSSFProviderRequest(
-    value: object,
-): value is PatchedSSFProviderRequest {
+export function instanceOfPatchedSSFProviderRequest(value: object): value is PatchedSSFProviderRequest {
     return true;
 }
 
@@ -53,21 +52,17 @@ export function PatchedSSFProviderRequestFromJSON(json: any): PatchedSSFProvider
     return PatchedSSFProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSSFProviderRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSSFProviderRequest {
+export function PatchedSSFProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSSFProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
-        oidcAuthProviders:
-            json["oidc_auth_providers"] == null ? undefined : json["oidc_auth_providers"],
-        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
-        pushVerifyCertificates:
-            json["push_verify_certificates"] == null ? undefined : json["push_verify_certificates"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'signingKey': json['signing_key'] == null ? undefined : json['signing_key'],
+        'oidcAuthProviders': json['oidc_auth_providers'] == null ? undefined : json['oidc_auth_providers'],
+        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        'pushVerifyCertificates': json['push_verify_certificates'] == null ? undefined : json['push_verify_certificates'],
     };
 }
 
@@ -75,19 +70,18 @@ export function PatchedSSFProviderRequestToJSON(json: any): PatchedSSFProviderRe
     return PatchedSSFProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedSSFProviderRequestToJSONTyped(
-    value?: PatchedSSFProviderRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSSFProviderRequestToJSONTyped(value?: PatchedSSFProviderRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        signing_key: value["signingKey"],
-        oidc_auth_providers: value["oidcAuthProviders"],
-        event_retention: value["eventRetention"],
-        push_verify_certificates: value["pushVerifyCertificates"],
+        
+        'name': value['name'],
+        'signing_key': value['signingKey'],
+        'oidc_auth_providers': value['oidcAuthProviders'],
+        'event_retention': value['eventRetention'],
+        'push_verify_certificates': value['pushVerifyCertificates'],
     };
 }
+

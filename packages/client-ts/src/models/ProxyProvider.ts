@@ -12,10 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ProxyMode } from "./ProxyMode";
-import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
-import type { RedirectURI } from "./RedirectURI";
-import { RedirectURIFromJSON } from "./RedirectURI";
+import { mapValues } from '../runtime';
+import type { RedirectURI } from './RedirectURI';
+import {
+    RedirectURIFromJSON,
+    RedirectURIFromJSONTyped,
+    RedirectURIToJSON,
+    RedirectURIToJSONTyped,
+} from './RedirectURI';
+import type { ProxyMode } from './ProxyMode';
+import {
+    ProxyModeFromJSON,
+    ProxyModeFromJSONTyped,
+    ProxyModeToJSON,
+    ProxyModeToJSONTyped,
+} from './ProxyMode';
 
 /**
  * ProxyProvider Serializer
@@ -24,11 +35,11 @@ import { RedirectURIFromJSON } from "./RedirectURI";
  */
 export interface ProxyProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -44,7 +55,7 @@ export interface ProxyProvider {
      */
     invalidationFlow: string;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -80,15 +91,15 @@ export interface ProxyProvider {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly clientId: string;
     /**
-     *
+     * 
      */
     internalHost?: string;
     /**
-     *
+     * 
      */
     externalHost: string;
     /**
@@ -96,7 +107,7 @@ export interface ProxyProvider {
      */
     internalHostSslValidation?: boolean;
     /**
-     *
+     * 
      */
     certificate?: string | null;
     /**
@@ -124,19 +135,19 @@ export interface ProxyProvider {
      */
     interceptHeaderAuth?: boolean;
     /**
-     *
+     * 
      */
     readonly redirectUris: Array<RedirectURI>;
     /**
-     *
+     * 
      */
     cookieDomain?: string;
     /**
-     *
+     * 
      */
     jwtFederationSources?: Array<string>;
     /**
-     *
+     * 
      */
     jwtFederationProviders?: Array<number>;
     /**
@@ -148,109 +159,33 @@ export interface ProxyProvider {
      */
     refreshTokenValidity?: string;
     /**
-     *
+     * 
      */
     readonly outpostSet: Array<string>;
 }
+
+
 
 /**
  * Check if a given object implements the ProxyProvider interface.
  */
 export function instanceOfProxyProvider(value: object): value is ProxyProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("clientId" in (value as Record<string, any>)) &&
-            !("client_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["clientId"] === undefined &&
-            (value as Record<string, any>)["client_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("externalHost" in (value as Record<string, any>)) &&
-            !("external_host" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalHost"] === undefined &&
-            (value as Record<string, any>)["external_host"] === undefined)
-    )
-        return false;
-    if (
-        (!("redirectUris" in (value as Record<string, any>)) &&
-            !("redirect_uris" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["redirectUris"] === undefined &&
-            (value as Record<string, any>)["redirect_uris"] === undefined)
-    )
-        return false;
-    if (
-        (!("outpostSet" in (value as Record<string, any>)) &&
-            !("outpost_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["outpostSet"] === undefined &&
-            (value as Record<string, any>)["outpost_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('invalidationFlow' in (value as Record<string, any>)) && !('invalidation_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['invalidationFlow'] === undefined && (value as Record<string, any>)['invalidation_flow'] === undefined)) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedApplicationSlug' in (value as Record<string, any>)) && !('assigned_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_application_slug'] === undefined)) return false;
+    if ((!('assignedApplicationName' in (value as Record<string, any>)) && !('assigned_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationName'] === undefined && (value as Record<string, any>)['assigned_application_name'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('clientId' in (value as Record<string, any>)) && !('client_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['clientId'] === undefined && (value as Record<string, any>)['client_id'] === undefined)) return false;
+    if ((!('externalHost' in (value as Record<string, any>)) && !('external_host' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalHost'] === undefined && (value as Record<string, any>)['external_host'] === undefined)) return false;
+    if ((!('redirectUris' in (value as Record<string, any>)) && !('redirect_uris' in (value as Record<string, any>))) || ((value as Record<string, any>)['redirectUris'] === undefined && (value as Record<string, any>)['redirect_uris'] === undefined)) return false;
+    if ((!('outpostSet' in (value as Record<string, any>)) && !('outpost_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['outpostSet'] === undefined && (value as Record<string, any>)['outpost_set'] === undefined)) return false;
     return true;
 }
 
@@ -263,63 +198,39 @@ export function ProxyProviderFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        component: json["component"],
-        assignedApplicationSlug: json["assigned_application_slug"],
-        assignedApplicationName: json["assigned_application_name"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        clientId: json["client_id"],
-        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
-        externalHost: json["external_host"],
-        internalHostSslValidation:
-            json["internal_host_ssl_validation"] == null
-                ? undefined
-                : json["internal_host_ssl_validation"],
-        certificate:
-            json["certificate"] === undefined
-                ? undefined
-                : json["certificate"] === null
-                  ? null
-                  : json["certificate"],
-        skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
-        basicAuthEnabled:
-            json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],
-        basicAuthPasswordAttribute:
-            json["basic_auth_password_attribute"] == null
-                ? undefined
-                : json["basic_auth_password_attribute"],
-        basicAuthUserAttribute:
-            json["basic_auth_user_attribute"] == null
-                ? undefined
-                : json["basic_auth_user_attribute"],
-        mode: json["mode"] == null ? undefined : ProxyModeFromJSON(json["mode"]),
-        interceptHeaderAuth:
-            json["intercept_header_auth"] == null ? undefined : json["intercept_header_auth"],
-        redirectUris: (json["redirect_uris"] as Array<any>).map(RedirectURIFromJSON),
-        cookieDomain: json["cookie_domain"] == null ? undefined : json["cookie_domain"],
-        jwtFederationSources:
-            json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
-        jwtFederationProviders:
-            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
-        accessTokenValidity:
-            json["access_token_validity"] == null ? undefined : json["access_token_validity"],
-        refreshTokenValidity:
-            json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
-        outpostSet: json["outpost_set"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'component': json['component'],
+        'assignedApplicationSlug': json['assigned_application_slug'],
+        'assignedApplicationName': json['assigned_application_name'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'clientId': json['client_id'],
+        'internalHost': json['internal_host'] == null ? undefined : json['internal_host'],
+        'externalHost': json['external_host'],
+        'internalHostSslValidation': json['internal_host_ssl_validation'] == null ? undefined : json['internal_host_ssl_validation'],
+        'certificate': json['certificate'] === undefined ? undefined : json['certificate'] === null ? null : json['certificate'],
+        'skipPathRegex': json['skip_path_regex'] == null ? undefined : json['skip_path_regex'],
+        'basicAuthEnabled': json['basic_auth_enabled'] == null ? undefined : json['basic_auth_enabled'],
+        'basicAuthPasswordAttribute': json['basic_auth_password_attribute'] == null ? undefined : json['basic_auth_password_attribute'],
+        'basicAuthUserAttribute': json['basic_auth_user_attribute'] == null ? undefined : json['basic_auth_user_attribute'],
+        'mode': json['mode'] == null ? undefined : ProxyModeFromJSON(json['mode']),
+        'interceptHeaderAuth': json['intercept_header_auth'] == null ? undefined : json['intercept_header_auth'],
+        'redirectUris': ((json['redirect_uris'] as Array<any>).map(RedirectURIFromJSON)),
+        'cookieDomain': json['cookie_domain'] == null ? undefined : json['cookie_domain'],
+        'jwtFederationSources': json['jwt_federation_sources'] == null ? undefined : json['jwt_federation_sources'],
+        'jwtFederationProviders': json['jwt_federation_providers'] == null ? undefined : json['jwt_federation_providers'],
+        'accessTokenValidity': json['access_token_validity'] == null ? undefined : json['access_token_validity'],
+        'refreshTokenValidity': json['refresh_token_validity'] == null ? undefined : json['refresh_token_validity'],
+        'outpostSet': json['outpost_set'],
     };
 }
 
@@ -327,48 +238,33 @@ export function ProxyProviderToJSON(json: any): ProxyProvider {
     return ProxyProviderToJSONTyped(json, false);
 }
 
-export function ProxyProviderToJSONTyped(
-    value?: Omit<
-        ProxyProvider,
-        | "pk"
-        | "component"
-        | "assignedApplicationSlug"
-        | "assignedApplicationName"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "clientId"
-        | "redirectUris"
-        | "outpostSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ProxyProviderToJSONTyped(value?: Omit<ProxyProvider, 'pk'|'component'|'assignedApplicationSlug'|'assignedApplicationName'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'|'clientId'|'redirectUris'|'outpostSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
-        internal_host: value["internalHost"],
-        external_host: value["externalHost"],
-        internal_host_ssl_validation: value["internalHostSslValidation"],
-        certificate: value["certificate"],
-        skip_path_regex: value["skipPathRegex"],
-        basic_auth_enabled: value["basicAuthEnabled"],
-        basic_auth_password_attribute: value["basicAuthPasswordAttribute"],
-        basic_auth_user_attribute: value["basicAuthUserAttribute"],
-        mode: ProxyModeToJSON(value["mode"]),
-        intercept_header_auth: value["interceptHeaderAuth"],
-        cookie_domain: value["cookieDomain"],
-        jwt_federation_sources: value["jwtFederationSources"],
-        jwt_federation_providers: value["jwtFederationProviders"],
-        access_token_validity: value["accessTokenValidity"],
-        refresh_token_validity: value["refreshTokenValidity"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
+        'internal_host': value['internalHost'],
+        'external_host': value['externalHost'],
+        'internal_host_ssl_validation': value['internalHostSslValidation'],
+        'certificate': value['certificate'],
+        'skip_path_regex': value['skipPathRegex'],
+        'basic_auth_enabled': value['basicAuthEnabled'],
+        'basic_auth_password_attribute': value['basicAuthPasswordAttribute'],
+        'basic_auth_user_attribute': value['basicAuthUserAttribute'],
+        'mode': ProxyModeToJSON(value['mode']),
+        'intercept_header_auth': value['interceptHeaderAuth'],
+        'cookie_domain': value['cookieDomain'],
+        'jwt_federation_sources': value['jwtFederationSources'],
+        'jwt_federation_providers': value['jwtFederationProviders'],
+        'access_token_validity': value['accessTokenValidity'],
+        'refresh_token_validity': value['refreshTokenValidity'],
     };
 }
+

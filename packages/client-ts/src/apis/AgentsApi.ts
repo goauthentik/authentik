@@ -12,17 +12,51 @@
  * Do not edit the class manually.
  */
 
-import { type Agent, AgentFromJSON } from "../models/Agent";
-import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
-import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest";
-import { type AgentRequest, AgentRequestToJSON } from "../models/AgentRequest";
-import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/PaginatedAgentList";
-import { type PatchedAgentRequest, PatchedAgentRequestToJSON } from "../models/PatchedAgentRequest";
-import * as runtime from "../runtime";
+import * as runtime from '../runtime';
+import {
+    type Agent,
+    AgentFromJSON,
+    AgentToJSON,
+} from '../models/Agent';
+import {
+    type AgentCreateRequest,
+    AgentCreateRequestFromJSON,
+    AgentCreateRequestToJSON,
+} from '../models/AgentCreateRequest';
+import {
+    type AgentCreated,
+    AgentCreatedFromJSON,
+    AgentCreatedToJSON,
+} from '../models/AgentCreated';
+import {
+    type AgentRequest,
+    AgentRequestFromJSON,
+    AgentRequestToJSON,
+} from '../models/AgentRequest';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type PaginatedAgentList,
+    PaginatedAgentListFromJSON,
+    PaginatedAgentListToJSON,
+} from '../models/PaginatedAgentList';
+import {
+    type PatchedAgentRequest,
+    PatchedAgentRequestFromJSON,
+    PatchedAgentRequestToJSON,
+} from '../models/PatchedAgentRequest';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface AgentsAgentsCreateRequest {
     /**
-     *
+     * 
      */
     agentCreateRequest?: AgentCreateRequest;
 }
@@ -48,7 +82,7 @@ export interface AgentsAgentsListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     parent?: number;
     /**
@@ -63,7 +97,7 @@ export interface AgentsAgentsPartialUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     patchedAgentRequest?: PatchedAgentRequest;
 }
@@ -81,26 +115,25 @@ export interface AgentsAgentsUpdateRequest {
      */
     id: number;
     /**
-     *
+     * 
      */
     agentRequest: AgentRequest;
 }
 
 /**
- *
+ * 
  */
 export class AgentsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for agentsAgentsCreate without sending the request
      */
-    async agentsAgentsCreateRequestOpts(
-        requestParameters: AgentsAgentsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
+    async agentsAgentsCreateRequestOpts(requestParameters: AgentsAgentsCreateRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -115,35 +148,27 @@ export class AgentsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: AgentCreateRequestToJSON(requestParameters["agentCreateRequest"]),
+            body: AgentCreateRequestToJSON(requestParameters['agentCreateRequest']),
         };
     }
 
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsCreateRaw(
-        requestParameters: AgentsAgentsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<AgentCreated>> {
+    async agentsAgentsCreateRaw(requestParameters: AgentsAgentsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AgentCreated>> {
         const requestOptions = await this.agentsAgentsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            AgentCreatedFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => AgentCreatedFromJSON(jsonValue));
     }
 
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsCreate(
-        requestParameters: AgentsAgentsCreateRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<AgentCreated> {
+    async agentsAgentsCreate(requestParameters: AgentsAgentsCreateRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AgentCreated> {
         const response = await this.agentsAgentsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -151,13 +176,11 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Creates request options for agentsAgentsDestroy without sending the request
      */
-    async agentsAgentsDestroyRequestOpts(
-        requestParameters: AgentsAgentsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async agentsAgentsDestroyRequestOpts(requestParameters: AgentsAgentsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling agentsAgentsDestroy().',
+                'id',
+                'Required parameter "id" was null or undefined when calling agentsAgentsDestroy().'
             );
         }
 
@@ -175,11 +198,11 @@ export class AgentsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/agents/agents/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -188,10 +211,7 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsDestroyRaw(
-        requestParameters: AgentsAgentsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async agentsAgentsDestroyRaw(requestParameters: AgentsAgentsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.agentsAgentsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -201,39 +221,34 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsDestroy(
-        requestParameters: AgentsAgentsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async agentsAgentsDestroy(requestParameters: AgentsAgentsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.agentsAgentsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for agentsAgentsList without sending the request
      */
-    async agentsAgentsListRequestOpts(
-        requestParameters: AgentsAgentsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async agentsAgentsListRequestOpts(requestParameters: AgentsAgentsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["parent"] != null) {
-            queryParameters["parent"] = requestParameters["parent"];
+        if (requestParameters['parent'] != null) {
+            queryParameters['parent'] = requestParameters['parent'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -251,7 +266,7 @@ export class AgentsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -260,25 +275,17 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsListRaw(
-        requestParameters: AgentsAgentsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedAgentList>> {
+    async agentsAgentsListRaw(requestParameters: AgentsAgentsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAgentList>> {
         const requestOptions = await this.agentsAgentsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedAgentListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAgentListFromJSON(jsonValue));
     }
 
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsList(
-        requestParameters: AgentsAgentsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedAgentList> {
+    async agentsAgentsList(requestParameters: AgentsAgentsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAgentList> {
         const response = await this.agentsAgentsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -286,13 +293,11 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Creates request options for agentsAgentsPartialUpdate without sending the request
      */
-    async agentsAgentsPartialUpdateRequestOpts(
-        requestParameters: AgentsAgentsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async agentsAgentsPartialUpdateRequestOpts(requestParameters: AgentsAgentsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling agentsAgentsPartialUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling agentsAgentsPartialUpdate().'
             );
         }
 
@@ -300,7 +305,7 @@ export class AgentsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -312,24 +317,21 @@ export class AgentsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/agents/agents/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAgentRequestToJSON(requestParameters["patchedAgentRequest"]),
+            body: PatchedAgentRequestToJSON(requestParameters['patchedAgentRequest']),
         };
     }
 
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsPartialUpdateRaw(
-        requestParameters: AgentsAgentsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Agent>> {
+    async agentsAgentsPartialUpdateRaw(requestParameters: AgentsAgentsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Agent>> {
         const requestOptions = await this.agentsAgentsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -339,10 +341,7 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsPartialUpdate(
-        requestParameters: AgentsAgentsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Agent> {
+    async agentsAgentsPartialUpdate(requestParameters: AgentsAgentsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Agent> {
         const response = await this.agentsAgentsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -350,13 +349,11 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Creates request options for agentsAgentsRetrieve without sending the request
      */
-    async agentsAgentsRetrieveRequestOpts(
-        requestParameters: AgentsAgentsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async agentsAgentsRetrieveRequestOpts(requestParameters: AgentsAgentsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling agentsAgentsRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling agentsAgentsRetrieve().'
             );
         }
 
@@ -374,11 +371,11 @@ export class AgentsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/agents/agents/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -387,10 +384,7 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsRetrieveRaw(
-        requestParameters: AgentsAgentsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Agent>> {
+    async agentsAgentsRetrieveRaw(requestParameters: AgentsAgentsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Agent>> {
         const requestOptions = await this.agentsAgentsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -400,10 +394,7 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsRetrieve(
-        requestParameters: AgentsAgentsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Agent> {
+    async agentsAgentsRetrieve(requestParameters: AgentsAgentsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Agent> {
         const response = await this.agentsAgentsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -411,20 +402,18 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Creates request options for agentsAgentsUpdate without sending the request
      */
-    async agentsAgentsUpdateRequestOpts(
-        requestParameters: AgentsAgentsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async agentsAgentsUpdateRequestOpts(requestParameters: AgentsAgentsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling agentsAgentsUpdate().',
+                'id',
+                'Required parameter "id" was null or undefined when calling agentsAgentsUpdate().'
             );
         }
 
-        if (requestParameters["agentRequest"] == null) {
+        if (requestParameters['agentRequest'] == null) {
             throw new runtime.RequiredError(
-                "agentRequest",
-                'Required parameter "agentRequest" was null or undefined when calling agentsAgentsUpdate().',
+                'agentRequest',
+                'Required parameter "agentRequest" was null or undefined when calling agentsAgentsUpdate().'
             );
         }
 
@@ -432,7 +421,7 @@ export class AgentsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -444,24 +433,21 @@ export class AgentsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/agents/agents/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: AgentRequestToJSON(requestParameters["agentRequest"]),
+            body: AgentRequestToJSON(requestParameters['agentRequest']),
         };
     }
 
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsUpdateRaw(
-        requestParameters: AgentsAgentsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Agent>> {
+    async agentsAgentsUpdateRaw(requestParameters: AgentsAgentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Agent>> {
         const requestOptions = await this.agentsAgentsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -471,11 +457,9 @@ export class AgentsApi extends runtime.BaseAPI {
     /**
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
-    async agentsAgentsUpdate(
-        requestParameters: AgentsAgentsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Agent> {
+    async agentsAgentsUpdate(requestParameters: AgentsAgentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Agent> {
         const response = await this.agentsAgentsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

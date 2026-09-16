@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Reputation Serializer
  * @export
@@ -21,31 +20,31 @@ import { parseDateTime } from "../runtime";
  */
 export interface Reputation {
     /**
-     *
+     * 
      */
     pk?: string;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     ip: string;
     /**
-     *
+     * 
      */
-    ipGeoData?: { [key: string]: any };
+    ipGeoData?: { [key: string]: any; };
     /**
-     *
+     * 
      */
-    ipAsnData?: { [key: string]: any };
+    ipAsnData?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     score?: number;
     /**
-     *
+     * 
      */
     readonly updated: Date;
 }
@@ -54,9 +53,9 @@ export interface Reputation {
  * Check if a given object implements the Reputation interface.
  */
 export function instanceOfReputation(value: object): value is Reputation {
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("ip" in value) || value["ip"] === undefined) return false;
-    if (!("updated" in value) || value["updated"] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+    if (!('ip' in value) || value['ip'] === undefined) return false;
+    if (!('updated' in value) || value['updated'] === undefined) return false;
     return true;
 }
 
@@ -69,13 +68,14 @@ export function ReputationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        pk: json["pk"] == null ? undefined : json["pk"],
-        identifier: json["identifier"],
-        ip: json["ip"],
-        ipGeoData: json["ip_geo_data"] == null ? undefined : json["ip_geo_data"],
-        ipAsnData: json["ip_asn_data"] == null ? undefined : json["ip_asn_data"],
-        score: json["score"] == null ? undefined : json["score"],
-        updated: json["updated"] == null ? json["updated"] : parseDateTime(json["updated"]),
+        
+        'pk': json['pk'] == null ? undefined : json['pk'],
+        'identifier': json['identifier'],
+        'ip': json['ip'],
+        'ipGeoData': json['ip_geo_data'] == null ? undefined : json['ip_geo_data'],
+        'ipAsnData': json['ip_asn_data'] == null ? undefined : json['ip_asn_data'],
+        'score': json['score'] == null ? undefined : json['score'],
+        'updated': (json['updated'] == null ? json['updated'] : parseDateTime(json['updated'])),
     };
 }
 
@@ -83,20 +83,19 @@ export function ReputationToJSON(json: any): Reputation {
     return ReputationToJSONTyped(json, false);
 }
 
-export function ReputationToJSONTyped(
-    value?: Omit<Reputation, "updated"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ReputationToJSONTyped(value?: Omit<Reputation, 'updated'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        identifier: value["identifier"],
-        ip: value["ip"],
-        ip_geo_data: value["ipGeoData"],
-        ip_asn_data: value["ipAsnData"],
-        score: value["score"],
+        
+        'pk': value['pk'],
+        'identifier': value['identifier'],
+        'ip': value['ip'],
+        'ip_geo_data': value['ipGeoData'],
+        'ip_asn_data': value['ipAsnData'],
+        'score': value['score'],
     };
 }
+

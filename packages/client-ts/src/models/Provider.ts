@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Provider Serializer
  * @export
@@ -19,11 +20,11 @@
  */
 export interface Provider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -39,7 +40,7 @@ export interface Provider {
      */
     invalidationFlow?: string | null;
     /**
-     *
+     * 
      */
     propertyMappings?: Array<string>;
     /**
@@ -80,58 +81,16 @@ export interface Provider {
  * Check if a given object implements the Provider interface.
  */
 export function instanceOfProvider(value: object): value is Provider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
-    )
-        return false;
-    if (
-        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
-            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
-            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('assignedApplicationSlug' in (value as Record<string, any>)) && !('assigned_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_application_slug'] === undefined)) return false;
+    if ((!('assignedApplicationName' in (value as Record<string, any>)) && !('assigned_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedApplicationName'] === undefined && (value as Record<string, any>)['assigned_application_name'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationSlug' in (value as Record<string, any>)) && !('assigned_backchannel_application_slug' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationSlug'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_slug'] === undefined)) return false;
+    if ((!('assignedBackchannelApplicationName' in (value as Record<string, any>)) && !('assigned_backchannel_application_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['assignedBackchannelApplicationName'] === undefined && (value as Record<string, any>)['assigned_backchannel_application_name'] === undefined)) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
     return true;
 }
 
@@ -144,35 +103,21 @@ export function ProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        authorizationFlow:
-            json["authorization_flow"] === undefined
-                ? undefined
-                : json["authorization_flow"] === null
-                  ? null
-                  : json["authorization_flow"],
-        invalidationFlow:
-            json["invalidation_flow"] === undefined
-                ? undefined
-                : json["invalidation_flow"] === null
-                  ? null
-                  : json["invalidation_flow"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        component: json["component"],
-        assignedApplicationSlug: json["assigned_application_slug"],
-        assignedApplicationName: json["assigned_application_name"],
-        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
-        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'authorizationFlow': json['authorization_flow'] === undefined ? undefined : json['authorization_flow'] === null ? null : json['authorization_flow'],
+        'invalidationFlow': json['invalidation_flow'] === undefined ? undefined : json['invalidation_flow'] === null ? null : json['invalidation_flow'],
+        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
+        'component': json['component'],
+        'assignedApplicationSlug': json['assigned_application_slug'],
+        'assignedApplicationName': json['assigned_application_name'],
+        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
+        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
     };
 }
 
@@ -180,30 +125,18 @@ export function ProviderToJSON(json: any): Provider {
     return ProviderToJSONTyped(json, false);
 }
 
-export function ProviderToJSONTyped(
-    value?: Omit<
-        Provider,
-        | "pk"
-        | "component"
-        | "assignedApplicationSlug"
-        | "assignedApplicationName"
-        | "assignedBackchannelApplicationSlug"
-        | "assignedBackchannelApplicationName"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ProviderToJSONTyped(value?: Omit<Provider, 'pk'|'component'|'assignedApplicationSlug'|'assignedApplicationName'|'assignedBackchannelApplicationSlug'|'assignedBackchannelApplicationName'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        authentication_flow: value["authenticationFlow"],
-        authorization_flow: value["authorizationFlow"],
-        invalidation_flow: value["invalidationFlow"],
-        property_mappings: value["propertyMappings"],
+        
+        'name': value['name'],
+        'authentication_flow': value['authenticationFlow'],
+        'authorization_flow': value['authorizationFlow'],
+        'invalidation_flow': value['invalidationFlow'],
+        'property_mappings': value['propertyMappings'],
     };
 }
+

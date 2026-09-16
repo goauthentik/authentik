@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * AuthenticatorStaticStage Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface AuthenticatorStaticStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,15 +28,15 @@ export interface AuthenticatorStaticStageRequest {
      */
     configureFlow?: string | null;
     /**
-     *
+     * 
      */
     friendlyName?: string;
     /**
-     *
+     * 
      */
     tokenCount?: number;
     /**
-     *
+     * 
      */
     tokenLength?: number;
 }
@@ -43,37 +44,26 @@ export interface AuthenticatorStaticStageRequest {
 /**
  * Check if a given object implements the AuthenticatorStaticStageRequest interface.
  */
-export function instanceOfAuthenticatorStaticStageRequest(
-    value: object,
-): value is AuthenticatorStaticStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+export function instanceOfAuthenticatorStaticStageRequest(value: object): value is AuthenticatorStaticStageRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorStaticStageRequestFromJSON(
-    json: any,
-): AuthenticatorStaticStageRequest {
+export function AuthenticatorStaticStageRequestFromJSON(json: any): AuthenticatorStaticStageRequest {
     return AuthenticatorStaticStageRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorStaticStageRequest {
+export function AuthenticatorStaticStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorStaticStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        configureFlow:
-            json["configure_flow"] === undefined
-                ? undefined
-                : json["configure_flow"] === null
-                  ? null
-                  : json["configure_flow"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        tokenCount: json["token_count"] == null ? undefined : json["token_count"],
-        tokenLength: json["token_length"] == null ? undefined : json["token_length"],
+        
+        'name': json['name'],
+        'configureFlow': json['configure_flow'] === undefined ? undefined : json['configure_flow'] === null ? null : json['configure_flow'],
+        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        'tokenCount': json['token_count'] == null ? undefined : json['token_count'],
+        'tokenLength': json['token_length'] == null ? undefined : json['token_length'],
     };
 }
 
@@ -81,19 +71,18 @@ export function AuthenticatorStaticStageRequestToJSON(json: any): AuthenticatorS
     return AuthenticatorStaticStageRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticStageRequestToJSONTyped(
-    value?: AuthenticatorStaticStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorStaticStageRequestToJSONTyped(value?: AuthenticatorStaticStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        configure_flow: value["configureFlow"],
-        friendly_name: value["friendlyName"],
-        token_count: value["tokenCount"],
-        token_length: value["tokenLength"],
+        
+        'name': value['name'],
+        'configure_flow': value['configureFlow'],
+        'friendly_name': value['friendlyName'],
+        'token_count': value['tokenCount'],
+        'token_length': value['tokenLength'],
     };
 }
+

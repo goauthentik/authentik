@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * KubernetesServiceConnection Serializer
  * @export
@@ -19,11 +20,11 @@
  */
 export interface KubernetesServiceConnection {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -31,7 +32,7 @@ export interface KubernetesServiceConnection {
      */
     local?: boolean;
     /**
-     *
+     * 
      */
     readonly component: string;
     /**
@@ -49,7 +50,7 @@ export interface KubernetesServiceConnection {
     /**
      * Paste your kubeconfig here. authentik will automatically use the currently selected context.
      */
-    kubeconfig?: { [key: string]: any };
+    kubeconfig?: { [key: string]: any; };
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -59,33 +60,13 @@ export interface KubernetesServiceConnection {
 /**
  * Check if a given object implements the KubernetesServiceConnection interface.
  */
-export function instanceOfKubernetesServiceConnection(
-    value: object,
-): value is KubernetesServiceConnection {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
+export function instanceOfKubernetesServiceConnection(value: object): value is KubernetesServiceConnection {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
     return true;
 }
 
@@ -93,23 +74,21 @@ export function KubernetesServiceConnectionFromJSON(json: any): KubernetesServic
     return KubernetesServiceConnectionFromJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): KubernetesServiceConnection {
+export function KubernetesServiceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): KubernetesServiceConnection {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        local: json["local"] == null ? undefined : json["local"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
-        verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'local': json['local'] == null ? undefined : json['local'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'kubeconfig': json['kubeconfig'] == null ? undefined : json['kubeconfig'],
+        'verifySsl': json['verify_ssl'] == null ? undefined : json['verify_ssl'],
     };
 }
 
@@ -117,21 +96,17 @@ export function KubernetesServiceConnectionToJSON(json: any): KubernetesServiceC
     return KubernetesServiceConnectionToJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionToJSONTyped(
-    value?: Omit<
-        KubernetesServiceConnection,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function KubernetesServiceConnectionToJSONTyped(value?: Omit<KubernetesServiceConnection, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        local: value["local"],
-        kubeconfig: value["kubeconfig"],
-        verify_ssl: value["verifySsl"],
+        
+        'name': value['name'],
+        'local': value['local'],
+        'kubeconfig': value['kubeconfig'],
+        'verify_ssl': value['verifySsl'],
     };
 }
+

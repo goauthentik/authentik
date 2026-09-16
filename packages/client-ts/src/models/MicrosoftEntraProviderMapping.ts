@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * MicrosoftEntraProviderMapping Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface MicrosoftEntraProviderMapping {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -27,11 +28,11 @@ export interface MicrosoftEntraProviderMapping {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
     /**
@@ -55,34 +56,14 @@ export interface MicrosoftEntraProviderMapping {
 /**
  * Check if a given object implements the MicrosoftEntraProviderMapping interface.
  */
-export function instanceOfMicrosoftEntraProviderMapping(
-    value: object,
-): value is MicrosoftEntraProviderMapping {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
+export function instanceOfMicrosoftEntraProviderMapping(value: object): value is MicrosoftEntraProviderMapping {
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
     return true;
 }
 
@@ -90,27 +71,20 @@ export function MicrosoftEntraProviderMappingFromJSON(json: any): MicrosoftEntra
     return MicrosoftEntraProviderMappingFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderMappingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MicrosoftEntraProviderMapping {
+export function MicrosoftEntraProviderMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderMapping {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
+        
+        'pk': json['pk'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
     };
 }
 
@@ -118,20 +92,16 @@ export function MicrosoftEntraProviderMappingToJSON(json: any): MicrosoftEntraPr
     return MicrosoftEntraProviderMappingToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderMappingToJSONTyped(
-    value?: Omit<
-        MicrosoftEntraProviderMapping,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MicrosoftEntraProviderMappingToJSONTyped(value?: Omit<MicrosoftEntraProviderMapping, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

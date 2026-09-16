@@ -12,9 +12,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import { mapValues } from '../runtime';
+import type { ErrorDetail } from './ErrorDetail';
+import {
+    ErrorDetailFromJSON,
+    ErrorDetailFromJSONTyped,
+    ErrorDetailToJSON,
+    ErrorDetailToJSONTyped,
+} from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoFromJSONTyped,
+    ContextualFlowInfoToJSON,
+    ContextualFlowInfoToJSONTyped,
+} from './ContextualFlowInfo';
 
 /**
  * Site public key
@@ -23,35 +35,35 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface CaptchaChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     pendingUser: string;
     /**
-     *
+     * 
      */
     pendingUserAvatar: string;
     /**
-     *
+     * 
      */
     siteKey: string;
     /**
-     *
+     * 
      */
     jsUrl: string;
     /**
-     *
+     * 
      */
     interactive: boolean;
 }
@@ -60,35 +72,11 @@ export interface CaptchaChallenge {
  * Check if a given object implements the CaptchaChallenge interface.
  */
 export function instanceOfCaptchaChallenge(value: object): value is CaptchaChallenge {
-    if (
-        (!("pendingUser" in (value as Record<string, any>)) &&
-            !("pending_user" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUser"] === undefined &&
-            (value as Record<string, any>)["pending_user"] === undefined)
-    )
-        return false;
-    if (
-        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
-            !("pending_user_avatar" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
-            (value as Record<string, any>)["pending_user_avatar"] === undefined)
-    )
-        return false;
-    if (
-        (!("siteKey" in (value as Record<string, any>)) &&
-            !("site_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["siteKey"] === undefined &&
-            (value as Record<string, any>)["site_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("jsUrl" in (value as Record<string, any>)) &&
-            !("js_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["jsUrl"] === undefined &&
-            (value as Record<string, any>)["js_url"] === undefined)
-    )
-        return false;
-    if (!("interactive" in value) || value["interactive"] === undefined) return false;
+    if ((!('pendingUser' in (value as Record<string, any>)) && !('pending_user' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUser'] === undefined && (value as Record<string, any>)['pending_user'] === undefined)) return false;
+    if ((!('pendingUserAvatar' in (value as Record<string, any>)) && !('pending_user_avatar' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUserAvatar'] === undefined && (value as Record<string, any>)['pending_user_avatar'] === undefined)) return false;
+    if ((!('siteKey' in (value as Record<string, any>)) && !('site_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['siteKey'] === undefined && (value as Record<string, any>)['site_key'] === undefined)) return false;
+    if ((!('jsUrl' in (value as Record<string, any>)) && !('js_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['jsUrl'] === undefined && (value as Record<string, any>)['js_url'] === undefined)) return false;
+    if (!('interactive' in value) || value['interactive'] === undefined) return false;
     return true;
 }
 
@@ -96,23 +84,20 @@ export function CaptchaChallengeFromJSON(json: any): CaptchaChallenge {
     return CaptchaChallengeFromJSONTyped(json, false);
 }
 
-export function CaptchaChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CaptchaChallenge {
+export function CaptchaChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): CaptchaChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        pendingUser: json["pending_user"],
-        pendingUserAvatar: json["pending_user_avatar"],
-        siteKey: json["site_key"],
-        jsUrl: json["js_url"],
-        interactive: json["interactive"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'pendingUser': json['pending_user'],
+        'pendingUserAvatar': json['pending_user_avatar'],
+        'siteKey': json['site_key'],
+        'jsUrl': json['js_url'],
+        'interactive': json['interactive'],
     };
 }
 
@@ -120,22 +105,21 @@ export function CaptchaChallengeToJSON(json: any): CaptchaChallenge {
     return CaptchaChallengeToJSONTyped(json, false);
 }
 
-export function CaptchaChallengeToJSONTyped(
-    value?: CaptchaChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CaptchaChallengeToJSONTyped(value?: CaptchaChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        pending_user: value["pendingUser"],
-        pending_user_avatar: value["pendingUserAvatar"],
-        site_key: value["siteKey"],
-        js_url: value["jsUrl"],
-        interactive: value["interactive"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'pending_user': value['pendingUser'],
+        'pending_user_avatar': value['pendingUserAvatar'],
+        'site_key': value['siteKey'],
+        'js_url': value['jsUrl'],
+        'interactive': value['interactive'],
     };
 }
+

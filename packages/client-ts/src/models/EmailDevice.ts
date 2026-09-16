@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { mapValues } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
 
 /**
  * Serializer for email authenticator devices
@@ -26,15 +32,15 @@ export interface EmailDevice {
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly email: string;
     /**
-     *
+     * 
      */
     readonly user: PartialUser;
 }
@@ -43,10 +49,10 @@ export interface EmailDevice {
  * Check if a given object implements the EmailDevice interface.
  */
 export function instanceOfEmailDevice(value: object): value is EmailDevice {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("email" in value) || value["email"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -59,10 +65,11 @@ export function EmailDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        name: json["name"],
-        pk: json["pk"],
-        email: json["email"],
-        user: PartialUserFromJSON(json["user"]),
+        
+        'name': json['name'],
+        'pk': json['pk'],
+        'email': json['email'],
+        'user': PartialUserFromJSON(json['user']),
     };
 }
 
@@ -70,15 +77,14 @@ export function EmailDeviceToJSON(json: any): EmailDevice {
     return EmailDeviceToJSONTyped(json, false);
 }
 
-export function EmailDeviceToJSONTyped(
-    value?: Omit<EmailDevice, "pk" | "email" | "user"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EmailDeviceToJSONTyped(value?: Omit<EmailDevice, 'pk'|'email'|'user'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

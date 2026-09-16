@@ -12,58 +12,73 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
-import type { DeviceUserBinding } from "./DeviceUserBinding";
-import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { DeviceAccessGroup } from './DeviceAccessGroup';
+import {
+    DeviceAccessGroupFromJSON,
+    DeviceAccessGroupFromJSONTyped,
+    DeviceAccessGroupToJSON,
+    DeviceAccessGroupToJSONTyped,
+} from './DeviceAccessGroup';
+import type { DeviceUserBinding } from './DeviceUserBinding';
+import {
+    DeviceUserBindingFromJSON,
+    DeviceUserBindingFromJSONTyped,
+    DeviceUserBindingToJSON,
+    DeviceUserBindingToJSONTyped,
+} from './DeviceUserBinding';
+import type { DeviceFactSnapshot } from './DeviceFactSnapshot';
+import {
+    DeviceFactSnapshotFromJSON,
+    DeviceFactSnapshotFromJSONTyped,
+    DeviceFactSnapshotToJSON,
+    DeviceFactSnapshotToJSONTyped,
+} from './DeviceFactSnapshot';
 
 /**
- *
+ * 
  * @export
  * @interface EndpointDevice
  */
 export interface EndpointDevice {
     /**
-     *
+     * 
      */
     deviceUuid?: string;
     /**
-     *
+     * 
      */
     readonly pbmUuid: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     accessGroup?: string | null;
     /**
-     *
+     * 
      */
     accessGroupObj?: DeviceAccessGroup;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     readonly facts: DeviceFactSnapshot | null;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     readonly primaryBindingObj: DeviceUserBinding | null;
 }
@@ -72,22 +87,10 @@ export interface EndpointDevice {
  * Check if a given object implements the EndpointDevice interface.
  */
 export function instanceOfEndpointDevice(value: object): value is EndpointDevice {
-    if (
-        (!("pbmUuid" in (value as Record<string, any>)) &&
-            !("pbm_uuid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pbmUuid"] === undefined &&
-            (value as Record<string, any>)["pbm_uuid"] === undefined)
-    )
-        return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("facts" in value) || value["facts"] === undefined) return false;
-    if (
-        (!("primaryBindingObj" in (value as Record<string, any>)) &&
-            !("primary_binding_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["primaryBindingObj"] === undefined &&
-            (value as Record<string, any>)["primary_binding_obj"] === undefined)
-    )
-        return false;
+    if ((!('pbmUuid' in (value as Record<string, any>)) && !('pbm_uuid' in (value as Record<string, any>))) || ((value as Record<string, any>)['pbmUuid'] === undefined && (value as Record<string, any>)['pbm_uuid'] === undefined)) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('facts' in value) || value['facts'] === undefined) return false;
+    if ((!('primaryBindingObj' in (value as Record<string, any>)) && !('primary_binding_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['primaryBindingObj'] === undefined && (value as Record<string, any>)['primary_binding_obj'] === undefined)) return false;
     return true;
 }
 
@@ -95,37 +98,22 @@ export function EndpointDeviceFromJSON(json: any): EndpointDevice {
     return EndpointDeviceFromJSONTyped(json, false);
 }
 
-export function EndpointDeviceFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EndpointDevice {
+export function EndpointDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointDevice {
     if (json == null) {
         return json;
     }
     return {
-        deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
-        pbmUuid: json["pbm_uuid"],
-        name: json["name"],
-        accessGroup:
-            json["access_group"] === undefined
-                ? undefined
-                : json["access_group"] === null
-                  ? null
-                  : json["access_group"],
-        accessGroupObj:
-            json["access_group_obj"] == null
-                ? undefined
-                : DeviceAccessGroupFromJSON(json["access_group_obj"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        facts: DeviceFactSnapshotFromJSON(json["facts"]),
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        primaryBindingObj: DeviceUserBindingFromJSON(json["primary_binding_obj"]),
+        
+        'deviceUuid': json['device_uuid'] == null ? undefined : json['device_uuid'],
+        'pbmUuid': json['pbm_uuid'],
+        'name': json['name'],
+        'accessGroup': json['access_group'] === undefined ? undefined : json['access_group'] === null ? null : json['access_group'],
+        'accessGroupObj': json['access_group_obj'] == null ? undefined : DeviceAccessGroupFromJSON(json['access_group_obj']),
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'facts': DeviceFactSnapshotFromJSON(json['facts']),
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'primaryBindingObj': DeviceUserBindingFromJSON(json['primary_binding_obj']),
     };
 }
 
@@ -133,21 +121,20 @@ export function EndpointDeviceToJSON(json: any): EndpointDevice {
     return EndpointDeviceToJSONTyped(json, false);
 }
 
-export function EndpointDeviceToJSONTyped(
-    value?: Omit<EndpointDevice, "pbmUuid" | "facts" | "primaryBindingObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EndpointDeviceToJSONTyped(value?: Omit<EndpointDevice, 'pbmUuid'|'facts'|'primaryBindingObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_uuid: value["deviceUuid"],
-        name: value["name"],
-        access_group: value["accessGroup"],
-        access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        attributes: value["attributes"],
+        
+        'device_uuid': value['deviceUuid'],
+        'name': value['name'],
+        'access_group': value['accessGroup'],
+        'access_group_obj': DeviceAccessGroupToJSON(value['accessGroupObj']),
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'attributes': value['attributes'],
     };
 }
+

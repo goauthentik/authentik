@@ -12,38 +12,49 @@
  * Do not edit the class manually.
  */
 
-import type { Domain } from "./Domain";
-import { DomainFromJSON, DomainToJSON } from "./Domain";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import { mapValues } from '../runtime';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationFromJSONTyped,
+    PaginationToJSON,
+    PaginationToJSONTyped,
+} from './Pagination';
+import type { Domain } from './Domain';
+import {
+    DomainFromJSON,
+    DomainFromJSONTyped,
+    DomainToJSON,
+    DomainToJSONTyped,
+} from './Domain';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedDomainList
  */
 export interface PaginatedDomainList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Domain>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedDomainList interface.
  */
 export function instanceOfPaginatedDomainList(value: object): value is PaginatedDomainList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +62,15 @@ export function PaginatedDomainListFromJSON(json: any): PaginatedDomainList {
     return PaginatedDomainListFromJSONTyped(json, false);
 }
 
-export function PaginatedDomainListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedDomainList {
+export function PaginatedDomainListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDomainList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(DomainFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(DomainFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +78,16 @@ export function PaginatedDomainListToJSON(json: any): PaginatedDomainList {
     return PaginatedDomainListToJSONTyped(json, false);
 }
 
-export function PaginatedDomainListToJSONTyped(
-    value?: PaginatedDomainList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedDomainListToJSONTyped(value?: PaginatedDomainList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(DomainToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(DomainToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -12,18 +12,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const OutpostTypeEnum = {
-    Proxy: "proxy",
-    Ldap: "ldap",
-    Radius: "radius",
-    Rac: "rac",
-    UnknownDefaultOpenApi: "11184809",
+    Proxy: 'proxy',
+    Ldap: 'ldap',
+    Radius: 'radius',
+    Rac: 'rac',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type OutpostTypeEnum = (typeof OutpostTypeEnum)[keyof typeof OutpostTypeEnum];
+export type OutpostTypeEnum = typeof OutpostTypeEnum[keyof typeof OutpostTypeEnum];
+
 
 export function instanceOfOutpostTypeEnum(value: any): boolean {
     for (const key in OutpostTypeEnum) {
@@ -40,10 +42,7 @@ export function OutpostTypeEnumFromJSON(json: any): OutpostTypeEnum {
     return OutpostTypeEnumFromJSONTyped(json, false);
 }
 
-export function OutpostTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OutpostTypeEnum {
+export function OutpostTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): OutpostTypeEnum {
     return json as OutpostTypeEnum;
 }
 
@@ -51,9 +50,7 @@ export function OutpostTypeEnumToJSON(value?: OutpostTypeEnum | null): any {
     return value as any;
 }
 
-export function OutpostTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): OutpostTypeEnum {
+export function OutpostTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): OutpostTypeEnum {
     return value as OutpostTypeEnum;
 }
+

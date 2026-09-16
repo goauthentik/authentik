@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SAMLPropertyMapping Serializer
  * @export
@@ -23,19 +24,19 @@ export interface SAMLPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
     /**
-     *
+     * 
      */
     samlName: string;
     /**
-     *
+     * 
      */
     friendlyName?: string | null;
 }
@@ -43,18 +44,10 @@ export interface SAMLPropertyMappingRequest {
 /**
  * Check if a given object implements the SAMLPropertyMappingRequest interface.
  */
-export function instanceOfSAMLPropertyMappingRequest(
-    value: object,
-): value is SAMLPropertyMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (
-        (!("samlName" in (value as Record<string, any>)) &&
-            !("saml_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["samlName"] === undefined &&
-            (value as Record<string, any>)["saml_name"] === undefined)
-    )
-        return false;
+export function instanceOfSAMLPropertyMappingRequest(value: object): value is SAMLPropertyMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if ((!('samlName' in (value as Record<string, any>)) && !('saml_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['samlName'] === undefined && (value as Record<string, any>)['saml_name'] === undefined)) return false;
     return true;
 }
 
@@ -62,29 +55,17 @@ export function SAMLPropertyMappingRequestFromJSON(json: any): SAMLPropertyMappi
     return SAMLPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SAMLPropertyMappingRequest {
+export function SAMLPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
-        samlName: json["saml_name"],
-        friendlyName:
-            json["friendly_name"] === undefined
-                ? undefined
-                : json["friendly_name"] === null
-                  ? null
-                  : json["friendly_name"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
+        'samlName': json['saml_name'],
+        'friendlyName': json['friendly_name'] === undefined ? undefined : json['friendly_name'] === null ? null : json['friendly_name'],
     };
 }
 
@@ -92,19 +73,18 @@ export function SAMLPropertyMappingRequestToJSON(json: any): SAMLPropertyMapping
     return SAMLPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingRequestToJSONTyped(
-    value?: SAMLPropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SAMLPropertyMappingRequestToJSONTyped(value?: SAMLPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        saml_name: value["samlName"],
-        friendly_name: value["friendlyName"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'saml_name': value['samlName'],
+        'friendly_name': value['friendlyName'],
     };
 }
+

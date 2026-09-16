@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Group Membership Policy Serializer
  * @export
@@ -19,7 +20,7 @@
  */
 export interface ExpressionPolicyRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -27,7 +28,7 @@ export interface ExpressionPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -36,8 +37,8 @@ export interface ExpressionPolicyRequest {
  * Check if a given object implements the ExpressionPolicyRequest interface.
  */
 export function instanceOfExpressionPolicyRequest(value: object): value is ExpressionPolicyRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
@@ -45,17 +46,15 @@ export function ExpressionPolicyRequestFromJSON(json: any): ExpressionPolicyRequ
     return ExpressionPolicyRequestFromJSONTyped(json, false);
 }
 
-export function ExpressionPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ExpressionPolicyRequest {
+export function ExpressionPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExpressionPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        expression: json["expression"],
+        
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'expression': json['expression'],
     };
 }
 
@@ -63,17 +62,16 @@ export function ExpressionPolicyRequestToJSON(json: any): ExpressionPolicyReques
     return ExpressionPolicyRequestToJSONTyped(json, false);
 }
 
-export function ExpressionPolicyRequestToJSONTyped(
-    value?: ExpressionPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ExpressionPolicyRequestToJSONTyped(value?: ExpressionPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        expression: value["expression"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'expression': value['expression'],
     };
 }
+

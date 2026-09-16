@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User agent device
  * @export
@@ -19,15 +20,15 @@
  */
 export interface AuthenticatedSessionUserAgentDevice {
     /**
-     *
+     * 
      */
     brand: string | null;
     /**
-     *
+     * 
      */
     family: string;
     /**
-     *
+     * 
      */
     model: string | null;
 }
@@ -35,52 +36,43 @@ export interface AuthenticatedSessionUserAgentDevice {
 /**
  * Check if a given object implements the AuthenticatedSessionUserAgentDevice interface.
  */
-export function instanceOfAuthenticatedSessionUserAgentDevice(
-    value: object,
-): value is AuthenticatedSessionUserAgentDevice {
-    if (!("brand" in value) || value["brand"] === undefined) return false;
-    if (!("family" in value) || value["family"] === undefined) return false;
-    if (!("model" in value) || value["model"] === undefined) return false;
+export function instanceOfAuthenticatedSessionUserAgentDevice(value: object): value is AuthenticatedSessionUserAgentDevice {
+    if (!('brand' in value) || value['brand'] === undefined) return false;
+    if (!('family' in value) || value['family'] === undefined) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
     return true;
 }
 
-export function AuthenticatedSessionUserAgentDeviceFromJSON(
-    json: any,
-): AuthenticatedSessionUserAgentDevice {
+export function AuthenticatedSessionUserAgentDeviceFromJSON(json: any): AuthenticatedSessionUserAgentDevice {
     return AuthenticatedSessionUserAgentDeviceFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentDeviceFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSessionUserAgentDevice {
+export function AuthenticatedSessionUserAgentDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionUserAgentDevice {
     if (json == null) {
         return json;
     }
     return {
-        brand: json["brand"],
-        family: json["family"],
-        model: json["model"],
+        
+        'brand': json['brand'],
+        'family': json['family'],
+        'model': json['model'],
     };
 }
 
-export function AuthenticatedSessionUserAgentDeviceToJSON(
-    json: any,
-): AuthenticatedSessionUserAgentDevice {
+export function AuthenticatedSessionUserAgentDeviceToJSON(json: any): AuthenticatedSessionUserAgentDevice {
     return AuthenticatedSessionUserAgentDeviceToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentDeviceToJSONTyped(
-    value?: AuthenticatedSessionUserAgentDevice | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionUserAgentDeviceToJSONTyped(value?: AuthenticatedSessionUserAgentDevice | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        brand: value["brand"],
-        family: value["family"],
-        model: value["model"],
+        
+        'brand': value['brand'],
+        'family': value['family'],
+        'model': value['model'],
     };
 }
+

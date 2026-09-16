@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -19,11 +20,11 @@
  */
 export interface PatchedUserSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +32,38 @@ export interface PatchedUserSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserSourceConnectionRequest(
-    value: object,
-): value is PatchedUserSourceConnectionRequest {
+export function instanceOfPatchedUserSourceConnectionRequest(value: object): value is PatchedUserSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedUserSourceConnectionRequest {
+export function PatchedUserSourceConnectionRequestFromJSON(json: any): PatchedUserSourceConnectionRequest {
     return PatchedUserSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserSourceConnectionRequest {
+export function PatchedUserSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedUserSourceConnectionRequestToJSON(
-    json: any,
-): PatchedUserSourceConnectionRequest {
+export function PatchedUserSourceConnectionRequestToJSON(json: any): PatchedUserSourceConnectionRequest {
     return PatchedUserSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserSourceConnectionRequestToJSONTyped(
-    value?: PatchedUserSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserSourceConnectionRequestToJSONTyped(value?: PatchedUserSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

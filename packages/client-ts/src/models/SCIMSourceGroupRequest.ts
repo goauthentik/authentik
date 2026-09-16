@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * SCIMSourceGroup Serializer
  * @export
@@ -19,40 +20,34 @@
  */
 export interface SCIMSourceGroupRequest {
     /**
-     *
+     * 
      */
     id?: string;
     /**
-     *
+     * 
      */
     externalId: string;
     /**
-     *
+     * 
      */
     group: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the SCIMSourceGroupRequest interface.
  */
 export function instanceOfSCIMSourceGroupRequest(value: object): value is SCIMSourceGroupRequest {
-    if (
-        (!("externalId" in (value as Record<string, any>)) &&
-            !("external_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalId"] === undefined &&
-            (value as Record<string, any>)["external_id"] === undefined)
-    )
-        return false;
-    if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if ((!('externalId' in (value as Record<string, any>)) && !('external_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalId'] === undefined && (value as Record<string, any>)['external_id'] === undefined)) return false;
+    if (!('group' in value) || value['group'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -60,19 +55,17 @@ export function SCIMSourceGroupRequestFromJSON(json: any): SCIMSourceGroupReques
     return SCIMSourceGroupRequestFromJSONTyped(json, false);
 }
 
-export function SCIMSourceGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMSourceGroupRequest {
+export function SCIMSourceGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourceGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"] == null ? undefined : json["id"],
-        externalId: json["external_id"],
-        group: json["group"],
-        source: json["source"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'id': json['id'] == null ? undefined : json['id'],
+        'externalId': json['external_id'],
+        'group': json['group'],
+        'source': json['source'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -80,19 +73,18 @@ export function SCIMSourceGroupRequestToJSON(json: any): SCIMSourceGroupRequest 
     return SCIMSourceGroupRequestToJSONTyped(json, false);
 }
 
-export function SCIMSourceGroupRequestToJSONTyped(
-    value?: SCIMSourceGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMSourceGroupRequestToJSONTyped(value?: SCIMSourceGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        external_id: value["externalId"],
-        group: value["group"],
-        source: value["source"],
-        attributes: value["attributes"],
+        
+        'id': value['id'],
+        'external_id': value['externalId'],
+        'group': value['group'],
+        'source': value['source'],
+        'attributes': value['attributes'],
     };
 }
+

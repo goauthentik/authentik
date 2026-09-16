@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Invitation Serializer
  * @export
@@ -21,17 +20,17 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface InvitationRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
-    fixedData?: { [key: string]: any };
+    fixedData?: { [key: string]: any; };
     /**
      * When enabled, the invitation will be deleted after usage.
      */
@@ -46,7 +45,7 @@ export interface InvitationRequest {
  * Check if a given object implements the InvitationRequest interface.
  */
 export function instanceOfInvitationRequest(value: object): value is InvitationRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -54,24 +53,17 @@ export function InvitationRequestFromJSON(json: any): InvitationRequest {
     return InvitationRequestFromJSONTyped(json, false);
 }
 
-export function InvitationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InvitationRequest {
+export function InvitationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): InvitationRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
-        singleUse: json["single_use"] == null ? undefined : json["single_use"],
-        flow: json["flow"] === undefined ? undefined : json["flow"] === null ? null : json["flow"],
+        
+        'name': json['name'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'fixedData': json['fixed_data'] == null ? undefined : json['fixed_data'],
+        'singleUse': json['single_use'] == null ? undefined : json['single_use'],
+        'flow': json['flow'] === undefined ? undefined : json['flow'] === null ? null : json['flow'],
     };
 }
 
@@ -79,19 +71,18 @@ export function InvitationRequestToJSON(json: any): InvitationRequest {
     return InvitationRequestToJSONTyped(json, false);
 }
 
-export function InvitationRequestToJSONTyped(
-    value?: InvitationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InvitationRequestToJSONTyped(value?: InvitationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        fixed_data: value["fixedData"],
-        single_use: value["singleUse"],
-        flow: value["flow"],
+        
+        'name': value['name'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'fixed_data': value['fixedData'],
+        'single_use': value['singleUse'],
+        'flow': value['flow'],
     };
 }
+

@@ -12,25 +12,61 @@
  * Do not edit the class manually.
  */
 
-import { type InstallID, InstallIDFromJSON } from "../models/InstallID";
-import { type License, LicenseFromJSON } from "../models/License";
-import { type LicenseForecast, LicenseForecastFromJSON } from "../models/LicenseForecast";
-import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest";
-import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary";
+import * as runtime from '../runtime';
+import {
+    type GenericError,
+    GenericErrorFromJSON,
+    GenericErrorToJSON,
+} from '../models/GenericError';
+import {
+    type InstallID,
+    InstallIDFromJSON,
+    InstallIDToJSON,
+} from '../models/InstallID';
+import {
+    type License,
+    LicenseFromJSON,
+    LicenseToJSON,
+} from '../models/License';
+import {
+    type LicenseForecast,
+    LicenseForecastFromJSON,
+    LicenseForecastToJSON,
+} from '../models/LicenseForecast';
+import {
+    type LicenseRequest,
+    LicenseRequestFromJSON,
+    LicenseRequestToJSON,
+} from '../models/LicenseRequest';
+import {
+    type LicenseSummary,
+    LicenseSummaryFromJSON,
+    LicenseSummaryToJSON,
+} from '../models/LicenseSummary';
 import {
     type PaginatedLicenseList,
     PaginatedLicenseListFromJSON,
-} from "../models/PaginatedLicenseList";
+    PaginatedLicenseListToJSON,
+} from '../models/PaginatedLicenseList';
 import {
     type PatchedLicenseRequest,
+    PatchedLicenseRequestFromJSON,
     PatchedLicenseRequestToJSON,
-} from "../models/PatchedLicenseRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from '../models/PatchedLicenseRequest';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+    UsedByToJSON,
+} from '../models/UsedBy';
+import {
+    type ValidationError,
+    ValidationErrorFromJSON,
+    ValidationErrorToJSON,
+} from '../models/ValidationError';
 
 export interface EnterpriseLicenseCreateRequest {
     /**
-     *
+     * 
      */
     licenseRequest: LicenseRequest;
 }
@@ -44,7 +80,7 @@ export interface EnterpriseLicenseDestroyRequest {
 
 export interface EnterpriseLicenseListRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -71,7 +107,7 @@ export interface EnterpriseLicensePartialUpdateRequest {
      */
     licenseUuid: string;
     /**
-     *
+     * 
      */
     patchedLicenseRequest?: PatchedLicenseRequest;
 }
@@ -85,7 +121,7 @@ export interface EnterpriseLicenseRetrieveRequest {
 
 export interface EnterpriseLicenseSummaryRetrieveRequest {
     /**
-     *
+     * 
      */
     cached?: boolean;
 }
@@ -96,7 +132,7 @@ export interface EnterpriseLicenseUpdateRequest {
      */
     licenseUuid: string;
     /**
-     *
+     * 
      */
     licenseRequest: LicenseRequest;
 }
@@ -109,19 +145,18 @@ export interface EnterpriseLicenseUsedByListRequest {
 }
 
 /**
- *
+ * 
  */
 export class EnterpriseApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for enterpriseLicenseCreate without sending the request
      */
-    async enterpriseLicenseCreateRequestOpts(
-        requestParameters: EnterpriseLicenseCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseRequest"] == null) {
+    async enterpriseLicenseCreateRequestOpts(requestParameters: EnterpriseLicenseCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseRequest'] == null) {
             throw new runtime.RequiredError(
-                "licenseRequest",
-                'Required parameter "licenseRequest" was null or undefined when calling enterpriseLicenseCreate().',
+                'licenseRequest',
+                'Required parameter "licenseRequest" was null or undefined when calling enterpriseLicenseCreate().'
             );
         }
 
@@ -129,7 +164,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -144,20 +179,17 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LicenseRequestToJSON(requestParameters["licenseRequest"]),
+            body: LicenseRequestToJSON(requestParameters['licenseRequest']),
         };
     }
 
     /**
      * License Viewset
      */
-    async enterpriseLicenseCreateRaw(
-        requestParameters: EnterpriseLicenseCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<License>> {
+    async enterpriseLicenseCreateRaw(requestParameters: EnterpriseLicenseCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<License>> {
         const requestOptions = await this.enterpriseLicenseCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -167,10 +199,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseCreate(
-        requestParameters: EnterpriseLicenseCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<License> {
+    async enterpriseLicenseCreate(requestParameters: EnterpriseLicenseCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<License> {
         const response = await this.enterpriseLicenseCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -178,13 +207,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseDestroy without sending the request
      */
-    async enterpriseLicenseDestroyRequestOpts(
-        requestParameters: EnterpriseLicenseDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseUuid"] == null) {
+    async enterpriseLicenseDestroyRequestOpts(requestParameters: EnterpriseLicenseDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseUuid'] == null) {
             throw new runtime.RequiredError(
-                "licenseUuid",
-                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseDestroy().',
+                'licenseUuid',
+                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseDestroy().'
             );
         }
 
@@ -202,14 +229,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
-        urlPath = urlPath.replace(
-            "{license_uuid}",
-            encodeURIComponent(String(requestParameters["licenseUuid"])),
-        );
+        urlPath = urlPath.replace('{license_uuid}', encodeURIComponent(String(requestParameters['licenseUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -218,10 +242,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseDestroyRaw(
-        requestParameters: EnterpriseLicenseDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async enterpriseLicenseDestroyRaw(requestParameters: EnterpriseLicenseDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.enterpriseLicenseDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -231,10 +252,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseDestroy(
-        requestParameters: EnterpriseLicenseDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async enterpriseLicenseDestroy(requestParameters: EnterpriseLicenseDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.enterpriseLicenseDestroyRaw(requestParameters, initOverrides);
     }
 
@@ -259,7 +277,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -268,23 +286,17 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Forecast how many users will be required in a year
      */
-    async enterpriseLicenseForecastRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LicenseForecast>> {
+    async enterpriseLicenseForecastRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LicenseForecast>> {
         const requestOptions = await this.enterpriseLicenseForecastRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LicenseForecastFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LicenseForecastFromJSON(jsonValue));
     }
 
     /**
      * Forecast how many users will be required in a year
      */
-    async enterpriseLicenseForecastRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LicenseForecast> {
+    async enterpriseLicenseForecastRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LicenseForecast> {
         const response = await this.enterpriseLicenseForecastRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -310,7 +322,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -319,9 +331,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Get install_id
      */
-    async enterpriseLicenseInstallIdRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<InstallID>> {
+    async enterpriseLicenseInstallIdRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InstallID>> {
         const requestOptions = await this.enterpriseLicenseInstallIdRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -331,9 +341,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Get install_id
      */
-    async enterpriseLicenseInstallIdRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<InstallID> {
+    async enterpriseLicenseInstallIdRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InstallID> {
         const response = await this.enterpriseLicenseInstallIdRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -341,29 +349,27 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseList without sending the request
      */
-    async enterpriseLicenseListRequestOpts(
-        requestParameters: EnterpriseLicenseListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async enterpriseLicenseListRequestOpts(requestParameters: EnterpriseLicenseListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -381,7 +387,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -390,25 +396,17 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseListRaw(
-        requestParameters: EnterpriseLicenseListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedLicenseList>> {
+    async enterpriseLicenseListRaw(requestParameters: EnterpriseLicenseListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLicenseList>> {
         const requestOptions = await this.enterpriseLicenseListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedLicenseListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLicenseListFromJSON(jsonValue));
     }
 
     /**
      * License Viewset
      */
-    async enterpriseLicenseList(
-        requestParameters: EnterpriseLicenseListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedLicenseList> {
+    async enterpriseLicenseList(requestParameters: EnterpriseLicenseListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLicenseList> {
         const response = await this.enterpriseLicenseListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -416,13 +414,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicensePartialUpdate without sending the request
      */
-    async enterpriseLicensePartialUpdateRequestOpts(
-        requestParameters: EnterpriseLicensePartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseUuid"] == null) {
+    async enterpriseLicensePartialUpdateRequestOpts(requestParameters: EnterpriseLicensePartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseUuid'] == null) {
             throw new runtime.RequiredError(
-                "licenseUuid",
-                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicensePartialUpdate().',
+                'licenseUuid',
+                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicensePartialUpdate().'
             );
         }
 
@@ -430,7 +426,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -442,29 +438,22 @@ export class EnterpriseApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
-        urlPath = urlPath.replace(
-            "{license_uuid}",
-            encodeURIComponent(String(requestParameters["licenseUuid"])),
-        );
+        urlPath = urlPath.replace('{license_uuid}', encodeURIComponent(String(requestParameters['licenseUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedLicenseRequestToJSON(requestParameters["patchedLicenseRequest"]),
+            body: PatchedLicenseRequestToJSON(requestParameters['patchedLicenseRequest']),
         };
     }
 
     /**
      * License Viewset
      */
-    async enterpriseLicensePartialUpdateRaw(
-        requestParameters: EnterpriseLicensePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<License>> {
-        const requestOptions =
-            await this.enterpriseLicensePartialUpdateRequestOpts(requestParameters);
+    async enterpriseLicensePartialUpdateRaw(requestParameters: EnterpriseLicensePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<License>> {
+        const requestOptions = await this.enterpriseLicensePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LicenseFromJSON(jsonValue));
@@ -473,27 +462,19 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicensePartialUpdate(
-        requestParameters: EnterpriseLicensePartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<License> {
-        const response = await this.enterpriseLicensePartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async enterpriseLicensePartialUpdate(requestParameters: EnterpriseLicensePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<License> {
+        const response = await this.enterpriseLicensePartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for enterpriseLicenseRetrieve without sending the request
      */
-    async enterpriseLicenseRetrieveRequestOpts(
-        requestParameters: EnterpriseLicenseRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseUuid"] == null) {
+    async enterpriseLicenseRetrieveRequestOpts(requestParameters: EnterpriseLicenseRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseUuid'] == null) {
             throw new runtime.RequiredError(
-                "licenseUuid",
-                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseRetrieve().',
+                'licenseUuid',
+                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseRetrieve().'
             );
         }
 
@@ -511,14 +492,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
-        urlPath = urlPath.replace(
-            "{license_uuid}",
-            encodeURIComponent(String(requestParameters["licenseUuid"])),
-        );
+        urlPath = urlPath.replace('{license_uuid}', encodeURIComponent(String(requestParameters['licenseUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -527,10 +505,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseRetrieveRaw(
-        requestParameters: EnterpriseLicenseRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<License>> {
+    async enterpriseLicenseRetrieveRaw(requestParameters: EnterpriseLicenseRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<License>> {
         const requestOptions = await this.enterpriseLicenseRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -540,10 +515,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseRetrieve(
-        requestParameters: EnterpriseLicenseRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<License> {
+    async enterpriseLicenseRetrieve(requestParameters: EnterpriseLicenseRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<License> {
         const response = await this.enterpriseLicenseRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -551,13 +523,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseSummaryRetrieve without sending the request
      */
-    async enterpriseLicenseSummaryRetrieveRequestOpts(
-        requestParameters: EnterpriseLicenseSummaryRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
+    async enterpriseLicenseSummaryRetrieveRequestOpts(requestParameters: EnterpriseLicenseSummaryRetrieveRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["cached"] != null) {
-            queryParameters["cached"] = requestParameters["cached"];
+        if (requestParameters['cached'] != null) {
+            queryParameters['cached'] = requestParameters['cached'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -575,7 +545,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -584,50 +554,36 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Get the total license status
      */
-    async enterpriseLicenseSummaryRetrieveRaw(
-        requestParameters: EnterpriseLicenseSummaryRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LicenseSummary>> {
-        const requestOptions =
-            await this.enterpriseLicenseSummaryRetrieveRequestOpts(requestParameters);
+    async enterpriseLicenseSummaryRetrieveRaw(requestParameters: EnterpriseLicenseSummaryRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LicenseSummary>> {
+        const requestOptions = await this.enterpriseLicenseSummaryRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LicenseSummaryFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LicenseSummaryFromJSON(jsonValue));
     }
 
     /**
      * Get the total license status
      */
-    async enterpriseLicenseSummaryRetrieve(
-        requestParameters: EnterpriseLicenseSummaryRetrieveRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LicenseSummary> {
-        const response = await this.enterpriseLicenseSummaryRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async enterpriseLicenseSummaryRetrieve(requestParameters: EnterpriseLicenseSummaryRetrieveRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LicenseSummary> {
+        const response = await this.enterpriseLicenseSummaryRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for enterpriseLicenseUpdate without sending the request
      */
-    async enterpriseLicenseUpdateRequestOpts(
-        requestParameters: EnterpriseLicenseUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseUuid"] == null) {
+    async enterpriseLicenseUpdateRequestOpts(requestParameters: EnterpriseLicenseUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseUuid'] == null) {
             throw new runtime.RequiredError(
-                "licenseUuid",
-                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseUpdate().',
+                'licenseUuid',
+                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseUpdate().'
             );
         }
 
-        if (requestParameters["licenseRequest"] == null) {
+        if (requestParameters['licenseRequest'] == null) {
             throw new runtime.RequiredError(
-                "licenseRequest",
-                'Required parameter "licenseRequest" was null or undefined when calling enterpriseLicenseUpdate().',
+                'licenseRequest',
+                'Required parameter "licenseRequest" was null or undefined when calling enterpriseLicenseUpdate().'
             );
         }
 
@@ -635,7 +591,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -647,27 +603,21 @@ export class EnterpriseApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
-        urlPath = urlPath.replace(
-            "{license_uuid}",
-            encodeURIComponent(String(requestParameters["licenseUuid"])),
-        );
+        urlPath = urlPath.replace('{license_uuid}', encodeURIComponent(String(requestParameters['licenseUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LicenseRequestToJSON(requestParameters["licenseRequest"]),
+            body: LicenseRequestToJSON(requestParameters['licenseRequest']),
         };
     }
 
     /**
      * License Viewset
      */
-    async enterpriseLicenseUpdateRaw(
-        requestParameters: EnterpriseLicenseUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<License>> {
+    async enterpriseLicenseUpdateRaw(requestParameters: EnterpriseLicenseUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<License>> {
         const requestOptions = await this.enterpriseLicenseUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -677,10 +627,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * License Viewset
      */
-    async enterpriseLicenseUpdate(
-        requestParameters: EnterpriseLicenseUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<License> {
+    async enterpriseLicenseUpdate(requestParameters: EnterpriseLicenseUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<License> {
         const response = await this.enterpriseLicenseUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -688,13 +635,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseUsedByList without sending the request
      */
-    async enterpriseLicenseUsedByListRequestOpts(
-        requestParameters: EnterpriseLicenseUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["licenseUuid"] == null) {
+    async enterpriseLicenseUsedByListRequestOpts(requestParameters: EnterpriseLicenseUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseUuid'] == null) {
             throw new runtime.RequiredError(
-                "licenseUuid",
-                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseUsedByList().',
+                'licenseUuid',
+                'Required parameter "licenseUuid" was null or undefined when calling enterpriseLicenseUsedByList().'
             );
         }
 
@@ -712,14 +657,11 @@ export class EnterpriseApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/enterprise/license/{license_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{license_uuid}",
-            encodeURIComponent(String(requestParameters["licenseUuid"])),
-        );
+        urlPath = urlPath.replace('{license_uuid}', encodeURIComponent(String(requestParameters['licenseUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -728,10 +670,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async enterpriseLicenseUsedByListRaw(
-        requestParameters: EnterpriseLicenseUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async enterpriseLicenseUsedByListRaw(requestParameters: EnterpriseLicenseUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.enterpriseLicenseUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -741,14 +680,9 @@ export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async enterpriseLicenseUsedByList(
-        requestParameters: EnterpriseLicenseUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.enterpriseLicenseUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async enterpriseLicenseUsedByList(requestParameters: EnterpriseLicenseUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+        const response = await this.enterpriseLicenseUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

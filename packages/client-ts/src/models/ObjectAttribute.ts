@@ -12,63 +12,70 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentType } from "./ContentType";
-import { ContentTypeFromJSON } from "./ContentType";
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { ContentType } from './ContentType';
+import {
+    ContentTypeFromJSON,
+    ContentTypeFromJSONTyped,
+    ContentTypeToJSON,
+    ContentTypeToJSONTyped,
+} from './ContentType';
+import type { ObjectAttributeTypeEnum } from './ObjectAttributeTypeEnum';
 import {
     ObjectAttributeTypeEnumFromJSON,
+    ObjectAttributeTypeEnumFromJSONTyped,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+    ObjectAttributeTypeEnumToJSONTyped,
+} from './ObjectAttributeTypeEnum';
 
 /**
- *
+ * 
  * @export
  * @interface ObjectAttribute
  */
 export interface ObjectAttribute {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     objectType: string;
     /**
-     *
+     * 
      */
     readonly objectTypeObj: ContentType;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     key: string;
     /**
-     *
+     * 
      */
     label: string;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     regex?: string;
     /**
-     *
+     * 
      */
     type: ObjectAttributeTypeEnum;
     /**
-     *
+     * 
      */
     group?: string;
     /**
@@ -76,45 +83,29 @@ export interface ObjectAttribute {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     isUnique?: boolean;
     /**
-     *
+     * 
      */
     isRequired?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the ObjectAttribute interface.
  */
 export function instanceOfObjectAttribute(value: object): value is ObjectAttribute {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (
-        (!("objectType" in (value as Record<string, any>)) &&
-            !("object_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["objectType"] === undefined &&
-            (value as Record<string, any>)["object_type"] === undefined)
-    )
-        return false;
-    if (
-        (!("objectTypeObj" in (value as Record<string, any>)) &&
-            !("object_type_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["objectTypeObj"] === undefined &&
-            (value as Record<string, any>)["object_type_obj"] === undefined)
-    )
-        return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("key" in value) || value["key"] === undefined) return false;
-    if (!("label" in value) || value["label"] === undefined) return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if ((!('objectType' in (value as Record<string, any>)) && !('object_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectType'] === undefined && (value as Record<string, any>)['object_type'] === undefined)) return false;
+    if ((!('objectTypeObj' in (value as Record<string, any>)) && !('object_type_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectTypeObj'] === undefined && (value as Record<string, any>)['object_type_obj'] === undefined)) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!('label' in value) || value['label'] === undefined) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -122,36 +113,26 @@ export function ObjectAttributeFromJSON(json: any): ObjectAttribute {
     return ObjectAttributeFromJSONTyped(json, false);
 }
 
-export function ObjectAttributeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ObjectAttribute {
+export function ObjectAttributeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ObjectAttribute {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        objectType: json["object_type"],
-        objectTypeObj: ContentTypeFromJSON(json["object_type_obj"]),
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        key: json["key"],
-        label: json["label"],
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        regex: json["regex"] == null ? undefined : json["regex"],
-        type: ObjectAttributeTypeEnumFromJSON(json["type"]),
-        group: json["group"] == null ? undefined : json["group"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
-        isRequired: json["is_required"] == null ? undefined : json["is_required"],
+        
+        'pk': json['pk'],
+        'objectType': json['object_type'],
+        'objectTypeObj': ContentTypeFromJSON(json['object_type_obj']),
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'key': json['key'],
+        'label': json['label'],
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'regex': json['regex'] == null ? undefined : json['regex'],
+        'type': ObjectAttributeTypeEnumFromJSON(json['type']),
+        'group': json['group'] == null ? undefined : json['group'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'isUnique': json['is_unique'] == null ? undefined : json['is_unique'],
+        'isRequired': json['is_required'] == null ? undefined : json['is_required'],
     };
 }
 
@@ -159,24 +140,23 @@ export function ObjectAttributeToJSON(json: any): ObjectAttribute {
     return ObjectAttributeToJSONTyped(json, false);
 }
 
-export function ObjectAttributeToJSONTyped(
-    value?: Omit<ObjectAttribute, "pk" | "objectTypeObj" | "created" | "lastUpdated"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ObjectAttributeToJSONTyped(value?: Omit<ObjectAttribute, 'pk'|'objectTypeObj'|'created'|'lastUpdated'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        object_type: value["objectType"],
-        enabled: value["enabled"],
-        key: value["key"],
-        label: value["label"],
-        regex: value["regex"],
-        type: ObjectAttributeTypeEnumToJSON(value["type"]),
-        group: value["group"],
-        managed: value["managed"],
-        is_unique: value["isUnique"],
-        is_required: value["isRequired"],
+        
+        'object_type': value['objectType'],
+        'enabled': value['enabled'],
+        'key': value['key'],
+        'label': value['label'],
+        'regex': value['regex'],
+        'type': ObjectAttributeTypeEnumToJSON(value['type']),
+        'group': value['group'],
+        'managed': value['managed'],
+        'is_unique': value['isUnique'],
+        'is_required': value['isRequired'],
     };
 }
+

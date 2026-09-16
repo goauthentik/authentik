@@ -12,11 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+    PartialUserFromJSONTyped,
+    PartialUserToJSON,
+    PartialUserToJSONTyped,
+} from './PartialUser';
+import type { WebAuthnDeviceType } from './WebAuthnDeviceType';
+import {
+    WebAuthnDeviceTypeFromJSON,
+    WebAuthnDeviceTypeFromJSONTyped,
+    WebAuthnDeviceTypeToJSON,
+    WebAuthnDeviceTypeToJSONTyped,
+} from './WebAuthnDeviceType';
 
 /**
  * Serializer for WebAuthn authenticator devices
@@ -25,27 +35,27 @@ import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
  */
 export interface WebAuthnDevice {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly createdOn: Date;
     /**
-     *
+     * 
      */
     readonly deviceType: WebAuthnDeviceType | null;
     /**
-     *
+     * 
      */
     readonly aaguid: string;
     /**
-     *
+     * 
      */
     readonly user: PartialUser;
 }
@@ -54,24 +64,12 @@ export interface WebAuthnDevice {
  * Check if a given object implements the WebAuthnDevice interface.
  */
 export function instanceOfWebAuthnDevice(value: object): value is WebAuthnDevice {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("createdOn" in (value as Record<string, any>)) &&
-            !("created_on" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["createdOn"] === undefined &&
-            (value as Record<string, any>)["created_on"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceType" in (value as Record<string, any>)) &&
-            !("device_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceType"] === undefined &&
-            (value as Record<string, any>)["device_type"] === undefined)
-    )
-        return false;
-    if (!("aaguid" in value) || value["aaguid"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('createdOn' in (value as Record<string, any>)) && !('created_on' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdOn'] === undefined && (value as Record<string, any>)['created_on'] === undefined)) return false;
+    if ((!('deviceType' in (value as Record<string, any>)) && !('device_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceType'] === undefined && (value as Record<string, any>)['device_type'] === undefined)) return false;
+    if (!('aaguid' in value) || value['aaguid'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -79,21 +77,18 @@ export function WebAuthnDeviceFromJSON(json: any): WebAuthnDevice {
     return WebAuthnDeviceFromJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): WebAuthnDevice {
+export function WebAuthnDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): WebAuthnDevice {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        createdOn:
-            json["created_on"] == null ? json["created_on"] : parseDateTime(json["created_on"]),
-        deviceType: WebAuthnDeviceTypeFromJSON(json["device_type"]),
-        aaguid: json["aaguid"],
-        user: PartialUserFromJSON(json["user"]),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'createdOn': (json['created_on'] == null ? json['created_on'] : parseDateTime(json['created_on'])),
+        'deviceType': WebAuthnDeviceTypeFromJSON(json['device_type']),
+        'aaguid': json['aaguid'],
+        'user': PartialUserFromJSON(json['user']),
     };
 }
 
@@ -101,15 +96,14 @@ export function WebAuthnDeviceToJSON(json: any): WebAuthnDevice {
     return WebAuthnDeviceToJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceToJSONTyped(
-    value?: Omit<WebAuthnDevice, "pk" | "createdOn" | "deviceType" | "aaguid" | "user"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function WebAuthnDeviceToJSONTyped(value?: Omit<WebAuthnDevice, 'pk'|'createdOn'|'deviceType'|'aaguid'|'user'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

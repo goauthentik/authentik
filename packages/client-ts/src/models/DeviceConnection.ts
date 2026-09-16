@@ -12,31 +12,42 @@
  * Do not edit the class manually.
  */
 
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
+import { mapValues } from '../runtime';
+import type { Connector } from './Connector';
+import {
+    ConnectorFromJSON,
+    ConnectorFromJSONTyped,
+    ConnectorToJSON,
+    ConnectorToJSONTyped,
+} from './Connector';
+import type { DeviceFactSnapshot } from './DeviceFactSnapshot';
+import {
+    DeviceFactSnapshotFromJSON,
+    DeviceFactSnapshotFromJSONTyped,
+    DeviceFactSnapshotToJSON,
+    DeviceFactSnapshotToJSONTyped,
+} from './DeviceFactSnapshot';
 
 /**
- *
+ * 
  * @export
  * @interface DeviceConnection
  */
 export interface DeviceConnection {
     /**
-     *
+     * 
      */
     device: string;
     /**
-     *
+     * 
      */
     connector: string;
     /**
-     *
+     * 
      */
     readonly connectorObj: Connector;
     /**
-     *
+     * 
      */
     readonly latestSnapshot: DeviceFactSnapshot | null;
 }
@@ -45,22 +56,10 @@ export interface DeviceConnection {
  * Check if a given object implements the DeviceConnection interface.
  */
 export function instanceOfDeviceConnection(value: object): value is DeviceConnection {
-    if (!("device" in value) || value["device"] === undefined) return false;
-    if (!("connector" in value) || value["connector"] === undefined) return false;
-    if (
-        (!("connectorObj" in (value as Record<string, any>)) &&
-            !("connector_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["connectorObj"] === undefined &&
-            (value as Record<string, any>)["connector_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("latestSnapshot" in (value as Record<string, any>)) &&
-            !("latest_snapshot" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["latestSnapshot"] === undefined &&
-            (value as Record<string, any>)["latest_snapshot"] === undefined)
-    )
-        return false;
+    if (!('device' in value) || value['device'] === undefined) return false;
+    if (!('connector' in value) || value['connector'] === undefined) return false;
+    if ((!('connectorObj' in (value as Record<string, any>)) && !('connector_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['connectorObj'] === undefined && (value as Record<string, any>)['connector_obj'] === undefined)) return false;
+    if ((!('latestSnapshot' in (value as Record<string, any>)) && !('latest_snapshot' in (value as Record<string, any>))) || ((value as Record<string, any>)['latestSnapshot'] === undefined && (value as Record<string, any>)['latest_snapshot'] === undefined)) return false;
     return true;
 }
 
@@ -68,18 +67,16 @@ export function DeviceConnectionFromJSON(json: any): DeviceConnection {
     return DeviceConnectionFromJSONTyped(json, false);
 }
 
-export function DeviceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceConnection {
+export function DeviceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceConnection {
     if (json == null) {
         return json;
     }
     return {
-        device: json["device"],
-        connector: json["connector"],
-        connectorObj: ConnectorFromJSON(json["connector_obj"]),
-        latestSnapshot: DeviceFactSnapshotFromJSON(json["latest_snapshot"]),
+        
+        'device': json['device'],
+        'connector': json['connector'],
+        'connectorObj': ConnectorFromJSON(json['connector_obj']),
+        'latestSnapshot': DeviceFactSnapshotFromJSON(json['latest_snapshot']),
     };
 }
 
@@ -87,16 +84,15 @@ export function DeviceConnectionToJSON(json: any): DeviceConnection {
     return DeviceConnectionToJSONTyped(json, false);
 }
 
-export function DeviceConnectionToJSONTyped(
-    value?: Omit<DeviceConnection, "connectorObj" | "latestSnapshot"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceConnectionToJSONTyped(value?: Omit<DeviceConnection, 'connectorObj'|'latestSnapshot'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device: value["device"],
-        connector: value["connector"],
+        
+        'device': value['device'],
+        'connector': value['connector'],
     };
 }
+

@@ -12,8 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelf } from "./UserSelf";
-import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
+import { mapValues } from '../runtime';
+import type { UserSelf } from './UserSelf';
+import {
+    UserSelfFromJSON,
+    UserSelfFromJSONTyped,
+    UserSelfToJSON,
+    UserSelfToJSONTyped,
+} from './UserSelf';
 
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)
@@ -23,15 +29,15 @@ import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
  */
 export interface SessionUser {
     /**
-     *
+     * 
      */
     user: UserSelf;
     /**
-     *
+     * 
      */
     original?: UserSelf;
     /**
-     *
+     * 
      */
     users: Array<UserSelf>;
 }
@@ -40,8 +46,8 @@ export interface SessionUser {
  * Check if a given object implements the SessionUser interface.
  */
 export function instanceOfSessionUser(value: object): value is SessionUser {
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("users" in value) || value["users"] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!('users' in value) || value['users'] === undefined) return false;
     return true;
 }
 
@@ -54,9 +60,10 @@ export function SessionUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        user: UserSelfFromJSON(json["user"]),
-        original: json["original"] == null ? undefined : UserSelfFromJSON(json["original"]),
-        users: (json["users"] as Array<any>).map(UserSelfFromJSON),
+        
+        'user': UserSelfFromJSON(json['user']),
+        'original': json['original'] == null ? undefined : UserSelfFromJSON(json['original']),
+        'users': ((json['users'] as Array<any>).map(UserSelfFromJSON)),
     };
 }
 
@@ -64,17 +71,16 @@ export function SessionUserToJSON(json: any): SessionUser {
     return SessionUserToJSONTyped(json, false);
 }
 
-export function SessionUserToJSONTyped(
-    value?: SessionUser | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SessionUserToJSONTyped(value?: SessionUser | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: UserSelfToJSON(value["user"]),
-        original: UserSelfToJSON(value["original"]),
-        users: (value["users"] as Array<any>).map(UserSelfToJSON),
+        
+        'user': UserSelfToJSON(value['user']),
+        'original': UserSelfToJSON(value['original']),
+        'users': ((value['users'] as Array<any>).map(UserSelfToJSON)),
     };
 }
+

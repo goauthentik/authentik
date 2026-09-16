@@ -12,12 +12,28 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { GeoipBindingEnum } from "./GeoipBindingEnum";
-import { GeoipBindingEnumFromJSON, GeoipBindingEnumToJSON } from "./GeoipBindingEnum";
-import type { NetworkBindingEnum } from "./NetworkBindingEnum";
-import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkBindingEnum";
+import { mapValues } from '../runtime';
+import type { GeoipBindingEnum } from './GeoipBindingEnum';
+import {
+    GeoipBindingEnumFromJSON,
+    GeoipBindingEnumFromJSONTyped,
+    GeoipBindingEnumToJSON,
+    GeoipBindingEnumToJSONTyped,
+} from './GeoipBindingEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+    FlowSetFromJSONTyped,
+    FlowSetToJSON,
+    FlowSetToJSONTyped,
+} from './FlowSet';
+import type { NetworkBindingEnum } from './NetworkBindingEnum';
+import {
+    NetworkBindingEnumFromJSON,
+    NetworkBindingEnumFromJSONTyped,
+    NetworkBindingEnumToJSON,
+    NetworkBindingEnumToJSONTyped,
+} from './NetworkBindingEnum';
 
 /**
  * UserLoginStage Serializer
@@ -26,11 +42,11 @@ import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkB
  */
 export interface UserLoginStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -50,7 +66,7 @@ export interface UserLoginStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -79,41 +95,19 @@ export interface UserLoginStage {
     rememberDevice?: string;
 }
 
+
+
 /**
  * Check if a given object implements the UserLoginStage interface.
  */
 export function instanceOfUserLoginStage(value: object): value is UserLoginStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
     return true;
 }
 
@@ -121,35 +115,25 @@ export function UserLoginStageFromJSON(json: any): UserLoginStage {
     return UserLoginStageFromJSONTyped(json, false);
 }
 
-export function UserLoginStageFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserLoginStage {
+export function UserLoginStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLoginStage {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        sessionDuration: json["session_duration"] == null ? undefined : json["session_duration"],
-        terminateOtherSessions:
-            json["terminate_other_sessions"] == null ? undefined : json["terminate_other_sessions"],
-        rememberMeOffset:
-            json["remember_me_offset"] == null ? undefined : json["remember_me_offset"],
-        networkBinding:
-            json["network_binding"] == null
-                ? undefined
-                : NetworkBindingEnumFromJSON(json["network_binding"]),
-        geoipBinding:
-            json["geoip_binding"] == null
-                ? undefined
-                : GeoipBindingEnumFromJSON(json["geoip_binding"]),
-        rememberDevice: json["remember_device"] == null ? undefined : json["remember_device"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'sessionDuration': json['session_duration'] == null ? undefined : json['session_duration'],
+        'terminateOtherSessions': json['terminate_other_sessions'] == null ? undefined : json['terminate_other_sessions'],
+        'rememberMeOffset': json['remember_me_offset'] == null ? undefined : json['remember_me_offset'],
+        'networkBinding': json['network_binding'] == null ? undefined : NetworkBindingEnumFromJSON(json['network_binding']),
+        'geoipBinding': json['geoip_binding'] == null ? undefined : GeoipBindingEnumFromJSON(json['geoip_binding']),
+        'rememberDevice': json['remember_device'] == null ? undefined : json['remember_device'],
     };
 }
 
@@ -157,24 +141,20 @@ export function UserLoginStageToJSON(json: any): UserLoginStage {
     return UserLoginStageToJSONTyped(json, false);
 }
 
-export function UserLoginStageToJSONTyped(
-    value?: Omit<
-        UserLoginStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserLoginStageToJSONTyped(value?: Omit<UserLoginStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        session_duration: value["sessionDuration"],
-        terminate_other_sessions: value["terminateOtherSessions"],
-        remember_me_offset: value["rememberMeOffset"],
-        network_binding: NetworkBindingEnumToJSON(value["networkBinding"]),
-        geoip_binding: GeoipBindingEnumToJSON(value["geoipBinding"]),
-        remember_device: value["rememberDevice"],
+        
+        'name': value['name'],
+        'session_duration': value['sessionDuration'],
+        'terminate_other_sessions': value['terminateOtherSessions'],
+        'remember_me_offset': value['rememberMeOffset'],
+        'network_binding': NetworkBindingEnumToJSON(value['networkBinding']),
+        'geoip_binding': GeoipBindingEnumToJSON(value['geoipBinding']),
+        'remember_device': value['rememberDevice'],
     };
 }
+

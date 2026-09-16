@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * Global permission
  * @export
@@ -19,23 +20,23 @@
  */
 export interface Permission {
     /**
-     *
+     * 
      */
     readonly id: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     codename: string;
     /**
-     *
+     * 
      */
     readonly model: string;
     /**
-     *
+     * 
      */
     readonly appLabel: string;
     /**
@@ -52,31 +53,13 @@ export interface Permission {
  * Check if a given object implements the Permission interface.
  */
 export function instanceOfPermission(value: object): value is Permission {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("codename" in value) || value["codename"] === undefined) return false;
-    if (!("model" in value) || value["model"] === undefined) return false;
-    if (
-        (!("appLabel" in (value as Record<string, any>)) &&
-            !("app_label" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appLabel"] === undefined &&
-            (value as Record<string, any>)["app_label"] === undefined)
-    )
-        return false;
-    if (
-        (!("appLabelVerbose" in (value as Record<string, any>)) &&
-            !("app_label_verbose" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appLabelVerbose"] === undefined &&
-            (value as Record<string, any>)["app_label_verbose"] === undefined)
-    )
-        return false;
-    if (
-        (!("modelVerbose" in (value as Record<string, any>)) &&
-            !("model_verbose" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["modelVerbose"] === undefined &&
-            (value as Record<string, any>)["model_verbose"] === undefined)
-    )
-        return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('codename' in value) || value['codename'] === undefined) return false;
+    if (!('model' in value) || value['model'] === undefined) return false;
+    if ((!('appLabel' in (value as Record<string, any>)) && !('app_label' in (value as Record<string, any>))) || ((value as Record<string, any>)['appLabel'] === undefined && (value as Record<string, any>)['app_label'] === undefined)) return false;
+    if ((!('appLabelVerbose' in (value as Record<string, any>)) && !('app_label_verbose' in (value as Record<string, any>))) || ((value as Record<string, any>)['appLabelVerbose'] === undefined && (value as Record<string, any>)['app_label_verbose'] === undefined)) return false;
+    if ((!('modelVerbose' in (value as Record<string, any>)) && !('model_verbose' in (value as Record<string, any>))) || ((value as Record<string, any>)['modelVerbose'] === undefined && (value as Record<string, any>)['model_verbose'] === undefined)) return false;
     return true;
 }
 
@@ -89,13 +72,14 @@ export function PermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        id: json["id"],
-        name: json["name"],
-        codename: json["codename"],
-        model: json["model"],
-        appLabel: json["app_label"],
-        appLabelVerbose: json["app_label_verbose"],
-        modelVerbose: json["model_verbose"],
+        
+        'id': json['id'],
+        'name': json['name'],
+        'codename': json['codename'],
+        'model': json['model'],
+        'appLabel': json['app_label'],
+        'appLabelVerbose': json['app_label_verbose'],
+        'modelVerbose': json['model_verbose'],
     };
 }
 
@@ -103,19 +87,15 @@ export function PermissionToJSON(json: any): Permission {
     return PermissionToJSONTyped(json, false);
 }
 
-export function PermissionToJSONTyped(
-    value?: Omit<
-        Permission,
-        "id" | "model" | "appLabel" | "appLabelVerbose" | "modelVerbose"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PermissionToJSONTyped(value?: Omit<Permission, 'id'|'model'|'appLabel'|'appLabelVerbose'|'modelVerbose'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        codename: value["codename"],
+        
+        'name': value['name'],
+        'codename': value['codename'],
     };
 }
+

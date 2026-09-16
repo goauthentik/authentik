@@ -12,25 +12,27 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const LastTaskStatusEnum = {
-    WaitingForDependencies: "waiting_for_dependencies",
-    Queued: "queued",
-    Consumed: "consumed",
-    Preprocess: "preprocess",
-    Running: "running",
-    Postprocess: "postprocess",
-    Rejected: "rejected",
-    Done: "done",
-    Info: "info",
-    Warning: "warning",
-    Error: "error",
-    UnknownDefaultOpenApi: "11184809",
+    WaitingForDependencies: 'waiting_for_dependencies',
+    Queued: 'queued',
+    Consumed: 'consumed',
+    Preprocess: 'preprocess',
+    Running: 'running',
+    Postprocess: 'postprocess',
+    Rejected: 'rejected',
+    Done: 'done',
+    Info: 'info',
+    Warning: 'warning',
+    Error: 'error',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type LastTaskStatusEnum = (typeof LastTaskStatusEnum)[keyof typeof LastTaskStatusEnum];
+export type LastTaskStatusEnum = typeof LastTaskStatusEnum[keyof typeof LastTaskStatusEnum];
+
 
 export function instanceOfLastTaskStatusEnum(value: any): boolean {
     for (const key in LastTaskStatusEnum) {
@@ -47,10 +49,7 @@ export function LastTaskStatusEnumFromJSON(json: any): LastTaskStatusEnum {
     return LastTaskStatusEnumFromJSONTyped(json, false);
 }
 
-export function LastTaskStatusEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LastTaskStatusEnum {
+export function LastTaskStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): LastTaskStatusEnum {
     return json as LastTaskStatusEnum;
 }
 
@@ -58,9 +57,7 @@ export function LastTaskStatusEnumToJSON(value?: LastTaskStatusEnum | null): any
     return value as any;
 }
 
-export function LastTaskStatusEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): LastTaskStatusEnum {
+export function LastTaskStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LastTaskStatusEnum {
     return value as LastTaskStatusEnum;
 }
+
