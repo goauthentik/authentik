@@ -34,7 +34,8 @@
         "build": "tsc -p .",
         "prepare": "tsc -p .",
         "lint": "run-s lint:oxlint lint:oxfmt",
-        "lint-check": "run-s lint-check:oxlint lint:oxfmt"
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "verify": "node scripts/verify-fixtures.mjs"
     },
     "dependencies": {
         "eslint-plugin-lit": "^2.3.1",

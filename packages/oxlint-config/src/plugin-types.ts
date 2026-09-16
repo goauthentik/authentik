@@ -9,12 +9,30 @@ export interface Comment {
     range: [number, number];
 }
 
-/** A loosely-typed AST node — only the fields the bundled rules read. */
+/**
+ * A loosely-typed AST node — only the fields the bundled rules read.
+ *
+ * @remarks
+ *   The shape is loose on purpose: a field is declared when a rule reads it. Every field a rule
+ *   reads belongs here rather than in a private mirror inside one plugin, so the next rule that
+ *   needs it finds it already declared.
+ */
 export interface AstNode {
     type: string;
     range: [number, number];
     parent?: AstNode;
-    body?: AstNode[];
+    /** A statement-list body (block or program) is an array; a loop body is a single statement. */
+    body?: AstNode[] | AstNode;
+    /** An expression statement's expression. */
+    expression?: AstNode;
+    /** An export statement's inner declaration. */
+    declaration?: AstNode | null;
+    /** A call expression's callee. */
+    callee?: AstNode;
+    /** A member expression's object. */
+    object?: AstNode;
+    /** An identifier's name. */
+    name?: string;
 }
 
 export interface SourceCode {
