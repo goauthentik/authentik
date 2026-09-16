@@ -202,7 +202,7 @@ class TokenView(View):
         )
         id_token = IDToken(
             iss=issuer,
-            sub=user.username,
+            sub=str(user.uuid),
             aud=str(self.connector.pk),
             exp=int(
                 (self.now + timedelta_from_string(self.connector.auth_session_duration)).timestamp()
