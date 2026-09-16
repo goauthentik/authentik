@@ -50,7 +50,7 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
         hasChanged: (next: SecretTypeEnum[], previous?: SecretTypeEnum[]) =>
             next.join() !== previous?.join(),
     })
-    public types = [SecretTypeEnum.Text];
+    public types: SecretTypeEnum[] = [SecretTypeEnum.Text];
 
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
