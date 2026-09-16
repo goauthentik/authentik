@@ -3,8 +3,6 @@
     "entryPoints": ["./plugin/index.js"],
     "plugin": ["typedoc-plugin-markdown"],
     "name": "ESBuild Plugin Live Reload",
-    "formatWithPrettier": true,
-    "prettierConfigFile": "@goauthentik/prettier-config",
     "flattenOutputFiles": true,
     "readme": ".github/README.md",
     "mergeReadme": true,

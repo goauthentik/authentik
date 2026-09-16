@@ -2,9 +2,6 @@
 
 authentik's shared [oxfmt](https://oxc.rs) formatter configuration.
 
-Replaces `@goauthentik/prettier-config`. oxfmt covers natively what previously needed three
-Prettier plugins: import organization, JSDoc formatting, and `package.json` key ordering.
-
 ## Install
 
 ```sh

@@ -186,12 +186,6 @@ catalogs:
       specifier: ^4.1.10
       version: 4.1.10
 
-overrides:
-  '@typescript-eslint/eslint-plugin>typescript': ^6.0.3
-  '@typescript-eslint/parser>typescript': ^6.0.3
-  format-imports>eslint: ^9.39.5
-  typescript-eslint>typescript: ^6.0.3
-
 importers:
 
   .:

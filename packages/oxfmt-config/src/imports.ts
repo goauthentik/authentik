@@ -1,6 +1,6 @@
 /**
- * @file Import organization for oxfmt, ported from the `@goauthentik/prettier-config` import
- *   plugin. oxfmt sorts imports with a perfectionist-style algorithm (selectors, modifiers, and
+ * @file Import organization for oxfmt.
+ *   Oxfmt sorts imports with a perfectionist-style algorithm (selectors, modifiers, and
  *   ordered `customGroups`) rather than the ordered regex `groupRules` the old `format-imports`
  *   plugin used. The configuration below reproduces the previous grouping: side-effect imports
  *   first, then Node built-ins, relative paths, each web alias in turn, the remaining
@@ -11,9 +11,6 @@ import type { CustomGroupItemConfig, SortGroupItemConfig, SortImportsConfig } fr
 
 /**
  * authentik web import-path aliases that each get their own import group, in display order.
- *
- * Mirrors the `webSubmodules` list in the former `@goauthentik/prettier-config`; an import is
- * matched in either its `#<alias>/…` (package `imports`) or `@goauthentik/<alias>/…` form.
  */
 export const WebSubmodules = ["common", "elements", "components", "user", "admin", "flow"] as const;
 
@@ -64,11 +61,13 @@ const groups: SortGroupItemConfig[] = [
 /**
  * authentik's oxfmt import-sorting configuration.
  *
- * @remarks
- *   `sortSideEffects` is left `false` so side-effect imports keep their authored order — reordering
- *   them can change CSS cascade or polyfill timing. (oxfmt omits the trailing blank line after an
- *   unsorted side-effect block; this is the one cosmetic difference from the former Prettier
- *   output.)
+ * `sortSideEffects` is left `false` so side-effect imports keep their authored order.
+ *
+ * Reordering them can change CSS cascade or polyfill timing.
+ *
+ * oxfmt omits the trailing blank line after an unsorted side-effect block.
+ *
+ * This is the one cosmetic difference from the former Prettier output.
  */
 export const authentikSortImportsConfig: SortImportsConfig = {
     groups,

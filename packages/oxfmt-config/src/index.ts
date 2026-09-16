@@ -33,7 +33,6 @@ export const authentikOxfmtConfig: OxfmtConfig = {
     },
     sortPackageJson: true,
     sortImports: authentikSortImportsConfig,
-    // File-specific overrides carried over verbatim from the former `@goauthentik/prettier-config`.
     overrides: [
         // JSON Schemas are conventionally two-space indented.
         { files: ["schemas/**/*.json"], options: { tabWidth: 2 } },
