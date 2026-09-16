@@ -63,7 +63,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     protected fileName = "";
 
     @property({ attribute: false })
-    public types = [SecretTypeEnum.Text, SecretTypeEnum.Multiline, SecretTypeEnum.File];
+    public types: SecretTypeEnum[] = [SecretTypeEnum.Text, SecretTypeEnum.Multiline, SecretTypeEnum.File];
 
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
