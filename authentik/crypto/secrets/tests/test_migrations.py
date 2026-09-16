@@ -91,9 +91,8 @@ class TestSecretMigration(TransactionTestCase):
     @patch("authentik.outposts.signals.outpost_send_update.send_with_options")
     def test_upgrade_and_downgrade(self, _send_outpost_update):
         get_broker().join(TESTING_QUEUE, timeout=10_000)
-        executor = MigrationExecutor(connection)
         self.addCleanup(lambda: MigrationExecutor(connection).migrate(LATEST_MIGRATIONS))
-        executor.migrate(OLD_MIGRATIONS)
+        (executor := MigrationExecutor(connection)).migrate(OLD_MIGRATIONS)
         state = executor.loader.project_state(OLD_MIGRATIONS)
         consumers = [
             ("authentik_events", "NotificationTransport", {"webhook_url": "secret"}),
@@ -101,7 +100,23 @@ class TestSecretMigration(TransactionTestCase):
             ("authentik_providers_radius", "RadiusProvider", {"shared_secret": "secret"}),
             ("authentik_providers_scim", "SCIMProvider", {"token": "secret"}),
             ("authentik_sources_ldap", "LDAPSource", {"bind_password": "secret"}),
-            ("authentik_sources_oauth", "OAuthSource", {"consumer_secret": "secret"}),
+            (
+                "authentik_sources_oauth",
+                "OAuthSource",
+                {"consumer_secret": "secret"},
+                {"provider_type": "github"},
+            ),
+            (
+                "authentik_sources_oauth",
+                "OAuthSource",
+                {"consumer_secret": "secret"},
+                {
+                    "name": "OAuthSource Apple",
+                    "slug": "oauthsource-apple",
+                    "provider_type": "apple",
+                    "consumer_secret": "private\nkey",
+                },
+            ),
             ("authentik_sources_plex", "PlexSource", {"plex_token": "secret"}),
             ("authentik_sources_telegram", "TelegramSource", {"bot_token": "secret"}),
             (
@@ -157,13 +172,14 @@ class TestSecretMigration(TransactionTestCase):
         ]
         role = Role.objects.create(name="credential editor")
         records = []
-        for app, model_name, fields in consumers:
+        for app, model_name, fields, *options in consumers:
             Model = state.apps.get_model(app, model_name)
             expected_types = {
                 name: (
                     "multiline"
                     if Model._meta.get_field(name).get_internal_type() == "JSONField"
                     or (model_name == "KerberosSource" and name != "sync_password")
+                    or (model_name == "OAuthSource" and options[0]["provider_type"] == "apple")
                     else "text"
                 )
                 for name in fields
@@ -181,8 +197,9 @@ class TestSecretMigration(TransactionTestCase):
                 kwargs["slug"] = model_name.lower()
             if model_name == "TelegramSource":
                 kwargs["pre_authentication_flow_id"] = create_test_flow().pk
-            if model_name == "OAuthSource":
-                kwargs["provider_type"] = "github"
+            if options:
+                kwargs.update(options[0])
+                values = {name: kwargs[name] for name in fields}
             obj = Model.objects.create(**kwargs)
             permission = state.apps.get_model("auth", "Permission").objects.get(
                 content_type__app_label=app, codename=f"change_{model_name.lower()}"
@@ -194,33 +211,6 @@ class TestSecretMigration(TransactionTestCase):
                 object_pk=str(obj.pk),
             )
             records.append((app, model_name, obj.pk, fields, values, expected_types))
-
-        OAuthSource = state.apps.get_model("authentik_sources_oauth", "OAuthSource")
-        apple = OAuthSource.objects.create(
-            name="OAuthSource Apple",
-            slug="oauthsource-apple",
-            provider_type="apple",
-            consumer_secret="private\nkey",
-        )
-        oauth_source_permission = state.apps.get_model("auth", "Permission").objects.get(
-            content_type__app_label="authentik_sources_oauth", codename="change_oauthsource"
-        )
-        state.apps.get_model("guardian", "RoleObjectPermission").objects.create(
-            role_id=role.pk,
-            permission=oauth_source_permission,
-            content_type_id=oauth_source_permission.content_type_id,
-            object_pk=str(apple.pk),
-        )
-        records.append(
-            (
-                "authentik_sources_oauth",
-                "OAuthSource",
-                apple.pk,
-                {"consumer_secret": "secret"},
-                {"consumer_secret": "private\nkey"},
-                {"consumer_secret": "multiline"},
-            )
-        )
 
         ProxyProvider = state.apps.get_model("authentik_providers_proxy", "ProxyProvider")
         proxy = ProxyProvider.objects.create(name="ProxyProvider", cookie_secret=" original ")
@@ -246,8 +236,7 @@ class TestSecretMigration(TransactionTestCase):
                 (app, model_name, obj.pk, {field: "secret"}, {field: ""}, {field: "text"})
             )
 
-        executor = MigrationExecutor(connection)
-        executor.migrate(LATEST_MIGRATIONS)
+        (executor := MigrationExecutor(connection)).migrate(LATEST_MIGRATIONS)
         state = executor.loader.project_state(LATEST_MIGRATIONS)
         for app, model_name, pk, fields, values, expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
@@ -281,8 +270,7 @@ class TestSecretMigration(TransactionTestCase):
                     )
                     secret.save(update_fields=["value"])
 
-        executor = MigrationExecutor(connection)
-        executor.migrate(OLD_MIGRATIONS)
+        (executor := MigrationExecutor(connection)).migrate(OLD_MIGRATIONS)
         state = executor.loader.project_state(OLD_MIGRATIONS)
         for app, model_name, pk, fields, values, _expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
