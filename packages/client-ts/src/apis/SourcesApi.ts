@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -368,20 +366,11 @@ import {
 import * as runtime from "../runtime";
 
 export interface SourcesAllDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesAllListRequest {
-    /**
-     *
-     */
     managed?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -395,31 +384,19 @@ export interface SourcesAllListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
 }
 
 export interface SourcesAllRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesAllUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
@@ -431,9 +408,6 @@ export interface SourcesGroupConnectionsAllDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsAllListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -451,9 +425,6 @@ export interface SourcesGroupConnectionsAllListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -462,9 +433,6 @@ export interface SourcesGroupConnectionsAllPartialUpdateRequest {
      * A unique integer value identifying this group source connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupSourceConnectionRequest?: PatchedGroupSourceConnectionRequest;
 }
 
@@ -480,9 +448,6 @@ export interface SourcesGroupConnectionsAllUpdateRequest {
      * A unique integer value identifying this group source connection.
      */
     id: number;
-    /**
-     *
-     */
     groupSourceConnectionRequest: GroupSourceConnectionRequest;
 }
 
@@ -494,9 +459,6 @@ export interface SourcesGroupConnectionsAllUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsKerberosCreateRequest {
-    /**
-     *
-     */
     groupKerberosSourceConnectionRequest: GroupKerberosSourceConnectionRequest;
 }
 
@@ -508,9 +470,6 @@ export interface SourcesGroupConnectionsKerberosDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsKerberosListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -528,9 +487,6 @@ export interface SourcesGroupConnectionsKerberosListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -539,9 +495,6 @@ export interface SourcesGroupConnectionsKerberosPartialUpdateRequest {
      * A unique integer value identifying this Group Kerberos Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupKerberosSourceConnectionRequest?: PatchedGroupKerberosSourceConnectionRequest;
 }
 
@@ -557,9 +510,6 @@ export interface SourcesGroupConnectionsKerberosUpdateRequest {
      * A unique integer value identifying this Group Kerberos Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupKerberosSourceConnectionRequest: GroupKerberosSourceConnectionRequest;
 }
 
@@ -571,9 +521,6 @@ export interface SourcesGroupConnectionsKerberosUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsLdapCreateRequest {
-    /**
-     *
-     */
     groupLDAPSourceConnectionRequest: GroupLDAPSourceConnectionRequest;
 }
 
@@ -585,9 +532,6 @@ export interface SourcesGroupConnectionsLdapDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsLdapListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -605,9 +549,6 @@ export interface SourcesGroupConnectionsLdapListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -616,9 +557,6 @@ export interface SourcesGroupConnectionsLdapPartialUpdateRequest {
      * A unique integer value identifying this Group LDAP Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupLDAPSourceConnectionRequest?: PatchedGroupLDAPSourceConnectionRequest;
 }
 
@@ -634,9 +572,6 @@ export interface SourcesGroupConnectionsLdapUpdateRequest {
      * A unique integer value identifying this Group LDAP Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupLDAPSourceConnectionRequest: GroupLDAPSourceConnectionRequest;
 }
 
@@ -648,9 +583,6 @@ export interface SourcesGroupConnectionsLdapUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsOauthCreateRequest {
-    /**
-     *
-     */
     groupOAuthSourceConnectionRequest: GroupOAuthSourceConnectionRequest;
 }
 
@@ -662,9 +594,6 @@ export interface SourcesGroupConnectionsOauthDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsOauthListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -682,9 +611,6 @@ export interface SourcesGroupConnectionsOauthListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -693,9 +619,6 @@ export interface SourcesGroupConnectionsOauthPartialUpdateRequest {
      * A unique integer value identifying this Group OAuth Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupOAuthSourceConnectionRequest?: PatchedGroupOAuthSourceConnectionRequest;
 }
 
@@ -711,9 +634,6 @@ export interface SourcesGroupConnectionsOauthUpdateRequest {
      * A unique integer value identifying this Group OAuth Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupOAuthSourceConnectionRequest: GroupOAuthSourceConnectionRequest;
 }
 
@@ -725,9 +645,6 @@ export interface SourcesGroupConnectionsOauthUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsPlexCreateRequest {
-    /**
-     *
-     */
     groupPlexSourceConnectionRequest: GroupPlexSourceConnectionRequest;
 }
 
@@ -739,9 +656,6 @@ export interface SourcesGroupConnectionsPlexDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsPlexListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -759,9 +673,6 @@ export interface SourcesGroupConnectionsPlexListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -770,9 +681,6 @@ export interface SourcesGroupConnectionsPlexPartialUpdateRequest {
      * A unique integer value identifying this Group Plex Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupPlexSourceConnectionRequest?: PatchedGroupPlexSourceConnectionRequest;
 }
 
@@ -788,9 +696,6 @@ export interface SourcesGroupConnectionsPlexUpdateRequest {
      * A unique integer value identifying this Group Plex Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupPlexSourceConnectionRequest: GroupPlexSourceConnectionRequest;
 }
 
@@ -802,9 +707,6 @@ export interface SourcesGroupConnectionsPlexUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsSamlCreateRequest {
-    /**
-     *
-     */
     groupSAMLSourceConnectionRequest: GroupSAMLSourceConnectionRequest;
 }
 
@@ -816,9 +718,6 @@ export interface SourcesGroupConnectionsSamlDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsSamlListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -836,9 +735,6 @@ export interface SourcesGroupConnectionsSamlListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -847,9 +743,6 @@ export interface SourcesGroupConnectionsSamlPartialUpdateRequest {
      * A unique integer value identifying this Group SAML Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupSAMLSourceConnectionRequest?: PatchedGroupSAMLSourceConnectionRequest;
 }
 
@@ -865,9 +758,6 @@ export interface SourcesGroupConnectionsSamlUpdateRequest {
      * A unique integer value identifying this Group SAML Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupSAMLSourceConnectionRequest: GroupSAMLSourceConnectionRequest;
 }
 
@@ -879,9 +769,6 @@ export interface SourcesGroupConnectionsSamlUsedByListRequest {
 }
 
 export interface SourcesGroupConnectionsTelegramCreateRequest {
-    /**
-     *
-     */
     groupTelegramSourceConnectionRequest: GroupTelegramSourceConnectionRequest;
 }
 
@@ -893,9 +780,6 @@ export interface SourcesGroupConnectionsTelegramDestroyRequest {
 }
 
 export interface SourcesGroupConnectionsTelegramListRequest {
-    /**
-     *
-     */
     group?: string;
     /**
      * Which field to use when ordering the results.
@@ -913,9 +797,6 @@ export interface SourcesGroupConnectionsTelegramListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -924,9 +805,6 @@ export interface SourcesGroupConnectionsTelegramPartialUpdateRequest {
      * A unique integer value identifying this Group Telegram Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedGroupTelegramSourceConnectionRequest?: PatchedGroupTelegramSourceConnectionRequest;
 }
 
@@ -942,9 +820,6 @@ export interface SourcesGroupConnectionsTelegramUpdateRequest {
      * A unique integer value identifying this Group Telegram Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     groupTelegramSourceConnectionRequest: GroupTelegramSourceConnectionRequest;
 }
 
@@ -956,31 +831,16 @@ export interface SourcesGroupConnectionsTelegramUsedByListRequest {
 }
 
 export interface SourcesKerberosCreateRequest {
-    /**
-     *
-     */
     kerberosSourceRequest: KerberosSourceRequest;
 }
 
 export interface SourcesKerberosDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesKerberosListRequest {
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     kadminType?: KadminTypeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -994,160 +854,67 @@ export interface SourcesKerberosListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     passwordLoginUpdateInternalPassword?: boolean;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     realm?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     spnegoServerName?: string;
-    /**
-     *
-     */
     syncPrincipal?: string;
-    /**
-     *
-     */
     syncUsers?: boolean;
-    /**
-     *
-     */
     syncUsersPassword?: boolean;
 }
 
 export interface SourcesKerberosPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedKerberosSourceRequest?: PatchedKerberosSourceRequest;
 }
 
 export interface SourcesKerberosRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesKerberosSyncStatusRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesKerberosUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     kerberosSourceRequest: KerberosSourceRequest;
 }
 
 export interface SourcesKerberosUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesLdapCreateRequest {
-    /**
-     *
-     */
     lDAPSourceRequest: LDAPSourceRequest;
 }
 
 export interface SourcesLdapDebugRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesLdapDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesLdapListRequest {
-    /**
-     *
-     */
     additionalGroupDn?: string;
-    /**
-     *
-     */
     additionalUserDn?: string;
-    /**
-     *
-     */
     baseDn?: string;
-    /**
-     *
-     */
     bindCn?: string;
-    /**
-     *
-     */
     clientCertificate?: string;
-    /**
-     *
-     */
     deleteNotFoundObjects?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     groupMembershipField?: string;
-    /**
-     *
-     */
     groupObjectFilter?: string;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     lookupGroupsFromUser?: boolean;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     objectUniquenessField?: string;
     /**
      * Which field to use when ordering the results.
@@ -1161,173 +928,71 @@ export interface SourcesLdapListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     passwordLoginUpdateInternalPassword?: boolean;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     peerCertificate?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     serverUri?: string;
-    /**
-     *
-     */
     serviceBindMethod?: ServiceBindMethodEnum;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     sni?: boolean;
-    /**
-     *
-     */
     startTls?: boolean;
-    /**
-     *
-     */
     syncGroupHierarchy?: boolean;
-    /**
-     *
-     */
     syncGroups?: boolean;
-    /**
-     *
-     */
     syncParentGroup?: string;
-    /**
-     *
-     */
     syncUsers?: boolean;
-    /**
-     *
-     */
     syncUsersPassword?: boolean;
-    /**
-     *
-     */
     userMembershipAttribute?: string;
-    /**
-     *
-     */
     userObjectFilter?: string;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
 }
 
 export interface SourcesLdapPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedLDAPSourceRequest?: PatchedLDAPSourceRequest;
 }
 
 export interface SourcesLdapRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesLdapSyncStatusRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesLdapUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     lDAPSourceRequest: LDAPSourceRequest;
 }
 
 export interface SourcesLdapUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesOauthCreateRequest {
-    /**
-     *
-     */
     oAuthSourceRequest: OAuthSourceRequest;
 }
 
 export interface SourcesOauthDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesOauthListRequest {
-    /**
-     *
-     */
     accessTokenUrl?: string;
-    /**
-     *
-     */
     additionalScopes?: string;
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     authorizationUrl?: string;
-    /**
-     *
-     */
     consumerKey?: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     enrollmentFlow?: string;
-    /**
-     *
-     */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Only return sources with JWKS data
      */
     hasJwks?: boolean;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1341,125 +1006,56 @@ export interface SourcesOauthListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     profileUrl?: string;
-    /**
-     *
-     */
     providerType?: string;
-    /**
-     *
-     */
     requestTokenUrl?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesOauthPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedOAuthSourceRequest?: PatchedOAuthSourceRequest;
 }
 
 export interface SourcesOauthRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesOauthSourceTypesListRequest {
-    /**
-     *
-     */
     name?: string;
 }
 
 export interface SourcesOauthUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     oAuthSourceRequest: OAuthSourceRequest;
 }
 
 export interface SourcesOauthUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesPlexCreateRequest {
-    /**
-     *
-     */
     plexSourceRequest: PlexSourceRequest;
 }
 
 export interface SourcesPlexDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesPlexListRequest {
-    /**
-     *
-     */
     allowFriends?: boolean;
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     clientId?: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     enrollmentFlow?: string;
-    /**
-     *
-     */
     groupMatchingMode?: GroupMatchingModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1473,144 +1069,63 @@ export interface SourcesPlexListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesPlexPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedPlexSourceRequest?: PatchedPlexSourceRequest;
 }
 
 export interface SourcesPlexRedeemTokenAuthenticatedCreateRequest {
-    /**
-     *
-     */
     plexTokenRedeemRequest: PlexTokenRedeemRequest;
-    /**
-     *
-     */
     slug?: string;
 }
 
 export interface SourcesPlexRedeemTokenCreateRequest {
-    /**
-     *
-     */
     plexTokenRedeemRequest: PlexTokenRedeemRequest;
-    /**
-     *
-     */
     slug?: string;
 }
 
 export interface SourcesPlexRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesPlexUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     plexSourceRequest: PlexSourceRequest;
 }
 
 export interface SourcesPlexUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesSamlCreateRequest {
-    /**
-     *
-     */
     sAMLSourceRequest: SAMLSourceRequest;
 }
 
 export interface SourcesSamlDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesSamlListRequest {
-    /**
-     *
-     */
     allowIdpInitiated?: boolean;
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     bindingType?: BindingTypeEnum;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     enrollmentFlow?: string;
-    /**
-     *
-     */
     forceAuthn?: boolean;
-    /**
-     *
-     */
     issuerOverride?: string;
-    /**
-     *
-     */
     managed?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
      * Which field to use when ordering the results.
@@ -1624,125 +1139,56 @@ export interface SourcesSamlListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     preAuthenticationFlow?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
-    /**
-     *
-     */
     signedAssertion?: boolean;
-    /**
-     *
-     */
     signedResponse?: boolean;
-    /**
-     *
-     */
     signingKp?: string;
-    /**
-     *
-     */
     sloUrl?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     ssoUrl?: string;
-    /**
-     *
-     */
     temporaryUserDeleteAfter?: string;
-    /**
-     *
-     */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     verificationKp?: string;
 }
 
 export interface SourcesSamlMetadataRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesSamlPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedSAMLSourceRequest?: PatchedSAMLSourceRequest;
 }
 
 export interface SourcesSamlRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesSamlUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     sAMLSourceRequest: SAMLSourceRequest;
 }
 
 export interface SourcesSamlUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesScimCreateRequest {
-    /**
-     *
-     */
     sCIMSourceRequest: SCIMSourceRequest;
 }
 
 export interface SourcesScimDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesScimGroupsCreateRequest {
-    /**
-     *
-     */
     sCIMSourceGroupRequest: SCIMSourceGroupRequest;
 }
 
@@ -1754,13 +1200,7 @@ export interface SourcesScimGroupsDestroyRequest {
 }
 
 export interface SourcesScimGroupsListRequest {
-    /**
-     *
-     */
     groupGroupUuid?: string;
-    /**
-     *
-     */
     groupName?: string;
     /**
      * Which field to use when ordering the results.
@@ -1778,9 +1218,6 @@ export interface SourcesScimGroupsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
 }
 
@@ -1789,9 +1226,6 @@ export interface SourcesScimGroupsPartialUpdateRequest {
      * A unique value identifying this scim source group.
      */
     id: string;
-    /**
-     *
-     */
     patchedSCIMSourceGroupRequest?: PatchedSCIMSourceGroupRequest;
 }
 
@@ -1807,9 +1241,6 @@ export interface SourcesScimGroupsUpdateRequest {
      * A unique value identifying this scim source group.
      */
     id: string;
-    /**
-     *
-     */
     sCIMSourceGroupRequest: SCIMSourceGroupRequest;
 }
 
@@ -1821,9 +1252,6 @@ export interface SourcesScimGroupsUsedByListRequest {
 }
 
 export interface SourcesScimListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1837,60 +1265,33 @@ export interface SourcesScimListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
 }
 
 export interface SourcesScimPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedSCIMSourceRequest?: PatchedSCIMSourceRequest;
 }
 
 export interface SourcesScimRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesScimUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     sCIMSourceRequest: SCIMSourceRequest;
 }
 
 export interface SourcesScimUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesScimUsersCreateRequest {
-    /**
-     *
-     */
     sCIMSourceUserRequest: SCIMSourceUserRequest;
 }
 
@@ -1918,17 +1319,8 @@ export interface SourcesScimUsersListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     userId?: number;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
@@ -1937,9 +1329,6 @@ export interface SourcesScimUsersPartialUpdateRequest {
      * A unique value identifying this scim source user.
      */
     id: string;
-    /**
-     *
-     */
     patchedSCIMSourceUserRequest?: PatchedSCIMSourceUserRequest;
 }
 
@@ -1955,9 +1344,6 @@ export interface SourcesScimUsersUpdateRequest {
      * A unique value identifying this scim source user.
      */
     id: string;
-    /**
-     *
-     */
     sCIMSourceUserRequest: SCIMSourceUserRequest;
 }
 
@@ -1969,54 +1355,24 @@ export interface SourcesScimUsersUsedByListRequest {
 }
 
 export interface SourcesTelegramConnectUserCreateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     telegramAuthRequest: TelegramAuthRequest;
 }
 
 export interface SourcesTelegramCreateRequest {
-    /**
-     *
-     */
     telegramSourceRequest: TelegramSourceRequest;
 }
 
 export interface SourcesTelegramDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesTelegramListRequest {
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     botUsername?: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     enrollmentFlow?: string;
-    /**
-     *
-     */
     groupMatchingMode?: GroupMatchingModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2030,65 +1386,32 @@ export interface SourcesTelegramListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     requestMessageAccess?: boolean;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesTelegramPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedTelegramSourceRequest?: PatchedTelegramSourceRequest;
 }
 
 export interface SourcesTelegramRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface SourcesTelegramUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     telegramSourceRequest: TelegramSourceRequest;
 }
 
 export interface SourcesTelegramUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
@@ -2116,13 +1439,7 @@ export interface SourcesUserConnectionsAllListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2131,9 +1448,6 @@ export interface SourcesUserConnectionsAllPartialUpdateRequest {
      * A unique integer value identifying this user source connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserSourceConnectionRequest?: PatchedUserSourceConnectionRequest;
 }
 
@@ -2149,9 +1463,6 @@ export interface SourcesUserConnectionsAllUpdateRequest {
      * A unique integer value identifying this user source connection.
      */
     id: number;
-    /**
-     *
-     */
     userSourceConnectionRequest: UserSourceConnectionRequest;
 }
 
@@ -2163,9 +1474,6 @@ export interface SourcesUserConnectionsAllUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsKerberosCreateRequest {
-    /**
-     *
-     */
     userKerberosSourceConnectionRequest: UserKerberosSourceConnectionRequest;
 }
 
@@ -2193,13 +1501,7 @@ export interface SourcesUserConnectionsKerberosListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2208,9 +1510,6 @@ export interface SourcesUserConnectionsKerberosPartialUpdateRequest {
      * A unique integer value identifying this User Kerberos Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserKerberosSourceConnectionRequest?: PatchedUserKerberosSourceConnectionRequest;
 }
 
@@ -2226,9 +1525,6 @@ export interface SourcesUserConnectionsKerberosUpdateRequest {
      * A unique integer value identifying this User Kerberos Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userKerberosSourceConnectionRequest: UserKerberosSourceConnectionRequest;
 }
 
@@ -2240,9 +1536,6 @@ export interface SourcesUserConnectionsKerberosUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsLdapCreateRequest {
-    /**
-     *
-     */
     userLDAPSourceConnectionRequest: UserLDAPSourceConnectionRequest;
 }
 
@@ -2270,13 +1563,7 @@ export interface SourcesUserConnectionsLdapListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2285,9 +1572,6 @@ export interface SourcesUserConnectionsLdapPartialUpdateRequest {
      * A unique integer value identifying this User LDAP Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserLDAPSourceConnectionRequest?: PatchedUserLDAPSourceConnectionRequest;
 }
 
@@ -2303,9 +1587,6 @@ export interface SourcesUserConnectionsLdapUpdateRequest {
      * A unique integer value identifying this User LDAP Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userLDAPSourceConnectionRequest: UserLDAPSourceConnectionRequest;
 }
 
@@ -2317,9 +1598,6 @@ export interface SourcesUserConnectionsLdapUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsOauthCreateRequest {
-    /**
-     *
-     */
     userOAuthSourceConnectionRequest: UserOAuthSourceConnectionRequest;
 }
 
@@ -2347,13 +1625,7 @@ export interface SourcesUserConnectionsOauthListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2362,9 +1634,6 @@ export interface SourcesUserConnectionsOauthPartialUpdateRequest {
      * A unique integer value identifying this User OAuth Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserOAuthSourceConnectionRequest?: PatchedUserOAuthSourceConnectionRequest;
 }
 
@@ -2380,9 +1649,6 @@ export interface SourcesUserConnectionsOauthUpdateRequest {
      * A unique integer value identifying this User OAuth Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userOAuthSourceConnectionRequest: UserOAuthSourceConnectionRequest;
 }
 
@@ -2394,9 +1660,6 @@ export interface SourcesUserConnectionsOauthUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsPlexCreateRequest {
-    /**
-     *
-     */
     userPlexSourceConnectionRequest: UserPlexSourceConnectionRequest;
 }
 
@@ -2424,13 +1687,7 @@ export interface SourcesUserConnectionsPlexListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2439,9 +1696,6 @@ export interface SourcesUserConnectionsPlexPartialUpdateRequest {
      * A unique integer value identifying this User Plex Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserPlexSourceConnectionRequest?: PatchedUserPlexSourceConnectionRequest;
 }
 
@@ -2457,9 +1711,6 @@ export interface SourcesUserConnectionsPlexUpdateRequest {
      * A unique integer value identifying this User Plex Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userPlexSourceConnectionRequest: UserPlexSourceConnectionRequest;
 }
 
@@ -2471,9 +1722,6 @@ export interface SourcesUserConnectionsPlexUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsSamlCreateRequest {
-    /**
-     *
-     */
     userSAMLSourceConnectionRequest: UserSAMLSourceConnectionRequest;
 }
 
@@ -2501,13 +1749,7 @@ export interface SourcesUserConnectionsSamlListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2516,9 +1758,6 @@ export interface SourcesUserConnectionsSamlPartialUpdateRequest {
      * A unique integer value identifying this User SAML Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserSAMLSourceConnectionRequest?: PatchedUserSAMLSourceConnectionRequest;
 }
 
@@ -2534,9 +1773,6 @@ export interface SourcesUserConnectionsSamlUpdateRequest {
      * A unique integer value identifying this User SAML Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userSAMLSourceConnectionRequest: UserSAMLSourceConnectionRequest;
 }
 
@@ -2548,9 +1784,6 @@ export interface SourcesUserConnectionsSamlUsedByListRequest {
 }
 
 export interface SourcesUserConnectionsTelegramCreateRequest {
-    /**
-     *
-     */
     userTelegramSourceConnectionRequest: UserTelegramSourceConnectionRequest;
 }
 
@@ -2578,13 +1811,7 @@ export interface SourcesUserConnectionsTelegramListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sourceSlug?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -2593,9 +1820,6 @@ export interface SourcesUserConnectionsTelegramPartialUpdateRequest {
      * A unique integer value identifying this User Telegram Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserTelegramSourceConnectionRequest?: PatchedUserTelegramSourceConnectionRequest;
 }
 
@@ -2611,9 +1835,6 @@ export interface SourcesUserConnectionsTelegramUpdateRequest {
      * A unique integer value identifying this User Telegram Source Connection.
      */
     id: number;
-    /**
-     *
-     */
     userTelegramSourceConnectionRequest: UserTelegramSourceConnectionRequest;
 }
 
@@ -2624,9 +1845,6 @@ export interface SourcesUserConnectionsTelegramUsedByListRequest {
     id: number;
 }
 
-/**
- *
- */
 export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesAllDestroy without sending the request
@@ -2739,7 +1957,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/all/`;
+        const urlPath = `/sources/all/`;
 
         return {
             path: urlPath,
@@ -2853,7 +2071,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/all/types/`;
+        const urlPath = `/sources/all/types/`;
 
         return {
             path: urlPath,
@@ -2965,7 +2183,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/all/user_settings/`;
+        const urlPath = `/sources/all/user_settings/`;
 
         return {
             path: urlPath,
@@ -3103,7 +2321,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/all/`;
+        const urlPath = `/sources/group_connections/all/`;
 
         return {
             path: urlPath,
@@ -3144,7 +2362,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsAllPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsAllPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsAllPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest,
@@ -3454,7 +2673,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/kerberos/`;
+        const urlPath = `/sources/group_connections/kerberos/`;
 
         return {
             path: urlPath,
@@ -3498,7 +2717,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsKerberosDestroy without sending the request
+     * Creates request options for sourcesGroupConnectionsKerberosDestroy without sending the
+     * request
      */
     async sourcesGroupConnectionsKerberosDestroyRequestOpts(
         requestParameters: SourcesGroupConnectionsKerberosDestroyRequest,
@@ -3601,7 +2821,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/kerberos/`;
+        const urlPath = `/sources/group_connections/kerberos/`;
 
         return {
             path: urlPath,
@@ -3642,7 +2862,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsKerberosPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsKerberosPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsKerberosPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest,
@@ -3714,7 +2935,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsKerberosRetrieve without sending the request
+     * Creates request options for sourcesGroupConnectionsKerberosRetrieve without sending the
+     * request
      */
     async sourcesGroupConnectionsKerberosRetrieveRequestOpts(
         requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest,
@@ -3860,7 +3082,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsKerberosUsedByList without sending the request
+     * Creates request options for sourcesGroupConnectionsKerberosUsedByList without sending the
+     * request
      */
     async sourcesGroupConnectionsKerberosUsedByListRequestOpts(
         requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
@@ -3952,7 +3175,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/ldap/`;
+        const urlPath = `/sources/group_connections/ldap/`;
 
         return {
             path: urlPath,
@@ -4099,7 +3322,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/ldap/`;
+        const urlPath = `/sources/group_connections/ldap/`;
 
         return {
             path: urlPath,
@@ -4140,7 +3363,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsLdapPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsLdapPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsLdapPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest,
@@ -4450,7 +3674,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/oauth/`;
+        const urlPath = `/sources/group_connections/oauth/`;
 
         return {
             path: urlPath,
@@ -4597,7 +3821,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/oauth/`;
+        const urlPath = `/sources/group_connections/oauth/`;
 
         return {
             path: urlPath,
@@ -4638,7 +3862,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsOauthPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsOauthPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsOauthPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest,
@@ -4856,7 +4081,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsOauthUsedByList without sending the request
+     * Creates request options for sourcesGroupConnectionsOauthUsedByList without sending the
+     * request
      */
     async sourcesGroupConnectionsOauthUsedByListRequestOpts(
         requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
@@ -4948,7 +4174,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/plex/`;
+        const urlPath = `/sources/group_connections/plex/`;
 
         return {
             path: urlPath,
@@ -5095,7 +4321,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/plex/`;
+        const urlPath = `/sources/group_connections/plex/`;
 
         return {
             path: urlPath,
@@ -5136,7 +4362,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsPlexPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsPlexPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsPlexPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest,
@@ -5446,7 +4673,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/saml/`;
+        const urlPath = `/sources/group_connections/saml/`;
 
         return {
             path: urlPath,
@@ -5593,7 +4820,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/saml/`;
+        const urlPath = `/sources/group_connections/saml/`;
 
         return {
             path: urlPath,
@@ -5634,7 +4861,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsSamlPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsSamlPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsSamlPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest,
@@ -5944,7 +5172,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/telegram/`;
+        const urlPath = `/sources/group_connections/telegram/`;
 
         return {
             path: urlPath,
@@ -5988,7 +5216,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsTelegramDestroy without sending the request
+     * Creates request options for sourcesGroupConnectionsTelegramDestroy without sending the
+     * request
      */
     async sourcesGroupConnectionsTelegramDestroyRequestOpts(
         requestParameters: SourcesGroupConnectionsTelegramDestroyRequest,
@@ -6091,7 +5320,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/group_connections/telegram/`;
+        const urlPath = `/sources/group_connections/telegram/`;
 
         return {
             path: urlPath,
@@ -6132,7 +5361,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsTelegramPartialUpdate without sending the request
+     * Creates request options for sourcesGroupConnectionsTelegramPartialUpdate without sending the
+     * request
      */
     async sourcesGroupConnectionsTelegramPartialUpdateRequestOpts(
         requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest,
@@ -6204,7 +5434,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsTelegramRetrieve without sending the request
+     * Creates request options for sourcesGroupConnectionsTelegramRetrieve without sending the
+     * request
      */
     async sourcesGroupConnectionsTelegramRetrieveRequestOpts(
         requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest,
@@ -6350,7 +5581,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsTelegramUsedByList without sending the request
+     * Creates request options for sourcesGroupConnectionsTelegramUsedByList without sending the
+     * request
      */
     async sourcesGroupConnectionsTelegramUsedByListRequestOpts(
         requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
@@ -6442,7 +5674,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/kerberos/`;
+        const urlPath = `/sources/kerberos/`;
 
         return {
             path: urlPath,
@@ -6619,7 +5851,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/kerberos/`;
+        const urlPath = `/sources/kerberos/`;
 
         return {
             path: urlPath,
@@ -6828,7 +6060,7 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async sourcesKerberosSyncStatusRetrieveRaw(
         requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
@@ -6842,7 +6074,7 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async sourcesKerberosSyncStatusRetrieve(
         requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
@@ -7017,7 +6249,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/ldap/`;
+        const urlPath = `/sources/ldap/`;
 
         return {
             path: urlPath,
@@ -7327,7 +6559,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/ldap/`;
+        const urlPath = `/sources/ldap/`;
 
         return {
             path: urlPath,
@@ -7526,7 +6758,7 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async sourcesLdapSyncStatusRetrieveRaw(
         requestParameters: SourcesLdapSyncStatusRetrieveRequest,
@@ -7540,7 +6772,7 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async sourcesLdapSyncStatusRetrieve(
         requestParameters: SourcesLdapSyncStatusRetrieveRequest,
@@ -7713,7 +6945,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/oauth/`;
+        const urlPath = `/sources/oauth/`;
 
         return {
             path: urlPath,
@@ -7911,7 +7143,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/oauth/`;
+        const urlPath = `/sources/oauth/`;
 
         return {
             path: urlPath,
@@ -8095,7 +7327,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/oauth/source_types/`;
+        const urlPath = `/sources/oauth/source_types/`;
 
         return {
             path: urlPath,
@@ -8106,7 +7338,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name> isn\'t found, returns the default type.
+     * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name>
+     * isn't found, returns the default type.
      */
     async sourcesOauthSourceTypesListRaw(
         requestParameters: SourcesOauthSourceTypesListRequest,
@@ -8121,7 +7354,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name> isn\'t found, returns the default type.
+     * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name>
+     * isn't found, returns the default type.
      */
     async sourcesOauthSourceTypesList(
         requestParameters: SourcesOauthSourceTypesListRequest = {},
@@ -8294,7 +7528,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/plex/`;
+        const urlPath = `/sources/plex/`;
 
         return {
             path: urlPath,
@@ -8468,7 +7702,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/plex/`;
+        const urlPath = `/sources/plex/`;
 
         return {
             path: urlPath,
@@ -8569,7 +7803,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesPlexRedeemTokenAuthenticatedCreate without sending the request
+     * Creates request options for sourcesPlexRedeemTokenAuthenticatedCreate without sending the
+     * request
      */
     async sourcesPlexRedeemTokenAuthenticatedCreateRequestOpts(
         requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest,
@@ -8600,7 +7835,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/plex/redeem_token_authenticated/`;
+        const urlPath = `/sources/plex/redeem_token_authenticated/`;
 
         return {
             path: urlPath,
@@ -8667,7 +7902,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/plex/redeem_token/`;
+        const urlPath = `/sources/plex/redeem_token/`;
 
         return {
             path: urlPath,
@@ -8679,7 +7914,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Redeem a plex token, check it\'s access to resources against what\'s allowed for the source, and redirect to an authentication/enrollment flow.
+     * Redeem a plex token, check it's access to resources against what's allowed for the source,
+     * and redirect to an authentication/enrollment flow.
      */
     async sourcesPlexRedeemTokenCreateRaw(
         requestParameters: SourcesPlexRedeemTokenCreateRequest,
@@ -8695,7 +7931,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Redeem a plex token, check it\'s access to resources against what\'s allowed for the source, and redirect to an authentication/enrollment flow.
+     * Redeem a plex token, check it's access to resources against what's allowed for the source,
+     * and redirect to an authentication/enrollment flow.
      */
     async sourcesPlexRedeemTokenCreate(
         requestParameters: SourcesPlexRedeemTokenCreateRequest,
@@ -8929,7 +8166,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/saml/`;
+        const urlPath = `/sources/saml/`;
 
         return {
             path: urlPath,
@@ -9156,7 +8393,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/saml/`;
+        const urlPath = `/sources/saml/`;
 
         return {
             path: urlPath,
@@ -9543,7 +8780,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim/`;
+        const urlPath = `/sources/scim/`;
 
         return {
             path: urlPath,
@@ -9666,7 +8903,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim_groups/`;
+        const urlPath = `/sources/scim_groups/`;
 
         return {
             path: urlPath,
@@ -9810,7 +9047,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim_groups/`;
+        const urlPath = `/sources/scim_groups/`;
 
         return {
             path: urlPath,
@@ -10165,7 +9402,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim/`;
+        const urlPath = `/sources/scim/`;
 
         return {
             path: urlPath,
@@ -10486,7 +9723,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim_users/`;
+        const urlPath = `/sources/scim_users/`;
 
         return {
             path: urlPath,
@@ -10630,7 +9867,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/scim_users/`;
+        const urlPath = `/sources/scim_users/`;
 
         return {
             path: urlPath,
@@ -11040,7 +10277,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/telegram/`;
+        const urlPath = `/sources/telegram/`;
 
         return {
             path: urlPath,
@@ -11216,7 +10453,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/telegram/`;
+        const urlPath = `/sources/telegram/`;
 
         return {
             path: urlPath,
@@ -11625,7 +10862,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/all/`;
+        const urlPath = `/sources/user_connections/all/`;
 
         return {
             path: urlPath,
@@ -11666,7 +10903,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsAllPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsAllPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsAllPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsAllPartialUpdateRequest,
@@ -11976,7 +11214,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/kerberos/`;
+        const urlPath = `/sources/user_connections/kerberos/`;
 
         return {
             path: urlPath,
@@ -12123,7 +11361,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/kerberos/`;
+        const urlPath = `/sources/user_connections/kerberos/`;
 
         return {
             path: urlPath,
@@ -12164,7 +11402,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsKerberosPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsKerberosPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsKerberosPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest,
@@ -12236,7 +11475,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsKerberosRetrieve without sending the request
+     * Creates request options for sourcesUserConnectionsKerberosRetrieve without sending the
+     * request
      */
     async sourcesUserConnectionsKerberosRetrieveRequestOpts(
         requestParameters: SourcesUserConnectionsKerberosRetrieveRequest,
@@ -12382,7 +11622,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsKerberosUsedByList without sending the request
+     * Creates request options for sourcesUserConnectionsKerberosUsedByList without sending the
+     * request
      */
     async sourcesUserConnectionsKerberosUsedByListRequestOpts(
         requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
@@ -12474,7 +11715,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/ldap/`;
+        const urlPath = `/sources/user_connections/ldap/`;
 
         return {
             path: urlPath,
@@ -12621,7 +11862,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/ldap/`;
+        const urlPath = `/sources/user_connections/ldap/`;
 
         return {
             path: urlPath,
@@ -12662,7 +11903,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsLdapPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsLdapPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsLdapPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest,
@@ -12972,7 +12214,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/oauth/`;
+        const urlPath = `/sources/user_connections/oauth/`;
 
         return {
             path: urlPath,
@@ -13119,7 +12361,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/oauth/`;
+        const urlPath = `/sources/user_connections/oauth/`;
 
         return {
             path: urlPath,
@@ -13160,7 +12402,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsOauthPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsOauthPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsOauthPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest,
@@ -13470,7 +12713,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/plex/`;
+        const urlPath = `/sources/user_connections/plex/`;
 
         return {
             path: urlPath,
@@ -13617,7 +12860,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/plex/`;
+        const urlPath = `/sources/user_connections/plex/`;
 
         return {
             path: urlPath,
@@ -13658,7 +12901,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsPlexPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsPlexPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsPlexPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest,
@@ -13968,7 +13212,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/saml/`;
+        const urlPath = `/sources/user_connections/saml/`;
 
         return {
             path: urlPath,
@@ -14115,7 +13359,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/saml/`;
+        const urlPath = `/sources/user_connections/saml/`;
 
         return {
             path: urlPath,
@@ -14156,7 +13400,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsSamlPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsSamlPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsSamlPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest,
@@ -14466,7 +13711,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/telegram/`;
+        const urlPath = `/sources/user_connections/telegram/`;
 
         return {
             path: urlPath,
@@ -14613,7 +13858,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/user_connections/telegram/`;
+        const urlPath = `/sources/user_connections/telegram/`;
 
         return {
             path: urlPath,
@@ -14654,7 +13899,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsTelegramPartialUpdate without sending the request
+     * Creates request options for sourcesUserConnectionsTelegramPartialUpdate without sending the
+     * request
      */
     async sourcesUserConnectionsTelegramPartialUpdateRequestOpts(
         requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest,
@@ -14726,7 +13972,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsTelegramRetrieve without sending the request
+     * Creates request options for sourcesUserConnectionsTelegramRetrieve without sending the
+     * request
      */
     async sourcesUserConnectionsTelegramRetrieveRequestOpts(
         requestParameters: SourcesUserConnectionsTelegramRetrieveRequest,
@@ -14872,7 +14119,8 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsTelegramUsedByList without sending the request
+     * Creates request options for sourcesUserConnectionsTelegramUsedByList without sending the
+     * request
      */
     async sourcesUserConnectionsTelegramUsedByListRequestOpts(
         requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,

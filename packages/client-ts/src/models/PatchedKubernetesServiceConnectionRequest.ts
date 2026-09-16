@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,16 @@
 
 /**
  * KubernetesServiceConnection Serializer
+ *
  * @export
  * @interface PatchedKubernetesServiceConnectionRequest
  */
 export interface PatchedKubernetesServiceConnectionRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
      */
     local?: boolean;
-    /**
-     *
-     */
     secret?: string | null;
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint

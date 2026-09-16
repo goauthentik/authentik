@@ -2,11 +2,12 @@
 
 from base64 import b64encode
 
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import ClientType, OAuth2Provider
 
@@ -92,3 +93,45 @@ class TestProviderSecret(APITestCase):
             response.json(),
             {"secret": ["Client secret must consist of only ASCII characters."]},
         )
+
+    def test_api_rejects_incompatible_secret_reference(self):
+        for secret_type, value in [
+            (SecretType.MULTILINE, "ascii"),
+            (SecretType.FILE, "aGk="),
+            (SecretType.TEXT, "x" * 256),
+        ]:
+            with self.subTest(type=secret_type):
+                secret = Secret.objects.create(name=generate_id(), type=secret_type, value=value)
+                response = self.client.post(
+                    reverse("authentik_api:oauth2provider-list"),
+                    data={
+                        "name": generate_id(),
+                        "authorization_flow": create_test_flow().pk,
+                        "invalidation_flow": create_test_flow().pk,
+                        "secret": str(secret.pk),
+                        "redirect_uris": [],
+                    },
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 400, response.content)
+                self.assertIn("secret", response.json())
+
+    def test_replacement_preserves_oauth_constraints(self):
+        provider = OAuth2Provider.objects.create(name=generate_id())
+        secret = provider.secret
+        original = secret.value
+        for value in ["x" * 256, "non-ascii-ú", "line\nbreak"]:
+            with self.subTest(value=value):
+                response = self.client.patch(
+                    reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+                    {"value": value},
+                )
+                self.assertEqual(response.status_code, 400, response.content)
+                with self.assertRaises(ValidationError):
+                    secret.replace_value(value)
+                self.assertEqual(secret.value, original)
+                secret.refresh_from_db()
+                self.assertEqual(secret.value, original)
+        secret.replace_value("x" * 255)
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "x" * 255)

@@ -178,8 +178,17 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-        # Test internal error handling
         stage.admin_integration_key = generate_id()
+        stage.save()
+        response = self.client.post(
+            reverse(
+                "authentik_api:authenticatorduostage-import-devices-automatic",
+                kwargs={"pk": str(stage.pk)},
+            ),
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # Test internal error handling
         stage.admin_secret = create_test_secret(generate_id())
         stage.save()
         with patch(

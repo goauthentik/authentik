@@ -14,6 +14,7 @@ import { SKIP, visit } from "unist-util-visit";
  *
  * @param {string} href
  * @param {string} publicDirectory
+ *
  * @returns {string}
  */
 function resolveDocsHref(href, publicDirectory) {
@@ -25,6 +26,7 @@ function resolveDocsHref(href, publicDirectory) {
     next.pathname = next.pathname.replace(/(index)?\.mdx?$/, "");
     next.search = placeholder.search;
     next.hash = placeholder.hash;
+
     return next.toString();
 }
 
@@ -44,7 +46,7 @@ function resolveDocsHref(href, publicDirectory) {
  * @param {{ publicDirectory: string }} options
  */
 export function rehypeAnchors({ publicDirectory }) {
-    return (/** @type {import('hast').Root} */ tree) => {
+    return (/** @type {import("hast").Root} */ tree) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "a") return;
 
@@ -69,7 +71,7 @@ export function rehypeAnchors({ publicDirectory }) {
             // the visitor from descending into the freshly-stamped
             // child anchor (which would re-match this filter and
             // recurse forever).
-            /** @type {import('hast').Element} */
+            /** @type {import("hast").Element} */
             const original = {
                 type: "element",
                 tagName: "a",
@@ -93,14 +95,16 @@ export function rehypeAnchors({ publicDirectory }) {
  * wrapper element is needed.
  */
 export function rehypeMermaid() {
-    return (/** @type {import('hast').Root} */ tree) => {
+    return (/** @type {import("hast").Root} */ tree) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "pre") return;
             const child = node.children?.[0];
+
             if (!child || child.type !== "element" || child.tagName !== "code") return;
 
             const className = child.properties?.className ?? [];
             const classes = Array.isArray(className) ? className : [className];
+
             if (!classes.includes("language-mermaid")) return;
 
             const source = (child.children ?? [])

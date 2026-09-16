@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,44 +20,22 @@ import { RequestRuleFromJSON } from "./RequestRule";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RequestRuleBinding
  */
 export interface RequestRuleBinding {
-    /**
-     *
-     */
     uuid?: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     rule: string;
-    /**
-     *
-     */
     readonly ruleObj: RequestRule;
-    /**
-     *
-     */
     target: string;
-    /**
-     *
-     */
     readonly related: Array<string>;
-    /**
-     *
-     */
     readonly relatedObj: Array<RelatedTarget>;
     /**
-     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+     * How long a request against this binding stays pending before it automatically lapses if not
+     * approved or denied.
      */
     expiryPending?: string;
     /**
