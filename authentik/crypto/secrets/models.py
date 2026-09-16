@@ -78,6 +78,12 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 b64decode(value, validate=True)
             except (BinasciiError, ValueError) as exc:
                 raise ValidationError(_("Value must be base64-encoded.")) from exc
+        if self._state.adding:
+            return
+        if self.oauth2_providers.exists():
+            from authentik.providers.oauth2.utils import validate_client_secret
+
+            validate_client_secret(value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

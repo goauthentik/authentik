@@ -79,13 +79,6 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
             or request.user.has_perm("authentik_crypto_secrets.rotate_secret", instance)
         ):
             raise PermissionDenied(_("You do not have permission to replace this value."))
-        if instance.oauth2_providers.exists():
-            from authentik.providers.oauth2.utils import is_all_vschar
-
-            if not is_all_vschar(value):
-                raise ValidationError(
-                    _("OAuth client secrets must consist of only ASCII characters.")
-                )
         return value
 
     def validate(self, attrs: dict) -> dict:
