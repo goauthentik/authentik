@@ -1,7 +1,6 @@
 import "#elements/SecretValue";
 import "#elements/dialogs/ak-modal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { PFSize } from "#common/enums";
 import { AKRefreshEvent } from "#common/events";
 import { docLink } from "#common/global";
@@ -41,10 +40,12 @@ export function IconRotateSecretButton({
         const confirm = async (event: Event) => {
             const dialog = (event.currentTarget as HTMLElement).closest("dialog")!;
             const modal = dialog.querySelector("ak-modal")!;
+
             if (modal.inert) return;
             modal.inert = true;
             const closedBy = dialog.closedBy;
             dialog.closedBy = "none";
+
             try {
                 const result = await rotate();
                 dialog.close();
@@ -64,6 +65,7 @@ export function IconRotateSecretButton({
                 }
 
                 invoker.dispatchEvent(new AKRefreshEvent());
+
                 showMessage({
                     message: msg("Successfully rotated secret.", { id: "secret-rotate.success" }),
                     level: MessageLevel.success,
@@ -93,13 +95,18 @@ export function IconRotateSecretButton({
                         })}</a
                     >
                 </p>
-                ${invoker.closest("form")
-                    ? html`<p>
-                          ${msg("Rotating applies immediately, even if you don't save this form.", {
-                              id: "secret-rotate.confirm.unsaved",
-                          })}
-                      </p>`
-                    : nothing}
+                ${
+                    invoker.closest("form")
+                        ? html`<p>
+                              ${msg(
+                                  "Rotating applies immediately, even if you don't save this form.",
+                                  {
+                                      id: "secret-rotate.confirm.unsaved",
+                                  },
+                              )}
+                          </p>`
+                        : nothing
+                }
                 <button
                     slot="actions"
                     type="button"

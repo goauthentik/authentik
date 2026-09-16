@@ -1,5 +1,4 @@
 import "#components/ak-secret-search-input";
-
 import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { serializeForm } from "#elements/forms/serialization";
 
@@ -13,6 +12,7 @@ afterEach(() => {
     document
         .querySelectorAll("ak-secret-search-input, dialog")
         .forEach((element) => element.remove());
+
     vi.restoreAllMocks();
 });
 
@@ -22,6 +22,7 @@ test("selects a newly created secret even when the dropdown was filtered", async
             results: search ? [] : [secret],
         }),
     );
+
     const picker = document.createElement("ak-secret-search-input");
     document.body.append(picker);
     await picker.updateComplete;
@@ -39,9 +40,11 @@ test("selects a newly created secret even when the dropdown was filtered", async
 
 test("loads a selected secret outside the first page", async () => {
     vi.spyOn(SecretsApi.prototype, "secretsSecretsList").mockResolvedValue({ results: [] });
+
     const retrieve = vi
         .spyOn(SecretsApi.prototype, "secretsSecretsRetrieve")
         .mockResolvedValue(secret);
+
     const picker = document.createElement("ak-secret-search-input");
     picker.name = "secret";
     picker.value = secret.pk;
@@ -57,9 +60,11 @@ test.each([false, true])(
     "preserves the selected secret when lookup fails (blankable=%s)",
     async (blankable) => {
         vi.spyOn(SecretsApi.prototype, "secretsSecretsList").mockResolvedValue({ results: [] });
+
         vi.spyOn(SecretsApi.prototype, "secretsSecretsRetrieve").mockRejectedValue(
             new Error("Unavailable"),
         );
+
         const picker = document.createElement("ak-secret-search-input");
         picker.name = "secret";
         picker.value = secret.pk;
@@ -71,9 +76,11 @@ test.each([false, true])(
         await vi.waitFor(() =>
             expect(select.shadowRoot?.textContent).toContain("Failed to fetch objects"),
         );
+
         expect(() =>
             serializeForm([picker.querySelector("ak-form-element-horizontal")!]),
         ).toThrow();
+
         expect(picker.value).toBe(secret.pk);
     },
 );
@@ -82,6 +89,7 @@ test("filters scalar secrets and restricts inline creation", async () => {
     const list = vi
         .spyOn(SecretsApi.prototype, "secretsSecretsList")
         .mockResolvedValue({ results: [] });
+
     const picker = document.createElement("ak-secret-search-input");
     document.body.append(picker);
     await vi.waitFor(() => expect(list).toHaveBeenCalled());
@@ -95,12 +103,15 @@ test("changing accepted types clears an incompatible selection", async () => {
     const list = vi
         .spyOn(SecretsApi.prototype, "secretsSecretsList")
         .mockResolvedValue({ results: [secret] });
+
     const picker = document.createElement("ak-secret-search-input");
     picker.value = secret.pk;
     document.body.append(picker);
+
     await vi.waitFor(() =>
         expect(picker.querySelector("ak-search-select")?.toForm()).toBe(secret.pk),
     );
+
     picker.types = [SecretTypeEnum.Text];
     await picker.updateComplete;
     expect(picker.value).toBe(secret.pk);

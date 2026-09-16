@@ -95,14 +95,16 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                     label=${msg("Shared secret")}
                     value=${ifPresent(provider.secret)}
                     blankable
-                    help=${provider.pk
-                        ? msg("Secret between clients and server to hash packets.", {
-                              id: "provider.radius.form.secret.description.edit",
-                          })
-                        : msg(
-                              "Secret between clients and server to hash packets. Leave empty to create one for this provider.",
-                              { id: "provider.radius.form.secret.description.create" },
-                          )}
+                    help=${
+                        provider.pk
+                            ? msg("Secret between clients and server to hash packets.", {
+                                  id: "provider.radius.form.secret.description.edit",
+                              })
+                            : msg(
+                                  "Secret between clients and server to hash packets. Leave empty to create one for this provider.",
+                                  { id: "provider.radius.form.secret.description.create" },
+                              )
+                    }
                 ></ak-secret-search-input>
                 <ak-text-input
                     name="clientNetworks"

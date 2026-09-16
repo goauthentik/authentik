@@ -1,6 +1,5 @@
 import "#elements/SecretValue";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { PFSize } from "#common/enums";
@@ -17,6 +16,7 @@ import { html } from "lit";
 
 export function SecretValueButton(secret: Secret, control = false) {
     const isFile = secret.type === SecretTypeEnum.File;
+
     const label = isFile
         ? msg("Download secret", { id: "secret.value.download.label" })
         : msg("View secret", { id: "secret.value.view.label" });
@@ -24,10 +24,12 @@ export function SecretValueButton(secret: Secret, control = false) {
     const view = async (event: Event) => {
         const button = event.currentTarget as HTMLButtonElement;
         button.disabled = true;
+
         try {
             const { value } = await aki(SecretsApi).secretsSecretsViewValueRetrieve({
                 secretUuid: secret.pk,
             });
+
             if (isFile) {
                 downloadFile({
                     content: Uint8Array.from(toByteArray(value)).buffer,
@@ -36,6 +38,7 @@ export function SecretValueButton(secret: Secret, control = false) {
             } else {
                 button.disabled = false;
                 button.focus();
+
                 await renderModal(
                     html`<ak-secret-value
                         .value=${value}

@@ -138,13 +138,15 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-secret-search-input
                 name="authSecret"
-                label=${this.authType === AuthTypeEnum.Bearer
-                    ? msg("Bearer token", {
-                          id: "stage.authenticator-sms.form.bearer-token.label",
-                      })
-                    : msg("API Auth Username", {
-                          id: "stage.authenticator-sms.form.api-auth-username-secret.label",
-                      })}
+                label=${
+                    this.authType === AuthTypeEnum.Bearer
+                        ? msg("Bearer token", {
+                              id: "stage.authenticator-sms.form.bearer-token.label",
+                          })
+                        : msg("API Auth Username", {
+                              id: "stage.authenticator-sms.form.api-auth-username-secret.label",
+                          })
+                }
                 value=${ifPresent(this.instance?.authSecret ?? undefined)}
                 required
             ></ak-secret-search-input>
