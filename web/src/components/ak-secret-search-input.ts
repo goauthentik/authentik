@@ -1,6 +1,7 @@
 import "#elements/forms/SearchSelect/index";
-
 import HostStyles from "./ak-secret-search-input.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -22,9 +23,6 @@ import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 const renderElement = (item: Secret) => item.name;
 const renderValue = (item?: Secret | null) => item?.pk;
@@ -54,10 +52,12 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
 
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
+
         if (changed.has("types") && changed.get("types")) {
             this.value = "";
             this.selectedSecret = undefined;
             const select = this.secretSearchRef.value;
+
             if (select) {
                 select.selectedObject = null;
                 select.updateData();
@@ -81,8 +81,10 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
             this.value = secret.pk;
             this.selectedSecret = secret;
             const secretSearch = this.secretSearchRef.value;
+
             if (secretSearch) {
                 secretSearch.query = undefined;
+
                 return secretSearch.updateData();
             }
         });
@@ -119,7 +121,9 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
             const selected =
                 secrets.results.find((secret) => secret.pk === this.value) ??
                 (await aki(SecretsApi).secretsSecretsRetrieve({ secretUuid: this.value }));
+
             this.selectedSecret = selected;
+
             if (this.types.includes(selected.type!) && !secrets.results.includes(selected)) {
                 return [selected, ...secrets.results];
             }
@@ -159,15 +163,17 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
                 <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
             ${this.selectedSecret ? SecretValueButton(this.selectedSecret, true) : nothing}
-            ${this.value && this.selectedSecret?.type === SecretTypeEnum.Text
-                ? IconRotateSecretButton({
-                      control: true,
-                      rotate: () =>
-                          aki(SecretsApi).secretsSecretsRotateCreate({
-                              secretUuid: this.value,
-                          }),
-                  })
-                : nothing}
+            ${
+                this.value && this.selectedSecret?.type === SecretTypeEnum.Text
+                    ? IconRotateSecretButton({
+                          control: true,
+                          rotate: () =>
+                              aki(SecretsApi).secretsSecretsRotateCreate({
+                                  secretUuid: this.value,
+                              }),
+                      })
+                    : nothing
+            }
         </div>`;
     }
 }

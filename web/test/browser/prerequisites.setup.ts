@@ -30,10 +30,12 @@ setup('Enable "Remember me on this device"', async ({ session, form, page }) => 
     await expect(dialog, "Edit modal opens").toBeVisible();
 
     await form.setInputCheck(`Enable "Remember me on this device"`, true, dialog);
+
     await expect(
         dialog.locator("ak-search-select-loading-indicator"),
         "Stage choices are loaded",
     ).toHaveCount(0);
+
     await dialog.getByRole("button", { name: "Save Changes" }).click();
 
     await expect(dialog, "Edit modal closes after save").toBeHidden();
