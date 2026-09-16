@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-token-copy-button.js";
-
 import AKTokenCopyButton from "./ak-token-copy-button.js";
 
 import { Meta } from "@storybook/web-components";
@@ -13,6 +12,7 @@ import { html, TemplateResult } from "lit";
 
 function makeid(length: number) {
     const sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
     return Array.from({ length })
         .fill(" ")
         .map(() => sample.charAt(Math.floor(Math.random() * sample.length)))
@@ -49,6 +49,7 @@ const displayMessage = (result: any) => {
         `<li><p><i>Event</i>: ${"result" in result.detail ? result.detail.result.key : result.detail.error}</p><p style="padding-left: 2.5rem">The key should also be in your clipboard</p></li>`,
         "text/xml",
     );
+
     const target = document.querySelector("#action-button-message-pad");
     target!.appendChild(doc.firstChild!);
 };

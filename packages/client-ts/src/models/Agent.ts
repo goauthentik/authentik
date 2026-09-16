@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,13 +19,11 @@ import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface Agent
  */
 export interface Agent {
-    /**
-     *
-     */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
@@ -38,44 +34,18 @@ export interface Agent {
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     email?: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     readonly uuid: string;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     readonly parent: PartialUser;
-    /**
-     *
-     */
     readonly policyBehavior: PolicyBehaviorEnum;
     /**
      * Identifier of the agent's API token, so its key can be retrieved/copied later.

@@ -135,10 +135,29 @@ class TestSecretsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         secret = Secret.objects.create(name="file", type=SecretType.FILE, value="aGk=")
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+            {"value": "not base64"},
+        )
+        self.assertEqual(response.status_code, 400)
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "aGk=")
         response = self.client.post(
             reverse("authentik_api:secret-rotate", kwargs={"pk": secret.pk})
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_filter_compatible_types(self):
+        self.client.force_login(self.admin)
+        for secret_type in [SecretType.MULTILINE, SecretType.FILE]:
+            Secret.objects.create(name=secret_type, type=secret_type, value="aGk=")
+        response = self.client.get(
+            reverse("authentik_api:secret-list"), {"type__in": "multiline,file"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            [secret["type"] for secret in response.json()["results"]], ["multiline", "file"]
+        )
 
     def test_blank_value_keeps_existing_value_without_rotate_permission(self):
         self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * ServiceConnection Serializer
+ *
  * @export
  * @interface ServiceConnection
  */
 export interface ServiceConnection {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration

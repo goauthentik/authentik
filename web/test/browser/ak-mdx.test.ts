@@ -9,12 +9,12 @@ import { series } from "@goauthentik/core/promises";
  * the OAuth2 provider view page. That document is well-suited to exercise
  * the full pipeline because it contains:
  *
- * - frontmatter (`title: OAuth 2.0 provider`)
- * - multiple H2 headings (id slugs)
+ * - Frontmatter (`title: OAuth 2.0 provider`)
+ * - Multiple H2 headings (id slugs)
  * - `:::caution` and `:::info` admonitions (two flavors: with title, without)
- * - relative-doc links (`./create-oauth2-provider.md`)
- * - external links (`https://oauth.net/2/`)
- * - a `mermaid` sequence diagram
+ * - Relative-doc links (`./create-oauth2-provider.md`)
+ * - External links (`https://oauth.net/2/`)
+ * - A `mermaid` sequence diagram
  *
  * These tests boot the admin UI, create a fresh OAuth2 provider, navigate
  * to its view page, and then assert against the rendered DOM inside
@@ -73,8 +73,8 @@ test.describe("ak-mdx renders compiled markdown", () => {
     });
 
     /**
-     * @returns a Locator scoped to the rendered `<ak-mdx>` element on the
-     * provider view page (there is exactly one inside the docs card).
+     * @returns A Locator scoped to the rendered `<ak-mdx>` element on the
+     *   provider view page (there is exactly one inside the docs card).
      */
     const $mdx = (page: import("@playwright/test").Page) =>
         page.locator("ak-mdx").filter({ has: page.locator('h1[part="title"]') });
@@ -104,10 +104,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         const $caution = mdx
             .locator('ak-alert[level="pf-m-warning"]')
             .filter({ hasText: "Reserved application slugs" });
+
         await expect(
             $caution,
             "`:::caution Title` renders an `<ak-alert level=pf-m-warning>` with the title in `<strong>`",
         ).toBeVisible();
+
         await expect(
             $caution.locator("strong"),
             "Bare-space directive label is promoted to `<strong>`",
@@ -130,10 +132,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         const $relative = mdx
             .locator('ak-md-a > a[href*="next.goauthentik.io"][href*="create-oauth2-provider"]')
             .first();
+
         await expect(
             $relative,
             "Relative `./create-oauth2-provider.md` resolved to docs site URL at build time",
         ).toBeVisible();
+
         await expect($relative).toHaveAttribute("target", "_blank");
 
         // Fragment href is preserved verbatim from the source markdown. The
@@ -141,10 +145,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         // docs author's `#about-oauth-20-and-oidc` target resolves to a real
         // heading id on this page and the wrapper can scroll to it.
         const $fragment = mdx.locator('ak-md-a > a[href="#about-oauth-20-and-oidc"]').first();
+
         await expect(
             $fragment,
             "Fragment links are kept as `#…` so the wrapper can intercept them",
         ).toBeVisible();
+
         await expect(
             $fragment,
             "Fragment links do NOT receive `target=_blank`",
@@ -158,6 +164,7 @@ test.describe("ak-mdx renders compiled markdown", () => {
         await expect($diagram).toBeVisible();
 
         const $svg = $diagram.locator("svg");
+
         await expect(
             $svg,
             "<ak-diagram> resolves the mermaid SVG into its shadow root",

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
 import { WebAuthnDeviceTypeFromJSON, WebAuthnDeviceTypeToJSON } from "./WebAuthnDeviceType";
 
 /**
- *
  * @export
  * @interface PaginatedWebAuthnDeviceTypeList
  */
 export interface PaginatedWebAuthnDeviceTypeList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<WebAuthnDeviceType>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

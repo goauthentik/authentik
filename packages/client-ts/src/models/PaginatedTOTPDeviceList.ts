@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { TOTPDevice } from "./TOTPDevice";
 import { TOTPDeviceFromJSON, TOTPDeviceToJSON } from "./TOTPDevice";
 
 /**
- *
  * @export
  * @interface PaginatedTOTPDeviceList
  */
 export interface PaginatedTOTPDeviceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<TOTPDevice>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

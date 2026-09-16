@@ -5,6 +5,7 @@ from binascii import Error as BinasciiError
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
 from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
@@ -70,21 +71,41 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             raise ValueError("Credential must be a JSON or YAML object")
         return data
 
+    def validate_value(self, value: str) -> None:
+        """Validate a replacement before changing the stored value."""
+        if self.type == SecretType.FILE:
+            try:
+                b64decode(value, validate=True)
+            except (BinasciiError, ValueError) as exc:
+                raise ValidationError(_("Value must be base64-encoded.")) from exc
+        if self._state.adding:
+            return
+        if self.oauth2_providers.exists():
+            from authentik.providers.oauth2.utils import validate_client_secret
+
+            validate_client_secret(value)
+
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""
         if value == self.value:
             return
 
-        with transaction.atomic():
-            self.value = value
-            with audit_ignore():
-                self.save(update_fields=["value", "last_updated"])
-            event = Event.new(EventAction.SECRET_ROTATE, secret=self)
-            if request:
-                event.from_http(request)
-            else:
-                event.save()
-            secret_value_changed.send(sender=Secret, secret=self)
+        self.validate_value(value)
+        previous_value, previous_updated = self.value, self.last_updated
+        try:
+            with transaction.atomic():
+                self.value = value
+                with audit_ignore():
+                    self.save(update_fields=["value", "last_updated"])
+                event = Event.new(EventAction.SECRET_ROTATE, secret=self)
+                if request:
+                    event.from_http(request)
+                else:
+                    event.save()
+                secret_value_changed.send(sender=Secret, secret=self)
+        except Exception:
+            self.value, self.last_updated = previous_value, previous_updated
+            raise
 
     def rotate(self, request: Request | None = None) -> str:
         """Generate and store a new text value."""
