@@ -46,7 +46,7 @@
         "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.65.0"
+        "typescript-eslint": "^8.70.0"
     },
     "peerDependencies": {
         "pino": "^10.3.1",
