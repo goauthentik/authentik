@@ -129,9 +129,11 @@ export class FormFixture extends PageFixture {
         });
 
         const checkbox = control.getByRole("checkbox");
+
         if ((await checkbox.isChecked()) !== value) {
             await control.locator("label").click();
         }
+
         await expect(checkbox, `Field (${fieldName}) has the requested value`).toBeChecked({
             checked: value,
         });
