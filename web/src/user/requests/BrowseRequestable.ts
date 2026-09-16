@@ -55,6 +55,7 @@ export class BrowseRequestable extends AKElement {
             const applications = await this.#coreApi.coreApplicationsRequestableList({
                 pageSize: 100,
             });
+
             this.applications = applications.results;
         } catch (error) {
             showAPIErrorMessage(error);

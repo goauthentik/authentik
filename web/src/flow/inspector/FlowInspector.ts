@@ -74,6 +74,7 @@ export class FlowInspector extends AKElement {
         if (!stage) {
             return stage;
         }
+
         const conciseStage = { ...stage };
         conciseStage.flowSet = [];
 

@@ -57,6 +57,7 @@ export function checkObjectShallowEquality(
     if (!newDeps || !prevDeps) {
         return newDeps === prevDeps;
     }
+
     const newKeys = Object.keys(newDeps);
     const prevKeys = Object.keys(prevDeps);
 

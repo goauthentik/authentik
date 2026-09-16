@@ -48,6 +48,7 @@ export const RadioInput = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
         const messagePad = document.getElementById("message-pad");
+
         const component: AkMultiSelect | null = document.querySelector(
             'ak-multi-select[name="ak-test-multi-select"]',
         );

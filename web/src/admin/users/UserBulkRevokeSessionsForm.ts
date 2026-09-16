@@ -33,11 +33,13 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
                 const sessions = await aki(CoreApi).coreAuthenticatedSessionsList({
                     userUsername: user.username,
                 });
+
                 this.sessionCounts.set(user.pk, sessions.pagination.count);
             } catch {
                 this.sessionCounts.set(user.pk, 0);
             }
         }
+
         this.requestUpdate();
 
         return createPaginatedResponse(this.items);
@@ -92,16 +94,19 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 const response = await aki(CoreApi).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
+
                 this.revokedCount = response.deleted || 0;
             }
 
             this.onSuccess();
+
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+
             this.open = false;
         } catch (e) {
             this.onError(e as Error);

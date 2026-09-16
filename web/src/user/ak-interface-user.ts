@@ -174,6 +174,7 @@ class UserInterface extends WithLicenseSummary(
         // that is a semi-expensive request
 
         const CE = CapabilitiesEnum;
+
         const navItems: UserNavItem[] = [
             { label: msg("Applications"), link: toUserInterface("library") },
             {

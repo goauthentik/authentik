@@ -72,6 +72,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
 
                         return users.results;
@@ -118,6 +119,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                     level: MessageLevel.info,
                                     message: msg(str`Successfully imported ${res.count} devices.`),
                                 });
+
                                 const modal = this.parentElement as ModalForm;
                                 modal.open = false;
                             });

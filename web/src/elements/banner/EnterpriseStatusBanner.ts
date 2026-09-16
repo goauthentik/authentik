@@ -43,6 +43,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
             default:
                 break;
         }
+
         let message = "";
 
         switch (this.licenseSummary?.status) {

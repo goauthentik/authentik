@@ -189,6 +189,7 @@ export class InputPassword extends AKElement {
         if (!this.grabFocus) {
             return;
         }
+
         this.inputFocusIntervalID = setInterval(() => {
             const input = this.inputRef.value;
 
@@ -196,6 +197,7 @@ export class InputPassword extends AKElement {
 
             if (isActiveElement(input, document.activeElement)) {
                 console.debug("authentik/stages/password: cleared focus observer");
+
                 clearInterval(this.inputFocusIntervalID);
             }
 

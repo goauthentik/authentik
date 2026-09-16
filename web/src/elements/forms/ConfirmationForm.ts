@@ -34,6 +34,7 @@ export class ConfirmationForm extends ModalButton {
             .then(() => {
                 this.onSuccess();
                 this.open = false;
+
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,

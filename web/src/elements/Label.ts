@@ -18,9 +18,11 @@ export enum PFColor {
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
+
 export type Level = (typeof levelNames)[number];
 
 type Chrome = [Level, PFColor, string, string];
+
 const chromeList: Chrome[] = [
     ["danger", PFColor.Red, "pf-m-red", "fa-times"],
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],

@@ -36,11 +36,13 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const api = aki(OutpostsApi);
         const outposts = await api.outpostsInstancesList({});
         const outpostStats: SummarizedSyncStatus[] = [];
+
         await Promise.all(
             outposts.results.map(async (element) => {
                 const health = await api.outpostsInstancesHealthList({
                     uuid: element.pk || "",
                 });
+
                 const singleStats: SummarizedSyncStatus = {
                     unsynced: 0,
                     healthy: 0,
@@ -52,6 +54,7 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 if (health.length === 0) {
                     singleStats.unsynced += 1;
                 }
+
                 health.forEach((h) => {
                     if (h.versionOutdated) {
                         singleStats.failed += 1;
@@ -59,9 +62,11 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
                         singleStats.healthy += 1;
                     }
                 });
+
                 outpostStats.push(singleStats);
             }),
         );
+
         this.centerText = outposts.pagination.count.toString();
         outpostStats.sort((a, b) => a.label.localeCompare(b.label));
 

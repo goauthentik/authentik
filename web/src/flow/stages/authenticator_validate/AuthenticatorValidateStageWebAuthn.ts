@@ -113,6 +113,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         // byte arrays as expected by the spec.
         const credentialRequestOptions = this.deviceChallenge
             ?.challenge as PublicKeyCredentialRequestOptions;
+
         this.transformedCredentialRequestOptions =
             transformCredentialRequestOptions(credentialRequestOptions);
 

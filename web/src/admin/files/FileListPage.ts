@@ -41,6 +41,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
 
     async apiEndpoint(): Promise<PaginatedResponse<FileListItem>> {
         const api = aki(AdminApi);
+
         const items = await api.adminFileList({
             usage: UsageEnum.Media,
             manageableOnly: true,

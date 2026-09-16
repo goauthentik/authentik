@@ -19,6 +19,7 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         const binding = await aki(EndpointsApi).endpointsDeviceBindingsRetrieve({
             policyBindingUuid: pk,
         });
+
         this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
         this.defaultOrder = await this.getOrder();
 

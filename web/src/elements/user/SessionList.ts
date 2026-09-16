@@ -93,6 +93,7 @@ export class AuthenticatedSessionList extends WithLocale(Table<AuthenticatedSess
 
     row(item: AuthenticatedSession): SlottedTemplateResult[] {
         const location = this.formatLocation(item.geoIp);
+
         const device = [item.userAgent.userAgent?.family, item.userAgent.os?.family]
             .filter(Boolean)
             .join(", ");

@@ -36,6 +36,7 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         const code = this.inputHint === "code";
+
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;
         };

@@ -66,11 +66,13 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const objects = await listObjects().catch(() => {
             return emptyResponse;
         });
+
         const metrics: { [key: string]: number } = {
             healthy: 0,
             failed: 0,
             unsynced: 0,
         };
+
         await Promise.all(
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
@@ -98,6 +100,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 } catch {
                     objectKey = "unsynced";
                 }
+
                 metrics[objectKey] += 1;
             }),
         );
@@ -169,6 +172,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 msg("Kerberos Source"),
             ),
         ];
+
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
 
         return statuses;

@@ -53,6 +53,7 @@ export class LibraryPage extends AKElement {
             })
             .catch(async (error: unknown) => {
                 const parsedError = await parseAPIResponseError(error);
+
                 this.apps = {
                     loading: false,
                     error: parsedError,

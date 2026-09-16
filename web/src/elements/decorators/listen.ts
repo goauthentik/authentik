@@ -150,6 +150,7 @@ export function listen<K extends keyof WindowEventMap>(
     EventConstructor: EventConstructor<K>,
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
+
 /**
  * Adds an event listener to the `window` object that is automatically
  * removed when the element is disconnected.
@@ -162,6 +163,7 @@ export function listen<K extends keyof WindowEventMap>(
     type: K,
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
+
 /**
  * Adds an event listener to the `window` object that is automatically
  * removed when the element is disconnected.

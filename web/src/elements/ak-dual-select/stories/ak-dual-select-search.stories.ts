@@ -46,6 +46,7 @@ const displayMessage = (result: any) => {
 
 const displayMessage2 = (result: string) => {
     console.debug("Huh.");
+
     const doc = new DOMParser().parseFromString(`<p><i>Behavior</i>: ${result}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad-2");
     target!.replaceChildren(doc.firstChild!);

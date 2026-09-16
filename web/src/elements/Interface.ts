@@ -61,6 +61,7 @@ export abstract class Interface extends AKElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+
         requestAnimationFrame(() => {
             this.commandPalette.modal.setCommands(
                 createCommonCommands().map((command) => ({
@@ -91,6 +92,7 @@ export abstract class Interface extends AKElement {
             this.#registryKeys.set(controller, registryKey);
             ContextControllerRegistry.set(registryKey, controller);
         }
+
         super.addController(controller);
     }
 

@@ -75,6 +75,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                         composed: true,
                     }),
                 );
+
                 this.open = false;
             })
             .catch((parsedError: unknown) => {

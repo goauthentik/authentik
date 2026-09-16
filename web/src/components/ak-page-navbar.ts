@@ -111,6 +111,7 @@ export class AKPageNavbar
         if (header) {
             title = `${header} - ${title}`;
         }
+
         document.title = title;
     }
 

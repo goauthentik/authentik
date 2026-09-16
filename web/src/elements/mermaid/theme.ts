@@ -71,9 +71,11 @@ export class MermaidThemeAdapter {
         const surfaceDark = readSurface("--pf-global--palette--black-200", surfaceAlt);
 
         const textBase = read("--pf-global--palette--purple-700");
+
         const textSecondary = read(
             darkMode ? "--pf-global--palette--gold-100" : "--pf-global--palette--gold-400",
         );
+
         const border = read(
             darkMode ? "--pf-global--palette--purple-300" : "--pf-global--palette--purple-700",
         );

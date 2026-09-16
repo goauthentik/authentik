@@ -59,6 +59,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const sources = await aki(SourcesApi).sourcesOauthList(args);
 
                     return sources.results;
@@ -148,6 +149,7 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             if (!provider) {
                                 provider = {};
                             }
+
                             provider.authMode = ev.detail.value;
                             update();
                         }}

@@ -42,6 +42,7 @@ export function findOptionsSubset(
     }
 
     const compValue = caseSensitive ? value : value.toLowerCase();
+
     const compOption = (option: SelectOption) => {
         const extractedOption = (option[1] ?? "").substring(0, fragLength);
 

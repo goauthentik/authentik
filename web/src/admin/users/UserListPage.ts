@@ -287,6 +287,7 @@ export class UserListPage extends WithLicenseSummary(
                         this.filterStatus = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             filterStatus: this.filterStatus,
                         });

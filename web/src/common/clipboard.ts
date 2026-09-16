@@ -55,6 +55,7 @@ export function writeToClipboard(
 
         return Promise.resolve(false);
     }
+
     const messageKey = `clipboard-success-${entityLabel ?? "generic"}`;
 
     // Wrap with promise to simplify fallback behavior.
@@ -104,6 +105,7 @@ export function writeToClipboard(
         })
         .catch((error) => {
             console.error("Failed to write to clipboard:", error);
+
             const fallbackDescription = msg(
                 "Clipboard not available. Please copy the value manually.",
                 {

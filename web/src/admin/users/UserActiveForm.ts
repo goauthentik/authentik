@@ -31,6 +31,7 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
         if (!this.instance) {
             return Promise.reject(new Error("No user instance provided"));
         }
+
         const nextActiveState = !this.instance.isActive;
 
         return this.coreAPI.coreUsersPartialUpdate({
@@ -101,6 +102,7 @@ export function ToggleUserActivationButton(
     { className = "" }: ToggleUserActivationButtonProps = {},
 ): SlottedTemplateResult {
     const label = user.isActive ? msg("Deactivate") : msg("Activate");
+
     const tooltip = user.isActive
         ? msg("Lock the user out of this system")
         : msg("Allow the user to log in and use this system");

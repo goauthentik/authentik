@@ -48,7 +48,9 @@ const StatusMap = {
     [TaskStatus.ERROR]: ERROR_CLASS,
 } as const satisfies Record<TaskStatus, string>;
 
-const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
+const SPINNER_TIMEOUT = 1000 * 1.5;
+
+// milliseconds
 
 /**
  * BaseTaskButton
@@ -104,6 +106,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
             result,
         });
+
         this.onComplete();
     }
 
@@ -111,6 +114,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
+
         this.onComplete();
     }
 

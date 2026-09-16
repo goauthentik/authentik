@@ -29,6 +29,7 @@ export function binEvents(points: EventPoint[], zoom: number): Map<string, CellB
             bin = { counts: new Map(), total: 0 };
             bins.set(cell, bin);
         }
+
         bin.counts.set(action, (bin.counts.get(action) ?? 0) + 1);
         bin.total += 1;
     }
@@ -69,7 +70,9 @@ export interface EventFeatureProperties {
     height: number;
 }
 
-type Position = [number, number]; // [lng, lat]
+type Position = [number, number];
+
+// [lng, lat]
 
 export interface EventFeature {
     type: "Feature";
@@ -144,6 +147,7 @@ function wedgeRing(
 ): Position[][] {
     const sweep = clockwiseDelta(startBearing, endBearing);
     const points: Position[] = [perimeterPoint(verts, startBearing)];
+
     const between = verts
         .map((v) => ({ v, delta: clockwiseDelta(startBearing, bearingOf(v[0], v[1])) }))
         .filter(({ delta }) => delta > 1e-9 && delta < sweep - 1e-9)
@@ -151,10 +155,12 @@ function wedgeRing(
 
     for (const { v } of between) points.push(v);
     points.push(perimeterPoint(verts, endBearing % TAU));
+
     const ring: Position[] = [
         fromLocal(centerLat, centerLng, 0, 0),
         ...points.map(([x, y]) => fromLocal(centerLat, centerLng, x, y)),
     ];
+
     ring.push(ring[0]!);
 
     return [ring];
@@ -184,11 +190,13 @@ export function buildEventFeatures(points: EventPoint[], zoom: number): EventFea
 
         if (actions.length === 1) {
             const [action, count] = actions[0]!;
+
             features.push({
                 type: "Feature",
                 geometry: { type: "Polygon", coordinates: wholeHexRing(boundary) },
                 properties: { cell, action, count, total: bin.total, height },
             });
+
             continue;
         }
 
@@ -199,6 +207,7 @@ export function buildEventFeatures(points: EventPoint[], zoom: number): EventFea
 
         for (const [action, count] of actions) {
             const sweep = (count / bin.total) * TAU;
+
             features.push({
                 type: "Feature",
                 geometry: {
@@ -207,6 +216,7 @@ export function buildEventFeatures(points: EventPoint[], zoom: number): EventFea
                 },
                 properties: { cell, action, count, total: bin.total, height },
             });
+
             cursor += sweep;
         }
     }

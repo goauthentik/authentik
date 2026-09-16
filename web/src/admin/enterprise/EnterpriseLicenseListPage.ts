@@ -77,9 +77,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await aki(EnterpriseApi).enterpriseLicenseForecastRetrieve();
+
         this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
             cached: false,
         });
+
         this.installID = (await aki(EnterpriseApi).enterpriseLicenseInstallIdRetrieve()).installId;
 
         return aki(EnterpriseApi).enterpriseLicenseList(await this.defaultEndpointConfig());

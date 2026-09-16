@@ -76,10 +76,13 @@ export function createColorSchemeTarget(colorScheme: ResolvedCSSColorSchemeValue
  * @category CSS
  */
 export function formatColorScheme(theme: ResolvedUITheme): ResolvedCSSColorSchemeValue;
+
 export function formatColorScheme(
     colorScheme: ResolvedCSSColorSchemeValue,
 ): ResolvedCSSColorSchemeValue;
+
 export function formatColorScheme(hint?: string): CSSColorSchemeValue;
+
 export function formatColorScheme(hint?: string): CSSColorSchemeValue {
     if (!hint) return "auto";
 

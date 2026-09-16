@@ -119,6 +119,7 @@ export class RoleListPage extends TablePage<Role> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             hideManaged: this.hideManaged,
                         });
@@ -131,6 +132,7 @@ export class RoleListPage extends TablePage<Role> {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,

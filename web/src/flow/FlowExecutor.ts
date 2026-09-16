@@ -302,6 +302,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
                     return true;
                 }
+
                 this.challenge = challenge;
 
                 return !this.challenge.responseErrors;

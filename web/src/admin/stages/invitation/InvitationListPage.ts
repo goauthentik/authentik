@@ -56,8 +56,10 @@ export class InvitationListPage extends TablePage<Invitation> {
             const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
+
             this.invitationStageExists = stages.pagination.count > 0;
             this.expandable = this.invitationStageExists;
+
             stages.results.forEach((stage) => {
                 const enrollmentFlows = (stage.flowSet || []).filter(
                     (flow) => flow.designation === FlowDesignationEnum.Enrollment,

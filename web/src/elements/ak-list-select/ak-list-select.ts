@@ -216,6 +216,7 @@ export class ListSelect extends AKElement implements IListSelect {
         const index = this.displayedElements.findIndex((element) => {
             return element.getAttribute("value") === this.value;
         });
+
         const elementCount = this.displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
@@ -234,11 +235,13 @@ export class ListSelect extends AKElement implements IListSelect {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
         });
+
         const currentElement = this.currentElement;
 
         if (!currentElement) {
             return;
         }
+
         currentElement.classList.add("ak-highlight-item");
 
         // A disabled row can be focused so its description is reachable, but it cannot be
@@ -246,6 +249,7 @@ export class ListSelect extends AKElement implements IListSelect {
         if (currentElement.getAttribute("aria-disabled") === "true") {
             return;
         }
+
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");

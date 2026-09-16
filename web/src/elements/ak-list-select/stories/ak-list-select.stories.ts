@@ -56,8 +56,10 @@ const container = (testItem: TemplateResult) => {
         if (!menu) {
             throw new Error("Test was not initialized correctly.");
         }
+
         menu.addEventListener("focusin", () => sendMessage("Element received focus"));
         menu.addEventListener("blur", () => sendMessage("Element lost focus"));
+
         menu.addEventListener("change", (event: Event) =>
             sendMessage(`Value changed to: ${(event.target as HTMLInputElement)?.value}`),
         );

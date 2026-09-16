@@ -8,6 +8,7 @@ export type DescriptionPair = [
     term: SlottedTemplateResult,
     desc: SlottedTemplateResult | undefined,
 ];
+
 export type DescriptionRecord = { term: string; desc: SlottedTemplateResult | undefined };
 
 interface DescriptionConfig {
@@ -82,6 +83,7 @@ export function renderDescriptionList(
     config: DescriptionConfig = defaultConfig,
 ) {
     const checkedTerms = alignTermType(terms);
+
     const classes = classMap({
         "pf-m-horizontal": config.horizontal ?? false,
         "pf-m-compact": config.compact ?? false,

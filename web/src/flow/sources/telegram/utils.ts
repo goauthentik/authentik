@@ -23,16 +23,21 @@ export function loadTelegramWidget(
     if (requestMessageAccess) {
         widgetScript.setAttribute("data-request-access", "write");
     }
+
     const callbackName =
         "__ak_telegram_login_callback_" + (Math.random() + 1).toString(36).substring(7);
+
     (window as unknown as Record<string, (user: TelegramUserResponse) => void>)[callbackName] =
         callback;
+
     widgetScript.setAttribute("data-onauth", callbackName + "(user)");
     targetElement?.appendChild(widgetScript);
+
     widgetScript.onload = () => {
         if (widgetScript.previousSibling) {
             targetElement?.appendChild(widgetScript.previousSibling);
         }
     };
+
     document.body.append(widgetScript);
 }

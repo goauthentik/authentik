@@ -54,6 +54,7 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
 
                         return users.results;

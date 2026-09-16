@@ -68,8 +68,10 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
             if (!file) {
                 throw new PreventFormSubmit("No form data");
             }
+
             data.file = file;
         }
+
         const result = await aki(ManagedApi).managedBlueprintsImportCreate(data);
 
         if (!result.success) {

@@ -23,6 +23,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         const stage = await aki(StagesApi).stagesEmailRetrieve({
             stageUuid: pk,
         });
+
         this.showConnectionSettings = !stage.useGlobalSettings;
 
         return stage;

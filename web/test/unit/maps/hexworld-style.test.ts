@@ -75,8 +75,10 @@ test("airgap: default style references no absolute URLs", () => {
 
 test("dark theme swaps palette", () => {
     const dark = buildHexworldStyle({ archiveURL: "/x.pmtiles", theme: "dark" });
+
     const bg = (spec: typeof style) =>
         paintOf(layerById(spec, "hexworld-background"))["background-color"];
+
     expect(bg(dark)).not.toBe(bg(style));
 });
 
@@ -106,6 +108,7 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
     for (let i = 3; i < expr.length; i += 2) {
         stops.push([expr[i] as number, expr[i + 1] as ExpressionSpecification]);
     }
+
     const valueFor = (match: ExpressionSpecification, res: number): unknown => {
         // ["match", ["get","res"], r1, v1, r2, v2, ..., fallback]
         for (let i = 2; i < match.length - 1; i += 2) {
@@ -114,11 +117,13 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
 
         return match[match.length - 1];
     };
+
     const atZoom = (z: number) =>
         required(
             stops.find(([stop]) => stop === z),
             `stop at z${z}`,
         )[1];
+
     // z3: res-3 grid still fully present, res-4 not yet visible.
     expect(valueFor(atZoom(3), 3)).toBe(0.95);
     expect(valueFor(atZoom(3), 4)).toBe(0);
@@ -137,8 +142,10 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
 
 test("hex and border layers use the band fade", () => {
     const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
+
     const opacity = (id: string, property: string) =>
         (paintOf(layerById(faded, id))[property] as unknown[])[0];
+
     expect(opacity("hexworld-hex", "fill-opacity")).toBe("interpolate");
     expect(opacity("hexworld-hex-outline", "line-opacity")).toBe("interpolate");
     expect(opacity("hexworld-borders", "line-opacity")).toBe("interpolate");

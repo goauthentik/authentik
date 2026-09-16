@@ -32,6 +32,7 @@ export function propertyMappingsSelector(object: string, instanceMappings?: stri
 
     return async () => {
         const pm = aki(PropertymappingsApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsSourceKerberosRetrieve({ pmUuid: instanceId }),

@@ -56,6 +56,7 @@ export function CustomEmitterElement<
 }
 
 type CustomEventListener<D = unknown> = (ev: CustomEvent<D>) => void;
+
 type EventMap<D = unknown> = WeakMap<CustomEventListener<D>, CustomEventListener<D>>;
 
 export interface CustomEventTarget<EventType extends string = string> {

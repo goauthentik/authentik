@@ -98,6 +98,7 @@ export class ProxyProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -147,6 +148,7 @@ export class ProxyProviderViewPage extends AKElement {
                 md: MDCaddyStandalone,
             },
         ];
+
         const replacers: Replacer[] = [
             (input: string): string => {
                 // The generated config is pretty unreliable currently so
@@ -158,6 +160,7 @@ export class ProxyProviderViewPage extends AKElement {
                 if (!this.provider) {
                     return input;
                 }
+
                 const extHost = new URL(this.provider.externalHost);
 
                 // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx

@@ -49,8 +49,10 @@ export class ConfigModal extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         this.addEventListener("ak-modal-show", () => {
             if (!this.request) return;
+
             aki(EndpointsApi)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {

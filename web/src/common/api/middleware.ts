@@ -30,6 +30,7 @@ export class LoggingMiddleware implements Middleware {
             brand.matchedDomain && brand.matchedDomain !== "authentik-default"
                 ? `api/${brand.matchedDomain}`
                 : "api";
+
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
@@ -103,6 +104,7 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();

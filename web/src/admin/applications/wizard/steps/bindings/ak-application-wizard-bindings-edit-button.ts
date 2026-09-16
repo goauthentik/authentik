@@ -17,6 +17,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
     @bound
     onClick(ev: Event) {
         ev.stopPropagation();
+
         this.dispatchEvent(
             new CustomEvent<number>("click-edit", {
                 bubbles: true,

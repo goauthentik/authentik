@@ -40,6 +40,7 @@ interface ProviderBase {
 }
 
 const api = () => aki(ProvidersApi);
+
 const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
@@ -119,6 +120,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         const o = await aki(OutpostsApi).outpostsInstancesRetrieve({
             uuid: pk,
         });
+
         this.type = o.type || OutpostTypeEnum.Proxy;
         this.providers = providerProvider(o.type);
 
@@ -210,6 +212,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const items =
                             await aki(OutpostsApi).outpostsServiceConnectionsAllList(args);
 

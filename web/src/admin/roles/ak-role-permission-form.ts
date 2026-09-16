@@ -47,12 +47,14 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         if (!this.roleUUID) {
             return;
         }
+
         await aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUUID,
             permissionAssignRequest: {
                 permissions: data.permissions,
             },
         });
+
         this.permissionsToAdd = [];
     }
 

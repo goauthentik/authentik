@@ -57,6 +57,7 @@ const container = (testItem: TemplateResult) =>
     </div>`;
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
+
 const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => [
     name,
     calories,
@@ -86,9 +87,11 @@ export class SimpleTableSortTest extends LitElement {
 
     get content() {
         const content = [...nutritionDbUSDA];
+
         const comparison = this.sortDown
             ? (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? -1 : 1)
             : (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? 1 : -1);
+
         content.sort(comparison);
 
         return content.map(({ name, calories, sugar, fiber, protein }) => [
@@ -107,6 +110,7 @@ export class SimpleTableSortTest extends LitElement {
 
                 return;
             }
+
             this.order = event.value;
         };
 

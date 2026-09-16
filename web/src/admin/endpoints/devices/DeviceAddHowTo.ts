@@ -17,6 +17,7 @@ export class DeviceAddHowTo extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         this.addEventListener("ak-modal-show", () => {
             aki(EndpointsApi)
                 .endpointsConnectorsList()

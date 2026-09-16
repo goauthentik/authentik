@@ -149,6 +149,7 @@ export class WizardStepsManager extends AKElement {
 
         if (details.disabled) {
             const disabled = asArr(details.disabled);
+
             this.slotMap.forEach((slot) => {
                 slot.enabled = !disabled.includes(slot.slot);
             });
@@ -156,6 +157,7 @@ export class WizardStepsManager extends AKElement {
 
         if (details.hidden) {
             const hidden = asArr(details.hidden);
+
             this.slotMap.forEach((slot) => {
                 slot.hide = hidden.includes(slot.slot);
             });

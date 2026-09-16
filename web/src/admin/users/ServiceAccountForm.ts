@@ -26,7 +26,9 @@ import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360;
+
+// 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
@@ -62,6 +64,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         const result = await aki(CoreApi).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
+
         this.result = result;
 
         if (this.parentElement instanceof ModalForm) {

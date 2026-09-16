@@ -107,9 +107,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(FlowsApi).flowsBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
 
         if (orders.length < 1) {
@@ -146,6 +148,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const stages = await aki(StagesApi).stagesAllList(args);
                         const selectedStage = this.instance?.stageObj;
 

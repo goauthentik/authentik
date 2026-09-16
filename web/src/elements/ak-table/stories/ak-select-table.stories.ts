@@ -54,6 +54,7 @@ const container = (testItem: TemplateResult) =>
     </div>`;
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
+
 const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => ({
     key: kebabCase(name),
     content: [name, calories, protein, fiber, sugar].map((a) => html`${a}`),
@@ -99,6 +100,7 @@ export class SimpleTableSortTest extends LitElement {
         const comparison = this.sortDown
             ? (a: Ord, b: Ord) => (a[this.order] > b[this.order] ? -1 : 1)
             : (a: Ord, b: Ord) => (a[this.order] > b[this.order] ? 1 : -1);
+
         content.sort(comparison);
 
         // Return the content, processed to comply with the format expected by a selectable table.
@@ -115,6 +117,7 @@ export class SimpleTableSortTest extends LitElement {
 
                 return;
             }
+
             this.order = event.value;
         };
 

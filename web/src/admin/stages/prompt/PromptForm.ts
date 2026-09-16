@@ -76,6 +76,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         const prompt = await aki(StagesApi).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
+
         await this.refreshPreview(prompt);
 
         return prompt;
@@ -117,6 +118,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
         const minUpdateDelay = 1000;
+
         this._timer = setInterval(() => {
             if (this._shouldRefresh) {
                 this.refreshPreview();
@@ -155,6 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.AlertDanger, msg("Alert (Danger): Static alert box with danger styling")],
             [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
         ];
+
         const currentType = this.instance?.type;
 
         return html` ${map(

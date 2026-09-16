@@ -200,6 +200,7 @@ export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleS
 
         if (!isStyleRoot(childElement.renderRoot)) {
             currentNode = treewalker.nextNode();
+
             continue;
         }
 
@@ -210,6 +211,7 @@ export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleS
             element: childElement,
             styles: childStyles,
         });
+
         currentNode = treewalker.nextNode();
     }
 

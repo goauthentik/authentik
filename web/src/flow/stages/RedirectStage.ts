@@ -66,6 +66,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
             return;
         }
+
         this.redirect();
     }
 

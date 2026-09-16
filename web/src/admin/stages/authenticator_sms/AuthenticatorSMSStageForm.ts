@@ -241,6 +241,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 if (query) {
                                     args.search = query;
                                 }
+
                                 const items =
                                     await aki(PropertymappingsApi).propertymappingsNotificationList(
                                         args,
@@ -286,6 +287,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

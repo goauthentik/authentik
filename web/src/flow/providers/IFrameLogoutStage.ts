@@ -57,9 +57,11 @@ export class IFrameLogoutStage extends BaseStage<
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
+
         this.#iframeTimeouts.forEach((id) => {
             clearTimeout(id);
         });
+
         clearTimeout(this.#moveOnTimeout);
     }
 
@@ -148,7 +150,9 @@ export class IFrameLogoutStage extends BaseStage<
         const timeoutId = setTimeout(() => {
             this.handleLogoutComplete(index, false);
             iframe.remove();
-        }, 5000); // 5 second timeout
+        }, 5000);
+
+        // 5 second timeout
         this.#iframeTimeouts.set(index, timeoutId);
 
         // Try to detect when iframe loads (may not work for cross-origin)
@@ -159,6 +163,7 @@ export class IFrameLogoutStage extends BaseStage<
                 clearTimeout(timeout);
                 this.#iframeTimeouts.delete(index);
             }
+
             this.handleLogoutComplete(index, true);
             iframe.remove();
         });
@@ -213,10 +218,12 @@ export class IFrameLogoutStage extends BaseStage<
     protected handleLogoutComplete(index: number, success: boolean): void {
         // Update status
         const statuses = [...this.logoutStatuses];
+
         statuses[index] = {
             ...statuses[index],
             status: success ? LogoutStatusStatus.Success : LogoutStatusStatus.Error,
         };
+
         this.logoutStatuses = statuses;
 
         // Increment completed count

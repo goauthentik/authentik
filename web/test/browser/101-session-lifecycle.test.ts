@@ -31,6 +31,7 @@ test.describe("Session Lifecycle", () => {
                 session.$rememberMeCheckbox,
                 "Remember me checkbox is visible",
             ).toBeVisible();
+
             await expect(
                 session.$rememberMeCheckbox,
                 "Remember me checkbox is not checked by default",

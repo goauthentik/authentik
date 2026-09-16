@@ -122,6 +122,7 @@ export function mapElementProps(
             const prefix = resolvePrefix(propDeclaration);
             const name = resolvePropertyName(propDeclaration, prefix, propName);
             filteredProps[`${prefix}${name}`] = propValue;
+
             continue;
         }
 

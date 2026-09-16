@@ -32,6 +32,7 @@ export function ModalInvokerButton<T extends ModalTemplate | NamedEntityElementC
     const { kind = "primary" } = buttonProps ?? {};
 
     const { verboseName, createLabel = msg("New") } = factory as NamedEntityElementConstructor;
+
     const label = verboseName
         ? msg(str`${createLabel} ${verboseName}`, {
               id: "invoker.label.modifier-noun",

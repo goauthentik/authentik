@@ -22,6 +22,7 @@ import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
 
 export type RawContent = string | number | TemplateResult;
+
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
 
 export interface ISimpleTable {
@@ -200,6 +201,7 @@ export class SimpleTable
         const columnCount = this.columns.length || 1;
 
         const verboseNamePlural = this.constructor.verboseNamePlural || msg("Objects");
+
         const message = msg(
             str`No ${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)} found.`,
             {

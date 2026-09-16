@@ -50,8 +50,10 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         if (outposts.results.length < 1) {
             return;
         }
+
         const outpost = outposts.results[0];
         outpost.config.authentik_host = window.location.origin;
+
         await aki(OutpostsApi).outpostsInstancesUpdate({
             uuid: outpost.pk,
             outpostRequest: outpost,
@@ -77,6 +79,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
                 message: html`${msg("HTTPS is not detected correctly")}`,
             });
         }
+
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
 
         if (timeDiff > 5000 || timeDiff < -5000) {
@@ -87,6 +90,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
                 message: html`${msg("Server and client are further than 5 seconds apart.")}`,
             });
         }
+
         this.statusSummary = msg("OK");
 
         return Promise.resolve<AdminStatus>({

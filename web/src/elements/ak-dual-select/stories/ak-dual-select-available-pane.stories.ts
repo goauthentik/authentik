@@ -58,6 +58,7 @@ const container = (testItem: TemplateResult) =>
 const handleMoveChanged = (result: any) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
+
     result.detail.forEach((key: string) => {
         target!.append(new DOMParser().parseFromString(`<li>${key}</li>`, "text/xml").firstChild!);
     });

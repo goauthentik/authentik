@@ -22,6 +22,7 @@ async function fetchObjects(query?: string): Promise<DeviceAccessGroup[]> {
     if (query !== undefined) {
         args.search = query;
     }
+
     const groups = await aki(EndpointsApi).endpointsDeviceAccessGroupsList(args);
 
     return groups.results;
@@ -69,6 +70,7 @@ export class EndpointsDeviceAccessGroupSearch extends CustomListenerElement(AKEl
         if (!horizontalContainer) {
             throw new Error("This search can only be used in a named ak-form-element-horizontal");
         }
+
         const name = horizontalContainer.getAttribute("name");
         const myName = this.getAttribute("name");
 

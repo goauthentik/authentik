@@ -122,6 +122,7 @@ export class AgentConnectorSetup extends AKElement {
                             if (query !== undefined) {
                                 args.search = query;
                             }
+
                             const token =
                                 await aki(EndpointsApi).endpointsAgentsEnrollmentTokensList(args);
 

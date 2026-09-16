@@ -104,6 +104,7 @@ export abstract class ModalButton extends AKElement {
     #closeListener = () => {
         const evt = new ModalHideEvent(this);
         this.dispatchEvent(evt);
+
         this.querySelectorAll<AKElement>("*").forEach((child) => {
             child.dispatchEvent(evt);
         });

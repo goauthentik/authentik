@@ -67,6 +67,7 @@ const meta: Meta<ProgressProps> = {
 };
 
 export default meta;
+
 type Story = StoryObj<Progress>;
 
 // Basic progress bar
@@ -254,6 +255,7 @@ export const AnimatedProgress: Story = {
     },
     render: () => {
         let progress = 0;
+
         const updateProgress = () => {
             const progressBar = document.querySelector("#animated-progress") as Progress;
 

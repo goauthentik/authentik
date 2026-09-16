@@ -66,6 +66,7 @@ export class SystemTasksPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-automation",
             header: msg("System Tasks"),

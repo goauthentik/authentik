@@ -366,6 +366,7 @@ export class OutpostViewPage extends AKElement {
         </main>`;
     }
 }
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-outpost-view": OutpostViewPage;

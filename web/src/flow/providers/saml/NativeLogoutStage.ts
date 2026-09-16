@@ -55,6 +55,7 @@ export class NativeLogoutStage extends BaseStage<
             if (!this.challenge.redirectUrl) {
                 throw new TypeError(`Binding challenge does not a have a redirect URL`);
             }
+
             requestAnimationFrame(() => {
                 if (!this.challenge?.redirectUrl) return;
 

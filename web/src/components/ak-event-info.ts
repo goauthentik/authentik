@@ -266,6 +266,7 @@ export class EventInfo extends AKElement {
                 clear?: boolean;
             };
         };
+
         let diffBody: SlottedTemplateResult = nothing;
 
         if (diff) {
@@ -282,10 +283,12 @@ export class EventInfo extends AKElement {
                         <tbody role="rowgroup">
                             ${Object.keys(diff).map((key) => {
                                 const value = diff[key];
+
                                 const previousCol =
                                     value.previous_value !== null
                                         ? JSON.stringify(value.previous_value, null, 4)
                                         : msg("-");
+
                                 let newCol: SlottedTemplateResult = nothing;
 
                                 if (value.add || value.remove) {

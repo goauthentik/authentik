@@ -45,6 +45,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
         throw new FocusAssertionError("Skipping focus, target has no focus method", { target });
     }
 }
+
 /**
  * Recursively check if the target element or any of its children are active (i.e. "focused").
  *

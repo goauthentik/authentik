@@ -142,6 +142,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
 
     protected override renderControl() {
         const code = this.inputHint === "code";
+
         const setValue: InputListener = (ev) => {
             this.value = (ev.target as T).value;
         };

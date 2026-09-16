@@ -22,6 +22,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         const provider = await aki(ProvidersApi).providersProxyRetrieve({
             id: pk,
         });
+
         this.showHttpBasic = provider.basicAuthEnabled ?? true;
         this.mode = provider.mode ?? ProxyMode.Proxy;
 

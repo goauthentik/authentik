@@ -30,6 +30,7 @@ export function stagesSelector(instanceStages: string[] | undefined) {
 
     return async () => {
         const stagesApi = aki(StagesApi);
+
         const stages = await Promise.allSettled(
             instanceStages.map((instanceId) =>
                 stagesApi.stagesAllRetrieve({ stageUuid: instanceId }),

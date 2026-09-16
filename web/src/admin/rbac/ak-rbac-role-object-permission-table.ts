@@ -46,20 +46,25 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         if (!this.objectPk || !this.model) {
             return createPaginatedResponse([]);
         }
+
         const perms = await aki(RbacApi).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             model: this.model,
             objectPk: this.objectPk.toString(),
         });
+
         const [appLabel, modelName] = this.model.split(".");
+
         const modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
         });
+
         modelPermissions.results = modelPermissions.results.filter((value) => {
             return value.codename !== `add_${modelName}`;
         });
+
         this.modelPermissions = modelPermissions;
         this.requestUpdate("columns");
 
@@ -116,10 +121,12 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         const baseRow = [
             html` <a href=${toAdminInterface(`identity/roles/${item.rolePk}`)}>${item.name}</a>`,
         ];
+
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,
             );
+
             const assignedToObject = item.objectPermissions
                 .filter((uPerm) => uPerm.objectPk === this.objectPk)
                 .some((uPerm) => uPerm.codename === perm.codename);
@@ -133,6 +140,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             } else if (assignedToObject) {
                 tooltip = msg("Object permission");
             }
+
             baseRow.push(
                 html`${
                     tooltip

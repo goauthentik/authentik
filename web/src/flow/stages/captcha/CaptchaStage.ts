@@ -241,6 +241,7 @@ export class CaptchaStage
 
     public connectedCallback(): void {
         super.connectedCallback();
+
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
@@ -325,13 +326,16 @@ export class CaptchaStage
 
         // Then, load the new script...
         const scriptElement = document.createElement("script");
+
         const matchedController = Array.from(CaptchaStage.controllers).find((Controller) =>
             Controller.matchesURL(challengeURL),
         );
 
         scriptElement.src = challengeURL.toString();
+
         scriptElement.type =
             matchedController?.scriptType === "module" ? "module" : "text/javascript";
+
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
@@ -558,6 +562,7 @@ export class CaptchaStage
         }
 
         const captchaElement = controller.interactive();
+
         const template = iframeTemplate(captchaElement, {
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,

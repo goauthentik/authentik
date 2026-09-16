@@ -132,6 +132,7 @@ export class AKElement extends LitElement implements AKElementProps {
                 for (const element of unregisteredElements) {
                     console.debug("Unregistered custom element found in the DOM", element);
                 }
+
                 throw new TypeError(
                     `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
                 );
@@ -151,6 +152,7 @@ export class AKElement extends LitElement implements AKElementProps {
 
             const hint =
                 this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme;
+
             const preferredColorScheme = resolveUITheme(hint);
 
             this.activeTheme = preferredColorScheme;
@@ -275,6 +277,7 @@ export class AKElement extends LitElement implements AKElementProps {
                 if (node instanceof Element && node.hasAttribute("slot")) {
                     return null;
                 }
+
                 node = node.parentNode;
             }
 

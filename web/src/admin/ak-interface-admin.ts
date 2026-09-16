@@ -275,6 +275,7 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
+
         const drawerClasses = {
             "pf-m-expanded": openDrawerCount !== 0,
             "pf-m-collapsed": openDrawerCount === 0,

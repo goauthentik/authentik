@@ -74,11 +74,13 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
                 type="button"
                 @click=${() => {
                     this.selectedOption = opt;
+
                     this.dispatchEvent(
                         new CustomEvent("change", {
                             detail: opt,
                         }),
                     );
+
                     this.open = false;
                 }}
             >

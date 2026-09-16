@@ -95,6 +95,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         if (!horizontalContainer) {
             throw new Error("This search can only be used in a named ak-form-element-horizontal");
         }
+
         const name = horizontalContainer.getAttribute("name");
         const myName = this.getAttribute("name");
 
@@ -180,10 +181,12 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         // page, the unrestricted one may be truncated, but sorting it by usability still gives a
         // sensible menu.
         const all = allResult.status === "fulfilled" ? allResult.value.results : [];
+
         const usable =
             usableResult.status === "fulfilled"
                 ? usableResult.value.results
                 : all.filter((item) => this.#unusableReason(item) === null);
+
         const unusable = all.filter((item) => this.#unusableReason(item) !== null);
 
         return [...usable, ...unusable];

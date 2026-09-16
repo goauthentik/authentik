@@ -84,6 +84,7 @@ export class AdminSettingsPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "fa fa-cog",
             header: msg("System settings"),

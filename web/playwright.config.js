@@ -69,6 +69,7 @@ export default defineConfig({
                         logger = ConsoleLogger.child({
                             name: `Playwright ${name.toUpperCase()}`,
                         });
+
                         LoggerCache.set(name, logger);
                     }
 

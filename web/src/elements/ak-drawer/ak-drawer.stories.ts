@@ -90,6 +90,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
+
 type Story = StoryObj;
 
 const Template: Story = {

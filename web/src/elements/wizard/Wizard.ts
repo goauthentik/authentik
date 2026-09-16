@@ -235,6 +235,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         if (applyStepPresent) {
             nextSteps.push(ApplyActionsSlot);
         }
+
         this.#steps = nextSteps;
     }
 
@@ -554,6 +555,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
             [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
             () => {
                 const customLabel = this.activeStepElement?.formatNextLabel();
+
                 const nextLabel =
                     customLabel ??
                     (lastPage && activeStepIndex > 0

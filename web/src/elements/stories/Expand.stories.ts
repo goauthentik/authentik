@@ -80,6 +80,7 @@ export const DefaultStory: StoryObj = {
             </ak-expand>`,
         ),
 };
+
 export const Expanded = {
     ...DefaultStory,
     args: {

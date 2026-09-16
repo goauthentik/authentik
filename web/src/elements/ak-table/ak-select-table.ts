@@ -153,6 +153,7 @@ export class SelectTable extends SimpleTable {
         } else {
             this.selected = this.selected.includes(value) ? [] : [value];
         }
+
         this.dispatchEvent(new Event("change"));
     }
 
@@ -178,6 +179,7 @@ export class SelectTable extends SimpleTable {
         if (key === undefined) {
             return html`<td class="pf-c-table__check"></td>`;
         }
+
         // The double `checked` there is not a typo. The first one ensures the input's DOM object
         // receives the state; the second ensures the input tag on the page reflects the state
         // accurately. See https://github.com/lit/lit-element/issues/601
@@ -215,6 +217,7 @@ export class SelectTable extends SimpleTable {
         const onInput = (ev: InputEvent) => {
             const selected = [...this.selected];
             const values = this.valuesOnPage;
+
             // The behavior preserves the `selected` elements that are not currently visible; its
             // purpose is to preserve the complete value list locally in case clients want to
             // implement pagination.  To clear the entire list, call `clear()` on the component.

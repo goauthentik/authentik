@@ -40,6 +40,7 @@ export class EndpointAgentStage extends BaseStage<
         if (this.#timeout !== null) {
             clearTimeout(this.#timeout);
         }
+
         this.host?.submit(
             {
                 response: ev.data?.response,
@@ -67,10 +68,12 @@ export class EndpointAgentStage extends BaseStage<
             if (this.challenge.responseErrors) {
                 return;
             }
+
             window.postMessage({
                 _ak_ext: "authentik-platform-sso",
                 challenge: this.challenge.challenge,
             });
+
             const delaySeconds = this.challenge?.challengeIdleTimeout ?? 3;
 
             // Fallback in case we don't get a response

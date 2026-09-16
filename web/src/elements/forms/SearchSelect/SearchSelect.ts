@@ -333,6 +333,7 @@ export abstract class SearchSelectBase<T>
                 this.selectedObject = { name: value } as T;
             }
         }
+
         this.dispatchChangeEvent(this.selectedObject);
     };
 
@@ -347,6 +348,7 @@ export abstract class SearchSelectBase<T>
 
             return;
         }
+
         const selected =
             this.objects?.find((obj) => {
                 // TODO: Despite the return of `value()` being a string,
@@ -369,6 +371,7 @@ export abstract class SearchSelectBase<T>
 
                 return;
             }
+
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
 
@@ -438,6 +441,7 @@ export abstract class SearchSelectBase<T>
         const options = this.getGroupedItems();
         const value = this.selectedObject ? `${this.value(this.selectedObject) ?? ""}` : undefined;
         const optionDisabled = this.optionDisabled;
+
         const disabledOptions = optionDisabled
             ? this.objects
                   .filter((item) => optionDisabled(item))

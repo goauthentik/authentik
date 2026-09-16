@@ -11,6 +11,7 @@ import { CSSResult, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 type Status = TaskAggregatedStatusEnum | LastTaskStatusEnum;
+
 type StatusRepresentation = [string, PFColor, ...Status[]];
 
 const C = PFColor;

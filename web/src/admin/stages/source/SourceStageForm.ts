@@ -60,6 +60,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(SourcesApi).sourcesAllList(args);
 
                         return users.results;

@@ -602,6 +602,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-map": AKMap;
     }
+
     interface HTMLElementEventMap {
         "bin-select": CustomEvent<BinSelectDetail>;
     }

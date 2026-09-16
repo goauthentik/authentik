@@ -56,7 +56,9 @@ export type TableGrouped = {
 export type Column = TableColumn | string | [string, string?];
 
 export type RawType = string | number | TemplateResult;
+
 export type TableInputType = RawType[][] | TableRow[] | TableGrouped | TableFlat;
+
 export type TableType = TableGrouped | TableFlat;
 
 export type KeyBy = (_: RawType[]) => string;

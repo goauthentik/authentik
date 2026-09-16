@@ -18,6 +18,7 @@ import { customElement } from "lit/decorators.js";
 // Leaving room in the future for a multi-state control if someone somehow needs to filter inactive
 // users as well.
 type UserListFilter = "active" | "all";
+
 type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-table")

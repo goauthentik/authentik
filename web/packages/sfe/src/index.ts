@@ -100,6 +100,7 @@ class SimpleFlowExecutor {
 
     start() {
         this.loading();
+
         $.ajax({
             type: "GET",
             url: this.apiURL,
@@ -114,16 +115,19 @@ class SimpleFlowExecutor {
         $("button[type=submit]").addClass("disabled")
             .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span role="status">Loading...</span>`);
+
         let finalData: { [key: string]: unknown } = {};
 
         if (data instanceof FormData) {
             finalData = {};
+
             data.forEach((value, key) => {
                 finalData[key] = value;
             });
         } else {
             finalData = data;
         }
+
         $.ajax({
             type: "POST",
             url: this.apiURL,
@@ -269,6 +273,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                 </button>
             </form>`,
         );
+
         $("#ident-form input[name=uid_field]").trigger("focus");
     }
 }
@@ -307,6 +312,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`,
         );
+
         $("#password-form input").trigger("focus");
     }
 }
@@ -333,6 +339,7 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
                 </div>
             </form>`,
         );
+
         $("#autosubmit-form").submit();
     }
 }
@@ -388,6 +395,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
             return false;
         }
+
         console.warn("WebAuthn not supported by browser.");
 
         return false;
@@ -468,6 +476,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 ? undefined
                 : challenge,
         );
+
         this.html(
             html`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
@@ -539,6 +548,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`,
         );
+
         $("#totp-form input").trigger("focus");
     }
 
@@ -554,6 +564,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 </div>
             </form>
         `);
+
         navigator.credentials
             .get({
                 publicKey: this.transformCredentialRequestOptions(
@@ -582,6 +593,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             })
             .catch((error) => {
                 console.warn(error);
+
                 this.deviceChallenge = undefined;
                 this.render();
             });

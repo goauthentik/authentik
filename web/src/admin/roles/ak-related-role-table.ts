@@ -185,6 +185,7 @@ export class RelatedRoleTable extends Table<Role> {
         if (this.showInherited) {
             return nothing;
         }
+
         const disabled = !this.selectedElements.length;
 
         return html`<ak-forms-delete-bulk
@@ -233,9 +234,11 @@ export class RelatedRoleTable extends Table<Role> {
 
     protected row(item: Role): SlottedTemplateResult[] {
         const inherited = this.showInherited && this.isInherited(item);
+
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
+
         const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 >${item.name}</a
             >

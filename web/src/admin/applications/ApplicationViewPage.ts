@@ -443,6 +443,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,

@@ -98,12 +98,14 @@ export class AKMDX extends AKElement {
      */
     async #hydrateFromURL(url: string): Promise<SlottedTemplateResult> {
         const { relBase } = globalAK().api;
+
         const pathname =
             relBase +
             StaticDirectoryName +
             "/" +
             DistDirectoryName +
             url.slice(url.indexOf("/assets"));
+
         const module = await fetchMarkdownModule(pathname);
 
         if (module.publicDirectory) {

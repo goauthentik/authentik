@@ -92,10 +92,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         const $caution = mdx
             .locator('ak-alert[level="pf-m-warning"]')
             .filter({ hasText: "Reserved application slugs" });
+
         await expect(
             $caution,
             "`:::caution Title` renders an `<ak-alert level=pf-m-warning>` with the title in `<strong>`",
         ).toBeVisible();
+
         await expect(
             $caution.locator("strong"),
             "Bare-space directive label is promoted to `<strong>`",
@@ -118,10 +120,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         const $relative = mdx
             .locator('ak-md-a > a[href*="next.goauthentik.io"][href*="create-oauth2-provider"]')
             .first();
+
         await expect(
             $relative,
             "Relative `./create-oauth2-provider.md` resolved to docs site URL at build time",
         ).toBeVisible();
+
         await expect($relative).toHaveAttribute("target", "_blank");
 
         // Fragment href is preserved verbatim from the source markdown. The
@@ -129,10 +133,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         // docs author's `#about-oauth-20-and-oidc` target resolves to a real
         // heading id on this page and the wrapper can scroll to it.
         const $fragment = mdx.locator('ak-md-a > a[href="#about-oauth-20-and-oidc"]').first();
+
         await expect(
             $fragment,
             "Fragment links are kept as `#…` so the wrapper can intercept them",
         ).toBeVisible();
+
         await expect(
             $fragment,
             "Fragment links do NOT receive `target=_blank`",
@@ -146,6 +152,7 @@ test.describe("ak-mdx renders compiled markdown", () => {
         await expect($diagram).toBeVisible();
 
         const $svg = $diagram.locator("svg");
+
         await expect(
             $svg,
             "<ak-diagram> resolves the mermaid SVG into its shadow root",

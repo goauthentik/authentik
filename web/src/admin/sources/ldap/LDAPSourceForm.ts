@@ -302,6 +302,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
 
                                 return groups.results;

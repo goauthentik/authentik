@@ -76,6 +76,7 @@ export function mdxPlugin({ root }) {
                 "/",
                 path.relative(path.join(root, "website", "docs"), args.path),
             );
+
             const publicDirectory = path.dirname(publicPath);
 
             const { html, frontmatter } = await compileMarkdown(source, publicDirectory);

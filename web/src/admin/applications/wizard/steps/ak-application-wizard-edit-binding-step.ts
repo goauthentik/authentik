@@ -67,6 +67,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
 
             const policyObject = this.searchSelect.selectedObject;
             const policyKey = PolicyObjectKeys[this.policyGroupUser];
+
             const newBinding: PolicyBinding = {
                 ...this.formValues,
                 [policyKey]: policyObject,

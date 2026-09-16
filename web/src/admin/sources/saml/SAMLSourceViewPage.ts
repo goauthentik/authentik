@@ -50,6 +50,7 @@ export class SAMLSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
             this.sourceSlug = this.source?.slug;

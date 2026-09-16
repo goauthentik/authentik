@@ -113,6 +113,7 @@ export class WebauthnController implements ReactiveController {
 
                 return;
             }
+
             console.warn("authentik/identification: Conditional WebAuthn failed", error);
         }
     }

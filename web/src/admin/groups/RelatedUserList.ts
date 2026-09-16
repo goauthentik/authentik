@@ -519,6 +519,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                         this.hideServiceAccounts = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             hideServiceAccounts: this.hideServiceAccounts,
                         });

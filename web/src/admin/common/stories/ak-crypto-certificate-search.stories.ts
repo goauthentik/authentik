@@ -46,6 +46,7 @@ const metadata: Meta<AkCryptoCertificateSearch> = {
 export default metadata;
 
 const LIGHT = "pf-t-light";
+
 function injectTheme() {
     setTimeout(() => {
         if (!document.body.classList.contains(LIGHT)) {
@@ -77,6 +78,7 @@ export const CryptoCertificateSearch = () => {
     const showMessage = (ev: CustomEvent<any>) => {
         const detail = ev.detail;
         delete detail.target;
+
         document.getElementById("message-pad")!.innerText =
             `Event: ${JSON.stringify(detail, null, 2)}`;
     };

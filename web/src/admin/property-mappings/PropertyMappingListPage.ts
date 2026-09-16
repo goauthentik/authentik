@@ -145,6 +145,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             hideManaged: this.hideManaged,
                         });

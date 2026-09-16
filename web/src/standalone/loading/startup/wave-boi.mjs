@@ -308,25 +308,31 @@ export class WavesCanvas {
                 this.#particleData[offset + ParticleOffsets.BASE_X] = baseX;
                 this.#particleData[offset + ParticleOffsets.BASE_Z] = baseZ;
                 this.#particleData[offset + ParticleOffsets.BASE_Y] = this.cameraZ * -0.4;
+
                 this.#particleData[offset + ParticleOffsets.R] = Math.min(
                     Math.floor(253 / (depthFactor * horizonFactor)),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.G] = Math.min(
                     Math.floor(75 / horizonFactor),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.B] = Math.min(
                     Math.floor(45 / (depthFactor * horizonFactor * 2)),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.A] = alpha;
                 this.#particleData[offset + ParticleOffsets.SIZE] = baseSize;
                 this.#particleData[offset + ParticleOffsets.PERSPECTIVE_SIZE] = perspectiveSize;
+
                 this.#particleData[offset + ParticleOffsets.HALF_SIZE] = Math.max(
                     1,
                     Math.round(perspectiveSize / 1.5),
                 );
+
                 this.#particleData[offset + ParticleOffsets.PERSPECTIVE_DEPTH_ALPHA] =
                     depthAlpha ** 2;
 
@@ -357,6 +363,7 @@ export class WavesCanvas {
         // top of canvas is horizon (y=0), bottom is near
 
         const screenX = ((projectedX / projectedZ) * this.width) / 2 + this.width / 2;
+
         const screenY =
             this.height / 2 - ((projectedY / projectedZ) * this.height) / 2 - this.cameraZ * 2;
 

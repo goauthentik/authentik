@@ -142,6 +142,7 @@ async function checkIfLocalesAreCurrent() {
 
             if (!current) {
                 logger.info(`Locale '${localeCode}' is out-of-date.`);
+
                 outOfDateCount++;
             }
         }),

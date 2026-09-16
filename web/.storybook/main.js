@@ -45,6 +45,7 @@ const config = {
                 conditions: [],
             },
         };
+
         newConfig.server = config.server || {};
         newConfig.server.fs = newConfig.server.fs || {};
         newConfig.server.fs.allow = newConfig.server.fs.allow || [];

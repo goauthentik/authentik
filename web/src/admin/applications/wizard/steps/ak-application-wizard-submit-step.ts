@@ -48,6 +48,7 @@ import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
+
 type SubmitStates = (typeof _submitStates)[number];
 
 type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
@@ -134,6 +135,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             // Step 3: Create policy bindings
             for (const binding of this.wizard.bindings ?? []) {
                 const bindingData = cleanBinding(binding);
+
                 await policiesApi.policiesBindingsCreate({
                     policyBindingRequest: {
                         ...bindingData,
@@ -438,6 +440,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
+
         // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
         const keys = Object.keys(this.wizard.errors);
 

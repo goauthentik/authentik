@@ -54,6 +54,7 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const stages = await aki(StagesApi).stagesEmailList(args);
 
                         return stages.results;

@@ -25,6 +25,7 @@ export class FormFixture extends PageFixture {
         const textbox = context.getByRole("textbox", { name: fieldName });
         const searchbox = context.getByRole("searchbox", { name: fieldName });
         const spinbutton = context.getByRole("spinbutton", { name: fieldName });
+
         // Comboboxes (e.g. the Query Language input) wrap an inner textbox.
         const comboboxTextbox = context
             .getByRole("combobox", { name: fieldName })
@@ -77,6 +78,7 @@ export class FormFixture extends PageFixture {
             /search/i,
             context.locator("ak-table-search"),
         );
+
         // We have to wait for the user to appear in the table,
         // but several UI elements will be rendered asynchronously.
         // We attempt several times to find the user to avoid flakiness.

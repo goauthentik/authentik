@@ -111,6 +111,7 @@ function renderHasSlsUrl(
         >
         </ak-radio-input>`;
 }
+
 export interface SAMLProviderFormProps {
     provider?: Partial<SAMLProvider> | null;
     errors?: ValidationError | null;
@@ -318,6 +319,7 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
+
                             const items =
                                 await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                                     args,
@@ -356,6 +358,7 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
+
                             const items =
                                 await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                                     args,

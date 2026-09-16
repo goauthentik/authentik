@@ -74,6 +74,7 @@ export function trimMany<T extends object, K extends keyof T>(target: T, ...keys
  */
 export function tryParsingJSON<T = unknown>(input: unknown, fallback?: undefined): T | undefined;
 export function tryParsingJSON<T = unknown>(input: unknown, fallback: null): T | null;
+
 export function tryParsingJSON<T = unknown, F = null>(input: unknown, fallback?: F): T | F {
     if (typeof input !== "string") return (fallback ?? null) as F;
 

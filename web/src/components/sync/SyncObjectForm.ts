@@ -50,6 +50,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
 
     async send(data: SyncObjectRequest): Promise<void> {
         data.syncObjectModel = this.model;
+
         this.result = await this.sync({
             id: this.provider || 0,
             syncObjectRequest: data,
@@ -67,6 +68,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const users = await aki(CoreApi).coreUsersList(args);
 
                     return users.results;
@@ -96,6 +98,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const groups = await aki(CoreApi).coreGroupsList(args);
 
                     return groups.results;

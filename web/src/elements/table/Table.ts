@@ -73,9 +73,11 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
+
 export type RowType =
     | SlottedTemplateResult
     | [template: SlottedTemplateResult, options: ColumnOptions];
+
 export interface ColumnOptions {
     style?: string;
 }
@@ -888,6 +890,7 @@ export abstract class Table<T extends object, D = T>
             if (!this.expandable) {
                 return nothing;
             }
+
             const expandItem = this.#toggleExpansion.bind(this, itemKey);
 
             return html`<td
@@ -940,6 +943,7 @@ export abstract class Table<T extends object, D = T>
                     const headers = groupHeaderID
                         ? `${groupHeaderID} ${columnID}`.trim()
                         : columnID;
+
                     let cellTemplate: SlottedTemplateResult;
                     let cellOptions: ColumnOptions = {};
 
@@ -1098,6 +1102,7 @@ export abstract class Table<T extends object, D = T>
         const pageItemCount = this.data?.results?.length ?? 0;
 
         const checked = pageItemCount !== 0 && selectedCount === pageItemCount;
+
         const indeterminate =
             pageItemCount !== 0 && selectedCount !== 0 && selectedCount < pageItemCount;
 

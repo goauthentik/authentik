@@ -191,6 +191,7 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
 
                         return users.results;
@@ -222,6 +223,7 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await aki(CoreApi).coreGroupsList(args);
 
                         return groups.results;

@@ -115,6 +115,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     @listen("hashchange", { target: window })
     public synchronize = (): void => {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
+
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
@@ -139,6 +140,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             item.parent.expanded = true;
             this.requestUpdate();
         }
+
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 

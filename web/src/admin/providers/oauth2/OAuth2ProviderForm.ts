@@ -37,6 +37,7 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
 
     return async () => {
         const oauthSources = aki(ProvidersApi);
+
         const mappings = await Promise.allSettled(
             instanceProviders.map((instanceId) =>
                 oauthSources.providersOauth2Retrieve({ id: instanceId }),
@@ -84,6 +85,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const provider = await aki(ProvidersApi).providersOauth2Retrieve({
             id: pk,
         });
+
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
         this.showLogoutMethod = !!provider.logoutUri;
 
@@ -107,6 +109,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+
         const showLogoutMethodCallback = (show: boolean) => {
             this.showLogoutMethod = show;
         };

@@ -69,6 +69,7 @@ export function remarkAdmonition() {
             const tagName = node.type === "textDirective" ? "span" : "ak-alert";
             const data = node.data || (node.data = {});
             data.hName = tagName;
+
             data.hProperties = {
                 ...data.hProperties,
                 ...node.attributes,
@@ -78,12 +79,14 @@ export function remarkAdmonition() {
             };
 
             const children = /** @type {any[]} */ (node.children || []);
+
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
 
             if (labelIndex !== -1) {
                 const label = children[labelIndex];
+
                 children[labelIndex] = {
                     type: "paragraph",
                     children: [{ type: "strong", children: label.children }],
@@ -136,6 +139,7 @@ export function remarkLists() {
     return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, "list", (node) => {
             const data = node.data || (node.data = {});
+
             data.hProperties = {
                 ...data.hProperties,
                 className: "pf-c-list",

@@ -65,6 +65,7 @@ const displayMessage = (result: any) => {
         `<li><i>Event</i>: ${"result" in result.detail ? result.detail.result : result.detail.error}</li>`,
         "text/xml",
     );
+
     const target = document.querySelector("#action-button-message-pad");
     target!.appendChild(doc.firstChild!);
 };

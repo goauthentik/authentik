@@ -180,6 +180,7 @@ export function deriveCapSiteVerifyURL(endpoint: string): string | null {
     }
 
     const endpointURL = new URL(trimmedEndpoint);
+
     const normalizedEndpoint = endpointURL.href.endsWith("/")
         ? endpointURL.href
         : `${endpointURL.href}/`;

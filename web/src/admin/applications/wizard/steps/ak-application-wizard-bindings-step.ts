@@ -62,6 +62,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             const { order, enabled, timeout } = binding;
 
             const isSet = P.union(P.string.minLength(1), P.number);
+
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
                 .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))
@@ -97,6 +98,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         const toDelete = this.selectTable
             .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
+
         const bindings = this.wizard.bindings.filter(
             (_binding, index) => !toDelete.includes(index),
         );

@@ -58,6 +58,7 @@ export class ConnectorViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-data-source",
             header: this.connector?.name,

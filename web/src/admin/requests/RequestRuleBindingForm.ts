@@ -100,6 +100,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         const relatedTargets = (data.relatedTargets ?? []).map((target) => String(target));
 
         const binding = this.instance?.uuid
@@ -157,6 +158,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const rules = await aki(RequestsApi).requestsRulesList(args);
 
                         return rules.results;

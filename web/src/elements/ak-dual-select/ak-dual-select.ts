@@ -320,6 +320,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
             selectedCount === 1
                 ? msg(str`${selectedCount} item marked to remove.`)
                 : msg(str`${selectedCount} items marked to remove.`);
+
         const selectedStatus =
             selectedCount > 0
                 ? `${selectedTotalStatus} ${selectedCountStatus}`

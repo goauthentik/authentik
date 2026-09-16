@@ -13,6 +13,7 @@ import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 export type CheckboxItem<T extends string = string> = { name: T; label: string | TemplateResult };
+
 export type CheckboxPair<T extends string = string> = [name: T, label: string | TemplateResult];
 
 export type CheckboxItemInit<T extends string = string> = CheckboxItem<T> | CheckboxPair<T>;
@@ -110,6 +111,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
+
         const name = this.name;
         const entries = new FormData();
         this.values.forEach((v) => entries.append(name, v));
@@ -139,6 +141,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                     this,
                 );
             }
+
             this.internals.setFormValue(this.formValue);
         }
 
@@ -171,6 +174,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                 "Setting `required` on ak-checkbox-group has no effect when the `name` attribute is unset",
             );
         }
+
         // These are necessary to prevent the input components' own events from
         // leaking out. This helps maintain the illusion that this component
         // behaves similarly to the multiple selection behavior of, well,
@@ -178,6 +182,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.addEventListener("input", (ev) => {
             ev.stopPropagation();
         });
+
         this.addEventListener("change", (ev) => {
             ev.stopPropagation();
         });
@@ -185,6 +190,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     protected renderCheckbox = ([name, label]: CheckboxPair): SlottedTemplateResult => {
         const selected = this.values.includes(name);
+
         const blockFwd = (e: Event) => {
             e.stopImmediatePropagation();
         };

@@ -66,6 +66,7 @@ function renderSingleAttribute(
         .with(ObjectAttributeTypeEnum.Number, () => 0)
         .with(ObjectAttributeTypeEnum.Boolean, () => false)
         .otherwise(() => "");
+
     const value = getValueAtPath(def.key, values, defaultValue);
     const name = def.key ? `attributes.${def.key}` : "";
     const { label, isRequired, type } = def;

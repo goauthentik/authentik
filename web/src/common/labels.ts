@@ -26,6 +26,7 @@ const IntentLabelRecord: Record<IntentEnum, MessageFormatter<string>> = {
 };
 
 const defaultIntent = IntentLabelRecord[IntentEnum.Api];
+
 export function formatIntentLabel(intent: IntentEnum | string | null | undefined): string {
     const label = IntentLabelRecord[intent as IntentEnum];
 

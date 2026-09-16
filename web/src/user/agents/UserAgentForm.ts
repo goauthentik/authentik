@@ -37,6 +37,7 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
         const result = await aki(AgentsApi).agentsAgentsCreate({
             agentCreateRequest: data,
         });
+
         this.result = result;
 
         if (this.parentElement instanceof ModalForm) {

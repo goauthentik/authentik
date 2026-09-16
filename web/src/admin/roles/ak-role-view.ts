@@ -68,6 +68,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.targetRole?.pk) return;
             this.roleId = this.targetRole?.pk;
@@ -164,6 +165,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "fa fa-lock",
             header: this.targetRole?.name ? msg(str`Role ${this.targetRole.name}`) : msg("Role"),

@@ -136,6 +136,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
     renderCards() {
         const isEnterprise = this.hasEnterpriseLicense;
+
         const classes = {
             "card-container": true,
             "pf-l-grid__item": true,

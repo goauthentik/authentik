@@ -72,6 +72,7 @@ async function copyHexworld() {
                 "`pnpm --dir packages/geo run hexworld:build`.",
         );
     }
+
     const fonts = path.resolve(HEXWORLD_SRC, "fonts");
 
     if (!existsSync(fonts)) {
@@ -80,6 +81,7 @@ async function copyHexworld() {
                 "restore from HEAD.",
         );
     }
+
     await fs.mkdir(HEXWORLD_DEST, { recursive: true });
     await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
     await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });

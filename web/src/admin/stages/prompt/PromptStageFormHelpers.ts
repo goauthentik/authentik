@@ -35,6 +35,7 @@ export function promptFieldsSelector(instanceFields: string[] | undefined) {
 
     return async () => {
         const stages = aki(StagesApi);
+
         const prompts = await Promise.allSettled(
             instanceFields.map((instanceId) =>
                 stages.stagesPromptPromptsRetrieve({ promptUuid: instanceId }),
@@ -72,6 +73,7 @@ export function policiesSelector(instancePolicies: string[] | undefined) {
 
     return async () => {
         const policy = aki(PoliciesApi);
+
         const policies = await Promise.allSettled(
             instancePolicies.map((instanceId) =>
                 policy.policiesAllRetrieve({ policyUuid: instanceId }),

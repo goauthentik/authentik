@@ -8,6 +8,7 @@
  */
 
 export const LabelKinds = new Set(["country", "region", "locality"] as const);
+
 export type LabelKind = typeof LabelKinds extends Set<infer K> ? K : never;
 
 /** Zoom at which each kind of label first appears. */

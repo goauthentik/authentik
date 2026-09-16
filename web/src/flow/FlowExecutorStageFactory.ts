@@ -19,6 +19,7 @@ import { match, P } from "ts-pattern";
 
 export type { FlowChallengeComponentName, StageModuleCallback };
 export const propVariants = ["standard", "challenge"] as const;
+
 export type PropVariant = (typeof propVariants)[number];
 
 const STANDARD = propVariants[0];

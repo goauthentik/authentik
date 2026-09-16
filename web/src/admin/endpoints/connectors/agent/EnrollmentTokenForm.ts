@@ -19,7 +19,9 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 /**
  * Enrollment Token Form

@@ -75,11 +75,13 @@ export class AkProviderInput extends AKElement {
         const args: ProvidersAllListRequest = {
             ordering: "name",
         };
+
         const api = aki(ProvidersApi);
 
         if (query !== undefined) {
             args.search = query;
         }
+
         const items = await api.providersAllList(args);
         const results = items.results;
 
@@ -87,6 +89,7 @@ export class AkProviderInput extends AKElement {
         if (!(this.value && !results.find((r) => r.pk === this.value))) {
             return results;
         }
+
         const single = await api.providersAllRetrieve({ id: this.value });
 
         return [single, ...results];

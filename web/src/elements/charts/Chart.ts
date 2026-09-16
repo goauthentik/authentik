@@ -88,12 +88,14 @@ export abstract class AKChart<T> extends AKElement {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+
         this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
                 this.fontColor = FONT_COLOR_LIGHT_MODE;
             } else {
                 this.fontColor = FONT_COLOR_DARK_MODE;
             }
+
             this.chart?.update();
         }) as EventListener);
     }
@@ -116,6 +118,7 @@ export abstract class AKChart<T> extends AKElement {
         if (!this.chart) {
             return;
         }
+
         this.chart.resize();
     }
 

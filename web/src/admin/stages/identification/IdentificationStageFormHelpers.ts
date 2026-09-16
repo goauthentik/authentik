@@ -28,6 +28,7 @@ export function sourcesSelector(instanceSources: string[] | undefined) {
 
     return async () => {
         const sourcesApi = aki(SourcesApi);
+
         const sources = await Promise.allSettled(
             instanceSources.map((instanceId) => sourcesApi.sourcesAllList({ pbmUuid: instanceId })),
         );

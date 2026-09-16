@@ -121,6 +121,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

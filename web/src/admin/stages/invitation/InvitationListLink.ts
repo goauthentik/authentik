@@ -78,6 +78,7 @@ export class InvitationListLink extends AKElement {
                                     ) {
                                         this.selectedFlow = stages.results[0].flowSet[0].slug;
                                     }
+
                                     const seenFlowSlugs: string[] = [];
 
                                     return stages.results.map((stage) => {
@@ -85,6 +86,7 @@ export class InvitationListLink extends AKElement {
                                             if (seenFlowSlugs.includes(flow.slug)) {
                                                 return nothing;
                                             }
+
                                             seenFlowSlugs.push(flow.slug);
 
                                             return html`<option

@@ -53,6 +53,7 @@ export function findClosestHost<T extends Element = Element | HTMLElement>(
 
         if (current.parentNode instanceof DocumentFragment) {
             current = current.parentNode;
+
             continue;
         }
 

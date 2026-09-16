@@ -72,6 +72,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         const target = event.currentTarget as HTMLElement & {
             selectedFlow?: Flow | null;
         };
+
         this.lockdownFlowAuthentication = target.selectedFlow?.authentication ?? null;
     };
 
@@ -233,6 +234,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const users = await aki(CoreApi).coreApplicationsList(args);
 
                                 return users.results;

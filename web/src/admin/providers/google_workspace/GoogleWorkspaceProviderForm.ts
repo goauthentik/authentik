@@ -186,6 +186,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
 
                                 return groups.results;

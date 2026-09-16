@@ -17,6 +17,7 @@ export enum Level {
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
+
 export type Levels = (typeof levelNames)[number];
 
 export interface IAlert {

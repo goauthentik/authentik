@@ -23,6 +23,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export function coreGroupPair(item: Group | RelatedGroup): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
+
 export function rbacRolePair(item: Role): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
@@ -95,6 +96,7 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
                 patchedGroupRequest: data,
             });
         }
+
         data.users = [];
 
         return aki(CoreApi).coreGroupsCreate({

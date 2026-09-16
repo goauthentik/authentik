@@ -18,6 +18,7 @@ export interface IFooterLinkInput {
 }
 
 const LEGAL_SCHEMES = ["http://", "https://", "mailto:"];
+
 const hasLegalScheme = (url: string) =>
     LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
 

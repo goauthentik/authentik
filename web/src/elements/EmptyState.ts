@@ -90,6 +90,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     render() {
         const hasHeading = this.findSlotted();
         const loading = this.loading || this.defaultLabel;
+
         const classes = {
             "pf-c-empty-state": true,
             "pf-m-full-height": this.fullHeight,

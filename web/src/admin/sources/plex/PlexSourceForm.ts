@@ -40,6 +40,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
+
         this.plexToken = source.plexToken;
         this.loadServers();
 
@@ -76,6 +77,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             this.plexToken = token;
@@ -87,6 +89,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
+
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 

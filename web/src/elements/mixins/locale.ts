@@ -73,6 +73,7 @@ export const WithLocale = createMixin<LocaleMixin>(
                         console.warn(
                             `[WithLocale] The locale context is not available on <${this.constructor.name}>. Did you forget to add the LocaleContextController?`,
                         );
+
                         this.#contextWarning = true;
                     }
 

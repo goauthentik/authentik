@@ -27,6 +27,7 @@ describe("Lexer", () => {
             lexer.addRule(/^a/im, (m) => {
                 seen.push(m);
             });
+
             lexer.setInput("A\nA");
 
             drain(lexer);
@@ -67,6 +68,7 @@ describe("Lexer", () => {
     describe("tokenization", () => {
         it("tokenizes a simple expression", () => {
             const lexer = new Lexer();
+
             lexer
                 .addRule(/\s+/, () => null)
                 .addRule(/[a-zA-Z]+/, (m) => ({ type: "ident", value: m }))
@@ -74,6 +76,7 @@ describe("Lexer", () => {
                 .addRule(/[+\-*/]/, (m) => ({ type: "op", value: m }));
 
             lexer.setInput("foo + 12 * bar");
+
             expect(drain(lexer)).toEqual([
                 { type: "ident", value: "foo" },
                 { type: "op", value: "+" },

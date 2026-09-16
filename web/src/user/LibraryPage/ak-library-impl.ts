@@ -239,6 +239,7 @@ export class LibraryPage extends WithSession(AKElement) {
     constructor() {
         super();
         this.#gridModeMatcher = window.matchMedia("(width > 768px)");
+
         this.#gridModeMatcher.addEventListener("change", this.#gridModeMediaQueryListener, {
             passive: true,
         });

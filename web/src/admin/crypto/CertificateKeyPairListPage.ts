@@ -93,6 +93,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");
         }
+
         let color = PFColor.Green;
 
         if (item.certExpiry) {

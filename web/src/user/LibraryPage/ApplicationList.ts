@@ -68,6 +68,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
             ([groupLabel]) => groupLabel,
             ([groupLabel, apps], groupIndex) => {
                 const groupID = kebabCase(groupLabel);
+
                 const inner = repeat(
                     apps,
                     (application) => application.pk,

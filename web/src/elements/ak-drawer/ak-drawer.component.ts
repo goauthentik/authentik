@@ -86,6 +86,7 @@ export class AkDrawer extends LitElement {
 
         if (expanded !== undefined) {
             const expandedMsg = (i: boolean) => (i ? "open" : "closed");
+
             this.dispatchEvent(
                 new ToggleEvent("toggle", {
                     newState: expandedMsg(this.expanded),

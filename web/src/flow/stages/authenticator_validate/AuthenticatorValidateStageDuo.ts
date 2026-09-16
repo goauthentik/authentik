@@ -30,6 +30,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
 
         if (changedProperties.has("challenge") && this.challenge) {
             this.authenticating = true;
+
             this.host
                 ?.submit(
                     {
@@ -50,6 +51,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
+
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
 

@@ -39,6 +39,7 @@ export class SyncStatusCard extends AKElement {
 
     firstUpdated() {
         this.loading = true;
+
         this.fetch().then((status) => {
             this.syncState = status;
             this.loading = false;

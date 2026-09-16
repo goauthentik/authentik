@@ -40,6 +40,7 @@ export class ShowHintController implements ReactiveController {
                 [this.hintToken]: state,
             }),
         );
+
         this.host.showHint = state;
     }
 
@@ -57,6 +58,7 @@ export class ShowHintController implements ReactiveController {
         if (!(this.hintToken in localStores)) {
             return;
         }
+
         // Note that we only do this IF the field exists and is defined. `undefined` means "do the
         // default thing of showing the hint."
         this.host.showHint = localStores[this.hintToken] as boolean;

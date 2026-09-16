@@ -370,6 +370,7 @@ export class AKCommandPaletteModal extends AKModal {
 
         // Build render-ordered list that matches the grouped display order.
         const grouped = Object.groupBy(filteredCommands, (command) => command.group || "");
+
         this.#renderOrderedCommands = Object.values(
             grouped,
         ).flat() as PaletteCommandDefinition<unknown>[];

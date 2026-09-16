@@ -95,6 +95,7 @@ export class ProviderViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-integration",
             header: this.provider?.name,

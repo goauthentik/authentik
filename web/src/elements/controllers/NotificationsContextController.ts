@@ -34,6 +34,7 @@ export class NotificationsContextController extends ReactiveContextController<No
         super();
 
         this.host = host;
+
         this.context = new ContextProvider(this.host, {
             context: NotificationsContext,
             initialValue: { loading: true, error: null },

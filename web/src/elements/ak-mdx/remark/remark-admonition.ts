@@ -63,12 +63,14 @@ export const remarkAdmonition: Plugin<[], Root, VFile> = () => {
             data.hProperties.level = ADMONITION_LEVEL[node.name] ?? `pf-m-${node.name}`;
 
             const children = node.children as Paragraph[];
+
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
 
             if (labelIndex !== -1) {
                 const label = children[labelIndex];
+
                 children[labelIndex] = {
                     type: "paragraph",
                     children: [{ type: "strong", children: label.children }],

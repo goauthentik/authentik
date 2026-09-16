@@ -18,6 +18,7 @@ const samples = sampleData.map(({ produce, seasons }) => ({
     pk: produce.replace(/\s+/, "").toLowerCase(),
     season: seasons,
 }));
+
 samples.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
 // All we need is a promise to return our dataset. It doesn't have to be a class-based method a'la
@@ -27,6 +28,7 @@ const getSamples = (query = "") => {
     if (query === "") {
         return Promise.resolve(samples);
     }
+
     const check = new RegExp(query);
 
     return Promise.resolve(samples.filter((s) => check.test(s.name)));

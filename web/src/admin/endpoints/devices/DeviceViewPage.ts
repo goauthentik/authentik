@@ -65,6 +65,7 @@ export class DeviceViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             header: this.device?.name
                 ? msg(str`Device ${this.device?.name}`)
@@ -85,6 +86,7 @@ export class DeviceViewPage extends AKElement {
             this.device?.facts?.data.disks?.filter(
                 (d) => d.mountpoint === "/" || d.mountpoint === "C:",
             ) || [];
+
         let rootDisk: Disk | undefined = undefined;
 
         if (_rootDisk?.length > 0) {

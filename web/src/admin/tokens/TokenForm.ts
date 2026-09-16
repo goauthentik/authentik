@@ -17,7 +17,9 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {

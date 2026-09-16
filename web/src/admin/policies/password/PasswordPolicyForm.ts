@@ -35,6 +35,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         const policy = await aki(PoliciesApi).policiesPasswordRetrieve({
             policyUuid: pk,
         });
+
         this.showStatic = policy.checkStaticRules || false;
         this.showHIBP = policy.checkHaveIBeenPwned || false;
         this.showZxcvbn = policy.checkZxcvbn || false;

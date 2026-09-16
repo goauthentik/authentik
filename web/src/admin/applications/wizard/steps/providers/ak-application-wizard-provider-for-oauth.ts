@@ -25,6 +25,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
 
     constructor() {
         super();
+
         aki(SourcesApi)
             .sourcesOauthList({
                 ordering: "name",
@@ -39,6 +40,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+
         const showLogoutMethodCallback = (show: boolean) => {
             this.showLogoutMethod = show;
         };

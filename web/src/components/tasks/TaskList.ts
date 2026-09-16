@@ -88,6 +88,7 @@ export class TaskList extends Table<Task> {
                   : this.showOnlyStandalone
                     ? true
                     : undefined;
+
         const aggregatedStatus = this.excludeSuccessful
             ? [
                   TaskAggregatedStatusEnum.WaitingForDependencies,

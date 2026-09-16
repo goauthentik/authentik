@@ -45,6 +45,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         const provider = await aki(ProvidersApi).providersSamlRetrieve({
             id: pk,
         });
+
         this.hasSigningKp = !!provider.signingKp;
         this.hasSlsUrl = !!provider.slsUrl;
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;

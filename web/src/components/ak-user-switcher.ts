@@ -34,6 +34,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 userPk,
             },
         });
+
         window.location.assign(redirect);
     }
 
@@ -51,6 +52,7 @@ export class UserSwitcher extends WithSession(AKElement) {
 
     #renderUser(user: UserSelf): SlottedTemplateResult {
         const label = formatUserDisplayName(user, this.uiConfig) || user.username;
+
         const description =
             [user.email, user.username].find((identifier) => identifier && identifier !== label) ??
             "";
@@ -90,9 +92,11 @@ export class UserSwitcher extends WithSession(AKElement) {
         }
 
         const enabled = Boolean(globalAK().brand.flowUserSwitch);
+
         const allUsers: readonly UserSelf[] = isAPIResultReady(this.session)
             ? [this.session.user, ...(this.session.users ?? [])]
             : [];
+
         const users = enabled ? allUsers : allUsers.filter((user) => user.isCurrent);
 
         return html`<ak-dropdown class="pf-c-dropdown" part="switcher">

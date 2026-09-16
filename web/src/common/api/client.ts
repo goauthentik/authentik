@@ -28,6 +28,7 @@ const endpoints = new Map<APIConstructor<unknown>, unknown>();
 function apiConfiguration(): Configuration {
     if (!configuration) {
         const { locale, api, brand, config } = globalAK();
+
         configuration = new Configuration({
             basePath: `${api.base}api/v3`,
             middleware: [
@@ -41,6 +42,7 @@ function apiConfiguration(): Configuration {
                     : []),
             ],
         });
+
         Object.freeze(configuration);
     }
 

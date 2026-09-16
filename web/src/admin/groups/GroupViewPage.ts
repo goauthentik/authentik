@@ -72,6 +72,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.group?.pk) return;
             this.groupId = this.group?.pk;
@@ -291,6 +292,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-users",
             header: this.group?.name ? msg(str`Group ${this.group.name}`) : msg("Group"),

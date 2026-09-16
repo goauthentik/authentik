@@ -50,9 +50,11 @@ export class ToggleGroup extends LitElement {
 
     public connectedCallback() {
         super.connectedCallback();
+
         this.optionsObserver = new MutationObserver((_mutations) => {
             requestAnimationFrame(() => this.requestUpdate());
         });
+
         this.optionsObserver.observe(this, {
             subtree: true,
             childList: true,
@@ -86,6 +88,7 @@ export class ToggleGroup extends LitElement {
 
     render() {
         const values = this.values;
+
         const mkClick = (v: string) => () => {
             this.dispatchEvent(new ToggleGroupEvent(v));
         };

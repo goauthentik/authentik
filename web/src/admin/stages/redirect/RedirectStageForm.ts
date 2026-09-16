@@ -124,6 +124,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

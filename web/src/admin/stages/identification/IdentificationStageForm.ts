@@ -115,6 +115,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const stages = await aki(StagesApi).stagesPasswordList(args);
 
                                 return stages.results;
@@ -144,6 +145,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const stages = await aki(StagesApi).stagesCaptchaList(args);
 
                                 return stages.results;
@@ -212,6 +214,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const stages =
                                     await aki(StagesApi).stagesAuthenticatorValidateList(args);
 

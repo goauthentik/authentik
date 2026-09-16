@@ -10,6 +10,7 @@ export function getCookie(name: string): string {
             // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === name + "=") {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
                 break;
             }
         }
@@ -19,6 +20,7 @@ export function getCookie(name: string): string {
 }
 
 export type GroupKeyCallback<T> = (item: T, index: number, array: T[]) => string;
+
 export type GroupResult<T> = [groupKey: string, items: T[]];
 
 export function groupBy<T>(items: T[], callback: GroupKeyCallback<T>): Array<GroupResult<T>> {
@@ -68,6 +70,7 @@ export function assertEveryPresent<T>(
 ): asserts input is T[] {
     if (!Array.isArray(input)) {
         console.debug("Input is not an array", input);
+
         throw TypeError(errorMessage);
     }
 
@@ -75,6 +78,7 @@ export function assertEveryPresent<T>(
 
     if (index !== -1) {
         console.debug(`Item at index ${index} is null or undefined`, input);
+
         throw new TypeError(errorMessage);
     }
 }

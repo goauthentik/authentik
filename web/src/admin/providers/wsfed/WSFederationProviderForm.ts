@@ -23,6 +23,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
         const provider = await aki(ProvidersApi).providersWsfedRetrieve({
             id: pk,
         });
+
         this.hasSigningKp = !!provider.signingKp;
 
         return provider;

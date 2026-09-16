@@ -37,6 +37,7 @@ export class FlowCard extends AKElement {
         if (!this.challenge || this.loading) {
             inner = html`<ak-empty-state loading default-label></ak-empty-state>`;
         }
+
         // No title if the challenge doesn't provide a title and no custom title is set
         let title: null | SlottedTemplateResult = null;
 
@@ -49,7 +50,9 @@ export class FlowCard extends AKElement {
                 ${this.challenge.flowInfo.title}
             </h1>`;
         }
+
         const footer = this.findSlotted("footer") ? html`<slot name="footer"></slot>` : null;
+
         const footerBand = this.findSlotted("footer-band")
             ? html`<slot name="footer-band"></slot>`
             : null;

@@ -118,6 +118,7 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
     const attObj = new Uint8Array(
         (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
     );
+
     const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
     const rawId = new Uint8Array(newAssertion.rawId);
 

@@ -65,6 +65,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;

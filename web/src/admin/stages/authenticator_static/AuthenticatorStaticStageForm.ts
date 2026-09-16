@@ -119,6 +119,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

@@ -78,6 +78,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
                 if (isResponseErrorLike(error) && error.response.status === 404) {
                     this.iterations = null;
                 }
+
                 throw error;
             });
     }

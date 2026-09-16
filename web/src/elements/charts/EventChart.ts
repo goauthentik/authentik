@@ -88,15 +88,19 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
         if (!options.optsMap) {
             options.optsMap = new Map<EventActions, Partial<ChartDataset>>();
         }
+
         const actions = new Set(data.map((v) => v.action));
+
         actions.forEach((action) => {
             const actionData: { x: number; y: number }[] = [];
+
             data.filter((v) => v.action === action).forEach((v) => {
                 actionData.push({
                     x: v.time.getTime(),
                     y: v.count,
                 });
             });
+
             // Check if we need to pad the data to reach a certain time window
             const earliestDate = data
                 .filter((v) => v.action === action)
@@ -108,6 +112,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
                 const earliestPadded = new Date(
                     new Date().getTime() - options.padToDays * (1000 * 3600 * 24),
                 );
+
                 const daysDelta = Math.round(
                     (earliestDate[0].getTime() - earliestPadded.getTime()) / (1000 * 3600 * 24),
                 );
@@ -119,6 +124,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
                     });
                 }
             }
+
             datasets.datasets.push({
                 data: actionData,
                 label: actionToLabel(action),

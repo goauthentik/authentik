@@ -33,6 +33,7 @@ const bundleDefinitions = createBundleDefinitions();
 const publicBundledDefinitions = Object.fromEntries(
     Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
 );
+
 logger.info(publicBundledDefinitions, "Bundle definitions");
 
 const entryPointNames = Object.keys(EntryPoint);
@@ -62,13 +63,16 @@ const BASE_ESBUILD_PLUGINS = [
         name: "log",
         setup(build) {
             let start = new Date(0);
+
             build.onStart(() => {
                 start = new Date();
                 logger.info("Build started");
             });
+
             build.onEnd((r) => {
                 const end = new Date();
                 const dur = end.getTime() - start.getTime();
+
                 logger.info(
                     `Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`,
                 );
@@ -220,6 +224,7 @@ async function doWatch() {
 
     return () => {
         logger.flush();
+
         console.info("");
         console.info("🛑 Stopping file watcher...");
 
@@ -243,6 +248,7 @@ async function doProxy() {
         EntryPoint.StaticStyles,
         EntryPoint.FlowStyles,
     ];
+
     const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
@@ -290,6 +296,7 @@ await cleanDistDirectory()
                         if (signalCount > 3) {
                             // Something is taking too long and the user wants to exit now.
                             console.log("🛑 Forcing exit...");
+
                             process.exit(0);
                         }
                     });

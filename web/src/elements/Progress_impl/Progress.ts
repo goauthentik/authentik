@@ -10,12 +10,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 export const progressVariants = ["none", "top", "inside", "outside", "indeterminate"] as const;
+
 export type ProgressVariant = (typeof progressVariants)[number];
 
 export const progressSize = ["xs", "sm", "md", "lg"] as const;
+
 export type ProgressSize = (typeof progressSize)[number];
 
 export const progressSeverity = ["success", "danger", "warning"] as const;
+
 export type ProgressSeverity = (typeof progressSeverity)[number];
 
 /**
@@ -68,6 +71,7 @@ export class Progress extends LitElement {
         if (this.oneWay && value < this._value) {
             return;
         }
+
         this._value = value;
     }
 

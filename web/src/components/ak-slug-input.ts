@@ -94,6 +94,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
         const newSlug = slugify(ev.target.value);
         const oldSlug = this.input.value;
+
         const [shorter, longer] =
             newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
 
@@ -107,6 +108,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // input. The name is already handled since it's both required and automatically
         // forwarded to our templated input, but the value must also be set.
         this.value = this.input.value = newSlug;
+
         this.dispatchEvent(
             new Event("input", {
                 bubbles: true,
@@ -119,6 +121,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         if (this.#origin) {
             this.#origin.removeEventListener("input", this.slugify);
         }
+
         super.disconnectedCallback();
     }
 

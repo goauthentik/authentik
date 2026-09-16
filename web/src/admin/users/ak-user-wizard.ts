@@ -27,6 +27,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 const SERVICE_ACCOUNT_FORM_SLOT =
     `type-ak-user-service-account-form-${UserTypeEnum.ServiceAccount}` as const;
+
 const SERVICE_ACCOUNT_RESULT_SLOT = `${SERVICE_ACCOUNT_FORM_SLOT}-result` as const;
 
 const DEFAULT_USER_TYPES: TypeCreate[] = [

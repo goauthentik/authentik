@@ -48,6 +48,7 @@ function decodeXmlEntities(input) {
 
     for (;;) {
         let local = 0;
+
         const next = current.replace(ENTITY_PATTERN, (match) => {
             local++;
 
@@ -75,6 +76,7 @@ function decodeXmlEntities(input) {
  */
 function undoubleHtmlEntities(input) {
     let replacements = 0;
+
     const output = input.replace(DOUBLE_ENCODED_PATTERN, (_match, name) => {
         replacements++;
 
@@ -105,6 +107,7 @@ export function sanitizeLocaleModule(source) {
 
         if (backtick === -1) {
             output += source.slice(cursor);
+
             break;
         }
 
@@ -133,6 +136,7 @@ export function sanitizeLocaleModule(source) {
 
             if (ch === "\\") {
                 end += 2;
+
                 continue;
             }
 
@@ -143,18 +147,23 @@ export function sanitizeLocaleModule(source) {
             if (ch === "$" && source[end + 1] === "{") {
                 depth++;
                 end += 2;
+
                 continue;
             }
 
             if (ch === "{" && depth > 0) {
                 depth++;
+
                 end++;
+
                 continue;
             }
 
             if (ch === "}" && depth > 0) {
                 depth--;
+
                 end++;
+
                 continue;
             }
 
@@ -213,6 +222,7 @@ export async function unescapeOverescapedLitTemplates(directory) {
 
             if (output !== original) {
                 await fs.writeFile(filePath, output, "utf8");
+
                 touched++;
                 replacements += localReplacements;
             }

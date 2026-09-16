@@ -167,6 +167,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
 
                                 return groups.results;

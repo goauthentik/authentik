@@ -54,6 +54,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     const cardID = `app-${application.pk}`;
     const titleID = `${cardID}-title`;
     const descriptionID = `${cardID}-description`;
+
     const cardHeader = CardHeader({
         application,
         id: titleID,
@@ -101,6 +102,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         const activate = () => {
             onAppClick(application);
         };
+
         main = html`<div
             ${primaryRef}
             role="button"

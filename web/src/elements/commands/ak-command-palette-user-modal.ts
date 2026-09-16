@@ -77,6 +77,7 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
                         group: msg("Users"),
                     };
                 });
+
                 this.setCommands(commands, [], currentValue);
             })
             .catch(this.suppressAbortError)

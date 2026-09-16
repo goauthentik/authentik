@@ -128,6 +128,7 @@ export class LocaleContextController implements ReactiveController {
 
             if (attribute.previous === attribute.current) {
                 logger.debug("Skipping locale update, `lang` unchanged", attribute);
+
                 continue;
             }
 

@@ -81,6 +81,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         const binding = await aki(PoliciesApi).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
+
         this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
 
         return binding as T;
@@ -150,9 +151,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(PoliciesApi).policiesBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
 
         if (orders.length < 1) {
@@ -199,6 +202,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const policies = await aki(PoliciesApi).policiesAllList(args);
                         const selectedPolicy = this.instance?.policyObj;
 
@@ -238,6 +242,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await aki(CoreApi).coreGroupsList(args);
                         const selectedGroup = this.instance?.groupObj;
 
@@ -278,6 +283,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
                         const selectedUser = this.instance?.userObj;
 

@@ -74,6 +74,7 @@ export class AkSbFruity extends LitElement {
 
     constructor() {
         super();
+
         this.page = {
             count: this.options.length,
             current: 1,
@@ -83,6 +84,7 @@ export class AkSbFruity extends LitElement {
             previous: 0,
             totalPages: Math.ceil(this.options.length / this.pageLength),
         };
+
         this.onNavigation = this.onNavigation.bind(this);
         this.addEventListener(DualSelectEventType.NavigateTo, this.onNavigation);
     }
@@ -98,6 +100,7 @@ export class AkSbFruity extends LitElement {
 
             return;
         }
+
         const endCount = this.pageLength * (index + 1);
         const endIndex = Math.min(endCount, this.options.length);
 

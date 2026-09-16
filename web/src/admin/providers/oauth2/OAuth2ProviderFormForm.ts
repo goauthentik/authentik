@@ -157,6 +157,7 @@ const defaultGrantTypes = [
 ];
 
 type ShowClientSecret = (show: boolean) => void;
+
 type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {

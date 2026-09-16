@@ -204,6 +204,7 @@ export function pluckErrorDetail(error: Error, fallback?: string): string;
  * Prioritizes the `detail` key, then the `message` key.
  */
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string;
+
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string {
     if (typeof errorLike === "string" && errorLike) {
         return errorLike;
@@ -243,6 +244,7 @@ export async function parseAPIResponseError<T extends APIError = APIError>(
 
         return createSyntheticGenericError(message) as T;
     }
+
     const { response } = apiError;
     let message: string | undefined;
 

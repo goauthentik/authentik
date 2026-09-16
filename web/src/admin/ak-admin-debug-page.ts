@@ -86,6 +86,7 @@ export class DebugPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-user",
             header: "Debug",

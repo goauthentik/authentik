@@ -30,6 +30,7 @@ export function isEventTargetingListener(event?: Pick<Event, "target" | "current
         if (current.matches(InteractiveElementsQuery)) {
             return true;
         }
+
         current = current.parentElement;
     }
 

@@ -113,6 +113,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
+
         const providerFromInstance = this.instance?.provider;
         const providerValue = providerFromInstance ?? this.provider;
         const providerPrefilled = !this.instance && this.provider !== null;

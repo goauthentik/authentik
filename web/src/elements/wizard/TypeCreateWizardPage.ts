@@ -262,6 +262,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         }
 
         const renderedItems = this.renderListItems();
+
         const content = this.groupLabel
             ? html`<ak-form-group
                   label=${this.groupLabel}

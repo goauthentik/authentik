@@ -113,6 +113,7 @@ export class AgentForm extends Form<AgentCreateRequest> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
 
                         return users.results;

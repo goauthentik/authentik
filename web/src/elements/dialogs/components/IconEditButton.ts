@@ -42,9 +42,11 @@ export function IconEditButton<T extends NamedEntityElementConstructor>(
 ): SlottedTemplateResult {
     options = { ...defaultIconEditOptions, ...options };
     const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Object");
+
     const labels = isSplitIconName(itemName)
         ? [itemName.ariaName, itemName.name]
         : [itemName, itemName];
+
     const [ariaText, label] = labels.map((s) => labelMaker(noun, s));
     const { modalProps, dialogOptions, iconName } = options;
 

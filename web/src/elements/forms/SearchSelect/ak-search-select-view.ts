@@ -329,12 +329,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         ) {
             return;
         }
+
         this.open = false;
 
         if (!this.value) {
             if (this.#inputRef.value) {
                 this.#inputRef.value.value = "";
             }
+
             this.setValue(undefined);
         }
     };
@@ -363,6 +365,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             if (newValue === value) {
                 return;
             }
+
             this.setValue(newValue);
         } else {
             this.setValue(undefined);
@@ -376,6 +379,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.findValueForInput();
             this.requestUpdate();
         }
+
         this.open = true;
     };
 
@@ -427,6 +431,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         } else if (this.#inputRef.value) {
             this.#inputRef.value.value = "";
         }
+
         this.open = false;
         this.setValue(value);
     };
@@ -486,6 +491,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const emptyOption = this.blankable
             ? this.emptyOption || this.placeholder || msg("Select an option...")
             : null;
+
         const hasMenuContent =
             this.#flatOptions.length > 0 || Boolean(emptyOption) || Boolean(this.actionLabel);
 

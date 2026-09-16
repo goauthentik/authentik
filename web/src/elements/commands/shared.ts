@@ -119,6 +119,7 @@ export class CommandPaletteState<D = unknown> {
 
     public set(nextCommandsInit: PaletteCommandDefinitionInit<D>[] | null): void {
         const previousCommands = this.#commands;
+
         const nextCommands: PaletteCommandDefinition<D>[] = (nextCommandsInit ?? []).map(
             (command) => ({
                 namespace: command.namespace ?? PaletteCommandNamespace.Action,

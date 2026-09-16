@@ -127,6 +127,7 @@ export function renderDialog(
         once: true,
         signal: eventAbortController.signal,
     });
+
     window.addEventListener("popstate", dispose, {
         passive: true,
         once: true,

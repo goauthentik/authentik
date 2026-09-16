@@ -98,6 +98,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         super();
         this.initKeyboard();
         this.checkClipboard();
+
         this.clipboardWatcherTimer = setInterval(
             this.checkClipboard.bind(this),
             500,
@@ -106,6 +107,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         window.addEventListener(
             "focus",
             () => {
@@ -115,6 +117,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
                 capture: false,
             },
         );
+
         window.addEventListener("resize", () => {
             this.client?.sendSize(
                 Math.floor(RacInterface.domSize().width),
@@ -132,17 +135,25 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
-        this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
+        this.tunnel.receiveTimeout = 10 * 1000;
+
+        // 10 seconds
         this.tunnel.onerror = (status) => {
             console.debug("authentik/rac: tunnel error: ", status);
+
             this.reconnect();
         };
+
         this.client = new Guacamole.Client(this.tunnel);
+
         this.client.onerror = (err) => {
             this.clientStatus = err;
+
             console.debug("authentik/rac: error: ", err);
+
             this.reconnect();
         };
+
         this.client.onstatechange = (state) => {
             this.clientState = state;
 
@@ -150,6 +161,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
                 this.onConnected();
             }
         };
+
         this.client.onclipboard = (stream, mimetype) => {
             // If the received data is text, read it as a simple string
             if (/^text\//.exec(mimetype)) {
@@ -172,6 +184,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
                         return;
                     }
+
                     this._previousClipboardValue = trimmed;
                     writeToClipboard(trimmed);
                 };
@@ -188,8 +201,10 @@ export class RacInterface extends WithBrandConfig(Interface) {
                     writeToClipboard(item);
                 };
             }
+
             console.debug("authentik/rac: updated clipboard from remote");
         };
+
         const params = new URLSearchParams();
         params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
         params.set("screen_height", Math.floor(RacInterface.domSize().height).toString());
@@ -208,6 +223,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
             // Check connection attempts if we haven't had a successful connection
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
                 this.hasConnected = true;
+
                 this.reconnectingMessage = msg(
                     str`Connection failed after ${this.connectionAttempt} attempts.`,
                 );
@@ -221,10 +237,13 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             return;
         }
+
         const delay = 500 * this.connectionAttempt;
+
         this.reconnectingMessage = msg(
             str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
         );
+
         setTimeout(() => {
             this.firstUpdated();
         }, delay);
@@ -246,10 +265,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (!this.client) {
             return;
         }
+
         this.hasConnected = true;
         this.clientStatus = undefined;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
+
         this.client?.sendSize(
             Math.floor(RacInterface.domSize().width),
             Math.floor(RacInterface.domSize().height),
@@ -258,6 +279,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initMouse(container: HTMLElement): void {
         const mouse = new Guacamole.Mouse(container);
+
         const handler = (mouseState: Guacamole.Mouse.State, scaleMouse = false) => {
             if (!this.client) return;
 
@@ -268,11 +290,13 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             this.client.sendMouseState(mouseState);
         };
+
         // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
             this.container?.focus();
             handler(ev.state);
         });
+
         // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
             handler(ev.state, true);
@@ -292,6 +316,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             return;
         }
+
         // Otherwise, ensure that another audio stream is created after this
         // audio stream is closed
         recorder.onclose = this.initAudioInput.bind(this);
@@ -299,9 +324,11 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initKeyboard(): void {
         const keyboard = new Guacamole.Keyboard(document);
+
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
         };
+
         keyboard.onkeyup = (keysym) => {
             this.client?.sendKeyEvent(0, keysym);
         };
@@ -314,10 +341,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
                 return;
             }
+
             const newValue = await navigator.clipboard.readText();
 
             if (newValue !== this._previousClipboardValue) {
                 console.debug(`authentik/rac: new clipboard value: ${newValue}`);
+
                 this._previousClipboardValue = newValue;
                 this.writeClipboard(newValue);
             }
@@ -327,6 +356,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
             if (ex instanceof DOMException) {
                 return;
             }
+
             console.warn("authentik/rac: error reading clipboard", ex);
         }
     }
@@ -335,10 +365,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (!this.client) {
             return;
         }
+
         const stream = this.client.createClipboardStream("text/plain");
         const writer = new Guacamole.StringWriter(stream);
         writer.sendText(value);
         writer.sendEnd();
+
         console.debug("authentik/rac: Sent clipboard");
     }
 
@@ -346,6 +378,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
+
         let message = html`${GuacStateToString(this.clientState)}`;
 
         if (this.clientState === GuacClientState.WAITING) {
@@ -359,6 +392,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (this.clientStatus?.message) {
             message = html`${message}<br />${this.clientStatus.message}`;
         }
+
         const isLoading = [
             GuacClientState.CONNECTING,
             GuacClientState.DISCONNECTING,

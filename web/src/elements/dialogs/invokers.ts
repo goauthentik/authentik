@@ -16,6 +16,7 @@ export type InvokerListener = (event: Event) => Promise<void> | void;
  * @param init Initialization options for the modal dialog.
  */
 export function asInvoker(renderer: ModalTemplate, init?: DialogInit): InvokerListener;
+
 /**
  * A utility function that takes a {@linkcode CustomElementConstructor} and returns
  * a function that renders the corresponding modal dialog when invoked.
@@ -27,6 +28,7 @@ export function asInvoker(
     Constructor: CustomElementConstructor,
     init?: DialogInit,
 ): () => Promise<void>;
+
 /**
  * A utility function that takes either a {@linkcode CustomElementConstructor} or a
  * {@linkcode ModalTemplate} and returns a function that renders the corresponding modal dialog.
@@ -39,6 +41,7 @@ export function asInvoker(
     factory: ModalTemplate | CustomElementConstructor,
     init?: DialogInit,
 ): (event?: Event) => Promise<void>;
+
 export function asInvoker(
     factory: ModalTemplate | CustomElementConstructor,
     init?: DialogInit,

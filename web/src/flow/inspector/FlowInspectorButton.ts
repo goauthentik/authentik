@@ -72,6 +72,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
                 this.loaded = true;
             });
         }
+
         const drawer = document.getElementById("flow-drawer");
 
         if (changed.has("open") && drawer) {

@@ -33,6 +33,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         const stage = await aki(StagesApi).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
+
         this.showConnectionSettings = !stage.useGlobalSettings;
 
         return stage;
@@ -223,6 +224,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

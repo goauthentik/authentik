@@ -30,6 +30,7 @@ export class AutosubmitStage extends BaseStage<
 
         if (changed.has("challenge") && this.challenge?.url) {
             console.debug("authentik/flow/stages/autosubmit: submitting");
+
             this.form?.submit();
         }
     }

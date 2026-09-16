@@ -43,6 +43,7 @@ import { CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 const Status = BlueprintInstanceStatusEnum;
+
 export const BlueprintStatus = (blueprint?: BlueprintInstance) =>
     match<BlueprintInstance | undefined, string>(blueprint)
         .with(P.nullish, () => "")

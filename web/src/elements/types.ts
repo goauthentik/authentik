@@ -14,6 +14,7 @@ import type {
 //#region HTML Helpers
 
 export const AKElementTagPrefix = `ak-`;
+
 export type AKElementTagPrefix = `ak-${string}`;
 
 /**
@@ -202,6 +203,7 @@ export type ConstructorWithMixin<SuperClass, Mixin> =
                 new (...args: ConstructorParameters<SuperClass>): InstanceType<SuperClass> & Mixin;
             }
           : never;
+
 /**
  * The init object passed to the `createMixin` callback.
  */
@@ -317,6 +319,7 @@ export type SelectGrouped<T = never> = {
  * below to support the case where you just want to pass in an array of SelectTuples.
  */
 export type GroupedOptions<T = never> = SelectGrouped<T> | SelectFlat<T>;
+
 export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
 
 //#endregion

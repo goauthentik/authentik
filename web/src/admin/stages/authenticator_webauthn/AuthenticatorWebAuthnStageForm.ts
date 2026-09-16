@@ -59,6 +59,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);
@@ -265,6 +266,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

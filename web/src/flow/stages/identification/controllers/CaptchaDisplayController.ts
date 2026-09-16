@@ -63,6 +63,7 @@ export class CaptchaDisplayController implements ReactiveController {
         if (captchaInput) {
             captchaInput.value = "";
         }
+
         this.#refreshedAt = new Date();
         this.host.requestUpdate();
     }

@@ -103,6 +103,7 @@ export class AkMultiSelect extends AKControlElement {
             this.values = Array.from(this.selectRef.value!.querySelectorAll("option"))
                 .filter((option) => option.selected)
                 .map((option) => option.value);
+
             this.dispatchEvent(
                 new CustomEvent("ak-select", {
                     detail: this.values,

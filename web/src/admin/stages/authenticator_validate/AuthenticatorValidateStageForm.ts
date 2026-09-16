@@ -42,6 +42,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         const stage = await aki(StagesApi).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         });
+
         this.showConfigurationStages =
             stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
 
@@ -86,6 +87,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.webauthnHints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);

@@ -50,6 +50,7 @@ export class TreeViewNode extends AKElement {
             if (item.id) {
                 pathItems.push(item.id);
             }
+
             item = item.parent || null;
         }
 
@@ -79,7 +80,9 @@ export class TreeViewNode extends AKElement {
         if (this.host) {
             this.host.activeNode = this;
         }
+
         updateSearchParams({ path: this.fullPath });
+
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,

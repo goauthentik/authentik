@@ -40,6 +40,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         }
+
         data.intent = this.intent;
 
         return aki(CoreApi).coreTokensCreate({
@@ -49,6 +50,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
     protected override renderForm(): TemplateResult {
         const now = new Date();
+
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())
             : new Date(now.getTime() + 30 * 60000);

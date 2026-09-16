@@ -87,6 +87,7 @@ export class UserInfoCard extends AKElement {
                 userUuid: this.user.uuid,
                 status: OffboardingStatusEnum.Pending,
             });
+
             this.pendingOffboarding = offboardings.results.at(0) ?? null;
         } catch (error) {
             // Don't swallow: a transient failure must not flip the button to
@@ -107,16 +108,19 @@ export class UserInfoCard extends AKElement {
         if (!this.pendingOffboarding) {
             return;
         }
+
         // ak-forms-confirm surfaces errors and refreshes the parent; we only
         // need to reload the local state so the button flips back to "Schedule".
         await this.#lifecycleApi.lifecycleUserOffboardingDestroy({
             id: this.pendingOffboarding.id,
         });
+
         await this.#loadOffboarding();
     };
 
     protected renderActionButtons(user: User) {
         const showImpersonate = this.canImpersonate && user.pk !== this.currentUserPk;
+
         const showEnterpriseActions =
             this.hasEnterpriseLicense &&
             user.pk !== this.currentUserPk &&
@@ -167,10 +171,12 @@ export class UserInfoCard extends AKElement {
     protected renderOffboardingButton(user: User) {
         if (this.pendingOffboarding) {
             const offboarding = this.pendingOffboarding;
+
             const actionLabel =
                 offboarding.action === OffboardingActionEnum.Delete
                     ? msg("Delete", { id: "offboarding.action.delete.label" })
                     : msg("Deactivate", { id: "offboarding.action.deactivate.label" });
+
             const yesNo = (value?: boolean) =>
                 value
                     ? msg("Yes", { id: "common.boolean.yes" })

@@ -182,6 +182,7 @@ export class Lexer {
                 const { result, length } = match;
                 this.index += length;
                 this.reject = false;
+
                 this.#remove++;
 
                 // TypeScript Native's assessment is correct.
@@ -253,6 +254,7 @@ export class Lexer {
         for (const rule of this.#rules) {
             const start = rule.start;
             const states = start.length;
+
             const eligible =
                 !states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0]);
 

@@ -36,6 +36,7 @@ export function propertyMappingsSelector(
 
     return async () => {
         const pm = aki(PropertymappingsApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderMicrosoftEntraRetrieve({ pmUuid: instanceId }),

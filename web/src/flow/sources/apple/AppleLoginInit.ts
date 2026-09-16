@@ -22,9 +22,12 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
 
     firstUpdated(): void {
         const appleAuth = document.createElement("script");
+
         appleAuth.src =
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+
         appleAuth.type = "text/javascript";
+
         appleAuth.onload = () => {
             if (!this.challenge) {
                 console.warn("No challenge present for Apple Login");
@@ -39,17 +42,22 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
                 state: this.challenge.state,
                 usePopup: false,
             });
+
             AppleID.auth.signIn();
             this.isModalShown = true;
         };
+
         document.head.append(appleAuth);
+
         // Listen for authorization success
         document.addEventListener("AppleIDSignInOnSuccess", () => {
             //handle successful response
         });
+
         // Listen for authorization failures
         document.addEventListener("AppleIDSignInOnFailure", (error) => {
             console.warn(error);
+
             this.isModalShown = false;
         });
     }

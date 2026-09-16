@@ -58,6 +58,7 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const users = await aki(EndpointsApi).endpointsConnectorsList(args);
 
                                 return users.results;

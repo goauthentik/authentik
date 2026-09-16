@@ -74,6 +74,7 @@ export class EnterpriseStatusCard extends AKElement {
 
         if (summary === LicenseSummaryStatusEnum.ExpirySoon && valid) {
             const gap = differenceInSeconds(valid, today);
+
             // prettier-ignore
             status[1] = match(gap)
                 .when((g) => g < 0, () => status[1])
@@ -107,6 +108,7 @@ export class EnterpriseStatusCard extends AKElement {
 
         const progressBar = (label: string, current: number, allowed: number) => {
             const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
+
             // prettier-ignore
             const severity = licensed
                 ? match(percentage)

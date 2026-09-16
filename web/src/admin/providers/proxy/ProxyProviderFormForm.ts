@@ -32,6 +32,7 @@ import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
+
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {

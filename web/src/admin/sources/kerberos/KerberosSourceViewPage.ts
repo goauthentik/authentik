@@ -69,6 +69,7 @@ export class KerberosSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
             this.sourceSlug = this.source?.slug;

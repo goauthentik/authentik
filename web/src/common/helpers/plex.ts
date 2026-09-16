@@ -38,6 +38,7 @@ export async function popupCenterScreen(
                 title,
                 `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
             );
+
             resolve(popup);
         });
     });
@@ -57,10 +58,12 @@ export class PlexAPIClient {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
         };
+
         const pinResponse = await fetch("https://plex.tv/api/v2/pins.json?strong=true", {
             method: "POST",
             headers,
         });
+
         const pin: PlexPinResponse = await pinResponse.json();
 
         return {
@@ -74,6 +77,7 @@ export class PlexAPIClient {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
         };
+
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
             headers,
         });
@@ -81,7 +85,9 @@ export class PlexAPIClient {
         if (pinResponse.status > 200) {
             throw new SentryIgnoredError("Invalid response code");
         }
+
         const pin: PlexPinResponse = await pinResponse.json();
+
         console.debug("authentik/plex: polling Pin");
 
         return pin.authToken;
@@ -115,6 +121,7 @@ export class PlexAPIClient {
                 headers: DEFAULT_HEADERS,
             },
         );
+
         const resources: PlexResource[] = await resourcesResponse.json();
 
         return resources.filter((r) => {

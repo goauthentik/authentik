@@ -50,6 +50,7 @@ export class AuthenticatorDuoStage extends BaseStage<
         const status = await aki(StagesApi).stagesAuthenticatorDuoEnrollmentStatusCreate({
             stageUuid: this.challenge?.stageUuid || "",
         });
+
         console.debug(
             `authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`,
         );

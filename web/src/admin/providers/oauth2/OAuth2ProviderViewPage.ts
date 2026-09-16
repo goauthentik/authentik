@@ -69,6 +69,7 @@ export const TypeToLabel = (clientType?: ClientTypeEnum) =>
         .exhaustive();
 
 const LogoutMethod = OAuth2ProviderLogoutMethodEnum;
+
 const LogoutMethodToLabel = (method?: OAuth2ProviderLogoutMethodEnum) =>
     match(method)
         .with(P.nullish, () => "")
@@ -127,6 +128,7 @@ export class OAuth2ProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -499,6 +501,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
+
                                             const users = await aki(CoreApi).coreUsersList(args);
 
                                             return users.results;
@@ -570,6 +573,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                 </div>
             </div>`;
         }
+
         const dcr = this.dcrConfig;
 
         return html`<div

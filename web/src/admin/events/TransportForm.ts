@@ -180,6 +180,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const items =
                             await aki(PropertymappingsApi).propertymappingsNotificationList(args);
 
@@ -210,6 +211,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const items =
                             await aki(PropertymappingsApi).propertymappingsNotificationList(args);
 

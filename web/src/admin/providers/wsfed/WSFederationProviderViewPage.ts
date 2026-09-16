@@ -86,6 +86,7 @@ export class WSFederationProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.fetchProvider(this.provider.pk);
@@ -457,6 +458,7 @@ export class WSFederationProviderViewPage extends AKElement {
                                         if (query !== undefined) {
                                             args.search = query;
                                         }
+
                                         const users = await aki(CoreApi).coreUsersList(args);
 
                                         return users.results;

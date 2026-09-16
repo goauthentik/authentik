@@ -315,11 +315,13 @@ export class AKModal extends AKElement implements TransclusionParentElement {
         this.beforeBodySlot.name = "before-body";
 
         this.dialogBody = this.ownerDocument.createElement("div");
+
         this.dialogBody.classList.add(
             "ak-c-dialog__body",
             "ak-m-thin-scrollbar",
             "ak-m-scroll-shadows",
         );
+
         this.dialogBody.setAttribute("part", "body");
 
         this.dialogBody.role = "region";
@@ -349,6 +351,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             this.logger.error("Parent element is not a <dialog>, cannot initialize modal", {
                 parentElement: dialogElement,
             });
+
             throw new TypeError(
                 `authentik/modal: ${localName} must be placed inside a <dialog> element.`,
             );

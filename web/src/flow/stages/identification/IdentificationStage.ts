@@ -183,8 +183,10 @@ export class IdentificationStage extends BaseStage<
             username.setAttribute("type", "text");
             username.setAttribute("name", "username"); // username as name for high compatibility
             username.setAttribute("autocomplete", "username");
+
             username.onkeyup = (ev: Event) => {
                 const el = ev.target as HTMLInputElement;
+
                 (this.shadowRoot || this)
                     .querySelectorAll<HTMLInputElement>("input[name=uidField]")
                     .forEach((input) => {
@@ -194,6 +196,7 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
+
             this.#form.appendChild(username);
         }
 
@@ -203,6 +206,7 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
+
             password.onkeyup = (event: KeyboardEvent) => {
                 if (event.key === "Enter") {
                     event.preventDefault();
@@ -214,6 +218,7 @@ export class IdentificationStage extends BaseStage<
                 // and we want to 'prefill' the password for the user,
                 // save it globally
                 PasswordManagerPrefill.password = el.value;
+
                 // Because password managers fill username, then password,
                 // we need to re-focus the uid_field here too
                 (this.shadowRoot || this)
@@ -233,6 +238,7 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
+
         totp.onkeyup = (event: KeyboardEvent) => {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -244,6 +250,7 @@ export class IdentificationStage extends BaseStage<
             // and we want to 'prefill' the totp for the user,
             // save it globally
             PasswordManagerPrefill.totp = el.value;
+
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
             (this.shadowRoot || this)

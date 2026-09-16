@@ -105,6 +105,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
     protected renderVisibleInput() {
         const code = this.inputHint === "code";
+
         const classes = {
             "pf-c-form-control": true,
             "pf-m-monospace": code,

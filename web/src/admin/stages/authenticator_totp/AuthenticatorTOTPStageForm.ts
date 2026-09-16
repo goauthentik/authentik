@@ -102,6 +102,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
 
                                 return flows.results;

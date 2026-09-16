@@ -84,6 +84,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         const source = await aki(SourcesApi).sourcesOauthRetrieve({
             slug: pk,
         });
+
         this.providerType = source.type;
 
         return source;

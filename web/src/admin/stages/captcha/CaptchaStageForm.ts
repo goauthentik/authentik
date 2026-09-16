@@ -148,6 +148,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 const description = formatDescription
                     ? html`<p class="pf-c-form__helper-text">${formatDescription()}</p>`
                     : null;
+
                 const providerLink =
                     formatAPISource && keyURL
                         ? html`<ak-alert level=${Level.Info} icon="fa-key">
@@ -192,9 +193,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     protected renderKeyFields(): SlottedTemplateResult {
         const isCapProvider = this.selectedProvider === "cap";
         const publicKeyLabel = isCapProvider ? msg("Cap Endpoint") : msg("Public Key");
+
         const publicKeyPlaceholder = isCapProvider
             ? msg("https://cap.example.com/site-key/")
             : msg("Paste your CAPTCHA public key...");
+
         const publicKeyHelp = isCapProvider
             ? msg("The public site-key endpoint of your Cap server.", {
                   id: "captcha.cap-endpoint.description",

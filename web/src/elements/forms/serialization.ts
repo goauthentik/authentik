@@ -40,6 +40,7 @@ function assignValue(
         if (!(nameEl in parent)) {
             parent[nameEl] = {};
         }
+
         parent = parent[nameEl] as { [key: string]: unknown };
     }
 

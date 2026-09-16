@@ -79,6 +79,7 @@ export class ModalInvokerDirective extends Directive {
             },
             { ...options, invokerElement: part.element },
         );
+
         part.element.addEventListener("click", listener);
 
         const cleanup = () => {
@@ -123,6 +124,7 @@ export type ModalInvoker = <T extends ModalTemplate | NamedEntityElementConstruc
  * ```
  */
 export const modalInvoker = directive(ModalInvokerDirective) as ModalInvoker;
+
 //#region Model Forms
 
 export interface ModelFormLike {

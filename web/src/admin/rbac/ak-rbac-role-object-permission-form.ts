@@ -54,6 +54,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
+
         this.modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
@@ -106,6 +107,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                             if (query !== undefined) {
                                 args.search = query;
                             }
+
                             const roles = await aki(RbacApi).rbacRolesList(args);
 
                             return roles.results;

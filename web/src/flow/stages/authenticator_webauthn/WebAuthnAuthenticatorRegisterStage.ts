@@ -110,6 +110,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         if (this.registerRunning) {
             return;
         }
+
         this.registerRunning = true;
 
         return this.register()
@@ -134,6 +135,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 this.challenge?.registration as PublicKeyCredentialCreationOptions,
                 this.challenge?.registration.user.id,
             );
+
             this.tryRegister();
         }
     }

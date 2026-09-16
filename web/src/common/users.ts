@@ -46,10 +46,12 @@ export function formatDisambiguatedUserDisplayName(
     user?: UserLike | null,
     formatter?: Intl.ListFormat,
 ): string;
+
 export function formatDisambiguatedUserDisplayName(
     user?: UserLike | null,
     locale?: Intl.LocalesArgument,
 ): string;
+
 export function formatDisambiguatedUserDisplayName(
     user?: UserLike | null,
     localeOrFormatter?: Intl.ListFormat | Intl.LocalesArgument,

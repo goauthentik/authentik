@@ -62,6 +62,7 @@ export class ChipGroup<T = string | number> extends AKElement {
 
     public constructor() {
         super();
+
         this.addEventListener("click", this.interceptClick, {
             capture: true,
         });

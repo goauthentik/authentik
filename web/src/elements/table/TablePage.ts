@@ -142,6 +142,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,
