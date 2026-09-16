@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,13 +12,13 @@
  */
 
 import {
-    type AgentGrantRequestCreated,
-    AgentGrantRequestCreatedFromJSON,
-} from "../models/AgentGrantRequestCreated";
-import {
     type AgentGrantRequestCreateRequest,
     AgentGrantRequestCreateRequestToJSON,
 } from "../models/AgentGrantRequestCreateRequest";
+import {
+    type AgentGrantRequestCreated,
+    AgentGrantRequestCreatedFromJSON,
+} from "../models/AgentGrantRequestCreated";
 import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
 import {
     type GrantRequestCreateRequest,

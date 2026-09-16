@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,7 +12,6 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
