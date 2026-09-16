@@ -48,7 +48,7 @@ def invalidate_policy_cache(sender, instance, update_fields=None, **_):
         bindings = PolicyBinding.objects.filter(policy=instance) if sender == Policy else [instance]
         total = 0
         for binding in bindings:
-            prefix = f"{CACHE_PREFIX}{UUID(str(binding.policy_binding_uuid)).hex}_*"
+            prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*"
             keys = cache.keys(prefix) or []
             total += len(keys)
             cache.delete_many(keys)
