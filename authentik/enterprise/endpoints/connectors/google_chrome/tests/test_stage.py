@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow
+from authentik.crypto.secrets.models import SecretType
 from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
@@ -14,7 +15,7 @@ class TestGoogleChromeStage(FlowTestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            secret=create_test_secret("{}"),
+            secret=create_test_secret("{}", SecretType.MULTILINE),
         )
 
     def _setup_flow(self, mode: StageMode) -> str:
