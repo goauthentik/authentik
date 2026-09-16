@@ -22,7 +22,8 @@ class TestGuacamoleInstructionParser(SimpleTestCase):
     def test_delimiters_inside_element_contents_are_preserved(self):
         instruction = "4.test,5.a,b;c;"
 
-        responses, forwarded = GuacamoleInstructionParser().receive(instruction)
+        parser = GuacamoleInstructionParser()
+        responses, forwarded = parser.split_internal(parser.feed(instruction))
 
         self.assertEqual([], responses)
         self.assertEqual(instruction, forwarded)
@@ -33,9 +34,9 @@ class TestGuacamoleInstructionParser(SimpleTestCase):
         parser = GuacamoleInstructionParser()
 
         with self.assertRaises(GuacamoleProtocolError):
-            parser.receive(instruction)
+            parser.feed(instruction)
 
-        responses, forwarded = parser.receive("3.nop;")
+        responses, forwarded = parser.split_internal(parser.feed("3.nop;"))
         self.assertEqual([], responses)
         self.assertEqual("3.nop;", forwarded)
 
@@ -75,7 +76,6 @@ class TestRACClientConsumer(SimpleTestCase):
             {
                 "type": "event.send",
                 "text_data": "3.nop;",
-                "bytes_data": None,
             },
         )
 
@@ -89,7 +89,6 @@ class TestRACClientConsumer(SimpleTestCase):
             {
                 "type": "event.send",
                 "text_data": instruction,
-                "bytes_data": None,
             },
         )
 
@@ -102,22 +101,14 @@ class TestRACClientConsumer(SimpleTestCase):
             {
                 "type": "event.send",
                 "text_data": MOUSE + KEY,
-                "bytes_data": None,
             },
         )
 
-    async def test_binary_instructions_preserve_bytes(self):
+    async def test_binary_frames_are_ignored(self):
         await self.consumer.receive(bytes_data=(MOUSE + PING + KEY).encode())
 
-        self.browser_send.assert_awaited_once_with(bytes_data=PING.encode())
-        self.channel_send.assert_awaited_once_with(
-            "outpost-channel",
-            {
-                "type": "event.send",
-                "text_data": None,
-                "bytes_data": (MOUSE + KEY).encode(),
-            },
-        )
+        self.browser_send.assert_not_awaited()
+        self.channel_send.assert_not_awaited()
 
     async def test_unknown_internal_instruction_is_filtered(self):
         await self.consumer.receive(text_data="0.,7.unknown,5.value;")
@@ -135,7 +126,6 @@ class TestRACClientConsumer(SimpleTestCase):
             {
                 "type": "event.send",
                 "text_data": KEY,
-                "bytes_data": None,
             },
         )
         self.logger.debug.assert_called_once()

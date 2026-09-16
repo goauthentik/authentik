@@ -145,20 +145,19 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         if self.token.is_expired:
             await self.event_disconnect({"reason": "token_expiry"})
             return
-        data = text_data if text_data is not None else bytes_data
-        if data is None:
+        # The Guacamole protocol is text-only, binary frames are not part of it.
+        if text_data is None:
             return
         try:
-            responses, forwarded = self.guacamole_parser.receive(data)
+            responses, forwarded = self.guacamole_parser.split_internal(
+                self.guacamole_parser.feed(text_data)
+            )
         except GuacamoleProtocolError as exc:
             self.logger.debug("Ignoring malformed Guacamole protocol data", error=str(exc))
             return
 
         for response in responses:
-            if isinstance(response, str):
-                await self.send(text_data=response)
-            else:
-                await self.send(bytes_data=response)
+            await self.send(text_data=response)
 
         if not forwarded or self.dest_channel_id == "":
             return
@@ -167,8 +166,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 self.dest_channel_id,
                 {
                     "type": "event.send",
-                    "text_data": forwarded if isinstance(forwarded, str) else None,
-                    "bytes_data": forwarded if isinstance(forwarded, bytes) else None,
+                    "text_data": forwarded,
                 },
             )
         except ChannelFull:
