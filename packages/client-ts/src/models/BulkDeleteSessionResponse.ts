@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,13 +12,13 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface BulkDeleteSessionResponse
  */
 export interface BulkDeleteSessionResponse {
     /**
-     *
+     * 
      */
     deleted: number;
 }
@@ -27,10 +26,8 @@ export interface BulkDeleteSessionResponse {
 /**
  * Check if a given object implements the BulkDeleteSessionResponse interface.
  */
-export function instanceOfBulkDeleteSessionResponse(
-    value: object,
-): value is BulkDeleteSessionResponse {
-    if (!("deleted" in value) || value["deleted"] === undefined) return false;
+export function instanceOfBulkDeleteSessionResponse(value: object): value is BulkDeleteSessionResponse {
+    if (!('deleted' in value) || value['deleted'] === undefined) return false;
     return true;
 }
 
@@ -38,15 +35,13 @@ export function BulkDeleteSessionResponseFromJSON(json: any): BulkDeleteSessionR
     return BulkDeleteSessionResponseFromJSONTyped(json, false);
 }
 
-export function BulkDeleteSessionResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): BulkDeleteSessionResponse {
+export function BulkDeleteSessionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkDeleteSessionResponse {
     if (json == null) {
         return json;
     }
     return {
-        deleted: json["deleted"],
+        
+        'deleted': json['deleted'],
     };
 }
 
@@ -54,15 +49,14 @@ export function BulkDeleteSessionResponseToJSON(json: any): BulkDeleteSessionRes
     return BulkDeleteSessionResponseToJSONTyped(json, false);
 }
 
-export function BulkDeleteSessionResponseToJSONTyped(
-    value?: BulkDeleteSessionResponse | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function BulkDeleteSessionResponseToJSONTyped(value?: BulkDeleteSessionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        deleted: value["deleted"],
+        
+        'deleted': value['deleted'],
     };
 }
+

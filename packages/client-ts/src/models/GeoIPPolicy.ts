@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,16 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
-import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner";
-import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner";
+import { parseDateTime } from '../runtime';
+import type { GeoIPPolicyCountriesObjInner } from './GeoIPPolicyCountriesObjInner';
+import {
+    GeoIPPolicyCountriesObjInnerFromJSON,
+} from './GeoIPPolicyCountriesObjInner';
+import type { CountryCodeEnum } from './CountryCodeEnum';
+import {
+    CountryCodeEnumFromJSON,
+    CountryCodeEnumToJSON,
+} from './CountryCodeEnum';
 
 /**
  * GeoIP Policy Serializer
@@ -25,11 +29,11 @@ import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjI
  */
 export interface GeoIPPolicy {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -57,47 +61,47 @@ export interface GeoIPPolicy {
      */
     readonly boundTo: number;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     asns?: Array<number>;
     /**
-     *
+     * 
      */
     countries: Array<CountryCodeEnum>;
     /**
-     *
+     * 
      */
     readonly countriesObj: Array<GeoIPPolicyCountriesObjInner>;
     /**
-     *
+     * 
      */
     checkHistoryDistance?: boolean;
     /**
-     *
+     * 
      */
     historyMaxDistanceKm?: number;
     /**
-     *
+     * 
      */
     distanceToleranceKm?: number;
     /**
-     *
+     * 
      */
     historyLoginCount?: number;
     /**
-     *
+     * 
      */
     checkImpossibleTravel?: boolean;
     /**
-     *
+     * 
      */
     impossibleToleranceKm?: number;
 }
@@ -106,53 +110,17 @@ export interface GeoIPPolicy {
  * Check if a given object implements the GeoIPPolicy interface.
  */
 export function instanceOfGeoIPPolicy(value: object): value is GeoIPPolicy {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("boundTo" in (value as Record<string, any>)) &&
-            !("bound_to" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["boundTo"] === undefined &&
-            (value as Record<string, any>)["bound_to"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("countries" in value) || value["countries"] === undefined) return false;
-    if (
-        (!("countriesObj" in (value as Record<string, any>)) &&
-            !("countries_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["countriesObj"] === undefined &&
-            (value as Record<string, any>)["countries_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('boundTo' in (value as Record<string, any>)) && !('bound_to' in (value as Record<string, any>))) || ((value as Record<string, any>)['boundTo'] === undefined && (value as Record<string, any>)['bound_to'] === undefined)) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if (!('countries' in value) || value['countries'] === undefined) return false;
+    if ((!('countriesObj' in (value as Record<string, any>)) && !('countries_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['countriesObj'] === undefined && (value as Record<string, any>)['countries_obj'] === undefined)) return false;
     return true;
 }
 
@@ -165,36 +133,26 @@ export function GeoIPPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        boundTo: json["bound_to"],
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        asns: json["asns"] == null ? undefined : json["asns"],
-        countries: (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
-        countriesObj: (json["countries_obj"] as Array<any>).map(
-            GeoIPPolicyCountriesObjInnerFromJSON,
-        ),
-        checkHistoryDistance:
-            json["check_history_distance"] == null ? undefined : json["check_history_distance"],
-        historyMaxDistanceKm:
-            json["history_max_distance_km"] == null ? undefined : json["history_max_distance_km"],
-        distanceToleranceKm:
-            json["distance_tolerance_km"] == null ? undefined : json["distance_tolerance_km"],
-        historyLoginCount:
-            json["history_login_count"] == null ? undefined : json["history_login_count"],
-        checkImpossibleTravel:
-            json["check_impossible_travel"] == null ? undefined : json["check_impossible_travel"],
-        impossibleToleranceKm:
-            json["impossible_tolerance_km"] == null ? undefined : json["impossible_tolerance_km"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'boundTo': json['bound_to'],
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'asns': json['asns'] == null ? undefined : json['asns'],
+        'countries': ((json['countries'] as Array<any>).map(CountryCodeEnumFromJSON)),
+        'countriesObj': ((json['countries_obj'] as Array<any>).map(GeoIPPolicyCountriesObjInnerFromJSON)),
+        'checkHistoryDistance': json['check_history_distance'] == null ? undefined : json['check_history_distance'],
+        'historyMaxDistanceKm': json['history_max_distance_km'] == null ? undefined : json['history_max_distance_km'],
+        'distanceToleranceKm': json['distance_tolerance_km'] == null ? undefined : json['distance_tolerance_km'],
+        'historyLoginCount': json['history_login_count'] == null ? undefined : json['history_login_count'],
+        'checkImpossibleTravel': json['check_impossible_travel'] == null ? undefined : json['check_impossible_travel'],
+        'impossibleToleranceKm': json['impossible_tolerance_km'] == null ? undefined : json['impossible_tolerance_km'],
     };
 }
 
@@ -202,35 +160,23 @@ export function GeoIPPolicyToJSON(json: any): GeoIPPolicy {
     return GeoIPPolicyToJSONTyped(json, false);
 }
 
-export function GeoIPPolicyToJSONTyped(
-    value?: Omit<
-        GeoIPPolicy,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "boundTo"
-        | "lastUpdated"
-        | "created"
-        | "countriesObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GeoIPPolicyToJSONTyped(value?: Omit<GeoIPPolicy, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'boundTo'|'lastUpdated'|'created'|'countriesObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        asns: value["asns"],
-        countries: (value["countries"] as Array<any>).map(CountryCodeEnumToJSON),
-        check_history_distance: value["checkHistoryDistance"],
-        history_max_distance_km: value["historyMaxDistanceKm"],
-        distance_tolerance_km: value["distanceToleranceKm"],
-        history_login_count: value["historyLoginCount"],
-        check_impossible_travel: value["checkImpossibleTravel"],
-        impossible_tolerance_km: value["impossibleToleranceKm"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'asns': value['asns'],
+        'countries': ((value['countries'] as Array<any>).map(CountryCodeEnumToJSON)),
+        'check_history_distance': value['checkHistoryDistance'],
+        'history_max_distance_km': value['historyMaxDistanceKm'],
+        'distance_tolerance_km': value['distanceToleranceKm'],
+        'history_login_count': value['historyLoginCount'],
+        'check_impossible_travel': value['checkImpossibleTravel'],
+        'impossible_tolerance_km': value['impossibleToleranceKm'],
     };
 }
+

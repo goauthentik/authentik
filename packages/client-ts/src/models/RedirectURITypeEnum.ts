@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const RedirectURITypeEnum = {
-    Authorization: "authorization",
-    Logout: "logout",
-    UnknownDefaultOpenApi: "11184809",
+    Authorization: 'authorization',
+    Logout: 'logout',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type RedirectURITypeEnum = (typeof RedirectURITypeEnum)[keyof typeof RedirectURITypeEnum];
+export type RedirectURITypeEnum = typeof RedirectURITypeEnum[keyof typeof RedirectURITypeEnum];
+
 
 export function instanceOfRedirectURITypeEnum(value: any): boolean {
     for (const key in RedirectURITypeEnum) {
@@ -38,10 +39,7 @@ export function RedirectURITypeEnumFromJSON(json: any): RedirectURITypeEnum {
     return RedirectURITypeEnumFromJSONTyped(json, false);
 }
 
-export function RedirectURITypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RedirectURITypeEnum {
+export function RedirectURITypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectURITypeEnum {
     return json as RedirectURITypeEnum;
 }
 
@@ -49,9 +47,7 @@ export function RedirectURITypeEnumToJSON(value?: RedirectURITypeEnum | null): a
     return value as any;
 }
 
-export function RedirectURITypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): RedirectURITypeEnum {
+export function RedirectURITypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): RedirectURITypeEnum {
     return value as RedirectURITypeEnum;
 }
+

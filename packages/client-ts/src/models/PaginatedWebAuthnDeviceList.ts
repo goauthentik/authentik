@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { WebAuthnDevice } from "./WebAuthnDevice";
-import { WebAuthnDeviceFromJSON, WebAuthnDeviceToJSON } from "./WebAuthnDevice";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { WebAuthnDevice } from './WebAuthnDevice';
+import {
+    WebAuthnDeviceFromJSON,
+    WebAuthnDeviceToJSON,
+} from './WebAuthnDevice';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedWebAuthnDeviceList
  */
 export interface PaginatedWebAuthnDeviceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<WebAuthnDevice>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedWebAuthnDeviceList interface.
  */
-export function instanceOfPaginatedWebAuthnDeviceList(
-    value: object,
-): value is PaginatedWebAuthnDeviceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedWebAuthnDeviceList(value: object): value is PaginatedWebAuthnDeviceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedWebAuthnDeviceListFromJSON(json: any): PaginatedWebAuth
     return PaginatedWebAuthnDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedWebAuthnDeviceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedWebAuthnDeviceList {
+export function PaginatedWebAuthnDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedWebAuthnDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(WebAuthnDeviceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(WebAuthnDeviceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedWebAuthnDeviceListToJSON(json: any): PaginatedWebAuthnD
     return PaginatedWebAuthnDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedWebAuthnDeviceListToJSONTyped(
-    value?: PaginatedWebAuthnDeviceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedWebAuthnDeviceListToJSONTyped(value?: PaginatedWebAuthnDeviceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(WebAuthnDeviceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(WebAuthnDeviceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

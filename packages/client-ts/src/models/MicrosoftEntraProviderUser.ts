@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
 
 /**
  * MicrosoftEntraProviderUser Serializer
@@ -22,55 +23,41 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface MicrosoftEntraProviderUser {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     microsoftId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser;
     /**
-     *
+     * 
      */
     provider: number;
     /**
-     *
+     * 
      */
-    readonly attributes: { [key: string]: any };
+    readonly attributes: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the MicrosoftEntraProviderUser interface.
  */
-export function instanceOfMicrosoftEntraProviderUser(
-    value: object,
-): value is MicrosoftEntraProviderUser {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("microsoftId" in (value as Record<string, any>)) &&
-            !("microsoft_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["microsoftId"] === undefined &&
-            (value as Record<string, any>)["microsoft_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("attributes" in value) || value["attributes"] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderUser(value: object): value is MicrosoftEntraProviderUser {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('microsoftId' in (value as Record<string, any>)) && !('microsoft_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['microsoftId'] === undefined && (value as Record<string, any>)['microsoft_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if (!('attributes' in value) || value['attributes'] === undefined) return false;
     return true;
 }
 
@@ -78,20 +65,18 @@ export function MicrosoftEntraProviderUserFromJSON(json: any): MicrosoftEntraPro
     return MicrosoftEntraProviderUserFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderUserFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MicrosoftEntraProviderUser {
+export function MicrosoftEntraProviderUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderUser {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        microsoftId: json["microsoft_id"],
-        user: json["user"],
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        provider: json["provider"],
-        attributes: json["attributes"],
+        
+        'id': json['id'],
+        'microsoftId': json['microsoft_id'],
+        'user': json['user'],
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'provider': json['provider'],
+        'attributes': json['attributes'],
     };
 }
 
@@ -99,17 +84,16 @@ export function MicrosoftEntraProviderUserToJSON(json: any): MicrosoftEntraProvi
     return MicrosoftEntraProviderUserToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderUserToJSONTyped(
-    value?: Omit<MicrosoftEntraProviderUser, "id" | "userObj" | "attributes"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MicrosoftEntraProviderUserToJSONTyped(value?: Omit<MicrosoftEntraProviderUser, 'id'|'userObj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        microsoft_id: value["microsoftId"],
-        user: value["user"],
-        provider: value["provider"],
+        
+        'microsoft_id': value['microsoftId'],
+        'user': value['user'],
+        'provider': value['provider'],
     };
 }
+

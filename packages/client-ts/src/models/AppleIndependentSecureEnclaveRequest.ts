@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,13 +12,13 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface AppleIndependentSecureEnclaveRequest
  */
 export interface AppleIndependentSecureEnclaveRequest {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
@@ -27,15 +26,15 @@ export interface AppleIndependentSecureEnclaveRequest {
      */
     user: number;
     /**
-     *
+     * 
      */
     appleSecureEnclaveKey: string;
     /**
-     *
+     * 
      */
     appleEnclaveKeyId: string;
     /**
-     *
+     * 
      */
     deviceType: string;
 }
@@ -43,75 +42,48 @@ export interface AppleIndependentSecureEnclaveRequest {
 /**
  * Check if a given object implements the AppleIndependentSecureEnclaveRequest interface.
  */
-export function instanceOfAppleIndependentSecureEnclaveRequest(
-    value: object,
-): value is AppleIndependentSecureEnclaveRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("appleSecureEnclaveKey" in (value as Record<string, any>)) &&
-            !("apple_secure_enclave_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appleSecureEnclaveKey"] === undefined &&
-            (value as Record<string, any>)["apple_secure_enclave_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("appleEnclaveKeyId" in (value as Record<string, any>)) &&
-            !("apple_enclave_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["appleEnclaveKeyId"] === undefined &&
-            (value as Record<string, any>)["apple_enclave_key_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceType" in (value as Record<string, any>)) &&
-            !("device_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceType"] === undefined &&
-            (value as Record<string, any>)["device_type"] === undefined)
-    )
-        return false;
+export function instanceOfAppleIndependentSecureEnclaveRequest(value: object): value is AppleIndependentSecureEnclaveRequest {
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('appleSecureEnclaveKey' in (value as Record<string, any>)) && !('apple_secure_enclave_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['appleSecureEnclaveKey'] === undefined && (value as Record<string, any>)['apple_secure_enclave_key'] === undefined)) return false;
+    if ((!('appleEnclaveKeyId' in (value as Record<string, any>)) && !('apple_enclave_key_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['appleEnclaveKeyId'] === undefined && (value as Record<string, any>)['apple_enclave_key_id'] === undefined)) return false;
+    if ((!('deviceType' in (value as Record<string, any>)) && !('device_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceType'] === undefined && (value as Record<string, any>)['device_type'] === undefined)) return false;
     return true;
 }
 
-export function AppleIndependentSecureEnclaveRequestFromJSON(
-    json: any,
-): AppleIndependentSecureEnclaveRequest {
+export function AppleIndependentSecureEnclaveRequestFromJSON(json: any): AppleIndependentSecureEnclaveRequest {
     return AppleIndependentSecureEnclaveRequestFromJSONTyped(json, false);
 }
 
-export function AppleIndependentSecureEnclaveRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AppleIndependentSecureEnclaveRequest {
+export function AppleIndependentSecureEnclaveRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AppleIndependentSecureEnclaveRequest {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        user: json["user"],
-        appleSecureEnclaveKey: json["apple_secure_enclave_key"],
-        appleEnclaveKeyId: json["apple_enclave_key_id"],
-        deviceType: json["device_type"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'user': json['user'],
+        'appleSecureEnclaveKey': json['apple_secure_enclave_key'],
+        'appleEnclaveKeyId': json['apple_enclave_key_id'],
+        'deviceType': json['device_type'],
     };
 }
 
-export function AppleIndependentSecureEnclaveRequestToJSON(
-    json: any,
-): AppleIndependentSecureEnclaveRequest {
+export function AppleIndependentSecureEnclaveRequestToJSON(json: any): AppleIndependentSecureEnclaveRequest {
     return AppleIndependentSecureEnclaveRequestToJSONTyped(json, false);
 }
 
-export function AppleIndependentSecureEnclaveRequestToJSONTyped(
-    value?: AppleIndependentSecureEnclaveRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AppleIndependentSecureEnclaveRequestToJSONTyped(value?: AppleIndependentSecureEnclaveRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        user: value["user"],
-        apple_secure_enclave_key: value["appleSecureEnclaveKey"],
-        apple_enclave_key_id: value["appleEnclaveKeyId"],
-        device_type: value["deviceType"],
+        
+        'uuid': value['uuid'],
+        'user': value['user'],
+        'apple_secure_enclave_key': value['appleSecureEnclaveKey'],
+        'apple_enclave_key_id': value['appleEnclaveKeyId'],
+        'device_type': value['deviceType'],
     };
 }
+

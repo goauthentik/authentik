@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceChallengeRequest } from "./DeviceChallengeRequest";
+import type { DeviceChallengeRequest } from './DeviceChallengeRequest';
 import {
     DeviceChallengeRequestFromJSON,
     DeviceChallengeRequestToJSON,
-} from "./DeviceChallengeRequest";
+} from './DeviceChallengeRequest';
 
 /**
  * Challenge used for Code-based and WebAuthn authenticators
@@ -25,27 +24,27 @@ import {
  */
 export interface AuthenticatorValidationChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     selectedChallenge?: DeviceChallengeRequest;
     /**
-     *
+     * 
      */
     selectedStage?: string;
     /**
-     *
+     * 
      */
     code?: string;
     /**
-     *
+     * 
      */
-    webauthn?: { [key: string]: any };
+    webauthn?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     duo?: number;
 }
@@ -53,58 +52,46 @@ export interface AuthenticatorValidationChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorValidationChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorValidationChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorValidationChallengeResponseRequest {
+export function instanceOfAuthenticatorValidationChallengeResponseRequest(value: object): value is AuthenticatorValidationChallengeResponseRequest {
     return true;
 }
 
-export function AuthenticatorValidationChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorValidationChallengeResponseRequest {
+export function AuthenticatorValidationChallengeResponseRequestFromJSON(json: any): AuthenticatorValidationChallengeResponseRequest {
     return AuthenticatorValidationChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorValidationChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorValidationChallengeResponseRequest {
+export function AuthenticatorValidationChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorValidationChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        selectedChallenge:
-            json["selected_challenge"] == null
-                ? undefined
-                : DeviceChallengeRequestFromJSON(json["selected_challenge"]),
-        selectedStage: json["selected_stage"] == null ? undefined : json["selected_stage"],
-        code: json["code"] == null ? undefined : json["code"],
-        webauthn: json["webauthn"] == null ? undefined : json["webauthn"],
-        duo: json["duo"] == null ? undefined : json["duo"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'selectedChallenge': json['selected_challenge'] == null ? undefined : DeviceChallengeRequestFromJSON(json['selected_challenge']),
+        'selectedStage': json['selected_stage'] == null ? undefined : json['selected_stage'],
+        'code': json['code'] == null ? undefined : json['code'],
+        'webauthn': json['webauthn'] == null ? undefined : json['webauthn'],
+        'duo': json['duo'] == null ? undefined : json['duo'],
     };
 }
 
-export function AuthenticatorValidationChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorValidationChallengeResponseRequest {
+export function AuthenticatorValidationChallengeResponseRequestToJSON(json: any): AuthenticatorValidationChallengeResponseRequest {
     return AuthenticatorValidationChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorValidationChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorValidationChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorValidationChallengeResponseRequestToJSONTyped(value?: AuthenticatorValidationChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        selected_challenge: DeviceChallengeRequestToJSON(value["selectedChallenge"]),
-        selected_stage: value["selectedStage"],
-        code: value["code"],
-        webauthn: value["webauthn"],
-        duo: value["duo"],
+        
+        'component': value['component'],
+        'selected_challenge': DeviceChallengeRequestToJSON(value['selectedChallenge']),
+        'selected_stage': value['selectedStage'],
+        'code': value['code'],
+        'webauthn': value['webauthn'],
+        'duo': value['duo'],
     };
 }
+

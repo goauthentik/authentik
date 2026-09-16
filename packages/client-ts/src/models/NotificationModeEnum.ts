@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const NotificationModeEnum = {
-    All: "all",
-    Direct: "direct",
-    RandomMinReviewers: "random_min_reviewers",
-    UnknownDefaultOpenApi: "11184809",
+    All: 'all',
+    Direct: 'direct',
+    RandomMinReviewers: 'random_min_reviewers',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type NotificationModeEnum = (typeof NotificationModeEnum)[keyof typeof NotificationModeEnum];
+export type NotificationModeEnum = typeof NotificationModeEnum[keyof typeof NotificationModeEnum];
+
 
 export function instanceOfNotificationModeEnum(value: any): boolean {
     for (const key in NotificationModeEnum) {
@@ -39,10 +40,7 @@ export function NotificationModeEnumFromJSON(json: any): NotificationModeEnum {
     return NotificationModeEnumFromJSONTyped(json, false);
 }
 
-export function NotificationModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationModeEnum {
+export function NotificationModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationModeEnum {
     return json as NotificationModeEnum;
 }
 
@@ -50,9 +48,7 @@ export function NotificationModeEnumToJSON(value?: NotificationModeEnum | null):
     return value as any;
 }
 
-export function NotificationModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): NotificationModeEnum {
+export function NotificationModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): NotificationModeEnum {
     return value as NotificationModeEnum;
 }
+

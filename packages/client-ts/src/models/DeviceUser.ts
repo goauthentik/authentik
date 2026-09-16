@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,25 +12,25 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface DeviceUser
  */
 export interface DeviceUser {
     /**
-     *
+     * 
      */
     id: string;
     /**
-     *
+     * 
      */
     username?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     home?: string;
 }
@@ -40,7 +39,7 @@ export interface DeviceUser {
  * Check if a given object implements the DeviceUser interface.
  */
 export function instanceOfDeviceUser(value: object): value is DeviceUser {
-    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -53,10 +52,11 @@ export function DeviceUserFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        id: json["id"],
-        username: json["username"] == null ? undefined : json["username"],
-        name: json["name"] == null ? undefined : json["name"],
-        home: json["home"] == null ? undefined : json["home"],
+        
+        'id': json['id'],
+        'username': json['username'] == null ? undefined : json['username'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'home': json['home'] == null ? undefined : json['home'],
     };
 }
 
@@ -64,18 +64,17 @@ export function DeviceUserToJSON(json: any): DeviceUser {
     return DeviceUserToJSONTyped(json, false);
 }
 
-export function DeviceUserToJSONTyped(
-    value?: DeviceUser | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceUserToJSONTyped(value?: DeviceUser | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        username: value["username"],
-        name: value["name"],
-        home: value["home"],
+        
+        'id': value['id'],
+        'username': value['username'],
+        'name': value['name'],
+        'home': value['home'],
     };
 }
+

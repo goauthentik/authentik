@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,14 @@
  * Do not edit the class manually.
  */
 
-import type { Config } from "./Config";
-import { ConfigFromJSON } from "./Config";
-import type { LicenseStatusEnum } from "./LicenseStatusEnum";
-import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum";
+import type { LicenseStatusEnum } from './LicenseStatusEnum';
+import {
+    LicenseStatusEnumFromJSON,
+} from './LicenseStatusEnum';
+import type { Config } from './Config';
+import {
+    ConfigFromJSON,
+} from './Config';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -24,121 +27,63 @@ import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum";
  */
 export interface AgentConfig {
     /**
-     *
+     * 
      */
     readonly deviceId: string;
     /**
-     *
+     * 
      */
     readonly refreshInterval: number;
     /**
-     *
+     * 
      */
     readonly authorizationFlow: string | null;
     /**
-     *
+     * 
      */
-    readonly jwksAuth: { [key: string]: any };
+    readonly jwksAuth: { [key: string]: any; };
     /**
-     *
+     * 
      */
-    readonly jwksChallenge: { [key: string]: any } | null;
+    readonly jwksChallenge: { [key: string]: any; } | null;
     /**
-     *
+     * 
      */
     nssUidOffset: number;
     /**
-     *
+     * 
      */
     nssGidOffset: number;
     /**
-     *
+     * 
      */
     authTerminateSessionOnExpiry: boolean;
     /**
-     *
+     * 
      */
     readonly systemConfig: Config;
     /**
-     *
+     * 
      */
     readonly licenseStatus: LicenseStatusEnum | null;
 }
+
+
 
 /**
  * Check if a given object implements the AgentConfig interface.
  */
 export function instanceOfAgentConfig(value: object): value is AgentConfig {
-    if (
-        (!("deviceId" in (value as Record<string, any>)) &&
-            !("device_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceId"] === undefined &&
-            (value as Record<string, any>)["device_id"] === undefined)
-    )
-        return false;
-    if (
-        (!("refreshInterval" in (value as Record<string, any>)) &&
-            !("refresh_interval" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["refreshInterval"] === undefined &&
-            (value as Record<string, any>)["refresh_interval"] === undefined)
-    )
-        return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("jwksAuth" in (value as Record<string, any>)) &&
-            !("jwks_auth" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["jwksAuth"] === undefined &&
-            (value as Record<string, any>)["jwks_auth"] === undefined)
-    )
-        return false;
-    if (
-        (!("jwksChallenge" in (value as Record<string, any>)) &&
-            !("jwks_challenge" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["jwksChallenge"] === undefined &&
-            (value as Record<string, any>)["jwks_challenge"] === undefined)
-    )
-        return false;
-    if (
-        (!("nssUidOffset" in (value as Record<string, any>)) &&
-            !("nss_uid_offset" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["nssUidOffset"] === undefined &&
-            (value as Record<string, any>)["nss_uid_offset"] === undefined)
-    )
-        return false;
-    if (
-        (!("nssGidOffset" in (value as Record<string, any>)) &&
-            !("nss_gid_offset" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["nssGidOffset"] === undefined &&
-            (value as Record<string, any>)["nss_gid_offset"] === undefined)
-    )
-        return false;
-    if (
-        (!("authTerminateSessionOnExpiry" in (value as Record<string, any>)) &&
-            !("auth_terminate_session_on_expiry" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authTerminateSessionOnExpiry"] === undefined &&
-            (value as Record<string, any>)["auth_terminate_session_on_expiry"] === undefined)
-    )
-        return false;
-    if (
-        (!("systemConfig" in (value as Record<string, any>)) &&
-            !("system_config" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["systemConfig"] === undefined &&
-            (value as Record<string, any>)["system_config"] === undefined)
-    )
-        return false;
-    if (
-        (!("licenseStatus" in (value as Record<string, any>)) &&
-            !("license_status" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["licenseStatus"] === undefined &&
-            (value as Record<string, any>)["license_status"] === undefined)
-    )
-        return false;
+    if ((!('deviceId' in (value as Record<string, any>)) && !('device_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceId'] === undefined && (value as Record<string, any>)['device_id'] === undefined)) return false;
+    if ((!('refreshInterval' in (value as Record<string, any>)) && !('refresh_interval' in (value as Record<string, any>))) || ((value as Record<string, any>)['refreshInterval'] === undefined && (value as Record<string, any>)['refresh_interval'] === undefined)) return false;
+    if ((!('authorizationFlow' in (value as Record<string, any>)) && !('authorization_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationFlow'] === undefined && (value as Record<string, any>)['authorization_flow'] === undefined)) return false;
+    if ((!('jwksAuth' in (value as Record<string, any>)) && !('jwks_auth' in (value as Record<string, any>))) || ((value as Record<string, any>)['jwksAuth'] === undefined && (value as Record<string, any>)['jwks_auth'] === undefined)) return false;
+    if ((!('jwksChallenge' in (value as Record<string, any>)) && !('jwks_challenge' in (value as Record<string, any>))) || ((value as Record<string, any>)['jwksChallenge'] === undefined && (value as Record<string, any>)['jwks_challenge'] === undefined)) return false;
+    if ((!('nssUidOffset' in (value as Record<string, any>)) && !('nss_uid_offset' in (value as Record<string, any>))) || ((value as Record<string, any>)['nssUidOffset'] === undefined && (value as Record<string, any>)['nss_uid_offset'] === undefined)) return false;
+    if ((!('nssGidOffset' in (value as Record<string, any>)) && !('nss_gid_offset' in (value as Record<string, any>))) || ((value as Record<string, any>)['nssGidOffset'] === undefined && (value as Record<string, any>)['nss_gid_offset'] === undefined)) return false;
+    if ((!('authTerminateSessionOnExpiry' in (value as Record<string, any>)) && !('auth_terminate_session_on_expiry' in (value as Record<string, any>))) || ((value as Record<string, any>)['authTerminateSessionOnExpiry'] === undefined && (value as Record<string, any>)['auth_terminate_session_on_expiry'] === undefined)) return false;
+    if ((!('systemConfig' in (value as Record<string, any>)) && !('system_config' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemConfig'] === undefined && (value as Record<string, any>)['system_config'] === undefined)) return false;
+    if ((!('licenseStatus' in (value as Record<string, any>)) && !('license_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['licenseStatus'] === undefined && (value as Record<string, any>)['license_status'] === undefined)) return false;
     return true;
 }
 
@@ -151,16 +96,17 @@ export function AgentConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        deviceId: json["device_id"],
-        refreshInterval: json["refresh_interval"],
-        authorizationFlow: json["authorization_flow"],
-        jwksAuth: json["jwks_auth"],
-        jwksChallenge: json["jwks_challenge"],
-        nssUidOffset: json["nss_uid_offset"],
-        nssGidOffset: json["nss_gid_offset"],
-        authTerminateSessionOnExpiry: json["auth_terminate_session_on_expiry"],
-        systemConfig: ConfigFromJSON(json["system_config"]),
-        licenseStatus: LicenseStatusEnumFromJSON(json["license_status"]),
+        
+        'deviceId': json['device_id'],
+        'refreshInterval': json['refresh_interval'],
+        'authorizationFlow': json['authorization_flow'],
+        'jwksAuth': json['jwks_auth'],
+        'jwksChallenge': json['jwks_challenge'],
+        'nssUidOffset': json['nss_uid_offset'],
+        'nssGidOffset': json['nss_gid_offset'],
+        'authTerminateSessionOnExpiry': json['auth_terminate_session_on_expiry'],
+        'systemConfig': ConfigFromJSON(json['system_config']),
+        'licenseStatus': LicenseStatusEnumFromJSON(json['license_status']),
     };
 }
 
@@ -168,26 +114,16 @@ export function AgentConfigToJSON(json: any): AgentConfig {
     return AgentConfigToJSONTyped(json, false);
 }
 
-export function AgentConfigToJSONTyped(
-    value?: Omit<
-        AgentConfig,
-        | "deviceId"
-        | "refreshInterval"
-        | "authorizationFlow"
-        | "jwksAuth"
-        | "jwksChallenge"
-        | "systemConfig"
-        | "licenseStatus"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentConfigToJSONTyped(value?: Omit<AgentConfig, 'deviceId'|'refreshInterval'|'authorizationFlow'|'jwksAuth'|'jwksChallenge'|'systemConfig'|'licenseStatus'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        nss_uid_offset: value["nssUidOffset"],
-        nss_gid_offset: value["nssGidOffset"],
-        auth_terminate_session_on_expiry: value["authTerminateSessionOnExpiry"],
+        
+        'nss_uid_offset': value['nssUidOffset'],
+        'nss_gid_offset': value['nssGidOffset'],
+        'auth_terminate_session_on_expiry': value['authTerminateSessionOnExpiry'],
     };
 }
+

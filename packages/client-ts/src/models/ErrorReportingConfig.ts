@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,23 +18,23 @@
  */
 export interface ErrorReportingConfig {
     /**
-     *
+     * 
      */
     readonly enabled: boolean;
     /**
-     *
+     * 
      */
     readonly sentryDsn: string;
     /**
-     *
+     * 
      */
     readonly environment: string;
     /**
-     *
+     * 
      */
     readonly sendPii: boolean;
     /**
-     *
+     * 
      */
     readonly tracesSampleRate: number;
 }
@@ -44,29 +43,11 @@ export interface ErrorReportingConfig {
  * Check if a given object implements the ErrorReportingConfig interface.
  */
 export function instanceOfErrorReportingConfig(value: object): value is ErrorReportingConfig {
-    if (!("enabled" in value) || value["enabled"] === undefined) return false;
-    if (
-        (!("sentryDsn" in (value as Record<string, any>)) &&
-            !("sentry_dsn" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sentryDsn"] === undefined &&
-            (value as Record<string, any>)["sentry_dsn"] === undefined)
-    )
-        return false;
-    if (!("environment" in value) || value["environment"] === undefined) return false;
-    if (
-        (!("sendPii" in (value as Record<string, any>)) &&
-            !("send_pii" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sendPii"] === undefined &&
-            (value as Record<string, any>)["send_pii"] === undefined)
-    )
-        return false;
-    if (
-        (!("tracesSampleRate" in (value as Record<string, any>)) &&
-            !("traces_sample_rate" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tracesSampleRate"] === undefined &&
-            (value as Record<string, any>)["traces_sample_rate"] === undefined)
-    )
-        return false;
+    if (!('enabled' in value) || value['enabled'] === undefined) return false;
+    if ((!('sentryDsn' in (value as Record<string, any>)) && !('sentry_dsn' in (value as Record<string, any>))) || ((value as Record<string, any>)['sentryDsn'] === undefined && (value as Record<string, any>)['sentry_dsn'] === undefined)) return false;
+    if (!('environment' in value) || value['environment'] === undefined) return false;
+    if ((!('sendPii' in (value as Record<string, any>)) && !('send_pii' in (value as Record<string, any>))) || ((value as Record<string, any>)['sendPii'] === undefined && (value as Record<string, any>)['send_pii'] === undefined)) return false;
+    if ((!('tracesSampleRate' in (value as Record<string, any>)) && !('traces_sample_rate' in (value as Record<string, any>))) || ((value as Record<string, any>)['tracesSampleRate'] === undefined && (value as Record<string, any>)['traces_sample_rate'] === undefined)) return false;
     return true;
 }
 
@@ -74,19 +55,17 @@ export function ErrorReportingConfigFromJSON(json: any): ErrorReportingConfig {
     return ErrorReportingConfigFromJSONTyped(json, false);
 }
 
-export function ErrorReportingConfigFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ErrorReportingConfig {
+export function ErrorReportingConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorReportingConfig {
     if (json == null) {
         return json;
     }
     return {
-        enabled: json["enabled"],
-        sentryDsn: json["sentry_dsn"],
-        environment: json["environment"],
-        sendPii: json["send_pii"],
-        tracesSampleRate: json["traces_sample_rate"],
+        
+        'enabled': json['enabled'],
+        'sentryDsn': json['sentry_dsn'],
+        'environment': json['environment'],
+        'sendPii': json['send_pii'],
+        'tracesSampleRate': json['traces_sample_rate'],
     };
 }
 
@@ -94,16 +73,13 @@ export function ErrorReportingConfigToJSON(json: any): ErrorReportingConfig {
     return ErrorReportingConfigToJSONTyped(json, false);
 }
 
-export function ErrorReportingConfigToJSONTyped(
-    value?: Omit<
-        ErrorReportingConfig,
-        "enabled" | "sentryDsn" | "environment" | "sendPii" | "tracesSampleRate"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ErrorReportingConfigToJSONTyped(value?: Omit<ErrorReportingConfig, 'enabled'|'sentryDsn'|'environment'|'sendPii'|'tracesSampleRate'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

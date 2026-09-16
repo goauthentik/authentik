@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,16 @@
  * Do not edit the class manually.
  */
 
-import type { GeoipBindingEnum } from "./GeoipBindingEnum";
-import { GeoipBindingEnumFromJSON, GeoipBindingEnumToJSON } from "./GeoipBindingEnum";
-import type { NetworkBindingEnum } from "./NetworkBindingEnum";
-import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkBindingEnum";
+import type { GeoipBindingEnum } from './GeoipBindingEnum';
+import {
+    GeoipBindingEnumFromJSON,
+    GeoipBindingEnumToJSON,
+} from './GeoipBindingEnum';
+import type { NetworkBindingEnum } from './NetworkBindingEnum';
+import {
+    NetworkBindingEnumFromJSON,
+    NetworkBindingEnumToJSON,
+} from './NetworkBindingEnum';
 
 /**
  * UserLoginStage Serializer
@@ -24,7 +29,7 @@ import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkB
  */
 export interface PatchedUserLoginStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -53,12 +58,12 @@ export interface PatchedUserLoginStageRequest {
     rememberDevice?: string;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedUserLoginStageRequest interface.
  */
-export function instanceOfPatchedUserLoginStageRequest(
-    value: object,
-): value is PatchedUserLoginStageRequest {
+export function instanceOfPatchedUserLoginStageRequest(value: object): value is PatchedUserLoginStageRequest {
     return true;
 }
 
@@ -66,29 +71,19 @@ export function PatchedUserLoginStageRequestFromJSON(json: any): PatchedUserLogi
     return PatchedUserLoginStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserLoginStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserLoginStageRequest {
+export function PatchedUserLoginStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserLoginStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        sessionDuration: json["session_duration"] == null ? undefined : json["session_duration"],
-        terminateOtherSessions:
-            json["terminate_other_sessions"] == null ? undefined : json["terminate_other_sessions"],
-        rememberMeOffset:
-            json["remember_me_offset"] == null ? undefined : json["remember_me_offset"],
-        networkBinding:
-            json["network_binding"] == null
-                ? undefined
-                : NetworkBindingEnumFromJSON(json["network_binding"]),
-        geoipBinding:
-            json["geoip_binding"] == null
-                ? undefined
-                : GeoipBindingEnumFromJSON(json["geoip_binding"]),
-        rememberDevice: json["remember_device"] == null ? undefined : json["remember_device"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'sessionDuration': json['session_duration'] == null ? undefined : json['session_duration'],
+        'terminateOtherSessions': json['terminate_other_sessions'] == null ? undefined : json['terminate_other_sessions'],
+        'rememberMeOffset': json['remember_me_offset'] == null ? undefined : json['remember_me_offset'],
+        'networkBinding': json['network_binding'] == null ? undefined : NetworkBindingEnumFromJSON(json['network_binding']),
+        'geoipBinding': json['geoip_binding'] == null ? undefined : GeoipBindingEnumFromJSON(json['geoip_binding']),
+        'rememberDevice': json['remember_device'] == null ? undefined : json['remember_device'],
     };
 }
 
@@ -96,21 +91,20 @@ export function PatchedUserLoginStageRequestToJSON(json: any): PatchedUserLoginS
     return PatchedUserLoginStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserLoginStageRequestToJSONTyped(
-    value?: PatchedUserLoginStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserLoginStageRequestToJSONTyped(value?: PatchedUserLoginStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        session_duration: value["sessionDuration"],
-        terminate_other_sessions: value["terminateOtherSessions"],
-        remember_me_offset: value["rememberMeOffset"],
-        network_binding: NetworkBindingEnumToJSON(value["networkBinding"]),
-        geoip_binding: GeoipBindingEnumToJSON(value["geoipBinding"]),
-        remember_device: value["rememberDevice"],
+        
+        'name': value['name'],
+        'session_duration': value['sessionDuration'],
+        'terminate_other_sessions': value['terminateOtherSessions'],
+        'remember_me_offset': value['rememberMeOffset'],
+        'network_binding': NetworkBindingEnumToJSON(value['networkBinding']),
+        'geoip_binding': GeoipBindingEnumToJSON(value['geoipBinding']),
+        'remember_device': value['rememberDevice'],
     };
 }
+

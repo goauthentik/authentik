@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,50 +11,76 @@
  * Do not edit the class manually.
  */
 
-import { type App, AppFromJSON } from "../models/App";
-import { type FileList, FileListFromJSON } from "../models/FileList";
+import * as runtime from '../runtime';
+import {
+    type App,
+    AppFromJSON,
+} from '../models/App';
+import {
+    type FileList,
+    FileListFromJSON,
+} from '../models/FileList';
 import {
     type PatchedSettingsRequest,
     PatchedSettingsRequestToJSON,
-} from "../models/PatchedSettingsRequest";
-import { type Settings, SettingsFromJSON } from "../models/Settings";
-import { type SettingsRequest, SettingsRequestToJSON } from "../models/SettingsRequest";
-import { type SystemInfo, SystemInfoFromJSON } from "../models/SystemInfo";
-import { type UsageEnum } from "../models/UsageEnum";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type Version, VersionFromJSON } from "../models/Version";
-import { type VersionHistory, VersionHistoryFromJSON } from "../models/VersionHistory";
-import * as runtime from "../runtime";
+} from '../models/PatchedSettingsRequest';
+import {
+    type Settings,
+    SettingsFromJSON,
+} from '../models/Settings';
+import {
+    type SettingsRequest,
+    SettingsRequestToJSON,
+} from '../models/SettingsRequest';
+import {
+    type SystemInfo,
+    SystemInfoFromJSON,
+} from '../models/SystemInfo';
+import {
+    type UsageEnum,
+} from '../models/UsageEnum';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+} from '../models/UsedBy';
+import {
+    type Version,
+    VersionFromJSON,
+} from '../models/Version';
+import {
+    type VersionHistory,
+    VersionHistoryFromJSON,
+} from '../models/VersionHistory';
 
 export interface AdminFileCreateRequest {
     /**
-     *
+     * 
      */
     file: Blob;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     usage?: string;
 }
 
 export interface AdminFileDestroyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     usage?: UsageEnum;
 }
 
 export interface AdminFileListRequest {
     /**
-     *
+     * 
      */
     manageableOnly?: boolean;
     /**
@@ -63,42 +88,42 @@ export interface AdminFileListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     usage?: UsageEnum;
 }
 
 export interface AdminFileUsedByListRequest {
     /**
-     *
+     * 
      */
     name?: string;
 }
 
 export interface AdminModelsListRequest {
     /**
-     *
+     * 
      */
     filterHasAttributes?: boolean | null;
 }
 
 export interface AdminSettingsPartialUpdateRequest {
     /**
-     *
+     * 
      */
     patchedSettingsRequest?: PatchedSettingsRequest;
 }
 
 export interface AdminSettingsUpdateRequest {
     /**
-     *
+     * 
      */
     settingsRequest: SettingsRequest;
 }
 
 export interface AdminVersionHistoryListRequest {
     /**
-     *
+     * 
      */
     build?: string;
     /**
@@ -110,7 +135,7 @@ export interface AdminVersionHistoryListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     version?: string;
 }
@@ -123,9 +148,10 @@ export interface AdminVersionHistoryRetrieveRequest {
 }
 
 /**
- *
+ * 
  */
 export class AdminApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for adminAppsList without sending the request
      */
@@ -147,7 +173,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -156,9 +182,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Read-only view list all installed apps
      */
-    async adminAppsListRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<App>>> {
+    async adminAppsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<App>>> {
         const requestOptions = await this.adminAppsListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -168,9 +192,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Read-only view list all installed apps
      */
-    async adminAppsList(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<App>> {
+    async adminAppsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<App>> {
         const response = await this.adminAppsListRaw(initOverrides);
         return await response.value();
     }
@@ -178,13 +200,11 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminFileCreate without sending the request
      */
-    async adminFileCreateRequestOpts(
-        requestParameters: AdminFileCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["file"] == null) {
+    async adminFileCreateRequestOpts(requestParameters: AdminFileCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['file'] == null) {
             throw new runtime.RequiredError(
-                "file",
-                'Required parameter "file" was null or undefined when calling adminFileCreate().',
+                'file',
+                'Required parameter "file" was null or undefined when calling adminFileCreate().'
             );
         }
 
@@ -200,7 +220,9 @@ export class AdminApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
         // @ts-ignore: canConsumeForm may be unused
         const canConsumeForm = runtime.canConsumeForm(consumes);
 
@@ -214,23 +236,24 @@ export class AdminApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
-        if (requestParameters["file"] != null) {
-            formParams.append("file", requestParameters["file"] as any);
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
         }
 
-        if (requestParameters["name"] != null) {
-            formParams.append("name", requestParameters["name"] as any);
+        if (requestParameters['name'] != null) {
+            formParams.append('name', requestParameters['name'] as any);
         }
 
-        if (requestParameters["usage"] != null) {
-            formParams.append("usage", requestParameters["usage"] as any);
+        if (requestParameters['usage'] != null) {
+            formParams.append('usage', requestParameters['usage'] as any);
         }
+
 
         let urlPath = `/admin/file/`;
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: formParams,
@@ -240,10 +263,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Upload file to storage backend.
      */
-    async adminFileCreateRaw(
-        requestParameters: AdminFileCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async adminFileCreateRaw(requestParameters: AdminFileCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.adminFileCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -253,27 +273,22 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Upload file to storage backend.
      */
-    async adminFileCreate(
-        requestParameters: AdminFileCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async adminFileCreate(requestParameters: AdminFileCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminFileCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for adminFileDestroy without sending the request
      */
-    async adminFileDestroyRequestOpts(
-        requestParameters: AdminFileDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminFileDestroyRequestOpts(requestParameters: AdminFileDestroyRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["usage"] != null) {
-            queryParameters["usage"] = requestParameters["usage"];
+        if (requestParameters['usage'] != null) {
+            queryParameters['usage'] = requestParameters['usage'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -291,7 +306,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -300,10 +315,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Delete file from storage backend.
      */
-    async adminFileDestroyRaw(
-        requestParameters: AdminFileDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async adminFileDestroyRaw(requestParameters: AdminFileDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.adminFileDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -313,31 +325,26 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Delete file from storage backend.
      */
-    async adminFileDestroy(
-        requestParameters: AdminFileDestroyRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async adminFileDestroy(requestParameters: AdminFileDestroyRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminFileDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for adminFileList without sending the request
      */
-    async adminFileListRequestOpts(
-        requestParameters: AdminFileListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminFileListRequestOpts(requestParameters: AdminFileListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["manageableOnly"] != null) {
-            queryParameters["manageable_only"] = requestParameters["manageableOnly"];
+        if (requestParameters['manageableOnly'] != null) {
+            queryParameters['manageable_only'] = requestParameters['manageableOnly'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["usage"] != null) {
-            queryParameters["usage"] = requestParameters["usage"];
+        if (requestParameters['usage'] != null) {
+            queryParameters['usage'] = requestParameters['usage'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -355,7 +362,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -364,25 +371,17 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * List files from storage backend.
      */
-    async adminFileListRaw(
-        requestParameters: AdminFileListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<FileList>>> {
+    async adminFileListRaw(requestParameters: AdminFileListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<FileList>>> {
         const requestOptions = await this.adminFileListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(FileListFromJSON),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(FileListFromJSON));
     }
 
     /**
      * List files from storage backend.
      */
-    async adminFileList(
-        requestParameters: AdminFileListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<FileList>> {
+    async adminFileList(requestParameters: AdminFileListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<FileList>> {
         const response = await this.adminFileListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -390,13 +389,11 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminFileUsedByList without sending the request
      */
-    async adminFileUsedByListRequestOpts(
-        requestParameters: AdminFileUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminFileUsedByListRequestOpts(requestParameters: AdminFileUsedByListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -414,7 +411,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -422,10 +419,7 @@ export class AdminApi extends runtime.BaseAPI {
 
     /**
      */
-    async adminFileUsedByListRaw(
-        requestParameters: AdminFileUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async adminFileUsedByListRaw(requestParameters: AdminFileUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.adminFileUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -434,10 +428,7 @@ export class AdminApi extends runtime.BaseAPI {
 
     /**
      */
-    async adminFileUsedByList(
-        requestParameters: AdminFileUsedByListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
+    async adminFileUsedByList(requestParameters: AdminFileUsedByListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
         const response = await this.adminFileUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -445,13 +436,11 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminModelsList without sending the request
      */
-    async adminModelsListRequestOpts(
-        requestParameters: AdminModelsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminModelsListRequestOpts(requestParameters: AdminModelsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["filterHasAttributes"] != null) {
-            queryParameters["filter_has_attributes"] = requestParameters["filterHasAttributes"];
+        if (requestParameters['filterHasAttributes'] != null) {
+            queryParameters['filter_has_attributes'] = requestParameters['filterHasAttributes'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -469,7 +458,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -478,10 +467,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Read-only view list all installed models
      */
-    async adminModelsListRaw(
-        requestParameters: AdminModelsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<App>>> {
+    async adminModelsListRaw(requestParameters: AdminModelsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<App>>> {
         const requestOptions = await this.adminModelsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -491,10 +477,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Read-only view list all installed models
      */
-    async adminModelsList(
-        requestParameters: AdminModelsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<App>> {
+    async adminModelsList(requestParameters: AdminModelsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<App>> {
         const response = await this.adminModelsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -502,14 +485,12 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminSettingsPartialUpdate without sending the request
      */
-    async adminSettingsPartialUpdateRequestOpts(
-        requestParameters: AdminSettingsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminSettingsPartialUpdateRequestOpts(requestParameters: AdminSettingsPartialUpdateRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -524,20 +505,17 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSettingsRequestToJSON(requestParameters["patchedSettingsRequest"]),
+            body: PatchedSettingsRequestToJSON(requestParameters['patchedSettingsRequest']),
         };
     }
 
     /**
      * Settings view
      */
-    async adminSettingsPartialUpdateRaw(
-        requestParameters: AdminSettingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Settings>> {
+    async adminSettingsPartialUpdateRaw(requestParameters: AdminSettingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Settings>> {
         const requestOptions = await this.adminSettingsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -547,10 +525,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Settings view
      */
-    async adminSettingsPartialUpdate(
-        requestParameters: AdminSettingsPartialUpdateRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Settings> {
+    async adminSettingsPartialUpdate(requestParameters: AdminSettingsPartialUpdateRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Settings> {
         const response = await this.adminSettingsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -576,7 +551,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -585,9 +560,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Settings view
      */
-    async adminSettingsRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Settings>> {
+    async adminSettingsRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Settings>> {
         const requestOptions = await this.adminSettingsRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -597,9 +570,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Settings view
      */
-    async adminSettingsRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Settings> {
+    async adminSettingsRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Settings> {
         const response = await this.adminSettingsRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -607,13 +578,11 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminSettingsUpdate without sending the request
      */
-    async adminSettingsUpdateRequestOpts(
-        requestParameters: AdminSettingsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["settingsRequest"] == null) {
+    async adminSettingsUpdateRequestOpts(requestParameters: AdminSettingsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['settingsRequest'] == null) {
             throw new runtime.RequiredError(
-                "settingsRequest",
-                'Required parameter "settingsRequest" was null or undefined when calling adminSettingsUpdate().',
+                'settingsRequest',
+                'Required parameter "settingsRequest" was null or undefined when calling adminSettingsUpdate().'
             );
         }
 
@@ -621,7 +590,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -636,20 +605,17 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SettingsRequestToJSON(requestParameters["settingsRequest"]),
+            body: SettingsRequestToJSON(requestParameters['settingsRequest']),
         };
     }
 
     /**
      * Settings view
      */
-    async adminSettingsUpdateRaw(
-        requestParameters: AdminSettingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Settings>> {
+    async adminSettingsUpdateRaw(requestParameters: AdminSettingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Settings>> {
         const requestOptions = await this.adminSettingsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -659,10 +625,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Settings view
      */
-    async adminSettingsUpdate(
-        requestParameters: AdminSettingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Settings> {
+    async adminSettingsUpdate(requestParameters: AdminSettingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Settings> {
         const response = await this.adminSettingsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -688,7 +651,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -697,9 +660,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get system information.
      */
-    async adminSystemCreateRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SystemInfo>> {
+    async adminSystemCreateRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SystemInfo>> {
         const requestOptions = await this.adminSystemCreateRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -709,9 +670,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get system information.
      */
-    async adminSystemCreate(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SystemInfo> {
+    async adminSystemCreate(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SystemInfo> {
         const response = await this.adminSystemCreateRaw(initOverrides);
         return await response.value();
     }
@@ -737,7 +696,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -746,9 +705,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get system information.
      */
-    async adminSystemRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SystemInfo>> {
+    async adminSystemRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SystemInfo>> {
         const requestOptions = await this.adminSystemRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -758,9 +715,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get system information.
      */
-    async adminSystemRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SystemInfo> {
+    async adminSystemRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SystemInfo> {
         const response = await this.adminSystemRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -768,25 +723,23 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminVersionHistoryList without sending the request
      */
-    async adminVersionHistoryListRequestOpts(
-        requestParameters: AdminVersionHistoryListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async adminVersionHistoryListRequestOpts(requestParameters: AdminVersionHistoryListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["build"] != null) {
-            queryParameters["build"] = requestParameters["build"];
+        if (requestParameters['build'] != null) {
+            queryParameters['build'] = requestParameters['build'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["version"] != null) {
-            queryParameters["version"] = requestParameters["version"];
+        if (requestParameters['version'] != null) {
+            queryParameters['version'] = requestParameters['version'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -804,7 +757,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -813,25 +766,17 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * VersionHistory Viewset
      */
-    async adminVersionHistoryListRaw(
-        requestParameters: AdminVersionHistoryListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<VersionHistory>>> {
+    async adminVersionHistoryListRaw(requestParameters: AdminVersionHistoryListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<VersionHistory>>> {
         const requestOptions = await this.adminVersionHistoryListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(VersionHistoryFromJSON),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VersionHistoryFromJSON));
     }
 
     /**
      * VersionHistory Viewset
      */
-    async adminVersionHistoryList(
-        requestParameters: AdminVersionHistoryListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<VersionHistory>> {
+    async adminVersionHistoryList(requestParameters: AdminVersionHistoryListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<VersionHistory>> {
         const response = await this.adminVersionHistoryListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -839,13 +784,11 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminVersionHistoryRetrieve without sending the request
      */
-    async adminVersionHistoryRetrieveRequestOpts(
-        requestParameters: AdminVersionHistoryRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
+    async adminVersionHistoryRetrieveRequestOpts(requestParameters: AdminVersionHistoryRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling adminVersionHistoryRetrieve().',
+                'id',
+                'Required parameter "id" was null or undefined when calling adminVersionHistoryRetrieve().'
             );
         }
 
@@ -863,11 +806,11 @@ export class AdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/admin/version/history/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -876,29 +819,18 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * VersionHistory Viewset
      */
-    async adminVersionHistoryRetrieveRaw(
-        requestParameters: AdminVersionHistoryRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<VersionHistory>> {
+    async adminVersionHistoryRetrieveRaw(requestParameters: AdminVersionHistoryRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VersionHistory>> {
         const requestOptions = await this.adminVersionHistoryRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            VersionHistoryFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => VersionHistoryFromJSON(jsonValue));
     }
 
     /**
      * VersionHistory Viewset
      */
-    async adminVersionHistoryRetrieve(
-        requestParameters: AdminVersionHistoryRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<VersionHistory> {
-        const response = await this.adminVersionHistoryRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async adminVersionHistoryRetrieve(requestParameters: AdminVersionHistoryRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionHistory> {
+        const response = await this.adminVersionHistoryRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -923,7 +855,7 @@ export class AdminApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -932,9 +864,7 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get running and latest version.
      */
-    async adminVersionRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Version>> {
+    async adminVersionRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Version>> {
         const requestOptions = await this.adminVersionRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -944,10 +874,9 @@ export class AdminApi extends runtime.BaseAPI {
     /**
      * Get running and latest version.
      */
-    async adminVersionRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Version> {
+    async adminVersionRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Version> {
         const response = await this.adminVersionRetrieveRaw(initOverrides);
         return await response.value();
     }
+
 }

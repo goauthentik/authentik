@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,18 @@
  * Do not edit the class manually.
  */
 
-import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum";
+import * as runtime from '../runtime';
+import {
+    type DeliveryMethodEnum,
+} from '../models/DeliveryMethodEnum';
 import {
     type PaginatedSSFStreamList,
     PaginatedSSFStreamListFromJSON,
-} from "../models/PaginatedSSFStreamList";
-import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream";
-import * as runtime from "../runtime";
+} from '../models/PaginatedSSFStreamList';
+import {
+    type SSFStream,
+    SSFStreamFromJSON,
+} from '../models/SSFStream';
 
 export interface SsfStreamsDestroyRequest {
     /**
@@ -29,11 +33,11 @@ export interface SsfStreamsDestroyRequest {
 
 export interface SsfStreamsListRequest {
     /**
-     *
+     * 
      */
     deliveryMethod?: DeliveryMethodEnum;
     /**
-     *
+     * 
      */
     endpointUrl?: string;
     /**
@@ -49,7 +53,7 @@ export interface SsfStreamsListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     provider?: number;
     /**
@@ -66,19 +70,18 @@ export interface SsfStreamsRetrieveRequest {
 }
 
 /**
- *
+ * 
  */
 export class SsfApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for ssfStreamsDestroy without sending the request
      */
-    async ssfStreamsDestroyRequestOpts(
-        requestParameters: SsfStreamsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async ssfStreamsDestroyRequestOpts(requestParameters: SsfStreamsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling ssfStreamsDestroy().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling ssfStreamsDestroy().'
             );
         }
 
@@ -96,11 +99,11 @@ export class SsfApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/ssf/streams/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -109,10 +112,7 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsDestroyRaw(
-        requestParameters: SsfStreamsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async ssfStreamsDestroyRaw(requestParameters: SsfStreamsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.ssfStreamsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -122,47 +122,42 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsDestroy(
-        requestParameters: SsfStreamsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async ssfStreamsDestroy(requestParameters: SsfStreamsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.ssfStreamsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for ssfStreamsList without sending the request
      */
-    async ssfStreamsListRequestOpts(
-        requestParameters: SsfStreamsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async ssfStreamsListRequestOpts(requestParameters: SsfStreamsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["deliveryMethod"] != null) {
-            queryParameters["delivery_method"] = requestParameters["deliveryMethod"];
+        if (requestParameters['deliveryMethod'] != null) {
+            queryParameters['delivery_method'] = requestParameters['deliveryMethod'];
         }
 
-        if (requestParameters["endpointUrl"] != null) {
-            queryParameters["endpoint_url"] = requestParameters["endpointUrl"];
+        if (requestParameters['endpointUrl'] != null) {
+            queryParameters['endpoint_url'] = requestParameters['endpointUrl'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["provider"] != null) {
-            queryParameters["provider"] = requestParameters["provider"];
+        if (requestParameters['provider'] != null) {
+            queryParameters['provider'] = requestParameters['provider'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -180,7 +175,7 @@ export class SsfApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -189,25 +184,17 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsListRaw(
-        requestParameters: SsfStreamsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedSSFStreamList>> {
+    async ssfStreamsListRaw(requestParameters: SsfStreamsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSSFStreamList>> {
         const requestOptions = await this.ssfStreamsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedSSFStreamListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSSFStreamListFromJSON(jsonValue));
     }
 
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsList(
-        requestParameters: SsfStreamsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedSSFStreamList> {
+    async ssfStreamsList(requestParameters: SsfStreamsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSSFStreamList> {
         const response = await this.ssfStreamsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -215,13 +202,11 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * Creates request options for ssfStreamsRetrieve without sending the request
      */
-    async ssfStreamsRetrieveRequestOpts(
-        requestParameters: SsfStreamsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
+    async ssfStreamsRetrieveRequestOpts(requestParameters: SsfStreamsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['uuid'] == null) {
             throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling ssfStreamsRetrieve().',
+                'uuid',
+                'Required parameter "uuid" was null or undefined when calling ssfStreamsRetrieve().'
             );
         }
 
@@ -239,11 +224,11 @@ export class SsfApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/ssf/streams/{uuid}/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+        urlPath = urlPath.replace('{uuid}', encodeURIComponent(String(requestParameters['uuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -252,10 +237,7 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsRetrieveRaw(
-        requestParameters: SsfStreamsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SSFStream>> {
+    async ssfStreamsRetrieveRaw(requestParameters: SsfStreamsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFStream>> {
         const requestOptions = await this.ssfStreamsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -265,11 +247,9 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsRetrieve(
-        requestParameters: SsfStreamsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SSFStream> {
+    async ssfStreamsRetrieve(requestParameters: SsfStreamsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFStream> {
         const response = await this.ssfStreamsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

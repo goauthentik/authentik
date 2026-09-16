@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,21 +12,21 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface AgentConnector
  */
 export interface AgentConnector {
     /**
-     *
+     * 
      */
     connectorUuid?: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -47,47 +46,47 @@ export interface AgentConnector {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     snapshotExpiry?: string;
     /**
-     *
+     * 
      */
     authSessionDuration?: string;
     /**
-     *
+     * 
      */
     authTerminateSessionOnExpiry?: boolean;
     /**
-     *
+     * 
      */
     refreshInterval?: string;
     /**
-     *
+     * 
      */
     authorizationFlow?: string | null;
     /**
-     *
+     * 
      */
     nssUidOffset?: number;
     /**
-     *
+     * 
      */
     nssGidOffset?: number;
     /**
-     *
+     * 
      */
     challengeKey?: string | null;
     /**
-     *
+     * 
      */
     challengeIdleTimeout?: string;
     /**
-     *
+     * 
      */
     challengeTriggerCheckIn?: boolean;
     /**
-     *
+     * 
      */
     jwtFederationProviders?: Array<number>;
 }
@@ -96,29 +95,11 @@ export interface AgentConnector {
  * Check if a given object implements the AgentConnector interface.
  */
 export function instanceOfAgentConnector(value: object): value is AgentConnector {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
     return true;
 }
 
@@ -126,51 +107,30 @@ export function AgentConnectorFromJSON(json: any): AgentConnector {
     return AgentConnectorFromJSONTyped(json, false);
 }
 
-export function AgentConnectorFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentConnector {
+export function AgentConnectorFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentConnector {
     if (json == null) {
         return json;
     }
     return {
-        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
-        name: json["name"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        snapshotExpiry: json["snapshot_expiry"] == null ? undefined : json["snapshot_expiry"],
-        authSessionDuration:
-            json["auth_session_duration"] == null ? undefined : json["auth_session_duration"],
-        authTerminateSessionOnExpiry:
-            json["auth_terminate_session_on_expiry"] == null
-                ? undefined
-                : json["auth_terminate_session_on_expiry"],
-        refreshInterval: json["refresh_interval"] == null ? undefined : json["refresh_interval"],
-        authorizationFlow:
-            json["authorization_flow"] === undefined
-                ? undefined
-                : json["authorization_flow"] === null
-                  ? null
-                  : json["authorization_flow"],
-        nssUidOffset: json["nss_uid_offset"] == null ? undefined : json["nss_uid_offset"],
-        nssGidOffset: json["nss_gid_offset"] == null ? undefined : json["nss_gid_offset"],
-        challengeKey:
-            json["challenge_key"] === undefined
-                ? undefined
-                : json["challenge_key"] === null
-                  ? null
-                  : json["challenge_key"],
-        challengeIdleTimeout:
-            json["challenge_idle_timeout"] == null ? undefined : json["challenge_idle_timeout"],
-        challengeTriggerCheckIn:
-            json["challenge_trigger_check_in"] == null
-                ? undefined
-                : json["challenge_trigger_check_in"],
-        jwtFederationProviders:
-            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        
+        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
+        'name': json['name'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'snapshotExpiry': json['snapshot_expiry'] == null ? undefined : json['snapshot_expiry'],
+        'authSessionDuration': json['auth_session_duration'] == null ? undefined : json['auth_session_duration'],
+        'authTerminateSessionOnExpiry': json['auth_terminate_session_on_expiry'] == null ? undefined : json['auth_terminate_session_on_expiry'],
+        'refreshInterval': json['refresh_interval'] == null ? undefined : json['refresh_interval'],
+        'authorizationFlow': json['authorization_flow'] === undefined ? undefined : json['authorization_flow'] === null ? null : json['authorization_flow'],
+        'nssUidOffset': json['nss_uid_offset'] == null ? undefined : json['nss_uid_offset'],
+        'nssGidOffset': json['nss_gid_offset'] == null ? undefined : json['nss_gid_offset'],
+        'challengeKey': json['challenge_key'] === undefined ? undefined : json['challenge_key'] === null ? null : json['challenge_key'],
+        'challengeIdleTimeout': json['challenge_idle_timeout'] == null ? undefined : json['challenge_idle_timeout'],
+        'challengeTriggerCheckIn': json['challenge_trigger_check_in'] == null ? undefined : json['challenge_trigger_check_in'],
+        'jwtFederationProviders': json['jwt_federation_providers'] == null ? undefined : json['jwt_federation_providers'],
     };
 }
 
@@ -178,31 +138,27 @@ export function AgentConnectorToJSON(json: any): AgentConnector {
     return AgentConnectorToJSONTyped(json, false);
 }
 
-export function AgentConnectorToJSONTyped(
-    value?: Omit<
-        AgentConnector,
-        "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentConnectorToJSONTyped(value?: Omit<AgentConnector, 'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        connector_uuid: value["connectorUuid"],
-        name: value["name"],
-        enabled: value["enabled"],
-        snapshot_expiry: value["snapshotExpiry"],
-        auth_session_duration: value["authSessionDuration"],
-        auth_terminate_session_on_expiry: value["authTerminateSessionOnExpiry"],
-        refresh_interval: value["refreshInterval"],
-        authorization_flow: value["authorizationFlow"],
-        nss_uid_offset: value["nssUidOffset"],
-        nss_gid_offset: value["nssGidOffset"],
-        challenge_key: value["challengeKey"],
-        challenge_idle_timeout: value["challengeIdleTimeout"],
-        challenge_trigger_check_in: value["challengeTriggerCheckIn"],
-        jwt_federation_providers: value["jwtFederationProviders"],
+        
+        'connector_uuid': value['connectorUuid'],
+        'name': value['name'],
+        'enabled': value['enabled'],
+        'snapshot_expiry': value['snapshotExpiry'],
+        'auth_session_duration': value['authSessionDuration'],
+        'auth_terminate_session_on_expiry': value['authTerminateSessionOnExpiry'],
+        'refresh_interval': value['refreshInterval'],
+        'authorization_flow': value['authorizationFlow'],
+        'nss_uid_offset': value['nssUidOffset'],
+        'nss_gid_offset': value['nssGidOffset'],
+        'challenge_key': value['challengeKey'],
+        'challenge_idle_timeout': value['challengeIdleTimeout'],
+        'challenge_trigger_check_in': value['challengeTriggerCheckIn'],
+        'jwt_federation_providers': value['jwtFederationProviders'],
     };
 }
+

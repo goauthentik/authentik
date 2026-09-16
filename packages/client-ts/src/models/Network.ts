@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,29 +11,32 @@
  * Do not edit the class manually.
  */
 
-import type { NetworkInterface } from "./NetworkInterface";
-import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInterface";
+import type { NetworkInterface } from './NetworkInterface';
+import {
+    NetworkInterfaceFromJSON,
+    NetworkInterfaceToJSON,
+} from './NetworkInterface';
 
 /**
- *
+ * 
  * @export
  * @interface Network
  */
 export interface Network {
     /**
-     *
+     * 
      */
     hostname: string;
     /**
-     *
+     * 
      */
     firewallEnabled?: boolean;
     /**
-     *
+     * 
      */
     interfaces: Array<NetworkInterface>;
     /**
-     *
+     * 
      */
     gateway?: string;
 }
@@ -43,8 +45,8 @@ export interface Network {
  * Check if a given object implements the Network interface.
  */
 export function instanceOfNetwork(value: object): value is Network {
-    if (!("hostname" in value) || value["hostname"] === undefined) return false;
-    if (!("interfaces" in value) || value["interfaces"] === undefined) return false;
+    if (!('hostname' in value) || value['hostname'] === undefined) return false;
+    if (!('interfaces' in value) || value['interfaces'] === undefined) return false;
     return true;
 }
 
@@ -57,10 +59,11 @@ export function NetworkFromJSONTyped(json: any, ignoreDiscriminator: boolean): N
         return json;
     }
     return {
-        hostname: json["hostname"],
-        firewallEnabled: json["firewall_enabled"] == null ? undefined : json["firewall_enabled"],
-        interfaces: (json["interfaces"] as Array<any>).map(NetworkInterfaceFromJSON),
-        gateway: json["gateway"] == null ? undefined : json["gateway"],
+        
+        'hostname': json['hostname'],
+        'firewallEnabled': json['firewall_enabled'] == null ? undefined : json['firewall_enabled'],
+        'interfaces': ((json['interfaces'] as Array<any>).map(NetworkInterfaceFromJSON)),
+        'gateway': json['gateway'] == null ? undefined : json['gateway'],
     };
 }
 
@@ -68,18 +71,17 @@ export function NetworkToJSON(json: any): Network {
     return NetworkToJSONTyped(json, false);
 }
 
-export function NetworkToJSONTyped(
-    value?: Network | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NetworkToJSONTyped(value?: Network | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        hostname: value["hostname"],
-        firewall_enabled: value["firewallEnabled"],
-        interfaces: (value["interfaces"] as Array<any>).map(NetworkInterfaceToJSON),
-        gateway: value["gateway"],
+        
+        'hostname': value['hostname'],
+        'firewall_enabled': value['firewallEnabled'],
+        'interfaces': ((value['interfaces'] as Array<any>).map(NetworkInterfaceToJSON)),
+        'gateway': value['gateway'],
     };
 }
+

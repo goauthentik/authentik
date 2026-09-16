@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface UserLogoutStageRequest {
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -28,7 +27,7 @@ export interface UserLogoutStageRequest {
  * Check if a given object implements the UserLogoutStageRequest interface.
  */
 export function instanceOfUserLogoutStageRequest(value: object): value is UserLogoutStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function UserLogoutStageRequestFromJSON(json: any): UserLogoutStageReques
     return UserLogoutStageRequestFromJSONTyped(json, false);
 }
 
-export function UserLogoutStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserLogoutStageRequest {
+export function UserLogoutStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLogoutStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +49,14 @@ export function UserLogoutStageRequestToJSON(json: any): UserLogoutStageRequest 
     return UserLogoutStageRequestToJSONTyped(json, false);
 }
 
-export function UserLogoutStageRequestToJSONTyped(
-    value?: UserLogoutStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserLogoutStageRequestToJSONTyped(value?: UserLogoutStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

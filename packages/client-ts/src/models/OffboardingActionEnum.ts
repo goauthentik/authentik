@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const OffboardingActionEnum = {
-    Deactivate: "deactivate",
-    Delete: "delete",
-    UnknownDefaultOpenApi: "11184809",
+    Deactivate: 'deactivate',
+    Delete: 'delete',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type OffboardingActionEnum =
-    (typeof OffboardingActionEnum)[keyof typeof OffboardingActionEnum];
+export type OffboardingActionEnum = typeof OffboardingActionEnum[keyof typeof OffboardingActionEnum];
+
 
 export function instanceOfOffboardingActionEnum(value: any): boolean {
     for (const key in OffboardingActionEnum) {
@@ -39,10 +39,7 @@ export function OffboardingActionEnumFromJSON(json: any): OffboardingActionEnum 
     return OffboardingActionEnumFromJSONTyped(json, false);
 }
 
-export function OffboardingActionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OffboardingActionEnum {
+export function OffboardingActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): OffboardingActionEnum {
     return json as OffboardingActionEnum;
 }
 
@@ -50,9 +47,7 @@ export function OffboardingActionEnumToJSON(value?: OffboardingActionEnum | null
     return value as any;
 }
 
-export function OffboardingActionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): OffboardingActionEnum {
+export function OffboardingActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): OffboardingActionEnum {
     return value as OffboardingActionEnum;
 }
+

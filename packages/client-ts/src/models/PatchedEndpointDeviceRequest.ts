@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,55 +11,53 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { DeviceAccessGroupRequest } from './DeviceAccessGroupRequest';
 import {
     DeviceAccessGroupRequestFromJSON,
     DeviceAccessGroupRequestToJSON,
-} from "./DeviceAccessGroupRequest";
+} from './DeviceAccessGroupRequest';
 
 /**
- *
+ * 
  * @export
  * @interface PatchedEndpointDeviceRequest
  */
 export interface PatchedEndpointDeviceRequest {
     /**
-     *
+     * 
      */
     deviceUuid?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     accessGroup?: string | null;
     /**
-     *
+     * 
      */
     accessGroupObj?: DeviceAccessGroupRequest;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PatchedEndpointDeviceRequest interface.
  */
-export function instanceOfPatchedEndpointDeviceRequest(
-    value: object,
-): value is PatchedEndpointDeviceRequest {
+export function instanceOfPatchedEndpointDeviceRequest(value: object): value is PatchedEndpointDeviceRequest {
     return true;
 }
 
@@ -68,34 +65,19 @@ export function PatchedEndpointDeviceRequestFromJSON(json: any): PatchedEndpoint
     return PatchedEndpointDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEndpointDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedEndpointDeviceRequest {
+export function PatchedEndpointDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEndpointDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
-        name: json["name"] == null ? undefined : json["name"],
-        accessGroup:
-            json["access_group"] === undefined
-                ? undefined
-                : json["access_group"] === null
-                  ? null
-                  : json["access_group"],
-        accessGroupObj:
-            json["access_group_obj"] == null
-                ? undefined
-                : DeviceAccessGroupRequestFromJSON(json["access_group_obj"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'deviceUuid': json['device_uuid'] == null ? undefined : json['device_uuid'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'accessGroup': json['access_group'] === undefined ? undefined : json['access_group'] === null ? null : json['access_group'],
+        'accessGroupObj': json['access_group_obj'] == null ? undefined : DeviceAccessGroupRequestFromJSON(json['access_group_obj']),
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -103,21 +85,20 @@ export function PatchedEndpointDeviceRequestToJSON(json: any): PatchedEndpointDe
     return PatchedEndpointDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedEndpointDeviceRequestToJSONTyped(
-    value?: PatchedEndpointDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedEndpointDeviceRequestToJSONTyped(value?: PatchedEndpointDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_uuid: value["deviceUuid"],
-        name: value["name"],
-        access_group: value["accessGroup"],
-        access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        attributes: value["attributes"],
+        
+        'device_uuid': value['deviceUuid'],
+        'name': value['name'],
+        'access_group': value['accessGroup'],
+        'access_group_obj': DeviceAccessGroupRequestToJSON(value['accessGroupObj']),
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'attributes': value['attributes'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,19 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelfGroups } from "./UserSelfGroups";
-import { UserSelfGroupsFromJSON } from "./UserSelfGroups";
-import type { UserSelfRoles } from "./UserSelfRoles";
-import { UserSelfRolesFromJSON } from "./UserSelfRoles";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { UserSelfGroups } from './UserSelfGroups';
+import {
+    UserSelfGroupsFromJSON,
+} from './UserSelfGroups';
+import type { UserTypeEnum } from './UserTypeEnum';
+import {
+    UserTypeEnumFromJSON,
+    UserTypeEnumToJSON,
+} from './UserTypeEnum';
+import type { UserSelfRoles } from './UserSelfRoles';
+import {
+    UserSelfRolesFromJSON,
+} from './UserSelfRoles';
 
 /**
  * User Serializer for information a user can retrieve about themselves
@@ -26,7 +32,7 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
  */
 export interface UserSelf {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
@@ -42,7 +48,7 @@ export interface UserSelf {
      */
     readonly isActive: boolean;
     /**
-     *
+     * 
      */
     readonly isSuperuser: boolean;
     /**
@@ -50,15 +56,15 @@ export interface UserSelf {
      */
     readonly isCurrent: boolean;
     /**
-     *
+     * 
      */
     readonly groups: Array<UserSelfGroups>;
     /**
-     *
+     * 
      */
     readonly roles: Array<UserSelfRoles>;
     /**
-     *
+     * 
      */
     email?: string;
     /**
@@ -66,15 +72,15 @@ export interface UserSelf {
      */
     readonly avatar: string;
     /**
-     *
+     * 
      */
     readonly uid: string;
     /**
      * Get user settings with brand and group settings applied
      */
-    readonly settings: { [key: string]: any };
+    readonly settings: { [key: string]: any; };
     /**
-     *
+     * 
      */
     type?: UserTypeEnum;
     /**
@@ -83,46 +89,24 @@ export interface UserSelf {
     readonly systemPermissions: Array<string>;
 }
 
+
+
 /**
  * Check if a given object implements the UserSelf interface.
  */
 export function instanceOfUserSelf(value: object): value is UserSelf {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("isActive" in (value as Record<string, any>)) &&
-            !("is_active" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isActive"] === undefined &&
-            (value as Record<string, any>)["is_active"] === undefined)
-    )
-        return false;
-    if (
-        (!("isSuperuser" in (value as Record<string, any>)) &&
-            !("is_superuser" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isSuperuser"] === undefined &&
-            (value as Record<string, any>)["is_superuser"] === undefined)
-    )
-        return false;
-    if (
-        (!("isCurrent" in (value as Record<string, any>)) &&
-            !("is_current" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isCurrent"] === undefined &&
-            (value as Record<string, any>)["is_current"] === undefined)
-    )
-        return false;
-    if (!("groups" in value) || value["groups"] === undefined) return false;
-    if (!("roles" in value) || value["roles"] === undefined) return false;
-    if (!("avatar" in value) || value["avatar"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("settings" in value) || value["settings"] === undefined) return false;
-    if (
-        (!("systemPermissions" in (value as Record<string, any>)) &&
-            !("system_permissions" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["systemPermissions"] === undefined &&
-            (value as Record<string, any>)["system_permissions"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('isActive' in (value as Record<string, any>)) && !('is_active' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActive'] === undefined && (value as Record<string, any>)['is_active'] === undefined)) return false;
+    if ((!('isSuperuser' in (value as Record<string, any>)) && !('is_superuser' in (value as Record<string, any>))) || ((value as Record<string, any>)['isSuperuser'] === undefined && (value as Record<string, any>)['is_superuser'] === undefined)) return false;
+    if ((!('isCurrent' in (value as Record<string, any>)) && !('is_current' in (value as Record<string, any>))) || ((value as Record<string, any>)['isCurrent'] === undefined && (value as Record<string, any>)['is_current'] === undefined)) return false;
+    if (!('groups' in value) || value['groups'] === undefined) return false;
+    if (!('roles' in value) || value['roles'] === undefined) return false;
+    if (!('avatar' in value) || value['avatar'] === undefined) return false;
+    if (!('uid' in value) || value['uid'] === undefined) return false;
+    if (!('settings' in value) || value['settings'] === undefined) return false;
+    if ((!('systemPermissions' in (value as Record<string, any>)) && !('system_permissions' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemPermissions'] === undefined && (value as Record<string, any>)['system_permissions'] === undefined)) return false;
     return true;
 }
 
@@ -135,20 +119,21 @@ export function UserSelfFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        pk: json["pk"],
-        username: json["username"],
-        name: json["name"],
-        isActive: json["is_active"],
-        isSuperuser: json["is_superuser"],
-        isCurrent: json["is_current"],
-        groups: (json["groups"] as Array<any>).map(UserSelfGroupsFromJSON),
-        roles: (json["roles"] as Array<any>).map(UserSelfRolesFromJSON),
-        email: json["email"] == null ? undefined : json["email"],
-        avatar: json["avatar"],
-        uid: json["uid"],
-        settings: json["settings"],
-        type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
-        systemPermissions: json["system_permissions"],
+        
+        'pk': json['pk'],
+        'username': json['username'],
+        'name': json['name'],
+        'isActive': json['is_active'],
+        'isSuperuser': json['is_superuser'],
+        'isCurrent': json['is_current'],
+        'groups': ((json['groups'] as Array<any>).map(UserSelfGroupsFromJSON)),
+        'roles': ((json['roles'] as Array<any>).map(UserSelfRolesFromJSON)),
+        'email': json['email'] == null ? undefined : json['email'],
+        'avatar': json['avatar'],
+        'uid': json['uid'],
+        'settings': json['settings'],
+        'type': json['type'] == null ? undefined : UserTypeEnumFromJSON(json['type']),
+        'systemPermissions': json['system_permissions'],
     };
 }
 
@@ -156,30 +141,17 @@ export function UserSelfToJSON(json: any): UserSelf {
     return UserSelfToJSONTyped(json, false);
 }
 
-export function UserSelfToJSONTyped(
-    value?: Omit<
-        UserSelf,
-        | "pk"
-        | "isActive"
-        | "isSuperuser"
-        | "isCurrent"
-        | "groups"
-        | "roles"
-        | "avatar"
-        | "uid"
-        | "settings"
-        | "systemPermissions"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSelfToJSONTyped(value?: Omit<UserSelf, 'pk'|'isActive'|'isSuperuser'|'isCurrent'|'groups'|'roles'|'avatar'|'uid'|'settings'|'systemPermissions'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        email: value["email"],
-        type: UserTypeEnumToJSON(value["type"]),
+        
+        'username': value['username'],
+        'name': value['name'],
+        'email': value['email'],
+        'type': UserTypeEnumToJSON(value['type']),
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,16 @@
  * Do not edit the class manually.
  */
 
-import type { CapabilitiesEnum } from "./CapabilitiesEnum";
-import { CapabilitiesEnumFromJSON, CapabilitiesEnumToJSON } from "./CapabilitiesEnum";
-import type { ErrorReportingConfig } from "./ErrorReportingConfig";
-import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./ErrorReportingConfig";
+import type { ErrorReportingConfig } from './ErrorReportingConfig';
+import {
+    ErrorReportingConfigFromJSON,
+    ErrorReportingConfigToJSON,
+} from './ErrorReportingConfig';
+import type { CapabilitiesEnum } from './CapabilitiesEnum';
+import {
+    CapabilitiesEnumFromJSON,
+    CapabilitiesEnumToJSON,
+} from './CapabilitiesEnum';
 
 /**
  * Serialize authentik Config into DRF Object
@@ -24,23 +29,23 @@ import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./Erro
  */
 export interface Config {
     /**
-     *
+     * 
      */
     errorReporting: ErrorReportingConfig;
     /**
-     *
+     * 
      */
     capabilities: Array<CapabilitiesEnum>;
     /**
-     *
+     * 
      */
     cacheTimeout: number;
     /**
-     *
+     * 
      */
     cacheTimeoutFlows: number;
     /**
-     *
+     * 
      */
     cacheTimeoutPolicies: number;
 }
@@ -49,35 +54,11 @@ export interface Config {
  * Check if a given object implements the Config interface.
  */
 export function instanceOfConfig(value: object): value is Config {
-    if (
-        (!("errorReporting" in (value as Record<string, any>)) &&
-            !("error_reporting" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["errorReporting"] === undefined &&
-            (value as Record<string, any>)["error_reporting"] === undefined)
-    )
-        return false;
-    if (!("capabilities" in value) || value["capabilities"] === undefined) return false;
-    if (
-        (!("cacheTimeout" in (value as Record<string, any>)) &&
-            !("cache_timeout" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["cacheTimeout"] === undefined &&
-            (value as Record<string, any>)["cache_timeout"] === undefined)
-    )
-        return false;
-    if (
-        (!("cacheTimeoutFlows" in (value as Record<string, any>)) &&
-            !("cache_timeout_flows" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["cacheTimeoutFlows"] === undefined &&
-            (value as Record<string, any>)["cache_timeout_flows"] === undefined)
-    )
-        return false;
-    if (
-        (!("cacheTimeoutPolicies" in (value as Record<string, any>)) &&
-            !("cache_timeout_policies" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["cacheTimeoutPolicies"] === undefined &&
-            (value as Record<string, any>)["cache_timeout_policies"] === undefined)
-    )
-        return false;
+    if ((!('errorReporting' in (value as Record<string, any>)) && !('error_reporting' in (value as Record<string, any>))) || ((value as Record<string, any>)['errorReporting'] === undefined && (value as Record<string, any>)['error_reporting'] === undefined)) return false;
+    if (!('capabilities' in value) || value['capabilities'] === undefined) return false;
+    if ((!('cacheTimeout' in (value as Record<string, any>)) && !('cache_timeout' in (value as Record<string, any>))) || ((value as Record<string, any>)['cacheTimeout'] === undefined && (value as Record<string, any>)['cache_timeout'] === undefined)) return false;
+    if ((!('cacheTimeoutFlows' in (value as Record<string, any>)) && !('cache_timeout_flows' in (value as Record<string, any>))) || ((value as Record<string, any>)['cacheTimeoutFlows'] === undefined && (value as Record<string, any>)['cache_timeout_flows'] === undefined)) return false;
+    if ((!('cacheTimeoutPolicies' in (value as Record<string, any>)) && !('cache_timeout_policies' in (value as Record<string, any>))) || ((value as Record<string, any>)['cacheTimeoutPolicies'] === undefined && (value as Record<string, any>)['cache_timeout_policies'] === undefined)) return false;
     return true;
 }
 
@@ -90,11 +71,12 @@ export function ConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): Co
         return json;
     }
     return {
-        errorReporting: ErrorReportingConfigFromJSON(json["error_reporting"]),
-        capabilities: (json["capabilities"] as Array<any>).map(CapabilitiesEnumFromJSON),
-        cacheTimeout: json["cache_timeout"],
-        cacheTimeoutFlows: json["cache_timeout_flows"],
-        cacheTimeoutPolicies: json["cache_timeout_policies"],
+        
+        'errorReporting': ErrorReportingConfigFromJSON(json['error_reporting']),
+        'capabilities': ((json['capabilities'] as Array<any>).map(CapabilitiesEnumFromJSON)),
+        'cacheTimeout': json['cache_timeout'],
+        'cacheTimeoutFlows': json['cache_timeout_flows'],
+        'cacheTimeoutPolicies': json['cache_timeout_policies'],
     };
 }
 
@@ -102,19 +84,18 @@ export function ConfigToJSON(json: any): Config {
     return ConfigToJSONTyped(json, false);
 }
 
-export function ConfigToJSONTyped(
-    value?: Config | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ConfigToJSONTyped(value?: Config | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        error_reporting: ErrorReportingConfigToJSON(value["errorReporting"]),
-        capabilities: (value["capabilities"] as Array<any>).map(CapabilitiesEnumToJSON),
-        cache_timeout: value["cacheTimeout"],
-        cache_timeout_flows: value["cacheTimeoutFlows"],
-        cache_timeout_policies: value["cacheTimeoutPolicies"],
+        
+        'error_reporting': ErrorReportingConfigToJSON(value['errorReporting']),
+        'capabilities': ((value['capabilities'] as Array<any>).map(CapabilitiesEnumToJSON)),
+        'cache_timeout': value['cacheTimeout'],
+        'cache_timeout_flows': value['cacheTimeoutFlows'],
+        'cache_timeout_policies': value['cacheTimeoutPolicies'],
     };
 }
+

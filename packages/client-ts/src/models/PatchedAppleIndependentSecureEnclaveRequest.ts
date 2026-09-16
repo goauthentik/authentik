@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,13 +12,13 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface PatchedAppleIndependentSecureEnclaveRequest
  */
 export interface PatchedAppleIndependentSecureEnclaveRequest {
     /**
-     *
+     * 
      */
     uuid?: string;
     /**
@@ -27,15 +26,15 @@ export interface PatchedAppleIndependentSecureEnclaveRequest {
      */
     user?: number;
     /**
-     *
+     * 
      */
     appleSecureEnclaveKey?: string;
     /**
-     *
+     * 
      */
     appleEnclaveKeyId?: string;
     /**
-     *
+     * 
      */
     deviceType?: string;
 }
@@ -43,55 +42,44 @@ export interface PatchedAppleIndependentSecureEnclaveRequest {
 /**
  * Check if a given object implements the PatchedAppleIndependentSecureEnclaveRequest interface.
  */
-export function instanceOfPatchedAppleIndependentSecureEnclaveRequest(
-    value: object,
-): value is PatchedAppleIndependentSecureEnclaveRequest {
+export function instanceOfPatchedAppleIndependentSecureEnclaveRequest(value: object): value is PatchedAppleIndependentSecureEnclaveRequest {
     return true;
 }
 
-export function PatchedAppleIndependentSecureEnclaveRequestFromJSON(
-    json: any,
-): PatchedAppleIndependentSecureEnclaveRequest {
+export function PatchedAppleIndependentSecureEnclaveRequestFromJSON(json: any): PatchedAppleIndependentSecureEnclaveRequest {
     return PatchedAppleIndependentSecureEnclaveRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAppleIndependentSecureEnclaveRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedAppleIndependentSecureEnclaveRequest {
+export function PatchedAppleIndependentSecureEnclaveRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAppleIndependentSecureEnclaveRequest {
     if (json == null) {
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        user: json["user"] == null ? undefined : json["user"],
-        appleSecureEnclaveKey:
-            json["apple_secure_enclave_key"] == null ? undefined : json["apple_secure_enclave_key"],
-        appleEnclaveKeyId:
-            json["apple_enclave_key_id"] == null ? undefined : json["apple_enclave_key_id"],
-        deviceType: json["device_type"] == null ? undefined : json["device_type"],
+        
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'user': json['user'] == null ? undefined : json['user'],
+        'appleSecureEnclaveKey': json['apple_secure_enclave_key'] == null ? undefined : json['apple_secure_enclave_key'],
+        'appleEnclaveKeyId': json['apple_enclave_key_id'] == null ? undefined : json['apple_enclave_key_id'],
+        'deviceType': json['device_type'] == null ? undefined : json['device_type'],
     };
 }
 
-export function PatchedAppleIndependentSecureEnclaveRequestToJSON(
-    json: any,
-): PatchedAppleIndependentSecureEnclaveRequest {
+export function PatchedAppleIndependentSecureEnclaveRequestToJSON(json: any): PatchedAppleIndependentSecureEnclaveRequest {
     return PatchedAppleIndependentSecureEnclaveRequestToJSONTyped(json, false);
 }
 
-export function PatchedAppleIndependentSecureEnclaveRequestToJSONTyped(
-    value?: PatchedAppleIndependentSecureEnclaveRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedAppleIndependentSecureEnclaveRequestToJSONTyped(value?: PatchedAppleIndependentSecureEnclaveRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        uuid: value["uuid"],
-        user: value["user"],
-        apple_secure_enclave_key: value["appleSecureEnclaveKey"],
-        apple_enclave_key_id: value["appleEnclaveKeyId"],
-        device_type: value["deviceType"],
+        
+        'uuid': value['uuid'],
+        'user': value['user'],
+        'apple_secure_enclave_key': value['appleSecureEnclaveKey'],
+        'apple_enclave_key_id': value['appleEnclaveKeyId'],
+        'device_type': value['deviceType'],
     };
 }
+

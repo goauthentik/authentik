@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface SCIMProviderGroupRequest {
     /**
-     *
+     * 
      */
     scimId: string;
     /**
-     *
+     * 
      */
     group: string;
     /**
-     *
+     * 
      */
     provider: number;
 }
@@ -35,18 +34,10 @@ export interface SCIMProviderGroupRequest {
 /**
  * Check if a given object implements the SCIMProviderGroupRequest interface.
  */
-export function instanceOfSCIMProviderGroupRequest(
-    value: object,
-): value is SCIMProviderGroupRequest {
-    if (
-        (!("scimId" in (value as Record<string, any>)) &&
-            !("scim_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scimId"] === undefined &&
-            (value as Record<string, any>)["scim_id"] === undefined)
-    )
-        return false;
-    if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
+export function instanceOfSCIMProviderGroupRequest(value: object): value is SCIMProviderGroupRequest {
+    if ((!('scimId' in (value as Record<string, any>)) && !('scim_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['scimId'] === undefined && (value as Record<string, any>)['scim_id'] === undefined)) return false;
+    if (!('group' in value) || value['group'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
     return true;
 }
 
@@ -54,17 +45,15 @@ export function SCIMProviderGroupRequestFromJSON(json: any): SCIMProviderGroupRe
     return SCIMProviderGroupRequestFromJSONTyped(json, false);
 }
 
-export function SCIMProviderGroupRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMProviderGroupRequest {
+export function SCIMProviderGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMProviderGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        scimId: json["scim_id"],
-        group: json["group"],
-        provider: json["provider"],
+        
+        'scimId': json['scim_id'],
+        'group': json['group'],
+        'provider': json['provider'],
     };
 }
 
@@ -72,17 +61,16 @@ export function SCIMProviderGroupRequestToJSON(json: any): SCIMProviderGroupRequ
     return SCIMProviderGroupRequestToJSONTyped(json, false);
 }
 
-export function SCIMProviderGroupRequestToJSONTyped(
-    value?: SCIMProviderGroupRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMProviderGroupRequestToJSONTyped(value?: SCIMProviderGroupRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        scim_id: value["scimId"],
-        group: value["group"],
-        provider: value["provider"],
+        
+        'scim_id': value['scimId'],
+        'group': value['group'],
+        'provider': value['provider'],
     };
 }
+

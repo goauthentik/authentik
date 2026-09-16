@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface DockerServiceConnection {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -31,7 +30,7 @@ export interface DockerServiceConnection {
      */
     local?: boolean;
     /**
-     *
+     * 
      */
     readonly component: string;
     /**
@@ -64,31 +63,13 @@ export interface DockerServiceConnection {
  * Check if a given object implements the DockerServiceConnection interface.
  */
 export function instanceOfDockerServiceConnection(value: object): value is DockerServiceConnection {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("url" in value) || value["url"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -96,34 +77,22 @@ export function DockerServiceConnectionFromJSON(json: any): DockerServiceConnect
     return DockerServiceConnectionFromJSONTyped(json, false);
 }
 
-export function DockerServiceConnectionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DockerServiceConnection {
+export function DockerServiceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): DockerServiceConnection {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        local: json["local"] == null ? undefined : json["local"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        url: json["url"],
-        tlsVerification:
-            json["tls_verification"] === undefined
-                ? undefined
-                : json["tls_verification"] === null
-                  ? null
-                  : json["tls_verification"],
-        tlsAuthentication:
-            json["tls_authentication"] === undefined
-                ? undefined
-                : json["tls_authentication"] === null
-                  ? null
-                  : json["tls_authentication"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'local': json['local'] == null ? undefined : json['local'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'url': json['url'],
+        'tlsVerification': json['tls_verification'] === undefined ? undefined : json['tls_verification'] === null ? null : json['tls_verification'],
+        'tlsAuthentication': json['tls_authentication'] === undefined ? undefined : json['tls_authentication'] === null ? null : json['tls_authentication'],
     };
 }
 
@@ -131,22 +100,18 @@ export function DockerServiceConnectionToJSON(json: any): DockerServiceConnectio
     return DockerServiceConnectionToJSONTyped(json, false);
 }
 
-export function DockerServiceConnectionToJSONTyped(
-    value?: Omit<
-        DockerServiceConnection,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DockerServiceConnectionToJSONTyped(value?: Omit<DockerServiceConnection, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        local: value["local"],
-        url: value["url"],
-        tls_verification: value["tlsVerification"],
-        tls_authentication: value["tlsAuthentication"],
+        
+        'name': value['name'],
+        'local': value['local'],
+        'url': value['url'],
+        'tls_verification': value['tlsVerification'],
+        'tls_authentication': value['tlsAuthentication'],
     };
 }
+

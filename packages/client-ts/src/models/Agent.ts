@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,15 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
-import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
+import type { PolicyBehaviorEnum } from './PolicyBehaviorEnum';
+import {
+    PolicyBehaviorEnumFromJSON,
+} from './PolicyBehaviorEnum';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -26,7 +29,7 @@ import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
  */
 export interface Agent {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
@@ -42,39 +45,39 @@ export interface Agent {
      */
     isActive?: boolean;
     /**
-     *
+     * 
      */
     lastLogin?: Date | null;
     /**
-     *
+     * 
      */
     email?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     readonly uid: string;
     /**
-     *
+     * 
      */
     readonly uuid: string;
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     readonly parent: PartialUser;
     /**
-     *
+     * 
      */
     readonly policyBehavior: PolicyBehaviorEnum;
     /**
@@ -83,30 +86,20 @@ export interface Agent {
     readonly tokenIdentifier: string | null;
 }
 
+
+
 /**
  * Check if a given object implements the Agent interface.
  */
 export function instanceOfAgent(value: object): value is Agent {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("uuid" in value) || value["uuid"] === undefined) return false;
-    if (!("parent" in value) || value["parent"] === undefined) return false;
-    if (
-        (!("policyBehavior" in (value as Record<string, any>)) &&
-            !("policy_behavior" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["policyBehavior"] === undefined &&
-            (value as Record<string, any>)["policy_behavior"] === undefined)
-    )
-        return false;
-    if (
-        (!("tokenIdentifier" in (value as Record<string, any>)) &&
-            !("token_identifier" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenIdentifier"] === undefined &&
-            (value as Record<string, any>)["token_identifier"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('uid' in value) || value['uid'] === undefined) return false;
+    if (!('uuid' in value) || value['uuid'] === undefined) return false;
+    if (!('parent' in value) || value['parent'] === undefined) return false;
+    if ((!('policyBehavior' in (value as Record<string, any>)) && !('policy_behavior' in (value as Record<string, any>))) || ((value as Record<string, any>)['policyBehavior'] === undefined && (value as Record<string, any>)['policy_behavior'] === undefined)) return false;
+    if ((!('tokenIdentifier' in (value as Record<string, any>)) && !('token_identifier' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenIdentifier'] === undefined && (value as Record<string, any>)['token_identifier'] === undefined)) return false;
     return true;
 }
 
@@ -119,30 +112,21 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
         return json;
     }
     return {
-        pk: json["pk"],
-        username: json["username"],
-        name: json["name"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin:
-            json["last_login"] === undefined
-                ? undefined
-                : json["last_login"] === null
-                  ? null
-                  : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        uid: json["uid"],
-        uuid: json["uuid"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        parent: PartialUserFromJSON(json["parent"]),
-        policyBehavior: PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
-        tokenIdentifier: json["token_identifier"],
+        
+        'pk': json['pk'],
+        'username': json['username'],
+        'name': json['name'],
+        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'lastLogin': json['last_login'] === undefined ? undefined : json['last_login'] === null ? null : (parseDateTime(json['last_login'])),
+        'email': json['email'] == null ? undefined : json['email'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'uid': json['uid'],
+        'uuid': json['uuid'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'parent': PartialUserFromJSON(json['parent']),
+        'policyBehavior': PolicyBehaviorEnumFromJSON(json['policy_behavior']),
+        'tokenIdentifier': json['token_identifier'],
     };
 }
 
@@ -150,26 +134,21 @@ export function AgentToJSON(json: any): Agent {
     return AgentToJSONTyped(json, false);
 }
 
-export function AgentToJSONTyped(
-    value?: Omit<
-        Agent,
-        "pk" | "uid" | "uuid" | "parent" | "policyBehavior" | "tokenIdentifier"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentToJSONTyped(value?: Omit<Agent, 'pk'|'uid'|'uuid'|'parent'|'policyBehavior'|'tokenIdentifier'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        is_active: value["isActive"],
-        last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
-        attributes: value["attributes"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'username': value['username'],
+        'name': value['name'],
+        'is_active': value['isActive'],
+        'last_login': value['lastLogin'] == null ? value['lastLogin'] : serializeDateTime(value['lastLogin']),
+        'email': value['email'],
+        'attributes': value['attributes'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,39 +18,39 @@
  */
 export interface SourceType {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     verboseName: string;
     /**
-     *
+     * 
      */
     urlsCustomizable: boolean;
     /**
-     *
+     * 
      */
     readonly requestTokenUrl: string | null;
     /**
-     *
+     * 
      */
     readonly authorizationUrl: string | null;
     /**
-     *
+     * 
      */
     readonly accessTokenUrl: string | null;
     /**
-     *
+     * 
      */
     readonly profileUrl: string | null;
     /**
-     *
+     * 
      */
     readonly oidcWellKnownUrl: string | null;
     /**
-     *
+     * 
      */
     readonly oidcJwksUrl: string | null;
 }
@@ -60,63 +59,15 @@ export interface SourceType {
  * Check if a given object implements the SourceType interface.
  */
 export function instanceOfSourceType(value: object): value is SourceType {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("urlsCustomizable" in (value as Record<string, any>)) &&
-            !("urls_customizable" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["urlsCustomizable"] === undefined &&
-            (value as Record<string, any>)["urls_customizable"] === undefined)
-    )
-        return false;
-    if (
-        (!("requestTokenUrl" in (value as Record<string, any>)) &&
-            !("request_token_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["requestTokenUrl"] === undefined &&
-            (value as Record<string, any>)["request_token_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("authorizationUrl" in (value as Record<string, any>)) &&
-            !("authorization_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationUrl"] === undefined &&
-            (value as Record<string, any>)["authorization_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("accessTokenUrl" in (value as Record<string, any>)) &&
-            !("access_token_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["accessTokenUrl"] === undefined &&
-            (value as Record<string, any>)["access_token_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("profileUrl" in (value as Record<string, any>)) &&
-            !("profile_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["profileUrl"] === undefined &&
-            (value as Record<string, any>)["profile_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("oidcWellKnownUrl" in (value as Record<string, any>)) &&
-            !("oidc_well_known_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["oidcWellKnownUrl"] === undefined &&
-            (value as Record<string, any>)["oidc_well_known_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("oidcJwksUrl" in (value as Record<string, any>)) &&
-            !("oidc_jwks_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["oidcJwksUrl"] === undefined &&
-            (value as Record<string, any>)["oidc_jwks_url"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('urlsCustomizable' in (value as Record<string, any>)) && !('urls_customizable' in (value as Record<string, any>))) || ((value as Record<string, any>)['urlsCustomizable'] === undefined && (value as Record<string, any>)['urls_customizable'] === undefined)) return false;
+    if ((!('requestTokenUrl' in (value as Record<string, any>)) && !('request_token_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['requestTokenUrl'] === undefined && (value as Record<string, any>)['request_token_url'] === undefined)) return false;
+    if ((!('authorizationUrl' in (value as Record<string, any>)) && !('authorization_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['authorizationUrl'] === undefined && (value as Record<string, any>)['authorization_url'] === undefined)) return false;
+    if ((!('accessTokenUrl' in (value as Record<string, any>)) && !('access_token_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['accessTokenUrl'] === undefined && (value as Record<string, any>)['access_token_url'] === undefined)) return false;
+    if ((!('profileUrl' in (value as Record<string, any>)) && !('profile_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['profileUrl'] === undefined && (value as Record<string, any>)['profile_url'] === undefined)) return false;
+    if ((!('oidcWellKnownUrl' in (value as Record<string, any>)) && !('oidc_well_known_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['oidcWellKnownUrl'] === undefined && (value as Record<string, any>)['oidc_well_known_url'] === undefined)) return false;
+    if ((!('oidcJwksUrl' in (value as Record<string, any>)) && !('oidc_jwks_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['oidcJwksUrl'] === undefined && (value as Record<string, any>)['oidc_jwks_url'] === undefined)) return false;
     return true;
 }
 
@@ -129,15 +80,16 @@ export function SourceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        name: json["name"],
-        verboseName: json["verbose_name"],
-        urlsCustomizable: json["urls_customizable"],
-        requestTokenUrl: json["request_token_url"],
-        authorizationUrl: json["authorization_url"],
-        accessTokenUrl: json["access_token_url"],
-        profileUrl: json["profile_url"],
-        oidcWellKnownUrl: json["oidc_well_known_url"],
-        oidcJwksUrl: json["oidc_jwks_url"],
+        
+        'name': json['name'],
+        'verboseName': json['verbose_name'],
+        'urlsCustomizable': json['urls_customizable'],
+        'requestTokenUrl': json['request_token_url'],
+        'authorizationUrl': json['authorization_url'],
+        'accessTokenUrl': json['access_token_url'],
+        'profileUrl': json['profile_url'],
+        'oidcWellKnownUrl': json['oidc_well_known_url'],
+        'oidcJwksUrl': json['oidc_jwks_url'],
     };
 }
 
@@ -145,25 +97,16 @@ export function SourceTypeToJSON(json: any): SourceType {
     return SourceTypeToJSONTyped(json, false);
 }
 
-export function SourceTypeToJSONTyped(
-    value?: Omit<
-        SourceType,
-        | "requestTokenUrl"
-        | "authorizationUrl"
-        | "accessTokenUrl"
-        | "profileUrl"
-        | "oidcWellKnownUrl"
-        | "oidcJwksUrl"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SourceTypeToJSONTyped(value?: Omit<SourceType, 'requestTokenUrl'|'authorizationUrl'|'accessTokenUrl'|'profileUrl'|'oidcWellKnownUrl'|'oidcJwksUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        verbose_name: value["verboseName"],
-        urls_customizable: value["urlsCustomizable"],
+        
+        'name': value['name'],
+        'verbose_name': value['verboseName'],
+        'urls_customizable': value['urlsCustomizable'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorEmailStage } from "./AuthenticatorEmailStage";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { AuthenticatorEmailStage } from './AuthenticatorEmailStage';
 import {
     AuthenticatorEmailStageFromJSON,
     AuthenticatorEmailStageToJSON,
-} from "./AuthenticatorEmailStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './AuthenticatorEmailStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAuthenticatorEmailStageList
  */
 export interface PaginatedAuthenticatorEmailStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AuthenticatorEmailStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorEmailStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorEmailStageList(
-    value: object,
-): value is PaginatedAuthenticatorEmailStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorEmailStageList(value: object): value is PaginatedAuthenticatorEmailStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorEmailStageListFromJSON(
-    json: any,
-): PaginatedAuthenticatorEmailStageList {
+export function PaginatedAuthenticatorEmailStageListFromJSON(json: any): PaginatedAuthenticatorEmailStageList {
     return PaginatedAuthenticatorEmailStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorEmailStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAuthenticatorEmailStageList {
+export function PaginatedAuthenticatorEmailStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorEmailStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AuthenticatorEmailStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AuthenticatorEmailStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAuthenticatorEmailStageListToJSON(
-    json: any,
-): PaginatedAuthenticatorEmailStageList {
+export function PaginatedAuthenticatorEmailStageListToJSON(json: any): PaginatedAuthenticatorEmailStageList {
     return PaginatedAuthenticatorEmailStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorEmailStageListToJSONTyped(
-    value?: PaginatedAuthenticatorEmailStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAuthenticatorEmailStageListToJSONTyped(value?: PaginatedAuthenticatorEmailStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AuthenticatorEmailStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AuthenticatorEmailStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

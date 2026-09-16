@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,15 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Flow } from "./Flow";
-import { FlowFromJSON } from "./Flow";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
+import type { Flow } from './Flow';
+import {
+    FlowFromJSON,
+} from './Flow';
 
 /**
  * Invitation Serializer
@@ -25,23 +28,23 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface Invitation {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
-    fixedData?: { [key: string]: any };
+    fixedData?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     readonly createdBy: PartialUser;
     /**
@@ -53,7 +56,7 @@ export interface Invitation {
      */
     flow?: string | null;
     /**
-     *
+     * 
      */
     readonly flowObj: Flow;
 }
@@ -62,22 +65,10 @@ export interface Invitation {
  * Check if a given object implements the Invitation interface.
  */
 export function instanceOfInvitation(value: object): value is Invitation {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("createdBy" in (value as Record<string, any>)) &&
-            !("created_by" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["createdBy"] === undefined &&
-            (value as Record<string, any>)["created_by"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowObj" in (value as Record<string, any>)) &&
-            !("flow_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowObj"] === undefined &&
-            (value as Record<string, any>)["flow_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('createdBy' in (value as Record<string, any>)) && !('created_by' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdBy'] === undefined && (value as Record<string, any>)['created_by'] === undefined)) return false;
+    if ((!('flowObj' in (value as Record<string, any>)) && !('flow_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowObj'] === undefined && (value as Record<string, any>)['flow_obj'] === undefined)) return false;
     return true;
 }
 
@@ -90,19 +81,15 @@ export function InvitationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
-        createdBy: PartialUserFromJSON(json["created_by"]),
-        singleUse: json["single_use"] == null ? undefined : json["single_use"],
-        flow: json["flow"] === undefined ? undefined : json["flow"] === null ? null : json["flow"],
-        flowObj: FlowFromJSON(json["flow_obj"]),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'fixedData': json['fixed_data'] == null ? undefined : json['fixed_data'],
+        'createdBy': PartialUserFromJSON(json['created_by']),
+        'singleUse': json['single_use'] == null ? undefined : json['single_use'],
+        'flow': json['flow'] === undefined ? undefined : json['flow'] === null ? null : json['flow'],
+        'flowObj': FlowFromJSON(json['flow_obj']),
     };
 }
 
@@ -110,19 +97,18 @@ export function InvitationToJSON(json: any): Invitation {
     return InvitationToJSONTyped(json, false);
 }
 
-export function InvitationToJSONTyped(
-    value?: Omit<Invitation, "pk" | "createdBy" | "flowObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InvitationToJSONTyped(value?: Omit<Invitation, 'pk'|'createdBy'|'flowObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        fixed_data: value["fixedData"],
-        single_use: value["singleUse"],
-        flow: value["flow"],
+        
+        'name': value['name'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'fixed_data': value['fixedData'],
+        'single_use': value['singleUse'],
+        'flow': value['flow'],
     };
 }
+

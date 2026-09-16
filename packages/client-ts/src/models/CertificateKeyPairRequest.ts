@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface CertificateKeyPairRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -35,17 +34,9 @@ export interface CertificateKeyPairRequest {
 /**
  * Check if a given object implements the CertificateKeyPairRequest interface.
  */
-export function instanceOfCertificateKeyPairRequest(
-    value: object,
-): value is CertificateKeyPairRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("certificateData" in (value as Record<string, any>)) &&
-            !("certificate_data" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certificateData"] === undefined &&
-            (value as Record<string, any>)["certificate_data"] === undefined)
-    )
-        return false;
+export function instanceOfCertificateKeyPairRequest(value: object): value is CertificateKeyPairRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('certificateData' in (value as Record<string, any>)) && !('certificate_data' in (value as Record<string, any>))) || ((value as Record<string, any>)['certificateData'] === undefined && (value as Record<string, any>)['certificate_data'] === undefined)) return false;
     return true;
 }
 
@@ -53,17 +44,15 @@ export function CertificateKeyPairRequestFromJSON(json: any): CertificateKeyPair
     return CertificateKeyPairRequestFromJSONTyped(json, false);
 }
 
-export function CertificateKeyPairRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CertificateKeyPairRequest {
+export function CertificateKeyPairRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateKeyPairRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        certificateData: json["certificate_data"],
-        keyData: json["key_data"] == null ? undefined : json["key_data"],
+        
+        'name': json['name'],
+        'certificateData': json['certificate_data'],
+        'keyData': json['key_data'] == null ? undefined : json['key_data'],
     };
 }
 
@@ -71,17 +60,16 @@ export function CertificateKeyPairRequestToJSON(json: any): CertificateKeyPairRe
     return CertificateKeyPairRequestToJSONTyped(json, false);
 }
 
-export function CertificateKeyPairRequestToJSONTyped(
-    value?: CertificateKeyPairRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CertificateKeyPairRequestToJSONTyped(value?: CertificateKeyPairRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        certificate_data: value["certificateData"],
-        key_data: value["keyData"],
+        
+        'name': value['name'],
+        'certificate_data': value['certificateData'],
+        'key_data': value['keyData'],
     };
 }
+

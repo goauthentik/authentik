@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface UserSwitchResponse {
     /**
-     *
+     * 
      */
     readonly redirect: string;
 }
@@ -28,7 +27,7 @@ export interface UserSwitchResponse {
  * Check if a given object implements the UserSwitchResponse interface.
  */
 export function instanceOfUserSwitchResponse(value: object): value is UserSwitchResponse {
-    if (!("redirect" in value) || value["redirect"] === undefined) return false;
+    if (!('redirect' in value) || value['redirect'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function UserSwitchResponseFromJSON(json: any): UserSwitchResponse {
     return UserSwitchResponseFromJSONTyped(json, false);
 }
 
-export function UserSwitchResponseFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSwitchResponse {
+export function UserSwitchResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSwitchResponse {
     if (json == null) {
         return json;
     }
     return {
-        redirect: json["redirect"],
+        
+        'redirect': json['redirect'],
     };
 }
 
@@ -52,13 +49,13 @@ export function UserSwitchResponseToJSON(json: any): UserSwitchResponse {
     return UserSwitchResponseToJSONTyped(json, false);
 }
 
-export function UserSwitchResponseToJSONTyped(
-    value?: Omit<UserSwitchResponse, "redirect"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSwitchResponseToJSONTyped(value?: Omit<UserSwitchResponse, 'redirect'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

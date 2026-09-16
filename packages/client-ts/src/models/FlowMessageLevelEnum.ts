@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,19 +11,21 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const FlowMessageLevelEnum = {
-    Debug: "debug",
-    Info: "info",
-    Success: "success",
-    Warning: "warning",
-    Error: "error",
-    UnknownDefaultOpenApi: "11184809",
+    Debug: 'debug',
+    Info: 'info',
+    Success: 'success',
+    Warning: 'warning',
+    Error: 'error',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type FlowMessageLevelEnum = (typeof FlowMessageLevelEnum)[keyof typeof FlowMessageLevelEnum];
+export type FlowMessageLevelEnum = typeof FlowMessageLevelEnum[keyof typeof FlowMessageLevelEnum];
+
 
 export function instanceOfFlowMessageLevelEnum(value: any): boolean {
     for (const key in FlowMessageLevelEnum) {
@@ -41,10 +42,7 @@ export function FlowMessageLevelEnumFromJSON(json: any): FlowMessageLevelEnum {
     return FlowMessageLevelEnumFromJSONTyped(json, false);
 }
 
-export function FlowMessageLevelEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): FlowMessageLevelEnum {
+export function FlowMessageLevelEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowMessageLevelEnum {
     return json as FlowMessageLevelEnum;
 }
 
@@ -52,9 +50,7 @@ export function FlowMessageLevelEnumToJSON(value?: FlowMessageLevelEnum | null):
     return value as any;
 }
 
-export function FlowMessageLevelEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): FlowMessageLevelEnum {
+export function FlowMessageLevelEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): FlowMessageLevelEnum {
     return value as FlowMessageLevelEnum;
 }
+

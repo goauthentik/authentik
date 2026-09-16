@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DeniedActionEnum = {
-    MessageContinue: "message_continue",
-    Message: "message",
-    Continue: "continue",
-    UnknownDefaultOpenApi: "11184809",
+    MessageContinue: 'message_continue',
+    Message: 'message',
+    Continue: 'continue',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DeniedActionEnum = (typeof DeniedActionEnum)[keyof typeof DeniedActionEnum];
+export type DeniedActionEnum = typeof DeniedActionEnum[keyof typeof DeniedActionEnum];
+
 
 export function instanceOfDeniedActionEnum(value: any): boolean {
     for (const key in DeniedActionEnum) {
@@ -39,10 +40,7 @@ export function DeniedActionEnumFromJSON(json: any): DeniedActionEnum {
     return DeniedActionEnumFromJSONTyped(json, false);
 }
 
-export function DeniedActionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeniedActionEnum {
+export function DeniedActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeniedActionEnum {
     return json as DeniedActionEnum;
 }
 
@@ -50,9 +48,7 @@ export function DeniedActionEnumToJSON(value?: DeniedActionEnum | null): any {
     return value as any;
 }
 
-export function DeniedActionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): DeniedActionEnum {
+export function DeniedActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DeniedActionEnum {
     return value as DeniedActionEnum;
 }
+

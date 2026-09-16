@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const SyncObjectModelEnum = {
-    AuthentikCoreModelsUser: "authentik.core.models.User",
-    AuthentikCoreModelsGroup: "authentik.core.models.Group",
-    UnknownDefaultOpenApi: "11184809",
+    AuthentikCoreModelsUser: 'authentik.core.models.User',
+    AuthentikCoreModelsGroup: 'authentik.core.models.Group',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type SyncObjectModelEnum = (typeof SyncObjectModelEnum)[keyof typeof SyncObjectModelEnum];
+export type SyncObjectModelEnum = typeof SyncObjectModelEnum[keyof typeof SyncObjectModelEnum];
+
 
 export function instanceOfSyncObjectModelEnum(value: any): boolean {
     for (const key in SyncObjectModelEnum) {
@@ -38,10 +39,7 @@ export function SyncObjectModelEnumFromJSON(json: any): SyncObjectModelEnum {
     return SyncObjectModelEnumFromJSONTyped(json, false);
 }
 
-export function SyncObjectModelEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SyncObjectModelEnum {
+export function SyncObjectModelEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SyncObjectModelEnum {
     return json as SyncObjectModelEnum;
 }
 
@@ -49,9 +47,7 @@ export function SyncObjectModelEnumToJSON(value?: SyncObjectModelEnum | null): a
     return value as any;
 }
 
-export function SyncObjectModelEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): SyncObjectModelEnum {
+export function SyncObjectModelEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SyncObjectModelEnum {
     return value as SyncObjectModelEnum;
 }
+

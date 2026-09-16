@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { OffboardingActionEnum } from './OffboardingActionEnum';
 import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
+} from './OffboardingActionEnum';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -27,7 +26,7 @@ import {
  */
 export interface UserOffboardingRequest {
     /**
-     *
+     * 
      */
     user: number;
     /**
@@ -35,7 +34,7 @@ export interface UserOffboardingRequest {
      */
     scheduledAt: Date;
     /**
-     *
+     * 
      */
     action?: OffboardingActionEnum;
     /**
@@ -48,18 +47,14 @@ export interface UserOffboardingRequest {
     revokeTokens?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the UserOffboardingRequest interface.
  */
 export function instanceOfUserOffboardingRequest(value: object): value is UserOffboardingRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("scheduledAt" in (value as Record<string, any>)) &&
-            !("scheduled_at" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scheduledAt"] === undefined &&
-            (value as Record<string, any>)["scheduled_at"] === undefined)
-    )
-        return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('scheduledAt' in (value as Record<string, any>)) && !('scheduled_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['scheduledAt'] === undefined && (value as Record<string, any>)['scheduled_at'] === undefined)) return false;
     return true;
 }
 
@@ -67,22 +62,17 @@ export function UserOffboardingRequestFromJSON(json: any): UserOffboardingReques
     return UserOffboardingRequestFromJSONTyped(json, false);
 }
 
-export function UserOffboardingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserOffboardingRequest {
+export function UserOffboardingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOffboardingRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"],
-        scheduledAt:
-            json["scheduled_at"] == null
-                ? json["scheduled_at"]
-                : parseDateTime(json["scheduled_at"]),
-        action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
-        revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
-        revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
+        
+        'user': json['user'],
+        'scheduledAt': (json['scheduled_at'] == null ? json['scheduled_at'] : parseDateTime(json['scheduled_at'])),
+        'action': json['action'] == null ? undefined : OffboardingActionEnumFromJSON(json['action']),
+        'revokeSessions': json['revoke_sessions'] == null ? undefined : json['revoke_sessions'],
+        'revokeTokens': json['revoke_tokens'] == null ? undefined : json['revoke_tokens'],
     };
 }
 
@@ -90,22 +80,18 @@ export function UserOffboardingRequestToJSON(json: any): UserOffboardingRequest 
     return UserOffboardingRequestToJSONTyped(json, false);
 }
 
-export function UserOffboardingRequestToJSONTyped(
-    value?: UserOffboardingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserOffboardingRequestToJSONTyped(value?: UserOffboardingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        scheduled_at:
-            value["scheduledAt"] == null
-                ? value["scheduledAt"]
-                : serializeDateTime(value["scheduledAt"]),
-        action: OffboardingActionEnumToJSON(value["action"]),
-        revoke_sessions: value["revokeSessions"],
-        revoke_tokens: value["revokeTokens"],
+        
+        'user': value['user'],
+        'scheduled_at': value['scheduledAt'] == null ? value['scheduledAt'] : serializeDateTime(value['scheduledAt']),
+        'action': OffboardingActionEnumToJSON(value['action']),
+        'revoke_sessions': value['revokeSessions'],
+        'revoke_tokens': value['revokeTokens'],
     };
 }
+

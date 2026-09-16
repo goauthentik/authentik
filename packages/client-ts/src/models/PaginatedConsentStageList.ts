@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentStage } from "./ConsentStage";
-import { ConsentStageFromJSON, ConsentStageToJSON } from "./ConsentStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { ConsentStage } from './ConsentStage';
+import {
+    ConsentStageFromJSON,
+    ConsentStageToJSON,
+} from './ConsentStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedConsentStageList
  */
 export interface PaginatedConsentStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<ConsentStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedConsentStageList interface.
  */
-export function instanceOfPaginatedConsentStageList(
-    value: object,
-): value is PaginatedConsentStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedConsentStageList(value: object): value is PaginatedConsentStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedConsentStageListFromJSON(json: any): PaginatedConsentSt
     return PaginatedConsentStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedConsentStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedConsentStageList {
+export function PaginatedConsentStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedConsentStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ConsentStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ConsentStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedConsentStageListToJSON(json: any): PaginatedConsentStag
     return PaginatedConsentStageListToJSONTyped(json, false);
 }
 
-export function PaginatedConsentStageListToJSONTyped(
-    value?: PaginatedConsentStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedConsentStageListToJSONTyped(value?: PaginatedConsentStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ConsentStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ConsentStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

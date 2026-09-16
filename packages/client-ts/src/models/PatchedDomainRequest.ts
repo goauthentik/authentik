@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface PatchedDomainRequest {
     /**
-     *
+     * 
      */
     domain?: string;
     /**
-     *
+     * 
      */
     isPrimary?: boolean;
     /**
-     *
+     * 
      */
     tenant?: string;
 }
@@ -43,17 +42,15 @@ export function PatchedDomainRequestFromJSON(json: any): PatchedDomainRequest {
     return PatchedDomainRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDomainRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedDomainRequest {
+export function PatchedDomainRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDomainRequest {
     if (json == null) {
         return json;
     }
     return {
-        domain: json["domain"] == null ? undefined : json["domain"],
-        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
-        tenant: json["tenant"] == null ? undefined : json["tenant"],
+        
+        'domain': json['domain'] == null ? undefined : json['domain'],
+        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
+        'tenant': json['tenant'] == null ? undefined : json['tenant'],
     };
 }
 
@@ -61,17 +58,16 @@ export function PatchedDomainRequestToJSON(json: any): PatchedDomainRequest {
     return PatchedDomainRequestToJSONTyped(json, false);
 }
 
-export function PatchedDomainRequestToJSONTyped(
-    value?: PatchedDomainRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedDomainRequestToJSONTyped(value?: PatchedDomainRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        domain: value["domain"],
-        is_primary: value["isPrimary"],
-        tenant: value["tenant"],
+        
+        'domain': value['domain'],
+        'is_primary': value['isPrimary'],
+        'tenant': value['tenant'],
     };
 }
+

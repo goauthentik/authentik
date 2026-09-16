@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface AppleChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -27,9 +26,7 @@ export interface AppleChallengeResponseRequest {
 /**
  * Check if a given object implements the AppleChallengeResponseRequest interface.
  */
-export function instanceOfAppleChallengeResponseRequest(
-    value: object,
-): value is AppleChallengeResponseRequest {
+export function instanceOfAppleChallengeResponseRequest(value: object): value is AppleChallengeResponseRequest {
     return true;
 }
 
@@ -37,15 +34,13 @@ export function AppleChallengeResponseRequestFromJSON(json: any): AppleChallenge
     return AppleChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AppleChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AppleChallengeResponseRequest {
+export function AppleChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AppleChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
@@ -53,15 +48,14 @@ export function AppleChallengeResponseRequestToJSON(json: any): AppleChallengeRe
     return AppleChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AppleChallengeResponseRequestToJSONTyped(
-    value?: AppleChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AppleChallengeResponseRequestToJSONTyped(value?: AppleChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const UserFieldsEnum = {
-    Email: "email",
-    Username: "username",
-    Upn: "upn",
-    UnknownDefaultOpenApi: "11184809",
+    Email: 'email',
+    Username: 'username',
+    Upn: 'upn',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type UserFieldsEnum = (typeof UserFieldsEnum)[keyof typeof UserFieldsEnum];
+export type UserFieldsEnum = typeof UserFieldsEnum[keyof typeof UserFieldsEnum];
+
 
 export function instanceOfUserFieldsEnum(value: any): boolean {
     for (const key in UserFieldsEnum) {
@@ -39,10 +40,7 @@ export function UserFieldsEnumFromJSON(json: any): UserFieldsEnum {
     return UserFieldsEnumFromJSONTyped(json, false);
 }
 
-export function UserFieldsEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserFieldsEnum {
+export function UserFieldsEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserFieldsEnum {
     return json as UserFieldsEnum;
 }
 
@@ -50,9 +48,7 @@ export function UserFieldsEnumToJSON(value?: UserFieldsEnum | null): any {
     return value as any;
 }
 
-export function UserFieldsEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): UserFieldsEnum {
+export function UserFieldsEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserFieldsEnum {
     return value as UserFieldsEnum;
 }
+

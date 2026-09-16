@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface InvitationStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -32,7 +31,7 @@ export interface InvitationStageRequest {
  * Check if a given object implements the InvitationStageRequest interface.
  */
 export function instanceOfInvitationStageRequest(value: object): value is InvitationStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -40,19 +39,14 @@ export function InvitationStageRequestFromJSON(json: any): InvitationStageReques
     return InvitationStageRequestFromJSONTyped(json, false);
 }
 
-export function InvitationStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InvitationStageRequest {
+export function InvitationStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): InvitationStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        continueFlowWithoutInvitation:
-            json["continue_flow_without_invitation"] == null
-                ? undefined
-                : json["continue_flow_without_invitation"],
+        
+        'name': json['name'],
+        'continueFlowWithoutInvitation': json['continue_flow_without_invitation'] == null ? undefined : json['continue_flow_without_invitation'],
     };
 }
 
@@ -60,16 +54,15 @@ export function InvitationStageRequestToJSON(json: any): InvitationStageRequest 
     return InvitationStageRequestToJSONTyped(json, false);
 }
 
-export function InvitationStageRequestToJSONTyped(
-    value?: InvitationStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InvitationStageRequestToJSONTyped(value?: InvitationStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        continue_flow_without_invitation: value["continueFlowWithoutInvitation"],
+        
+        'name': value['name'],
+        'continue_flow_without_invitation': value['continueFlowWithoutInvitation'],
     };
 }
+

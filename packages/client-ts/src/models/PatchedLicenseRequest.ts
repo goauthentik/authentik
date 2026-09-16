@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedLicenseRequest {
     /**
-     *
+     * 
      */
     key?: string;
 }
@@ -35,15 +34,13 @@ export function PatchedLicenseRequestFromJSON(json: any): PatchedLicenseRequest 
     return PatchedLicenseRequestFromJSONTyped(json, false);
 }
 
-export function PatchedLicenseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedLicenseRequest {
+export function PatchedLicenseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedLicenseRequest {
     if (json == null) {
         return json;
     }
     return {
-        key: json["key"] == null ? undefined : json["key"],
+        
+        'key': json['key'] == null ? undefined : json['key'],
     };
 }
 
@@ -51,15 +48,14 @@ export function PatchedLicenseRequestToJSON(json: any): PatchedLicenseRequest {
     return PatchedLicenseRequestToJSONTyped(json, false);
 }
 
-export function PatchedLicenseRequestToJSONTyped(
-    value?: PatchedLicenseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedLicenseRequestToJSONTyped(value?: PatchedLicenseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        key: value["key"],
+        
+        'key': value['key'],
     };
 }
+

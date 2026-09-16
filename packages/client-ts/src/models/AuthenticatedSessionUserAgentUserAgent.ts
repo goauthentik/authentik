@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,19 +18,19 @@
  */
 export interface AuthenticatedSessionUserAgentUserAgent {
     /**
-     *
+     * 
      */
     family: string;
     /**
-     *
+     * 
      */
     major: string;
     /**
-     *
+     * 
      */
     minor: string;
     /**
-     *
+     * 
      */
     patch: string;
 }
@@ -39,55 +38,46 @@ export interface AuthenticatedSessionUserAgentUserAgent {
 /**
  * Check if a given object implements the AuthenticatedSessionUserAgentUserAgent interface.
  */
-export function instanceOfAuthenticatedSessionUserAgentUserAgent(
-    value: object,
-): value is AuthenticatedSessionUserAgentUserAgent {
-    if (!("family" in value) || value["family"] === undefined) return false;
-    if (!("major" in value) || value["major"] === undefined) return false;
-    if (!("minor" in value) || value["minor"] === undefined) return false;
-    if (!("patch" in value) || value["patch"] === undefined) return false;
+export function instanceOfAuthenticatedSessionUserAgentUserAgent(value: object): value is AuthenticatedSessionUserAgentUserAgent {
+    if (!('family' in value) || value['family'] === undefined) return false;
+    if (!('major' in value) || value['major'] === undefined) return false;
+    if (!('minor' in value) || value['minor'] === undefined) return false;
+    if (!('patch' in value) || value['patch'] === undefined) return false;
     return true;
 }
 
-export function AuthenticatedSessionUserAgentUserAgentFromJSON(
-    json: any,
-): AuthenticatedSessionUserAgentUserAgent {
+export function AuthenticatedSessionUserAgentUserAgentFromJSON(json: any): AuthenticatedSessionUserAgentUserAgent {
     return AuthenticatedSessionUserAgentUserAgentFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentUserAgentFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSessionUserAgentUserAgent {
+export function AuthenticatedSessionUserAgentUserAgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionUserAgentUserAgent {
     if (json == null) {
         return json;
     }
     return {
-        family: json["family"],
-        major: json["major"],
-        minor: json["minor"],
-        patch: json["patch"],
+        
+        'family': json['family'],
+        'major': json['major'],
+        'minor': json['minor'],
+        'patch': json['patch'],
     };
 }
 
-export function AuthenticatedSessionUserAgentUserAgentToJSON(
-    json: any,
-): AuthenticatedSessionUserAgentUserAgent {
+export function AuthenticatedSessionUserAgentUserAgentToJSON(json: any): AuthenticatedSessionUserAgentUserAgent {
     return AuthenticatedSessionUserAgentUserAgentToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentUserAgentToJSONTyped(
-    value?: AuthenticatedSessionUserAgentUserAgent | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionUserAgentUserAgentToJSONTyped(value?: AuthenticatedSessionUserAgentUserAgent | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        family: value["family"],
-        major: value["major"],
-        minor: value["minor"],
-        patch: value["patch"],
+        
+        'family': value['family'],
+        'major': value['major'],
+        'minor': value['minor'],
+        'patch': value['patch'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,16 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Event } from "./Event";
-import { EventFromJSON, EventToJSON } from "./Event";
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON } from "./SeverityEnum";
+import { parseDateTime } from '../runtime';
+import type { SeverityEnum } from './SeverityEnum';
+import {
+    SeverityEnumFromJSON,
+} from './SeverityEnum';
+import type { Event } from './Event';
+import {
+    EventFromJSON,
+    EventToJSON,
+} from './Event';
 
 /**
  * Notification Serializer
@@ -25,47 +29,49 @@ import { SeverityEnumFromJSON } from "./SeverityEnum";
  */
 export interface Notification {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     readonly severity: SeverityEnum;
     /**
-     *
+     * 
      */
     readonly body: string;
     /**
-     *
+     * 
      */
     hyperlink?: string | null;
     /**
-     *
+     * 
      */
     hyperlinkLabel?: string | null;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     event?: Event;
     /**
-     *
+     * 
      */
     seen?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the Notification interface.
  */
 export function instanceOfNotification(value: object): value is Notification {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("severity" in value) || value["severity"] === undefined) return false;
-    if (!("body" in value) || value["body"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('severity' in value) || value['severity'] === undefined) return false;
+    if (!('body' in value) || value['body'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
     return true;
 }
 
@@ -78,24 +84,15 @@ export function NotificationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        severity: SeverityEnumFromJSON(json["severity"]),
-        body: json["body"],
-        hyperlink:
-            json["hyperlink"] === undefined
-                ? undefined
-                : json["hyperlink"] === null
-                  ? null
-                  : json["hyperlink"],
-        hyperlinkLabel:
-            json["hyperlink_label"] === undefined
-                ? undefined
-                : json["hyperlink_label"] === null
-                  ? null
-                  : json["hyperlink_label"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        event: json["event"] == null ? undefined : EventFromJSON(json["event"]),
-        seen: json["seen"] == null ? undefined : json["seen"],
+        
+        'pk': json['pk'],
+        'severity': SeverityEnumFromJSON(json['severity']),
+        'body': json['body'],
+        'hyperlink': json['hyperlink'] === undefined ? undefined : json['hyperlink'] === null ? null : json['hyperlink'],
+        'hyperlinkLabel': json['hyperlink_label'] === undefined ? undefined : json['hyperlink_label'] === null ? null : json['hyperlink_label'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'event': json['event'] == null ? undefined : EventFromJSON(json['event']),
+        'seen': json['seen'] == null ? undefined : json['seen'],
     };
 }
 
@@ -103,18 +100,17 @@ export function NotificationToJSON(json: any): Notification {
     return NotificationToJSONTyped(json, false);
 }
 
-export function NotificationToJSONTyped(
-    value?: Omit<Notification, "pk" | "severity" | "body" | "created"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationToJSONTyped(value?: Omit<Notification, 'pk'|'severity'|'body'|'created'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        hyperlink: value["hyperlink"],
-        hyperlink_label: value["hyperlinkLabel"],
-        event: EventToJSON(value["event"]),
-        seen: value["seen"],
+        
+        'hyperlink': value['hyperlink'],
+        'hyperlink_label': value['hyperlinkLabel'],
+        'event': EventToJSON(value['event']),
+        'seen': value['seen'],
     };
 }
+

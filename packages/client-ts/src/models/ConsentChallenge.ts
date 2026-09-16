@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,11 +11,17 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentPermission } from "./ConsentPermission";
-import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission";
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
+import type { ConsentPermission } from './ConsentPermission';
+import {
+    ConsentPermissionFromJSON,
+    ConsentPermissionToJSON,
+} from './ConsentPermission';
 
 /**
  * Challenge info for consent screens
@@ -25,39 +30,39 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface ConsentChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     pendingUser: string;
     /**
-     *
+     * 
      */
     pendingUserAvatar: string;
     /**
-     *
+     * 
      */
     headerText?: string;
     /**
-     *
+     * 
      */
     permissions: Array<ConsentPermission>;
     /**
-     *
+     * 
      */
     additionalPermissions: Array<ConsentPermission>;
     /**
-     *
+     * 
      */
     token: string;
 }
@@ -66,29 +71,11 @@ export interface ConsentChallenge {
  * Check if a given object implements the ConsentChallenge interface.
  */
 export function instanceOfConsentChallenge(value: object): value is ConsentChallenge {
-    if (
-        (!("pendingUser" in (value as Record<string, any>)) &&
-            !("pending_user" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUser"] === undefined &&
-            (value as Record<string, any>)["pending_user"] === undefined)
-    )
-        return false;
-    if (
-        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
-            !("pending_user_avatar" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
-            (value as Record<string, any>)["pending_user_avatar"] === undefined)
-    )
-        return false;
-    if (!("permissions" in value) || value["permissions"] === undefined) return false;
-    if (
-        (!("additionalPermissions" in (value as Record<string, any>)) &&
-            !("additional_permissions" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["additionalPermissions"] === undefined &&
-            (value as Record<string, any>)["additional_permissions"] === undefined)
-    )
-        return false;
-    if (!("token" in value) || value["token"] === undefined) return false;
+    if ((!('pendingUser' in (value as Record<string, any>)) && !('pending_user' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUser'] === undefined && (value as Record<string, any>)['pending_user'] === undefined)) return false;
+    if ((!('pendingUserAvatar' in (value as Record<string, any>)) && !('pending_user_avatar' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingUserAvatar'] === undefined && (value as Record<string, any>)['pending_user_avatar'] === undefined)) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
+    if ((!('additionalPermissions' in (value as Record<string, any>)) && !('additional_permissions' in (value as Record<string, any>))) || ((value as Record<string, any>)['additionalPermissions'] === undefined && (value as Record<string, any>)['additional_permissions'] === undefined)) return false;
+    if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
@@ -96,26 +83,21 @@ export function ConsentChallengeFromJSON(json: any): ConsentChallenge {
     return ConsentChallengeFromJSONTyped(json, false);
 }
 
-export function ConsentChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ConsentChallenge {
+export function ConsentChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        pendingUser: json["pending_user"],
-        pendingUserAvatar: json["pending_user_avatar"],
-        headerText: json["header_text"] == null ? undefined : json["header_text"],
-        permissions: (json["permissions"] as Array<any>).map(ConsentPermissionFromJSON),
-        additionalPermissions: (json["additional_permissions"] as Array<any>).map(
-            ConsentPermissionFromJSON,
-        ),
-        token: json["token"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'pendingUser': json['pending_user'],
+        'pendingUserAvatar': json['pending_user_avatar'],
+        'headerText': json['header_text'] == null ? undefined : json['header_text'],
+        'permissions': ((json['permissions'] as Array<any>).map(ConsentPermissionFromJSON)),
+        'additionalPermissions': ((json['additional_permissions'] as Array<any>).map(ConsentPermissionFromJSON)),
+        'token': json['token'],
     };
 }
 
@@ -123,25 +105,22 @@ export function ConsentChallengeToJSON(json: any): ConsentChallenge {
     return ConsentChallengeToJSONTyped(json, false);
 }
 
-export function ConsentChallengeToJSONTyped(
-    value?: ConsentChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ConsentChallengeToJSONTyped(value?: ConsentChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        pending_user: value["pendingUser"],
-        pending_user_avatar: value["pendingUserAvatar"],
-        header_text: value["headerText"],
-        permissions: (value["permissions"] as Array<any>).map(ConsentPermissionToJSON),
-        additional_permissions: (value["additionalPermissions"] as Array<any>).map(
-            ConsentPermissionToJSON,
-        ),
-        token: value["token"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'pending_user': value['pendingUser'],
+        'pending_user_avatar': value['pendingUserAvatar'],
+        'header_text': value['headerText'],
+        'permissions': ((value['permissions'] as Array<any>).map(ConsentPermissionToJSON)),
+        'additional_permissions': ((value['additionalPermissions'] as Array<any>).map(ConsentPermissionToJSON)),
+        'token': value['token'],
     };
 }
+

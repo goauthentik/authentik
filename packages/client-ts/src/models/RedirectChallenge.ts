@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * Challenge type to redirect the client
@@ -23,23 +25,23 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface RedirectChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     to: string;
     /**
-     *
+     * 
      */
     finalRedirect?: boolean;
 }
@@ -48,7 +50,7 @@ export interface RedirectChallenge {
  * Check if a given object implements the RedirectChallenge interface.
  */
 export function instanceOfRedirectChallenge(value: object): value is RedirectChallenge {
-    if (!("to" in value) || value["to"] === undefined) return false;
+    if (!('to' in value) || value['to'] === undefined) return false;
     return true;
 }
 
@@ -56,20 +58,17 @@ export function RedirectChallengeFromJSON(json: any): RedirectChallenge {
     return RedirectChallengeFromJSONTyped(json, false);
 }
 
-export function RedirectChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): RedirectChallenge {
+export function RedirectChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        to: json["to"],
-        finalRedirect: json["final_redirect"] == null ? undefined : json["final_redirect"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'to': json['to'],
+        'finalRedirect': json['final_redirect'] == null ? undefined : json['final_redirect'],
     };
 }
 
@@ -77,19 +76,18 @@ export function RedirectChallengeToJSON(json: any): RedirectChallenge {
     return RedirectChallengeToJSONTyped(json, false);
 }
 
-export function RedirectChallengeToJSONTyped(
-    value?: RedirectChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RedirectChallengeToJSONTyped(value?: RedirectChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        to: value["to"],
-        final_redirect: value["finalRedirect"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'to': value['to'],
+        'final_redirect': value['finalRedirect'],
     };
 }
+

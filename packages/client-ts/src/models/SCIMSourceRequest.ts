@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -27,19 +26,19 @@ export interface SCIMSourceRequest {
      */
     slug: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     userPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     groupPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     userPathTemplate?: string;
 }
@@ -48,8 +47,8 @@ export interface SCIMSourceRequest {
  * Check if a given object implements the SCIMSourceRequest interface.
  */
 export function instanceOfSCIMSourceRequest(value: object): value is SCIMSourceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -57,23 +56,18 @@ export function SCIMSourceRequestFromJSON(json: any): SCIMSourceRequest {
     return SCIMSourceRequestFromJSONTyped(json, false);
 }
 
-export function SCIMSourceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMSourceRequest {
+export function SCIMSourceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        slug: json["slug"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        userPropertyMappings:
-            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
-        groupPropertyMappings:
-            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
-        userPathTemplate:
-            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        
+        'name': json['name'],
+        'slug': json['slug'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
+        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
+        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
     };
 }
 
@@ -81,20 +75,19 @@ export function SCIMSourceRequestToJSON(json: any): SCIMSourceRequest {
     return SCIMSourceRequestToJSONTyped(json, false);
 }
 
-export function SCIMSourceRequestToJSONTyped(
-    value?: SCIMSourceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMSourceRequestToJSONTyped(value?: SCIMSourceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        enabled: value["enabled"],
-        user_property_mappings: value["userPropertyMappings"],
-        group_property_mappings: value["groupPropertyMappings"],
-        user_path_template: value["userPathTemplate"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'enabled': value['enabled'],
+        'user_property_mappings': value['userPropertyMappings'],
+        'group_property_mappings': value['groupPropertyMappings'],
+        'user_path_template': value['userPathTemplate'],
     };
 }
+

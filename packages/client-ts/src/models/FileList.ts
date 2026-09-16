@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
+import type { ThemedUrls } from './ThemedUrls';
+import {
+    ThemedUrlsFromJSON,
+    ThemedUrlsToJSON,
+} from './ThemedUrls';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,19 +24,19 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
  */
 export interface FileList {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     mimeType: string;
     /**
-     *
+     * 
      */
     url: string;
     /**
-     *
+     * 
      */
     themedUrls?: ThemedUrls | null;
 }
@@ -43,15 +45,9 @@ export interface FileList {
  * Check if a given object implements the FileList interface.
  */
 export function instanceOfFileList(value: object): value is FileList {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("mimeType" in (value as Record<string, any>)) &&
-            !("mime_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["mimeType"] === undefined &&
-            (value as Record<string, any>)["mime_type"] === undefined)
-    )
-        return false;
-    if (!("url" in value) || value["url"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('mimeType' in (value as Record<string, any>)) && !('mime_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['mimeType'] === undefined && (value as Record<string, any>)['mime_type'] === undefined)) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -64,15 +60,11 @@ export function FileListFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        name: json["name"],
-        mimeType: json["mime_type"],
-        url: json["url"],
-        themedUrls:
-            json["themed_urls"] === undefined
-                ? undefined
-                : json["themed_urls"] === null
-                  ? null
-                  : ThemedUrlsFromJSON(json["themed_urls"]),
+        
+        'name': json['name'],
+        'mimeType': json['mime_type'],
+        'url': json['url'],
+        'themedUrls': json['themed_urls'] === undefined ? undefined : json['themed_urls'] === null ? null : ThemedUrlsFromJSON(json['themed_urls']),
     };
 }
 
@@ -80,18 +72,17 @@ export function FileListToJSON(json: any): FileList {
     return FileListToJSONTyped(json, false);
 }
 
-export function FileListToJSONTyped(
-    value?: FileList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FileListToJSONTyped(value?: FileList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mime_type: value["mimeType"],
-        url: value["url"],
-        themed_urls: ThemedUrlsToJSON(value["themedUrls"]),
+        
+        'name': value['name'],
+        'mime_type': value['mimeType'],
+        'url': value['url'],
+        'themed_urls': ThemedUrlsToJSON(value['themedUrls']),
     };
 }
+

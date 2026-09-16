@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,25 +11,24 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const InvalidResponseActionEnum = {
-    Retry: "retry",
-    Restart: "restart",
-    RestartWithContext: "restart_with_context",
-    UnknownDefaultOpenApi: "11184809",
+    Retry: 'retry',
+    Restart: 'restart',
+    RestartWithContext: 'restart_with_context',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type InvalidResponseActionEnum =
-    (typeof InvalidResponseActionEnum)[keyof typeof InvalidResponseActionEnum];
+export type InvalidResponseActionEnum = typeof InvalidResponseActionEnum[keyof typeof InvalidResponseActionEnum];
+
 
 export function instanceOfInvalidResponseActionEnum(value: any): boolean {
     for (const key in InvalidResponseActionEnum) {
         if (Object.prototype.hasOwnProperty.call(InvalidResponseActionEnum, key)) {
-            if (
-                InvalidResponseActionEnum[key as keyof typeof InvalidResponseActionEnum] === value
-            ) {
+            if (InvalidResponseActionEnum[key as keyof typeof InvalidResponseActionEnum] === value) {
                 return true;
             }
         }
@@ -42,10 +40,7 @@ export function InvalidResponseActionEnumFromJSON(json: any): InvalidResponseAct
     return InvalidResponseActionEnumFromJSONTyped(json, false);
 }
 
-export function InvalidResponseActionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InvalidResponseActionEnum {
+export function InvalidResponseActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): InvalidResponseActionEnum {
     return json as InvalidResponseActionEnum;
 }
 
@@ -53,9 +48,7 @@ export function InvalidResponseActionEnumToJSON(value?: InvalidResponseActionEnu
     return value as any;
 }
 
-export function InvalidResponseActionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): InvalidResponseActionEnum {
+export function InvalidResponseActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): InvalidResponseActionEnum {
     return value as InvalidResponseActionEnum;
 }
+

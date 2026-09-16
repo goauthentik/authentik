@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface PatchedUserSAMLSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source?: string;
     /**
-     *
+     * 
      */
     identifier?: string;
 }
@@ -31,47 +30,38 @@ export interface PatchedUserSAMLSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserSAMLSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserSAMLSourceConnectionRequest(
-    value: object,
-): value is PatchedUserSAMLSourceConnectionRequest {
+export function instanceOfPatchedUserSAMLSourceConnectionRequest(value: object): value is PatchedUserSAMLSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserSAMLSourceConnectionRequestFromJSON(
-    json: any,
-): PatchedUserSAMLSourceConnectionRequest {
+export function PatchedUserSAMLSourceConnectionRequestFromJSON(json: any): PatchedUserSAMLSourceConnectionRequest {
     return PatchedUserSAMLSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserSAMLSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserSAMLSourceConnectionRequest {
+export function PatchedUserSAMLSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserSAMLSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"] == null ? undefined : json["source"],
-        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        
+        'source': json['source'] == null ? undefined : json['source'],
+        'identifier': json['identifier'] == null ? undefined : json['identifier'],
     };
 }
 
-export function PatchedUserSAMLSourceConnectionRequestToJSON(
-    json: any,
-): PatchedUserSAMLSourceConnectionRequest {
+export function PatchedUserSAMLSourceConnectionRequestToJSON(json: any): PatchedUserSAMLSourceConnectionRequest {
     return PatchedUserSAMLSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserSAMLSourceConnectionRequestToJSONTyped(
-    value?: PatchedUserSAMLSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserSAMLSourceConnectionRequestToJSONTyped(value?: PatchedUserSAMLSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

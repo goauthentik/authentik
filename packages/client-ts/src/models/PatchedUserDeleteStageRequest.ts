@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedUserDeleteStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
 }
@@ -27,9 +26,7 @@ export interface PatchedUserDeleteStageRequest {
 /**
  * Check if a given object implements the PatchedUserDeleteStageRequest interface.
  */
-export function instanceOfPatchedUserDeleteStageRequest(
-    value: object,
-): value is PatchedUserDeleteStageRequest {
+export function instanceOfPatchedUserDeleteStageRequest(value: object): value is PatchedUserDeleteStageRequest {
     return true;
 }
 
@@ -37,15 +34,13 @@ export function PatchedUserDeleteStageRequestFromJSON(json: any): PatchedUserDel
     return PatchedUserDeleteStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserDeleteStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedUserDeleteStageRequest {
+export function PatchedUserDeleteStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserDeleteStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -53,15 +48,14 @@ export function PatchedUserDeleteStageRequestToJSON(json: any): PatchedUserDelet
     return PatchedUserDeleteStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserDeleteStageRequestToJSONTyped(
-    value?: PatchedUserDeleteStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedUserDeleteStageRequestToJSONTyped(value?: PatchedUserDeleteStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

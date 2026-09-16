@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedExpressionPolicyRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -27,7 +26,7 @@ export interface PatchedExpressionPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,9 +34,7 @@ export interface PatchedExpressionPolicyRequest {
 /**
  * Check if a given object implements the PatchedExpressionPolicyRequest interface.
  */
-export function instanceOfPatchedExpressionPolicyRequest(
-    value: object,
-): value is PatchedExpressionPolicyRequest {
+export function instanceOfPatchedExpressionPolicyRequest(value: object): value is PatchedExpressionPolicyRequest {
     return true;
 }
 
@@ -45,17 +42,15 @@ export function PatchedExpressionPolicyRequestFromJSON(json: any): PatchedExpres
     return PatchedExpressionPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedExpressionPolicyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedExpressionPolicyRequest {
+export function PatchedExpressionPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedExpressionPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
@@ -63,17 +58,16 @@ export function PatchedExpressionPolicyRequestToJSON(json: any): PatchedExpressi
     return PatchedExpressionPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedExpressionPolicyRequestToJSONTyped(
-    value?: PatchedExpressionPolicyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedExpressionPolicyRequestToJSONTyped(value?: PatchedExpressionPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        execution_logging: value["executionLogging"],
-        expression: value["expression"],
+        
+        'name': value['name'],
+        'execution_logging': value['executionLogging'],
+        'expression': value['expression'],
     };
 }
+

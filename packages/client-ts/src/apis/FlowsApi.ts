@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,42 +11,83 @@
  * Do not edit the class manually.
  */
 
-import { type Cache, CacheFromJSON } from "../models/Cache";
-import { type ChallengeTypes, ChallengeTypesFromJSON } from "../models/ChallengeTypes";
-import { type DeniedActionEnum } from "../models/DeniedActionEnum";
-import { type Flow, FlowFromJSON } from "../models/Flow";
+import * as runtime from '../runtime';
+import {
+    type Cache,
+    CacheFromJSON,
+} from '../models/Cache';
+import {
+    type ChallengeTypes,
+    ChallengeTypesFromJSON,
+} from '../models/ChallengeTypes';
+import {
+    type DeniedActionEnum,
+} from '../models/DeniedActionEnum';
+import {
+    type Flow,
+    FlowFromJSON,
+} from '../models/Flow';
 import {
     type FlowChallengeResponseRequest,
     FlowChallengeResponseRequestToJSON,
-} from "../models/FlowChallengeResponseRequest";
-import { type FlowDesignationEnum } from "../models/FlowDesignationEnum";
-import { type FlowDiagram, FlowDiagramFromJSON } from "../models/FlowDiagram";
-import { type FlowInspection, FlowInspectionFromJSON } from "../models/FlowInspection";
-import { type FlowRequest, FlowRequestToJSON } from "../models/FlowRequest";
-import { type FlowStageBinding, FlowStageBindingFromJSON } from "../models/FlowStageBinding";
+} from '../models/FlowChallengeResponseRequest';
+import {
+    type FlowDesignationEnum,
+} from '../models/FlowDesignationEnum';
+import {
+    type FlowDiagram,
+    FlowDiagramFromJSON,
+} from '../models/FlowDiagram';
+import {
+    type FlowInspection,
+    FlowInspectionFromJSON,
+} from '../models/FlowInspection';
+import {
+    type FlowRequest,
+    FlowRequestToJSON,
+} from '../models/FlowRequest';
+import {
+    type FlowStageBinding,
+    FlowStageBindingFromJSON,
+} from '../models/FlowStageBinding';
 import {
     type FlowStageBindingRequest,
     FlowStageBindingRequestToJSON,
-} from "../models/FlowStageBindingRequest";
-import { type InvalidResponseActionEnum } from "../models/InvalidResponseActionEnum";
-import { type Link, LinkFromJSON } from "../models/Link";
-import { type PaginatedFlowList, PaginatedFlowListFromJSON } from "../models/PaginatedFlowList";
+} from '../models/FlowStageBindingRequest';
+import {
+    type InvalidResponseActionEnum,
+} from '../models/InvalidResponseActionEnum';
+import {
+    type Link,
+    LinkFromJSON,
+} from '../models/Link';
+import {
+    type PaginatedFlowList,
+    PaginatedFlowListFromJSON,
+} from '../models/PaginatedFlowList';
 import {
     type PaginatedFlowStageBindingList,
     PaginatedFlowStageBindingListFromJSON,
-} from "../models/PaginatedFlowStageBindingList";
-import { type PatchedFlowRequest, PatchedFlowRequestToJSON } from "../models/PatchedFlowRequest";
+} from '../models/PaginatedFlowStageBindingList';
+import {
+    type PatchedFlowRequest,
+    PatchedFlowRequestToJSON,
+} from '../models/PatchedFlowRequest';
 import {
     type PatchedFlowStageBindingRequest,
     PatchedFlowStageBindingRequestToJSON,
-} from "../models/PatchedFlowStageBindingRequest";
-import { type PolicyEngineMode } from "../models/PolicyEngineMode";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from '../models/PatchedFlowStageBindingRequest';
+import {
+    type PolicyEngineMode,
+} from '../models/PolicyEngineMode';
+import {
+    type UsedBy,
+    UsedByFromJSON,
+} from '../models/UsedBy';
 
 export interface FlowsBindingsCreateRequest {
     /**
-     *
+     * 
      */
     flowStageBindingRequest: FlowStageBindingRequest;
 }
@@ -61,19 +101,19 @@ export interface FlowsBindingsDestroyRequest {
 
 export interface FlowsBindingsListRequest {
     /**
-     *
+     * 
      */
     evaluateOnPlan?: boolean;
     /**
-     *
+     * 
      */
     fsbUuid?: string;
     /**
-     *
+     * 
      */
     invalidResponseAction?: InvalidResponseActionEnum;
     /**
-     *
+     * 
      */
     order?: number;
     /**
@@ -89,19 +129,19 @@ export interface FlowsBindingsListRequest {
      */
     pageSize?: number;
     /**
-     *
+     * 
      */
     pbmUuid?: string;
     /**
-     *
+     * 
      */
     policies?: Array<string>;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     *
+     * 
      */
     reEvaluatePolicies?: boolean;
     /**
@@ -109,11 +149,11 @@ export interface FlowsBindingsListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     stage?: string;
     /**
-     *
+     * 
      */
     target?: string;
 }
@@ -124,7 +164,7 @@ export interface FlowsBindingsPartialUpdateRequest {
      */
     fsbUuid: string;
     /**
-     *
+     * 
      */
     patchedFlowStageBindingRequest?: PatchedFlowStageBindingRequest;
 }
@@ -142,7 +182,7 @@ export interface FlowsBindingsUpdateRequest {
      */
     fsbUuid: string;
     /**
-     *
+     * 
      */
     flowStageBindingRequest: FlowStageBindingRequest;
 }
@@ -156,7 +196,7 @@ export interface FlowsBindingsUsedByListRequest {
 
 export interface FlowsExecutorGetRequest {
     /**
-     *
+     * 
      */
     flowSlug: string;
     /**
@@ -167,7 +207,7 @@ export interface FlowsExecutorGetRequest {
 
 export interface FlowsExecutorSolveRequest {
     /**
-     *
+     * 
      */
     flowSlug: string;
     /**
@@ -175,68 +215,68 @@ export interface FlowsExecutorSolveRequest {
      */
     query: string;
     /**
-     *
+     * 
      */
     flowChallengeResponseRequest?: FlowChallengeResponseRequest;
 }
 
 export interface FlowsInspectorGetRequest {
     /**
-     *
+     * 
      */
     flowSlug: string;
 }
 
 export interface FlowsInstancesCreateRequest {
     /**
-     *
+     * 
      */
     flowRequest: FlowRequest;
 }
 
 export interface FlowsInstancesDestroyRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 export interface FlowsInstancesDiagramRetrieveRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 export interface FlowsInstancesExecuteRetrieveRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 export interface FlowsInstancesExportRetrieveRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 export interface FlowsInstancesListRequest {
     /**
-     *
+     * 
      */
     deniedAction?: DeniedActionEnum;
     /**
-     *
+     * 
      */
     designation?: FlowDesignationEnum;
     /**
-     *
+     * 
      */
     flowUuid?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -256,61 +296,60 @@ export interface FlowsInstancesListRequest {
      */
     search?: string;
     /**
-     *
+     * 
      */
     slug?: string;
 }
 
 export interface FlowsInstancesPartialUpdateRequest {
     /**
-     *
+     * 
      */
     slug: string;
     /**
-     *
+     * 
      */
     patchedFlowRequest?: PatchedFlowRequest;
 }
 
 export interface FlowsInstancesRetrieveRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 export interface FlowsInstancesUpdateRequest {
     /**
-     *
+     * 
      */
     slug: string;
     /**
-     *
+     * 
      */
     flowRequest: FlowRequest;
 }
 
 export interface FlowsInstancesUsedByListRequest {
     /**
-     *
+     * 
      */
     slug: string;
 }
 
 /**
- *
+ * 
  */
 export class FlowsApi extends runtime.BaseAPI {
+
     /**
      * Creates request options for flowsBindingsCreate without sending the request
      */
-    async flowsBindingsCreateRequestOpts(
-        requestParameters: FlowsBindingsCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["flowStageBindingRequest"] == null) {
+    async flowsBindingsCreateRequestOpts(requestParameters: FlowsBindingsCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['flowStageBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "flowStageBindingRequest",
-                'Required parameter "flowStageBindingRequest" was null or undefined when calling flowsBindingsCreate().',
+                'flowStageBindingRequest',
+                'Required parameter "flowStageBindingRequest" was null or undefined when calling flowsBindingsCreate().'
             );
         }
 
@@ -318,7 +357,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -333,35 +372,27 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: FlowStageBindingRequestToJSON(requestParameters["flowStageBindingRequest"]),
+            body: FlowStageBindingRequestToJSON(requestParameters['flowStageBindingRequest']),
         };
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsCreateRaw(
-        requestParameters: FlowsBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowStageBinding>> {
+    async flowsBindingsCreateRaw(requestParameters: FlowsBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowStageBinding>> {
         const requestOptions = await this.flowsBindingsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            FlowStageBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => FlowStageBindingFromJSON(jsonValue));
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsCreate(
-        requestParameters: FlowsBindingsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowStageBinding> {
+    async flowsBindingsCreate(requestParameters: FlowsBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowStageBinding> {
         const response = await this.flowsBindingsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -369,13 +400,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsBindingsDestroy without sending the request
      */
-    async flowsBindingsDestroyRequestOpts(
-        requestParameters: FlowsBindingsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
+    async flowsBindingsDestroyRequestOpts(requestParameters: FlowsBindingsDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['fsbUuid'] == null) {
             throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsDestroy().',
+                'fsbUuid',
+                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsDestroy().'
             );
         }
 
@@ -393,14 +422,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
+        urlPath = urlPath.replace('{fsb_uuid}', encodeURIComponent(String(requestParameters['fsbUuid'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -409,10 +435,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsDestroyRaw(
-        requestParameters: FlowsBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async flowsBindingsDestroyRaw(requestParameters: FlowsBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.flowsBindingsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -422,75 +445,70 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsDestroy(
-        requestParameters: FlowsBindingsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async flowsBindingsDestroy(requestParameters: FlowsBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.flowsBindingsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for flowsBindingsList without sending the request
      */
-    async flowsBindingsListRequestOpts(
-        requestParameters: FlowsBindingsListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async flowsBindingsListRequestOpts(requestParameters: FlowsBindingsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["evaluateOnPlan"] != null) {
-            queryParameters["evaluate_on_plan"] = requestParameters["evaluateOnPlan"];
+        if (requestParameters['evaluateOnPlan'] != null) {
+            queryParameters['evaluate_on_plan'] = requestParameters['evaluateOnPlan'];
         }
 
-        if (requestParameters["fsbUuid"] != null) {
-            queryParameters["fsb_uuid"] = requestParameters["fsbUuid"];
+        if (requestParameters['fsbUuid'] != null) {
+            queryParameters['fsb_uuid'] = requestParameters['fsbUuid'];
         }
 
-        if (requestParameters["invalidResponseAction"] != null) {
-            queryParameters["invalid_response_action"] = requestParameters["invalidResponseAction"];
+        if (requestParameters['invalidResponseAction'] != null) {
+            queryParameters['invalid_response_action'] = requestParameters['invalidResponseAction'];
         }
 
-        if (requestParameters["order"] != null) {
-            queryParameters["order"] = requestParameters["order"];
+        if (requestParameters['order'] != null) {
+            queryParameters['order'] = requestParameters['order'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["pbmUuid"] != null) {
-            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        if (requestParameters['pbmUuid'] != null) {
+            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
         }
 
-        if (requestParameters["policies"] != null) {
-            queryParameters["policies"] = requestParameters["policies"];
+        if (requestParameters['policies'] != null) {
+            queryParameters['policies'] = requestParameters['policies'];
         }
 
-        if (requestParameters["policyEngineMode"] != null) {
-            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
+        if (requestParameters['policyEngineMode'] != null) {
+            queryParameters['policy_engine_mode'] = requestParameters['policyEngineMode'];
         }
 
-        if (requestParameters["reEvaluatePolicies"] != null) {
-            queryParameters["re_evaluate_policies"] = requestParameters["reEvaluatePolicies"];
+        if (requestParameters['reEvaluatePolicies'] != null) {
+            queryParameters['re_evaluate_policies'] = requestParameters['reEvaluatePolicies'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["stage"] != null) {
-            queryParameters["stage"] = requestParameters["stage"];
+        if (requestParameters['stage'] != null) {
+            queryParameters['stage'] = requestParameters['stage'];
         }
 
-        if (requestParameters["target"] != null) {
-            queryParameters["target"] = requestParameters["target"];
+        if (requestParameters['target'] != null) {
+            queryParameters['target'] = requestParameters['target'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -508,7 +526,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -517,25 +535,17 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsListRaw(
-        requestParameters: FlowsBindingsListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedFlowStageBindingList>> {
+    async flowsBindingsListRaw(requestParameters: FlowsBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedFlowStageBindingList>> {
         const requestOptions = await this.flowsBindingsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedFlowStageBindingListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedFlowStageBindingListFromJSON(jsonValue));
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsList(
-        requestParameters: FlowsBindingsListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedFlowStageBindingList> {
+    async flowsBindingsList(requestParameters: FlowsBindingsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedFlowStageBindingList> {
         const response = await this.flowsBindingsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -543,13 +553,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsBindingsPartialUpdate without sending the request
      */
-    async flowsBindingsPartialUpdateRequestOpts(
-        requestParameters: FlowsBindingsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
+    async flowsBindingsPartialUpdateRequestOpts(requestParameters: FlowsBindingsPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['fsbUuid'] == null) {
             throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsPartialUpdate().',
+                'fsbUuid',
+                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsPartialUpdate().'
             );
         }
 
@@ -557,7 +565,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -569,44 +577,31 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
+        urlPath = urlPath.replace('{fsb_uuid}', encodeURIComponent(String(requestParameters['fsbUuid'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedFlowStageBindingRequestToJSON(
-                requestParameters["patchedFlowStageBindingRequest"],
-            ),
+            body: PatchedFlowStageBindingRequestToJSON(requestParameters['patchedFlowStageBindingRequest']),
         };
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsPartialUpdateRaw(
-        requestParameters: FlowsBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowStageBinding>> {
+    async flowsBindingsPartialUpdateRaw(requestParameters: FlowsBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowStageBinding>> {
         const requestOptions = await this.flowsBindingsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            FlowStageBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => FlowStageBindingFromJSON(jsonValue));
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsPartialUpdate(
-        requestParameters: FlowsBindingsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowStageBinding> {
+    async flowsBindingsPartialUpdate(requestParameters: FlowsBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowStageBinding> {
         const response = await this.flowsBindingsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -614,13 +609,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsBindingsRetrieve without sending the request
      */
-    async flowsBindingsRetrieveRequestOpts(
-        requestParameters: FlowsBindingsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
+    async flowsBindingsRetrieveRequestOpts(requestParameters: FlowsBindingsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['fsbUuid'] == null) {
             throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsRetrieve().',
+                'fsbUuid',
+                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsRetrieve().'
             );
         }
 
@@ -638,14 +631,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
+        urlPath = urlPath.replace('{fsb_uuid}', encodeURIComponent(String(requestParameters['fsbUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -654,25 +644,17 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsRetrieveRaw(
-        requestParameters: FlowsBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowStageBinding>> {
+    async flowsBindingsRetrieveRaw(requestParameters: FlowsBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowStageBinding>> {
         const requestOptions = await this.flowsBindingsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            FlowStageBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => FlowStageBindingFromJSON(jsonValue));
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsRetrieve(
-        requestParameters: FlowsBindingsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowStageBinding> {
+    async flowsBindingsRetrieve(requestParameters: FlowsBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowStageBinding> {
         const response = await this.flowsBindingsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -680,20 +662,18 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsBindingsUpdate without sending the request
      */
-    async flowsBindingsUpdateRequestOpts(
-        requestParameters: FlowsBindingsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
+    async flowsBindingsUpdateRequestOpts(requestParameters: FlowsBindingsUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['fsbUuid'] == null) {
             throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsUpdate().',
+                'fsbUuid',
+                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsUpdate().'
             );
         }
 
-        if (requestParameters["flowStageBindingRequest"] == null) {
+        if (requestParameters['flowStageBindingRequest'] == null) {
             throw new runtime.RequiredError(
-                "flowStageBindingRequest",
-                'Required parameter "flowStageBindingRequest" was null or undefined when calling flowsBindingsUpdate().',
+                'flowStageBindingRequest',
+                'Required parameter "flowStageBindingRequest" was null or undefined when calling flowsBindingsUpdate().'
             );
         }
 
@@ -701,7 +681,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -713,42 +693,31 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
+        urlPath = urlPath.replace('{fsb_uuid}', encodeURIComponent(String(requestParameters['fsbUuid'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: FlowStageBindingRequestToJSON(requestParameters["flowStageBindingRequest"]),
+            body: FlowStageBindingRequestToJSON(requestParameters['flowStageBindingRequest']),
         };
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsUpdateRaw(
-        requestParameters: FlowsBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowStageBinding>> {
+    async flowsBindingsUpdateRaw(requestParameters: FlowsBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowStageBinding>> {
         const requestOptions = await this.flowsBindingsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            FlowStageBindingFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => FlowStageBindingFromJSON(jsonValue));
     }
 
     /**
      * FlowStageBinding Viewset
      */
-    async flowsBindingsUpdate(
-        requestParameters: FlowsBindingsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowStageBinding> {
+    async flowsBindingsUpdate(requestParameters: FlowsBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowStageBinding> {
         const response = await this.flowsBindingsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -756,13 +725,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsBindingsUsedByList without sending the request
      */
-    async flowsBindingsUsedByListRequestOpts(
-        requestParameters: FlowsBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
+    async flowsBindingsUsedByListRequestOpts(requestParameters: FlowsBindingsUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['fsbUuid'] == null) {
             throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsUsedByList().',
+                'fsbUuid',
+                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsUsedByList().'
             );
         }
 
@@ -780,14 +747,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/bindings/{fsb_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
+        urlPath = urlPath.replace('{fsb_uuid}', encodeURIComponent(String(requestParameters['fsbUuid'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -796,10 +760,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async flowsBindingsUsedByListRaw(
-        requestParameters: FlowsBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async flowsBindingsUsedByListRaw(requestParameters: FlowsBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.flowsBindingsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -809,10 +770,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async flowsBindingsUsedByList(
-        requestParameters: FlowsBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
+    async flowsBindingsUsedByList(requestParameters: FlowsBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
         const response = await this.flowsBindingsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -820,27 +778,25 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsExecutorGet without sending the request
      */
-    async flowsExecutorGetRequestOpts(
-        requestParameters: FlowsExecutorGetRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["flowSlug"] == null) {
+    async flowsExecutorGetRequestOpts(requestParameters: FlowsExecutorGetRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['flowSlug'] == null) {
             throw new runtime.RequiredError(
-                "flowSlug",
-                'Required parameter "flowSlug" was null or undefined when calling flowsExecutorGet().',
+                'flowSlug',
+                'Required parameter "flowSlug" was null or undefined when calling flowsExecutorGet().'
             );
         }
 
-        if (requestParameters["query"] == null) {
+        if (requestParameters['query'] == null) {
             throw new runtime.RequiredError(
-                "query",
-                'Required parameter "query" was null or undefined when calling flowsExecutorGet().',
+                'query',
+                'Required parameter "query" was null or undefined when calling flowsExecutorGet().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["query"] != null) {
-            queryParameters["query"] = requestParameters["query"];
+        if (requestParameters['query'] != null) {
+            queryParameters['query'] = requestParameters['query'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -855,14 +811,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/executor/{flow_slug}/`;
-        urlPath = urlPath.replace(
-            "{flow_slug}",
-            encodeURIComponent(String(requestParameters["flowSlug"])),
-        );
+        urlPath = urlPath.replace('{flow_slug}', encodeURIComponent(String(requestParameters['flowSlug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -871,25 +824,17 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get the next pending challenge from the currently active flow.
      */
-    async flowsExecutorGetRaw(
-        requestParameters: FlowsExecutorGetRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ChallengeTypes>> {
+    async flowsExecutorGetRaw(requestParameters: FlowsExecutorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChallengeTypes>> {
         const requestOptions = await this.flowsExecutorGetRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ChallengeTypesFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChallengeTypesFromJSON(jsonValue));
     }
 
     /**
      * Get the next pending challenge from the currently active flow.
      */
-    async flowsExecutorGet(
-        requestParameters: FlowsExecutorGetRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ChallengeTypes> {
+    async flowsExecutorGet(requestParameters: FlowsExecutorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChallengeTypes> {
         const response = await this.flowsExecutorGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -897,32 +842,30 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsExecutorSolve without sending the request
      */
-    async flowsExecutorSolveRequestOpts(
-        requestParameters: FlowsExecutorSolveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["flowSlug"] == null) {
+    async flowsExecutorSolveRequestOpts(requestParameters: FlowsExecutorSolveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['flowSlug'] == null) {
             throw new runtime.RequiredError(
-                "flowSlug",
-                'Required parameter "flowSlug" was null or undefined when calling flowsExecutorSolve().',
+                'flowSlug',
+                'Required parameter "flowSlug" was null or undefined when calling flowsExecutorSolve().'
             );
         }
 
-        if (requestParameters["query"] == null) {
+        if (requestParameters['query'] == null) {
             throw new runtime.RequiredError(
-                "query",
-                'Required parameter "query" was null or undefined when calling flowsExecutorSolve().',
+                'query',
+                'Required parameter "query" was null or undefined when calling flowsExecutorSolve().'
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters["query"] != null) {
-            queryParameters["query"] = requestParameters["query"];
+        if (requestParameters['query'] != null) {
+            queryParameters['query'] = requestParameters['query'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -934,44 +877,31 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/executor/{flow_slug}/`;
-        urlPath = urlPath.replace(
-            "{flow_slug}",
-            encodeURIComponent(String(requestParameters["flowSlug"])),
-        );
+        urlPath = urlPath.replace('{flow_slug}', encodeURIComponent(String(requestParameters['flowSlug'])));
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: FlowChallengeResponseRequestToJSON(
-                requestParameters["flowChallengeResponseRequest"],
-            ),
+            body: FlowChallengeResponseRequestToJSON(requestParameters['flowChallengeResponseRequest']),
         };
     }
 
     /**
      * Solve the previously retrieved challenge and advanced to the next stage.
      */
-    async flowsExecutorSolveRaw(
-        requestParameters: FlowsExecutorSolveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<ChallengeTypes>> {
+    async flowsExecutorSolveRaw(requestParameters: FlowsExecutorSolveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChallengeTypes>> {
         const requestOptions = await this.flowsExecutorSolveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            ChallengeTypesFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChallengeTypesFromJSON(jsonValue));
     }
 
     /**
      * Solve the previously retrieved challenge and advanced to the next stage.
      */
-    async flowsExecutorSolve(
-        requestParameters: FlowsExecutorSolveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<ChallengeTypes> {
+    async flowsExecutorSolve(requestParameters: FlowsExecutorSolveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChallengeTypes> {
         const response = await this.flowsExecutorSolveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -979,13 +909,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInspectorGet without sending the request
      */
-    async flowsInspectorGetRequestOpts(
-        requestParameters: FlowsInspectorGetRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["flowSlug"] == null) {
+    async flowsInspectorGetRequestOpts(requestParameters: FlowsInspectorGetRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['flowSlug'] == null) {
             throw new runtime.RequiredError(
-                "flowSlug",
-                'Required parameter "flowSlug" was null or undefined when calling flowsInspectorGet().',
+                'flowSlug',
+                'Required parameter "flowSlug" was null or undefined when calling flowsInspectorGet().'
             );
         }
 
@@ -1003,14 +931,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/inspector/{flow_slug}/`;
-        urlPath = urlPath.replace(
-            "{flow_slug}",
-            encodeURIComponent(String(requestParameters["flowSlug"])),
-        );
+        urlPath = urlPath.replace('{flow_slug}', encodeURIComponent(String(requestParameters['flowSlug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1019,25 +944,17 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get current flow state and record it
      */
-    async flowsInspectorGetRaw(
-        requestParameters: FlowsInspectorGetRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowInspection>> {
+    async flowsInspectorGetRaw(requestParameters: FlowsInspectorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowInspection>> {
         const requestOptions = await this.flowsInspectorGetRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            FlowInspectionFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => FlowInspectionFromJSON(jsonValue));
     }
 
     /**
      * Get current flow state and record it
      */
-    async flowsInspectorGet(
-        requestParameters: FlowsInspectorGetRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowInspection> {
+    async flowsInspectorGet(requestParameters: FlowsInspectorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowInspection> {
         const response = await this.flowsInspectorGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1063,7 +980,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1072,9 +989,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Clear flow cache
      */
-    async flowsInstancesCacheClearCreateRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async flowsInstancesCacheClearCreateRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.flowsInstancesCacheClearCreateRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1084,9 +999,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Clear flow cache
      */
-    async flowsInstancesCacheClearCreate(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async flowsInstancesCacheClearCreate(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.flowsInstancesCacheClearCreateRaw(initOverrides);
     }
 
@@ -1111,7 +1024,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1120,9 +1033,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Info about cached flows
      */
-    async flowsInstancesCacheInfoRetrieveRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Cache>> {
+    async flowsInstancesCacheInfoRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Cache>> {
         const requestOptions = await this.flowsInstancesCacheInfoRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1132,9 +1043,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Info about cached flows
      */
-    async flowsInstancesCacheInfoRetrieve(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Cache> {
+    async flowsInstancesCacheInfoRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Cache> {
         const response = await this.flowsInstancesCacheInfoRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -1142,13 +1051,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInstancesCreate without sending the request
      */
-    async flowsInstancesCreateRequestOpts(
-        requestParameters: FlowsInstancesCreateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["flowRequest"] == null) {
+    async flowsInstancesCreateRequestOpts(requestParameters: FlowsInstancesCreateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['flowRequest'] == null) {
             throw new runtime.RequiredError(
-                "flowRequest",
-                'Required parameter "flowRequest" was null or undefined when calling flowsInstancesCreate().',
+                'flowRequest',
+                'Required parameter "flowRequest" was null or undefined when calling flowsInstancesCreate().'
             );
         }
 
@@ -1156,7 +1063,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1171,20 +1078,17 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: FlowRequestToJSON(requestParameters["flowRequest"]),
+            body: FlowRequestToJSON(requestParameters['flowRequest']),
         };
     }
 
     /**
      * Flow Viewset
      */
-    async flowsInstancesCreateRaw(
-        requestParameters: FlowsInstancesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Flow>> {
+    async flowsInstancesCreateRaw(requestParameters: FlowsInstancesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Flow>> {
         const requestOptions = await this.flowsInstancesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1194,10 +1098,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesCreate(
-        requestParameters: FlowsInstancesCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Flow> {
+    async flowsInstancesCreate(requestParameters: FlowsInstancesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Flow> {
         const response = await this.flowsInstancesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1205,13 +1106,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInstancesDestroy without sending the request
      */
-    async flowsInstancesDestroyRequestOpts(
-        requestParameters: FlowsInstancesDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesDestroyRequestOpts(requestParameters: FlowsInstancesDestroyRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesDestroy().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesDestroy().'
             );
         }
 
@@ -1229,11 +1128,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "DELETE",
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1242,10 +1141,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesDestroyRaw(
-        requestParameters: FlowsInstancesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
+    async flowsInstancesDestroyRaw(requestParameters: FlowsInstancesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.flowsInstancesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1255,23 +1151,18 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesDestroy(
-        requestParameters: FlowsInstancesDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
+    async flowsInstancesDestroy(requestParameters: FlowsInstancesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.flowsInstancesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for flowsInstancesDiagramRetrieve without sending the request
      */
-    async flowsInstancesDiagramRetrieveRequestOpts(
-        requestParameters: FlowsInstancesDiagramRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesDiagramRetrieveRequestOpts(requestParameters: FlowsInstancesDiagramRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesDiagramRetrieve().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesDiagramRetrieve().'
             );
         }
 
@@ -1289,11 +1180,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/diagram/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1302,12 +1193,8 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Return the graph of flow with slug `slug`, for the client to render
      */
-    async flowsInstancesDiagramRetrieveRaw(
-        requestParameters: FlowsInstancesDiagramRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<FlowDiagram>> {
-        const requestOptions =
-            await this.flowsInstancesDiagramRetrieveRequestOpts(requestParameters);
+    async flowsInstancesDiagramRetrieveRaw(requestParameters: FlowsInstancesDiagramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowDiagram>> {
+        const requestOptions = await this.flowsInstancesDiagramRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FlowDiagramFromJSON(jsonValue));
@@ -1316,27 +1203,19 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Return the graph of flow with slug `slug`, for the client to render
      */
-    async flowsInstancesDiagramRetrieve(
-        requestParameters: FlowsInstancesDiagramRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<FlowDiagram> {
-        const response = await this.flowsInstancesDiagramRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async flowsInstancesDiagramRetrieve(requestParameters: FlowsInstancesDiagramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowDiagram> {
+        const response = await this.flowsInstancesDiagramRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for flowsInstancesExecuteRetrieve without sending the request
      */
-    async flowsInstancesExecuteRetrieveRequestOpts(
-        requestParameters: FlowsInstancesExecuteRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesExecuteRetrieveRequestOpts(requestParameters: FlowsInstancesExecuteRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesExecuteRetrieve().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesExecuteRetrieve().'
             );
         }
 
@@ -1354,11 +1233,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/execute/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1367,12 +1246,8 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Execute flow for current user
      */
-    async flowsInstancesExecuteRetrieveRaw(
-        requestParameters: FlowsInstancesExecuteRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Link>> {
-        const requestOptions =
-            await this.flowsInstancesExecuteRetrieveRequestOpts(requestParameters);
+    async flowsInstancesExecuteRetrieveRaw(requestParameters: FlowsInstancesExecuteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Link>> {
+        const requestOptions = await this.flowsInstancesExecuteRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LinkFromJSON(jsonValue));
@@ -1381,27 +1256,19 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Execute flow for current user
      */
-    async flowsInstancesExecuteRetrieve(
-        requestParameters: FlowsInstancesExecuteRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Link> {
-        const response = await this.flowsInstancesExecuteRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async flowsInstancesExecuteRetrieve(requestParameters: FlowsInstancesExecuteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Link> {
+        const response = await this.flowsInstancesExecuteRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for flowsInstancesExportRetrieve without sending the request
      */
-    async flowsInstancesExportRetrieveRequestOpts(
-        requestParameters: FlowsInstancesExportRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesExportRetrieveRequestOpts(requestParameters: FlowsInstancesExportRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesExportRetrieve().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesExportRetrieve().'
             );
         }
 
@@ -1419,11 +1286,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/export/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1432,12 +1299,8 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Export flow to .yaml file
      */
-    async flowsInstancesExportRetrieveRaw(
-        requestParameters: FlowsInstancesExportRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Blob>> {
-        const requestOptions =
-            await this.flowsInstancesExportRetrieveRequestOpts(requestParameters);
+    async flowsInstancesExportRetrieveRaw(requestParameters: FlowsInstancesExportRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        const requestOptions = await this.flowsInstancesExportRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.BlobApiResponse(response);
@@ -1446,59 +1309,51 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Export flow to .yaml file
      */
-    async flowsInstancesExportRetrieve(
-        requestParameters: FlowsInstancesExportRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Blob> {
-        const response = await this.flowsInstancesExportRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async flowsInstancesExportRetrieve(requestParameters: FlowsInstancesExportRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.flowsInstancesExportRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for flowsInstancesList without sending the request
      */
-    async flowsInstancesListRequestOpts(
-        requestParameters: FlowsInstancesListRequest,
-    ): Promise<runtime.RequestOpts> {
+    async flowsInstancesListRequestOpts(requestParameters: FlowsInstancesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["deniedAction"] != null) {
-            queryParameters["denied_action"] = requestParameters["deniedAction"];
+        if (requestParameters['deniedAction'] != null) {
+            queryParameters['denied_action'] = requestParameters['deniedAction'];
         }
 
-        if (requestParameters["designation"] != null) {
-            queryParameters["designation"] = requestParameters["designation"];
+        if (requestParameters['designation'] != null) {
+            queryParameters['designation'] = requestParameters['designation'];
         }
 
-        if (requestParameters["flowUuid"] != null) {
-            queryParameters["flow_uuid"] = requestParameters["flowUuid"];
+        if (requestParameters['flowUuid'] != null) {
+            queryParameters['flow_uuid'] = requestParameters['flowUuid'];
         }
 
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
         }
 
-        if (requestParameters["ordering"] != null) {
-            queryParameters["ordering"] = requestParameters["ordering"];
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
         }
 
-        if (requestParameters["page"] != null) {
-            queryParameters["page"] = requestParameters["page"];
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
-        if (requestParameters["pageSize"] != null) {
-            queryParameters["page_size"] = requestParameters["pageSize"];
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
         }
 
-        if (requestParameters["search"] != null) {
-            queryParameters["search"] = requestParameters["search"];
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
         }
 
-        if (requestParameters["slug"] != null) {
-            queryParameters["slug"] = requestParameters["slug"];
+        if (requestParameters['slug'] != null) {
+            queryParameters['slug'] = requestParameters['slug'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1516,7 +1371,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1525,25 +1380,17 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesListRaw(
-        requestParameters: FlowsInstancesListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedFlowList>> {
+    async flowsInstancesListRaw(requestParameters: FlowsInstancesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedFlowList>> {
         const requestOptions = await this.flowsInstancesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedFlowListFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedFlowListFromJSON(jsonValue));
     }
 
     /**
      * Flow Viewset
      */
-    async flowsInstancesList(
-        requestParameters: FlowsInstancesListRequest = {},
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedFlowList> {
+    async flowsInstancesList(requestParameters: FlowsInstancesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedFlowList> {
         const response = await this.flowsInstancesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1551,13 +1398,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInstancesPartialUpdate without sending the request
      */
-    async flowsInstancesPartialUpdateRequestOpts(
-        requestParameters: FlowsInstancesPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesPartialUpdateRequestOpts(requestParameters: FlowsInstancesPartialUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesPartialUpdate().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesPartialUpdate().'
             );
         }
 
@@ -1565,7 +1410,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1577,24 +1422,21 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "PATCH",
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedFlowRequestToJSON(requestParameters["patchedFlowRequest"]),
+            body: PatchedFlowRequestToJSON(requestParameters['patchedFlowRequest']),
         };
     }
 
     /**
      * Flow Viewset
      */
-    async flowsInstancesPartialUpdateRaw(
-        requestParameters: FlowsInstancesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Flow>> {
+    async flowsInstancesPartialUpdateRaw(requestParameters: FlowsInstancesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Flow>> {
         const requestOptions = await this.flowsInstancesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1604,27 +1446,19 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesPartialUpdate(
-        requestParameters: FlowsInstancesPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Flow> {
-        const response = await this.flowsInstancesPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
+    async flowsInstancesPartialUpdate(requestParameters: FlowsInstancesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Flow> {
+        const response = await this.flowsInstancesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for flowsInstancesRetrieve without sending the request
      */
-    async flowsInstancesRetrieveRequestOpts(
-        requestParameters: FlowsInstancesRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesRetrieveRequestOpts(requestParameters: FlowsInstancesRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesRetrieve().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesRetrieve().'
             );
         }
 
@@ -1642,11 +1476,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1655,10 +1489,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesRetrieveRaw(
-        requestParameters: FlowsInstancesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Flow>> {
+    async flowsInstancesRetrieveRaw(requestParameters: FlowsInstancesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Flow>> {
         const requestOptions = await this.flowsInstancesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1668,10 +1499,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesRetrieve(
-        requestParameters: FlowsInstancesRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Flow> {
+    async flowsInstancesRetrieve(requestParameters: FlowsInstancesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Flow> {
         const response = await this.flowsInstancesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1679,20 +1507,18 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInstancesUpdate without sending the request
      */
-    async flowsInstancesUpdateRequestOpts(
-        requestParameters: FlowsInstancesUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesUpdateRequestOpts(requestParameters: FlowsInstancesUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesUpdate().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesUpdate().'
             );
         }
 
-        if (requestParameters["flowRequest"] == null) {
+        if (requestParameters['flowRequest'] == null) {
             throw new runtime.RequiredError(
-                "flowRequest",
-                'Required parameter "flowRequest" was null or undefined when calling flowsInstancesUpdate().',
+                'flowRequest',
+                'Required parameter "flowRequest" was null or undefined when calling flowsInstancesUpdate().'
             );
         }
 
@@ -1700,7 +1526,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "application/json";
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1712,24 +1538,21 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "PUT",
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: FlowRequestToJSON(requestParameters["flowRequest"]),
+            body: FlowRequestToJSON(requestParameters['flowRequest']),
         };
     }
 
     /**
      * Flow Viewset
      */
-    async flowsInstancesUpdateRaw(
-        requestParameters: FlowsInstancesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Flow>> {
+    async flowsInstancesUpdateRaw(requestParameters: FlowsInstancesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Flow>> {
         const requestOptions = await this.flowsInstancesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1739,10 +1562,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Flow Viewset
      */
-    async flowsInstancesUpdate(
-        requestParameters: FlowsInstancesUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Flow> {
+    async flowsInstancesUpdate(requestParameters: FlowsInstancesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Flow> {
         const response = await this.flowsInstancesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1750,13 +1570,11 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Creates request options for flowsInstancesUsedByList without sending the request
      */
-    async flowsInstancesUsedByListRequestOpts(
-        requestParameters: FlowsInstancesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
+    async flowsInstancesUsedByListRequestOpts(requestParameters: FlowsInstancesUsedByListRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['slug'] == null) {
             throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesUsedByList().',
+                'slug',
+                'Required parameter "slug" was null or undefined when calling flowsInstancesUsedByList().'
             );
         }
 
@@ -1774,11 +1592,11 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+        urlPath = urlPath.replace('{slug}', encodeURIComponent(String(requestParameters['slug'])));
 
         return {
             path: urlPath,
-            method: "GET",
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1787,10 +1605,7 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async flowsInstancesUsedByListRaw(
-        requestParameters: FlowsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async flowsInstancesUsedByListRaw(requestParameters: FlowsInstancesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.flowsInstancesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1800,11 +1615,9 @@ export class FlowsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async flowsInstancesUsedByList(
-        requestParameters: FlowsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
+    async flowsInstancesUsedByList(requestParameters: FlowsInstancesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
         const response = await this.flowsInstancesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
+
 }

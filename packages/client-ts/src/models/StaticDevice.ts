@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,14 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { StaticDeviceToken } from "./StaticDeviceToken";
-import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
+import type { StaticDeviceToken } from './StaticDeviceToken';
+import {
+    StaticDeviceTokenFromJSON,
+} from './StaticDeviceToken';
 
 /**
  * Serializer for static authenticator devices
@@ -28,15 +31,15 @@ export interface StaticDevice {
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly tokenSet: Array<StaticDeviceToken>;
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     readonly user: PartialUser;
 }
@@ -45,16 +48,10 @@ export interface StaticDevice {
  * Check if a given object implements the StaticDevice interface.
  */
 export function instanceOfStaticDevice(value: object): value is StaticDevice {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("tokenSet" in (value as Record<string, any>)) &&
-            !("token_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenSet"] === undefined &&
-            (value as Record<string, any>)["token_set"] === undefined)
-    )
-        return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('tokenSet' in (value as Record<string, any>)) && !('token_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenSet'] === undefined && (value as Record<string, any>)['token_set'] === undefined)) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -67,10 +64,11 @@ export function StaticDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        name: json["name"],
-        tokenSet: (json["token_set"] as Array<any>).map(StaticDeviceTokenFromJSON),
-        pk: json["pk"],
-        user: PartialUserFromJSON(json["user"]),
+        
+        'name': json['name'],
+        'tokenSet': ((json['token_set'] as Array<any>).map(StaticDeviceTokenFromJSON)),
+        'pk': json['pk'],
+        'user': PartialUserFromJSON(json['user']),
     };
 }
 
@@ -78,15 +76,14 @@ export function StaticDeviceToJSON(json: any): StaticDevice {
     return StaticDeviceToJSONTyped(json, false);
 }
 
-export function StaticDeviceToJSONTyped(
-    value?: Omit<StaticDevice, "tokenSet" | "pk" | "user"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function StaticDeviceToJSONTyped(value?: Omit<StaticDevice, 'tokenSet'|'pk'|'user'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

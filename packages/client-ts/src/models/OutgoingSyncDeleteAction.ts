@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,18 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const OutgoingSyncDeleteAction = {
-    DoNothing: "do_nothing",
-    Delete: "delete",
-    Suspend: "suspend",
-    UnknownDefaultOpenApi: "11184809",
+    DoNothing: 'do_nothing',
+    Delete: 'delete',
+    Suspend: 'suspend',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type OutgoingSyncDeleteAction =
-    (typeof OutgoingSyncDeleteAction)[keyof typeof OutgoingSyncDeleteAction];
+export type OutgoingSyncDeleteAction = typeof OutgoingSyncDeleteAction[keyof typeof OutgoingSyncDeleteAction];
+
 
 export function instanceOfOutgoingSyncDeleteAction(value: any): boolean {
     for (const key in OutgoingSyncDeleteAction) {
@@ -40,10 +40,7 @@ export function OutgoingSyncDeleteActionFromJSON(json: any): OutgoingSyncDeleteA
     return OutgoingSyncDeleteActionFromJSONTyped(json, false);
 }
 
-export function OutgoingSyncDeleteActionFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OutgoingSyncDeleteAction {
+export function OutgoingSyncDeleteActionFromJSONTyped(json: any, ignoreDiscriminator: boolean): OutgoingSyncDeleteAction {
     return json as OutgoingSyncDeleteAction;
 }
 
@@ -51,9 +48,7 @@ export function OutgoingSyncDeleteActionToJSON(value?: OutgoingSyncDeleteAction 
     return value as any;
 }
 
-export function OutgoingSyncDeleteActionToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): OutgoingSyncDeleteAction {
+export function OutgoingSyncDeleteActionToJSONTyped(value: any, ignoreDiscriminator: boolean): OutgoingSyncDeleteAction {
     return value as OutgoingSyncDeleteAction;
 }
+

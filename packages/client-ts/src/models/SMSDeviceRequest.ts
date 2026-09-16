@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -28,7 +27,7 @@ export interface SMSDeviceRequest {
  * Check if a given object implements the SMSDeviceRequest interface.
  */
 export function instanceOfSMSDeviceRequest(value: object): value is SMSDeviceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function SMSDeviceRequestFromJSON(json: any): SMSDeviceRequest {
     return SMSDeviceRequestFromJSONTyped(json, false);
 }
 
-export function SMSDeviceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SMSDeviceRequest {
+export function SMSDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SMSDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
+        
+        'name': json['name'],
     };
 }
 
@@ -52,15 +49,14 @@ export function SMSDeviceRequestToJSON(json: any): SMSDeviceRequest {
     return SMSDeviceRequestToJSONTyped(json, false);
 }
 
-export function SMSDeviceRequestToJSONTyped(
-    value?: SMSDeviceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SMSDeviceRequestToJSONTyped(value?: SMSDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

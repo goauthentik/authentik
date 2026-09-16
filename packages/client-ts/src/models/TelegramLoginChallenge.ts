@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * Base login challenge for Identification stage
@@ -23,23 +25,23 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface TelegramLoginChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
      * Telegram bot username
      */
     botUsername: string;
     /**
-     *
+     * 
      */
     requestMessageAccess: boolean;
 }
@@ -48,20 +50,8 @@ export interface TelegramLoginChallenge {
  * Check if a given object implements the TelegramLoginChallenge interface.
  */
 export function instanceOfTelegramLoginChallenge(value: object): value is TelegramLoginChallenge {
-    if (
-        (!("botUsername" in (value as Record<string, any>)) &&
-            !("bot_username" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["botUsername"] === undefined &&
-            (value as Record<string, any>)["bot_username"] === undefined)
-    )
-        return false;
-    if (
-        (!("requestMessageAccess" in (value as Record<string, any>)) &&
-            !("request_message_access" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["requestMessageAccess"] === undefined &&
-            (value as Record<string, any>)["request_message_access"] === undefined)
-    )
-        return false;
+    if ((!('botUsername' in (value as Record<string, any>)) && !('bot_username' in (value as Record<string, any>))) || ((value as Record<string, any>)['botUsername'] === undefined && (value as Record<string, any>)['bot_username'] === undefined)) return false;
+    if ((!('requestMessageAccess' in (value as Record<string, any>)) && !('request_message_access' in (value as Record<string, any>))) || ((value as Record<string, any>)['requestMessageAccess'] === undefined && (value as Record<string, any>)['request_message_access'] === undefined)) return false;
     return true;
 }
 
@@ -69,20 +59,17 @@ export function TelegramLoginChallengeFromJSON(json: any): TelegramLoginChalleng
     return TelegramLoginChallengeFromJSONTyped(json, false);
 }
 
-export function TelegramLoginChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramLoginChallenge {
+export function TelegramLoginChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramLoginChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        botUsername: json["bot_username"],
-        requestMessageAccess: json["request_message_access"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'botUsername': json['bot_username'],
+        'requestMessageAccess': json['request_message_access'],
     };
 }
 
@@ -90,19 +77,18 @@ export function TelegramLoginChallengeToJSON(json: any): TelegramLoginChallenge 
     return TelegramLoginChallengeToJSONTyped(json, false);
 }
 
-export function TelegramLoginChallengeToJSONTyped(
-    value?: TelegramLoginChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramLoginChallengeToJSONTyped(value?: TelegramLoginChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        bot_username: value["botUsername"],
-        request_message_access: value["requestMessageAccess"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'bot_username': value['botUsername'],
+        'request_message_access': value['requestMessageAccess'],
     };
 }
+

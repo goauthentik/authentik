@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
@@ -34,23 +32,23 @@ export interface PatchedAgentRequest {
      */
     isActive?: boolean;
     /**
-     *
+     * 
      */
     lastLogin?: Date | null;
     /**
-     *
+     * 
      */
     email?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     expiring?: boolean;
     /**
-     *
+     * 
      */
     expires?: Date | null;
 }
@@ -66,32 +64,20 @@ export function PatchedAgentRequestFromJSON(json: any): PatchedAgentRequest {
     return PatchedAgentRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAgentRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedAgentRequest {
+export function PatchedAgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAgentRequest {
     if (json == null) {
         return json;
     }
     return {
-        username: json["username"] == null ? undefined : json["username"],
-        name: json["name"] == null ? undefined : json["name"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin:
-            json["last_login"] === undefined
-                ? undefined
-                : json["last_login"] === null
-                  ? null
-                  : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
+        
+        'username': json['username'] == null ? undefined : json['username'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'lastLogin': json['last_login'] === undefined ? undefined : json['last_login'] === null ? null : (parseDateTime(json['last_login'])),
+        'email': json['email'] == null ? undefined : json['email'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
     };
 }
 
@@ -99,23 +85,21 @@ export function PatchedAgentRequestToJSON(json: any): PatchedAgentRequest {
     return PatchedAgentRequestToJSONTyped(json, false);
 }
 
-export function PatchedAgentRequestToJSONTyped(
-    value?: PatchedAgentRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedAgentRequestToJSONTyped(value?: PatchedAgentRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        username: value["username"],
-        name: value["name"],
-        is_active: value["isActive"],
-        last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
-        attributes: value["attributes"],
-        expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'username': value['username'],
+        'name': value['name'],
+        'is_active': value['isActive'],
+        'last_login': value['lastLogin'] == null ? value['lastLogin'] : serializeDateTime(value['lastLogin']),
+        'email': value['email'],
+        'attributes': value['attributes'],
+        'expiring': value['expiring'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

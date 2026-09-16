@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { EmailDevice } from "./EmailDevice";
-import { EmailDeviceFromJSON, EmailDeviceToJSON } from "./EmailDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EmailDevice } from './EmailDevice';
+import {
+    EmailDeviceFromJSON,
+    EmailDeviceToJSON,
+} from './EmailDevice';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedEmailDeviceList
  */
 export interface PaginatedEmailDeviceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<EmailDevice>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedEmailDeviceList interface.
  */
-export function instanceOfPaginatedEmailDeviceList(
-    value: object,
-): value is PaginatedEmailDeviceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedEmailDeviceList(value: object): value is PaginatedEmailDeviceList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedEmailDeviceListFromJSON(json: any): PaginatedEmailDevic
     return PaginatedEmailDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedEmailDeviceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedEmailDeviceList {
+export function PaginatedEmailDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEmailDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EmailDeviceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(EmailDeviceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedEmailDeviceListToJSON(json: any): PaginatedEmailDeviceL
     return PaginatedEmailDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedEmailDeviceListToJSONTyped(
-    value?: PaginatedEmailDeviceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedEmailDeviceListToJSONTyped(value?: PaginatedEmailDeviceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EmailDeviceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(EmailDeviceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

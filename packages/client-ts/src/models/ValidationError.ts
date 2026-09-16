@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,11 +19,11 @@
 export interface ValidationError {
     [key: string]: any | any;
     /**
-     *
+     * 
      */
     nonFieldErrors?: Array<string>;
     /**
-     *
+     * 
      */
     code?: string;
 }
@@ -40,17 +39,15 @@ export function ValidationErrorFromJSON(json: any): ValidationError {
     return ValidationErrorFromJSONTyped(json, false);
 }
 
-export function ValidationErrorFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ValidationError {
+export function ValidationErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean): ValidationError {
     if (json == null) {
         return json;
     }
     return {
-        ...json,
-        nonFieldErrors: json["non_field_errors"] == null ? undefined : json["non_field_errors"],
-        code: json["code"] == null ? undefined : json["code"],
+        
+            ...json,
+        'nonFieldErrors': json['non_field_errors'] == null ? undefined : json['non_field_errors'],
+        'code': json['code'] == null ? undefined : json['code'],
     };
 }
 
@@ -58,17 +55,16 @@ export function ValidationErrorToJSON(json: any): ValidationError {
     return ValidationErrorToJSONTyped(json, false);
 }
 
-export function ValidationErrorToJSONTyped(
-    value?: ValidationError | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ValidationErrorToJSONTyped(value?: ValidationError | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        ...value,
-        non_field_errors: value["nonFieldErrors"],
-        code: value["code"],
+        
+            ...value,
+        'non_field_errors': value['nonFieldErrors'],
+        'code': value['code'],
     };
 }
+

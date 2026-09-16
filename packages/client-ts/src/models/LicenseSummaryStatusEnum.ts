@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,22 +11,23 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const LicenseSummaryStatusEnum = {
-    Unlicensed: "unlicensed",
-    Valid: "valid",
-    Expired: "expired",
-    ExpirySoon: "expiry_soon",
-    LimitExceededAdmin: "limit_exceeded_admin",
-    LimitExceededUser: "limit_exceeded_user",
-    ReadOnly: "read_only",
-    UnknownDefaultOpenApi: "11184809",
+    Unlicensed: 'unlicensed',
+    Valid: 'valid',
+    Expired: 'expired',
+    ExpirySoon: 'expiry_soon',
+    LimitExceededAdmin: 'limit_exceeded_admin',
+    LimitExceededUser: 'limit_exceeded_user',
+    ReadOnly: 'read_only',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type LicenseSummaryStatusEnum =
-    (typeof LicenseSummaryStatusEnum)[keyof typeof LicenseSummaryStatusEnum];
+export type LicenseSummaryStatusEnum = typeof LicenseSummaryStatusEnum[keyof typeof LicenseSummaryStatusEnum];
+
 
 export function instanceOfLicenseSummaryStatusEnum(value: any): boolean {
     for (const key in LicenseSummaryStatusEnum) {
@@ -44,10 +44,7 @@ export function LicenseSummaryStatusEnumFromJSON(json: any): LicenseSummaryStatu
     return LicenseSummaryStatusEnumFromJSONTyped(json, false);
 }
 
-export function LicenseSummaryStatusEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LicenseSummaryStatusEnum {
+export function LicenseSummaryStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseSummaryStatusEnum {
     return json as LicenseSummaryStatusEnum;
 }
 
@@ -55,9 +52,7 @@ export function LicenseSummaryStatusEnumToJSON(value?: LicenseSummaryStatusEnum 
     return value as any;
 }
 
-export function LicenseSummaryStatusEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): LicenseSummaryStatusEnum {
+export function LicenseSummaryStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LicenseSummaryStatusEnum {
     return value as LicenseSummaryStatusEnum;
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { RequestStatus } from "./RequestStatus";
-import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
+import type { RequestStatus } from './RequestStatus';
+import {
+    RequestStatusFromJSON,
+    RequestStatusToJSON,
+} from './RequestStatus';
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,59 +24,52 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
  */
 export interface PatchedGrantRequestFulfillRequest {
     /**
-     *
+     * 
      */
-    data?: { [key: string]: any };
+    data?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     status?: RequestStatus;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedGrantRequestFulfillRequest interface.
  */
-export function instanceOfPatchedGrantRequestFulfillRequest(
-    value: object,
-): value is PatchedGrantRequestFulfillRequest {
+export function instanceOfPatchedGrantRequestFulfillRequest(value: object): value is PatchedGrantRequestFulfillRequest {
     return true;
 }
 
-export function PatchedGrantRequestFulfillRequestFromJSON(
-    json: any,
-): PatchedGrantRequestFulfillRequest {
+export function PatchedGrantRequestFulfillRequestFromJSON(json: any): PatchedGrantRequestFulfillRequest {
     return PatchedGrantRequestFulfillRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGrantRequestFulfillRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedGrantRequestFulfillRequest {
+export function PatchedGrantRequestFulfillRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGrantRequestFulfillRequest {
     if (json == null) {
         return json;
     }
     return {
-        data: json["data"] == null ? undefined : json["data"],
-        status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
+        
+        'data': json['data'] == null ? undefined : json['data'],
+        'status': json['status'] == null ? undefined : RequestStatusFromJSON(json['status']),
     };
 }
 
-export function PatchedGrantRequestFulfillRequestToJSON(
-    json: any,
-): PatchedGrantRequestFulfillRequest {
+export function PatchedGrantRequestFulfillRequestToJSON(json: any): PatchedGrantRequestFulfillRequest {
     return PatchedGrantRequestFulfillRequestToJSONTyped(json, false);
 }
 
-export function PatchedGrantRequestFulfillRequestToJSONTyped(
-    value?: PatchedGrantRequestFulfillRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedGrantRequestFulfillRequestToJSONTyped(value?: PatchedGrantRequestFulfillRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        data: value["data"],
-        status: RequestStatusToJSON(value["status"]),
+        
+        'data': value['data'],
+        'status': RequestStatusToJSON(value['status']),
     };
 }
+

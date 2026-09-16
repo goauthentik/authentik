@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,23 +18,23 @@
  */
 export interface AuthenticatedSessionGeoIp {
     /**
-     *
+     * 
      */
     continent: string | null;
     /**
-     *
+     * 
      */
     country: string | null;
     /**
-     *
+     * 
      */
     lat: number | null;
     /**
-     *
+     * 
      */
     _long: number | null;
     /**
-     *
+     * 
      */
     city: string;
 }
@@ -43,20 +42,12 @@ export interface AuthenticatedSessionGeoIp {
 /**
  * Check if a given object implements the AuthenticatedSessionGeoIp interface.
  */
-export function instanceOfAuthenticatedSessionGeoIp(
-    value: object,
-): value is AuthenticatedSessionGeoIp {
-    if (!("continent" in value) || value["continent"] === undefined) return false;
-    if (!("country" in value) || value["country"] === undefined) return false;
-    if (!("lat" in value) || value["lat"] === undefined) return false;
-    if (
-        (!("_long" in (value as Record<string, any>)) &&
-            !("long" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["_long"] === undefined &&
-            (value as Record<string, any>)["long"] === undefined)
-    )
-        return false;
-    if (!("city" in value) || value["city"] === undefined) return false;
+export function instanceOfAuthenticatedSessionGeoIp(value: object): value is AuthenticatedSessionGeoIp {
+    if (!('continent' in value) || value['continent'] === undefined) return false;
+    if (!('country' in value) || value['country'] === undefined) return false;
+    if (!('lat' in value) || value['lat'] === undefined) return false;
+    if ((!('_long' in (value as Record<string, any>)) && !('long' in (value as Record<string, any>))) || ((value as Record<string, any>)['_long'] === undefined && (value as Record<string, any>)['long'] === undefined)) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
     return true;
 }
 
@@ -64,19 +55,17 @@ export function AuthenticatedSessionGeoIpFromJSON(json: any): AuthenticatedSessi
     return AuthenticatedSessionGeoIpFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionGeoIpFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatedSessionGeoIp {
+export function AuthenticatedSessionGeoIpFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionGeoIp {
     if (json == null) {
         return json;
     }
     return {
-        continent: json["continent"],
-        country: json["country"],
-        lat: json["lat"],
-        _long: json["long"],
-        city: json["city"],
+        
+        'continent': json['continent'],
+        'country': json['country'],
+        'lat': json['lat'],
+        '_long': json['long'],
+        'city': json['city'],
     };
 }
 
@@ -84,19 +73,18 @@ export function AuthenticatedSessionGeoIpToJSON(json: any): AuthenticatedSession
     return AuthenticatedSessionGeoIpToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionGeoIpToJSONTyped(
-    value?: AuthenticatedSessionGeoIp | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatedSessionGeoIpToJSONTyped(value?: AuthenticatedSessionGeoIp | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        continent: value["continent"],
-        country: value["country"],
-        lat: value["lat"],
-        long: value["_long"],
-        city: value["city"],
+        
+        'continent': value['continent'],
+        'country': value['country'],
+        'lat': value['lat'],
+        'long': value['_long'],
+        'city': value['city'],
     };
 }
+

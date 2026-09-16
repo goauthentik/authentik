@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,11 +22,11 @@ export interface PatchedSCIMSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     expression?: string;
 }
@@ -35,54 +34,40 @@ export interface PatchedSCIMSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedSCIMSourcePropertyMappingRequest interface.
  */
-export function instanceOfPatchedSCIMSourcePropertyMappingRequest(
-    value: object,
-): value is PatchedSCIMSourcePropertyMappingRequest {
+export function instanceOfPatchedSCIMSourcePropertyMappingRequest(value: object): value is PatchedSCIMSourcePropertyMappingRequest {
     return true;
 }
 
-export function PatchedSCIMSourcePropertyMappingRequestFromJSON(
-    json: any,
-): PatchedSCIMSourcePropertyMappingRequest {
+export function PatchedSCIMSourcePropertyMappingRequestFromJSON(json: any): PatchedSCIMSourcePropertyMappingRequest {
     return PatchedSCIMSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedSCIMSourcePropertyMappingRequest {
+export function PatchedSCIMSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSCIMSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"] == null ? undefined : json["name"],
-        expression: json["expression"] == null ? undefined : json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'expression': json['expression'] == null ? undefined : json['expression'],
     };
 }
 
-export function PatchedSCIMSourcePropertyMappingRequestToJSON(
-    json: any,
-): PatchedSCIMSourcePropertyMappingRequest {
+export function PatchedSCIMSourcePropertyMappingRequestToJSON(json: any): PatchedSCIMSourcePropertyMappingRequest {
     return PatchedSCIMSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourcePropertyMappingRequestToJSONTyped(
-    value?: PatchedSCIMSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedSCIMSourcePropertyMappingRequestToJSONTyped(value?: PatchedSCIMSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

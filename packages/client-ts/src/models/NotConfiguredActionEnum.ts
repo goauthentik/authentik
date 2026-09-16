@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,18 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const NotConfiguredActionEnum = {
-    Skip: "skip",
-    Deny: "deny",
-    Configure: "configure",
-    UnknownDefaultOpenApi: "11184809",
+    Skip: 'skip',
+    Deny: 'deny',
+    Configure: 'configure',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type NotConfiguredActionEnum =
-    (typeof NotConfiguredActionEnum)[keyof typeof NotConfiguredActionEnum];
+export type NotConfiguredActionEnum = typeof NotConfiguredActionEnum[keyof typeof NotConfiguredActionEnum];
+
 
 export function instanceOfNotConfiguredActionEnum(value: any): boolean {
     for (const key in NotConfiguredActionEnum) {
@@ -40,10 +40,7 @@ export function NotConfiguredActionEnumFromJSON(json: any): NotConfiguredActionE
     return NotConfiguredActionEnumFromJSONTyped(json, false);
 }
 
-export function NotConfiguredActionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotConfiguredActionEnum {
+export function NotConfiguredActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotConfiguredActionEnum {
     return json as NotConfiguredActionEnum;
 }
 
@@ -51,9 +48,7 @@ export function NotConfiguredActionEnumToJSON(value?: NotConfiguredActionEnum | 
     return value as any;
 }
 
-export function NotConfiguredActionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): NotConfiguredActionEnum {
+export function NotConfiguredActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): NotConfiguredActionEnum {
     return value as NotConfiguredActionEnum;
 }
+

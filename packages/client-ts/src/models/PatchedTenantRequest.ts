@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface PatchedTenantRequest {
     /**
-     *
+     * 
      */
     schemaName?: string;
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     ready?: boolean;
 }
@@ -43,17 +42,15 @@ export function PatchedTenantRequestFromJSON(json: any): PatchedTenantRequest {
     return PatchedTenantRequestFromJSONTyped(json, false);
 }
 
-export function PatchedTenantRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedTenantRequest {
+export function PatchedTenantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedTenantRequest {
     if (json == null) {
         return json;
     }
     return {
-        schemaName: json["schema_name"] == null ? undefined : json["schema_name"],
-        name: json["name"] == null ? undefined : json["name"],
-        ready: json["ready"] == null ? undefined : json["ready"],
+        
+        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'ready': json['ready'] == null ? undefined : json['ready'],
     };
 }
 
@@ -61,17 +58,16 @@ export function PatchedTenantRequestToJSON(json: any): PatchedTenantRequest {
     return PatchedTenantRequestToJSONTyped(json, false);
 }
 
-export function PatchedTenantRequestToJSONTyped(
-    value?: PatchedTenantRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedTenantRequestToJSONTyped(value?: PatchedTenantRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        schema_name: value["schemaName"],
-        name: value["name"],
-        ready: value["ready"],
+        
+        'schema_name': value['schemaName'],
+        'name': value['name'],
+        'ready': value['ready'],
     };
 }
+

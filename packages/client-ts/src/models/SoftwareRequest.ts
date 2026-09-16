@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,25 +12,25 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface SoftwareRequest
  */
 export interface SoftwareRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     version?: string;
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     path?: string;
 }
@@ -40,8 +39,8 @@ export interface SoftwareRequest {
  * Check if a given object implements the SoftwareRequest interface.
  */
 export function instanceOfSoftwareRequest(value: object): value is SoftwareRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -49,18 +48,16 @@ export function SoftwareRequestFromJSON(json: any): SoftwareRequest {
     return SoftwareRequestFromJSONTyped(json, false);
 }
 
-export function SoftwareRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SoftwareRequest {
+export function SoftwareRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SoftwareRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        version: json["version"] == null ? undefined : json["version"],
-        source: json["source"],
-        path: json["path"] == null ? undefined : json["path"],
+        
+        'name': json['name'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'source': json['source'],
+        'path': json['path'] == null ? undefined : json['path'],
     };
 }
 
@@ -68,18 +65,17 @@ export function SoftwareRequestToJSON(json: any): SoftwareRequest {
     return SoftwareRequestToJSONTyped(json, false);
 }
 
-export function SoftwareRequestToJSONTyped(
-    value?: SoftwareRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SoftwareRequestToJSONTyped(value?: SoftwareRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        version: value["version"],
-        source: value["source"],
-        path: value["path"],
+        
+        'name': value['name'],
+        'version': value['version'],
+        'source': value['source'],
+        'path': value['path'],
     };
 }
+

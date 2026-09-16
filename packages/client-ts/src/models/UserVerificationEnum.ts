@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const UserVerificationEnum = {
-    Required: "required",
-    Preferred: "preferred",
-    Discouraged: "discouraged",
-    UnknownDefaultOpenApi: "11184809",
+    Required: 'required',
+    Preferred: 'preferred',
+    Discouraged: 'discouraged',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type UserVerificationEnum = (typeof UserVerificationEnum)[keyof typeof UserVerificationEnum];
+export type UserVerificationEnum = typeof UserVerificationEnum[keyof typeof UserVerificationEnum];
+
 
 export function instanceOfUserVerificationEnum(value: any): boolean {
     for (const key in UserVerificationEnum) {
@@ -39,10 +40,7 @@ export function UserVerificationEnumFromJSON(json: any): UserVerificationEnum {
     return UserVerificationEnumFromJSONTyped(json, false);
 }
 
-export function UserVerificationEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserVerificationEnum {
+export function UserVerificationEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserVerificationEnum {
     return json as UserVerificationEnum;
 }
 
@@ -50,9 +48,7 @@ export function UserVerificationEnumToJSON(value?: UserVerificationEnum | null):
     return value as any;
 }
 
-export function UserVerificationEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): UserVerificationEnum {
+export function UserVerificationEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserVerificationEnum {
     return value as UserVerificationEnum;
 }
+

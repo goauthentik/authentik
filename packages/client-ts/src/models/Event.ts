@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { EventActions } from './EventActions';
+import {
+    EventActionsFromJSON,
+    EventActionsToJSON,
+} from './EventActions';
 
 /**
  * Event Serializer
@@ -23,51 +25,53 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
  */
 export interface Event {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
-    user?: { [key: string]: any };
+    user?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     action: EventActions;
     /**
-     *
+     * 
      */
     app: string;
     /**
-     *
+     * 
      */
-    context?: { [key: string]: any };
+    context?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     clientIp?: string | null;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     expires?: Date;
     /**
-     *
+     * 
      */
-    brand?: { [key: string]: any };
+    brand?: { [key: string]: any; };
 }
+
+
 
 /**
  * Check if a given object implements the Event interface.
  */
 export function instanceOfEvent(value: object): value is Event {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("action" in value) || value["action"] === undefined) return false;
-    if (!("app" in value) || value["app"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('action' in value) || value['action'] === undefined) return false;
+    if (!('app' in value) || value['app'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
     return true;
 }
 
@@ -80,20 +84,16 @@ export function EventFromJSONTyped(json: any, ignoreDiscriminator: boolean): Eve
         return json;
     }
     return {
-        pk: json["pk"],
-        user: json["user"] == null ? undefined : json["user"],
-        action: EventActionsFromJSON(json["action"]),
-        app: json["app"],
-        context: json["context"] == null ? undefined : json["context"],
-        clientIp:
-            json["client_ip"] === undefined
-                ? undefined
-                : json["client_ip"] === null
-                  ? null
-                  : json["client_ip"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
-        brand: json["brand"] == null ? undefined : json["brand"],
+        
+        'pk': json['pk'],
+        'user': json['user'] == null ? undefined : json['user'],
+        'action': EventActionsFromJSON(json['action']),
+        'app': json['app'],
+        'context': json['context'] == null ? undefined : json['context'],
+        'clientIp': json['client_ip'] === undefined ? undefined : json['client_ip'] === null ? null : json['client_ip'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'expires': json['expires'] == null ? undefined : (parseDateTime(json['expires'])),
+        'brand': json['brand'] == null ? undefined : json['brand'],
     };
 }
 
@@ -101,21 +101,20 @@ export function EventToJSON(json: any): Event {
     return EventToJSONTyped(json, false);
 }
 
-export function EventToJSONTyped(
-    value?: Omit<Event, "pk" | "created"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EventToJSONTyped(value?: Omit<Event, 'pk'|'created'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        action: EventActionsToJSON(value["action"]),
-        app: value["app"],
-        context: value["context"],
-        client_ip: value["clientIp"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        brand: value["brand"],
+        
+        'user': value['user'],
+        'action': EventActionsToJSON(value['action']),
+        'app': value['app'],
+        'context': value['context'],
+        'client_ip': value['clientIp'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'brand': value['brand'],
     };
 }
+

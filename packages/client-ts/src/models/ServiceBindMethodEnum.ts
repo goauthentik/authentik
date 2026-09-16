@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ServiceBindMethodEnum = {
-    Simple: "simple",
-    SaslExternal: "sasl_external",
-    UnknownDefaultOpenApi: "11184809",
+    Simple: 'simple',
+    SaslExternal: 'sasl_external',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ServiceBindMethodEnum =
-    (typeof ServiceBindMethodEnum)[keyof typeof ServiceBindMethodEnum];
+export type ServiceBindMethodEnum = typeof ServiceBindMethodEnum[keyof typeof ServiceBindMethodEnum];
+
 
 export function instanceOfServiceBindMethodEnum(value: any): boolean {
     for (const key in ServiceBindMethodEnum) {
@@ -39,10 +39,7 @@ export function ServiceBindMethodEnumFromJSON(json: any): ServiceBindMethodEnum 
     return ServiceBindMethodEnumFromJSONTyped(json, false);
 }
 
-export function ServiceBindMethodEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ServiceBindMethodEnum {
+export function ServiceBindMethodEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ServiceBindMethodEnum {
     return json as ServiceBindMethodEnum;
 }
 
@@ -50,9 +47,7 @@ export function ServiceBindMethodEnumToJSON(value?: ServiceBindMethodEnum | null
     return value as any;
 }
 
-export function ServiceBindMethodEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ServiceBindMethodEnum {
+export function ServiceBindMethodEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ServiceBindMethodEnum {
     return value as ServiceBindMethodEnum;
 }
+

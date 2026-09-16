@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface TokenSetKeyRequest {
     /**
-     *
+     * 
      */
     key: string;
 }
@@ -28,7 +27,7 @@ export interface TokenSetKeyRequest {
  * Check if a given object implements the TokenSetKeyRequest interface.
  */
 export function instanceOfTokenSetKeyRequest(value: object): value is TokenSetKeyRequest {
-    if (!("key" in value) || value["key"] === undefined) return false;
+    if (!('key' in value) || value['key'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function TokenSetKeyRequestFromJSON(json: any): TokenSetKeyRequest {
     return TokenSetKeyRequestFromJSONTyped(json, false);
 }
 
-export function TokenSetKeyRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TokenSetKeyRequest {
+export function TokenSetKeyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TokenSetKeyRequest {
     if (json == null) {
         return json;
     }
     return {
-        key: json["key"],
+        
+        'key': json['key'],
     };
 }
 
@@ -52,15 +49,14 @@ export function TokenSetKeyRequestToJSON(json: any): TokenSetKeyRequest {
     return TokenSetKeyRequestToJSONTyped(json, false);
 }
 
-export function TokenSetKeyRequestToJSONTyped(
-    value?: TokenSetKeyRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TokenSetKeyRequestToJSONTyped(value?: TokenSetKeyRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        key: value["key"],
+        
+        'key': value['key'],
     };
 }
+

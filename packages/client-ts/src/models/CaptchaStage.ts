@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,15 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import type { RequestContentTypeEnum } from './RequestContentTypeEnum';
 import {
     RequestContentTypeEnumFromJSON,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+} from './RequestContentTypeEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * CaptchaStage Serializer
@@ -27,11 +28,11 @@ import {
  */
 export interface CaptchaStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -51,7 +52,7 @@ export interface CaptchaStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
@@ -59,27 +60,27 @@ export interface CaptchaStage {
      */
     publicKey: string;
     /**
-     *
+     * 
      */
     jsUrl?: string;
     /**
-     *
+     * 
      */
     apiUrl?: string;
     /**
-     *
+     * 
      */
     requestContentType?: RequestContentTypeEnum;
     /**
-     *
+     * 
      */
     interactive?: boolean;
     /**
-     *
+     * 
      */
     scoreMinThreshold?: number;
     /**
-     *
+     * 
      */
     scoreMaxThreshold?: number;
     /**
@@ -88,48 +89,20 @@ export interface CaptchaStage {
     errorOnInvalidScore?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the CaptchaStage interface.
  */
 export function instanceOfCaptchaStage(value: object): value is CaptchaStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (
-        (!("publicKey" in (value as Record<string, any>)) &&
-            !("public_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["publicKey"] === undefined &&
-            (value as Record<string, any>)["public_key"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if ((!('publicKey' in (value as Record<string, any>)) && !('public_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['publicKey'] === undefined && (value as Record<string, any>)['public_key'] === undefined)) return false;
     return true;
 }
 
@@ -142,27 +115,22 @@ export function CaptchaStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        publicKey: json["public_key"],
-        jsUrl: json["js_url"] == null ? undefined : json["js_url"],
-        apiUrl: json["api_url"] == null ? undefined : json["api_url"],
-        requestContentType:
-            json["request_content_type"] == null
-                ? undefined
-                : RequestContentTypeEnumFromJSON(json["request_content_type"]),
-        interactive: json["interactive"] == null ? undefined : json["interactive"],
-        scoreMinThreshold:
-            json["score_min_threshold"] == null ? undefined : json["score_min_threshold"],
-        scoreMaxThreshold:
-            json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
-        errorOnInvalidScore:
-            json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'publicKey': json['public_key'],
+        'jsUrl': json['js_url'] == null ? undefined : json['js_url'],
+        'apiUrl': json['api_url'] == null ? undefined : json['api_url'],
+        'requestContentType': json['request_content_type'] == null ? undefined : RequestContentTypeEnumFromJSON(json['request_content_type']),
+        'interactive': json['interactive'] == null ? undefined : json['interactive'],
+        'scoreMinThreshold': json['score_min_threshold'] == null ? undefined : json['score_min_threshold'],
+        'scoreMaxThreshold': json['score_max_threshold'] == null ? undefined : json['score_max_threshold'],
+        'errorOnInvalidScore': json['error_on_invalid_score'] == null ? undefined : json['error_on_invalid_score'],
     };
 }
 
@@ -170,26 +138,22 @@ export function CaptchaStageToJSON(json: any): CaptchaStage {
     return CaptchaStageToJSONTyped(json, false);
 }
 
-export function CaptchaStageToJSONTyped(
-    value?: Omit<
-        CaptchaStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CaptchaStageToJSONTyped(value?: Omit<CaptchaStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        public_key: value["publicKey"],
-        js_url: value["jsUrl"],
-        api_url: value["apiUrl"],
-        request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),
-        interactive: value["interactive"],
-        score_min_threshold: value["scoreMinThreshold"],
-        score_max_threshold: value["scoreMaxThreshold"],
-        error_on_invalid_score: value["errorOnInvalidScore"],
+        
+        'name': value['name'],
+        'public_key': value['publicKey'],
+        'js_url': value['jsUrl'],
+        'api_url': value['apiUrl'],
+        'request_content_type': RequestContentTypeEnumToJSON(value['requestContentType']),
+        'interactive': value['interactive'],
+        'score_min_threshold': value['scoreMinThreshold'],
+        'score_max_threshold': value['scoreMaxThreshold'],
+        'error_on_invalid_score': value['errorOnInvalidScore'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from '../runtime';
 /**
  * Serializer for authenticator devices
  * @export
@@ -33,11 +31,11 @@ export interface Device {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -45,19 +43,19 @@ export interface Device {
      */
     readonly type: string;
     /**
-     *
+     * 
      */
     confirmed: boolean;
     /**
-     *
+     * 
      */
     readonly created: Date;
     /**
-     *
+     * 
      */
     readonly lastUpdated: Date;
     /**
-     *
+     * 
      */
     readonly lastUsed: Date | null;
     /**
@@ -74,60 +72,18 @@ export interface Device {
  * Check if a given object implements the Device interface.
  */
 export function instanceOfDevice(value: object): value is Device {
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("type" in value) || value["type"] === undefined) return false;
-    if (!("confirmed" in value) || value["confirmed"] === undefined) return false;
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (
-        (!("lastUpdated" in (value as Record<string, any>)) &&
-            !("last_updated" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUpdated"] === undefined &&
-            (value as Record<string, any>)["last_updated"] === undefined)
-    )
-        return false;
-    if (
-        (!("lastUsed" in (value as Record<string, any>)) &&
-            !("last_used" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUsed"] === undefined &&
-            (value as Record<string, any>)["last_used"] === undefined)
-    )
-        return false;
-    if (
-        (!("extraDescription" in (value as Record<string, any>)) &&
-            !("extra_description" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["extraDescription"] === undefined &&
-            (value as Record<string, any>)["extra_description"] === undefined)
-    )
-        return false;
-    if (
-        (!("externalId" in (value as Record<string, any>)) &&
-            !("external_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalId"] === undefined &&
-            (value as Record<string, any>)["external_id"] === undefined)
-    )
-        return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('confirmed' in value) || value['confirmed'] === undefined) return false;
+    if (!('created' in value) || value['created'] === undefined) return false;
+    if ((!('lastUpdated' in (value as Record<string, any>)) && !('last_updated' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUpdated'] === undefined && (value as Record<string, any>)['last_updated'] === undefined)) return false;
+    if ((!('lastUsed' in (value as Record<string, any>)) && !('last_used' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUsed'] === undefined && (value as Record<string, any>)['last_used'] === undefined)) return false;
+    if ((!('extraDescription' in (value as Record<string, any>)) && !('extra_description' in (value as Record<string, any>))) || ((value as Record<string, any>)['extraDescription'] === undefined && (value as Record<string, any>)['extra_description'] === undefined)) return false;
+    if ((!('externalId' in (value as Record<string, any>)) && !('external_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalId'] === undefined && (value as Record<string, any>)['external_id'] === undefined)) return false;
     return true;
 }
 
@@ -140,21 +96,19 @@ export function DeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): De
         return json;
     }
     return {
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        pk: json["pk"],
-        name: json["name"],
-        type: json["type"],
-        confirmed: json["confirmed"],
-        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
-        lastUpdated:
-            json["last_updated"] == null
-                ? json["last_updated"]
-                : parseDateTime(json["last_updated"]),
-        lastUsed: json["last_used"] == null ? null : parseDateTime(json["last_used"]),
-        extraDescription: json["extra_description"],
-        externalId: json["external_id"],
+        
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'pk': json['pk'],
+        'name': json['name'],
+        'type': json['type'],
+        'confirmed': json['confirmed'],
+        'created': (json['created'] == null ? json['created'] : parseDateTime(json['created'])),
+        'lastUpdated': (json['last_updated'] == null ? json['last_updated'] : parseDateTime(json['last_updated'])),
+        'lastUsed': (json['last_used'] == null ? null : parseDateTime(json['last_used'])),
+        'extraDescription': json['extra_description'],
+        'externalId': json['external_id'],
     };
 }
 
@@ -162,28 +116,16 @@ export function DeviceToJSON(json: any): Device {
     return DeviceToJSONTyped(json, false);
 }
 
-export function DeviceToJSONTyped(
-    value?: Omit<
-        Device,
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "type"
-        | "created"
-        | "lastUpdated"
-        | "lastUsed"
-        | "extraDescription"
-        | "externalId"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceToJSONTyped(value?: Omit<Device, 'verboseName'|'verboseNamePlural'|'metaModelName'|'type'|'created'|'lastUpdated'|'lastUsed'|'extraDescription'|'externalId'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pk: value["pk"],
-        name: value["name"],
-        confirmed: value["confirmed"],
+        
+        'pk': value['pk'],
+        'name': value['name'],
+        'confirmed': value['confirmed'],
     };
 }
+

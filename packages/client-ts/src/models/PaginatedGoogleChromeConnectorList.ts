@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleChromeConnector } from "./GoogleChromeConnector";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { GoogleChromeConnector } from './GoogleChromeConnector';
 import {
     GoogleChromeConnectorFromJSON,
     GoogleChromeConnectorToJSON,
-} from "./GoogleChromeConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './GoogleChromeConnector';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedGoogleChromeConnectorList
  */
 export interface PaginatedGoogleChromeConnectorList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<GoogleChromeConnector>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedGoogleChromeConnectorList interface.
  */
-export function instanceOfPaginatedGoogleChromeConnectorList(
-    value: object,
-): value is PaginatedGoogleChromeConnectorList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedGoogleChromeConnectorList(value: object): value is PaginatedGoogleChromeConnectorList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedGoogleChromeConnectorListFromJSON(
-    json: any,
-): PaginatedGoogleChromeConnectorList {
+export function PaginatedGoogleChromeConnectorListFromJSON(json: any): PaginatedGoogleChromeConnectorList {
     return PaginatedGoogleChromeConnectorListFromJSONTyped(json, false);
 }
 
-export function PaginatedGoogleChromeConnectorListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedGoogleChromeConnectorList {
+export function PaginatedGoogleChromeConnectorListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGoogleChromeConnectorList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(GoogleChromeConnectorFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(GoogleChromeConnectorFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedGoogleChromeConnectorListToJSON(
-    json: any,
-): PaginatedGoogleChromeConnectorList {
+export function PaginatedGoogleChromeConnectorListToJSON(json: any): PaginatedGoogleChromeConnectorList {
     return PaginatedGoogleChromeConnectorListToJSONTyped(json, false);
 }
 
-export function PaginatedGoogleChromeConnectorListToJSONTyped(
-    value?: PaginatedGoogleChromeConnectorList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedGoogleChromeConnectorListToJSONTyped(value?: PaginatedGoogleChromeConnectorList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(GoogleChromeConnectorToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(GoogleChromeConnectorToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

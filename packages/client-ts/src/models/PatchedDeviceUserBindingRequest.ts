@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,19 +18,19 @@
  */
 export interface PatchedDeviceUserBindingRequest {
     /**
-     *
+     * 
      */
     policy?: string | null;
     /**
-     *
+     * 
      */
     group?: string | null;
     /**
-     *
+     * 
      */
     user?: number | null;
     /**
-     *
+     * 
      */
     target?: string;
     /**
@@ -39,11 +38,11 @@ export interface PatchedDeviceUserBindingRequest {
      */
     negate?: boolean;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
-     *
+     * 
      */
     order?: number;
     /**
@@ -55,7 +54,7 @@ export interface PatchedDeviceUserBindingRequest {
      */
     failureResult?: boolean;
     /**
-     *
+     * 
      */
     isPrimary?: boolean;
 }
@@ -63,42 +62,30 @@ export interface PatchedDeviceUserBindingRequest {
 /**
  * Check if a given object implements the PatchedDeviceUserBindingRequest interface.
  */
-export function instanceOfPatchedDeviceUserBindingRequest(
-    value: object,
-): value is PatchedDeviceUserBindingRequest {
+export function instanceOfPatchedDeviceUserBindingRequest(value: object): value is PatchedDeviceUserBindingRequest {
     return true;
 }
 
-export function PatchedDeviceUserBindingRequestFromJSON(
-    json: any,
-): PatchedDeviceUserBindingRequest {
+export function PatchedDeviceUserBindingRequestFromJSON(json: any): PatchedDeviceUserBindingRequest {
     return PatchedDeviceUserBindingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDeviceUserBindingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedDeviceUserBindingRequest {
+export function PatchedDeviceUserBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDeviceUserBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        policy:
-            json["policy"] === undefined
-                ? undefined
-                : json["policy"] === null
-                  ? null
-                  : json["policy"],
-        group:
-            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
-        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
-        target: json["target"] == null ? undefined : json["target"],
-        negate: json["negate"] == null ? undefined : json["negate"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        order: json["order"] == null ? undefined : json["order"],
-        timeout: json["timeout"] == null ? undefined : json["timeout"],
-        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
+        
+        'policy': json['policy'] === undefined ? undefined : json['policy'] === null ? null : json['policy'],
+        'group': json['group'] === undefined ? undefined : json['group'] === null ? null : json['group'],
+        'user': json['user'] === undefined ? undefined : json['user'] === null ? null : json['user'],
+        'target': json['target'] == null ? undefined : json['target'],
+        'negate': json['negate'] == null ? undefined : json['negate'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'order': json['order'] == null ? undefined : json['order'],
+        'timeout': json['timeout'] == null ? undefined : json['timeout'],
+        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
+        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
     };
 }
 
@@ -106,24 +93,23 @@ export function PatchedDeviceUserBindingRequestToJSON(json: any): PatchedDeviceU
     return PatchedDeviceUserBindingRequestToJSONTyped(json, false);
 }
 
-export function PatchedDeviceUserBindingRequestToJSONTyped(
-    value?: PatchedDeviceUserBindingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedDeviceUserBindingRequestToJSONTyped(value?: PatchedDeviceUserBindingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        policy: value["policy"],
-        group: value["group"],
-        user: value["user"],
-        target: value["target"],
-        negate: value["negate"],
-        enabled: value["enabled"],
-        order: value["order"],
-        timeout: value["timeout"],
-        failure_result: value["failureResult"],
-        is_primary: value["isPrimary"],
+        
+        'policy': value['policy'],
+        'group': value['group'],
+        'user': value['user'],
+        'target': value['target'],
+        'negate': value['negate'],
+        'enabled': value['enabled'],
+        'order': value['order'],
+        'timeout': value['timeout'],
+        'failure_result': value['failureResult'],
+        'is_primary': value['isPrimary'],
     };
 }
+

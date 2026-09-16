@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,27 +18,25 @@
  */
 export interface ApplicationEntitlementRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     app: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the ApplicationEntitlementRequest interface.
  */
-export function instanceOfApplicationEntitlementRequest(
-    value: object,
-): value is ApplicationEntitlementRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("app" in value) || value["app"] === undefined) return false;
+export function instanceOfApplicationEntitlementRequest(value: object): value is ApplicationEntitlementRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('app' in value) || value['app'] === undefined) return false;
     return true;
 }
 
@@ -47,17 +44,15 @@ export function ApplicationEntitlementRequestFromJSON(json: any): ApplicationEnt
     return ApplicationEntitlementRequestFromJSONTyped(json, false);
 }
 
-export function ApplicationEntitlementRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ApplicationEntitlementRequest {
+export function ApplicationEntitlementRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApplicationEntitlementRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        app: json["app"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'name': json['name'],
+        'app': json['app'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
@@ -65,17 +60,16 @@ export function ApplicationEntitlementRequestToJSON(json: any): ApplicationEntit
     return ApplicationEntitlementRequestToJSONTyped(json, false);
 }
 
-export function ApplicationEntitlementRequestToJSONTyped(
-    value?: ApplicationEntitlementRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ApplicationEntitlementRequestToJSONTyped(value?: ApplicationEntitlementRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        app: value["app"],
-        attributes: value["attributes"],
+        
+        'name': value['name'],
+        'app': value['app'],
+        'attributes': value['attributes'],
     };
 }
+

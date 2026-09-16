@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserOAuthSourceConnection } from "./UserOAuthSourceConnection";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { UserOAuthSourceConnection } from './UserOAuthSourceConnection';
 import {
     UserOAuthSourceConnectionFromJSON,
     UserOAuthSourceConnectionToJSON,
-} from "./UserOAuthSourceConnection";
+} from './UserOAuthSourceConnection';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedUserOAuthSourceConnectionList
  */
 export interface PaginatedUserOAuthSourceConnectionList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<UserOAuthSourceConnection>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedUserOAuthSourceConnectionList interface.
  */
-export function instanceOfPaginatedUserOAuthSourceConnectionList(
-    value: object,
-): value is PaginatedUserOAuthSourceConnectionList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedUserOAuthSourceConnectionList(value: object): value is PaginatedUserOAuthSourceConnectionList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedUserOAuthSourceConnectionListFromJSON(
-    json: any,
-): PaginatedUserOAuthSourceConnectionList {
+export function PaginatedUserOAuthSourceConnectionListFromJSON(json: any): PaginatedUserOAuthSourceConnectionList {
     return PaginatedUserOAuthSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserOAuthSourceConnectionListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedUserOAuthSourceConnectionList {
+export function PaginatedUserOAuthSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserOAuthSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(UserOAuthSourceConnectionFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(UserOAuthSourceConnectionFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedUserOAuthSourceConnectionListToJSON(
-    json: any,
-): PaginatedUserOAuthSourceConnectionList {
+export function PaginatedUserOAuthSourceConnectionListToJSON(json: any): PaginatedUserOAuthSourceConnectionList {
     return PaginatedUserOAuthSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedUserOAuthSourceConnectionListToJSONTyped(
-    value?: PaginatedUserOAuthSourceConnectionList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedUserOAuthSourceConnectionListToJSONTyped(value?: PaginatedUserOAuthSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(UserOAuthSourceConnectionToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(UserOAuthSourceConnectionToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,19 +18,19 @@
  */
 export interface InvitationSendEmailRequest {
     /**
-     *
+     * 
      */
     emailAddresses: Array<any>;
     /**
-     *
+     * 
      */
     ccAddresses?: Array<any>;
     /**
-     *
+     * 
      */
     bccAddresses?: Array<any>;
     /**
-     *
+     * 
      */
     template?: string;
 }
@@ -39,16 +38,8 @@ export interface InvitationSendEmailRequest {
 /**
  * Check if a given object implements the InvitationSendEmailRequest interface.
  */
-export function instanceOfInvitationSendEmailRequest(
-    value: object,
-): value is InvitationSendEmailRequest {
-    if (
-        (!("emailAddresses" in (value as Record<string, any>)) &&
-            !("email_addresses" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["emailAddresses"] === undefined &&
-            (value as Record<string, any>)["email_addresses"] === undefined)
-    )
-        return false;
+export function instanceOfInvitationSendEmailRequest(value: object): value is InvitationSendEmailRequest {
+    if ((!('emailAddresses' in (value as Record<string, any>)) && !('email_addresses' in (value as Record<string, any>))) || ((value as Record<string, any>)['emailAddresses'] === undefined && (value as Record<string, any>)['email_addresses'] === undefined)) return false;
     return true;
 }
 
@@ -56,18 +47,16 @@ export function InvitationSendEmailRequestFromJSON(json: any): InvitationSendEma
     return InvitationSendEmailRequestFromJSONTyped(json, false);
 }
 
-export function InvitationSendEmailRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): InvitationSendEmailRequest {
+export function InvitationSendEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): InvitationSendEmailRequest {
     if (json == null) {
         return json;
     }
     return {
-        emailAddresses: json["email_addresses"],
-        ccAddresses: json["cc_addresses"] == null ? undefined : json["cc_addresses"],
-        bccAddresses: json["bcc_addresses"] == null ? undefined : json["bcc_addresses"],
-        template: json["template"] == null ? undefined : json["template"],
+        
+        'emailAddresses': json['email_addresses'],
+        'ccAddresses': json['cc_addresses'] == null ? undefined : json['cc_addresses'],
+        'bccAddresses': json['bcc_addresses'] == null ? undefined : json['bcc_addresses'],
+        'template': json['template'] == null ? undefined : json['template'],
     };
 }
 
@@ -75,18 +64,17 @@ export function InvitationSendEmailRequestToJSON(json: any): InvitationSendEmail
     return InvitationSendEmailRequestToJSONTyped(json, false);
 }
 
-export function InvitationSendEmailRequestToJSONTyped(
-    value?: InvitationSendEmailRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function InvitationSendEmailRequestToJSONTyped(value?: InvitationSendEmailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        email_addresses: value["emailAddresses"],
-        cc_addresses: value["ccAddresses"],
-        bcc_addresses: value["bccAddresses"],
-        template: value["template"],
+        
+        'email_addresses': value['emailAddresses'],
+        'cc_addresses': value['ccAddresses'],
+        'bcc_addresses': value['bccAddresses'],
+        'template': value['template'],
     };
 }
+

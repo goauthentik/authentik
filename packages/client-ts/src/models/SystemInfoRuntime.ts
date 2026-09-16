@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,35 +18,35 @@
  */
 export interface SystemInfoRuntime {
     /**
-     *
+     * 
      */
     pythonVersion: string;
     /**
-     *
+     * 
      */
     environment: string;
     /**
-     *
+     * 
      */
     architecture: string;
     /**
-     *
+     * 
      */
     platform: string;
     /**
-     *
+     * 
      */
     uname: string;
     /**
-     *
+     * 
      */
     opensslVersion: string;
     /**
-     *
+     * 
      */
     opensslFipsEnabled: boolean | null;
     /**
-     *
+     * 
      */
     authentikVersion: string;
 }
@@ -56,38 +55,14 @@ export interface SystemInfoRuntime {
  * Check if a given object implements the SystemInfoRuntime interface.
  */
 export function instanceOfSystemInfoRuntime(value: object): value is SystemInfoRuntime {
-    if (
-        (!("pythonVersion" in (value as Record<string, any>)) &&
-            !("python_version" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["pythonVersion"] === undefined &&
-            (value as Record<string, any>)["python_version"] === undefined)
-    )
-        return false;
-    if (!("environment" in value) || value["environment"] === undefined) return false;
-    if (!("architecture" in value) || value["architecture"] === undefined) return false;
-    if (!("platform" in value) || value["platform"] === undefined) return false;
-    if (!("uname" in value) || value["uname"] === undefined) return false;
-    if (
-        (!("opensslVersion" in (value as Record<string, any>)) &&
-            !("openssl_version" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["opensslVersion"] === undefined &&
-            (value as Record<string, any>)["openssl_version"] === undefined)
-    )
-        return false;
-    if (
-        (!("opensslFipsEnabled" in (value as Record<string, any>)) &&
-            !("openssl_fips_enabled" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["opensslFipsEnabled"] === undefined &&
-            (value as Record<string, any>)["openssl_fips_enabled"] === undefined)
-    )
-        return false;
-    if (
-        (!("authentikVersion" in (value as Record<string, any>)) &&
-            !("authentik_version" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authentikVersion"] === undefined &&
-            (value as Record<string, any>)["authentik_version"] === undefined)
-    )
-        return false;
+    if ((!('pythonVersion' in (value as Record<string, any>)) && !('python_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['pythonVersion'] === undefined && (value as Record<string, any>)['python_version'] === undefined)) return false;
+    if (!('environment' in value) || value['environment'] === undefined) return false;
+    if (!('architecture' in value) || value['architecture'] === undefined) return false;
+    if (!('platform' in value) || value['platform'] === undefined) return false;
+    if (!('uname' in value) || value['uname'] === undefined) return false;
+    if ((!('opensslVersion' in (value as Record<string, any>)) && !('openssl_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['opensslVersion'] === undefined && (value as Record<string, any>)['openssl_version'] === undefined)) return false;
+    if ((!('opensslFipsEnabled' in (value as Record<string, any>)) && !('openssl_fips_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['opensslFipsEnabled'] === undefined && (value as Record<string, any>)['openssl_fips_enabled'] === undefined)) return false;
+    if ((!('authentikVersion' in (value as Record<string, any>)) && !('authentik_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['authentikVersion'] === undefined && (value as Record<string, any>)['authentik_version'] === undefined)) return false;
     return true;
 }
 
@@ -95,22 +70,20 @@ export function SystemInfoRuntimeFromJSON(json: any): SystemInfoRuntime {
     return SystemInfoRuntimeFromJSONTyped(json, false);
 }
 
-export function SystemInfoRuntimeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SystemInfoRuntime {
+export function SystemInfoRuntimeFromJSONTyped(json: any, ignoreDiscriminator: boolean): SystemInfoRuntime {
     if (json == null) {
         return json;
     }
     return {
-        pythonVersion: json["python_version"],
-        environment: json["environment"],
-        architecture: json["architecture"],
-        platform: json["platform"],
-        uname: json["uname"],
-        opensslVersion: json["openssl_version"],
-        opensslFipsEnabled: json["openssl_fips_enabled"],
-        authentikVersion: json["authentik_version"],
+        
+        'pythonVersion': json['python_version'],
+        'environment': json['environment'],
+        'architecture': json['architecture'],
+        'platform': json['platform'],
+        'uname': json['uname'],
+        'opensslVersion': json['openssl_version'],
+        'opensslFipsEnabled': json['openssl_fips_enabled'],
+        'authentikVersion': json['authentik_version'],
     };
 }
 
@@ -118,22 +91,21 @@ export function SystemInfoRuntimeToJSON(json: any): SystemInfoRuntime {
     return SystemInfoRuntimeToJSONTyped(json, false);
 }
 
-export function SystemInfoRuntimeToJSONTyped(
-    value?: SystemInfoRuntime | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SystemInfoRuntimeToJSONTyped(value?: SystemInfoRuntime | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        python_version: value["pythonVersion"],
-        environment: value["environment"],
-        architecture: value["architecture"],
-        platform: value["platform"],
-        uname: value["uname"],
-        openssl_version: value["opensslVersion"],
-        openssl_fips_enabled: value["opensslFipsEnabled"],
-        authentik_version: value["authentikVersion"],
+        
+        'python_version': value['pythonVersion'],
+        'environment': value['environment'],
+        'architecture': value['architecture'],
+        'platform': value['platform'],
+        'uname': value['uname'],
+        'openssl_version': value['opensslVersion'],
+        'openssl_fips_enabled': value['opensslFipsEnabled'],
+        'authentik_version': value['authentikVersion'],
     };
 }
+

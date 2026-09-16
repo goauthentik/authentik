@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,23 +11,25 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const CapabilitiesEnum = {
-    CanSaveMedia: "can_save_media",
-    CanSaveReports: "can_save_reports",
-    CanGeoIp: "can_geo_ip",
-    CanAsn: "can_asn",
-    CanImpersonate: "can_impersonate",
-    CanDebug: "can_debug",
-    IsEnterprise: "is_enterprise",
-    CanRequest: "can_request",
-    CanAgentSelfService: "can_agent_self_service",
-    UnknownDefaultOpenApi: "11184809",
+    CanSaveMedia: 'can_save_media',
+    CanSaveReports: 'can_save_reports',
+    CanGeoIp: 'can_geo_ip',
+    CanAsn: 'can_asn',
+    CanImpersonate: 'can_impersonate',
+    CanDebug: 'can_debug',
+    IsEnterprise: 'is_enterprise',
+    CanRequest: 'can_request',
+    CanAgentSelfService: 'can_agent_self_service',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type CapabilitiesEnum = (typeof CapabilitiesEnum)[keyof typeof CapabilitiesEnum];
+export type CapabilitiesEnum = typeof CapabilitiesEnum[keyof typeof CapabilitiesEnum];
+
 
 export function instanceOfCapabilitiesEnum(value: any): boolean {
     for (const key in CapabilitiesEnum) {
@@ -45,10 +46,7 @@ export function CapabilitiesEnumFromJSON(json: any): CapabilitiesEnum {
     return CapabilitiesEnumFromJSONTyped(json, false);
 }
 
-export function CapabilitiesEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CapabilitiesEnum {
+export function CapabilitiesEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): CapabilitiesEnum {
     return json as CapabilitiesEnum;
 }
 
@@ -56,9 +54,7 @@ export function CapabilitiesEnumToJSON(value?: CapabilitiesEnum | null): any {
     return value as any;
 }
 
-export function CapabilitiesEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): CapabilitiesEnum {
+export function CapabilitiesEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): CapabilitiesEnum {
     return value as CapabilitiesEnum;
 }
+

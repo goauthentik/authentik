@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { DeviceClassesEnum } from './DeviceClassesEnum';
+import {
+    DeviceClassesEnumFromJSON,
+    DeviceClassesEnumToJSON,
+} from './DeviceClassesEnum';
 
 /**
  * Single device challenge
@@ -23,49 +25,33 @@ import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClas
  */
 export interface DeviceChallenge {
     /**
-     *
+     * 
      */
     deviceClass: DeviceClassesEnum;
     /**
-     *
+     * 
      */
     deviceUid: string;
     /**
-     *
+     * 
      */
-    challenge: { [key: string]: any };
+    challenge: { [key: string]: any; };
     /**
-     *
+     * 
      */
     lastUsed: Date | null;
 }
+
+
 
 /**
  * Check if a given object implements the DeviceChallenge interface.
  */
 export function instanceOfDeviceChallenge(value: object): value is DeviceChallenge {
-    if (
-        (!("deviceClass" in (value as Record<string, any>)) &&
-            !("device_class" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceClass"] === undefined &&
-            (value as Record<string, any>)["device_class"] === undefined)
-    )
-        return false;
-    if (
-        (!("deviceUid" in (value as Record<string, any>)) &&
-            !("device_uid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deviceUid"] === undefined &&
-            (value as Record<string, any>)["device_uid"] === undefined)
-    )
-        return false;
-    if (!("challenge" in value) || value["challenge"] === undefined) return false;
-    if (
-        (!("lastUsed" in (value as Record<string, any>)) &&
-            !("last_used" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["lastUsed"] === undefined &&
-            (value as Record<string, any>)["last_used"] === undefined)
-    )
-        return false;
+    if ((!('deviceClass' in (value as Record<string, any>)) && !('device_class' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceClass'] === undefined && (value as Record<string, any>)['device_class'] === undefined)) return false;
+    if ((!('deviceUid' in (value as Record<string, any>)) && !('device_uid' in (value as Record<string, any>))) || ((value as Record<string, any>)['deviceUid'] === undefined && (value as Record<string, any>)['device_uid'] === undefined)) return false;
+    if (!('challenge' in value) || value['challenge'] === undefined) return false;
+    if ((!('lastUsed' in (value as Record<string, any>)) && !('last_used' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUsed'] === undefined && (value as Record<string, any>)['last_used'] === undefined)) return false;
     return true;
 }
 
@@ -73,18 +59,16 @@ export function DeviceChallengeFromJSON(json: any): DeviceChallenge {
     return DeviceChallengeFromJSONTyped(json, false);
 }
 
-export function DeviceChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeviceChallenge {
+export function DeviceChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceChallenge {
     if (json == null) {
         return json;
     }
     return {
-        deviceClass: DeviceClassesEnumFromJSON(json["device_class"]),
-        deviceUid: json["device_uid"],
-        challenge: json["challenge"],
-        lastUsed: json["last_used"] == null ? null : parseDateTime(json["last_used"]),
+        
+        'deviceClass': DeviceClassesEnumFromJSON(json['device_class']),
+        'deviceUid': json['device_uid'],
+        'challenge': json['challenge'],
+        'lastUsed': (json['last_used'] == null ? null : parseDateTime(json['last_used'])),
     };
 }
 
@@ -92,19 +76,17 @@ export function DeviceChallengeToJSON(json: any): DeviceChallenge {
     return DeviceChallengeToJSONTyped(json, false);
 }
 
-export function DeviceChallengeToJSONTyped(
-    value?: DeviceChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DeviceChallengeToJSONTyped(value?: DeviceChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        device_class: DeviceClassesEnumToJSON(value["deviceClass"]),
-        device_uid: value["deviceUid"],
-        challenge: value["challenge"],
-        last_used:
-            value["lastUsed"] == null ? value["lastUsed"] : serializeDateTime(value["lastUsed"]),
+        
+        'device_class': DeviceClassesEnumToJSON(value['deviceClass']),
+        'device_uid': value['deviceUid'],
+        'challenge': value['challenge'],
+        'last_used': value['lastUsed'] == null ? value['lastUsed'] : serializeDateTime(value['lastUsed']),
     };
 }
+

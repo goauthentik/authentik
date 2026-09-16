@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface AuthenticatorStaticChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -27,45 +26,36 @@ export interface AuthenticatorStaticChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorStaticChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorStaticChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorStaticChallengeResponseRequest {
+export function instanceOfAuthenticatorStaticChallengeResponseRequest(value: object): value is AuthenticatorStaticChallengeResponseRequest {
     return true;
 }
 
-export function AuthenticatorStaticChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorStaticChallengeResponseRequest {
+export function AuthenticatorStaticChallengeResponseRequestFromJSON(json: any): AuthenticatorStaticChallengeResponseRequest {
     return AuthenticatorStaticChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorStaticChallengeResponseRequest {
+export function AuthenticatorStaticChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorStaticChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
-export function AuthenticatorStaticChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorStaticChallengeResponseRequest {
+export function AuthenticatorStaticChallengeResponseRequestToJSON(json: any): AuthenticatorStaticChallengeResponseRequest {
     return AuthenticatorStaticChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorStaticChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorStaticChallengeResponseRequestToJSONTyped(value?: AuthenticatorStaticChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

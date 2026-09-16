@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ProviderEnum = {
-    Twilio: "twilio",
-    Generic: "generic",
-    UnknownDefaultOpenApi: "11184809",
+    Twilio: 'twilio',
+    Generic: 'generic',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ProviderEnum = (typeof ProviderEnum)[keyof typeof ProviderEnum];
+export type ProviderEnum = typeof ProviderEnum[keyof typeof ProviderEnum];
+
 
 export function instanceOfProviderEnum(value: any): boolean {
     for (const key in ProviderEnum) {
@@ -49,3 +50,4 @@ export function ProviderEnumToJSON(value?: ProviderEnum | null): any {
 export function ProviderEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ProviderEnum {
     return value as ProviderEnum;
 }
+

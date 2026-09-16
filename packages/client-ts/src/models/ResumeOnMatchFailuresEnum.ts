@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,23 +11,22 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ResumeOnMatchFailuresEnum = {
-    MissingProperty: "missing_property",
-    UnknownDefaultOpenApi: "11184809",
+    MissingProperty: 'missing_property',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ResumeOnMatchFailuresEnum =
-    (typeof ResumeOnMatchFailuresEnum)[keyof typeof ResumeOnMatchFailuresEnum];
+export type ResumeOnMatchFailuresEnum = typeof ResumeOnMatchFailuresEnum[keyof typeof ResumeOnMatchFailuresEnum];
+
 
 export function instanceOfResumeOnMatchFailuresEnum(value: any): boolean {
     for (const key in ResumeOnMatchFailuresEnum) {
         if (Object.prototype.hasOwnProperty.call(ResumeOnMatchFailuresEnum, key)) {
-            if (
-                ResumeOnMatchFailuresEnum[key as keyof typeof ResumeOnMatchFailuresEnum] === value
-            ) {
+            if (ResumeOnMatchFailuresEnum[key as keyof typeof ResumeOnMatchFailuresEnum] === value) {
                 return true;
             }
         }
@@ -40,10 +38,7 @@ export function ResumeOnMatchFailuresEnumFromJSON(json: any): ResumeOnMatchFailu
     return ResumeOnMatchFailuresEnumFromJSONTyped(json, false);
 }
 
-export function ResumeOnMatchFailuresEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ResumeOnMatchFailuresEnum {
+export function ResumeOnMatchFailuresEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResumeOnMatchFailuresEnum {
     return json as ResumeOnMatchFailuresEnum;
 }
 
@@ -51,9 +46,7 @@ export function ResumeOnMatchFailuresEnumToJSON(value?: ResumeOnMatchFailuresEnu
     return value as any;
 }
 
-export function ResumeOnMatchFailuresEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ResumeOnMatchFailuresEnum {
+export function ResumeOnMatchFailuresEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ResumeOnMatchFailuresEnum {
     return value as ResumeOnMatchFailuresEnum;
 }
+

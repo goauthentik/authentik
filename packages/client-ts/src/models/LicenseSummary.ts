@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,14 +11,17 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
-import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
-import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { LicenseSummaryStatusEnum } from './LicenseSummaryStatusEnum';
 import {
     LicenseSummaryStatusEnumFromJSON,
     LicenseSummaryStatusEnumToJSON,
-} from "./LicenseSummaryStatusEnum";
+} from './LicenseSummaryStatusEnum';
+import type { LicenseFlagsEnum } from './LicenseFlagsEnum';
+import {
+    LicenseFlagsEnumFromJSON,
+    LicenseFlagsEnumToJSON,
+} from './LicenseFlagsEnum';
 
 /**
  * Serializer for license status
@@ -28,60 +30,38 @@ import {
  */
 export interface LicenseSummary {
     /**
-     *
+     * 
      */
     internalUsers: number;
     /**
-     *
+     * 
      */
     externalUsers: number;
     /**
-     *
+     * 
      */
     status: LicenseSummaryStatusEnum;
     /**
-     *
+     * 
      */
     latestValid: Date;
     /**
-     *
+     * 
      */
     licenseFlags: Array<LicenseFlagsEnum>;
 }
+
+
 
 /**
  * Check if a given object implements the LicenseSummary interface.
  */
 export function instanceOfLicenseSummary(value: object): value is LicenseSummary {
-    if (
-        (!("internalUsers" in (value as Record<string, any>)) &&
-            !("internal_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["internalUsers"] === undefined &&
-            (value as Record<string, any>)["internal_users"] === undefined)
-    )
-        return false;
-    if (
-        (!("externalUsers" in (value as Record<string, any>)) &&
-            !("external_users" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["externalUsers"] === undefined &&
-            (value as Record<string, any>)["external_users"] === undefined)
-    )
-        return false;
-    if (!("status" in value) || value["status"] === undefined) return false;
-    if (
-        (!("latestValid" in (value as Record<string, any>)) &&
-            !("latest_valid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["latestValid"] === undefined &&
-            (value as Record<string, any>)["latest_valid"] === undefined)
-    )
-        return false;
-    if (
-        (!("licenseFlags" in (value as Record<string, any>)) &&
-            !("license_flags" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["licenseFlags"] === undefined &&
-            (value as Record<string, any>)["license_flags"] === undefined)
-    )
-        return false;
+    if ((!('internalUsers' in (value as Record<string, any>)) && !('internal_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['internalUsers'] === undefined && (value as Record<string, any>)['internal_users'] === undefined)) return false;
+    if ((!('externalUsers' in (value as Record<string, any>)) && !('external_users' in (value as Record<string, any>))) || ((value as Record<string, any>)['externalUsers'] === undefined && (value as Record<string, any>)['external_users'] === undefined)) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if ((!('latestValid' in (value as Record<string, any>)) && !('latest_valid' in (value as Record<string, any>))) || ((value as Record<string, any>)['latestValid'] === undefined && (value as Record<string, any>)['latest_valid'] === undefined)) return false;
+    if ((!('licenseFlags' in (value as Record<string, any>)) && !('license_flags' in (value as Record<string, any>))) || ((value as Record<string, any>)['licenseFlags'] === undefined && (value as Record<string, any>)['license_flags'] === undefined)) return false;
     return true;
 }
 
@@ -89,22 +69,17 @@ export function LicenseSummaryFromJSON(json: any): LicenseSummary {
     return LicenseSummaryFromJSONTyped(json, false);
 }
 
-export function LicenseSummaryFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): LicenseSummary {
+export function LicenseSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseSummary {
     if (json == null) {
         return json;
     }
     return {
-        internalUsers: json["internal_users"],
-        externalUsers: json["external_users"],
-        status: LicenseSummaryStatusEnumFromJSON(json["status"]),
-        latestValid:
-            json["latest_valid"] == null
-                ? json["latest_valid"]
-                : parseDateTime(json["latest_valid"]),
-        licenseFlags: (json["license_flags"] as Array<any>).map(LicenseFlagsEnumFromJSON),
+        
+        'internalUsers': json['internal_users'],
+        'externalUsers': json['external_users'],
+        'status': LicenseSummaryStatusEnumFromJSON(json['status']),
+        'latestValid': (json['latest_valid'] == null ? json['latest_valid'] : parseDateTime(json['latest_valid'])),
+        'licenseFlags': ((json['license_flags'] as Array<any>).map(LicenseFlagsEnumFromJSON)),
     };
 }
 
@@ -112,22 +87,18 @@ export function LicenseSummaryToJSON(json: any): LicenseSummary {
     return LicenseSummaryToJSONTyped(json, false);
 }
 
-export function LicenseSummaryToJSONTyped(
-    value?: LicenseSummary | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LicenseSummaryToJSONTyped(value?: LicenseSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        internal_users: value["internalUsers"],
-        external_users: value["externalUsers"],
-        status: LicenseSummaryStatusEnumToJSON(value["status"]),
-        latest_valid:
-            value["latestValid"] == null
-                ? value["latestValid"]
-                : serializeDateTime(value["latestValid"]),
-        license_flags: (value["licenseFlags"] as Array<any>).map(LicenseFlagsEnumToJSON),
+        
+        'internal_users': value['internalUsers'],
+        'external_users': value['externalUsers'],
+        'status': LicenseSummaryStatusEnumToJSON(value['status']),
+        'latest_valid': value['latestValid'] == null ? value['latestValid'] : serializeDateTime(value['latestValid']),
+        'license_flags': ((value['licenseFlags'] as Array<any>).map(LicenseFlagsEnumToJSON)),
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from '../runtime';
 /**
  * User source connection
  * @export
@@ -21,19 +19,19 @@ import { parseDateTime, serializeDateTime } from "../runtime";
  */
 export interface UserOAuthSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     accessToken?: string | null;
     /**
-     *
+     * 
      */
     expires?: Date;
 }
@@ -41,58 +39,44 @@ export interface UserOAuthSourceConnectionRequest {
 /**
  * Check if a given object implements the UserOAuthSourceConnectionRequest interface.
  */
-export function instanceOfUserOAuthSourceConnectionRequest(
-    value: object,
-): value is UserOAuthSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfUserOAuthSourceConnectionRequest(value: object): value is UserOAuthSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function UserOAuthSourceConnectionRequestFromJSON(
-    json: any,
-): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestFromJSON(json: any): UserOAuthSourceConnectionRequest {
     return UserOAuthSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOAuthSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
-        accessToken:
-            json["access_token"] === undefined
-                ? undefined
-                : json["access_token"] === null
-                  ? null
-                  : json["access_token"],
-        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
+        'accessToken': json['access_token'] === undefined ? undefined : json['access_token'] === null ? null : json['access_token'],
+        'expires': json['expires'] == null ? undefined : (parseDateTime(json['expires'])),
     };
 }
 
-export function UserOAuthSourceConnectionRequestToJSON(
-    json: any,
-): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestToJSON(json: any): UserOAuthSourceConnectionRequest {
     return UserOAuthSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionRequestToJSONTyped(
-    value?: UserOAuthSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserOAuthSourceConnectionRequestToJSONTyped(value?: UserOAuthSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
-        access_token: value["accessToken"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
+        'access_token': value['accessToken'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
     };
 }
+

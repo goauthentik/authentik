@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,14 +11,25 @@
  * Do not edit the class manually.
  */
 
-import type { DeliveryMethodEnum } from "./DeliveryMethodEnum";
-import { DeliveryMethodEnumFromJSON, DeliveryMethodEnumToJSON } from "./DeliveryMethodEnum";
-import type { EventsRequestedEnum } from "./EventsRequestedEnum";
-import { EventsRequestedEnumFromJSON, EventsRequestedEnumToJSON } from "./EventsRequestedEnum";
-import type { SSFProvider } from "./SSFProvider";
-import { SSFProviderFromJSON } from "./SSFProvider";
-import type { SSFStreamStatusEnum } from "./SSFStreamStatusEnum";
-import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStreamStatusEnum";
+import type { SSFStreamStatusEnum } from './SSFStreamStatusEnum';
+import {
+    SSFStreamStatusEnumFromJSON,
+    SSFStreamStatusEnumToJSON,
+} from './SSFStreamStatusEnum';
+import type { DeliveryMethodEnum } from './DeliveryMethodEnum';
+import {
+    DeliveryMethodEnumFromJSON,
+    DeliveryMethodEnumToJSON,
+} from './DeliveryMethodEnum';
+import type { EventsRequestedEnum } from './EventsRequestedEnum';
+import {
+    EventsRequestedEnumFromJSON,
+    EventsRequestedEnumToJSON,
+} from './EventsRequestedEnum';
+import type { SSFProvider } from './SSFProvider';
+import {
+    SSFProviderFromJSON,
+} from './SSFProvider';
 
 /**
  * SSFStream Serializer
@@ -28,69 +38,59 @@ import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStr
  */
 export interface SSFStream {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     status?: SSFStreamStatusEnum;
     /**
-     *
+     * 
      */
     provider: number;
     /**
-     *
+     * 
      */
     readonly providerObj: SSFProvider;
     /**
-     *
+     * 
      */
     deliveryMethod: DeliveryMethodEnum;
     /**
-     *
+     * 
      */
     endpointUrl?: string | null;
     /**
-     *
+     * 
      */
     eventsRequested?: Array<EventsRequestedEnum>;
     /**
-     *
+     * 
      */
     format: string;
     /**
-     *
+     * 
      */
     aud?: Array<string>;
     /**
-     *
+     * 
      */
     iss: string;
 }
+
+
 
 /**
  * Check if a given object implements the SSFStream interface.
  */
 export function instanceOfSSFStream(value: object): value is SSFStream {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (
-        (!("providerObj" in (value as Record<string, any>)) &&
-            !("provider_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["providerObj"] === undefined &&
-            (value as Record<string, any>)["provider_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("deliveryMethod" in (value as Record<string, any>)) &&
-            !("delivery_method" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["deliveryMethod"] === undefined &&
-            (value as Record<string, any>)["delivery_method"] === undefined)
-    )
-        return false;
-    if (!("format" in value) || value["format"] === undefined) return false;
-    if (!("iss" in value) || value["iss"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if ((!('providerObj' in (value as Record<string, any>)) && !('provider_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['providerObj'] === undefined && (value as Record<string, any>)['provider_obj'] === undefined)) return false;
+    if ((!('deliveryMethod' in (value as Record<string, any>)) && !('delivery_method' in (value as Record<string, any>))) || ((value as Record<string, any>)['deliveryMethod'] === undefined && (value as Record<string, any>)['delivery_method'] === undefined)) return false;
+    if (!('format' in value) || value['format'] === undefined) return false;
+    if (!('iss' in value) || value['iss'] === undefined) return false;
     return true;
 }
 
@@ -103,24 +103,17 @@ export function SSFStreamFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        pk: json["pk"],
-        status: json["status"] == null ? undefined : SSFStreamStatusEnumFromJSON(json["status"]),
-        provider: json["provider"],
-        providerObj: SSFProviderFromJSON(json["provider_obj"]),
-        deliveryMethod: DeliveryMethodEnumFromJSON(json["delivery_method"]),
-        endpointUrl:
-            json["endpoint_url"] === undefined
-                ? undefined
-                : json["endpoint_url"] === null
-                  ? null
-                  : json["endpoint_url"],
-        eventsRequested:
-            json["events_requested"] == null
-                ? undefined
-                : (json["events_requested"] as Array<any>).map(EventsRequestedEnumFromJSON),
-        format: json["format"],
-        aud: json["aud"] == null ? undefined : json["aud"],
-        iss: json["iss"],
+        
+        'pk': json['pk'],
+        'status': json['status'] == null ? undefined : SSFStreamStatusEnumFromJSON(json['status']),
+        'provider': json['provider'],
+        'providerObj': SSFProviderFromJSON(json['provider_obj']),
+        'deliveryMethod': DeliveryMethodEnumFromJSON(json['delivery_method']),
+        'endpointUrl': json['endpoint_url'] === undefined ? undefined : json['endpoint_url'] === null ? null : json['endpoint_url'],
+        'eventsRequested': json['events_requested'] == null ? undefined : ((json['events_requested'] as Array<any>).map(EventsRequestedEnumFromJSON)),
+        'format': json['format'],
+        'aud': json['aud'] == null ? undefined : json['aud'],
+        'iss': json['iss'],
     };
 }
 
@@ -128,25 +121,21 @@ export function SSFStreamToJSON(json: any): SSFStream {
     return SSFStreamToJSONTyped(json, false);
 }
 
-export function SSFStreamToJSONTyped(
-    value?: Omit<SSFStream, "pk" | "providerObj"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SSFStreamToJSONTyped(value?: Omit<SSFStream, 'pk'|'providerObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        status: SSFStreamStatusEnumToJSON(value["status"]),
-        provider: value["provider"],
-        delivery_method: DeliveryMethodEnumToJSON(value["deliveryMethod"]),
-        endpoint_url: value["endpointUrl"],
-        events_requested:
-            value["eventsRequested"] == null
-                ? undefined
-                : (value["eventsRequested"] as Array<any>).map(EventsRequestedEnumToJSON),
-        format: value["format"],
-        aud: value["aud"],
-        iss: value["iss"],
+        
+        'status': SSFStreamStatusEnumToJSON(value['status']),
+        'provider': value['provider'],
+        'delivery_method': DeliveryMethodEnumToJSON(value['deliveryMethod']),
+        'endpoint_url': value['endpointUrl'],
+        'events_requested': value['eventsRequested'] == null ? undefined : ((value['eventsRequested'] as Array<any>).map(EventsRequestedEnumToJSON)),
+        'format': value['format'],
+        'aud': value['aud'],
+        'iss': value['iss'],
     };
 }
+

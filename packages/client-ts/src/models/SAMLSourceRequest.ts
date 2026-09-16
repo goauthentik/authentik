@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +11,41 @@
  * Do not edit the class manually.
  */
 
-import type { BindingTypeEnum } from "./BindingTypeEnum";
-import { BindingTypeEnumFromJSON, BindingTypeEnumToJSON } from "./BindingTypeEnum";
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+import type { PolicyEngineMode } from './PolicyEngineMode';
 import {
-    GroupMatchingModeEnumFromJSON,
-    GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
+import type { BindingTypeEnum } from './BindingTypeEnum';
+import {
+    BindingTypeEnumFromJSON,
+    BindingTypeEnumToJSON,
+} from './BindingTypeEnum';
+import type { DigestAlgorithmEnum } from './DigestAlgorithmEnum';
+import {
+    DigestAlgorithmEnumFromJSON,
+    DigestAlgorithmEnumToJSON,
+} from './DigestAlgorithmEnum';
+import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from './UserMatchingModeEnum';
+import type { SignatureAlgorithmEnum } from './SignatureAlgorithmEnum';
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from './SignatureAlgorithmEnum';
+import type { SAMLNameIDPolicyEnum } from './SAMLNameIDPolicyEnum';
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from './SAMLNameIDPolicyEnum';
+import type { GroupMatchingModeEnum } from './GroupMatchingModeEnum';
+import {
+    GroupMatchingModeEnumFromJSON,
+    GroupMatchingModeEnumToJSON,
+} from './GroupMatchingModeEnum';
 
 /**
  * SAMLSource Serializer
@@ -48,7 +62,7 @@ export interface SAMLSourceRequest {
      */
     slug: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -64,15 +78,15 @@ export interface SAMLSourceRequest {
      */
     enrollmentFlow?: string | null;
     /**
-     *
+     * 
      */
     userPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     groupPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
@@ -80,11 +94,11 @@ export interface SAMLSourceRequest {
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     *
+     * 
      */
     userPathTemplate?: string;
     /**
-     *
+     * 
      */
     icon?: string;
     /**
@@ -120,7 +134,7 @@ export interface SAMLSourceRequest {
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
-     *
+     * 
      */
     bindingType?: BindingTypeEnum;
     /**
@@ -132,11 +146,11 @@ export interface SAMLSourceRequest {
      */
     signingKp?: string | null;
     /**
-     *
+     * 
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
-     *
+     * 
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
@@ -148,35 +162,25 @@ export interface SAMLSourceRequest {
      */
     encryptionKp?: string | null;
     /**
-     *
+     * 
      */
     signedAssertion?: boolean;
     /**
-     *
+     * 
      */
     signedResponse?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the SAMLSourceRequest interface.
  */
 export function instanceOfSAMLSourceRequest(value: object): value is SAMLSourceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (
-        (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
-            !("pre_authentication_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["preAuthenticationFlow"] === undefined &&
-            (value as Record<string, any>)["pre_authentication_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("ssoUrl" in (value as Record<string, any>)) &&
-            !("sso_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["ssoUrl"] === undefined &&
-            (value as Record<string, any>)["sso_url"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if ((!('preAuthenticationFlow' in (value as Record<string, any>)) && !('pre_authentication_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['preAuthenticationFlow'] === undefined && (value as Record<string, any>)['pre_authentication_flow'] === undefined)) return false;
+    if ((!('ssoUrl' in (value as Record<string, any>)) && !('sso_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['ssoUrl'] === undefined && (value as Record<string, any>)['sso_url'] === undefined)) return false;
     return true;
 }
 
@@ -184,101 +188,41 @@ export function SAMLSourceRequestFromJSON(json: any): SAMLSourceRequest {
     return SAMLSourceRequestFromJSONTyped(json, false);
 }
 
-export function SAMLSourceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SAMLSourceRequest {
+export function SAMLSourceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLSourceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        slug: json["slug"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        promoted: json["promoted"] == null ? undefined : json["promoted"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        enrollmentFlow:
-            json["enrollment_flow"] === undefined
-                ? undefined
-                : json["enrollment_flow"] === null
-                  ? null
-                  : json["enrollment_flow"],
-        userPropertyMappings:
-            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
-        groupPropertyMappings:
-            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        userMatchingMode:
-            json["user_matching_mode"] == null
-                ? undefined
-                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
-        userPathTemplate:
-            json["user_path_template"] == null ? undefined : json["user_path_template"],
-        icon: json["icon"] == null ? undefined : json["icon"],
-        groupMatchingMode:
-            json["group_matching_mode"] == null
-                ? undefined
-                : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
-        preAuthenticationFlow: json["pre_authentication_flow"],
-        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
-        ssoUrl: json["sso_url"],
-        sloUrl:
-            json["slo_url"] === undefined
-                ? undefined
-                : json["slo_url"] === null
-                  ? null
-                  : json["slo_url"],
-        allowIdpInitiated:
-            json["allow_idp_initiated"] == null ? undefined : json["allow_idp_initiated"],
-        forceAuthn: json["force_authn"] == null ? undefined : json["force_authn"],
-        nameIdPolicy:
-            json["name_id_policy"] == null
-                ? undefined
-                : SAMLNameIDPolicyEnumFromJSON(json["name_id_policy"]),
-        bindingType:
-            json["binding_type"] == null
-                ? undefined
-                : BindingTypeEnumFromJSON(json["binding_type"]),
-        verificationKp:
-            json["verification_kp"] === undefined
-                ? undefined
-                : json["verification_kp"] === null
-                  ? null
-                  : json["verification_kp"],
-        signingKp:
-            json["signing_kp"] === undefined
-                ? undefined
-                : json["signing_kp"] === null
-                  ? null
-                  : json["signing_kp"],
-        digestAlgorithm:
-            json["digest_algorithm"] == null
-                ? undefined
-                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm:
-            json["signature_algorithm"] == null
-                ? undefined
-                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        temporaryUserDeleteAfter:
-            json["temporary_user_delete_after"] == null
-                ? undefined
-                : json["temporary_user_delete_after"],
-        encryptionKp:
-            json["encryption_kp"] === undefined
-                ? undefined
-                : json["encryption_kp"] === null
-                  ? null
-                  : json["encryption_kp"],
-        signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
-        signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
+        
+        'name': json['name'],
+        'slug': json['slug'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'promoted': json['promoted'] == null ? undefined : json['promoted'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'enrollmentFlow': json['enrollment_flow'] === undefined ? undefined : json['enrollment_flow'] === null ? null : json['enrollment_flow'],
+        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
+        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
+        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        'icon': json['icon'] == null ? undefined : json['icon'],
+        'groupMatchingMode': json['group_matching_mode'] == null ? undefined : GroupMatchingModeEnumFromJSON(json['group_matching_mode']),
+        'preAuthenticationFlow': json['pre_authentication_flow'],
+        'issuerOverride': json['issuer_override'] == null ? undefined : json['issuer_override'],
+        'ssoUrl': json['sso_url'],
+        'sloUrl': json['slo_url'] === undefined ? undefined : json['slo_url'] === null ? null : json['slo_url'],
+        'allowIdpInitiated': json['allow_idp_initiated'] == null ? undefined : json['allow_idp_initiated'],
+        'forceAuthn': json['force_authn'] == null ? undefined : json['force_authn'],
+        'nameIdPolicy': json['name_id_policy'] == null ? undefined : SAMLNameIDPolicyEnumFromJSON(json['name_id_policy']),
+        'bindingType': json['binding_type'] == null ? undefined : BindingTypeEnumFromJSON(json['binding_type']),
+        'verificationKp': json['verification_kp'] === undefined ? undefined : json['verification_kp'] === null ? null : json['verification_kp'],
+        'signingKp': json['signing_kp'] === undefined ? undefined : json['signing_kp'] === null ? null : json['signing_kp'],
+        'digestAlgorithm': json['digest_algorithm'] == null ? undefined : DigestAlgorithmEnumFromJSON(json['digest_algorithm']),
+        'signatureAlgorithm': json['signature_algorithm'] == null ? undefined : SignatureAlgorithmEnumFromJSON(json['signature_algorithm']),
+        'temporaryUserDeleteAfter': json['temporary_user_delete_after'] == null ? undefined : json['temporary_user_delete_after'],
+        'encryptionKp': json['encryption_kp'] === undefined ? undefined : json['encryption_kp'] === null ? null : json['encryption_kp'],
+        'signedAssertion': json['signed_assertion'] == null ? undefined : json['signed_assertion'],
+        'signedResponse': json['signed_response'] == null ? undefined : json['signed_response'],
     };
 }
 
@@ -286,43 +230,42 @@ export function SAMLSourceRequestToJSON(json: any): SAMLSourceRequest {
     return SAMLSourceRequestToJSONTyped(json, false);
 }
 
-export function SAMLSourceRequestToJSONTyped(
-    value?: SAMLSourceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SAMLSourceRequestToJSONTyped(value?: SAMLSourceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        enabled: value["enabled"],
-        promoted: value["promoted"],
-        authentication_flow: value["authenticationFlow"],
-        enrollment_flow: value["enrollmentFlow"],
-        user_property_mappings: value["userPropertyMappings"],
-        group_property_mappings: value["groupPropertyMappings"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
-        user_path_template: value["userPathTemplate"],
-        icon: value["icon"],
-        group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
-        pre_authentication_flow: value["preAuthenticationFlow"],
-        issuer_override: value["issuerOverride"],
-        sso_url: value["ssoUrl"],
-        slo_url: value["sloUrl"],
-        allow_idp_initiated: value["allowIdpInitiated"],
-        force_authn: value["forceAuthn"],
-        name_id_policy: SAMLNameIDPolicyEnumToJSON(value["nameIdPolicy"]),
-        binding_type: BindingTypeEnumToJSON(value["bindingType"]),
-        verification_kp: value["verificationKp"],
-        signing_kp: value["signingKp"],
-        digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
-        signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
-        temporary_user_delete_after: value["temporaryUserDeleteAfter"],
-        encryption_kp: value["encryptionKp"],
-        signed_assertion: value["signedAssertion"],
-        signed_response: value["signedResponse"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'enabled': value['enabled'],
+        'promoted': value['promoted'],
+        'authentication_flow': value['authenticationFlow'],
+        'enrollment_flow': value['enrollmentFlow'],
+        'user_property_mappings': value['userPropertyMappings'],
+        'group_property_mappings': value['groupPropertyMappings'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
+        'user_path_template': value['userPathTemplate'],
+        'icon': value['icon'],
+        'group_matching_mode': GroupMatchingModeEnumToJSON(value['groupMatchingMode']),
+        'pre_authentication_flow': value['preAuthenticationFlow'],
+        'issuer_override': value['issuerOverride'],
+        'sso_url': value['ssoUrl'],
+        'slo_url': value['sloUrl'],
+        'allow_idp_initiated': value['allowIdpInitiated'],
+        'force_authn': value['forceAuthn'],
+        'name_id_policy': SAMLNameIDPolicyEnumToJSON(value['nameIdPolicy']),
+        'binding_type': BindingTypeEnumToJSON(value['bindingType']),
+        'verification_kp': value['verificationKp'],
+        'signing_kp': value['signingKp'],
+        'digest_algorithm': DigestAlgorithmEnumToJSON(value['digestAlgorithm']),
+        'signature_algorithm': SignatureAlgorithmEnumToJSON(value['signatureAlgorithm']),
+        'temporary_user_delete_after': value['temporaryUserDeleteAfter'],
+        'encryption_kp': value['encryptionKp'],
+        'signed_assertion': value['signedAssertion'],
+        'signed_response': value['signedResponse'],
     };
 }
+

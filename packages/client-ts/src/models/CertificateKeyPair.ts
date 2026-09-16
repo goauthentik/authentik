@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
-import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
+import { parseDateTime } from '../runtime';
+import type { CertificateKeyPairKeyTypeEnum } from './CertificateKeyPairKeyTypeEnum';
+import {
+    CertificateKeyPairKeyTypeEnumFromJSON,
+} from './CertificateKeyPairKeyTypeEnum';
 
 /**
  * CertificateKeyPair Serializer
@@ -23,11 +24,11 @@ import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTy
  */
 export interface CertificateKeyPair {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -68,69 +69,23 @@ export interface CertificateKeyPair {
     readonly managed: string | null;
 }
 
+
+
 /**
  * Check if a given object implements the CertificateKeyPair interface.
  */
 export function instanceOfCertificateKeyPair(value: object): value is CertificateKeyPair {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("fingerprintSha256" in (value as Record<string, any>)) &&
-            !("fingerprint_sha256" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fingerprintSha256"] === undefined &&
-            (value as Record<string, any>)["fingerprint_sha256"] === undefined)
-    )
-        return false;
-    if (
-        (!("fingerprintSha1" in (value as Record<string, any>)) &&
-            !("fingerprint_sha1" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["fingerprintSha1"] === undefined &&
-            (value as Record<string, any>)["fingerprint_sha1"] === undefined)
-    )
-        return false;
-    if (
-        (!("certExpiry" in (value as Record<string, any>)) &&
-            !("cert_expiry" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certExpiry"] === undefined &&
-            (value as Record<string, any>)["cert_expiry"] === undefined)
-    )
-        return false;
-    if (
-        (!("certSubject" in (value as Record<string, any>)) &&
-            !("cert_subject" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certSubject"] === undefined &&
-            (value as Record<string, any>)["cert_subject"] === undefined)
-    )
-        return false;
-    if (
-        (!("privateKeyAvailable" in (value as Record<string, any>)) &&
-            !("private_key_available" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["privateKeyAvailable"] === undefined &&
-            (value as Record<string, any>)["private_key_available"] === undefined)
-    )
-        return false;
-    if (
-        (!("keyType" in (value as Record<string, any>)) &&
-            !("key_type" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["keyType"] === undefined &&
-            (value as Record<string, any>)["key_type"] === undefined)
-    )
-        return false;
-    if (
-        (!("certificateDownloadUrl" in (value as Record<string, any>)) &&
-            !("certificate_download_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certificateDownloadUrl"] === undefined &&
-            (value as Record<string, any>)["certificate_download_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("privateKeyDownloadUrl" in (value as Record<string, any>)) &&
-            !("private_key_download_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["privateKeyDownloadUrl"] === undefined &&
-            (value as Record<string, any>)["private_key_download_url"] === undefined)
-    )
-        return false;
-    if (!("managed" in value) || value["managed"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('fingerprintSha256' in (value as Record<string, any>)) && !('fingerprint_sha256' in (value as Record<string, any>))) || ((value as Record<string, any>)['fingerprintSha256'] === undefined && (value as Record<string, any>)['fingerprint_sha256'] === undefined)) return false;
+    if ((!('fingerprintSha1' in (value as Record<string, any>)) && !('fingerprint_sha1' in (value as Record<string, any>))) || ((value as Record<string, any>)['fingerprintSha1'] === undefined && (value as Record<string, any>)['fingerprint_sha1'] === undefined)) return false;
+    if ((!('certExpiry' in (value as Record<string, any>)) && !('cert_expiry' in (value as Record<string, any>))) || ((value as Record<string, any>)['certExpiry'] === undefined && (value as Record<string, any>)['cert_expiry'] === undefined)) return false;
+    if ((!('certSubject' in (value as Record<string, any>)) && !('cert_subject' in (value as Record<string, any>))) || ((value as Record<string, any>)['certSubject'] === undefined && (value as Record<string, any>)['cert_subject'] === undefined)) return false;
+    if ((!('privateKeyAvailable' in (value as Record<string, any>)) && !('private_key_available' in (value as Record<string, any>))) || ((value as Record<string, any>)['privateKeyAvailable'] === undefined && (value as Record<string, any>)['private_key_available'] === undefined)) return false;
+    if ((!('keyType' in (value as Record<string, any>)) && !('key_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['keyType'] === undefined && (value as Record<string, any>)['key_type'] === undefined)) return false;
+    if ((!('certificateDownloadUrl' in (value as Record<string, any>)) && !('certificate_download_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['certificateDownloadUrl'] === undefined && (value as Record<string, any>)['certificate_download_url'] === undefined)) return false;
+    if ((!('privateKeyDownloadUrl' in (value as Record<string, any>)) && !('private_key_download_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['privateKeyDownloadUrl'] === undefined && (value as Record<string, any>)['private_key_download_url'] === undefined)) return false;
+    if (!('managed' in value) || value['managed'] === undefined) return false;
     return true;
 }
 
@@ -138,25 +93,23 @@ export function CertificateKeyPairFromJSON(json: any): CertificateKeyPair {
     return CertificateKeyPairFromJSONTyped(json, false);
 }
 
-export function CertificateKeyPairFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): CertificateKeyPair {
+export function CertificateKeyPairFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateKeyPair {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        fingerprintSha256: json["fingerprint_sha256"],
-        fingerprintSha1: json["fingerprint_sha1"],
-        certExpiry: json["cert_expiry"] == null ? null : parseDateTime(json["cert_expiry"]),
-        certSubject: json["cert_subject"],
-        privateKeyAvailable: json["private_key_available"],
-        keyType: CertificateKeyPairKeyTypeEnumFromJSON(json["key_type"]),
-        certificateDownloadUrl: json["certificate_download_url"],
-        privateKeyDownloadUrl: json["private_key_download_url"],
-        managed: json["managed"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'fingerprintSha256': json['fingerprint_sha256'],
+        'fingerprintSha1': json['fingerprint_sha1'],
+        'certExpiry': (json['cert_expiry'] == null ? null : parseDateTime(json['cert_expiry'])),
+        'certSubject': json['cert_subject'],
+        'privateKeyAvailable': json['private_key_available'],
+        'keyType': CertificateKeyPairKeyTypeEnumFromJSON(json['key_type']),
+        'certificateDownloadUrl': json['certificate_download_url'],
+        'privateKeyDownloadUrl': json['private_key_download_url'],
+        'managed': json['managed'],
     };
 }
 
@@ -164,27 +117,14 @@ export function CertificateKeyPairToJSON(json: any): CertificateKeyPair {
     return CertificateKeyPairToJSONTyped(json, false);
 }
 
-export function CertificateKeyPairToJSONTyped(
-    value?: Omit<
-        CertificateKeyPair,
-        | "pk"
-        | "fingerprintSha256"
-        | "fingerprintSha1"
-        | "certExpiry"
-        | "certSubject"
-        | "privateKeyAvailable"
-        | "keyType"
-        | "certificateDownloadUrl"
-        | "privateKeyDownloadUrl"
-        | "managed"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CertificateKeyPairToJSONTyped(value?: Omit<CertificateKeyPair, 'pk'|'fingerprintSha256'|'fingerprintSha1'|'certExpiry'|'certSubject'|'privateKeyAvailable'|'keyType'|'certificateDownloadUrl'|'privateKeyDownloadUrl'|'managed'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

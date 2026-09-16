@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const WSFedSAMLVersionEnum = {
-    _11: "1.1",
-    _20: "2.0",
-    UnknownDefaultOpenApi: "11184809",
+    _11: '1.1',
+    _20: '2.0',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type WSFedSAMLVersionEnum = (typeof WSFedSAMLVersionEnum)[keyof typeof WSFedSAMLVersionEnum];
+export type WSFedSAMLVersionEnum = typeof WSFedSAMLVersionEnum[keyof typeof WSFedSAMLVersionEnum];
+
 
 export function instanceOfWSFedSAMLVersionEnum(value: any): boolean {
     for (const key in WSFedSAMLVersionEnum) {
@@ -38,10 +39,7 @@ export function WSFedSAMLVersionEnumFromJSON(json: any): WSFedSAMLVersionEnum {
     return WSFedSAMLVersionEnumFromJSONTyped(json, false);
 }
 
-export function WSFedSAMLVersionEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): WSFedSAMLVersionEnum {
+export function WSFedSAMLVersionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): WSFedSAMLVersionEnum {
     return json as WSFedSAMLVersionEnum;
 }
 
@@ -49,9 +47,7 @@ export function WSFedSAMLVersionEnumToJSON(value?: WSFedSAMLVersionEnum | null):
     return value as any;
 }
 
-export function WSFedSAMLVersionEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): WSFedSAMLVersionEnum {
+export function WSFedSAMLVersionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): WSFedSAMLVersionEnum {
     return value as WSFedSAMLVersionEnum;
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleWorkspaceProviderMapping } from "./GoogleWorkspaceProviderMapping";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { GoogleWorkspaceProviderMapping } from './GoogleWorkspaceProviderMapping';
 import {
     GoogleWorkspaceProviderMappingFromJSON,
     GoogleWorkspaceProviderMappingToJSON,
-} from "./GoogleWorkspaceProviderMapping";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './GoogleWorkspaceProviderMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedGoogleWorkspaceProviderMappingList
  */
 export interface PaginatedGoogleWorkspaceProviderMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<GoogleWorkspaceProviderMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedGoogleWorkspaceProviderMappingList interface.
  */
-export function instanceOfPaginatedGoogleWorkspaceProviderMappingList(
-    value: object,
-): value is PaginatedGoogleWorkspaceProviderMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedGoogleWorkspaceProviderMappingList(value: object): value is PaginatedGoogleWorkspaceProviderMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedGoogleWorkspaceProviderMappingListFromJSON(
-    json: any,
-): PaginatedGoogleWorkspaceProviderMappingList {
+export function PaginatedGoogleWorkspaceProviderMappingListFromJSON(json: any): PaginatedGoogleWorkspaceProviderMappingList {
     return PaginatedGoogleWorkspaceProviderMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedGoogleWorkspaceProviderMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedGoogleWorkspaceProviderMappingList {
+export function PaginatedGoogleWorkspaceProviderMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGoogleWorkspaceProviderMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(GoogleWorkspaceProviderMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(GoogleWorkspaceProviderMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedGoogleWorkspaceProviderMappingListToJSON(
-    json: any,
-): PaginatedGoogleWorkspaceProviderMappingList {
+export function PaginatedGoogleWorkspaceProviderMappingListToJSON(json: any): PaginatedGoogleWorkspaceProviderMappingList {
     return PaginatedGoogleWorkspaceProviderMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedGoogleWorkspaceProviderMappingListToJSONTyped(
-    value?: PaginatedGoogleWorkspaceProviderMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedGoogleWorkspaceProviderMappingListToJSONTyped(value?: PaginatedGoogleWorkspaceProviderMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(GoogleWorkspaceProviderMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(GoogleWorkspaceProviderMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

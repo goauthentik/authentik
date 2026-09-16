@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { InvitationStage } from "./InvitationStage";
-import { InvitationStageFromJSON, InvitationStageToJSON } from "./InvitationStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { InvitationStage } from './InvitationStage';
+import {
+    InvitationStageFromJSON,
+    InvitationStageToJSON,
+} from './InvitationStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedInvitationStageList
  */
 export interface PaginatedInvitationStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<InvitationStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedInvitationStageList interface.
  */
-export function instanceOfPaginatedInvitationStageList(
-    value: object,
-): value is PaginatedInvitationStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedInvitationStageList(value: object): value is PaginatedInvitationStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedInvitationStageListFromJSON(json: any): PaginatedInvita
     return PaginatedInvitationStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedInvitationStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedInvitationStageList {
+export function PaginatedInvitationStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedInvitationStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(InvitationStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(InvitationStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedInvitationStageListToJSON(json: any): PaginatedInvitati
     return PaginatedInvitationStageListToJSONTyped(json, false);
 }
 
-export function PaginatedInvitationStageListToJSONTyped(
-    value?: PaginatedInvitationStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedInvitationStageListToJSONTyped(value?: PaginatedInvitationStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(InvitationStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(InvitationStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

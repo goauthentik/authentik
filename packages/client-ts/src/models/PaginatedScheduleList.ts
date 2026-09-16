@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Schedule } from "./Schedule";
-import { ScheduleFromJSON, ScheduleToJSON } from "./Schedule";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { Schedule } from './Schedule';
+import {
+    ScheduleFromJSON,
+    ScheduleToJSON,
+} from './Schedule';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedScheduleList
  */
 export interface PaginatedScheduleList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<Schedule>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedScheduleList interface.
  */
 export function instanceOfPaginatedScheduleList(value: object): value is PaginatedScheduleList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedScheduleListFromJSON(json: any): PaginatedScheduleList 
     return PaginatedScheduleListFromJSONTyped(json, false);
 }
 
-export function PaginatedScheduleListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedScheduleList {
+export function PaginatedScheduleListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedScheduleList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(ScheduleFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(ScheduleFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedScheduleListToJSON(json: any): PaginatedScheduleList {
     return PaginatedScheduleListToJSONTyped(json, false);
 }
 
-export function PaginatedScheduleListToJSONTyped(
-    value?: PaginatedScheduleList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedScheduleListToJSONTyped(value?: PaginatedScheduleList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(ScheduleToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(ScheduleToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

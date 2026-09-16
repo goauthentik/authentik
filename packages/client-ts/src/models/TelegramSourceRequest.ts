@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,16 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
+import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from './UserMatchingModeEnum';
 
 /**
  * Source Serializer
@@ -32,7 +37,7 @@ export interface TelegramSourceRequest {
      */
     slug: string;
     /**
-     *
+     * 
      */
     enabled?: boolean;
     /**
@@ -48,15 +53,15 @@ export interface TelegramSourceRequest {
      */
     enrollmentFlow?: string | null;
     /**
-     *
+     * 
      */
     userPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     groupPropertyMappings?: Array<string>;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
     /**
@@ -64,11 +69,11 @@ export interface TelegramSourceRequest {
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     *
+     * 
      */
     userPathTemplate?: string;
     /**
-     *
+     * 
      */
     icon?: string;
     /**
@@ -89,33 +94,17 @@ export interface TelegramSourceRequest {
     preAuthenticationFlow: string;
 }
 
+
+
 /**
  * Check if a given object implements the TelegramSourceRequest interface.
  */
 export function instanceOfTelegramSourceRequest(value: object): value is TelegramSourceRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (
-        (!("botUsername" in (value as Record<string, any>)) &&
-            !("bot_username" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["botUsername"] === undefined &&
-            (value as Record<string, any>)["bot_username"] === undefined)
-    )
-        return false;
-    if (
-        (!("botToken" in (value as Record<string, any>)) &&
-            !("bot_token" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["botToken"] === undefined &&
-            (value as Record<string, any>)["bot_token"] === undefined)
-    )
-        return false;
-    if (
-        (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
-            !("pre_authentication_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["preAuthenticationFlow"] === undefined &&
-            (value as Record<string, any>)["pre_authentication_flow"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if ((!('botUsername' in (value as Record<string, any>)) && !('bot_username' in (value as Record<string, any>))) || ((value as Record<string, any>)['botUsername'] === undefined && (value as Record<string, any>)['bot_username'] === undefined)) return false;
+    if ((!('botToken' in (value as Record<string, any>)) && !('bot_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['botToken'] === undefined && (value as Record<string, any>)['bot_token'] === undefined)) return false;
+    if ((!('preAuthenticationFlow' in (value as Record<string, any>)) && !('pre_authentication_flow' in (value as Record<string, any>))) || ((value as Record<string, any>)['preAuthenticationFlow'] === undefined && (value as Record<string, any>)['pre_authentication_flow'] === undefined)) return false;
     return true;
 }
 
@@ -123,50 +112,28 @@ export function TelegramSourceRequestFromJSON(json: any): TelegramSourceRequest 
     return TelegramSourceRequestFromJSONTyped(json, false);
 }
 
-export function TelegramSourceRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): TelegramSourceRequest {
+export function TelegramSourceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramSourceRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        slug: json["slug"],
-        enabled: json["enabled"] == null ? undefined : json["enabled"],
-        promoted: json["promoted"] == null ? undefined : json["promoted"],
-        authenticationFlow:
-            json["authentication_flow"] === undefined
-                ? undefined
-                : json["authentication_flow"] === null
-                  ? null
-                  : json["authentication_flow"],
-        enrollmentFlow:
-            json["enrollment_flow"] === undefined
-                ? undefined
-                : json["enrollment_flow"] === null
-                  ? null
-                  : json["enrollment_flow"],
-        userPropertyMappings:
-            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
-        groupPropertyMappings:
-            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
-        userMatchingMode:
-            json["user_matching_mode"] == null
-                ? undefined
-                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
-        userPathTemplate:
-            json["user_path_template"] == null ? undefined : json["user_path_template"],
-        icon: json["icon"] == null ? undefined : json["icon"],
-        botUsername: json["bot_username"],
-        botToken: json["bot_token"],
-        requestMessageAccess:
-            json["request_message_access"] == null ? undefined : json["request_message_access"],
-        preAuthenticationFlow: json["pre_authentication_flow"],
+        
+        'name': json['name'],
+        'slug': json['slug'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'promoted': json['promoted'] == null ? undefined : json['promoted'],
+        'authenticationFlow': json['authentication_flow'] === undefined ? undefined : json['authentication_flow'] === null ? null : json['authentication_flow'],
+        'enrollmentFlow': json['enrollment_flow'] === undefined ? undefined : json['enrollment_flow'] === null ? null : json['enrollment_flow'],
+        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
+        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
+        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
+        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        'icon': json['icon'] == null ? undefined : json['icon'],
+        'botUsername': json['bot_username'],
+        'botToken': json['bot_token'],
+        'requestMessageAccess': json['request_message_access'] == null ? undefined : json['request_message_access'],
+        'preAuthenticationFlow': json['pre_authentication_flow'],
     };
 }
 
@@ -174,30 +141,29 @@ export function TelegramSourceRequestToJSON(json: any): TelegramSourceRequest {
     return TelegramSourceRequestToJSONTyped(json, false);
 }
 
-export function TelegramSourceRequestToJSONTyped(
-    value?: TelegramSourceRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TelegramSourceRequestToJSONTyped(value?: TelegramSourceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        slug: value["slug"],
-        enabled: value["enabled"],
-        promoted: value["promoted"],
-        authentication_flow: value["authenticationFlow"],
-        enrollment_flow: value["enrollmentFlow"],
-        user_property_mappings: value["userPropertyMappings"],
-        group_property_mappings: value["groupPropertyMappings"],
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
-        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
-        user_path_template: value["userPathTemplate"],
-        icon: value["icon"],
-        bot_username: value["botUsername"],
-        bot_token: value["botToken"],
-        request_message_access: value["requestMessageAccess"],
-        pre_authentication_flow: value["preAuthenticationFlow"],
+        
+        'name': value['name'],
+        'slug': value['slug'],
+        'enabled': value['enabled'],
+        'promoted': value['promoted'],
+        'authentication_flow': value['authenticationFlow'],
+        'enrollment_flow': value['enrollmentFlow'],
+        'user_property_mappings': value['userPropertyMappings'],
+        'group_property_mappings': value['groupPropertyMappings'],
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
+        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
+        'user_path_template': value['userPathTemplate'],
+        'icon': value['icon'],
+        'bot_username': value['botUsername'],
+        'bot_token': value['botToken'],
+        'request_message_access': value['requestMessageAccess'],
+        'pre_authentication_flow': value['preAuthenticationFlow'],
     };
 }
+

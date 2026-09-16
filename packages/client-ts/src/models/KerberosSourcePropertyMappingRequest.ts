@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,11 +22,11 @@ export interface KerberosSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
 }
@@ -35,56 +34,42 @@ export interface KerberosSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the KerberosSourcePropertyMappingRequest interface.
  */
-export function instanceOfKerberosSourcePropertyMappingRequest(
-    value: object,
-): value is KerberosSourcePropertyMappingRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
+export function instanceOfKerberosSourcePropertyMappingRequest(value: object): value is KerberosSourcePropertyMappingRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
     return true;
 }
 
-export function KerberosSourcePropertyMappingRequestFromJSON(
-    json: any,
-): KerberosSourcePropertyMappingRequest {
+export function KerberosSourcePropertyMappingRequestFromJSON(json: any): KerberosSourcePropertyMappingRequest {
     return KerberosSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function KerberosSourcePropertyMappingRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): KerberosSourcePropertyMappingRequest {
+export function KerberosSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): KerberosSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
     };
 }
 
-export function KerberosSourcePropertyMappingRequestToJSON(
-    json: any,
-): KerberosSourcePropertyMappingRequest {
+export function KerberosSourcePropertyMappingRequestToJSON(json: any): KerberosSourcePropertyMappingRequest {
     return KerberosSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function KerberosSourcePropertyMappingRequestToJSONTyped(
-    value?: KerberosSourcePropertyMappingRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function KerberosSourcePropertyMappingRequestToJSONTyped(value?: KerberosSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
     };
 }
+

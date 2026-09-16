@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { MutualTLSStage } from "./MutualTLSStage";
-import { MutualTLSStageFromJSON, MutualTLSStageToJSON } from "./MutualTLSStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { MutualTLSStage } from './MutualTLSStage';
+import {
+    MutualTLSStageFromJSON,
+    MutualTLSStageToJSON,
+} from './MutualTLSStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedMutualTLSStageList
  */
 export interface PaginatedMutualTLSStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<MutualTLSStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedMutualTLSStageList interface.
  */
-export function instanceOfPaginatedMutualTLSStageList(
-    value: object,
-): value is PaginatedMutualTLSStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedMutualTLSStageList(value: object): value is PaginatedMutualTLSStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedMutualTLSStageListFromJSON(json: any): PaginatedMutualT
     return PaginatedMutualTLSStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedMutualTLSStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedMutualTLSStageList {
+export function PaginatedMutualTLSStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedMutualTLSStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(MutualTLSStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(MutualTLSStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedMutualTLSStageListToJSON(json: any): PaginatedMutualTLS
     return PaginatedMutualTLSStageListToJSONTyped(json, false);
 }
 
-export function PaginatedMutualTLSStageListToJSONTyped(
-    value?: PaginatedMutualTLSStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedMutualTLSStageListToJSONTyped(value?: PaginatedMutualTLSStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(MutualTLSStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(MutualTLSStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

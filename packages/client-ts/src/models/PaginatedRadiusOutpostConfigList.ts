@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,80 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RadiusOutpostConfig } from "./RadiusOutpostConfig";
-import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig";
+import type { RadiusOutpostConfig } from './RadiusOutpostConfig';
+import {
+    RadiusOutpostConfigFromJSON,
+    RadiusOutpostConfigToJSON,
+} from './RadiusOutpostConfig';
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedRadiusOutpostConfigList
  */
 export interface PaginatedRadiusOutpostConfigList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<RadiusOutpostConfig>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedRadiusOutpostConfigList interface.
  */
-export function instanceOfPaginatedRadiusOutpostConfigList(
-    value: object,
-): value is PaginatedRadiusOutpostConfigList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedRadiusOutpostConfigList(value: object): value is PaginatedRadiusOutpostConfigList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedRadiusOutpostConfigListFromJSON(
-    json: any,
-): PaginatedRadiusOutpostConfigList {
+export function PaginatedRadiusOutpostConfigListFromJSON(json: any): PaginatedRadiusOutpostConfigList {
     return PaginatedRadiusOutpostConfigListFromJSONTyped(json, false);
 }
 
-export function PaginatedRadiusOutpostConfigListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedRadiusOutpostConfigList {
+export function PaginatedRadiusOutpostConfigListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRadiusOutpostConfigList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(RadiusOutpostConfigFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(RadiusOutpostConfigFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedRadiusOutpostConfigListToJSON(
-    json: any,
-): PaginatedRadiusOutpostConfigList {
+export function PaginatedRadiusOutpostConfigListToJSON(json: any): PaginatedRadiusOutpostConfigList {
     return PaginatedRadiusOutpostConfigListToJSONTyped(json, false);
 }
 
-export function PaginatedRadiusOutpostConfigListToJSONTyped(
-    value?: PaginatedRadiusOutpostConfigList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedRadiusOutpostConfigListToJSONTyped(value?: PaginatedRadiusOutpostConfigList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(RadiusOutpostConfigToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(RadiusOutpostConfigToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

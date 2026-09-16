@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface UserSAMLSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,30 +30,24 @@ export interface UserSAMLSourceConnectionRequest {
 /**
  * Check if a given object implements the UserSAMLSourceConnectionRequest interface.
  */
-export function instanceOfUserSAMLSourceConnectionRequest(
-    value: object,
-): value is UserSAMLSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfUserSAMLSourceConnectionRequest(value: object): value is UserSAMLSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function UserSAMLSourceConnectionRequestFromJSON(
-    json: any,
-): UserSAMLSourceConnectionRequest {
+export function UserSAMLSourceConnectionRequestFromJSON(json: any): UserSAMLSourceConnectionRequest {
     return UserSAMLSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserSAMLSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): UserSAMLSourceConnectionRequest {
+export function UserSAMLSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSAMLSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
@@ -62,16 +55,15 @@ export function UserSAMLSourceConnectionRequestToJSON(json: any): UserSAMLSource
     return UserSAMLSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserSAMLSourceConnectionRequestToJSONTyped(
-    value?: UserSAMLSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSAMLSourceConnectionRequestToJSONTyped(value?: UserSAMLSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

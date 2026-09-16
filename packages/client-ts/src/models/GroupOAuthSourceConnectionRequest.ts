@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface GroupOAuthSourceConnectionRequest {
     /**
-     *
+     * 
      */
     source: string;
     /**
-     *
+     * 
      */
     identifier: string;
 }
@@ -31,49 +30,40 @@ export interface GroupOAuthSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupOAuthSourceConnectionRequest interface.
  */
-export function instanceOfGroupOAuthSourceConnectionRequest(
-    value: object,
-): value is GroupOAuthSourceConnectionRequest {
-    if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+export function instanceOfGroupOAuthSourceConnectionRequest(value: object): value is GroupOAuthSourceConnectionRequest {
+    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
-export function GroupOAuthSourceConnectionRequestFromJSON(
-    json: any,
-): GroupOAuthSourceConnectionRequest {
+export function GroupOAuthSourceConnectionRequestFromJSON(json: any): GroupOAuthSourceConnectionRequest {
     return GroupOAuthSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupOAuthSourceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GroupOAuthSourceConnectionRequest {
+export function GroupOAuthSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupOAuthSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        source: json["source"],
-        identifier: json["identifier"],
+        
+        'source': json['source'],
+        'identifier': json['identifier'],
     };
 }
 
-export function GroupOAuthSourceConnectionRequestToJSON(
-    json: any,
-): GroupOAuthSourceConnectionRequest {
+export function GroupOAuthSourceConnectionRequestToJSON(json: any): GroupOAuthSourceConnectionRequest {
     return GroupOAuthSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupOAuthSourceConnectionRequestToJSONTyped(
-    value?: GroupOAuthSourceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GroupOAuthSourceConnectionRequestToJSONTyped(value?: GroupOAuthSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        source: value["source"],
-        identifier: value["identifier"],
+        
+        'source': value['source'],
+        'identifier': value['identifier'],
     };
 }
+

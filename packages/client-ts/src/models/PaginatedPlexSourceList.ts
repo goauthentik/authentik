@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { PlexSource } from "./PlexSource";
-import { PlexSourceFromJSON, PlexSourceToJSON } from "./PlexSource";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { PlexSource } from './PlexSource';
+import {
+    PlexSourceFromJSON,
+    PlexSourceToJSON,
+} from './PlexSource';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedPlexSourceList
  */
 export interface PaginatedPlexSourceList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<PlexSource>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedPlexSourceList interface.
  */
 export function instanceOfPaginatedPlexSourceList(value: object): value is PaginatedPlexSourceList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +56,15 @@ export function PaginatedPlexSourceListFromJSON(json: any): PaginatedPlexSourceL
     return PaginatedPlexSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedPlexSourceListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedPlexSourceList {
+export function PaginatedPlexSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPlexSourceList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(PlexSourceFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(PlexSourceFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -69,17 +72,16 @@ export function PaginatedPlexSourceListToJSON(json: any): PaginatedPlexSourceLis
     return PaginatedPlexSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedPlexSourceListToJSONTyped(
-    value?: PaginatedPlexSourceList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedPlexSourceListToJSONTyped(value?: PaginatedPlexSourceList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(PlexSourceToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(PlexSourceToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

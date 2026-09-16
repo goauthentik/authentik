@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface AgentPSSOUserRegistrationRequest {
     /**
-     *
+     * 
      */
     userAuth: string;
     /**
-     *
+     * 
      */
     userSecureEnclaveKey: string;
     /**
-     *
+     * 
      */
     enclaveKeyId: string;
 }
@@ -35,70 +34,43 @@ export interface AgentPSSOUserRegistrationRequest {
 /**
  * Check if a given object implements the AgentPSSOUserRegistrationRequest interface.
  */
-export function instanceOfAgentPSSOUserRegistrationRequest(
-    value: object,
-): value is AgentPSSOUserRegistrationRequest {
-    if (
-        (!("userAuth" in (value as Record<string, any>)) &&
-            !("user_auth" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userAuth"] === undefined &&
-            (value as Record<string, any>)["user_auth"] === undefined)
-    )
-        return false;
-    if (
-        (!("userSecureEnclaveKey" in (value as Record<string, any>)) &&
-            !("user_secure_enclave_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userSecureEnclaveKey"] === undefined &&
-            (value as Record<string, any>)["user_secure_enclave_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("enclaveKeyId" in (value as Record<string, any>)) &&
-            !("enclave_key_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["enclaveKeyId"] === undefined &&
-            (value as Record<string, any>)["enclave_key_id"] === undefined)
-    )
-        return false;
+export function instanceOfAgentPSSOUserRegistrationRequest(value: object): value is AgentPSSOUserRegistrationRequest {
+    if ((!('userAuth' in (value as Record<string, any>)) && !('user_auth' in (value as Record<string, any>))) || ((value as Record<string, any>)['userAuth'] === undefined && (value as Record<string, any>)['user_auth'] === undefined)) return false;
+    if ((!('userSecureEnclaveKey' in (value as Record<string, any>)) && !('user_secure_enclave_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['userSecureEnclaveKey'] === undefined && (value as Record<string, any>)['user_secure_enclave_key'] === undefined)) return false;
+    if ((!('enclaveKeyId' in (value as Record<string, any>)) && !('enclave_key_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['enclaveKeyId'] === undefined && (value as Record<string, any>)['enclave_key_id'] === undefined)) return false;
     return true;
 }
 
-export function AgentPSSOUserRegistrationRequestFromJSON(
-    json: any,
-): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestFromJSON(json: any): AgentPSSOUserRegistrationRequest {
     return AgentPSSOUserRegistrationRequestFromJSONTyped(json, false);
 }
 
-export function AgentPSSOUserRegistrationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentPSSOUserRegistrationRequest {
     if (json == null) {
         return json;
     }
     return {
-        userAuth: json["user_auth"],
-        userSecureEnclaveKey: json["user_secure_enclave_key"],
-        enclaveKeyId: json["enclave_key_id"],
+        
+        'userAuth': json['user_auth'],
+        'userSecureEnclaveKey': json['user_secure_enclave_key'],
+        'enclaveKeyId': json['enclave_key_id'],
     };
 }
 
-export function AgentPSSOUserRegistrationRequestToJSON(
-    json: any,
-): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestToJSON(json: any): AgentPSSOUserRegistrationRequest {
     return AgentPSSOUserRegistrationRequestToJSONTyped(json, false);
 }
 
-export function AgentPSSOUserRegistrationRequestToJSONTyped(
-    value?: AgentPSSOUserRegistrationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AgentPSSOUserRegistrationRequestToJSONTyped(value?: AgentPSSOUserRegistrationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user_auth: value["userAuth"],
-        user_secure_enclave_key: value["userSecureEnclaveKey"],
-        enclave_key_id: value["enclaveKeyId"],
+        
+        'user_auth': value['userAuth'],
+        'user_secure_enclave_key': value['userSecureEnclaveKey'],
+        'enclave_key_id': value['enclaveKeyId'],
     };
 }
+

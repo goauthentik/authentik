@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,20 +11,20 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const DeliveryMethodEnum = {
-    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPush:
-        "https://schemas.openid.net/secevent/risc/delivery-method/push",
-    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPoll:
-        "https://schemas.openid.net/secevent/risc/delivery-method/poll",
-    UrnIetfRfc8935: "urn:ietf:rfc:8935",
-    UrnIetfRfc8936: "urn:ietf:rfc:8936",
-    UnknownDefaultOpenApi: "11184809",
+    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPush: 'https://schemas.openid.net/secevent/risc/delivery-method/push',
+    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPoll: 'https://schemas.openid.net/secevent/risc/delivery-method/poll',
+    UrnIetfRfc8935: 'urn:ietf:rfc:8935',
+    UrnIetfRfc8936: 'urn:ietf:rfc:8936',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type DeliveryMethodEnum = (typeof DeliveryMethodEnum)[keyof typeof DeliveryMethodEnum];
+export type DeliveryMethodEnum = typeof DeliveryMethodEnum[keyof typeof DeliveryMethodEnum];
+
 
 export function instanceOfDeliveryMethodEnum(value: any): boolean {
     for (const key in DeliveryMethodEnum) {
@@ -42,10 +41,7 @@ export function DeliveryMethodEnumFromJSON(json: any): DeliveryMethodEnum {
     return DeliveryMethodEnumFromJSONTyped(json, false);
 }
 
-export function DeliveryMethodEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DeliveryMethodEnum {
+export function DeliveryMethodEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeliveryMethodEnum {
     return json as DeliveryMethodEnum;
 }
 
@@ -53,9 +49,7 @@ export function DeliveryMethodEnumToJSON(value?: DeliveryMethodEnum | null): any
     return value as any;
 }
 
-export function DeliveryMethodEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): DeliveryMethodEnum {
+export function DeliveryMethodEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DeliveryMethodEnum {
     return value as DeliveryMethodEnum;
 }
+

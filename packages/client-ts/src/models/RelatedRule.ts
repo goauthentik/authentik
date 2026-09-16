@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,14 @@
  * Do not edit the class manually.
  */
 
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
+import type { PartialGroup } from './PartialGroup';
+import {
+    PartialGroupFromJSON,
+} from './PartialGroup';
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -25,23 +28,23 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface RelatedRule {
     /**
-     *
+     * 
      */
     id?: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     readonly reviewerGroups: Array<PartialGroup>;
     /**
-     *
+     * 
      */
     readonly minReviewers: number;
     /**
-     *
+     * 
      */
     readonly reviewers: Array<PartialUser>;
 }
@@ -50,22 +53,10 @@ export interface RelatedRule {
  * Check if a given object implements the RelatedRule interface.
  */
 export function instanceOfRelatedRule(value: object): value is RelatedRule {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("reviewerGroups" in (value as Record<string, any>)) &&
-            !("reviewer_groups" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["reviewerGroups"] === undefined &&
-            (value as Record<string, any>)["reviewer_groups"] === undefined)
-    )
-        return false;
-    if (
-        (!("minReviewers" in (value as Record<string, any>)) &&
-            !("min_reviewers" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["minReviewers"] === undefined &&
-            (value as Record<string, any>)["min_reviewers"] === undefined)
-    )
-        return false;
-    if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if ((!('reviewerGroups' in (value as Record<string, any>)) && !('reviewer_groups' in (value as Record<string, any>))) || ((value as Record<string, any>)['reviewerGroups'] === undefined && (value as Record<string, any>)['reviewer_groups'] === undefined)) return false;
+    if ((!('minReviewers' in (value as Record<string, any>)) && !('min_reviewers' in (value as Record<string, any>))) || ((value as Record<string, any>)['minReviewers'] === undefined && (value as Record<string, any>)['min_reviewers'] === undefined)) return false;
+    if (!('reviewers' in value) || value['reviewers'] === undefined) return false;
     return true;
 }
 
@@ -78,11 +69,12 @@ export function RelatedRuleFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        id: json["id"] == null ? undefined : json["id"],
-        name: json["name"],
-        reviewerGroups: (json["reviewer_groups"] as Array<any>).map(PartialGroupFromJSON),
-        minReviewers: json["min_reviewers"],
-        reviewers: (json["reviewers"] as Array<any>).map(PartialUserFromJSON),
+        
+        'id': json['id'] == null ? undefined : json['id'],
+        'name': json['name'],
+        'reviewerGroups': ((json['reviewer_groups'] as Array<any>).map(PartialGroupFromJSON)),
+        'minReviewers': json['min_reviewers'],
+        'reviewers': ((json['reviewers'] as Array<any>).map(PartialUserFromJSON)),
     };
 }
 
@@ -90,16 +82,15 @@ export function RelatedRuleToJSON(json: any): RelatedRule {
     return RelatedRuleToJSONTyped(json, false);
 }
 
-export function RelatedRuleToJSONTyped(
-    value?: Omit<RelatedRule, "reviewerGroups" | "minReviewers" | "reviewers"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RelatedRuleToJSONTyped(value?: Omit<RelatedRule, 'reviewerGroups'|'minReviewers'|'reviewers'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        id: value["id"],
-        name: value["name"],
+        
+        'id': value['id'],
+        'name': value['name'],
     };
 }
+

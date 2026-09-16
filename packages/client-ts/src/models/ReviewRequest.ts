@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,11 +19,11 @@
  */
 export interface ReviewRequest {
     /**
-     *
+     * 
      */
     iteration: string;
     /**
-     *
+     * 
      */
     note?: string | null;
 }
@@ -33,7 +32,7 @@ export interface ReviewRequest {
  * Check if a given object implements the ReviewRequest interface.
  */
 export function instanceOfReviewRequest(value: object): value is ReviewRequest {
-    if (!("iteration" in value) || value["iteration"] === undefined) return false;
+    if (!('iteration' in value) || value['iteration'] === undefined) return false;
     return true;
 }
 
@@ -46,8 +45,9 @@ export function ReviewRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        iteration: json["iteration"],
-        note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
+        
+        'iteration': json['iteration'],
+        'note': json['note'] === undefined ? undefined : json['note'] === null ? null : json['note'],
     };
 }
 
@@ -55,16 +55,15 @@ export function ReviewRequestToJSON(json: any): ReviewRequest {
     return ReviewRequestToJSONTyped(json, false);
 }
 
-export function ReviewRequestToJSONTyped(
-    value?: ReviewRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ReviewRequestToJSONTyped(value?: ReviewRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        iteration: value["iteration"],
-        note: value["note"],
+        
+        'iteration': value['iteration'],
+        'note': value['note'],
     };
 }
+

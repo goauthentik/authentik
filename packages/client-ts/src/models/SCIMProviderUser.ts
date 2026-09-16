@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from './PartialUser';
+import {
+    PartialUserFromJSON,
+} from './PartialUser';
 
 /**
  * SCIMProviderUser Serializer
@@ -22,53 +23,41 @@ import { PartialUserFromJSON } from "./PartialUser";
  */
 export interface SCIMProviderUser {
     /**
-     *
+     * 
      */
     readonly id: string;
     /**
-     *
+     * 
      */
     scimId: string;
     /**
-     *
+     * 
      */
     user: number;
     /**
-     *
+     * 
      */
     readonly userObj: PartialUser;
     /**
-     *
+     * 
      */
     provider: number;
     /**
-     *
+     * 
      */
-    readonly attributes: { [key: string]: any };
+    readonly attributes: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the SCIMProviderUser interface.
  */
 export function instanceOfSCIMProviderUser(value: object): value is SCIMProviderUser {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (
-        (!("scimId" in (value as Record<string, any>)) &&
-            !("scim_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["scimId"] === undefined &&
-            (value as Record<string, any>)["scim_id"] === undefined)
-    )
-        return false;
-    if (!("user" in value) || value["user"] === undefined) return false;
-    if (
-        (!("userObj" in (value as Record<string, any>)) &&
-            !("user_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userObj"] === undefined &&
-            (value as Record<string, any>)["user_obj"] === undefined)
-    )
-        return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("attributes" in value) || value["attributes"] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if ((!('scimId' in (value as Record<string, any>)) && !('scim_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['scimId'] === undefined && (value as Record<string, any>)['scim_id'] === undefined)) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
+    if ((!('userObj' in (value as Record<string, any>)) && !('user_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['userObj'] === undefined && (value as Record<string, any>)['user_obj'] === undefined)) return false;
+    if (!('provider' in value) || value['provider'] === undefined) return false;
+    if (!('attributes' in value) || value['attributes'] === undefined) return false;
     return true;
 }
 
@@ -76,20 +65,18 @@ export function SCIMProviderUserFromJSON(json: any): SCIMProviderUser {
     return SCIMProviderUserFromJSONTyped(json, false);
 }
 
-export function SCIMProviderUserFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SCIMProviderUser {
+export function SCIMProviderUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMProviderUser {
     if (json == null) {
         return json;
     }
     return {
-        id: json["id"],
-        scimId: json["scim_id"],
-        user: json["user"],
-        userObj: PartialUserFromJSON(json["user_obj"]),
-        provider: json["provider"],
-        attributes: json["attributes"],
+        
+        'id': json['id'],
+        'scimId': json['scim_id'],
+        'user': json['user'],
+        'userObj': PartialUserFromJSON(json['user_obj']),
+        'provider': json['provider'],
+        'attributes': json['attributes'],
     };
 }
 
@@ -97,17 +84,16 @@ export function SCIMProviderUserToJSON(json: any): SCIMProviderUser {
     return SCIMProviderUserToJSONTyped(json, false);
 }
 
-export function SCIMProviderUserToJSONTyped(
-    value?: Omit<SCIMProviderUser, "id" | "userObj" | "attributes"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SCIMProviderUserToJSONTyped(value?: Omit<SCIMProviderUser, 'id'|'userObj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        scim_id: value["scimId"],
-        user: value["user"],
-        provider: value["provider"],
+        
+        'scim_id': value['scimId'],
+        'user': value['user'],
+        'provider': value['provider'],
     };
 }
+

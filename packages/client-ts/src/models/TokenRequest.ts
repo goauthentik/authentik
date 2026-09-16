@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { IntentEnum } from './IntentEnum';
+import {
+    IntentEnumFromJSON,
+    IntentEnumToJSON,
+} from './IntentEnum';
 
 /**
  * Token Serializer
@@ -27,36 +29,38 @@ export interface TokenRequest {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     identifier: string;
     /**
-     *
+     * 
      */
     intent?: IntentEnum;
     /**
-     *
+     * 
      */
     user?: number;
     /**
-     *
+     * 
      */
     description?: string;
     /**
-     *
+     * 
      */
     expires?: Date | null;
     /**
-     *
+     * 
      */
     expiring?: boolean;
 }
+
+
 
 /**
  * Check if a given object implements the TokenRequest interface.
  */
 export function instanceOfTokenRequest(value: object): value is TokenRequest {
-    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!('identifier' in value) || value['identifier'] === undefined) return false;
     return true;
 }
 
@@ -69,23 +73,14 @@ export function TokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        identifier: json["identifier"],
-        intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
-        user: json["user"] == null ? undefined : json["user"],
-        description: json["description"] == null ? undefined : json["description"],
-        expires:
-            json["expires"] === undefined
-                ? undefined
-                : json["expires"] === null
-                  ? null
-                  : parseDateTime(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'identifier': json['identifier'],
+        'intent': json['intent'] == null ? undefined : IntentEnumFromJSON(json['intent']),
+        'user': json['user'] == null ? undefined : json['user'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'expires': json['expires'] === undefined ? undefined : json['expires'] === null ? null : (parseDateTime(json['expires'])),
+        'expiring': json['expiring'] == null ? undefined : json['expiring'],
     };
 }
 
@@ -93,21 +88,20 @@ export function TokenRequestToJSON(json: any): TokenRequest {
     return TokenRequestToJSONTyped(json, false);
 }
 
-export function TokenRequestToJSONTyped(
-    value?: TokenRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TokenRequestToJSONTyped(value?: TokenRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        identifier: value["identifier"],
-        intent: IntentEnumToJSON(value["intent"]),
-        user: value["user"],
-        description: value["description"],
-        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
-        expiring: value["expiring"],
+        
+        'managed': value['managed'],
+        'identifier': value['identifier'],
+        'intent': IntentEnumToJSON(value['intent']),
+        'user': value['user'],
+        'description': value['description'],
+        'expires': value['expires'] == null ? value['expires'] : serializeDateTime(value['expires']),
+        'expiring': value['expiring'],
     };
 }
+

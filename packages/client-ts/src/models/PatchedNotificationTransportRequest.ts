@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { TransportModeEnum } from "./TransportModeEnum";
-import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
+import type { TransportModeEnum } from './TransportModeEnum';
+import {
+    TransportModeEnumFromJSON,
+    TransportModeEnumToJSON,
+} from './TransportModeEnum';
 
 /**
  * NotificationTransport Serializer
@@ -22,15 +24,15 @@ import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportM
  */
 export interface PatchedNotificationTransportRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     mode?: TransportModeEnum;
     /**
-     *
+     * 
      */
     webhookUrl?: string;
     /**
@@ -46,11 +48,11 @@ export interface PatchedNotificationTransportRequest {
      */
     webhookMappingHeaders?: string | null;
     /**
-     *
+     * 
      */
     emailSubjectPrefix?: string;
     /**
-     *
+     * 
      */
     emailTemplate?: string;
     /**
@@ -59,80 +61,57 @@ export interface PatchedNotificationTransportRequest {
     sendOnce?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedNotificationTransportRequest interface.
  */
-export function instanceOfPatchedNotificationTransportRequest(
-    value: object,
-): value is PatchedNotificationTransportRequest {
+export function instanceOfPatchedNotificationTransportRequest(value: object): value is PatchedNotificationTransportRequest {
     return true;
 }
 
-export function PatchedNotificationTransportRequestFromJSON(
-    json: any,
-): PatchedNotificationTransportRequest {
+export function PatchedNotificationTransportRequestFromJSON(json: any): PatchedNotificationTransportRequest {
     return PatchedNotificationTransportRequestFromJSONTyped(json, false);
 }
 
-export function PatchedNotificationTransportRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedNotificationTransportRequest {
+export function PatchedNotificationTransportRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedNotificationTransportRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
-        webhookCa:
-            json["webhook_ca"] === undefined
-                ? undefined
-                : json["webhook_ca"] === null
-                  ? null
-                  : json["webhook_ca"],
-        webhookMappingBody:
-            json["webhook_mapping_body"] === undefined
-                ? undefined
-                : json["webhook_mapping_body"] === null
-                  ? null
-                  : json["webhook_mapping_body"],
-        webhookMappingHeaders:
-            json["webhook_mapping_headers"] === undefined
-                ? undefined
-                : json["webhook_mapping_headers"] === null
-                  ? null
-                  : json["webhook_mapping_headers"],
-        emailSubjectPrefix:
-            json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
-        emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
-        sendOnce: json["send_once"] == null ? undefined : json["send_once"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'mode': json['mode'] == null ? undefined : TransportModeEnumFromJSON(json['mode']),
+        'webhookUrl': json['webhook_url'] == null ? undefined : json['webhook_url'],
+        'webhookCa': json['webhook_ca'] === undefined ? undefined : json['webhook_ca'] === null ? null : json['webhook_ca'],
+        'webhookMappingBody': json['webhook_mapping_body'] === undefined ? undefined : json['webhook_mapping_body'] === null ? null : json['webhook_mapping_body'],
+        'webhookMappingHeaders': json['webhook_mapping_headers'] === undefined ? undefined : json['webhook_mapping_headers'] === null ? null : json['webhook_mapping_headers'],
+        'emailSubjectPrefix': json['email_subject_prefix'] == null ? undefined : json['email_subject_prefix'],
+        'emailTemplate': json['email_template'] == null ? undefined : json['email_template'],
+        'sendOnce': json['send_once'] == null ? undefined : json['send_once'],
     };
 }
 
-export function PatchedNotificationTransportRequestToJSON(
-    json: any,
-): PatchedNotificationTransportRequest {
+export function PatchedNotificationTransportRequestToJSON(json: any): PatchedNotificationTransportRequest {
     return PatchedNotificationTransportRequestToJSONTyped(json, false);
 }
 
-export function PatchedNotificationTransportRequestToJSONTyped(
-    value?: PatchedNotificationTransportRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedNotificationTransportRequestToJSONTyped(value?: PatchedNotificationTransportRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mode: TransportModeEnumToJSON(value["mode"]),
-        webhook_url: value["webhookUrl"],
-        webhook_ca: value["webhookCa"],
-        webhook_mapping_body: value["webhookMappingBody"],
-        webhook_mapping_headers: value["webhookMappingHeaders"],
-        email_subject_prefix: value["emailSubjectPrefix"],
-        email_template: value["emailTemplate"],
-        send_once: value["sendOnce"],
+        
+        'name': value['name'],
+        'mode': TransportModeEnumToJSON(value['mode']),
+        'webhook_url': value['webhookUrl'],
+        'webhook_ca': value['webhookCa'],
+        'webhook_mapping_body': value['webhookMappingBody'],
+        'webhook_mapping_headers': value['webhookMappingHeaders'],
+        'email_subject_prefix': value['emailSubjectPrefix'],
+        'email_template': value['emailTemplate'],
+        'send_once': value['sendOnce'],
     };
 }
+

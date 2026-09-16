@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface AuthenticatorEmailChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
     code?: string;
     /**
-     *
+     * 
      */
     email?: string;
 }
@@ -35,49 +34,40 @@ export interface AuthenticatorEmailChallengeResponseRequest {
 /**
  * Check if a given object implements the AuthenticatorEmailChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorEmailChallengeResponseRequest(
-    value: object,
-): value is AuthenticatorEmailChallengeResponseRequest {
+export function instanceOfAuthenticatorEmailChallengeResponseRequest(value: object): value is AuthenticatorEmailChallengeResponseRequest {
     return true;
 }
 
-export function AuthenticatorEmailChallengeResponseRequestFromJSON(
-    json: any,
-): AuthenticatorEmailChallengeResponseRequest {
+export function AuthenticatorEmailChallengeResponseRequestFromJSON(json: any): AuthenticatorEmailChallengeResponseRequest {
     return AuthenticatorEmailChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): AuthenticatorEmailChallengeResponseRequest {
+export function AuthenticatorEmailChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorEmailChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
-        code: json["code"] == null ? undefined : json["code"],
-        email: json["email"] == null ? undefined : json["email"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
+        'code': json['code'] == null ? undefined : json['code'],
+        'email': json['email'] == null ? undefined : json['email'],
     };
 }
 
-export function AuthenticatorEmailChallengeResponseRequestToJSON(
-    json: any,
-): AuthenticatorEmailChallengeResponseRequest {
+export function AuthenticatorEmailChallengeResponseRequestToJSON(json: any): AuthenticatorEmailChallengeResponseRequest {
     return AuthenticatorEmailChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailChallengeResponseRequestToJSONTyped(
-    value?: AuthenticatorEmailChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function AuthenticatorEmailChallengeResponseRequestToJSONTyped(value?: AuthenticatorEmailChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
-        code: value["code"],
-        email: value["email"],
+        
+        'component': value['component'],
+        'code': value['code'],
+        'email': value['email'],
     };
 }
+

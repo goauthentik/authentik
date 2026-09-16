@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,17 +11,19 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ProtocolEnum = {
-    Rdp: "rdp",
-    Vnc: "vnc",
-    Ssh: "ssh",
-    UnknownDefaultOpenApi: "11184809",
+    Rdp: 'rdp',
+    Vnc: 'vnc',
+    Ssh: 'ssh',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ProtocolEnum = (typeof ProtocolEnum)[keyof typeof ProtocolEnum];
+export type ProtocolEnum = typeof ProtocolEnum[keyof typeof ProtocolEnum];
+
 
 export function instanceOfProtocolEnum(value: any): boolean {
     for (const key in ProtocolEnum) {
@@ -50,3 +51,4 @@ export function ProtocolEnumToJSON(value?: ProtocolEnum | null): any {
 export function ProtocolEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ProtocolEnum {
     return value as ProtocolEnum;
 }
+

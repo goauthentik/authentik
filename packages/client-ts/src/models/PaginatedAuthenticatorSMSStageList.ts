@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorSMSStage } from "./AuthenticatorSMSStage";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { AuthenticatorSMSStage } from './AuthenticatorSMSStage';
 import {
     AuthenticatorSMSStageFromJSON,
     AuthenticatorSMSStageToJSON,
-} from "./AuthenticatorSMSStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './AuthenticatorSMSStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAuthenticatorSMSStageList
  */
 export interface PaginatedAuthenticatorSMSStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AuthenticatorSMSStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorSMSStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorSMSStageList(
-    value: object,
-): value is PaginatedAuthenticatorSMSStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorSMSStageList(value: object): value is PaginatedAuthenticatorSMSStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorSMSStageListFromJSON(
-    json: any,
-): PaginatedAuthenticatorSMSStageList {
+export function PaginatedAuthenticatorSMSStageListFromJSON(json: any): PaginatedAuthenticatorSMSStageList {
     return PaginatedAuthenticatorSMSStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorSMSStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAuthenticatorSMSStageList {
+export function PaginatedAuthenticatorSMSStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorSMSStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AuthenticatorSMSStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AuthenticatorSMSStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAuthenticatorSMSStageListToJSON(
-    json: any,
-): PaginatedAuthenticatorSMSStageList {
+export function PaginatedAuthenticatorSMSStageListToJSON(json: any): PaginatedAuthenticatorSMSStageList {
     return PaginatedAuthenticatorSMSStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorSMSStageListToJSONTyped(
-    value?: PaginatedAuthenticatorSMSStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAuthenticatorSMSStageListToJSONTyped(value?: PaginatedAuthenticatorSMSStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AuthenticatorSMSStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AuthenticatorSMSStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

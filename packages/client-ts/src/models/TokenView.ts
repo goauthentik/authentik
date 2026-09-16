@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface TokenView {
     /**
-     *
+     * 
      */
     readonly key: string;
 }
@@ -28,7 +27,7 @@ export interface TokenView {
  * Check if a given object implements the TokenView interface.
  */
 export function instanceOfTokenView(value: object): value is TokenView {
-    if (!("key" in value) || value["key"] === undefined) return false;
+    if (!('key' in value) || value['key'] === undefined) return false;
     return true;
 }
 
@@ -41,7 +40,8 @@ export function TokenViewFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        key: json["key"],
+        
+        'key': json['key'],
     };
 }
 
@@ -49,13 +49,13 @@ export function TokenViewToJSON(json: any): TokenView {
     return TokenViewToJSONTyped(json, false);
 }
 
-export function TokenViewToJSONTyped(
-    value?: Omit<TokenView, "key"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function TokenViewToJSONTyped(value?: Omit<TokenView, 'key'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

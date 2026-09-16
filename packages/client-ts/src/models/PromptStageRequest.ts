@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface PromptStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     fields: Array<string>;
     /**
-     *
+     * 
      */
     validationPolicies?: Array<string>;
 }
@@ -36,8 +35,8 @@ export interface PromptStageRequest {
  * Check if a given object implements the PromptStageRequest interface.
  */
 export function instanceOfPromptStageRequest(value: object): value is PromptStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("fields" in value) || value["fields"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('fields' in value) || value['fields'] === undefined) return false;
     return true;
 }
 
@@ -45,18 +44,15 @@ export function PromptStageRequestFromJSON(json: any): PromptStageRequest {
     return PromptStageRequestFromJSONTyped(json, false);
 }
 
-export function PromptStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PromptStageRequest {
+export function PromptStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PromptStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        fields: json["fields"],
-        validationPolicies:
-            json["validation_policies"] == null ? undefined : json["validation_policies"],
+        
+        'name': json['name'],
+        'fields': json['fields'],
+        'validationPolicies': json['validation_policies'] == null ? undefined : json['validation_policies'],
     };
 }
 
@@ -64,17 +60,16 @@ export function PromptStageRequestToJSON(json: any): PromptStageRequest {
     return PromptStageRequestToJSONTyped(json, false);
 }
 
-export function PromptStageRequestToJSONTyped(
-    value?: PromptStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PromptStageRequestToJSONTyped(value?: PromptStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        fields: value["fields"],
-        validation_policies: value["validationPolicies"],
+        
+        'name': value['name'],
+        'fields': value['fields'],
+        'validation_policies': value['validationPolicies'],
     };
 }
+

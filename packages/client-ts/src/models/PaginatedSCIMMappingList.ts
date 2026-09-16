@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMMapping } from "./SCIMMapping";
-import { SCIMMappingFromJSON, SCIMMappingToJSON } from "./SCIMMapping";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { SCIMMapping } from './SCIMMapping';
+import {
+    SCIMMappingFromJSON,
+    SCIMMappingToJSON,
+} from './SCIMMapping';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedSCIMMappingList
  */
 export interface PaginatedSCIMMappingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<SCIMMapping>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMMappingList interface.
  */
-export function instanceOfPaginatedSCIMMappingList(
-    value: object,
-): value is PaginatedSCIMMappingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedSCIMMappingList(value: object): value is PaginatedSCIMMappingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedSCIMMappingListFromJSON(json: any): PaginatedSCIMMappin
     return PaginatedSCIMMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMMappingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedSCIMMappingList {
+export function PaginatedSCIMMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMMappingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(SCIMMappingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(SCIMMappingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedSCIMMappingListToJSON(json: any): PaginatedSCIMMappingL
     return PaginatedSCIMMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMMappingListToJSONTyped(
-    value?: PaginatedSCIMMappingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedSCIMMappingListToJSONTyped(value?: PaginatedSCIMMappingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(SCIMMappingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(SCIMMappingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

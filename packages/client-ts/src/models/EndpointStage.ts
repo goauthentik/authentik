@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,19 @@
  * Do not edit the class manually.
  */
 
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
+import type { Connector } from './Connector';
+import {
+    ConnectorFromJSON,
+} from './Connector';
+import type { StageModeEnum } from './StageModeEnum';
+import {
+    StageModeEnumFromJSON,
+    StageModeEnumToJSON,
+} from './StageModeEnum';
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
 
 /**
  * EndpointStage Serializer
@@ -26,11 +32,11 @@ import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
  */
 export interface EndpointStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -50,66 +56,38 @@ export interface EndpointStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     connector: string;
     /**
-     *
+     * 
      */
     readonly connectorObj: Connector;
     /**
-     *
+     * 
      */
     mode?: StageModeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the EndpointStage interface.
  */
 export function instanceOfEndpointStage(value: object): value is EndpointStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("connector" in value) || value["connector"] === undefined) return false;
-    if (
-        (!("connectorObj" in (value as Record<string, any>)) &&
-            !("connector_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["connectorObj"] === undefined &&
-            (value as Record<string, any>)["connector_obj"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('connector' in value) || value['connector'] === undefined) return false;
+    if ((!('connectorObj' in (value as Record<string, any>)) && !('connector_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['connectorObj'] === undefined && (value as Record<string, any>)['connector_obj'] === undefined)) return false;
     return true;
 }
 
@@ -122,16 +100,17 @@ export function EndpointStageFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        connector: json["connector"],
-        connectorObj: ConnectorFromJSON(json["connector_obj"]),
-        mode: json["mode"] == null ? undefined : StageModeEnumFromJSON(json["mode"]),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'connector': json['connector'],
+        'connectorObj': ConnectorFromJSON(json['connector_obj']),
+        'mode': json['mode'] == null ? undefined : StageModeEnumFromJSON(json['mode']),
     };
 }
 
@@ -139,26 +118,16 @@ export function EndpointStageToJSON(json: any): EndpointStage {
     return EndpointStageToJSONTyped(json, false);
 }
 
-export function EndpointStageToJSONTyped(
-    value?: Omit<
-        EndpointStage,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "flowSet"
-        | "connectorObj"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EndpointStageToJSONTyped(value?: Omit<EndpointStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'|'connectorObj'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        connector: value["connector"],
-        mode: StageModeEnumToJSON(value["mode"]),
+        
+        'name': value['name'],
+        'connector': value['connector'],
+        'mode': StageModeEnumToJSON(value['mode']),
     };
 }
+

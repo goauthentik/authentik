@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,16 @@
  * Do not edit the class manually.
  */
 
-import type { GrantTypeEnum } from "./GrantTypeEnum";
-import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { PolicyEngineMode } from './PolicyEngineMode';
+import {
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
+} from './PolicyEngineMode';
+import type { GrantTypeEnum } from './GrantTypeEnum';
+import {
+    GrantTypeEnumFromJSON,
+    GrantTypeEnumToJSON,
+} from './GrantTypeEnum';
 
 /**
  * Serializer for OAuth2DynamicClientRegistration
@@ -24,7 +29,7 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
  */
 export interface PatchedOAuth2DynamicClientRegistrationRequest {
     /**
-     *
+     * 
      */
     provider?: number;
     /**
@@ -36,7 +41,7 @@ export interface PatchedOAuth2DynamicClientRegistrationRequest {
      */
     overrideAuthorizationFlow?: string | null;
     /**
-     *
+     * 
      */
     overrideInvalidationFlow?: string | null;
     /**
@@ -56,96 +61,62 @@ export interface PatchedOAuth2DynamicClientRegistrationRequest {
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
     /**
-     *
+     * 
      */
     policyEngineMode?: PolicyEngineMode;
 }
 
+
+
 /**
  * Check if a given object implements the PatchedOAuth2DynamicClientRegistrationRequest interface.
  */
-export function instanceOfPatchedOAuth2DynamicClientRegistrationRequest(
-    value: object,
-): value is PatchedOAuth2DynamicClientRegistrationRequest {
+export function instanceOfPatchedOAuth2DynamicClientRegistrationRequest(value: object): value is PatchedOAuth2DynamicClientRegistrationRequest {
     return true;
 }
 
-export function PatchedOAuth2DynamicClientRegistrationRequestFromJSON(
-    json: any,
-): PatchedOAuth2DynamicClientRegistrationRequest {
+export function PatchedOAuth2DynamicClientRegistrationRequestFromJSON(json: any): PatchedOAuth2DynamicClientRegistrationRequest {
     return PatchedOAuth2DynamicClientRegistrationRequestFromJSONTyped(json, false);
 }
 
-export function PatchedOAuth2DynamicClientRegistrationRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedOAuth2DynamicClientRegistrationRequest {
+export function PatchedOAuth2DynamicClientRegistrationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedOAuth2DynamicClientRegistrationRequest {
     if (json == null) {
         return json;
     }
     return {
-        provider: json["provider"] == null ? undefined : json["provider"],
-        defaultApplicationGroup:
-            json["default_application_group"] == null
-                ? undefined
-                : json["default_application_group"],
-        overrideAuthorizationFlow:
-            json["override_authorization_flow"] === undefined
-                ? undefined
-                : json["override_authorization_flow"] === null
-                  ? null
-                  : json["override_authorization_flow"],
-        overrideInvalidationFlow:
-            json["override_invalidation_flow"] === undefined
-                ? undefined
-                : json["override_invalidation_flow"] === null
-                  ? null
-                  : json["override_invalidation_flow"],
-        overridePropertyMappings:
-            json["override_property_mappings"] == null
-                ? undefined
-                : json["override_property_mappings"],
-        accessTokenValidity:
-            json["access_token_validity"] == null ? undefined : json["access_token_validity"],
-        refreshTokenValidity:
-            json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
-        allowedGrantTypes:
-            json["allowed_grant_types"] == null
-                ? undefined
-                : (json["allowed_grant_types"] as Array<any>).map(GrantTypeEnumFromJSON),
-        policyEngineMode:
-            json["policy_engine_mode"] == null
-                ? undefined
-                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        
+        'provider': json['provider'] == null ? undefined : json['provider'],
+        'defaultApplicationGroup': json['default_application_group'] == null ? undefined : json['default_application_group'],
+        'overrideAuthorizationFlow': json['override_authorization_flow'] === undefined ? undefined : json['override_authorization_flow'] === null ? null : json['override_authorization_flow'],
+        'overrideInvalidationFlow': json['override_invalidation_flow'] === undefined ? undefined : json['override_invalidation_flow'] === null ? null : json['override_invalidation_flow'],
+        'overridePropertyMappings': json['override_property_mappings'] == null ? undefined : json['override_property_mappings'],
+        'accessTokenValidity': json['access_token_validity'] == null ? undefined : json['access_token_validity'],
+        'refreshTokenValidity': json['refresh_token_validity'] == null ? undefined : json['refresh_token_validity'],
+        'allowedGrantTypes': json['allowed_grant_types'] == null ? undefined : ((json['allowed_grant_types'] as Array<any>).map(GrantTypeEnumFromJSON)),
+        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
     };
 }
 
-export function PatchedOAuth2DynamicClientRegistrationRequestToJSON(
-    json: any,
-): PatchedOAuth2DynamicClientRegistrationRequest {
+export function PatchedOAuth2DynamicClientRegistrationRequestToJSON(json: any): PatchedOAuth2DynamicClientRegistrationRequest {
     return PatchedOAuth2DynamicClientRegistrationRequestToJSONTyped(json, false);
 }
 
-export function PatchedOAuth2DynamicClientRegistrationRequestToJSONTyped(
-    value?: PatchedOAuth2DynamicClientRegistrationRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedOAuth2DynamicClientRegistrationRequestToJSONTyped(value?: PatchedOAuth2DynamicClientRegistrationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        provider: value["provider"],
-        default_application_group: value["defaultApplicationGroup"],
-        override_authorization_flow: value["overrideAuthorizationFlow"],
-        override_invalidation_flow: value["overrideInvalidationFlow"],
-        override_property_mappings: value["overridePropertyMappings"],
-        access_token_validity: value["accessTokenValidity"],
-        refresh_token_validity: value["refreshTokenValidity"],
-        allowed_grant_types:
-            value["allowedGrantTypes"] == null
-                ? undefined
-                : (value["allowedGrantTypes"] as Array<any>).map(GrantTypeEnumToJSON),
-        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        
+        'provider': value['provider'],
+        'default_application_group': value['defaultApplicationGroup'],
+        'override_authorization_flow': value['overrideAuthorizationFlow'],
+        'override_invalidation_flow': value['overrideInvalidationFlow'],
+        'override_property_mappings': value['overridePropertyMappings'],
+        'access_token_validity': value['accessTokenValidity'],
+        'refresh_token_validity': value['refreshTokenValidity'],
+        'allowed_grant_types': value['allowedGrantTypes'] == null ? undefined : ((value['allowedGrantTypes'] as Array<any>).map(GrantTypeEnumToJSON)),
+        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
     };
 }
+

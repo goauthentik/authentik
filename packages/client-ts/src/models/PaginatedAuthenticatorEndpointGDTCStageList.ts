@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,83 +11,77 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorEndpointGDTCStage } from "./AuthenticatorEndpointGDTCStage";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { AuthenticatorEndpointGDTCStage } from './AuthenticatorEndpointGDTCStage';
 import {
     AuthenticatorEndpointGDTCStageFromJSON,
     AuthenticatorEndpointGDTCStageToJSON,
-} from "./AuthenticatorEndpointGDTCStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from './AuthenticatorEndpointGDTCStage';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedAuthenticatorEndpointGDTCStageList
  */
 export interface PaginatedAuthenticatorEndpointGDTCStageList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<AuthenticatorEndpointGDTCStage>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorEndpointGDTCStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorEndpointGDTCStageList(
-    value: object,
-): value is PaginatedAuthenticatorEndpointGDTCStageList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorEndpointGDTCStageList(value: object): value is PaginatedAuthenticatorEndpointGDTCStageList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorEndpointGDTCStageListFromJSON(
-    json: any,
-): PaginatedAuthenticatorEndpointGDTCStageList {
+export function PaginatedAuthenticatorEndpointGDTCStageListFromJSON(json: any): PaginatedAuthenticatorEndpointGDTCStageList {
     return PaginatedAuthenticatorEndpointGDTCStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorEndpointGDTCStageListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedAuthenticatorEndpointGDTCStageList {
+export function PaginatedAuthenticatorEndpointGDTCStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorEndpointGDTCStageList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(AuthenticatorEndpointGDTCStageFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(AuthenticatorEndpointGDTCStageFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
-export function PaginatedAuthenticatorEndpointGDTCStageListToJSON(
-    json: any,
-): PaginatedAuthenticatorEndpointGDTCStageList {
+export function PaginatedAuthenticatorEndpointGDTCStageListToJSON(json: any): PaginatedAuthenticatorEndpointGDTCStageList {
     return PaginatedAuthenticatorEndpointGDTCStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorEndpointGDTCStageListToJSONTyped(
-    value?: PaginatedAuthenticatorEndpointGDTCStageList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedAuthenticatorEndpointGDTCStageListToJSONTyped(value?: PaginatedAuthenticatorEndpointGDTCStageList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(AuthenticatorEndpointGDTCStageToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(AuthenticatorEndpointGDTCStageToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * Challenge type to render a frame
@@ -23,27 +25,27 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface FrameChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     url: string;
     /**
-     *
+     * 
      */
     loadingOverlay?: boolean;
     /**
-     *
+     * 
      */
     loadingText: string;
 }
@@ -52,14 +54,8 @@ export interface FrameChallenge {
  * Check if a given object implements the FrameChallenge interface.
  */
 export function instanceOfFrameChallenge(value: object): value is FrameChallenge {
-    if (!("url" in value) || value["url"] === undefined) return false;
-    if (
-        (!("loadingText" in (value as Record<string, any>)) &&
-            !("loading_text" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["loadingText"] === undefined &&
-            (value as Record<string, any>)["loading_text"] === undefined)
-    )
-        return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
+    if ((!('loadingText' in (value as Record<string, any>)) && !('loading_text' in (value as Record<string, any>))) || ((value as Record<string, any>)['loadingText'] === undefined && (value as Record<string, any>)['loading_text'] === undefined)) return false;
     return true;
 }
 
@@ -67,21 +63,18 @@ export function FrameChallengeFromJSON(json: any): FrameChallenge {
     return FrameChallengeFromJSONTyped(json, false);
 }
 
-export function FrameChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): FrameChallenge {
+export function FrameChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): FrameChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        url: json["url"],
-        loadingOverlay: json["loading_overlay"] == null ? undefined : json["loading_overlay"],
-        loadingText: json["loading_text"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'url': json['url'],
+        'loadingOverlay': json['loading_overlay'] == null ? undefined : json['loading_overlay'],
+        'loadingText': json['loading_text'],
     };
 }
 
@@ -89,20 +82,19 @@ export function FrameChallengeToJSON(json: any): FrameChallenge {
     return FrameChallengeToJSONTyped(json, false);
 }
 
-export function FrameChallengeToJSONTyped(
-    value?: FrameChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FrameChallengeToJSONTyped(value?: FrameChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        url: value["url"],
-        loading_overlay: value["loadingOverlay"],
-        loading_text: value["loadingText"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'url': value['url'],
+        'loading_overlay': value['loadingOverlay'],
+        'loading_text': value['loadingText'],
     };
 }
+

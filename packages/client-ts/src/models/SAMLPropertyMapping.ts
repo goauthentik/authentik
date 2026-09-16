@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface SAMLPropertyMapping {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
@@ -27,11 +26,11 @@ export interface SAMLPropertyMapping {
      */
     managed?: string | null;
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     expression: string;
     /**
@@ -51,11 +50,11 @@ export interface SAMLPropertyMapping {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     samlName: string;
     /**
-     *
+     * 
      */
     friendlyName?: string | null;
 }
@@ -64,38 +63,14 @@ export interface SAMLPropertyMapping {
  * Check if a given object implements the SAMLPropertyMapping interface.
  */
 export function instanceOfSAMLPropertyMapping(value: object): value is SAMLPropertyMapping {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("samlName" in (value as Record<string, any>)) &&
-            !("saml_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["samlName"] === undefined &&
-            (value as Record<string, any>)["saml_name"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('samlName' in (value as Record<string, any>)) && !('saml_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['samlName'] === undefined && (value as Record<string, any>)['saml_name'] === undefined)) return false;
     return true;
 }
 
@@ -103,34 +78,22 @@ export function SAMLPropertyMappingFromJSON(json: any): SAMLPropertyMapping {
     return SAMLPropertyMappingFromJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SAMLPropertyMapping {
+export function SAMLPropertyMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLPropertyMapping {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        managed:
-            json["managed"] === undefined
-                ? undefined
-                : json["managed"] === null
-                  ? null
-                  : json["managed"],
-        name: json["name"],
-        expression: json["expression"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        samlName: json["saml_name"],
-        friendlyName:
-            json["friendly_name"] === undefined
-                ? undefined
-                : json["friendly_name"] === null
-                  ? null
-                  : json["friendly_name"],
+        
+        'pk': json['pk'],
+        'managed': json['managed'] === undefined ? undefined : json['managed'] === null ? null : json['managed'],
+        'name': json['name'],
+        'expression': json['expression'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'samlName': json['saml_name'],
+        'friendlyName': json['friendly_name'] === undefined ? undefined : json['friendly_name'] === null ? null : json['friendly_name'],
     };
 }
 
@@ -138,22 +101,18 @@ export function SAMLPropertyMappingToJSON(json: any): SAMLPropertyMapping {
     return SAMLPropertyMappingToJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingToJSONTyped(
-    value?: Omit<
-        SAMLPropertyMapping,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SAMLPropertyMappingToJSONTyped(value?: Omit<SAMLPropertyMapping, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        managed: value["managed"],
-        name: value["name"],
-        expression: value["expression"],
-        saml_name: value["samlName"],
-        friendly_name: value["friendlyName"],
+        
+        'managed': value['managed'],
+        'name': value['name'],
+        'expression': value['expression'],
+        'saml_name': value['samlName'],
+        'friendly_name': value['friendlyName'],
     };
 }
+

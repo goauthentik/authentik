@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPProvider } from "./LDAPProvider";
-import { LDAPProviderFromJSON, LDAPProviderToJSON } from "./LDAPProvider";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { LDAPProvider } from './LDAPProvider';
+import {
+    LDAPProviderFromJSON,
+    LDAPProviderToJSON,
+} from './LDAPProvider';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedLDAPProviderList
  */
 export interface PaginatedLDAPProviderList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<LDAPProvider>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedLDAPProviderList interface.
  */
-export function instanceOfPaginatedLDAPProviderList(
-    value: object,
-): value is PaginatedLDAPProviderList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedLDAPProviderList(value: object): value is PaginatedLDAPProviderList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedLDAPProviderListFromJSON(json: any): PaginatedLDAPProvi
     return PaginatedLDAPProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedLDAPProviderListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedLDAPProviderList {
+export function PaginatedLDAPProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLDAPProviderList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(LDAPProviderFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(LDAPProviderFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedLDAPProviderListToJSON(json: any): PaginatedLDAPProvide
     return PaginatedLDAPProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedLDAPProviderListToJSONTyped(
-    value?: PaginatedLDAPProviderList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedLDAPProviderListToJSONTyped(value?: PaginatedLDAPProviderList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(LDAPProviderToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(LDAPProviderToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

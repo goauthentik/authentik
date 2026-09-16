@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,16 +11,18 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const ClientTypeEnum = {
-    Confidential: "confidential",
-    Public: "public",
-    UnknownDefaultOpenApi: "11184809",
+    Confidential: 'confidential',
+    Public: 'public',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type ClientTypeEnum = (typeof ClientTypeEnum)[keyof typeof ClientTypeEnum];
+export type ClientTypeEnum = typeof ClientTypeEnum[keyof typeof ClientTypeEnum];
+
 
 export function instanceOfClientTypeEnum(value: any): boolean {
     for (const key in ClientTypeEnum) {
@@ -38,10 +39,7 @@ export function ClientTypeEnumFromJSON(json: any): ClientTypeEnum {
     return ClientTypeEnumFromJSONTyped(json, false);
 }
 
-export function ClientTypeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ClientTypeEnum {
+export function ClientTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ClientTypeEnum {
     return json as ClientTypeEnum;
 }
 
@@ -49,9 +47,7 @@ export function ClientTypeEnumToJSON(value?: ClientTypeEnum | null): any {
     return value as any;
 }
 
-export function ClientTypeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): ClientTypeEnum {
+export function ClientTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ClientTypeEnum {
     return value as ClientTypeEnum;
 }
+

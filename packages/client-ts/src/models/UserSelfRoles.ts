@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,17 +12,17 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface UserSelfRoles
  */
 export interface UserSelfRoles {
     /**
-     *
+     * 
      */
     readonly name: string;
     /**
-     *
+     * 
      */
     readonly pk: string;
 }
@@ -32,8 +31,8 @@ export interface UserSelfRoles {
  * Check if a given object implements the UserSelfRoles interface.
  */
 export function instanceOfUserSelfRoles(value: object): value is UserSelfRoles {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
     return true;
 }
 
@@ -46,8 +45,9 @@ export function UserSelfRolesFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        name: json["name"],
-        pk: json["pk"],
+        
+        'name': json['name'],
+        'pk': json['pk'],
     };
 }
 
@@ -55,13 +55,13 @@ export function UserSelfRolesToJSON(json: any): UserSelfRoles {
     return UserSelfRolesToJSONTyped(json, false);
 }
 
-export function UserSelfRolesToJSONTyped(
-    value?: Omit<UserSelfRoles, "name" | "pk"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function UserSelfRolesToJSONTyped(value?: Omit<UserSelfRoles, 'name'|'pk'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

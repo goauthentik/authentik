@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * challenge type to render HTML as-is
@@ -23,19 +25,19 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface ShellChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     body: string;
 }
@@ -44,7 +46,7 @@ export interface ShellChallenge {
  * Check if a given object implements the ShellChallenge interface.
  */
 export function instanceOfShellChallenge(value: object): value is ShellChallenge {
-    if (!("body" in value) || value["body"] === undefined) return false;
+    if (!('body' in value) || value['body'] === undefined) return false;
     return true;
 }
 
@@ -52,19 +54,16 @@ export function ShellChallengeFromJSON(json: any): ShellChallenge {
     return ShellChallengeFromJSONTyped(json, false);
 }
 
-export function ShellChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): ShellChallenge {
+export function ShellChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ShellChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        body: json["body"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'body': json['body'],
     };
 }
 
@@ -72,18 +71,17 @@ export function ShellChallengeToJSON(json: any): ShellChallenge {
     return ShellChallengeToJSONTyped(json, false);
 }
 
-export function ShellChallengeToJSONTyped(
-    value?: ShellChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function ShellChallengeToJSONTyped(value?: ShellChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        body: value["body"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'body': value['body'],
     };
 }
+

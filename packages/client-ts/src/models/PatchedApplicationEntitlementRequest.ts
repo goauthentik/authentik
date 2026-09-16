@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,65 +18,56 @@
  */
 export interface PatchedApplicationEntitlementRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
-     *
+     * 
      */
     app?: string;
     /**
-     *
+     * 
      */
-    attributes?: { [key: string]: any };
+    attributes?: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PatchedApplicationEntitlementRequest interface.
  */
-export function instanceOfPatchedApplicationEntitlementRequest(
-    value: object,
-): value is PatchedApplicationEntitlementRequest {
+export function instanceOfPatchedApplicationEntitlementRequest(value: object): value is PatchedApplicationEntitlementRequest {
     return true;
 }
 
-export function PatchedApplicationEntitlementRequestFromJSON(
-    json: any,
-): PatchedApplicationEntitlementRequest {
+export function PatchedApplicationEntitlementRequestFromJSON(json: any): PatchedApplicationEntitlementRequest {
     return PatchedApplicationEntitlementRequestFromJSONTyped(json, false);
 }
 
-export function PatchedApplicationEntitlementRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedApplicationEntitlementRequest {
+export function PatchedApplicationEntitlementRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedApplicationEntitlementRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        app: json["app"] == null ? undefined : json["app"],
-        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'app': json['app'] == null ? undefined : json['app'],
+        'attributes': json['attributes'] == null ? undefined : json['attributes'],
     };
 }
 
-export function PatchedApplicationEntitlementRequestToJSON(
-    json: any,
-): PatchedApplicationEntitlementRequest {
+export function PatchedApplicationEntitlementRequestToJSON(json: any): PatchedApplicationEntitlementRequest {
     return PatchedApplicationEntitlementRequestToJSONTyped(json, false);
 }
 
-export function PatchedApplicationEntitlementRequestToJSONTyped(
-    value?: PatchedApplicationEntitlementRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedApplicationEntitlementRequestToJSONTyped(value?: PatchedApplicationEntitlementRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        app: value["app"],
-        attributes: value["attributes"],
+        
+        'name': value['name'],
+        'app': value['app'],
+        'attributes': value['attributes'],
     };
 }
+

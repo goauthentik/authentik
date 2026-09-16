@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ErrorDetail } from './ErrorDetail';
+import type { ContextualFlowInfo } from './ContextualFlowInfo';
+import {
+    ContextualFlowInfoFromJSON,
+    ContextualFlowInfoToJSON,
+} from './ContextualFlowInfo';
 
 /**
  * Dummy challenge
@@ -23,19 +25,19 @@ import type { ErrorDetail } from "./ErrorDetail";
  */
 export interface DummyChallenge {
     /**
-     *
+     * 
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     *
+     * 
      */
     component?: string;
     /**
-     *
+     * 
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail> };
+    responseErrors?: { [key: string]: Array<ErrorDetail>; };
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -44,7 +46,7 @@ export interface DummyChallenge {
  * Check if a given object implements the DummyChallenge interface.
  */
 export function instanceOfDummyChallenge(value: object): value is DummyChallenge {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -52,19 +54,16 @@ export function DummyChallengeFromJSON(json: any): DummyChallenge {
     return DummyChallengeFromJSONTyped(json, false);
 }
 
-export function DummyChallengeFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): DummyChallenge {
+export function DummyChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DummyChallenge {
     if (json == null) {
         return json;
     }
     return {
-        flowInfo:
-            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
-        component: json["component"] == null ? undefined : json["component"],
-        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        name: json["name"],
+        
+        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
+        'component': json['component'] == null ? undefined : json['component'],
+        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        'name': json['name'],
     };
 }
 
@@ -72,18 +71,17 @@ export function DummyChallengeToJSON(json: any): DummyChallenge {
     return DummyChallengeToJSONTyped(json, false);
 }
 
-export function DummyChallengeToJSONTyped(
-    value?: DummyChallenge | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DummyChallengeToJSONTyped(value?: DummyChallenge | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
-        component: value["component"],
-        response_errors: value["responseErrors"],
-        name: value["name"],
+        
+        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
+        'component': value['component'],
+        'response_errors': value['responseErrors'],
+        'name': value['name'],
     };
 }
+

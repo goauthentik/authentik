@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface Cache {
     /**
-     *
+     * 
      */
     readonly count: number;
 }
@@ -28,7 +27,7 @@ export interface Cache {
  * Check if a given object implements the Cache interface.
  */
 export function instanceOfCache(value: object): value is Cache {
-    if (!("count" in value) || value["count"] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
     return true;
 }
 
@@ -41,7 +40,8 @@ export function CacheFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cac
         return json;
     }
     return {
-        count: json["count"],
+        
+        'count': json['count'],
     };
 }
 
@@ -49,13 +49,13 @@ export function CacheToJSON(json: any): Cache {
     return CacheToJSONTyped(json, false);
 }
 
-export function CacheToJSONTyped(
-    value?: Omit<Cache, "count"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function CacheToJSONTyped(value?: Omit<Cache, 'count'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

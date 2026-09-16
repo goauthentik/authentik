@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { UserFieldsEnum } from "./UserFieldsEnum";
-import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
+import type { UserFieldsEnum } from './UserFieldsEnum';
+import {
+    UserFieldsEnumFromJSON,
+    UserFieldsEnumToJSON,
+} from './UserFieldsEnum';
 
 /**
  * IdentificationStage Serializer
@@ -22,7 +24,7 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
  */
 export interface PatchedIdentificationStageRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -62,7 +64,7 @@ export interface PatchedIdentificationStageRequest {
      */
     sources?: Array<string>;
     /**
-     *
+     * 
      */
     showSourceLabels?: boolean;
     /**
@@ -82,113 +84,62 @@ export interface PatchedIdentificationStageRequest {
 /**
  * Check if a given object implements the PatchedIdentificationStageRequest interface.
  */
-export function instanceOfPatchedIdentificationStageRequest(
-    value: object,
-): value is PatchedIdentificationStageRequest {
+export function instanceOfPatchedIdentificationStageRequest(value: object): value is PatchedIdentificationStageRequest {
     return true;
 }
 
-export function PatchedIdentificationStageRequestFromJSON(
-    json: any,
-): PatchedIdentificationStageRequest {
+export function PatchedIdentificationStageRequestFromJSON(json: any): PatchedIdentificationStageRequest {
     return PatchedIdentificationStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedIdentificationStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedIdentificationStageRequest {
+export function PatchedIdentificationStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedIdentificationStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        userFields:
-            json["user_fields"] == null
-                ? undefined
-                : (json["user_fields"] as Array<any>).map(UserFieldsEnumFromJSON),
-        passwordStage:
-            json["password_stage"] === undefined
-                ? undefined
-                : json["password_stage"] === null
-                  ? null
-                  : json["password_stage"],
-        captchaStage:
-            json["captcha_stage"] === undefined
-                ? undefined
-                : json["captcha_stage"] === null
-                  ? null
-                  : json["captcha_stage"],
-        caseInsensitiveMatching:
-            json["case_insensitive_matching"] == null
-                ? undefined
-                : json["case_insensitive_matching"],
-        showMatchedUser: json["show_matched_user"] == null ? undefined : json["show_matched_user"],
-        enrollmentFlow:
-            json["enrollment_flow"] === undefined
-                ? undefined
-                : json["enrollment_flow"] === null
-                  ? null
-                  : json["enrollment_flow"],
-        recoveryFlow:
-            json["recovery_flow"] === undefined
-                ? undefined
-                : json["recovery_flow"] === null
-                  ? null
-                  : json["recovery_flow"],
-        passwordlessFlow:
-            json["passwordless_flow"] === undefined
-                ? undefined
-                : json["passwordless_flow"] === null
-                  ? null
-                  : json["passwordless_flow"],
-        sources: json["sources"] == null ? undefined : json["sources"],
-        showSourceLabels:
-            json["show_source_labels"] == null ? undefined : json["show_source_labels"],
-        pretendUserExists:
-            json["pretend_user_exists"] == null ? undefined : json["pretend_user_exists"],
-        enableRememberMe:
-            json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
-        webauthnStage:
-            json["webauthn_stage"] === undefined
-                ? undefined
-                : json["webauthn_stage"] === null
-                  ? null
-                  : json["webauthn_stage"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'userFields': json['user_fields'] == null ? undefined : ((json['user_fields'] as Array<any>).map(UserFieldsEnumFromJSON)),
+        'passwordStage': json['password_stage'] === undefined ? undefined : json['password_stage'] === null ? null : json['password_stage'],
+        'captchaStage': json['captcha_stage'] === undefined ? undefined : json['captcha_stage'] === null ? null : json['captcha_stage'],
+        'caseInsensitiveMatching': json['case_insensitive_matching'] == null ? undefined : json['case_insensitive_matching'],
+        'showMatchedUser': json['show_matched_user'] == null ? undefined : json['show_matched_user'],
+        'enrollmentFlow': json['enrollment_flow'] === undefined ? undefined : json['enrollment_flow'] === null ? null : json['enrollment_flow'],
+        'recoveryFlow': json['recovery_flow'] === undefined ? undefined : json['recovery_flow'] === null ? null : json['recovery_flow'],
+        'passwordlessFlow': json['passwordless_flow'] === undefined ? undefined : json['passwordless_flow'] === null ? null : json['passwordless_flow'],
+        'sources': json['sources'] == null ? undefined : json['sources'],
+        'showSourceLabels': json['show_source_labels'] == null ? undefined : json['show_source_labels'],
+        'pretendUserExists': json['pretend_user_exists'] == null ? undefined : json['pretend_user_exists'],
+        'enableRememberMe': json['enable_remember_me'] == null ? undefined : json['enable_remember_me'],
+        'webauthnStage': json['webauthn_stage'] === undefined ? undefined : json['webauthn_stage'] === null ? null : json['webauthn_stage'],
     };
 }
 
-export function PatchedIdentificationStageRequestToJSON(
-    json: any,
-): PatchedIdentificationStageRequest {
+export function PatchedIdentificationStageRequestToJSON(json: any): PatchedIdentificationStageRequest {
     return PatchedIdentificationStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedIdentificationStageRequestToJSONTyped(
-    value?: PatchedIdentificationStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedIdentificationStageRequestToJSONTyped(value?: PatchedIdentificationStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        user_fields:
-            value["userFields"] == null
-                ? undefined
-                : (value["userFields"] as Array<any>).map(UserFieldsEnumToJSON),
-        password_stage: value["passwordStage"],
-        captcha_stage: value["captchaStage"],
-        case_insensitive_matching: value["caseInsensitiveMatching"],
-        show_matched_user: value["showMatchedUser"],
-        enrollment_flow: value["enrollmentFlow"],
-        recovery_flow: value["recoveryFlow"],
-        passwordless_flow: value["passwordlessFlow"],
-        sources: value["sources"],
-        show_source_labels: value["showSourceLabels"],
-        pretend_user_exists: value["pretendUserExists"],
-        enable_remember_me: value["enableRememberMe"],
-        webauthn_stage: value["webauthnStage"],
+        
+        'name': value['name'],
+        'user_fields': value['userFields'] == null ? undefined : ((value['userFields'] as Array<any>).map(UserFieldsEnumToJSON)),
+        'password_stage': value['passwordStage'],
+        'captcha_stage': value['captchaStage'],
+        'case_insensitive_matching': value['caseInsensitiveMatching'],
+        'show_matched_user': value['showMatchedUser'],
+        'enrollment_flow': value['enrollmentFlow'],
+        'recovery_flow': value['recoveryFlow'],
+        'passwordless_flow': value['passwordlessFlow'],
+        'sources': value['sources'],
+        'show_source_labels': value['showSourceLabels'],
+        'pretend_user_exists': value['pretendUserExists'],
+        'enable_remember_me': value['enableRememberMe'],
+        'webauthn_stage': value['webauthnStage'],
     };
 }
+

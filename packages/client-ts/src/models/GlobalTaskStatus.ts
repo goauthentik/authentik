@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,49 +12,49 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface GlobalTaskStatus
  */
 export interface GlobalTaskStatus {
     /**
-     *
+     * 
      */
     readonly queued: number;
     /**
-     *
+     * 
      */
     readonly consumed: number;
     /**
-     *
+     * 
      */
     readonly preprocess: number;
     /**
-     *
+     * 
      */
     readonly running: number;
     /**
-     *
+     * 
      */
     readonly postprocess: number;
     /**
-     *
+     * 
      */
     readonly rejected: number;
     /**
-     *
+     * 
      */
     readonly done: number;
     /**
-     *
+     * 
      */
     readonly info: number;
     /**
-     *
+     * 
      */
     readonly warning: number;
     /**
-     *
+     * 
      */
     readonly error: number;
 }
@@ -64,16 +63,16 @@ export interface GlobalTaskStatus {
  * Check if a given object implements the GlobalTaskStatus interface.
  */
 export function instanceOfGlobalTaskStatus(value: object): value is GlobalTaskStatus {
-    if (!("queued" in value) || value["queued"] === undefined) return false;
-    if (!("consumed" in value) || value["consumed"] === undefined) return false;
-    if (!("preprocess" in value) || value["preprocess"] === undefined) return false;
-    if (!("running" in value) || value["running"] === undefined) return false;
-    if (!("postprocess" in value) || value["postprocess"] === undefined) return false;
-    if (!("rejected" in value) || value["rejected"] === undefined) return false;
-    if (!("done" in value) || value["done"] === undefined) return false;
-    if (!("info" in value) || value["info"] === undefined) return false;
-    if (!("warning" in value) || value["warning"] === undefined) return false;
-    if (!("error" in value) || value["error"] === undefined) return false;
+    if (!('queued' in value) || value['queued'] === undefined) return false;
+    if (!('consumed' in value) || value['consumed'] === undefined) return false;
+    if (!('preprocess' in value) || value['preprocess'] === undefined) return false;
+    if (!('running' in value) || value['running'] === undefined) return false;
+    if (!('postprocess' in value) || value['postprocess'] === undefined) return false;
+    if (!('rejected' in value) || value['rejected'] === undefined) return false;
+    if (!('done' in value) || value['done'] === undefined) return false;
+    if (!('info' in value) || value['info'] === undefined) return false;
+    if (!('warning' in value) || value['warning'] === undefined) return false;
+    if (!('error' in value) || value['error'] === undefined) return false;
     return true;
 }
 
@@ -81,24 +80,22 @@ export function GlobalTaskStatusFromJSON(json: any): GlobalTaskStatus {
     return GlobalTaskStatusFromJSONTyped(json, false);
 }
 
-export function GlobalTaskStatusFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GlobalTaskStatus {
+export function GlobalTaskStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean): GlobalTaskStatus {
     if (json == null) {
         return json;
     }
     return {
-        queued: json["queued"],
-        consumed: json["consumed"],
-        preprocess: json["preprocess"],
-        running: json["running"],
-        postprocess: json["postprocess"],
-        rejected: json["rejected"],
-        done: json["done"],
-        info: json["info"],
-        warning: json["warning"],
-        error: json["error"],
+        
+        'queued': json['queued'],
+        'consumed': json['consumed'],
+        'preprocess': json['preprocess'],
+        'running': json['running'],
+        'postprocess': json['postprocess'],
+        'rejected': json['rejected'],
+        'done': json['done'],
+        'info': json['info'],
+        'warning': json['warning'],
+        'error': json['error'],
     };
 }
 
@@ -106,25 +103,13 @@ export function GlobalTaskStatusToJSON(json: any): GlobalTaskStatus {
     return GlobalTaskStatusToJSONTyped(json, false);
 }
 
-export function GlobalTaskStatusToJSONTyped(
-    value?: Omit<
-        GlobalTaskStatus,
-        | "queued"
-        | "consumed"
-        | "preprocess"
-        | "running"
-        | "postprocess"
-        | "rejected"
-        | "done"
-        | "info"
-        | "warning"
-        | "error"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function GlobalTaskStatusToJSONTyped(value?: Omit<GlobalTaskStatus, 'queued'|'consumed'|'preprocess'|'running'|'postprocess'|'rejected'|'done'|'info'|'warning'|'error'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

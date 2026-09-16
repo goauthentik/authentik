@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,16 +18,16 @@
  */
 export interface OutpostDefaultConfig {
     /**
-     *
+     * 
      */
-    readonly config: { [key: string]: any };
+    readonly config: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the OutpostDefaultConfig interface.
  */
 export function instanceOfOutpostDefaultConfig(value: object): value is OutpostDefaultConfig {
-    if (!("config" in value) || value["config"] === undefined) return false;
+    if (!('config' in value) || value['config'] === undefined) return false;
     return true;
 }
 
@@ -36,15 +35,13 @@ export function OutpostDefaultConfigFromJSON(json: any): OutpostDefaultConfig {
     return OutpostDefaultConfigFromJSONTyped(json, false);
 }
 
-export function OutpostDefaultConfigFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): OutpostDefaultConfig {
+export function OutpostDefaultConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): OutpostDefaultConfig {
     if (json == null) {
         return json;
     }
     return {
-        config: json["config"],
+        
+        'config': json['config'],
     };
 }
 
@@ -52,13 +49,13 @@ export function OutpostDefaultConfigToJSON(json: any): OutpostDefaultConfig {
     return OutpostDefaultConfigToJSONTyped(json, false);
 }
 
-export function OutpostDefaultConfigToJSONTyped(
-    value?: Omit<OutpostDefaultConfig, "config"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function OutpostDefaultConfigToJSONTyped(value?: Omit<OutpostDefaultConfig, 'config'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,33 +12,33 @@
  */
 
 /**
- *
+ * 
  * @export
  * @interface DiskRequest
  */
 export interface DiskRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     mountpoint: string;
     /**
-     *
+     * 
      */
     label?: string;
     /**
-     *
+     * 
      */
     capacityTotalBytes?: number;
     /**
-     *
+     * 
      */
     capacityUsedBytes?: number;
     /**
-     *
+     * 
      */
     encryptionEnabled?: boolean;
 }
@@ -48,8 +47,8 @@ export interface DiskRequest {
  * Check if a given object implements the DiskRequest interface.
  */
 export function instanceOfDiskRequest(value: object): value is DiskRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("mountpoint" in value) || value["mountpoint"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('mountpoint' in value) || value['mountpoint'] === undefined) return false;
     return true;
 }
 
@@ -62,15 +61,13 @@ export function DiskRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        name: json["name"],
-        mountpoint: json["mountpoint"],
-        label: json["label"] == null ? undefined : json["label"],
-        capacityTotalBytes:
-            json["capacity_total_bytes"] == null ? undefined : json["capacity_total_bytes"],
-        capacityUsedBytes:
-            json["capacity_used_bytes"] == null ? undefined : json["capacity_used_bytes"],
-        encryptionEnabled:
-            json["encryption_enabled"] == null ? undefined : json["encryption_enabled"],
+        
+        'name': json['name'],
+        'mountpoint': json['mountpoint'],
+        'label': json['label'] == null ? undefined : json['label'],
+        'capacityTotalBytes': json['capacity_total_bytes'] == null ? undefined : json['capacity_total_bytes'],
+        'capacityUsedBytes': json['capacity_used_bytes'] == null ? undefined : json['capacity_used_bytes'],
+        'encryptionEnabled': json['encryption_enabled'] == null ? undefined : json['encryption_enabled'],
     };
 }
 
@@ -78,20 +75,19 @@ export function DiskRequestToJSON(json: any): DiskRequest {
     return DiskRequestToJSONTyped(json, false);
 }
 
-export function DiskRequestToJSONTyped(
-    value?: DiskRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function DiskRequestToJSONTyped(value?: DiskRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mountpoint: value["mountpoint"],
-        label: value["label"],
-        capacity_total_bytes: value["capacityTotalBytes"],
-        capacity_used_bytes: value["capacityUsedBytes"],
-        encryption_enabled: value["encryptionEnabled"],
+        
+        'name': value['name'],
+        'mountpoint': value['mountpoint'],
+        'label': value['label'],
+        'capacity_total_bytes': value['capacityTotalBytes'],
+        'capacity_used_bytes': value['capacityUsedBytes'],
+        'encryption_enabled': value['encryptionEnabled'],
     };
 }
+

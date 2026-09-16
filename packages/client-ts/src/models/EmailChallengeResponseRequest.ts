@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,7 +19,7 @@
  */
 export interface EmailChallengeResponseRequest {
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -28,9 +27,7 @@ export interface EmailChallengeResponseRequest {
 /**
  * Check if a given object implements the EmailChallengeResponseRequest interface.
  */
-export function instanceOfEmailChallengeResponseRequest(
-    value: object,
-): value is EmailChallengeResponseRequest {
+export function instanceOfEmailChallengeResponseRequest(value: object): value is EmailChallengeResponseRequest {
     return true;
 }
 
@@ -38,15 +35,13 @@ export function EmailChallengeResponseRequestFromJSON(json: any): EmailChallenge
     return EmailChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function EmailChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): EmailChallengeResponseRequest {
+export function EmailChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EmailChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        component: json["component"] == null ? undefined : json["component"],
+        
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
@@ -54,15 +49,14 @@ export function EmailChallengeResponseRequestToJSON(json: any): EmailChallengeRe
     return EmailChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function EmailChallengeResponseRequestToJSONTyped(
-    value?: EmailChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function EmailChallengeResponseRequestToJSONTyped(value?: EmailChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        component: value["component"],
+        
+        'component': value['component'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +11,44 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { PolicyBinding } from "./PolicyBinding";
-import { PolicyBindingFromJSON, PolicyBindingToJSON } from "./PolicyBinding";
+import type { Pagination } from './Pagination';
+import {
+    PaginationFromJSON,
+    PaginationToJSON,
+} from './Pagination';
+import type { PolicyBinding } from './PolicyBinding';
+import {
+    PolicyBindingFromJSON,
+    PolicyBindingToJSON,
+} from './PolicyBinding';
 
 /**
- *
+ * 
  * @export
  * @interface PaginatedPolicyBindingList
  */
 export interface PaginatedPolicyBindingList {
     /**
-     *
+     * 
      */
     pagination: Pagination;
     /**
-     *
+     * 
      */
     results: Array<PolicyBinding>;
     /**
-     *
+     * 
      */
-    autocomplete: { [key: string]: any };
+    autocomplete: { [key: string]: any; };
 }
 
 /**
  * Check if a given object implements the PaginatedPolicyBindingList interface.
  */
-export function instanceOfPaginatedPolicyBindingList(
-    value: object,
-): value is PaginatedPolicyBindingList {
-    if (!("pagination" in value) || value["pagination"] === undefined) return false;
-    if (!("results" in value) || value["results"] === undefined) return false;
-    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
+export function instanceOfPaginatedPolicyBindingList(value: object): value is PaginatedPolicyBindingList {
+    if (!('pagination' in value) || value['pagination'] === undefined) return false;
+    if (!('results' in value) || value['results'] === undefined) return false;
+    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
     return true;
 }
 
@@ -53,17 +56,15 @@ export function PaginatedPolicyBindingListFromJSON(json: any): PaginatedPolicyBi
     return PaginatedPolicyBindingListFromJSONTyped(json, false);
 }
 
-export function PaginatedPolicyBindingListFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PaginatedPolicyBindingList {
+export function PaginatedPolicyBindingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPolicyBindingList {
     if (json == null) {
         return json;
     }
     return {
-        pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(PolicyBindingFromJSON),
-        autocomplete: json["autocomplete"],
+        
+        'pagination': PaginationFromJSON(json['pagination']),
+        'results': ((json['results'] as Array<any>).map(PolicyBindingFromJSON)),
+        'autocomplete': json['autocomplete'],
     };
 }
 
@@ -71,17 +72,16 @@ export function PaginatedPolicyBindingListToJSON(json: any): PaginatedPolicyBind
     return PaginatedPolicyBindingListToJSONTyped(json, false);
 }
 
-export function PaginatedPolicyBindingListToJSONTyped(
-    value?: PaginatedPolicyBindingList | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PaginatedPolicyBindingListToJSONTyped(value?: PaginatedPolicyBindingList | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(PolicyBindingToJSON),
-        autocomplete: value["autocomplete"],
+        
+        'pagination': PaginationToJSON(value['pagination']),
+        'results': ((value['results'] as Array<any>).map(PolicyBindingToJSON)),
+        'autocomplete': value['autocomplete'],
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +11,24 @@
  * Do not edit the class manually.
  */
 
+
 /**
- *
+ * 
  * @export
  */
 export const SyncOutgoingTriggerModeEnum = {
-    None: "none",
-    Immediate: "immediate",
-    DeferredEnd: "deferred_end",
-    UnknownDefaultOpenApi: "11184809",
+    None: 'none',
+    Immediate: 'immediate',
+    DeferredEnd: 'deferred_end',
+    UnknownDefaultOpenApi: '11184809',
 } as const;
-export type SyncOutgoingTriggerModeEnum =
-    (typeof SyncOutgoingTriggerModeEnum)[keyof typeof SyncOutgoingTriggerModeEnum];
+export type SyncOutgoingTriggerModeEnum = typeof SyncOutgoingTriggerModeEnum[keyof typeof SyncOutgoingTriggerModeEnum];
+
 
 export function instanceOfSyncOutgoingTriggerModeEnum(value: any): boolean {
     for (const key in SyncOutgoingTriggerModeEnum) {
         if (Object.prototype.hasOwnProperty.call(SyncOutgoingTriggerModeEnum, key)) {
-            if (
-                SyncOutgoingTriggerModeEnum[key as keyof typeof SyncOutgoingTriggerModeEnum] ===
-                value
-            ) {
+            if (SyncOutgoingTriggerModeEnum[key as keyof typeof SyncOutgoingTriggerModeEnum] === value) {
                 return true;
             }
         }
@@ -43,10 +40,7 @@ export function SyncOutgoingTriggerModeEnumFromJSON(json: any): SyncOutgoingTrig
     return SyncOutgoingTriggerModeEnumFromJSONTyped(json, false);
 }
 
-export function SyncOutgoingTriggerModeEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): SyncOutgoingTriggerModeEnum {
+export function SyncOutgoingTriggerModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SyncOutgoingTriggerModeEnum {
     return json as SyncOutgoingTriggerModeEnum;
 }
 
@@ -54,9 +48,7 @@ export function SyncOutgoingTriggerModeEnumToJSON(value?: SyncOutgoingTriggerMod
     return value as any;
 }
 
-export function SyncOutgoingTriggerModeEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): SyncOutgoingTriggerModeEnum {
+export function SyncOutgoingTriggerModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SyncOutgoingTriggerModeEnum {
     return value as SyncOutgoingTriggerModeEnum;
 }
+

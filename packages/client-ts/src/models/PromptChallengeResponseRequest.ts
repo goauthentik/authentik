@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,7 +20,7 @@
 export interface PromptChallengeResponseRequest {
     [key: string]: any | any;
     /**
-     *
+     * 
      */
     component?: string;
 }
@@ -29,9 +28,7 @@ export interface PromptChallengeResponseRequest {
 /**
  * Check if a given object implements the PromptChallengeResponseRequest interface.
  */
-export function instanceOfPromptChallengeResponseRequest(
-    value: object,
-): value is PromptChallengeResponseRequest {
+export function instanceOfPromptChallengeResponseRequest(value: object): value is PromptChallengeResponseRequest {
     return true;
 }
 
@@ -39,16 +36,14 @@ export function PromptChallengeResponseRequestFromJSON(json: any): PromptChallen
     return PromptChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function PromptChallengeResponseRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PromptChallengeResponseRequest {
+export function PromptChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PromptChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        ...json,
-        component: json["component"] == null ? undefined : json["component"],
+        
+            ...json,
+        'component': json['component'] == null ? undefined : json['component'],
     };
 }
 
@@ -56,16 +51,15 @@ export function PromptChallengeResponseRequestToJSON(json: any): PromptChallenge
     return PromptChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function PromptChallengeResponseRequestToJSONTyped(
-    value?: PromptChallengeResponseRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PromptChallengeResponseRequestToJSONTyped(value?: PromptChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        ...value,
-        component: value["component"],
+        
+            ...value,
+        'component': value['component'],
     };
 }
+

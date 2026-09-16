@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,11 @@
  * Do not edit the class manually.
  */
 
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
+import type { SeverityEnum } from './SeverityEnum';
+import {
+    SeverityEnumFromJSON,
+    SeverityEnumToJSON,
+} from './SeverityEnum';
 
 /**
  * NotificationRule Serializer
@@ -22,7 +24,7 @@ import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
  */
 export interface NotificationRuleRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -43,11 +45,13 @@ export interface NotificationRuleRequest {
     destinationEventUser?: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the NotificationRuleRequest interface.
  */
 export function instanceOfNotificationRuleRequest(value: object): value is NotificationRuleRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -55,25 +59,17 @@ export function NotificationRuleRequestFromJSON(json: any): NotificationRuleRequ
     return NotificationRuleRequestFromJSONTyped(json, false);
 }
 
-export function NotificationRuleRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): NotificationRuleRequest {
+export function NotificationRuleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationRuleRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        transports: json["transports"] == null ? undefined : json["transports"],
-        severity: json["severity"] == null ? undefined : SeverityEnumFromJSON(json["severity"]),
-        destinationGroup:
-            json["destination_group"] === undefined
-                ? undefined
-                : json["destination_group"] === null
-                  ? null
-                  : json["destination_group"],
-        destinationEventUser:
-            json["destination_event_user"] == null ? undefined : json["destination_event_user"],
+        
+        'name': json['name'],
+        'transports': json['transports'] == null ? undefined : json['transports'],
+        'severity': json['severity'] == null ? undefined : SeverityEnumFromJSON(json['severity']),
+        'destinationGroup': json['destination_group'] === undefined ? undefined : json['destination_group'] === null ? null : json['destination_group'],
+        'destinationEventUser': json['destination_event_user'] == null ? undefined : json['destination_event_user'],
     };
 }
 
@@ -81,19 +77,18 @@ export function NotificationRuleRequestToJSON(json: any): NotificationRuleReques
     return NotificationRuleRequestToJSONTyped(json, false);
 }
 
-export function NotificationRuleRequestToJSONTyped(
-    value?: NotificationRuleRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function NotificationRuleRequestToJSONTyped(value?: NotificationRuleRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        transports: value["transports"],
-        severity: SeverityEnumToJSON(value["severity"]),
-        destination_group: value["destinationGroup"],
-        destination_event_user: value["destinationEventUser"],
+        
+        'name': value['name'],
+        'transports': value['transports'],
+        'severity': SeverityEnumToJSON(value['severity']),
+        'destination_group': value['destinationGroup'],
+        'destination_event_user': value['destinationEventUser'],
     };
 }
+

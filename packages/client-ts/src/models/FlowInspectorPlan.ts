@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +11,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON } from "./FlowStageBinding";
+import type { FlowStageBinding } from './FlowStageBinding';
+import {
+    FlowStageBindingFromJSON,
+} from './FlowStageBinding';
 
 /**
  * Serializer for an active FlowPlan
@@ -22,17 +23,17 @@ import { FlowStageBindingFromJSON } from "./FlowStageBinding";
  */
 export interface FlowInspectorPlan {
     /**
-     *
+     * 
      */
     readonly currentStage: FlowStageBinding;
     /**
-     *
+     * 
      */
     readonly nextPlannedStage: FlowStageBinding;
     /**
      * Get the plan's context, sanitized
      */
-    readonly planContext: { [key: string]: any };
+    readonly planContext: { [key: string]: any; };
     /**
      * Get a unique session ID
      */
@@ -43,34 +44,10 @@ export interface FlowInspectorPlan {
  * Check if a given object implements the FlowInspectorPlan interface.
  */
 export function instanceOfFlowInspectorPlan(value: object): value is FlowInspectorPlan {
-    if (
-        (!("currentStage" in (value as Record<string, any>)) &&
-            !("current_stage" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["currentStage"] === undefined &&
-            (value as Record<string, any>)["current_stage"] === undefined)
-    )
-        return false;
-    if (
-        (!("nextPlannedStage" in (value as Record<string, any>)) &&
-            !("next_planned_stage" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["nextPlannedStage"] === undefined &&
-            (value as Record<string, any>)["next_planned_stage"] === undefined)
-    )
-        return false;
-    if (
-        (!("planContext" in (value as Record<string, any>)) &&
-            !("plan_context" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["planContext"] === undefined &&
-            (value as Record<string, any>)["plan_context"] === undefined)
-    )
-        return false;
-    if (
-        (!("sessionId" in (value as Record<string, any>)) &&
-            !("session_id" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["sessionId"] === undefined &&
-            (value as Record<string, any>)["session_id"] === undefined)
-    )
-        return false;
+    if ((!('currentStage' in (value as Record<string, any>)) && !('current_stage' in (value as Record<string, any>))) || ((value as Record<string, any>)['currentStage'] === undefined && (value as Record<string, any>)['current_stage'] === undefined)) return false;
+    if ((!('nextPlannedStage' in (value as Record<string, any>)) && !('next_planned_stage' in (value as Record<string, any>))) || ((value as Record<string, any>)['nextPlannedStage'] === undefined && (value as Record<string, any>)['next_planned_stage'] === undefined)) return false;
+    if ((!('planContext' in (value as Record<string, any>)) && !('plan_context' in (value as Record<string, any>))) || ((value as Record<string, any>)['planContext'] === undefined && (value as Record<string, any>)['plan_context'] === undefined)) return false;
+    if ((!('sessionId' in (value as Record<string, any>)) && !('session_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['sessionId'] === undefined && (value as Record<string, any>)['session_id'] === undefined)) return false;
     return true;
 }
 
@@ -78,18 +55,16 @@ export function FlowInspectorPlanFromJSON(json: any): FlowInspectorPlan {
     return FlowInspectorPlanFromJSONTyped(json, false);
 }
 
-export function FlowInspectorPlanFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): FlowInspectorPlan {
+export function FlowInspectorPlanFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowInspectorPlan {
     if (json == null) {
         return json;
     }
     return {
-        currentStage: FlowStageBindingFromJSON(json["current_stage"]),
-        nextPlannedStage: FlowStageBindingFromJSON(json["next_planned_stage"]),
-        planContext: json["plan_context"],
-        sessionId: json["session_id"],
+        
+        'currentStage': FlowStageBindingFromJSON(json['current_stage']),
+        'nextPlannedStage': FlowStageBindingFromJSON(json['next_planned_stage']),
+        'planContext': json['plan_context'],
+        'sessionId': json['session_id'],
     };
 }
 
@@ -97,16 +72,13 @@ export function FlowInspectorPlanToJSON(json: any): FlowInspectorPlan {
     return FlowInspectorPlanToJSONTyped(json, false);
 }
 
-export function FlowInspectorPlanToJSONTyped(
-    value?: Omit<
-        FlowInspectorPlan,
-        "currentStage" | "nextPlannedStage" | "planContext" | "sessionId"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function FlowInspectorPlanToJSONTyped(value?: Omit<FlowInspectorPlan, 'currentStage'|'nextPlannedStage'|'planContext'|'sessionId'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        
+    };
 }
+

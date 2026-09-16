@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +11,21 @@
  * Do not edit the class manually.
  */
 
-import type { CertAttributeEnum } from "./CertAttributeEnum";
-import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
-import type { UserAttributeEnum } from "./UserAttributeEnum";
-import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum";
+import type { StageModeEnum } from './StageModeEnum';
+import {
+    StageModeEnumFromJSON,
+    StageModeEnumToJSON,
+} from './StageModeEnum';
+import type { CertAttributeEnum } from './CertAttributeEnum';
+import {
+    CertAttributeEnumFromJSON,
+    CertAttributeEnumToJSON,
+} from './CertAttributeEnum';
+import type { UserAttributeEnum } from './UserAttributeEnum';
+import {
+    UserAttributeEnumFromJSON,
+    UserAttributeEnumToJSON,
+} from './UserAttributeEnum';
 
 /**
  * MutualTLSStage Serializer
@@ -26,11 +34,11 @@ import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttrib
  */
 export interface MutualTLSStageRequest {
     /**
-     *
+     * 
      */
     name: string;
     /**
-     *
+     * 
      */
     mode: StageModeEnum;
     /**
@@ -38,35 +46,25 @@ export interface MutualTLSStageRequest {
      */
     certificateAuthorities?: Array<string>;
     /**
-     *
+     * 
      */
     certAttribute: CertAttributeEnum;
     /**
-     *
+     * 
      */
     userAttribute: UserAttributeEnum;
 }
+
+
 
 /**
  * Check if a given object implements the MutualTLSStageRequest interface.
  */
 export function instanceOfMutualTLSStageRequest(value: object): value is MutualTLSStageRequest {
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("mode" in value) || value["mode"] === undefined) return false;
-    if (
-        (!("certAttribute" in (value as Record<string, any>)) &&
-            !("cert_attribute" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["certAttribute"] === undefined &&
-            (value as Record<string, any>)["cert_attribute"] === undefined)
-    )
-        return false;
-    if (
-        (!("userAttribute" in (value as Record<string, any>)) &&
-            !("user_attribute" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["userAttribute"] === undefined &&
-            (value as Record<string, any>)["user_attribute"] === undefined)
-    )
-        return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('mode' in value) || value['mode'] === undefined) return false;
+    if ((!('certAttribute' in (value as Record<string, any>)) && !('cert_attribute' in (value as Record<string, any>))) || ((value as Record<string, any>)['certAttribute'] === undefined && (value as Record<string, any>)['cert_attribute'] === undefined)) return false;
+    if ((!('userAttribute' in (value as Record<string, any>)) && !('user_attribute' in (value as Record<string, any>))) || ((value as Record<string, any>)['userAttribute'] === undefined && (value as Record<string, any>)['user_attribute'] === undefined)) return false;
     return true;
 }
 
@@ -74,20 +72,17 @@ export function MutualTLSStageRequestFromJSON(json: any): MutualTLSStageRequest 
     return MutualTLSStageRequestFromJSONTyped(json, false);
 }
 
-export function MutualTLSStageRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): MutualTLSStageRequest {
+export function MutualTLSStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MutualTLSStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"],
-        mode: StageModeEnumFromJSON(json["mode"]),
-        certificateAuthorities:
-            json["certificate_authorities"] == null ? undefined : json["certificate_authorities"],
-        certAttribute: CertAttributeEnumFromJSON(json["cert_attribute"]),
-        userAttribute: UserAttributeEnumFromJSON(json["user_attribute"]),
+        
+        'name': json['name'],
+        'mode': StageModeEnumFromJSON(json['mode']),
+        'certificateAuthorities': json['certificate_authorities'] == null ? undefined : json['certificate_authorities'],
+        'certAttribute': CertAttributeEnumFromJSON(json['cert_attribute']),
+        'userAttribute': UserAttributeEnumFromJSON(json['user_attribute']),
     };
 }
 
@@ -95,19 +90,18 @@ export function MutualTLSStageRequestToJSON(json: any): MutualTLSStageRequest {
     return MutualTLSStageRequestToJSONTyped(json, false);
 }
 
-export function MutualTLSStageRequestToJSONTyped(
-    value?: MutualTLSStageRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function MutualTLSStageRequestToJSONTyped(value?: MutualTLSStageRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        mode: StageModeEnumToJSON(value["mode"]),
-        certificate_authorities: value["certificateAuthorities"],
-        cert_attribute: CertAttributeEnumToJSON(value["certAttribute"]),
-        user_attribute: UserAttributeEnumToJSON(value["userAttribute"]),
+        
+        'name': value['name'],
+        'mode': StageModeEnumToJSON(value['mode']),
+        'certificate_authorities': value['certificateAuthorities'],
+        'cert_attribute': CertAttributeEnumToJSON(value['certAttribute']),
+        'user_attribute': UserAttributeEnumToJSON(value['userAttribute']),
     };
 }
+

@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,9 +11,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LogLevelEnum } from "./LogLevelEnum";
-import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
+import { parseDateTime, serializeDateTime } from '../runtime';
+import type { LogLevelEnum } from './LogLevelEnum';
+import {
+    LogLevelEnumFromJSON,
+    LogLevelEnumToJSON,
+} from './LogLevelEnum';
 
 /**
  * Single log message with all context logged.
@@ -23,42 +25,38 @@ import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
  */
 export interface LogEvent {
     /**
-     *
+     * 
      */
     timestamp: Date;
     /**
-     *
+     * 
      */
     logLevel: LogLevelEnum;
     /**
-     *
+     * 
      */
     logger: string;
     /**
-     *
+     * 
      */
     event: string;
     /**
-     *
+     * 
      */
-    attributes: { [key: string]: any };
+    attributes: { [key: string]: any; };
 }
+
+
 
 /**
  * Check if a given object implements the LogEvent interface.
  */
 export function instanceOfLogEvent(value: object): value is LogEvent {
-    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
-    if (
-        (!("logLevel" in (value as Record<string, any>)) &&
-            !("log_level" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["logLevel"] === undefined &&
-            (value as Record<string, any>)["log_level"] === undefined)
-    )
-        return false;
-    if (!("logger" in value) || value["logger"] === undefined) return false;
-    if (!("event" in value) || value["event"] === undefined) return false;
-    if (!("attributes" in value) || value["attributes"] === undefined) return false;
+    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
+    if ((!('logLevel' in (value as Record<string, any>)) && !('log_level' in (value as Record<string, any>))) || ((value as Record<string, any>)['logLevel'] === undefined && (value as Record<string, any>)['log_level'] === undefined)) return false;
+    if (!('logger' in value) || value['logger'] === undefined) return false;
+    if (!('event' in value) || value['event'] === undefined) return false;
+    if (!('attributes' in value) || value['attributes'] === undefined) return false;
     return true;
 }
 
@@ -71,11 +69,12 @@ export function LogEventFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
-        logLevel: LogLevelEnumFromJSON(json["log_level"]),
-        logger: json["logger"],
-        event: json["event"],
-        attributes: json["attributes"],
+        
+        'timestamp': (json['timestamp'] == null ? json['timestamp'] : parseDateTime(json['timestamp'])),
+        'logLevel': LogLevelEnumFromJSON(json['log_level']),
+        'logger': json['logger'],
+        'event': json['event'],
+        'attributes': json['attributes'],
     };
 }
 
@@ -83,20 +82,18 @@ export function LogEventToJSON(json: any): LogEvent {
     return LogEventToJSONTyped(json, false);
 }
 
-export function LogEventToJSONTyped(
-    value?: LogEvent | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function LogEventToJSONTyped(value?: LogEvent | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        timestamp:
-            value["timestamp"] == null ? value["timestamp"] : serializeDateTime(value["timestamp"]),
-        log_level: LogLevelEnumToJSON(value["logLevel"]),
-        logger: value["logger"],
-        event: value["event"],
-        attributes: value["attributes"],
+        
+        'timestamp': value['timestamp'] == null ? value['timestamp'] : serializeDateTime(value['timestamp']),
+        'log_level': LogLevelEnumToJSON(value['logLevel']),
+        'logger': value['logger'],
+        'event': value['event'],
+        'attributes': value['attributes'],
     };
 }
+

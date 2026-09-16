@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +11,14 @@
  * Do not edit the class manually.
  */
 
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { Token } from "./Token";
-import { TokenFromJSON } from "./Token";
+import type { Token } from './Token';
+import {
+    TokenFromJSON,
+} from './Token';
+import type { Provider } from './Provider';
+import {
+    ProviderFromJSON,
+} from './Provider';
 
 /**
  * SSFProvider Serializer
@@ -24,11 +27,11 @@ import { TokenFromJSON } from "./Token";
  */
 export interface SSFProvider {
     /**
-     *
+     * 
      */
     readonly pk: number;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -52,27 +55,27 @@ export interface SSFProvider {
      */
     signingKey: string;
     /**
-     *
+     * 
      */
     readonly tokenObj: Token;
     /**
-     *
+     * 
      */
     oidcAuthProviders?: Array<number>;
     /**
-     *
+     * 
      */
     readonly oidcAuthProvidersObj: Array<Provider>;
     /**
-     *
+     * 
      */
     readonly ssfUrl: string | null;
     /**
-     *
+     * 
      */
     eventRetention?: string;
     /**
-     *
+     * 
      */
     pushVerifyCertificates?: boolean;
 }
@@ -81,58 +84,16 @@ export interface SSFProvider {
  * Check if a given object implements the SSFProvider interface.
  */
 export function instanceOfSSFProvider(value: object): value is SSFProvider {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("signingKey" in (value as Record<string, any>)) &&
-            !("signing_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signingKey"] === undefined &&
-            (value as Record<string, any>)["signing_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("tokenObj" in (value as Record<string, any>)) &&
-            !("token_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenObj"] === undefined &&
-            (value as Record<string, any>)["token_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("oidcAuthProvidersObj" in (value as Record<string, any>)) &&
-            !("oidc_auth_providers_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["oidcAuthProvidersObj"] === undefined &&
-            (value as Record<string, any>)["oidc_auth_providers_obj"] === undefined)
-    )
-        return false;
-    if (
-        (!("ssfUrl" in (value as Record<string, any>)) &&
-            !("ssf_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["ssfUrl"] === undefined &&
-            (value as Record<string, any>)["ssf_url"] === undefined)
-    )
-        return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('signingKey' in (value as Record<string, any>)) && !('signing_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['signingKey'] === undefined && (value as Record<string, any>)['signing_key'] === undefined)) return false;
+    if ((!('tokenObj' in (value as Record<string, any>)) && !('token_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokenObj'] === undefined && (value as Record<string, any>)['token_obj'] === undefined)) return false;
+    if ((!('oidcAuthProvidersObj' in (value as Record<string, any>)) && !('oidc_auth_providers_obj' in (value as Record<string, any>))) || ((value as Record<string, any>)['oidcAuthProvidersObj'] === undefined && (value as Record<string, any>)['oidc_auth_providers_obj'] === undefined)) return false;
+    if ((!('ssfUrl' in (value as Record<string, any>)) && !('ssf_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['ssfUrl'] === undefined && (value as Record<string, any>)['ssf_url'] === undefined)) return false;
     return true;
 }
 
@@ -145,21 +106,20 @@ export function SSFProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        signingKey: json["signing_key"],
-        tokenObj: TokenFromJSON(json["token_obj"]),
-        oidcAuthProviders:
-            json["oidc_auth_providers"] == null ? undefined : json["oidc_auth_providers"],
-        oidcAuthProvidersObj: (json["oidc_auth_providers_obj"] as Array<any>).map(ProviderFromJSON),
-        ssfUrl: json["ssf_url"],
-        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
-        pushVerifyCertificates:
-            json["push_verify_certificates"] == null ? undefined : json["push_verify_certificates"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'signingKey': json['signing_key'],
+        'tokenObj': TokenFromJSON(json['token_obj']),
+        'oidcAuthProviders': json['oidc_auth_providers'] == null ? undefined : json['oidc_auth_providers'],
+        'oidcAuthProvidersObj': ((json['oidc_auth_providers_obj'] as Array<any>).map(ProviderFromJSON)),
+        'ssfUrl': json['ssf_url'],
+        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        'pushVerifyCertificates': json['push_verify_certificates'] == null ? undefined : json['push_verify_certificates'],
     };
 }
 
@@ -167,29 +127,18 @@ export function SSFProviderToJSON(json: any): SSFProvider {
     return SSFProviderToJSONTyped(json, false);
 }
 
-export function SSFProviderToJSONTyped(
-    value?: Omit<
-        SSFProvider,
-        | "pk"
-        | "component"
-        | "verboseName"
-        | "verboseNamePlural"
-        | "metaModelName"
-        | "tokenObj"
-        | "oidcAuthProvidersObj"
-        | "ssfUrl"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SSFProviderToJSONTyped(value?: Omit<SSFProvider, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'tokenObj'|'oidcAuthProvidersObj'|'ssfUrl'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        signing_key: value["signingKey"],
-        oidc_auth_providers: value["oidcAuthProviders"],
-        event_retention: value["eventRetention"],
-        push_verify_certificates: value["pushVerifyCertificates"],
+        
+        'name': value['name'],
+        'signing_key': value['signingKey'],
+        'oidc_auth_providers': value['oidcAuthProviders'],
+        'event_retention': value['eventRetention'],
+        'push_verify_certificates': value['pushVerifyCertificates'],
     };
 }
+

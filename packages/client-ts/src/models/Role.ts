@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,11 +18,11 @@
  */
 export interface Role {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
 }
@@ -32,8 +31,8 @@ export interface Role {
  * Check if a given object implements the Role interface.
  */
 export function instanceOfRole(value: object): value is Role {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -46,8 +45,9 @@ export function RoleFromJSONTyped(json: any, ignoreDiscriminator: boolean): Role
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
+        
+        'pk': json['pk'],
+        'name': json['name'],
     };
 }
 
@@ -55,15 +55,14 @@ export function RoleToJSON(json: any): Role {
     return RoleToJSONTyped(json, false);
 }
 
-export function RoleToJSONTyped(
-    value?: Omit<Role, "pk"> | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function RoleToJSONTyped(value?: Omit<Role, 'pk'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
+        
+        'name': value['name'],
     };
 }
+

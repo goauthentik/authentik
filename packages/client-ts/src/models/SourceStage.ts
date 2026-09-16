@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +11,15 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { FlowSet } from './FlowSet';
+import {
+    FlowSetFromJSON,
+} from './FlowSet';
+import type { ResumeOnMatchFailuresEnum } from './ResumeOnMatchFailuresEnum';
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from './ResumeOnMatchFailuresEnum';
 
 /**
  * SourceStage Serializer
@@ -27,11 +28,11 @@ import {
  */
 export interface SourceStage {
     /**
-     *
+     * 
      */
     readonly pk: string;
     /**
-     *
+     * 
      */
     name: string;
     /**
@@ -51,11 +52,11 @@ export interface SourceStage {
      */
     readonly metaModelName: string;
     /**
-     *
+     * 
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     *
+     * 
      */
     source: string;
     /**
@@ -72,38 +73,14 @@ export interface SourceStage {
  * Check if a given object implements the SourceStage interface.
  */
 export function instanceOfSourceStage(value: object): value is SourceStage {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("component" in value) || value["component"] === undefined) return false;
-    if (
-        (!("verboseName" in (value as Record<string, any>)) &&
-            !("verbose_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseName"] === undefined &&
-            (value as Record<string, any>)["verbose_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("verboseNamePlural" in (value as Record<string, any>)) &&
-            !("verbose_name_plural" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
-            (value as Record<string, any>)["verbose_name_plural"] === undefined)
-    )
-        return false;
-    if (
-        (!("metaModelName" in (value as Record<string, any>)) &&
-            !("meta_model_name" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["metaModelName"] === undefined &&
-            (value as Record<string, any>)["meta_model_name"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowSet" in (value as Record<string, any>)) &&
-            !("flow_set" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowSet"] === undefined &&
-            (value as Record<string, any>)["flow_set"] === undefined)
-    )
-        return false;
-    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!('pk' in value) || value['pk'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('component' in value) || value['component'] === undefined) return false;
+    if ((!('verboseName' in (value as Record<string, any>)) && !('verbose_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseName'] === undefined && (value as Record<string, any>)['verbose_name'] === undefined)) return false;
+    if ((!('verboseNamePlural' in (value as Record<string, any>)) && !('verbose_name_plural' in (value as Record<string, any>))) || ((value as Record<string, any>)['verboseNamePlural'] === undefined && (value as Record<string, any>)['verbose_name_plural'] === undefined)) return false;
+    if ((!('metaModelName' in (value as Record<string, any>)) && !('meta_model_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['metaModelName'] === undefined && (value as Record<string, any>)['meta_model_name'] === undefined)) return false;
+    if ((!('flowSet' in (value as Record<string, any>)) && !('flow_set' in (value as Record<string, any>))) || ((value as Record<string, any>)['flowSet'] === undefined && (value as Record<string, any>)['flow_set'] === undefined)) return false;
+    if (!('source' in value) || value['source'] === undefined) return false;
     return true;
 }
 
@@ -116,21 +93,17 @@ export function SourceStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        component: json["component"],
-        verboseName: json["verbose_name"],
-        verboseNamePlural: json["verbose_name_plural"],
-        metaModelName: json["meta_model_name"],
-        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        source: json["source"],
-        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
-        resumeOnMatchFailures:
-            json["resume_on_match_failures"] == null
-                ? undefined
-                : (json["resume_on_match_failures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumFromJSON,
-                  ),
+        
+        'pk': json['pk'],
+        'name': json['name'],
+        'component': json['component'],
+        'verboseName': json['verbose_name'],
+        'verboseNamePlural': json['verbose_name_plural'],
+        'metaModelName': json['meta_model_name'],
+        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        'source': json['source'],
+        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        'resumeOnMatchFailures': json['resume_on_match_failures'] == null ? undefined : ((json['resume_on_match_failures'] as Array<any>).map(ResumeOnMatchFailuresEnumFromJSON)),
     };
 }
 
@@ -138,26 +111,17 @@ export function SourceStageToJSON(json: any): SourceStage {
     return SourceStageToJSONTyped(json, false);
 }
 
-export function SourceStageToJSONTyped(
-    value?: Omit<
-        SourceStage,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
-    > | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function SourceStageToJSONTyped(value?: Omit<SourceStage, 'pk'|'component'|'verboseName'|'verboseNamePlural'|'metaModelName'|'flowSet'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        source: value["source"],
-        resume_timeout: value["resumeTimeout"],
-        resume_on_match_failures:
-            value["resumeOnMatchFailures"] == null
-                ? undefined
-                : (value["resumeOnMatchFailures"] as Array<any>).map(
-                      ResumeOnMatchFailuresEnumToJSON,
-                  ),
+        
+        'name': value['name'],
+        'source': value['source'],
+        'resume_timeout': value['resumeTimeout'],
+        'resume_on_match_failures': value['resumeOnMatchFailures'] == null ? undefined : ((value['resumeOnMatchFailures'] as Array<any>).map(ResumeOnMatchFailuresEnumToJSON)),
     };
 }
+

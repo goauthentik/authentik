@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,15 +18,15 @@
  */
 export interface PropertyMappingTestRequest {
     /**
-     *
+     * 
      */
     user?: number | null;
     /**
-     *
+     * 
      */
-    context?: { [key: string]: any };
+    context?: { [key: string]: any; };
     /**
-     *
+     * 
      */
     group?: string | null;
 }
@@ -35,9 +34,7 @@ export interface PropertyMappingTestRequest {
 /**
  * Check if a given object implements the PropertyMappingTestRequest interface.
  */
-export function instanceOfPropertyMappingTestRequest(
-    value: object,
-): value is PropertyMappingTestRequest {
+export function instanceOfPropertyMappingTestRequest(value: object): value is PropertyMappingTestRequest {
     return true;
 }
 
@@ -45,18 +42,15 @@ export function PropertyMappingTestRequestFromJSON(json: any): PropertyMappingTe
     return PropertyMappingTestRequestFromJSONTyped(json, false);
 }
 
-export function PropertyMappingTestRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PropertyMappingTestRequest {
+export function PropertyMappingTestRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PropertyMappingTestRequest {
     if (json == null) {
         return json;
     }
     return {
-        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
-        context: json["context"] == null ? undefined : json["context"],
-        group:
-            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
+        
+        'user': json['user'] === undefined ? undefined : json['user'] === null ? null : json['user'],
+        'context': json['context'] == null ? undefined : json['context'],
+        'group': json['group'] === undefined ? undefined : json['group'] === null ? null : json['group'],
     };
 }
 
@@ -64,17 +58,16 @@ export function PropertyMappingTestRequestToJSON(json: any): PropertyMappingTest
     return PropertyMappingTestRequestToJSONTyped(json, false);
 }
 
-export function PropertyMappingTestRequestToJSONTyped(
-    value?: PropertyMappingTestRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PropertyMappingTestRequestToJSONTyped(value?: PropertyMappingTestRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        user: value["user"],
-        context: value["context"],
-        group: value["group"],
+        
+        'user': value['user'],
+        'context': value['context'],
+        'group': value['group'],
     };
 }
+

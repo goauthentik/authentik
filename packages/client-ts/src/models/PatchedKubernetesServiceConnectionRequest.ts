@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,7 +18,7 @@
  */
 export interface PatchedKubernetesServiceConnectionRequest {
     /**
-     *
+     * 
      */
     name?: string;
     /**
@@ -29,7 +28,7 @@ export interface PatchedKubernetesServiceConnectionRequest {
     /**
      * Paste your kubeconfig here. authentik will automatically use the currently selected context.
      */
-    kubeconfig?: { [key: string]: any };
+    kubeconfig?: { [key: string]: any; };
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -39,51 +38,42 @@ export interface PatchedKubernetesServiceConnectionRequest {
 /**
  * Check if a given object implements the PatchedKubernetesServiceConnectionRequest interface.
  */
-export function instanceOfPatchedKubernetesServiceConnectionRequest(
-    value: object,
-): value is PatchedKubernetesServiceConnectionRequest {
+export function instanceOfPatchedKubernetesServiceConnectionRequest(value: object): value is PatchedKubernetesServiceConnectionRequest {
     return true;
 }
 
-export function PatchedKubernetesServiceConnectionRequestFromJSON(
-    json: any,
-): PatchedKubernetesServiceConnectionRequest {
+export function PatchedKubernetesServiceConnectionRequestFromJSON(json: any): PatchedKubernetesServiceConnectionRequest {
     return PatchedKubernetesServiceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedKubernetesServiceConnectionRequestFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): PatchedKubernetesServiceConnectionRequest {
+export function PatchedKubernetesServiceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedKubernetesServiceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        name: json["name"] == null ? undefined : json["name"],
-        local: json["local"] == null ? undefined : json["local"],
-        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
-        verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
+        
+        'name': json['name'] == null ? undefined : json['name'],
+        'local': json['local'] == null ? undefined : json['local'],
+        'kubeconfig': json['kubeconfig'] == null ? undefined : json['kubeconfig'],
+        'verifySsl': json['verify_ssl'] == null ? undefined : json['verify_ssl'],
     };
 }
 
-export function PatchedKubernetesServiceConnectionRequestToJSON(
-    json: any,
-): PatchedKubernetesServiceConnectionRequest {
+export function PatchedKubernetesServiceConnectionRequestToJSON(json: any): PatchedKubernetesServiceConnectionRequest {
     return PatchedKubernetesServiceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedKubernetesServiceConnectionRequestToJSONTyped(
-    value?: PatchedKubernetesServiceConnectionRequest | null,
-    ignoreDiscriminator: boolean = false,
-): any {
+export function PatchedKubernetesServiceConnectionRequestToJSONTyped(value?: PatchedKubernetesServiceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
-        name: value["name"],
-        local: value["local"],
-        kubeconfig: value["kubeconfig"],
-        verify_ssl: value["verifySsl"],
+        
+        'name': value['name'],
+        'local': value['local'],
+        'kubeconfig': value['kubeconfig'],
+        'verify_ssl': value['verifySsl'],
     };
 }
+
