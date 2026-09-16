@@ -1,15 +1,12 @@
 /**
  * @file Swizzled DocItemContent component.
- *
- * This component is a swizzled version of the original DocItemContent component.
- *
- * Similar to Docusaurus' default `DocItemContent`, this component renders
- * the content of a documentation page. However, it also adds support for
- * support badges, and Authentik version badges.
+ *   This component is a swizzled version of the original DocItemContent component.
+ *   Similar to Docusaurus' default `DocItemContent`, this component renders
+ *   the content of a documentation page. However, it also adds support for
+ *   support badges, and Authentik version badges.
  */
 
 import "./styles.css";
-
 import { MarkdownPageActions } from "#components/MarkdownPageActions.tsx";
 import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
