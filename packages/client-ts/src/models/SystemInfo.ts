@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,6 +16,7 @@ import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfo
 
 /**
  * Get system information.
+ *
  * @export
  * @interface SystemInfo
  */
@@ -34,9 +33,6 @@ export interface SystemInfo {
      * Get HTTP Secure flag
      */
     readonly httpIsSecure: boolean;
-    /**
-     *
-     */
     runtime: SystemInfoRuntime;
     /**
      * Currently active brand

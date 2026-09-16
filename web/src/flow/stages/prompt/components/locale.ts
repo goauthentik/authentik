@@ -48,7 +48,7 @@ export const LocalePrompt: LitFC<LocalePromptProps> = ({
                 : null;
 
             /**
-             *  This is a bit subtle.
+             * This is a bit subtle.
              *
              * -
              */

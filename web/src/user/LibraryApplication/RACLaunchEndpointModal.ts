@@ -51,6 +51,7 @@ export class RACLaunchEndpointLaunch extends Table<Endpoint> {
                 this.parentElement.close();
             }
         }
+
         return endpoints;
     }
 

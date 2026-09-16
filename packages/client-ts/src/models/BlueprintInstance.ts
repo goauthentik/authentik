@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,53 +16,21 @@ import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEn
 
 /**
  * Info about a single blueprint instance file
+ *
  * @export
  * @interface BlueprintInstance
  */
 export interface BlueprintInstance {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     */
     readonly lastApplied: Date;
-    /**
-     *
-     */
     readonly lastAppliedHash: string;
-    /**
-     *
-     */
     readonly status: BlueprintInstanceStatusEnum;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     readonly managedModels: Array<string>;
-    /**
-     *
-     */
     readonly metadata: { [key: string]: any };
-    /**
-     *
-     */
     content?: string;
 }
 

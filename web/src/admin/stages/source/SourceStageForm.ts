@@ -3,7 +3,6 @@ import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -57,10 +56,13 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                         const args: SourcesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(SourcesApi).sourcesAllList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(source: Source): string => {

@@ -98,7 +98,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["secret"], str(self.secret.pk))
-        self.assertEqual(body["plex_token"], self.secret.value)
+        self.assertNotIn("plex_token", body)
 
     def test_source_create(self):
         """Test source create (role has global add permission, but no change permission)"""

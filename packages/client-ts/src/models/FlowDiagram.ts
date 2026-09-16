@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,17 +17,12 @@ import { DiagramNodeFromJSON } from "./DiagramNode";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface FlowDiagram
  */
 export interface FlowDiagram {
-    /**
-     *
-     */
     readonly nodes: Array<DiagramNode>;
-    /**
-     *
-     */
     readonly edges: Array<DiagramEdge>;
 }
 

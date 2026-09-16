@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./UserOAuthSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserOAuthSourceConnectionList
  */
 export interface PaginatedUserOAuthSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserOAuthSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

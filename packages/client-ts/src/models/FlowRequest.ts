@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,13 +23,11 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * Flow Serializer
+ *
  * @export
  * @interface FlowRequest
  */
 export interface FlowRequest {
-    /**
-     *
-     */
     name: string;
     /**
      * Visible in the URL.
@@ -42,24 +38,19 @@ export interface FlowRequest {
      */
     title: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation: FlowDesignationEnum;
     /**
      * Background shown during execution
      */
     background?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
      */
     compatibilityMode?: boolean;
-    /**
-     *
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
