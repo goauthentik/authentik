@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,69 +12,36 @@
 
 /**
  * AuthenticatorEmailStage Serializer
+ *
  * @export
  * @interface AuthenticatorEmailStageRequest
  */
 export interface AuthenticatorEmailStageRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     */
     host?: string;
-    /**
-     *
-     */
     port?: number;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     secret?: string | null;
-    /**
-     *
-     */
     useTls?: boolean;
-    /**
-     *
-     */
     useSsl?: boolean;
-    /**
-     *
-     */
     timeout?: number;
-    /**
-     *
-     */
     fromAddress?: string;
-    /**
-     *
-     */
     subject?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
      */
     tokenExpiry?: string;
-    /**
-     *
-     */
     template?: string;
 }
 

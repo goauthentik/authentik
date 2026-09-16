@@ -4,7 +4,6 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -54,6 +53,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}

@@ -15,7 +15,6 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
 import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
@@ -158,6 +157,7 @@ const defaultGrantTypes = [
 ];
 
 type ShowClientSecret = (show: boolean) => void;
+
 type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {
@@ -179,6 +179,7 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     provider ||= {};
     errors ||= {};
+
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Type a provider name...")}
@@ -311,19 +312,23 @@ export function renderForm({
                     }}
                 ></ak-text-input>
 
-                ${showLogoutMethod
-                    ? html`<ak-radio-input
-                          label=${msg("Logout Method")}
-                          name="logoutMethod"
-                          .value=${provider.logoutMethod ||
-                          OAuth2ProviderLogoutMethodEnum.Backchannel}
-                          required
-                          .options=${logoutMethodOptions}
-                          .help=${msg(
-                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
-                          )}
-                      ></ak-radio-input>`
-                    : html``}
+                ${
+                    showLogoutMethod
+                        ? html`<ak-radio-input
+                              label=${msg("Logout Method")}
+                              name="logoutMethod"
+                              .value=${
+                                  provider.logoutMethod ||
+                                  OAuth2ProviderLogoutMethodEnum.Backchannel
+                              }
+                              required
+                              .options=${logoutMethodOptions}
+                              .help=${msg(
+                                  "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                              )}
+                          ></ak-radio-input>`
+                        : html``
+                }
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->

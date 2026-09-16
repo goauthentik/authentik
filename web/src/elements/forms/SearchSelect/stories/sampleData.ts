@@ -345,6 +345,7 @@ const reseason = (acc: Seasoned[], { produce, seasons, desc }: ViewSample): Seas
 export const groupedSampleData = ((): SelectOptions<string> => {
     const seasoned: Seasoned[] = sampleData.reduce(reseason, [] as Seasoned[]);
     const grouped = Object.groupBy(seasoned, ([season]) => season);
+
     const ungrouped = ([_season, label, desc]: Seasoned): Seasoned => [
         kebabCase(label),
         label,

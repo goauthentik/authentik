@@ -11,7 +11,6 @@ import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import {
     groupsProvider,
     groupsSelector,
@@ -56,10 +55,13 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     const args: SourcesOauthListRequest = {
                         ordering: "name",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const sources = await aki(SourcesApi).sourcesOauthList(args);
+
                     return sources.results;
                 }}
                 .renderElement=${(source: OAuthSource): string => {
@@ -147,6 +149,7 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             if (!provider) {
                                 provider = {};
                             }
+
                             provider.authMode = ev.detail.value;
                             update();
                         }}

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -424,9 +422,6 @@ import { type WebAuthnDeviceType, WebAuthnDeviceTypeFromJSON } from "../models/W
 import * as runtime from "../runtime";
 
 export interface StagesAccountLockdownCreateRequest {
-    /**
-     *
-     */
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
@@ -438,17 +433,8 @@ export interface StagesAccountLockdownDestroyRequest {
 }
 
 export interface StagesAccountLockdownListRequest {
-    /**
-     *
-     */
     deactivateUser?: boolean;
-    /**
-     *
-     */
     deleteSessions?: boolean;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -462,25 +448,13 @@ export interface StagesAccountLockdownListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     revokeTokens?: boolean;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     selfServiceCompletionFlow?: string;
-    /**
-     *
-     */
     setUnusablePassword?: boolean;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -489,9 +463,6 @@ export interface StagesAccountLockdownPartialUpdateRequest {
      * A UUID string identifying this Account Lockdown Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAccountLockdownStageRequest?: PatchedAccountLockdownStageRequest;
 }
 
@@ -507,9 +478,6 @@ export interface StagesAccountLockdownUpdateRequest {
      * A UUID string identifying this Account Lockdown Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
@@ -528,9 +496,6 @@ export interface StagesAllDestroyRequest {
 }
 
 export interface StagesAllListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -565,9 +530,6 @@ export interface StagesAllUsedByListRequest {
 }
 
 export interface StagesAuthenticatorDuoCreateRequest {
-    /**
-     *
-     */
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
@@ -590,9 +552,6 @@ export interface StagesAuthenticatorDuoImportDeviceManualCreateRequest {
      * A UUID string identifying this Duo Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorDuoStageManualDeviceImportRequest: AuthenticatorDuoStageManualDeviceImportRequest;
 }
 
@@ -604,21 +563,9 @@ export interface StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest {
 }
 
 export interface StagesAuthenticatorDuoListRequest {
-    /**
-     *
-     */
     apiHostname?: string;
-    /**
-     *
-     */
     clientId?: string;
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -643,9 +590,6 @@ export interface StagesAuthenticatorDuoPartialUpdateRequest {
      * A UUID string identifying this Duo Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorDuoStageRequest?: PatchedAuthenticatorDuoStageRequest;
 }
 
@@ -661,9 +605,6 @@ export interface StagesAuthenticatorDuoUpdateRequest {
      * A UUID string identifying this Duo Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
@@ -675,9 +616,6 @@ export interface StagesAuthenticatorDuoUsedByListRequest {
 }
 
 export interface StagesAuthenticatorEmailCreateRequest {
-    /**
-     *
-     */
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
@@ -689,25 +627,10 @@ export interface StagesAuthenticatorEmailDestroyRequest {
 }
 
 export interface StagesAuthenticatorEmailListRequest {
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     fromAddress?: string;
-    /**
-     *
-     */
     host?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -721,45 +644,18 @@ export interface StagesAuthenticatorEmailListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     port?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     subject?: string;
-    /**
-     *
-     */
     template?: string;
-    /**
-     *
-     */
     timeout?: number;
-    /**
-     *
-     */
     tokenExpiry?: string;
-    /**
-     *
-     */
     useGlobalSettings?: boolean;
-    /**
-     *
-     */
     useSsl?: boolean;
-    /**
-     *
-     */
     useTls?: boolean;
-    /**
-     *
-     */
     username?: string;
 }
 
@@ -768,9 +664,6 @@ export interface StagesAuthenticatorEmailPartialUpdateRequest {
      * A UUID string identifying this Email Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorEmailStageRequest?: PatchedAuthenticatorEmailStageRequest;
 }
 
@@ -786,9 +679,6 @@ export interface StagesAuthenticatorEmailUpdateRequest {
      * A UUID string identifying this Email Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
@@ -800,9 +690,6 @@ export interface StagesAuthenticatorEmailUsedByListRequest {
 }
 
 export interface StagesAuthenticatorEndpointGdtcCreateRequest {
-    /**
-     *
-     */
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
 
@@ -814,13 +701,7 @@ export interface StagesAuthenticatorEndpointGdtcDestroyRequest {
 }
 
 export interface StagesAuthenticatorEndpointGdtcListRequest {
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -845,9 +726,6 @@ export interface StagesAuthenticatorEndpointGdtcPartialUpdateRequest {
      * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorEndpointGDTCStageRequest?: PatchedAuthenticatorEndpointGDTCStageRequest;
 }
 
@@ -863,9 +741,6 @@ export interface StagesAuthenticatorEndpointGdtcUpdateRequest {
      * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
 
@@ -877,9 +752,6 @@ export interface StagesAuthenticatorEndpointGdtcUsedByListRequest {
 }
 
 export interface StagesAuthenticatorSmsCreateRequest {
-    /**
-     *
-     */
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
@@ -891,33 +763,12 @@ export interface StagesAuthenticatorSmsDestroyRequest {
 }
 
 export interface StagesAuthenticatorSmsListRequest {
-    /**
-     *
-     */
     accountSid?: string;
-    /**
-     *
-     */
     authType?: AuthTypeEnum;
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     fromNumber?: string;
-    /**
-     *
-     */
     mapping?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -931,17 +782,11 @@ export interface StagesAuthenticatorSmsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: ProviderEnum;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     verifyOnly?: boolean;
 }
 
@@ -950,9 +795,6 @@ export interface StagesAuthenticatorSmsPartialUpdateRequest {
      * A UUID string identifying this SMS Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorSMSStageRequest?: PatchedAuthenticatorSMSStageRequest;
 }
 
@@ -968,9 +810,6 @@ export interface StagesAuthenticatorSmsUpdateRequest {
      * A UUID string identifying this SMS Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
@@ -982,9 +821,6 @@ export interface StagesAuthenticatorSmsUsedByListRequest {
 }
 
 export interface StagesAuthenticatorStaticCreateRequest {
-    /**
-     *
-     */
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
 
@@ -996,17 +832,8 @@ export interface StagesAuthenticatorStaticDestroyRequest {
 }
 
 export interface StagesAuthenticatorStaticListRequest {
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1024,17 +851,8 @@ export interface StagesAuthenticatorStaticListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     tokenCount?: number;
-    /**
-     *
-     */
     tokenLength?: number;
 }
 
@@ -1043,9 +861,6 @@ export interface StagesAuthenticatorStaticPartialUpdateRequest {
      * A UUID string identifying this Static Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorStaticStageRequest?: PatchedAuthenticatorStaticStageRequest;
 }
 
@@ -1061,9 +876,6 @@ export interface StagesAuthenticatorStaticUpdateRequest {
      * A UUID string identifying this Static Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
 
@@ -1075,9 +887,6 @@ export interface StagesAuthenticatorStaticUsedByListRequest {
 }
 
 export interface StagesAuthenticatorTotpCreateRequest {
-    /**
-     *
-     */
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
@@ -1089,21 +898,9 @@ export interface StagesAuthenticatorTotpDestroyRequest {
 }
 
 export interface StagesAuthenticatorTotpListRequest {
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     digits?: DigitsEnum;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1121,9 +918,6 @@ export interface StagesAuthenticatorTotpListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -1132,9 +926,6 @@ export interface StagesAuthenticatorTotpPartialUpdateRequest {
      * A UUID string identifying this TOTP Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorTOTPStageRequest?: PatchedAuthenticatorTOTPStageRequest;
 }
 
@@ -1150,9 +941,6 @@ export interface StagesAuthenticatorTotpUpdateRequest {
      * A UUID string identifying this TOTP Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
@@ -1164,9 +952,6 @@ export interface StagesAuthenticatorTotpUsedByListRequest {
 }
 
 export interface StagesAuthenticatorValidateCreateRequest {
-    /**
-     *
-     */
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
 
@@ -1178,17 +963,8 @@ export interface StagesAuthenticatorValidateDestroyRequest {
 }
 
 export interface StagesAuthenticatorValidateListRequest {
-    /**
-     *
-     */
     configurationStages?: Array<string>;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Which field to use when ordering the results.
@@ -1213,9 +989,6 @@ export interface StagesAuthenticatorValidatePartialUpdateRequest {
      * A UUID string identifying this Authenticator Validation Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorValidateStageRequest?: PatchedAuthenticatorValidateStageRequest;
 }
 
@@ -1231,9 +1004,6 @@ export interface StagesAuthenticatorValidateUpdateRequest {
      * A UUID string identifying this Authenticator Validation Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
 
@@ -1245,9 +1015,6 @@ export interface StagesAuthenticatorValidateUsedByListRequest {
 }
 
 export interface StagesAuthenticatorWebauthnCreateRequest {
-    /**
-     *
-     */
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
@@ -1259,17 +1026,8 @@ export interface StagesAuthenticatorWebauthnDestroyRequest {
 }
 
 export interface StagesAuthenticatorWebauthnDeviceTypesListRequest {
-    /**
-     *
-     */
     aaguid?: string;
-    /**
-     *
-     */
     description?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * Which field to use when ordering the results.
@@ -1297,25 +1055,10 @@ export interface StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest {
 }
 
 export interface StagesAuthenticatorWebauthnListRequest {
-    /**
-     *
-     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     deviceTypeRestrictions?: Array<string>;
-    /**
-     *
-     */
     maxAttempts?: number;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1329,17 +1072,11 @@ export interface StagesAuthenticatorWebauthnListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     residentKeyRequirement?: UserVerificationEnum;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userVerification?: UserVerificationEnum;
 }
 
@@ -1348,9 +1085,6 @@ export interface StagesAuthenticatorWebauthnPartialUpdateRequest {
      * A UUID string identifying this WebAuthn Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedAuthenticatorWebAuthnStageRequest?: PatchedAuthenticatorWebAuthnStageRequest;
 }
 
@@ -1366,9 +1100,6 @@ export interface StagesAuthenticatorWebauthnUpdateRequest {
      * A UUID string identifying this WebAuthn Authenticator Setup Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
@@ -1380,9 +1111,6 @@ export interface StagesAuthenticatorWebauthnUsedByListRequest {
 }
 
 export interface StagesCaptchaCreateRequest {
-    /**
-     *
-     */
     captchaStageRequest: CaptchaStageRequest;
 }
 
@@ -1394,9 +1122,6 @@ export interface StagesCaptchaDestroyRequest {
 }
 
 export interface StagesCaptchaListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1410,9 +1135,6 @@ export interface StagesCaptchaListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     publicKey?: string;
     /**
      * A search term.
@@ -1425,9 +1147,6 @@ export interface StagesCaptchaPartialUpdateRequest {
      * A UUID string identifying this Captcha Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedCaptchaStageRequest?: PatchedCaptchaStageRequest;
 }
 
@@ -1443,9 +1162,6 @@ export interface StagesCaptchaUpdateRequest {
      * A UUID string identifying this Captcha Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     captchaStageRequest: CaptchaStageRequest;
 }
 
@@ -1457,9 +1173,6 @@ export interface StagesCaptchaUsedByListRequest {
 }
 
 export interface StagesConsentCreateRequest {
-    /**
-     *
-     */
     consentStageRequest: ConsentStageRequest;
 }
 
@@ -1471,17 +1184,8 @@ export interface StagesConsentDestroyRequest {
 }
 
 export interface StagesConsentListRequest {
-    /**
-     *
-     */
     consentExpireIn?: string;
-    /**
-     *
-     */
     mode?: ConsentModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1499,9 +1203,6 @@ export interface StagesConsentListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -1510,9 +1211,6 @@ export interface StagesConsentPartialUpdateRequest {
      * A UUID string identifying this Consent Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedConsentStageRequest?: PatchedConsentStageRequest;
 }
 
@@ -1528,9 +1226,6 @@ export interface StagesConsentUpdateRequest {
      * A UUID string identifying this Consent Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     consentStageRequest: ConsentStageRequest;
 }
 
@@ -1542,9 +1237,6 @@ export interface StagesConsentUsedByListRequest {
 }
 
 export interface StagesDenyCreateRequest {
-    /**
-     *
-     */
     denyStageRequest: DenyStageRequest;
 }
 
@@ -1556,13 +1248,7 @@ export interface StagesDenyDestroyRequest {
 }
 
 export interface StagesDenyListRequest {
-    /**
-     *
-     */
     denyMessage?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1580,9 +1266,6 @@ export interface StagesDenyListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -1591,9 +1274,6 @@ export interface StagesDenyPartialUpdateRequest {
      * A UUID string identifying this Deny Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedDenyStageRequest?: PatchedDenyStageRequest;
 }
 
@@ -1609,9 +1289,6 @@ export interface StagesDenyUpdateRequest {
      * A UUID string identifying this Deny Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     denyStageRequest: DenyStageRequest;
 }
 
@@ -1623,9 +1300,6 @@ export interface StagesDenyUsedByListRequest {
 }
 
 export interface StagesDummyCreateRequest {
-    /**
-     *
-     */
     dummyStageRequest: DummyStageRequest;
 }
 
@@ -1637,9 +1311,6 @@ export interface StagesDummyDestroyRequest {
 }
 
 export interface StagesDummyListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1657,13 +1328,7 @@ export interface StagesDummyListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     throwError?: boolean;
 }
 
@@ -1672,9 +1337,6 @@ export interface StagesDummyPartialUpdateRequest {
      * A UUID string identifying this Dummy Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedDummyStageRequest?: PatchedDummyStageRequest;
 }
 
@@ -1690,9 +1352,6 @@ export interface StagesDummyUpdateRequest {
      * A UUID string identifying this Dummy Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     dummyStageRequest: DummyStageRequest;
 }
 
@@ -1704,9 +1363,6 @@ export interface StagesDummyUsedByListRequest {
 }
 
 export interface StagesEmailCreateRequest {
-    /**
-     *
-     */
     emailStageRequest: EmailStageRequest;
 }
 
@@ -1718,21 +1374,9 @@ export interface StagesEmailDestroyRequest {
 }
 
 export interface StagesEmailListRequest {
-    /**
-     *
-     */
     activateUserOnSuccess?: boolean;
-    /**
-     *
-     */
     fromAddress?: string;
-    /**
-     *
-     */
     host?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1746,45 +1390,18 @@ export interface StagesEmailListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     port?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     subject?: string;
-    /**
-     *
-     */
     template?: string;
-    /**
-     *
-     */
     timeout?: number;
-    /**
-     *
-     */
     tokenExpiry?: string;
-    /**
-     *
-     */
     useGlobalSettings?: boolean;
-    /**
-     *
-     */
     useSsl?: boolean;
-    /**
-     *
-     */
     useTls?: boolean;
-    /**
-     *
-     */
     username?: string;
 }
 
@@ -1793,9 +1410,6 @@ export interface StagesEmailPartialUpdateRequest {
      * A UUID string identifying this Email Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedEmailStageRequest?: PatchedEmailStageRequest;
 }
 
@@ -1811,9 +1425,6 @@ export interface StagesEmailUpdateRequest {
      * A UUID string identifying this Email Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     emailStageRequest: EmailStageRequest;
 }
 
@@ -1825,9 +1436,6 @@ export interface StagesEmailUsedByListRequest {
 }
 
 export interface StagesEndpointsCreateRequest {
-    /**
-     *
-     */
     endpointStageRequest: EndpointStageRequest;
 }
 
@@ -1839,9 +1447,6 @@ export interface StagesEndpointsDestroyRequest {
 }
 
 export interface StagesEndpointsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1866,9 +1471,6 @@ export interface StagesEndpointsPartialUpdateRequest {
      * A UUID string identifying this Endpoint Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedEndpointStageRequest?: PatchedEndpointStageRequest;
 }
 
@@ -1884,9 +1486,6 @@ export interface StagesEndpointsUpdateRequest {
      * A UUID string identifying this Endpoint Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     endpointStageRequest: EndpointStageRequest;
 }
 
@@ -1898,9 +1497,6 @@ export interface StagesEndpointsUsedByListRequest {
 }
 
 export interface StagesIdentificationCreateRequest {
-    /**
-     *
-     */
     identificationStageRequest: IdentificationStageRequest;
 }
 
@@ -1912,21 +1508,9 @@ export interface StagesIdentificationDestroyRequest {
 }
 
 export interface StagesIdentificationListRequest {
-    /**
-     *
-     */
     captchaStage?: string;
-    /**
-     *
-     */
     caseInsensitiveMatching?: boolean;
-    /**
-     *
-     */
     enrollmentFlow?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1940,33 +1524,15 @@ export interface StagesIdentificationListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     passwordStage?: string;
-    /**
-     *
-     */
     passwordlessFlow?: string;
-    /**
-     *
-     */
     recoveryFlow?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     showMatchedUser?: boolean;
-    /**
-     *
-     */
     showSourceLabels?: boolean;
-    /**
-     *
-     */
     webauthnStage?: string;
 }
 
@@ -1975,9 +1541,6 @@ export interface StagesIdentificationPartialUpdateRequest {
      * A UUID string identifying this Identification Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedIdentificationStageRequest?: PatchedIdentificationStageRequest;
 }
 
@@ -1993,9 +1556,6 @@ export interface StagesIdentificationUpdateRequest {
      * A UUID string identifying this Identification Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     identificationStageRequest: IdentificationStageRequest;
 }
 
@@ -2007,9 +1567,6 @@ export interface StagesIdentificationUsedByListRequest {
 }
 
 export interface StagesInvitationInvitationsCreateRequest {
-    /**
-     *
-     */
     invitationRequest: InvitationRequest;
 }
 
@@ -2021,21 +1578,9 @@ export interface StagesInvitationInvitationsDestroyRequest {
 }
 
 export interface StagesInvitationInvitationsListRequest {
-    /**
-     *
-     */
     createdByUsername?: string;
-    /**
-     *
-     */
     expires?: Date;
-    /**
-     *
-     */
     flowSlug?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2060,9 +1605,6 @@ export interface StagesInvitationInvitationsPartialUpdateRequest {
      * A UUID string identifying this Invitation.
      */
     inviteUuid: string;
-    /**
-     *
-     */
     patchedInvitationRequest?: PatchedInvitationRequest;
 }
 
@@ -2078,9 +1620,6 @@ export interface StagesInvitationInvitationsSendEmailCreateRequest {
      * A UUID string identifying this Invitation.
      */
     inviteUuid: string;
-    /**
-     *
-     */
     invitationSendEmailRequest: InvitationSendEmailRequest;
 }
 
@@ -2089,9 +1628,6 @@ export interface StagesInvitationInvitationsUpdateRequest {
      * A UUID string identifying this Invitation.
      */
     inviteUuid: string;
-    /**
-     *
-     */
     invitationRequest: InvitationRequest;
 }
 
@@ -2103,9 +1639,6 @@ export interface StagesInvitationInvitationsUsedByListRequest {
 }
 
 export interface StagesInvitationStagesCreateRequest {
-    /**
-     *
-     */
     invitationStageRequest: InvitationStageRequest;
 }
 
@@ -2117,17 +1650,8 @@ export interface StagesInvitationStagesDestroyRequest {
 }
 
 export interface StagesInvitationStagesListRequest {
-    /**
-     *
-     */
     continueFlowWithoutInvitation?: boolean;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     noFlows?: boolean;
     /**
      * Which field to use when ordering the results.
@@ -2145,9 +1669,6 @@ export interface StagesInvitationStagesListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -2156,9 +1677,6 @@ export interface StagesInvitationStagesPartialUpdateRequest {
      * A UUID string identifying this Invitation Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedInvitationStageRequest?: PatchedInvitationStageRequest;
 }
 
@@ -2174,9 +1692,6 @@ export interface StagesInvitationStagesUpdateRequest {
      * A UUID string identifying this Invitation Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     invitationStageRequest: InvitationStageRequest;
 }
 
@@ -2188,9 +1703,6 @@ export interface StagesInvitationStagesUsedByListRequest {
 }
 
 export interface StagesMtlsCreateRequest {
-    /**
-     *
-     */
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
@@ -2202,21 +1714,9 @@ export interface StagesMtlsDestroyRequest {
 }
 
 export interface StagesMtlsListRequest {
-    /**
-     *
-     */
     certAttribute?: CertAttributeEnum;
-    /**
-     *
-     */
     certificateAuthorities?: Array<string>;
-    /**
-     *
-     */
     mode?: StageModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2234,13 +1734,7 @@ export interface StagesMtlsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     userAttribute?: UserAttributeEnum;
 }
 
@@ -2249,9 +1743,6 @@ export interface StagesMtlsPartialUpdateRequest {
      * A UUID string identifying this Mutual TLS Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedMutualTLSStageRequest?: PatchedMutualTLSStageRequest;
 }
 
@@ -2267,9 +1758,6 @@ export interface StagesMtlsUpdateRequest {
      * A UUID string identifying this Mutual TLS Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
@@ -2281,9 +1769,6 @@ export interface StagesMtlsUsedByListRequest {
 }
 
 export interface StagesPasswordCreateRequest {
-    /**
-     *
-     */
     passwordStageRequest: PasswordStageRequest;
 }
 
@@ -2295,21 +1780,9 @@ export interface StagesPasswordDestroyRequest {
 }
 
 export interface StagesPasswordListRequest {
-    /**
-     *
-     */
     allowShowPassword?: boolean;
-    /**
-     *
-     */
     configureFlow?: string;
-    /**
-     *
-     */
     failedAttemptsBeforeCancel?: number;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2334,9 +1807,6 @@ export interface StagesPasswordPartialUpdateRequest {
      * A UUID string identifying this Password Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedPasswordStageRequest?: PatchedPasswordStageRequest;
 }
 
@@ -2352,9 +1822,6 @@ export interface StagesPasswordUpdateRequest {
      * A UUID string identifying this Password Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     passwordStageRequest: PasswordStageRequest;
 }
 
@@ -2366,9 +1833,6 @@ export interface StagesPasswordUsedByListRequest {
 }
 
 export interface StagesPromptPromptsCreateRequest {
-    /**
-     *
-     */
     promptRequest: PromptRequest;
 }
 
@@ -2380,17 +1844,8 @@ export interface StagesPromptPromptsDestroyRequest {
 }
 
 export interface StagesPromptPromptsListRequest {
-    /**
-     *
-     */
     fieldKey?: string;
-    /**
-     *
-     */
     label?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2404,17 +1859,11 @@ export interface StagesPromptPromptsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     placeholder?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     type?: PromptTypeEnum;
 }
 
@@ -2423,16 +1872,10 @@ export interface StagesPromptPromptsPartialUpdateRequest {
      * A UUID string identifying this Prompt.
      */
     promptUuid: string;
-    /**
-     *
-     */
     patchedPromptRequest?: PatchedPromptRequest;
 }
 
 export interface StagesPromptPromptsPreviewCreateRequest {
-    /**
-     *
-     */
     promptRequest: PromptRequest;
 }
 
@@ -2448,9 +1891,6 @@ export interface StagesPromptPromptsUpdateRequest {
      * A UUID string identifying this Prompt.
      */
     promptUuid: string;
-    /**
-     *
-     */
     promptRequest: PromptRequest;
 }
 
@@ -2462,9 +1902,6 @@ export interface StagesPromptPromptsUsedByListRequest {
 }
 
 export interface StagesPromptStagesCreateRequest {
-    /**
-     *
-     */
     promptStageRequest: PromptStageRequest;
 }
 
@@ -2476,13 +1913,7 @@ export interface StagesPromptStagesDestroyRequest {
 }
 
 export interface StagesPromptStagesListRequest {
-    /**
-     *
-     */
     fields?: Array<string>;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2500,13 +1931,7 @@ export interface StagesPromptStagesListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     validationPolicies?: Array<string>;
 }
 
@@ -2515,9 +1940,6 @@ export interface StagesPromptStagesPartialUpdateRequest {
      * A UUID string identifying this Prompt Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedPromptStageRequest?: PatchedPromptStageRequest;
 }
 
@@ -2533,9 +1955,6 @@ export interface StagesPromptStagesUpdateRequest {
      * A UUID string identifying this Prompt Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     promptStageRequest: PromptStageRequest;
 }
 
@@ -2547,9 +1966,6 @@ export interface StagesPromptStagesUsedByListRequest {
 }
 
 export interface StagesRedirectCreateRequest {
-    /**
-     *
-     */
     redirectStageRequest: RedirectStageRequest;
 }
 
@@ -2561,9 +1977,6 @@ export interface StagesRedirectDestroyRequest {
 }
 
 export interface StagesRedirectListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2588,9 +2001,6 @@ export interface StagesRedirectPartialUpdateRequest {
      * A UUID string identifying this Redirect Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedRedirectStageRequest?: PatchedRedirectStageRequest;
 }
 
@@ -2606,9 +2016,6 @@ export interface StagesRedirectUpdateRequest {
      * A UUID string identifying this Redirect Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     redirectStageRequest: RedirectStageRequest;
 }
 
@@ -2620,9 +2027,6 @@ export interface StagesRedirectUsedByListRequest {
 }
 
 export interface StagesSourceCreateRequest {
-    /**
-     *
-     */
     sourceStageRequest: SourceStageRequest;
 }
 
@@ -2634,9 +2038,6 @@ export interface StagesSourceDestroyRequest {
 }
 
 export interface StagesSourceListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2650,21 +2051,12 @@ export interface StagesSourceListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     resumeTimeout?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     source?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -2673,9 +2065,6 @@ export interface StagesSourcePartialUpdateRequest {
      * A UUID string identifying this Source Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedSourceStageRequest?: PatchedSourceStageRequest;
 }
 
@@ -2691,9 +2080,6 @@ export interface StagesSourceUpdateRequest {
      * A UUID string identifying this Source Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     sourceStageRequest: SourceStageRequest;
 }
 
@@ -2705,9 +2091,6 @@ export interface StagesSourceUsedByListRequest {
 }
 
 export interface StagesUserDeleteCreateRequest {
-    /**
-     *
-     */
     userDeleteStageRequest: UserDeleteStageRequest;
 }
 
@@ -2719,9 +2102,6 @@ export interface StagesUserDeleteDestroyRequest {
 }
 
 export interface StagesUserDeleteListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2739,9 +2119,6 @@ export interface StagesUserDeleteListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -2750,9 +2127,6 @@ export interface StagesUserDeletePartialUpdateRequest {
      * A UUID string identifying this User Delete Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedUserDeleteStageRequest?: PatchedUserDeleteStageRequest;
 }
 
@@ -2768,9 +2142,6 @@ export interface StagesUserDeleteUpdateRequest {
      * A UUID string identifying this User Delete Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     userDeleteStageRequest: UserDeleteStageRequest;
 }
 
@@ -2782,9 +2153,6 @@ export interface StagesUserDeleteUsedByListRequest {
 }
 
 export interface StagesUserLoginCreateRequest {
-    /**
-     *
-     */
     userLoginStageRequest: UserLoginStageRequest;
 }
 
@@ -2796,17 +2164,8 @@ export interface StagesUserLoginDestroyRequest {
 }
 
 export interface StagesUserLoginListRequest {
-    /**
-     *
-     */
     geoipBinding?: GeoipBindingEnum;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     networkBinding?: NetworkBindingEnum;
     /**
      * Which field to use when ordering the results.
@@ -2820,29 +2179,14 @@ export interface StagesUserLoginListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     rememberDevice?: string;
-    /**
-     *
-     */
     rememberMeOffset?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sessionDuration?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     terminateOtherSessions?: boolean;
 }
 
@@ -2851,9 +2195,6 @@ export interface StagesUserLoginPartialUpdateRequest {
      * A UUID string identifying this User Login Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedUserLoginStageRequest?: PatchedUserLoginStageRequest;
 }
 
@@ -2869,9 +2210,6 @@ export interface StagesUserLoginUpdateRequest {
      * A UUID string identifying this User Login Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     userLoginStageRequest: UserLoginStageRequest;
 }
 
@@ -2883,9 +2221,6 @@ export interface StagesUserLoginUsedByListRequest {
 }
 
 export interface StagesUserLogoutCreateRequest {
-    /**
-     *
-     */
     userLogoutStageRequest: UserLogoutStageRequest;
 }
 
@@ -2897,9 +2232,6 @@ export interface StagesUserLogoutDestroyRequest {
 }
 
 export interface StagesUserLogoutListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2917,9 +2249,6 @@ export interface StagesUserLogoutListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
 }
 
@@ -2928,9 +2257,6 @@ export interface StagesUserLogoutPartialUpdateRequest {
      * A UUID string identifying this User Logout Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedUserLogoutStageRequest?: PatchedUserLogoutStageRequest;
 }
 
@@ -2946,9 +2272,6 @@ export interface StagesUserLogoutUpdateRequest {
      * A UUID string identifying this User Logout Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     userLogoutStageRequest: UserLogoutStageRequest;
 }
 
@@ -2960,9 +2283,6 @@ export interface StagesUserLogoutUsedByListRequest {
 }
 
 export interface StagesUserWriteCreateRequest {
-    /**
-     *
-     */
     userWriteStageRequest: UserWriteStageRequest;
 }
 
@@ -2974,17 +2294,8 @@ export interface StagesUserWriteDestroyRequest {
 }
 
 export interface StagesUserWriteListRequest {
-    /**
-     *
-     */
     createUsersAsInactive?: boolean;
-    /**
-     *
-     */
     createUsersGroup?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -3002,21 +2313,9 @@ export interface StagesUserWriteListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     stageUuid?: string;
-    /**
-     *
-     */
     userCreationMode?: UserCreationModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     userType?: UserTypeEnum;
 }
 
@@ -3025,9 +2324,6 @@ export interface StagesUserWritePartialUpdateRequest {
      * A UUID string identifying this User Write Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     patchedUserWriteStageRequest?: PatchedUserWriteStageRequest;
 }
 
@@ -3043,9 +2339,6 @@ export interface StagesUserWriteUpdateRequest {
      * A UUID string identifying this User Write Stage.
      */
     stageUuid: string;
-    /**
-     *
-     */
     userWriteStageRequest: UserWriteStageRequest;
 }
 
@@ -3056,9 +2349,6 @@ export interface StagesUserWriteUsedByListRequest {
     stageUuid: string;
 }
 
-/**
- *
- */
 export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAccountLockdownCreate without sending the request
@@ -3088,7 +2378,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/account_lockdown/`;
+        const urlPath = `/stages/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -3258,7 +2548,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/account_lockdown/`;
+        const urlPath = `/stages/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -3690,7 +2980,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/`;
+        const urlPath = `/stages/all/`;
 
         return {
             path: urlPath,
@@ -3807,7 +3097,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/types/`;
+        const urlPath = `/stages/all/types/`;
 
         return {
             path: urlPath,
@@ -3922,7 +3212,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/user_settings/`;
+        const urlPath = `/stages/all/user_settings/`;
 
         return {
             path: urlPath,
@@ -3984,7 +3274,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/duo/`;
+        const urlPath = `/stages/authenticator/duo/`;
 
         return {
             path: urlPath,
@@ -4092,7 +3382,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoEnrollmentStatusCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoEnrollmentStatusCreate without sending the
+     * request
      */
     async stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest,
@@ -4153,7 +3444,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoImportDeviceManualCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoImportDeviceManualCreate without sending
+     * the request
      */
     async stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest,
@@ -4232,7 +3524,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoImportDevicesAutomaticCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoImportDevicesAutomaticCreate without
+     * sending the request
      */
     async stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest,
@@ -4354,7 +3647,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/duo/`;
+        const urlPath = `/stages/authenticator/duo/`;
 
         return {
             path: urlPath,
@@ -4713,7 +4006,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/email/`;
+        const urlPath = `/stages/authenticator/email/`;
 
         return {
             path: urlPath,
@@ -4911,7 +4204,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/email/`;
+        const urlPath = `/stages/authenticator/email/`;
 
         return {
             path: urlPath,
@@ -5274,7 +4567,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/endpoint_gdtc/`;
+        const urlPath = `/stages/authenticator/endpoint_gdtc/`;
 
         return {
             path: urlPath,
@@ -5318,7 +4611,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcDestroy without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcDestroy without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcDestroyRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest,
@@ -5424,7 +4718,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/endpoint_gdtc/`;
+        const urlPath = `/stages/authenticator/endpoint_gdtc/`;
 
         return {
             path: urlPath,
@@ -5465,7 +4759,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest,
@@ -5540,7 +4835,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcRetrieve without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcRetrieve without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest,
@@ -5692,7 +4988,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
@@ -5787,7 +5084,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/sms/`;
+        const urlPath = `/stages/authenticator/sms/`;
 
         return {
             path: urlPath,
@@ -5965,7 +5262,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/sms/`;
+        const urlPath = `/stages/authenticator/sms/`;
 
         return {
             path: urlPath,
@@ -6324,7 +5621,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/static/`;
+        const urlPath = `/stages/authenticator/static/`;
 
         return {
             path: urlPath,
@@ -6490,7 +5787,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/static/`;
+        const urlPath = `/stages/authenticator/static/`;
 
         return {
             path: urlPath,
@@ -6531,7 +5828,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorStaticPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorStaticPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorStaticPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorStaticPartialUpdateRequest,
@@ -6853,7 +6151,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/totp/`;
+        const urlPath = `/stages/authenticator/totp/`;
 
         return {
             path: urlPath,
@@ -7015,7 +6313,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/totp/`;
+        const urlPath = `/stages/authenticator/totp/`;
 
         return {
             path: urlPath,
@@ -7377,7 +6675,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/validate/`;
+        const urlPath = `/stages/authenticator/validate/`;
 
         return {
             path: urlPath,
@@ -7531,7 +6829,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/validate/`;
+        const urlPath = `/stages/authenticator/validate/`;
 
         return {
             path: urlPath,
@@ -7572,7 +6870,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorValidatePartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorValidatePartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorValidatePartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorValidatePartialUpdateRequest,
@@ -7894,7 +7193,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn/`;
+        const urlPath = `/stages/authenticator/webauthn/`;
 
         return {
             path: urlPath,
@@ -8002,7 +7301,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesList without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesList without sending the
+     * request
      */
     async stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest,
@@ -8048,7 +7348,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn_device_types/`;
+        const urlPath = `/stages/authenticator/webauthn_device_types/`;
 
         return {
             path: urlPath,
@@ -8089,7 +7389,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesRetrieve without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesRetrieve without sending
+     * the request
      */
     async stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest,
@@ -8224,7 +7525,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn/`;
+        const urlPath = `/stages/authenticator/webauthn/`;
 
         return {
             path: urlPath,
@@ -8265,7 +7566,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorWebauthnPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest,
@@ -8587,7 +7889,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/captcha/`;
+        const urlPath = `/stages/captcha/`;
 
         return {
             path: urlPath,
@@ -8730,7 +8032,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/captcha/`;
+        const urlPath = `/stages/captcha/`;
 
         return {
             path: urlPath,
@@ -9069,7 +8371,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/consent/`;
+        const urlPath = `/stages/consent/`;
 
         return {
             path: urlPath,
@@ -9220,7 +8522,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/consent/`;
+        const urlPath = `/stages/consent/`;
 
         return {
             path: urlPath,
@@ -9559,7 +8861,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/deny/`;
+        const urlPath = `/stages/deny/`;
 
         return {
             path: urlPath,
@@ -9704,7 +9006,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/deny/`;
+        const urlPath = `/stages/deny/`;
 
         return {
             path: urlPath,
@@ -10037,7 +9339,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/dummy/`;
+        const urlPath = `/stages/dummy/`;
 
         return {
             path: urlPath,
@@ -10182,7 +9484,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/dummy/`;
+        const urlPath = `/stages/dummy/`;
 
         return {
             path: urlPath,
@@ -10515,7 +9817,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/`;
+        const urlPath = `/stages/email/`;
 
         return {
             path: urlPath,
@@ -10701,7 +10003,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/`;
+        const urlPath = `/stages/email/`;
 
         return {
             path: urlPath,
@@ -10885,7 +10187,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/templates/`;
+        const urlPath = `/stages/email/templates/`;
 
         return {
             path: urlPath,
@@ -11085,7 +10387,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/endpoints/`;
+        const urlPath = `/stages/endpoints/`;
 
         return {
             path: urlPath,
@@ -11224,7 +10526,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/endpoints/`;
+        const urlPath = `/stages/endpoints/`;
 
         return {
             path: urlPath,
@@ -11569,7 +10871,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/identification/`;
+        const urlPath = `/stages/identification/`;
 
         return {
             path: urlPath,
@@ -11745,7 +11047,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/identification/`;
+        const urlPath = `/stages/identification/`;
 
         return {
             path: urlPath,
@@ -12098,7 +11400,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/invitations/`;
+        const urlPath = `/stages/invitation/invitations/`;
 
         return {
             path: urlPath,
@@ -12254,7 +11556,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/invitations/`;
+        const urlPath = `/stages/invitation/invitations/`;
 
         return {
             path: urlPath,
@@ -12295,7 +11597,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationInvitationsPartialUpdate without sending the request
+     * Creates request options for stagesInvitationInvitationsPartialUpdate without sending the
+     * request
      */
     async stagesInvitationInvitationsPartialUpdateRequestOpts(
         requestParameters: StagesInvitationInvitationsPartialUpdateRequest,
@@ -12434,7 +11737,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationInvitationsSendEmailCreate without sending the request
+     * Creates request options for stagesInvitationInvitationsSendEmailCreate without sending the
+     * request
      */
     async stagesInvitationInvitationsSendEmailCreateRequestOpts(
         requestParameters: StagesInvitationInvitationsSendEmailCreateRequest,
@@ -12681,7 +11985,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/stages/`;
+        const urlPath = `/stages/invitation/stages/`;
 
         return {
             path: urlPath,
@@ -12838,7 +12142,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/stages/`;
+        const urlPath = `/stages/invitation/stages/`;
 
         return {
             path: urlPath,
@@ -13195,7 +12499,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/mtls/`;
+        const urlPath = `/stages/mtls/`;
 
         return {
             path: urlPath,
@@ -13355,7 +12659,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/mtls/`;
+        const urlPath = `/stages/mtls/`;
 
         return {
             path: urlPath,
@@ -13696,7 +13000,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/password/`;
+        const urlPath = `/stages/password/`;
 
         return {
             path: urlPath,
@@ -13848,7 +13152,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/password/`;
+        const urlPath = `/stages/password/`;
 
         return {
             path: urlPath,
@@ -14192,7 +13496,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/`;
+        const urlPath = `/stages/prompt/prompts/`;
 
         return {
             path: urlPath,
@@ -14345,7 +13649,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/`;
+        const urlPath = `/stages/prompt/prompts/`;
 
         return {
             path: urlPath,
@@ -14480,7 +13784,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/preview/`;
+        const urlPath = `/stages/prompt/prompts/preview/`;
 
         return {
             path: urlPath,
@@ -14758,7 +14062,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/stages/`;
+        const urlPath = `/stages/prompt/stages/`;
 
         return {
             path: urlPath,
@@ -14907,7 +14211,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/stages/`;
+        const urlPath = `/stages/prompt/stages/`;
 
         return {
             path: urlPath,
@@ -15248,7 +14552,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/redirect/`;
+        const urlPath = `/stages/redirect/`;
 
         return {
             path: urlPath,
@@ -15387,7 +14691,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/redirect/`;
+        const urlPath = `/stages/redirect/`;
 
         return {
             path: urlPath,
@@ -15731,7 +15035,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/source/`;
+        const urlPath = `/stages/source/`;
 
         return {
             path: urlPath,
@@ -15880,7 +15184,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/source/`;
+        const urlPath = `/stages/source/`;
 
         return {
             path: urlPath,
@@ -16213,7 +15517,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_delete/`;
+        const urlPath = `/stages/user_delete/`;
 
         return {
             path: urlPath,
@@ -16356,7 +15660,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_delete/`;
+        const urlPath = `/stages/user_delete/`;
 
         return {
             path: urlPath,
@@ -16701,7 +16005,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_login/`;
+        const urlPath = `/stages/user_login/`;
 
         return {
             path: urlPath,
@@ -16869,7 +16173,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_login/`;
+        const urlPath = `/stages/user_login/`;
 
         return {
             path: urlPath,
@@ -17214,7 +16518,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_logout/`;
+        const urlPath = `/stages/user_logout/`;
 
         return {
             path: urlPath,
@@ -17357,7 +16661,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_logout/`;
+        const urlPath = `/stages/user_logout/`;
 
         return {
             path: urlPath,
@@ -17702,7 +17006,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_write/`;
+        const urlPath = `/stages/user_write/`;
 
         return {
             path: urlPath,
@@ -17866,7 +17170,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_write/`;
+        const urlPath = `/stages/user_write/`;
 
         return {
             path: urlPath,

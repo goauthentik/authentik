@@ -112,6 +112,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
         if (!isAPIResultReady(session)) {
             this.#commands.clear();
+
             return;
         }
 

@@ -1,9 +1,8 @@
 /**
  * @file Remark plugins for the build-time markdown pipeline.
- *
- * The runtime side (`src/elements/ak-mdx/remark/*`) mirrors a subset of
- * these. Keeping the shapes parallel makes it easier to spot drift when
- * either pipeline grows a new transform.
+ *   The runtime side (`src/elements/ak-mdx/remark/*`) mirrors a subset of
+ *   these. Keeping the shapes parallel makes it easier to spot drift when
+ *   either pipeline grows a new transform.
  */
 
 import { visit } from "unist-util-visit";
@@ -40,6 +39,7 @@ const ADMONITION_BARE_LABEL_RE = new RegExp(
 
 /**
  * @param {string} source
+ *
  * @returns {string}
  */
 export function normalizeAdmonitionLabels(source) {
@@ -54,7 +54,7 @@ export function normalizeAdmonitionLabels(source) {
  * element inside the slot.
  */
 export function remarkAdmonition() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, (node) => {
             if (
                 node.type !== "containerDirective" &&
@@ -63,25 +63,30 @@ export function remarkAdmonition() {
             ) {
                 return;
             }
+
             if (!ADMONITIONS.has(node.name)) return;
 
             const tagName = node.type === "textDirective" ? "span" : "ak-alert";
             const data = node.data || (node.data = {});
             data.hName = tagName;
+
             data.hProperties = {
-                ...(data.hProperties || {}),
-                ...(node.attributes || {}),
+                ...data.hProperties,
+                ...node.attributes,
                 level:
                     /** @type {Record<string, string>} */ (ADMONITION_LEVEL)[node.name] ??
                     `pf-m-${node.name}`,
             };
 
             const children = /** @type {any[]} */ (node.children || []);
+
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
+
             if (labelIndex !== -1) {
                 const label = children[labelIndex];
+
                 children[labelIndex] = {
                     type: "paragraph",
                     children: [{ type: "strong", children: label.children }],
@@ -106,20 +111,23 @@ export function remarkAdmonition() {
  */
 export function remarkHeadings({ slugger }) {
     /**
-     * @param {{ value?: string, children?: any[] }} n
+     * @param {{ value?: string; children?: any[] }} n
+     *
      * @returns {string}
      */
     const flatten = (n) => {
         if (n.value) return n.value;
+
         if (n.children) return n.children.map(flatten).join("");
+
         return "";
     };
 
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, "heading", (node) => {
             const id = slugger.slug(flatten(node));
             const data = node.data || (node.data = {});
-            data.hProperties = { ...(data.hProperties || {}), id };
+            data.hProperties = { ...data.hProperties, id };
         });
     };
 }
@@ -128,11 +136,12 @@ export function remarkHeadings({ slugger }) {
  * Remark plugin: tag lists with PatternFly's content class.
  */
 export function remarkLists() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (/** @type {import("mdast").Root} */ tree) => {
         visit(tree, "list", (node) => {
             const data = node.data || (node.data = {});
+
             data.hProperties = {
-                ...(data.hProperties || {}),
+                ...data.hProperties,
                 className: "pf-c-list",
             };
         });
