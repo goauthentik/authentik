@@ -15,6 +15,7 @@ const ADMIN_USERNAME = "akadmin";
 const DAY = 24 * 60 * 60 * 1_000;
 
 type Page = PageFixtureInit["page"];
+
 type Browser = NonNullable<ReturnType<ReturnType<Page["context"]>["browser"]>>;
 
 interface BrowserContext {
@@ -129,6 +130,7 @@ async function setUserPassword(
         const dialog = page
             .getByRole("dialog")
             .filter({ has: page.getByRole("button", { name: "Set Password", exact: true }) });
+
         await expect(dialog, "Set password dialog opens").toBeVisible();
         await form.fill("New Password", password, dialog);
         await dialog.getByRole("button", { name: "Set Password", exact: true }).click();
@@ -157,6 +159,7 @@ async function verifyLogin(
                 page.getByRole("heading", { level: 1 }),
                 "Active user can log in before offboarding",
             ).toHaveText("Application Dashboard", { timeout: 10_000 });
+
             return;
         }
 
@@ -257,10 +260,12 @@ async function scheduleOffboarding(
             fields.getByRole("radio", { name: "Deactivate" }),
             "Deactivate is selected by default",
         ).toBeChecked();
+
         await expect(
             fields.getByRole("checkbox", { name: "Revoke sessions" }),
             "Session revocation is enabled by default",
         ).toBeChecked();
+
         await expect(
             fields.getByRole("checkbox", { name: "Revoke tokens" }),
             "Token revocation is enabled by default",
@@ -272,9 +277,11 @@ async function scheduleOffboarding(
         await form.setInputCheck("Revoke tokens", revokeTokens, fields);
 
         await fields.getByRole("button", { name: "Schedule", exact: true }).click();
+
         await expect(dialog, "Schedule offboarding dialog closes").toBeHidden({
             timeout: 10_000,
         });
+
         await expect(
             cancelOffboardingButton(page),
             "Pending offboarding can be canceled",
@@ -343,6 +350,7 @@ async function runDueOffboardings(context: BrowserContext) {
 
         const runButton = scheduleRow.locator("ak-action-button").getByRole("button");
         await runButton.click();
+
         await expect(runButton, "Due offboarding schedule request completes").toHaveAttribute(
             "aria-busy",
             "false",
@@ -366,6 +374,7 @@ async function waitForOffboardingEvent(
     await expect(async () => {
         await form.fill(searchInput, query);
         await searchInput.press("Enter");
+
         await expect(eventRow, "Matching offboarding event is visible").toBeVisible({
             timeout: 2_000,
         });
@@ -398,10 +407,12 @@ test.describe("User offboarding", () => {
             await test.step("Authenticate", async () => {
                 await session.toLoginPage();
                 await session.login();
+
                 await expect(
                     page.getByRole("heading", { level: 1 }),
                     "User interface opens after authentication",
                 ).toHaveText("Application Dashboard", { timeout: 10_000 });
+
                 test.skip(!(await license.isAvailable()), "A valid enterprise license is required");
                 await pointer.click("Admin interface", "link");
                 await openUsers({ page, form, pointer });
@@ -419,6 +430,7 @@ test.describe("User offboarding", () => {
         const scheduledAt = new Date(Date.now() + DAY);
 
         await createAndOpenInternalUser(context, identity);
+
         await scheduleOffboarding(context, scheduledAt, {
             action: "Delete",
             revokeSessions: false,
@@ -426,9 +438,11 @@ test.describe("User offboarding", () => {
         });
 
         let list = await openOffboardingList(context);
+
         const pendingFilter = list.getByRole("checkbox", {
             name: "Only show pending offboardings",
         });
+
         await expect(pendingFilter, "Pending filter is enabled by default").toBeChecked();
 
         let row = await form.search(identity.username, list);
@@ -439,6 +453,7 @@ test.describe("User offboarding", () => {
 
         await test.step("Navigate to the user from the offboarding list", async () => {
             await row.getByRole("link", { name: identity.username }).click();
+
             await expect(
                 page.getByRole("heading", { name: identity.username, exact: true }).first(),
                 "Offboarding user link opens the user details page",
@@ -454,21 +469,26 @@ test.describe("User offboarding", () => {
             const dialog = summary.getByRole("dialog");
 
             await expect(dialog, "Cancel offboarding dialog opens").toBeVisible();
+
             await expect(summary, "Cancel dialog shows the selected action").toContainText(
                 "Action: Delete",
             );
+
             await expect(
                 summary,
                 "Cancel dialog shows session revocation is disabled",
             ).toContainText("Revoke sessions: No");
+
             await expect(summary, "Cancel dialog shows token revocation is disabled").toContainText(
                 "Revoke tokens: No",
             );
 
             await summary.getByRole("button", { name: "Cancel offboarding" }).click();
+
             await expect(dialog, "Cancel offboarding dialog closes").toBeHidden({
                 timeout: 10_000,
             });
+
             await expect(
                 page.getByRole("button", { name: "Schedule Offboarding" }),
                 "Canceled user can be rescheduled",
@@ -481,6 +501,7 @@ test.describe("User offboarding", () => {
         await expect(row, "Canceled offboarding remains in history").toContainText("Canceled");
 
         await row.getByRole("link", { name: identity.username }).click();
+
         await expect(
             page.getByRole("heading", { name: identity.username, exact: true }).first(),
             "Canceled offboarding user opens",
@@ -528,6 +549,7 @@ test.describe("User offboarding", () => {
         const identity = identities.get(testInfo.testId)!;
 
         await openUserDetails(context, ADMIN_USERNAME);
+
         await expect(
             page.getByRole("button", { name: "Schedule Offboarding" }),
             "Current administrator cannot schedule their own offboarding",
@@ -547,6 +569,7 @@ test.describe("User offboarding", () => {
         const context = { page, form, pointer };
         const identity = identities.get(testInfo.testId)!;
         const sharedUsername = `${identity.username}_bulk`;
+
         const users: UserIdentity[] = [
             {
                 displayName: `${identity.displayName} Bulk One`,
@@ -562,12 +585,14 @@ test.describe("User offboarding", () => {
             if (index > 0) {
                 await openUsers(context);
             }
+
             await createAndOpenInternalUser(context, user);
             await scheduleOffboarding(context, new Date(Date.now() + (index + 1) * DAY));
         }
 
         const list = await openOffboardingList(context);
         const rows = await searchRows(context, list, sharedUsername);
+
         await expect(rows, "Both pending offboardings are listed").toHaveCount(2, {
             timeout: 10_000,
         });
@@ -582,24 +607,29 @@ test.describe("User offboarding", () => {
         const dialog = page.getByRole("dialog").filter({ hasText: "Cancel Offboardings" });
 
         await expect(dialog, "Bulk cancellation dialog opens").toBeVisible();
+
         await expect(bulk, "Bulk cancellation includes both users").toContainText(
             users[0].username,
         );
+
         await expect(bulk, "Bulk cancellation includes both users").toContainText(
             users[1].username,
         );
 
         await bulk.getByRole("button", { name: "Cancel Offboardings" }).last().click();
         await expect(dialog, "Bulk cancellation dialog closes").toBeHidden({ timeout: 10_000 });
+
         await expect(rows, "Canceled offboardings leave the pending list").toHaveCount(0, {
             timeout: 10_000,
         });
 
         await setOnlyPending(list, false);
         const canceledRows = await searchRows(context, list, sharedUsername);
+
         await expect(canceledRows, "Canceled offboardings remain in history").toHaveCount(2, {
             timeout: 10_000,
         });
+
         for (const row of await canceledRows.all()) {
             await expect(row, "Bulk-canceled offboarding has canceled status").toContainText(
                 "Canceled",
@@ -635,6 +665,7 @@ test.describe("User offboarding", () => {
 
         const eventRow = await waitForOffboardingEvent(context, identity.username, "deactivate");
         await eventRow.getByRole("link").last().click();
+
         await expect(page.locator("pre"), "Audit event retains the target username").toContainText(
             identity.username,
         );
@@ -654,6 +685,7 @@ test.describe("User offboarding", () => {
             activeStatus,
             "Executed deactivation marks the user inactive",
         ).toHaveAccessibleName("No");
+
         await expect(
             page.getByRole("button", { name: "Schedule Offboarding" }),
             "Completed offboarding is no longer pending",
@@ -705,15 +737,18 @@ test.describe("User offboarding", () => {
         await eventRow.getByRole("link").last().click();
 
         const rawEvent = page.locator("pre");
+
         await expect(rawEvent, "Delete audit event remains available").toContainText(
             identity.username,
         );
+
         await expect(rawEvent, "Delete audit event records the selected action").toContainText(
             '"offboarding_action": "delete"',
         );
 
         const usersList = await openUsers(context);
         const deletedRows = await searchRows(context, usersList, identity.username);
+
         await expect(deletedRows, "Deleted user is removed from the users list").toHaveCount(0, {
             timeout: 10_000,
         });
