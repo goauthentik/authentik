@@ -61,6 +61,7 @@ test.describe("Admin interface routing", () => {
 
         await page.goBack();
         await navigator.waitForPathname(OVERVIEW);
+
         await expect(
             page.locator("ak-admin-overview"),
             "Overview renders after back",
@@ -68,6 +69,7 @@ test.describe("Admin interface routing", () => {
 
         await page.goForward();
         await navigator.waitForPathname(SYSTEM_TASKS);
+
         await expect(
             page.locator("ak-system-tasks"),
             "System Tasks renders after forward",

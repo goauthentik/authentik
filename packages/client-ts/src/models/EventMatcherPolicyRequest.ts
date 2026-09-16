@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,20 +19,20 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Event Matcher Policy Serializer
+ *
  * @export
  * @interface EventMatcherPolicyRequest
  */
 export interface EventMatcherPolicyRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
-     * Match created events with this action type. When left empty, all action types will be matched.
+     * Match created events with this action type. When left empty, all action types will be
+     * matched.
      */
     action?: EventActions | null;
     /**
@@ -46,12 +44,10 @@ export interface EventMatcherPolicyRequest {
      */
     app?: AppEnum | null;
     /**
-     * Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+     * Match events created by selected model. When left empty, all models are matched. When an app
+     * is selected, all the application's models are matched.
      */
     model?: ModelEnum | null;
-    /**
-     *
-     */
     query?: string | null;
 }
 

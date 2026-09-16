@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AccountLockdownStage Serializer
+ *
  * @export
  * @interface AccountLockdownStage
  */
 export interface AccountLockdownStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,9 +38,6 @@ export interface AccountLockdownStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
      * Deactivate the user account (set is_active to False)
@@ -66,7 +56,8 @@ export interface AccountLockdownStage {
      */
     revokeTokens?: boolean;
     /**
-     * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
+     * Flow to redirect users to after self-service lockdown. This flow should not require
+     * authentication since the user's session is deleted.
      */
     selfServiceCompletionFlow?: string | null;
 }

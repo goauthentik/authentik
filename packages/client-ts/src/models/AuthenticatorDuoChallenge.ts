@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,41 +16,18 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Duo Challenge
+ *
  * @export
  * @interface AuthenticatorDuoChallenge
  */
 export interface AuthenticatorDuoChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     activationBarcode: string;
-    /**
-     *
-     */
     activationCode: string;
-    /**
-     *
-     */
     stageUuid: string;
 }
 

@@ -37,8 +37,8 @@ declare module "process" {
                  * An environment variable used to determine
                  * whether Node.js is running in production mode.
                  *
-                 * @see {@link https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production | The difference between development and production}
                  * @runtime node
+                 * @see {@link https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production | The difference between development and production}
                  */
                 readonly NODE_ENV?: "development" | "production";
 
@@ -52,10 +52,10 @@ declare module "process" {
                 readonly GIT_BUILD_HASH?: string;
 
                 /**
-                 * @todo Determine where this is used and if it is needed,
-                 * give it a better name.
                  * @deprecated
                  * @runtime node
+                 * @todo Determine where this is used and if it is needed,
+                 * give it a better name.
                  */
                 readonly AK_API_BASE_PATH?: string;
             }

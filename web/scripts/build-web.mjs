@@ -3,16 +3,14 @@
  */
 
 import "@goauthentik/core/environment/load/node";
-
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.mjs";
 
 /**
- * @file ESBuild script for building the authentik web UI.
- *
  * @import { BuildOptions, Plugin } from "esbuild";
+ * @file ESBuild script for building the authentik web UI.
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -35,6 +33,7 @@ const bundleDefinitions = createBundleDefinitions();
 const publicBundledDefinitions = Object.fromEntries(
     Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
 );
+
 logger.info(publicBundledDefinitions, "Bundle definitions");
 
 const entryPointNames = Object.keys(EntryPoint);
@@ -50,7 +49,7 @@ const BASE_ESBUILD_PLUGINS = [
         setup(build) {
             build.onEnd(async () => {
                 /**
-                 * @type {import('esbuild').PartialMessage[]}
+                 * @type {import("esbuild").PartialMessage[]}
                  */
                 const errors = [];
 
@@ -64,13 +63,16 @@ const BASE_ESBUILD_PLUGINS = [
         name: "log",
         setup(build) {
             let start = new Date(0);
+
             build.onStart(() => {
                 start = new Date();
                 logger.info("Build started");
             });
+
             build.onEnd((r) => {
                 const end = new Date();
                 const dur = end.getTime() - start.getTime();
+
                 logger.info(
                     `Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`,
                 );
@@ -145,6 +147,7 @@ const BASE_ESBUILD_OPTIONS = {
  *
  * @param {BuildOptions["entryPoints"]} entryPoints
  * @param {Plugin[]} plugIns
+ *
  * @returns {BuildOptions}
  */
 export function createESBuildOptions(entryPoints, plugIns = []) {
@@ -183,8 +186,7 @@ function doHelp() {
 }
 
 /**
- *
- * @returns {Promise<() => Promise<void>>} dispose
+ * @returns {Promise<() => Promise<void>>} Dispose
  */
 async function doWatch() {
     logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);
@@ -222,6 +224,7 @@ async function doWatch() {
 
     return () => {
         logger.flush();
+
         console.info("");
         console.info("🛑 Stopping file watcher...");
 
@@ -245,6 +248,7 @@ async function doProxy() {
         EntryPoint.StaticStyles,
         EntryPoint.FlowStyles,
     ];
+
     const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
@@ -292,6 +296,7 @@ await cleanDistDirectory()
                         if (signalCount > 3) {
                             // Something is taking too long and the user wants to exit now.
                             console.log("🛑 Forcing exit...");
+
                             process.exit(0);
                         }
                     });

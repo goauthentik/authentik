@@ -1,9 +1,8 @@
 /**
  * @file Build-time markdown → HTML pipeline.
- *
- * The output is wrapped in a `<div class="pf-c-content" part="content">`
- * envelope so consuming `<ak-mdx>` elements can rely on PatternFly content
- * styles and expose CSS parts (`title`, `content`) to host pages.
+ *   The output is wrapped in a `<div class="pf-c-content" part="content">`
+ *   envelope so consuming `<ak-mdx>` elements can rely on PatternFly content
+ *   styles and expose CSS parts (`title`, `content`) to host pages.
  */
 
 import { rehypeAnchors, rehypeMermaid } from "./rehype.js";
@@ -35,12 +34,15 @@ import { parse as parseYAML } from "yaml";
  * pieces. Returns an empty object if there is no frontmatter.
  *
  * @param {string} source
- * @returns {{ body: string, frontmatter: Record<string, unknown> }}
+ *
+ * @returns {{ body: string; frontmatter: Record<string, unknown> }}
  */
 function splitFrontmatter(source) {
     const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+
     if (!match) return { body: source, frontmatter: {} };
     const frontmatter = parseYAML(match[1]) || {};
+
     return { body: source.slice(match[0].length), frontmatter };
 }
 
@@ -51,12 +53,13 @@ function splitFrontmatter(source) {
  * escaping rules — no hand-rolled `&`/`<`/`>`/`"` replacement that has
  * to be remembered and audited separately.
  *
- * @param {import('hast').Element[]} bodyChildren Hast nodes from the markdown pipeline.
+ * @param {import("hast").Element[]} bodyChildren Hast nodes from the markdown pipeline.
  * @param {string | null} title Frontmatter title, or `null` to omit the `<h1>`.
+ *
  * @returns {string}
  */
 function renderEnvelope(bodyChildren, title) {
-    /** @type {import('hast').Element[]} */
+    /** @type {import("hast").Element[]} */
     const children = [];
 
     if (title) {
@@ -70,7 +73,7 @@ function renderEnvelope(bodyChildren, title) {
 
     children.push(...bodyChildren);
 
-    /** @type {import('hast').Root} */
+    /** @type {import("hast").Root} */
     const root = {
         type: "root",
         children: [
@@ -93,8 +96,9 @@ function renderEnvelope(bodyChildren, title) {
  *
  * @param {string} source
  * @param {string} publicDirectory Path of the file's directory inside the
- *     docs site, used to resolve relative `<a>` hrefs at build time.
- * @returns {Promise<{ html: string, frontmatter: Record<string, unknown> }>}
+ *   docs site, used to resolve relative `<a>` hrefs at build time.
+ *
+ * @returns {Promise<{ html: string; frontmatter: Record<string, unknown> }>}
  */
 export async function compileMarkdown(source, publicDirectory) {
     const { body: rawBody, frontmatter } = splitFrontmatter(source);
@@ -125,12 +129,12 @@ export async function compileMarkdown(source, publicDirectory) {
         })
         .use(rehypeMermaid);
 
-    const tree = /** @type {import('hast').Root} */ (
+    const tree = /** @type {import("hast").Root} */ (
         await processor.run(processor.parse(body), body)
     );
 
     const title = typeof frontmatter.title === "string" ? frontmatter.title : null;
-    const html = renderEnvelope(/** @type {import('hast').Element[]} */ (tree.children), title);
+    const html = renderEnvelope(/** @type {import("hast").Element[]} */ (tree.children), title);
 
     return { html, frontmatter };
 }
