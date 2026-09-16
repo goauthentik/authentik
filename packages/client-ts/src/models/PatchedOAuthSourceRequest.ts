@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -33,6 +31,7 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * OAuth Source Serializer
+ *
  * @export
  * @interface PatchedOAuthSourceRequest
  */
@@ -45,12 +44,10 @@ export interface PatchedOAuthSourceRequest {
      * Internal source name, used in URLs.
      */
     slug?: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -61,37 +58,19 @@ export interface PatchedOAuthSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
      */
     groupMatchingMode?: GroupMatchingModeEnum;
-    /**
-     *
-     */
     providerType?: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
@@ -109,33 +88,12 @@ export interface PatchedOAuthSourceRequest {
      * URL used by authentik to get user information.
      */
     profileUrl?: string | null;
-    /**
-     *
-     */
     pkce?: PKCEMethodEnum;
-    /**
-     *
-     */
     consumerKey?: string;
-    /**
-     *
-     */
     secret?: string;
-    /**
-     *
-     */
     additionalScopes?: string;
-    /**
-     *
-     */
     oidcWellKnownUrl?: string;
-    /**
-     *
-     */
     oidcJwksUrl?: string;
-    /**
-     *
-     */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow

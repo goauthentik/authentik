@@ -3,7 +3,6 @@ import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/timestamp/ak-timestamp";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -81,6 +80,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Offboarding(s)")}
             action=${msg("canceled")}
@@ -100,9 +100,11 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         // backend enforces both, so hide the control rather than offer a dead 403.
         const cancelable =
             item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUser?.pk;
+
         if (!cancelable) {
             return msg("-");
         }
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Offboarding(s)")}
             action=${msg("canceled")}

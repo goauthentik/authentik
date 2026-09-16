@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
@@ -34,11 +33,13 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
                 const sessions = await aki(CoreApi).coreAuthenticatedSessionsList({
                     userUsername: user.username,
                 });
+
                 this.sessionCounts.set(user.pk, sessions.pagination.count);
             } catch {
                 this.sessionCounts.set(user.pk, 0);
             }
         }
+
         this.requestUpdate();
 
         return createPaginatedResponse(this.items);
@@ -54,12 +55,15 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
 
     row(item: User): SlottedTemplateResult[] {
         const sessionCount = this.sessionCounts.get(item.pk);
+
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,
-            html`${sessionCount !== undefined
-                ? sessionCount
-                : html`<ak-spinner size="sm"></ak-spinner>`}`,
+            html`${
+                sessionCount !== undefined
+                    ? sessionCount
+                    : html`<ak-spinner size="sm"></ak-spinner>`
+            }`,
         ];
     }
 }
@@ -90,16 +94,19 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 const response = await aki(CoreApi).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
+
                 this.revokedCount = response.deleted || 0;
             }
 
             this.onSuccess();
+
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+
             this.open = false;
         } catch (e) {
             this.onError(e as Error);

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * Domain Serializer
+ *
  * @export
  * @interface DomainRequest
  */
 export interface DomainRequest {
-    /**
-     *
-     */
     domain: string;
-    /**
-     *
-     */
     isPrimary?: boolean;
-    /**
-     *
-     */
     tenant: string;
 }
 

@@ -5,6 +5,7 @@ import { match, P } from "ts-pattern";
 import { ReactiveController, ReactiveControllerHost } from "lit";
 
 type DrawerResizeControllerHost = ReactiveControllerHost & AkDrawer;
+
 type Position = "start" | "end" | "left" | "right" | "bottom";
 
 const oneOf = P.union;
@@ -45,14 +46,17 @@ export class DrawerResizeController implements ReactiveController {
     restartController() {
         this.endController();
         this.#abortController = new AbortController();
+
         return this.#abortController.signal;
     }
 
     hostQ(part: string): HTMLElement {
         const element = this.host.renderRoot.querySelector(part);
+
         if (element === null || !(element instanceof HTMLElement)) {
             throw new Error(`Could not identify requested part ${element}`);
         }
+
         return element;
     }
 
@@ -99,6 +103,7 @@ export class DrawerResizeController implements ReactiveController {
 
     handleMove(ev: MouseEvent | TouchEvent, controlPosition: number) {
         ev.stopPropagation();
+
         const newSize = match(this.position)
             .with(oneOf("end", "right"), () => this.#positions.end - controlPosition)
             .with(oneOf("start", "left"), () => controlPosition - this.#positions.start)
@@ -106,9 +111,11 @@ export class DrawerResizeController implements ReactiveController {
             .otherwise(() => {
                 throw new Error(`Do not recognize position: ${this.position}`);
             });
+
         if (this.position === "bottom") {
             this.panel.style.overflowAnchor = "none";
         }
+
         this.panel.style.setProperty(DEFAULT_SIZE_PROPERTY_NAME, `${newSize}px`);
     }
 
@@ -155,8 +162,10 @@ export class DrawerResizeController implements ReactiveController {
 
     handleKeyDown = (ev: KeyboardEvent) => {
         const key = ev.key;
+
         const positionKeys =
             this.position === "bottom" ? ["ArrowUp", "ArrowDown"] : ["ArrowLeft", "ArrowRight"];
+
         const validKeys = ["Escape", "Enter", ...positionKeys];
 
         // Prevent default behavior when resizing, but otherwise let it pass.
@@ -164,8 +173,10 @@ export class DrawerResizeController implements ReactiveController {
             if (this.isResizing) {
                 ev.preventDefault();
             }
+
             return;
         }
+
         ev.preventDefault();
 
         const delta = match([key, this.position])

@@ -9,8 +9,8 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
 import "#elements/Alert";
-
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
 
@@ -23,8 +23,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
