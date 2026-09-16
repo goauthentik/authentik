@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,23 +11,18 @@
  */
 
 import { parseDateTime } from "../runtime";
-
 /**
  * Group Membership Policy Serializer
+ *
  * @export
  * @interface ExpressionPolicy
  */
 export interface ExpressionPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -52,17 +45,8 @@ export interface ExpressionPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     expression: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,13 @@ import { LogEventFromJSON } from "./LogEvent";
 
 /**
  * Logs of an attempted blueprint import
+ *
  * @export
  * @interface BlueprintImportResult
  */
 export interface BlueprintImportResult {
-    /**
-     *
-     */
     readonly logs: Array<LogEvent>;
-    /**
-     *
-     */
     readonly success: boolean;
-    /**
-     *
-     */
     readonly imported: boolean;
 }
 

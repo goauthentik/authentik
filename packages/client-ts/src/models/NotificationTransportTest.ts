@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Notification test serializer
+ *
  * @export
  * @interface NotificationTransportTest
  */
 export interface NotificationTransportTest {
-    /**
-     *
-     */
     messages: Array<string>;
 }
 

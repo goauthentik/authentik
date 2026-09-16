@@ -2,18 +2,16 @@
 
 /**
  * @file Locale module post-process pass.
- *
- * `@lit/localize-tools` 0.8.x runs an HTML escape on every text fragment it
- * splices into a compiled message template, including `str`-tagged and
- * untagged messages whose runtime value is a plain string. Any `<`/`>`/`&`
- * in the translation gets baked in as `&lt;`/`&gt;`/`&amp;`, and any literal
- * entity reference a translator typed (`&quot;`, `&lt;`, ...) round-trips
- * through the escape as `&amp;quot;`/`&amp;lt;`/..., showing up to the user
- * as visible entity text.
- *
- * The `html`-tagged messages need the escape — lit-html parses their static
- * parts as HTML — so we leave those alone. Everything else gets decoded
- * back to the characters the translator meant.
+ *   `@lit/localize-tools` 0.8.x runs an HTML escape on every text fragment it
+ *   splices into a compiled message template, including `str`-tagged and
+ *   untagged messages whose runtime value is a plain string. Any `<`/`>`/`&`
+ *   in the translation gets baked in as `&lt;`/`&gt;`/`&amp;`, and any literal
+ *   entity reference a translator typed (`&quot;`, `&lt;`, ...) round-trips
+ *   through the escape as `&amp;quot;`/`&amp;lt;`/..., showing up to the user
+ *   as visible entity text.
+ *   The `html`-tagged messages need the escape — lit-html parses their static
+ *   parts as HTML — so we leave those alone. Everything else gets decoded
+ *   back to the characters the translator meant.
  */
 
 import * as fs from "node:fs/promises";
@@ -41,6 +39,7 @@ const ENTITY_TABLE = {
  * DOM, so the entity references have to disappear entirely.
  *
  * @param {string} input
+ *
  * @returns {{ output: string; replacements: number }}
  */
 function decodeXmlEntities(input) {
@@ -49,8 +48,10 @@ function decodeXmlEntities(input) {
 
     for (;;) {
         let local = 0;
+
         const next = current.replace(ENTITY_PATTERN, (match) => {
             local++;
+
             return ENTITY_TABLE[match];
         });
 
@@ -70,14 +71,18 @@ function decodeXmlEntities(input) {
  * `&gt;` (which renders to `>`).
  *
  * @param {string} input
+ *
  * @returns {{ output: string; replacements: number }}
  */
 function undoubleHtmlEntities(input) {
     let replacements = 0;
+
     const output = input.replace(DOUBLE_ENCODED_PATTERN, (_match, name) => {
         replacements++;
+
         return `&${name};`;
     });
+
     return { output, replacements };
 }
 
@@ -89,6 +94,7 @@ function undoubleHtmlEntities(input) {
  * `@lit/localize-tools` is regular enough to scan character-by-character.
  *
  * @param {string} source
+ *
  * @returns {{ output: string; replacements: number }}
  */
 export function sanitizeLocaleModule(source) {
@@ -101,6 +107,7 @@ export function sanitizeLocaleModule(source) {
 
         if (backtick === -1) {
             output += source.slice(cursor);
+
             break;
         }
 
@@ -129,6 +136,7 @@ export function sanitizeLocaleModule(source) {
 
             if (ch === "\\") {
                 end += 2;
+
                 continue;
             }
 
@@ -139,18 +147,23 @@ export function sanitizeLocaleModule(source) {
             if (ch === "$" && source[end + 1] === "{") {
                 depth++;
                 end += 2;
+
                 continue;
             }
 
             if (ch === "{" && depth > 0) {
                 depth++;
+
                 end++;
+
                 continue;
             }
 
             if (ch === "}" && depth > 0) {
                 depth--;
+
                 end++;
+
                 continue;
             }
 
@@ -188,6 +201,7 @@ export function sanitizeLocaleModule(source) {
  * change.
  *
  * @param {string} directory
+ *
  * @returns {Promise<{ touched: number; replacements: number }>}
  */
 export async function unescapeOverescapedLitTemplates(directory) {
@@ -199,6 +213,7 @@ export async function unescapeOverescapedLitTemplates(directory) {
     await Promise.all(
         entries.map(async (entry) => {
             if (!entry.isFile()) return;
+
             if (!entry.name.endsWith(".ts") && !entry.name.endsWith(".js")) return;
 
             const filePath = path.join(directory, entry.name);
@@ -207,6 +222,7 @@ export async function unescapeOverescapedLitTemplates(directory) {
 
             if (output !== original) {
                 await fs.writeFile(filePath, output, "utf8");
+
                 touched++;
                 replacements += localReplacements;
             }

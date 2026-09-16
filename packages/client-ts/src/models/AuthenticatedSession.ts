@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -31,49 +29,23 @@ import {
 
 /**
  * AuthenticatedSession Serializer
+ *
  * @export
  * @interface AuthenticatedSession
  */
 export interface AuthenticatedSession {
-    /**
-     *
-     */
     uuid?: string;
     /**
      * Check if session is currently active session
      */
     readonly current: boolean;
-    /**
-     *
-     */
     userAgent: AuthenticatedSessionUserAgent;
-    /**
-     *
-     */
     geoIp: AuthenticatedSessionGeoIp | null;
-    /**
-     *
-     */
     asn: AuthenticatedSessionAsn | null;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     readonly lastIp: string;
-    /**
-     *
-     */
     readonly lastUserAgent: string;
-    /**
-     *
-     */
     readonly lastUsed: Date;
-    /**
-     *
-     */
     readonly expires: Date;
 }
 

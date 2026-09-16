@@ -1,7 +1,6 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
@@ -46,6 +45,7 @@ export class AgentListPage extends TablePage<Agent> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html` <ak-forms-delete-bulk
             object-label=${msg("Agent(s)")}
             .objects=${this.selectedElements}

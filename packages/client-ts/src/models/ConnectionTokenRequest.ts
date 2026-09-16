@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * ConnectionToken Serializer
+ *
  * @export
  * @interface ConnectionTokenRequest
  */
 export interface ConnectionTokenRequest {
-    /**
-     *
-     */
     pk?: string;
-    /**
-     *
-     */
     provider: number;
-    /**
-     *
-     */
     endpoint: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -50,20 +48,11 @@ import {
 import * as runtime from "../runtime";
 
 export interface LifecycleIterationsCreateRequest {
-    /**
-     *
-     */
     lifecycleIterationRequest: LifecycleIterationRequest;
 }
 
 export interface LifecycleIterationsListLatestRequest {
-    /**
-     *
-     */
     contentType: string;
-    /**
-     *
-     */
     objectId: string;
     /**
      * Which field to use when ordering the results.
@@ -73,9 +62,6 @@ export interface LifecycleIterationsListLatestRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userIsReviewer?: boolean;
 }
 
@@ -96,23 +82,14 @@ export interface LifecycleIterationsListOpenRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userIsReviewer?: boolean;
 }
 
 export interface LifecycleReviewsCreateRequest {
-    /**
-     *
-     */
     reviewRequest: ReviewRequest;
 }
 
 export interface LifecycleRulesCreateRequest {
-    /**
-     *
-     */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
@@ -124,9 +101,6 @@ export interface LifecycleRulesDestroyRequest {
 }
 
 export interface LifecycleRulesListRequest {
-    /**
-     *
-     */
     contentTypeModel?: string;
     /**
      * Which field to use when ordering the results.
@@ -151,9 +125,6 @@ export interface LifecycleRulesPartialUpdateRequest {
      * A UUID string identifying this lifecycle rule.
      */
     id: string;
-    /**
-     *
-     */
     patchedLifecycleRuleRequest?: PatchedLifecycleRuleRequest;
 }
 
@@ -169,16 +140,10 @@ export interface LifecycleRulesUpdateRequest {
      * A UUID string identifying this lifecycle rule.
      */
     id: string;
-    /**
-     *
-     */
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
 export interface LifecycleUserOffboardingCreateRequest {
-    /**
-     *
-     */
     userOffboardingRequest: UserOffboardingRequest;
 }
 
@@ -190,9 +155,6 @@ export interface LifecycleUserOffboardingDestroyRequest {
 }
 
 export interface LifecycleUserOffboardingListRequest {
-    /**
-     *
-     */
     action?: OffboardingActionEnum;
     /**
      * Which field to use when ordering the results.
@@ -210,13 +172,7 @@ export interface LifecycleUserOffboardingListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     status?: OffboardingStatusEnum;
-    /**
-     *
-     */
     userUuid?: string;
 }
 
@@ -227,9 +183,6 @@ export interface LifecycleUserOffboardingRetrieveRequest {
     id: string;
 }
 
-/**
- *
- */
 export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Creates request options for lifecycleIterationsCreate without sending the request
@@ -259,7 +212,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/iterations/`;
+        const urlPath = `/lifecycle/iterations/`;
 
         return {
             path: urlPath,
@@ -428,7 +381,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/iterations/open/`;
+        const urlPath = `/lifecycle/iterations/open/`;
 
         return {
             path: urlPath,
@@ -495,7 +448,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/reviews/`;
+        const urlPath = `/lifecycle/reviews/`;
 
         return {
             path: urlPath,
@@ -558,7 +511,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/rules/`;
+        const urlPath = `/lifecycle/rules/`;
 
         return {
             path: urlPath,
@@ -569,8 +522,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesCreateRaw(
         requestParameters: LifecycleRulesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -583,8 +534,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleRulesCreate(
         requestParameters: LifecycleRulesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -630,8 +579,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesDestroyRaw(
         requestParameters: LifecycleRulesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -642,8 +589,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async lifecycleRulesDestroy(
         requestParameters: LifecycleRulesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -690,7 +635,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/rules/`;
+        const urlPath = `/lifecycle/rules/`;
 
         return {
             path: urlPath,
@@ -700,8 +645,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesListRaw(
         requestParameters: LifecycleRulesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -714,8 +657,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleRulesList(
         requestParameters: LifecycleRulesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -766,8 +707,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesPartialUpdateRaw(
         requestParameters: LifecycleRulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -780,8 +719,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleRulesPartialUpdate(
         requestParameters: LifecycleRulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -830,8 +767,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesRetrieveRaw(
         requestParameters: LifecycleRulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -844,8 +779,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleRulesRetrieve(
         requestParameters: LifecycleRulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -901,8 +834,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleRulesUpdateRaw(
         requestParameters: LifecycleRulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -915,8 +846,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleRulesUpdate(
         requestParameters: LifecycleRulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -953,7 +882,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/user_offboarding/`;
+        const urlPath = `/lifecycle/user_offboarding/`;
 
         return {
             path: urlPath,
@@ -964,8 +893,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleUserOffboardingCreateRaw(
         requestParameters: LifecycleUserOffboardingCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -979,8 +906,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleUserOffboardingCreate(
         requestParameters: LifecycleUserOffboardingCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1030,7 +955,9 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it. You cannot cancel an offboarding that targets you.
+     * Cancel a pending offboarding instead of deleting the record. The row is retained (as
+     * `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who
+     * scheduled and cancelled it. You cannot cancel an offboarding that targets you.
      */
     async lifecycleUserOffboardingDestroyRaw(
         requestParameters: LifecycleUserOffboardingDestroyRequest,
@@ -1044,7 +971,9 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it. You cannot cancel an offboarding that targets you.
+     * Cancel a pending offboarding instead of deleting the record. The row is retained (as
+     * `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who
+     * scheduled and cancelled it. You cannot cancel an offboarding that targets you.
      */
     async lifecycleUserOffboardingDestroy(
         requestParameters: LifecycleUserOffboardingDestroyRequest,
@@ -1100,7 +1029,7 @@ export class LifecycleApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/lifecycle/user_offboarding/`;
+        const urlPath = `/lifecycle/user_offboarding/`;
 
         return {
             path: urlPath,
@@ -1110,8 +1039,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleUserOffboardingListRaw(
         requestParameters: LifecycleUserOffboardingListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1125,8 +1052,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleUserOffboardingList(
         requestParameters: LifecycleUserOffboardingListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1175,8 +1100,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async lifecycleUserOffboardingRetrieveRaw(
         requestParameters: LifecycleUserOffboardingRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1190,8 +1113,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async lifecycleUserOffboardingRetrieve(
         requestParameters: LifecycleUserOffboardingRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

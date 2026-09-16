@@ -5,7 +5,6 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -34,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Flow Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
@@ -95,15 +94,17 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </option>
                     <option
                         value=${FlowDesignationEnum.Authentication}
-                        ?selected=${this.instance?.designation ===
-                        FlowDesignationEnum.Authentication}
+                        ?selected=${
+                            this.instance?.designation === FlowDesignationEnum.Authentication
+                        }
                     >
                         ${DesignationToLabel(FlowDesignationEnum.Authentication)}
                     </option>
                     <option
                         value=${FlowDesignationEnum.Authorization}
-                        ?selected=${this.instance?.designation ===
-                        FlowDesignationEnum.Authorization}
+                        ?selected=${
+                            this.instance?.designation === FlowDesignationEnum.Authorization
+                        }
                     >
                         ${DesignationToLabel(FlowDesignationEnum.Authorization)}
                     </option>
@@ -127,8 +128,9 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </option>
                     <option
                         value=${FlowDesignationEnum.StageConfiguration}
-                        ?selected=${this.instance?.designation ===
-                        FlowDesignationEnum.StageConfiguration}
+                        ?selected=${
+                            this.instance?.designation === FlowDesignationEnum.StageConfiguration
+                        }
                     >
                         ${DesignationToLabel(FlowDesignationEnum.StageConfiguration)}
                     </option>
@@ -165,43 +167,51 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireAuthenticated}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireAuthenticated}
+                        ?selected=${
+                            this.instance?.authentication ===
+                            AuthenticationEnum.RequireAuthenticated
+                        }
                     >
                         ${msg("Require authentication")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireUnauthenticated}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireUnauthenticated}
+                        ?selected=${
+                            this.instance?.authentication ===
+                            AuthenticationEnum.RequireUnauthenticated
+                        }
                     >
                         ${msg("Require no authentication")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireSuperuser}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireSuperuser}
+                        ?selected=${
+                            this.instance?.authentication === AuthenticationEnum.RequireSuperuser
+                        }
                     >
                         ${msg("Require superuser")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireRedirect}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireRedirect}
+                        ?selected=${
+                            this.instance?.authentication === AuthenticationEnum.RequireRedirect
+                        }
                     >
                         ${msg("Require being redirected from another flow")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireOutpost}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireOutpost}
+                        ?selected=${
+                            this.instance?.authentication === AuthenticationEnum.RequireOutpost
+                        }
                     >
                         ${msg("Require Outpost (flow can only be executed from an outpost)")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireToken}
-                        ?selected=${this.instance?.authentication ===
-                        AuthenticationEnum.RequireToken}
+                        ?selected=${
+                            this.instance?.authentication === AuthenticationEnum.RequireToken
+                        }
                     >
                         ${msg(
                             "Require Flow token (flow can only be executed from a generated recovery link)",
@@ -320,15 +330,19 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                             </option>
                             <option
                                 value=${FlowLayoutEnum.SidebarLeftFrameBackground}
-                                ?selected=${this.instance?.layout ===
-                                FlowLayoutEnum.SidebarLeftFrameBackground}
+                                ?selected=${
+                                    this.instance?.layout ===
+                                    FlowLayoutEnum.SidebarLeftFrameBackground
+                                }
                             >
                                 ${LayoutToLabel(FlowLayoutEnum.SidebarLeftFrameBackground)}
                             </option>
                             <option
                                 value=${FlowLayoutEnum.SidebarRightFrameBackground}
-                                ?selected=${this.instance?.layout ===
-                                FlowLayoutEnum.SidebarRightFrameBackground}
+                                ?selected=${
+                                    this.instance?.layout ===
+                                    FlowLayoutEnum.SidebarRightFrameBackground
+                                }
                             >
                                 ${LayoutToLabel(FlowLayoutEnum.SidebarRightFrameBackground)}
                             </option>

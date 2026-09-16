@@ -5643,6 +5643,32 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /debug/log/:
+    post:
+      operationId: debug_log_create
+      description: |-
+        Debug-only endpoint to allow frontend to log messages, usable
+        when browser develooper-tools aren't available.
+
+        Never available in production.
+      tags:
+      - debug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerLogRequest'
+        required: true
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
@@ -59313,6 +59339,15 @@ components:
       - name
       - pk
       - verbose_name
+    ServerLogRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+          minLength: 1
+      required:
+      - message
     ServiceBindMethodEnum:
       enum:
       - simple
