@@ -10,7 +10,6 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-file-search-input";
-
 import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
@@ -373,13 +372,15 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
                             )}
                         </p>
-                        ${this.lockdownWarningVisible
-                            ? html`<ak-alert inline>
-                                  ${msg(
-                                      "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
-                                  )}
-                              </ak-alert>`
-                            : null}
+                        ${
+                            this.lockdownWarningVisible
+                                ? html`<ak-alert inline>
+                                      ${msg(
+                                          "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
+                                      )}
+                                  </ak-alert>`
+                                : null
+                        }
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
                         <ak-flow-search

@@ -6,7 +6,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
@@ -240,13 +239,15 @@ export class RelatedRoleTable extends Table<Role> {
         const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 >${item.name}</a
             >
-            ${inherited
-                ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
-                      <span class="pf-c-label pf-m-outline pf-m-cyan">
-                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
-                      </span>
-                  </pf-tooltip>`
-                : nothing}`;
+            ${
+                inherited
+                    ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                          <span class="pf-c-label pf-m-outline pf-m-cyan">
+                              <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
+                          </span>
+                      </pf-tooltip>`
+                    : nothing
+            }`;
 
         // Hide actions in showInherited mode (view-only)
         if (this.showInherited) {

@@ -1,6 +1,5 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
-
 import { PFSize } from "#common/enums";
 
 import { modalInvoker } from "#elements/dialogs";

@@ -1,5 +1,4 @@
 import "#flow/FormStatic";
-
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -32,8 +31,8 @@ export function readFileAsync(file: Blob) {
  * Base class for all flow stages.
  *
  * @template Tin The type of the challenge this stage accepts.
- * @prop {StageHost} host The host managing this stage.
- * @prop {Tin} challenge The challenge provided to this stage.
+ * @property {StageHost} host The host managing this stage.
+ * @property {Tin} challenge The challenge provided to this stage.
  */
 export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     extends WithLocale(AKElement)

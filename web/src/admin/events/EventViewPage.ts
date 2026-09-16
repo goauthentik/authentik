@@ -1,4 +1,9 @@
 import "#components/ak-event-info";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
@@ -16,12 +21,6 @@ import { EventsApi, EventToJSON } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {

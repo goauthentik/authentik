@@ -1,5 +1,4 @@
 import "#flow/stages/captcha/CaptchaStage";
-
 import type { IdentificationHost } from "#flow/stages/identification/IdentificationStage";
 
 import { CaptchaChallenge } from "@goauthentik/api";
@@ -12,10 +11,10 @@ import { createRef, ref } from "lit/directives/ref.js";
  *
  * @remarks
  *
- * If configured by the admin, the user will be presented with a CAPTCHA challenge along with the
- * other challenges related to identifying the user. That logic is peripheral to the main tasks of
- * IdentifyingStage, so it's placed into its own controller. The only thing a client needs to do is
- * remember to try and render it; if it's not enabled, it just returns `nothing`.
+ *   If configured by the admin, the user will be presented with a CAPTCHA challenge along with the
+ *   other challenges related to identifying the user. That logic is peripheral to the main tasks of
+ *   IdentifyingStage, so it's placed into its own controller. The only thing a client needs to do
+ *   is remember to try and render it; if it's not enabled, it just returns `nothing`.
  */
 export class CaptchaDisplayController implements ReactiveController {
     #challenge: CaptchaChallenge | null = null;

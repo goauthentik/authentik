@@ -9,12 +9,12 @@ import { series } from "@goauthentik/core/promises";
  * the OAuth2 provider view page. That document is well-suited to exercise
  * the full pipeline because it contains:
  *
- * - frontmatter (`title: OAuth 2.0 provider`)
- * - multiple H2 headings (id slugs)
+ * - Frontmatter (`title: OAuth 2.0 provider`)
+ * - Multiple H2 headings (id slugs)
  * - `:::caution` and `:::info` admonitions (two flavors: with title, without)
- * - relative-doc links (`./create-oauth2-provider.md`)
- * - external links (`https://oauth.net/2/`)
- * - a `mermaid` sequence diagram
+ * - Relative-doc links (`./create-oauth2-provider.md`)
+ * - External links (`https://oauth.net/2/`)
+ * - A `mermaid` sequence diagram
  *
  * These tests boot the admin UI, create a fresh OAuth2 provider, navigate
  * to its view page, and then assert against the rendered DOM inside
@@ -61,8 +61,8 @@ test.describe("ak-mdx renders compiled markdown", () => {
     });
 
     /**
-     * @returns a Locator scoped to the rendered `<ak-mdx>` element on the
-     * provider view page (there is exactly one inside the docs card).
+     * @returns A Locator scoped to the rendered `<ak-mdx>` element on the
+     *   provider view page (there is exactly one inside the docs card).
      */
     const $mdx = (page: import("@playwright/test").Page) =>
         page.locator("ak-mdx").filter({ has: page.locator('h1[part="title"]') });

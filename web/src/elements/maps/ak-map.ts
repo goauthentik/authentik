@@ -2,6 +2,7 @@ import Styles from "./ak-map.css";
 import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "./basemap-style.js";
 import { buildHexworldStyle, wedgeColors } from "./hexworld-style.js";
 import { binAtLocation, buildEventFeatures, type EventFeatureCollection } from "./wedges.js";
+import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 import { EventActions } from "@goauthentik/api";
 
@@ -11,8 +12,6 @@ import { Protocol } from "pmtiles";
 
 import { LitElement, type PropertyValues, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
     id: string;

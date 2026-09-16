@@ -6,9 +6,15 @@ import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
-
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { type PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -46,14 +52,6 @@ import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 export * from "./shared.js";
 export * from "./TableColumn.js";
@@ -338,7 +336,7 @@ export abstract class Table<T extends object, D = T>
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
-     * @prop
+     * @property
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
     public clearOnRefresh = false;
@@ -409,7 +407,8 @@ export abstract class Table<T extends object, D = T>
      * An overridable method to convert selected items to a custom JSON format,
      * for example when used in a modal with a confirm button.
      *
-     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     * By default, it returns the selected elements as an array, but it can be customized to return
+     * any data structure needed.
      */
     public toJSON(): D[] {
         return this.selectedElements as unknown as D[];
@@ -662,11 +661,13 @@ export abstract class Table<T extends object, D = T>
         return html`<tr role="presentation">
             <td role="presentation" colspan=${this.columnCount}>
                 <div class="pf-l-bullseye">
-                    ${inner ??
-                    html`<ak-empty-state
-                        ><span>${this.formatEmptyStateMessage()}</span>
-                        <div slot="primary">${this.renderObjectCreate()}</div>
-                    </ak-empty-state>`}
+                    ${
+                        inner ??
+                        html`<ak-empty-state
+                            ><span>${this.formatEmptyStateMessage()}</span>
+                            <div slot="primary">${this.renderObjectCreate()}</div>
+                        </ak-empty-state>`
+                    }
                 </div>
             </td>
         </tr>`;
@@ -700,8 +701,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * An overridable event listener when a row is clicked.
      *
-     * @bound
      * @abstract
+     * @bound
      */
     protected rowClickListener(item: T, event?: InputEvent | PointerEvent): void {
         if (event?.defaultPrevented) {
@@ -1007,11 +1008,13 @@ export abstract class Table<T extends object, D = T>
             aria-label="${label}"
             part="toolbar"
         >
-            ${primaryToolbar.length
-                ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
-                      ${primaryToolbar}
-                  </div>`
-                : nothing}
+            ${
+                primaryToolbar.length
+                    ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
+                          ${primaryToolbar}
+                      </div>`
+                    : nothing
+            }
 
             <div class="pf-c-toolbar__content" part="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
@@ -1189,9 +1192,9 @@ export abstract class Table<T extends object, D = T>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.renderLoadingBar()}${this.needChipGroup
-                ? this.renderChipGroup()
-                : nothing}
+        return html`${this.renderLoadingBar()}${
+                this.needChipGroup ? this.renderChipGroup() : nothing
+            }
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
@@ -1205,12 +1208,14 @@ export abstract class Table<T extends object, D = T>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable
-                                ? html`<th
-                                      class="pf-c-table__toggle pf-m-pressable"
-                                      aria-hidden="true"
-                                  ></th>`
-                                : nothing}
+                            ${
+                                this.expandable
+                                    ? html`<th
+                                          class="pf-c-table__toggle pf-m-pressable"
+                                          aria-hidden="true"
+                                      ></th>`
+                                    : nothing
+                            }
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;

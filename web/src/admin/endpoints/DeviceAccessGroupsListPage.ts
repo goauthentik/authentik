@@ -3,7 +3,6 @@ import "#elements/forms/ModalForm";
 import "#admin/endpoints/DeviceAccessGroupForm";
 import "#admin/policies/BoundPoliciesList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";

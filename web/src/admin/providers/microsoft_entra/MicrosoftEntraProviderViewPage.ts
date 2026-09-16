@@ -1,5 +1,6 @@
 /**
- * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users,
+ *   provisioned groups, and permissions
  */
 
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
@@ -13,6 +14,16 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
 import "#components/sync/SyncStatusCard";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -28,17 +39,6 @@ import { MicrosoftEntraProvider, ModelEnum, ProvidersApi } from "@goauthentik/ap
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 const PROVIDER_TYPE = ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider;
 
@@ -161,13 +161,15 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             return nothing;
         }
 
-        return html`${!this.provider?.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
-                      )}
-                  </div>`
-                : nothing}
+        return html`${
+                !this.provider?.assignedBackchannelApplicationName
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: Provider is not assigned to an application as backchannel provider.",
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"

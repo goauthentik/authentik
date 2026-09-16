@@ -4,7 +4,6 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";

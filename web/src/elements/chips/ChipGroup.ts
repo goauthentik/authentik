@@ -1,14 +1,15 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
+import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
+
 import { AKElement } from "#elements/Base";
 import { Chip } from "#elements/chips/Chip";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { css, CSSResult, html } from "lit";
 import { createRef, ref } from "lit-html/directives/ref.js";
-import { customElement, property } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
-import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
+import { css, CSSResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-chip-group")
 export class ChipGroup<T = string | number> extends AKElement {

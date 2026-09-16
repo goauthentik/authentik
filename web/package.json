@@ -1,60 +1,9 @@
 {
     "name": "@goauthentik/web",
     "version": "2026.11.0-rc1",
-    "license": "MIT",
     "private": true,
-    "scripts": {
-        "build": "wireit",
-        "build-locales": "node scripts/build-locales.mjs",
-        "build-proxy": "wireit",
-        "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
-        "bundler:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "lit-localize extract",
-        "fix:oxfmt": "oxfmt --write .",
-        "fix:oxlint": "oxlint --fix",
-        "lint": "run-s lint:oxlint lint:oxfmt",
-        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
-        "lint-check:oxlint": "oxlint --max-warnings=0",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:oxlint": "oxlint",
-        "lint:types": "wireit",
-        "lit-analyse": "wireit",
-        "precommit": "wireit",
-        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "wireit",
-        "test": "vitest",
-        "test:e2e": "playwright test",
-        "test:unit": "vitest run",
-        "tsc": "wireit",
-        "watch": "run-s build-locales bundler:watch"
-    },
+    "license": "MIT",
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        "./styles/*": "./src/styles/*",
-        "./elements/*": "./src/elements/*",
-        "./common/*": "./src/common/*",
-        "./components/*": "./src/components/*",
-        "./flow/*": "./src/flow/*",
-        "./locales/*": "./src/locales/*",
-        "./user/*": "./src/user/*",
-        "./admin/*": "./src/admin/*",
-        "./*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "./*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "./*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
-    },
     "imports": {
         "#styles/*.css": "./src/styles/*.css",
         "#styles/*": "./src/styles/*.js",
@@ -87,6 +36,138 @@
         "#*": {
             "types": "./out/*/index.d.ts",
             "import": "./*/index.js"
+        }
+    },
+    "exports": {
+        "./package.json": "./package.json",
+        "./styles/*": "./src/styles/*",
+        "./elements/*": "./src/elements/*",
+        "./common/*": "./src/common/*",
+        "./components/*": "./src/components/*",
+        "./flow/*": "./src/flow/*",
+        "./locales/*": "./src/locales/*",
+        "./user/*": "./src/user/*",
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "scripts": {
+        "build": "wireit",
+        "build-locales": "node scripts/build-locales.mjs",
+        "build-proxy": "wireit",
+        "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
+        "fix:oxfmt": "oxfmt --write .",
+        "fix:oxlint": "oxlint --fix",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "lint:imports": "knip --config scripts/knip.config.ts",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:oxlint": "oxlint",
+        "lint:types": "wireit",
+        "lit-analyse": "wireit",
+        "precommit": "wireit",
+        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "vitest",
+        "test:e2e": "playwright test",
+        "test:unit": "vitest run",
+        "tsc": "wireit",
+        "watch": "run-s build-locales bundler:watch"
+    },
+    "wireit": {
+        "build": {
+            "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "dependencies": [
+                "build-locales"
+            ],
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts",
+                "icons/**/*"
+            ],
+            "output": [
+                "./dist/admin/**",
+                "./dist/user/**",
+                "./dist/flow/**",
+                "./dist/standalone/api-browser/**",
+                "./dist/standalone/loading/**",
+                "./dist/enterprise/**",
+                "./dist/poly-*.js",
+                "./dist/poly-*.js.map",
+                "./dist/styles/**"
+            ],
+            "#comment": [
+                "`pnpm run build` and `pnpm run watch` are the most common ",
+                "commands you should be using when working on the front end",
+                "The files and output spec here expect you to use `pnpm run build --watch` ",
+                "instead of `pnpm run watch`. The former is more comprehensive, but ",
+                "the latter is faster."
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build-proxy": {
+            "command": "node scripts/build-web.mjs --styles-only",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lint:components": {
+            "command": "lit-analyzer src"
+        },
+        "lint:types": {
+            "command": "tsc -p .",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lit-analyse": {
+            "command": "lit-analyzer src"
+        },
+        "locales:repair": {
+            "command": "oxfmt --write ./src/locale-codes.ts"
+        },
+        "precommit": {
+            "command": "oxfmt --write .",
+            "dependencies": [
+                "lint",
+                "lint:types",
+                "lint:components"
+            ]
+        },
+        "storybook:build": {
+            "command": "storybook build",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            }
+        },
+        "tsc": {
+            "command": "tsgo -p .",
+            "dependencies": [
+                "build-locales"
+            ]
         }
     },
     "dependencies": {
@@ -204,97 +285,16 @@
         "@rollup/rollup-linux-arm64-gnu": "^4.63.1",
         "@rollup/rollup-linux-x64-gnu": "^4.63.1"
     },
-    "wireit": {
-        "build": {
-            "command": "${NODE_RUNNER} scripts/build-web.mjs",
-            "dependencies": [
-                "build-locales"
-            ],
-            "files": [
-                "src/**/*.{css,jpg,png,ts,js,json}",
-                "!src/**/*.stories.ts",
-                "!src/**/*.tests.ts",
-                "!src/locales/*.ts",
-                "!src/locale-codes.ts",
-                "icons/**/*"
-            ],
-            "output": [
-                "./dist/admin/**",
-                "./dist/user/**",
-                "./dist/flow/**",
-                "./dist/standalone/api-browser/**",
-                "./dist/standalone/loading/**",
-                "./dist/enterprise/**",
-                "./dist/poly-*.js",
-                "./dist/poly-*.js.map",
-                "./dist/styles/**"
-            ],
-            "#comment": [
-                "`pnpm run build` and `pnpm run watch` are the most common ",
-                "commands you should be using when working on the front end",
-                "The files and output spec here expect you to use `pnpm run build --watch` ",
-                "instead of `pnpm run watch`. The former is more comprehensive, but ",
-                "the latter is faster."
-            ],
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "build-proxy": {
-            "command": "node scripts/build-web.mjs --styles-only",
-            "dependencies": [
-                "build-locales"
-            ]
-        },
-        "lint:components": {
-            "command": "lit-analyzer src"
-        },
-        "lint:types": {
-            "command": "tsc -p .",
-            "dependencies": [
-                "build-locales"
-            ]
-        },
-        "lit-analyse": {
-            "command": "lit-analyzer src"
-        },
-        "locales:repair": {
-            "command": "oxfmt --write ./src/locale-codes.ts"
-        },
-        "precommit": {
-            "command": "oxfmt --write .",
-            "dependencies": [
-                "lint",
-                "lint:types",
-                "lint:components"
-            ]
-        },
-        "storybook:build": {
-            "command": "storybook build",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=8192"
-            }
-        },
-        "tsc": {
-            "command": "tsgo -p .",
-            "dependencies": [
-                "build-locales"
-            ]
-        }
-    },
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=12.4.0"
-    },
     "devEngines": {
         "runtime": {
             "name": "node",
             "version": ">=24.20",
             "onFail": "error"
         }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
     },
     "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }

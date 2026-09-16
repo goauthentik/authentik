@@ -1,3 +1,5 @@
+import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
+
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -8,8 +10,6 @@ import { ifPresent } from "#elements/utils/attributes";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 
 //#region Tree View Node
 
@@ -110,28 +110,30 @@ export class TreeViewNode extends AKElement {
                     @click=${this.#selectionListener}
                 >
                     <div class="pf-c-tree-view__node-container">
-                        ${this.openable
-                            ? html` <button
-                                  type="button"
-                                  aria-label=${ifPresent(
-                                      this.openable,
-                                      this.open
-                                          ? msg(str`Collapse "${itemLabel}"`)
-                                          : msg(str`Expand "${itemLabel}"`),
-                                  )}
-                                  class="pf-c-tree-view__node-toggle"
-                                  @click=${(e: Event) => {
-                                      if (this.openable) {
-                                          this.open = !this.open;
-                                          e.stopPropagation();
-                                      }
-                                  }}
-                              >
-                                  <span class="pf-c-tree-view__node-toggle-icon">
-                                      <i class="fas fa-angle-right" aria-hidden="true"></i>
-                                  </span>
-                              </button>`
-                            : null}
+                        ${
+                            this.openable
+                                ? html` <button
+                                      type="button"
+                                      aria-label=${ifPresent(
+                                          this.openable,
+                                          this.open
+                                              ? msg(str`Collapse "${itemLabel}"`)
+                                              : msg(str`Expand "${itemLabel}"`),
+                                      )}
+                                      class="pf-c-tree-view__node-toggle"
+                                      @click=${(e: Event) => {
+                                          if (this.openable) {
+                                              this.open = !this.open;
+                                              e.stopPropagation();
+                                          }
+                                      }}
+                                  >
+                                      <span class="pf-c-tree-view__node-toggle-icon">
+                                          <i class="fas fa-angle-right" aria-hidden="true"></i>
+                                      </span>
+                                  </button>`
+                                : null
+                        }
                         <span class="pf-c-tree-view__node-icon">
                             <i
                                 class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"

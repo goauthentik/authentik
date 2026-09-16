@@ -14,16 +14,16 @@ import { styleMap } from "lit/directives/style-map.js";
  * This component switches between a display of asterisks indicating a secret value, and an input
  * control. By default, the input control is type 'password'; the attribute 'plaintext' will change
  * it to type 'text.'
-
- * @element ak-secret-text-input
  *
  * @class AkSecretTextInput
- *
- * @prop {String} value - The value of the component
- * @prop {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when input allowed.
- * @prop {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will show the secret.
- * @prop {Number} maxLength
- * @prop {Number} minLength
+ * @property {String} value - The value of the component
+ * @property {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when
+ *   input allowed.
+ * @property {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will
+ *   show the secret.
+ * @property {Number} maxLength
+ * @property {Number} minLength
+ * @element ak-secret-text-input
  */
 
 @customElement("ak-secret-text-input")

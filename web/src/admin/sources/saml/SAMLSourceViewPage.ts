@@ -6,6 +6,12 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,13 +26,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {

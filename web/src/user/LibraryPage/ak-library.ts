@@ -1,6 +1,5 @@
 import "#elements/EmptyState";
 import "./ak-library-impl.js";
-
 import { aki } from "#common/api/client";
 import { APIResult } from "#common/api/responses";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -20,9 +19,9 @@ import { customElement, state } from "lit/decorators.js";
  * apps: a list of the applications available to the user.
  *
  * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
  *
+ * - Display the list of applications available to the user
+ * - Filter that list using the search bar
  */
 
 const coreApi = () => aki(CoreApi);

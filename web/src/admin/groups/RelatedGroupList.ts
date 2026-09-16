@@ -4,7 +4,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
@@ -175,14 +174,16 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-            ${this.targetUser
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
-                  >
-                      ${msg("Add to existing group")}
-                  </button>`
-                : nothing}
+            ${
+                this.targetUser
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                      >
+                          ${msg("Add to existing group")}
+                      </button>`
+                    : nothing
+            }
             <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
                 ${msg("Add new group")}
             </button>

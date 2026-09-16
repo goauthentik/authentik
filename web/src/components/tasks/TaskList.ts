@@ -7,6 +7,9 @@ import "#components/tasks/TaskStatus";
 import "#components/tasks/TaskStatusSummary";
 import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -27,16 +30,11 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
 /**
  * TaskList
  *
  * @summary Displays lists of running tasks performed by the authentik service. Often specialized to
  * a specific object types within the service, or even individual objects.
- *
  */
 
 @customElement("ak-task-list")
@@ -134,29 +132,33 @@ export class TaskList extends Table<Task> {
     ];
 
     render(): TemplateResult {
-        return html`${this.includeOverview
-            ? html`<ak-task-status-summary .status=${this.status}></ak-task-status-summary>`
-            : nothing}${super.render()}`;
+        return html`${
+            this.includeOverview
+                ? html`<ak-task-status-summary .status=${this.status}></ak-task-status-summary>`
+                : nothing
+        }${super.render()}`;
     }
 
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                ${this.relObjId === undefined && this.taskIds === undefined
-                    ? html`<ak-table-filter-select
-                          .options=${[
-                              { label: msg("Show only standalone tasks"), value: true },
-                              { label: msg("Show all tasks"), value: false },
-                          ]}
-                          group=${msg("Standalone")}
-                          .value=${this.showOnlyStandalone}
-                          @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
-                              this.showOnlyStandalone = ev.detail.value;
-                              this.page = 1;
-                              this.fetch();
-                          }}
-                      ></ak-table-filter-select>`
-                    : nothing}
+                ${
+                    this.relObjId === undefined && this.taskIds === undefined
+                        ? html`<ak-table-filter-select
+                              .options=${[
+                                  { label: msg("Show only standalone tasks"), value: true },
+                                  { label: msg("Show all tasks"), value: false },
+                              ]}
+                              group=${msg("Standalone")}
+                              .value=${this.showOnlyStandalone}
+                              @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                                  this.showOnlyStandalone = ev.detail.value;
+                                  this.page = 1;
+                                  this.fetch();
+                              }}
+                          ></ak-table-filter-select>`
+                        : nothing
+                }
             </div>
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
@@ -215,15 +217,17 @@ export class TaskList extends Table<Task> {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
             <ak-log-viewer display-box="contents" .items=${item.logs}></ak-log-viewer>
-            ${item.previousLogs.length > 0
-                ? html`<p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
-                          ${msg("Previous executions logs")}
-                      </p>
-                      <ak-log-viewer
-                          display-box="contents"
-                          .items=${item.previousLogs}
-                      ></ak-log-viewer>`
-                : nothing}
+            ${
+                item.previousLogs.length > 0
+                    ? html`<p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
+                              ${msg("Previous executions logs")}
+                          </p>
+                          <ak-log-viewer
+                              display-box="contents"
+                              .items=${item.previousLogs}
+                          ></ak-log-viewer>`
+                    : nothing
+            }
         </div>`;
     }
 }

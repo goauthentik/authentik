@@ -11,7 +11,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
@@ -95,9 +94,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             item.name,
             item.verboseName,
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
-            html`${itemState?.healthy
-                ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
-                : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
+            html`${
+                itemState?.healthy
+                    ? html`<ak-label color=${PFColor.Green}
+                          >${ifDefined(itemState.version)}</ak-label
+                      >`
+                    : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
                 ${IconPermissionButton(item.name, {

@@ -110,18 +110,15 @@ class ClassListDirective extends Directive {
  *
  * @remarks
  *
- * This must be used in the `class` attribute and must be the only directive used in the attribute.
- * It takes as an argument a list of strings, nulls, or `false` values (specifically), and updates
- * the element's `classList` property with a de-duplicated list of non-empty strings in the
- * argument, taking care to include any static classes provided. On subsequent renders, it analyzes
- * the argument and adds new classes to the element`s classList and removes any that no longer appear
- * in the argument.
- *
- * For example, ["foo", theme && "bar"] will always add `.foo`, and will only add `.bar` if theme is
- * Truthy. On the other hand, `[theme || "default"]` will return the content of theme if and only if
- * it is a string (and not an empty string).
- *
- * @param classUpdate
+ *   This must be used in the `class` attribute and must be the only directive used in the
+ *   attribute. It takes as an argument a list of strings, nulls, or `false` values (specifically),
+ *   and updates the element's `classList` property with a de-duplicated list of non-empty strings
+ *   in the argument, taking care to include any static classes provided. On subsequent renders, it
+ *   analyzes the argument and adds new classes to the element`s classList and removes any that no
+ *   longer appear in the argument. For example, ["foo", theme && "bar"] will always add `.foo`, and
+ *   will only add `.bar` if theme is Truthy. On the other hand, `[theme || "default"]` will return
+ *   the content of theme if and only if it is a string (and not an empty string). @param
+ *   classUpdate
  */
 export const classList = directive(ClassListDirective);
 

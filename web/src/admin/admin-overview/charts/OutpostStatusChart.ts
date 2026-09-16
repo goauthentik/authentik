@@ -1,5 +1,4 @@
 import "#elements/forms/ConfirmationForm";
-
 import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";

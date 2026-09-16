@@ -1,3 +1,6 @@
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -14,9 +17,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export interface SidebarItemProperties {
     path?: string | null;
@@ -157,9 +157,11 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <button
                 part="button button-with-children"
                 class="pf-c-nav__link"
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 aria-expanded=${this.expanded ? "true" : "false"}
                 aria-controls="subnav-${this.path}"
                 type="button"
@@ -197,9 +199,11 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         >
             ${this.label}
             <button
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 part="button button-with-path-and-children"
                 class="pf-c-nav__link"
                 aria-expanded=${this.expanded ? "true" : "false"}
@@ -240,9 +244,9 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
-                href="${this.isAbsoluteLink
-                    ? (this.path ?? "")
-                    : toCurrentInterface(this.path ?? "")}"
+                href="${
+                    this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")
+                }"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >

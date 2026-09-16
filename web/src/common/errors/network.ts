@@ -40,10 +40,12 @@ export type ErrorPredicate<T> = (error: unknown) => error is T;
 /**
  * Recursively checks if an error or any of its causes satisfies a given predicate.
  *
- * This is useful for unwrapping errors that may be wrapped in multiple layers of `Error` objects with causes.
+ * This is useful for unwrapping errors that may be wrapped in multiple layers of `Error` objects
+ * with causes.
  *
  * @param error The error to check.
  * @param predicate The type predicate to apply to the error and its causes.
+ *
  * @returns The first error in the chain that satisfies the predicate, or `null` if none do.
  */
 export function findCause<T>(error: unknown, predicate: ErrorPredicate<T>): T | null {
@@ -113,7 +115,8 @@ interface ResponseErrorDescriptor {
 }
 
 /**
- * Fallback error messages for HTTP status codes used when a more specific error message is not available in the response.
+ * Fallback error messages for HTTP status codes used when a more specific error message is not
+ * available in the response.
  */
 export const ResponseErrorMessages: Record<number, ResponseErrorDescriptor> = {
     [HTTPStatusCode.BadRequest]: {
@@ -166,7 +169,8 @@ export function isResponseErrorLike(errorLike: unknown): errorLike is APIErrorWi
 /**
  * Composes a human readable error message from a {@linkcode ResponseErrorDescriptor}.
  *
- * Note that this is kept separate from localization to lower the complexity of the error handling code.
+ * Note that this is kept separate from localization to lower the complexity of the error handling
+ * code.
  */
 export function composeResponseErrorDescriptor(descriptor: ResponseErrorDescriptor): string {
     return `${descriptor.headline}: ${descriptor.reason}`;
@@ -198,7 +202,6 @@ export function pluckErrorDetail(error: Error, fallback?: string): string;
  * Attempts to pluck a human readable error message from an error-like object.
  *
  * Prioritizes the `detail` key, then the `message` key.
- *
  */
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string;
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string {

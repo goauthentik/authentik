@@ -6,6 +6,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 
@@ -23,8 +24,6 @@ import { CertificateKeyPair, CryptoApi, ModelEnum } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
@@ -184,15 +183,17 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         >
                             ${msg("Download Certificate")}
                         </a>
-                        ${item.privateKeyAvailable
-                            ? html`<a
-                                  class="pf-c-button pf-m-secondary"
-                                  target="_blank"
-                                  href=${item.privateKeyDownloadUrl}
-                              >
-                                  ${msg("Download Private key")}
-                              </a>`
-                            : nothing}
+                        ${
+                            item.privateKeyAvailable
+                                ? html`<a
+                                      class="pf-c-button pf-m-secondary"
+                                      target="_blank"
+                                      href=${item.privateKeyDownloadUrl}
+                                  >
+                                      ${msg("Download Private key")}
+                                  </a>`
+                                : nothing
+                        }
                     </div>
                 </dd>
             </div>

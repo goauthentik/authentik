@@ -3,6 +3,7 @@ import "#elements/user/sources/SourceSettingsOAuth";
 import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
 import "#elements/user/sources/SourceSettingsTelegram";
+import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -17,8 +18,6 @@ import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api"
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {

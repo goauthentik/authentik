@@ -6,13 +6,17 @@ import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
-
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
@@ -57,12 +61,6 @@ import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithLicenseSummary(
@@ -289,9 +287,9 @@ export class AdminInterface extends WithLicenseSummary(
                         aria-controls="global-nav"
                         class="pf-c-button pf-m-plain"
                         @click=${this.toggleSidebar}
-                        aria-label=${this.sidebarOpen
-                            ? msg("Collapse navigation")
-                            : msg("Expand navigation")}
+                        aria-label=${
+                            this.sidebarOpen ? msg("Collapse navigation") : msg("Expand navigation")
+                        }
                         aria-expanded=${this.sidebarOpen ? "true" : "false"}
                     >
                         <i aria-hidden="true" class="fas fa-bars"></i>

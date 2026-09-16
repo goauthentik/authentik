@@ -19,13 +19,15 @@
  * `index`, and `reject`.
  *
  * Return values:
+ *
  * - `null` (or `undefined` from an implicit return) — discard the match and continue scanning.
- * - a single token — yield it from {@link Lexer.lex}.
- * - an array of tokens — yield the first; queue the rest for subsequent calls.
+ * - A single token — yield it from {@link Lexer.lex}.
+ * - An array of tokens — yield the first; queue the rest for subsequent calls.
  *
  * @callback LexerAction
  * @this {Lexer}
  * @param {...string[]} match
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -34,7 +36,8 @@
  * @property {RegExp} pattern Sticky-compiled pattern used to probe the input.
  * @property {boolean} global Whether the user-supplied pattern was global.
  * @property {LexerAction} action
- * @property {number[]} start States in which the rule is active. `[0]` is the default state; an empty array means "any state".
+ * @property {number[]} start States in which the rule is active. `[0]` is the default state; an
+ *   empty array means "any state".
  */
 
 /**
@@ -51,6 +54,7 @@
  * @callback DefunctHandler
  * @this {Lexer}
  * @param {string} chr The unexpected character.
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -113,6 +117,7 @@ export class Lexer {
      * @param {RegExp} pattern
      * @param {LexerAction} action
      * @param {number[]} [start] States in which the rule is active. Defaults to `[0]`.
+     *
      * @returns {this}
      */
     addRule(pattern, action, start) {
@@ -143,6 +148,7 @@ export class Lexer {
      * Reset the lexer and load a new input string.
      *
      * @param {string} input
+     *
      * @returns {this}
      */
     setInput(input) {

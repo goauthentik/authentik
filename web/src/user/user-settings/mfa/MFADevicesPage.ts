@@ -5,7 +5,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
@@ -147,13 +146,15 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
-                ${item.extraDescription
-                    ? html`
-                          <pf-tooltip position="top" content=${item.externalId || ""}>
-                              <small>${item.extraDescription}</small>
-                          </pf-tooltip>
-                      `
-                    : nothing} `,
+                ${
+                    item.extraDescription
+                        ? html`
+                              <pf-tooltip position="top" content=${item.externalId || ""}>
+                                  <small>${item.extraDescription}</small>
+                              </pf-tooltip>
+                          `
+                        : nothing
+                } `,
             Timestamp(item.created),
             Timestamp(item.lastUsed),
             html`

@@ -1,4 +1,5 @@
 import "#elements/messages/Message";
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
@@ -18,8 +19,6 @@ import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-
 const logger = ConsoleLogger.prefix("messages");
 
 /**
@@ -27,7 +26,6 @@ const logger = ConsoleLogger.prefix("messages");
  *
  * @param message The message to display.
  * @param unique Whether to only display the message if the title is unique.
- *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
 export function showMessage(message: APIMessage | null, unique: boolean = false): boolean {

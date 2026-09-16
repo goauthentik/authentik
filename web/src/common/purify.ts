@@ -8,9 +8,8 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 /**
  * Trusted types policy that escapes HTML content in place.
  *
- * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
- *
  * @returns {TrustedHTML} All HTML content, escaped.
+ * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
  */
 export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
     createHTML: (untrustedHTML: string) => {
@@ -22,7 +21,6 @@ export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
 
 /**
  * Trusted types policy that removes all HTML content.
- *
  *
  * @returns {TrustedHTML} All remaining text content.
  */

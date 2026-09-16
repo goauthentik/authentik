@@ -5,6 +5,8 @@ import "#components/ak-text-input";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 import { DefaultUIConfig } from "#common/ui/config";
 
@@ -22,9 +24,6 @@ import { TypeCreate, UserServiceAccountResponse, UserTypeEnum } from "@goauthent
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 const SERVICE_ACCOUNT_FORM_SLOT =
     `type-ak-user-service-account-form-${UserTypeEnum.ServiceAccount}` as const;

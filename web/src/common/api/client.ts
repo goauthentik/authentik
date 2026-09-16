@@ -1,5 +1,5 @@
 /**
- * @file aki(): function to instantiate authentik OpenAPI connectors with configuration details
+ * @file Aki(): function to instantiate authentik OpenAPI connectors with configuration details
  */
 
 import {

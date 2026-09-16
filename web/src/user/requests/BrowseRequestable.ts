@@ -1,5 +1,8 @@
 import "#elements/EmptyState";
 import "#user/requests/RequestEntitlementModal";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { LayoutType } from "#common/ui/config";
@@ -20,10 +23,6 @@ import { Application, CoreApi, RequestsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-browse-requestable")
 export class BrowseRequestable extends AKElement {

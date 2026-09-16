@@ -8,8 +8,17 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-
 import { logoutMethodLabel } from "./SAMLProviderOptions.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -37,17 +46,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 export interface SAMLPreviewAttribute {
     attributes: {
@@ -452,66 +450,69 @@ export class SAMLProviderViewPage extends AKElement {
         }
 
         return html`
-            ${this.provider.assignedApplicationName
-                ? html` <div
-                      role="tabpanel"
-                      tabindex="0"
-                      slot="page-metadata"
-                      id="page-metadata"
-                      aria-label="${msg("Metadata")}"
-                      @activate=${() => {
-                          aki(ProvidersApi)
-                              .providersSamlMetadataRetrieve({
-                                  id: this.provider?.pk || 0,
-                              })
-                              .then((metadata) => (this.metadata = metadata));
-                      }}
-                  >
-                      <div
-                          class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+            ${
+                this.provider.assignedApplicationName
+                    ? html` <div
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-metadata"
+                          id="page-metadata"
+                          aria-label="${msg("Metadata")}"
+                          @activate=${() => {
+                              aki(ProvidersApi)
+                                  .providersSamlMetadataRetrieve({
+                                      id: this.provider?.pk || 0,
+                                  })
+                                  .then((metadata) => (this.metadata = metadata));
+                          }}
                       >
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__title">${msg("SAML Metadata")}</div>
-                              <div class="pf-c-card__body">
-                                  <a
-                                      class="pf-c-button pf-m-primary"
-                                      target="_blank"
-                                      href=${this.provider.urlDownloadMetadata}
-                                  >
-                                      ${msg("Download")}
-                                  </a>
-                                  <ak-action-button
-                                      class="pf-m-secondary"
-                                      .apiRequest=${() => {
-                                          if (!navigator.clipboard) {
-                                              return Promise.resolve(
-                                                  showMessage({
-                                                      level: MessageLevel.info,
-                                                      message:
-                                                          this.provider?.urlDownloadMetadata || "",
-                                                  }),
-                                              );
-                                          }
+                          <div
+                              class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+                          >
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__title">${msg("SAML Metadata")}</div>
+                                  <div class="pf-c-card__body">
+                                      <a
+                                          class="pf-c-button pf-m-primary"
+                                          target="_blank"
+                                          href=${this.provider.urlDownloadMetadata}
+                                      >
+                                          ${msg("Download")}
+                                      </a>
+                                      <ak-action-button
+                                          class="pf-m-secondary"
+                                          .apiRequest=${() => {
+                                              if (!navigator.clipboard) {
+                                                  return Promise.resolve(
+                                                      showMessage({
+                                                          level: MessageLevel.info,
+                                                          message:
+                                                              this.provider?.urlDownloadMetadata ||
+                                                              "",
+                                                      }),
+                                                  );
+                                              }
 
-                                          return navigator.clipboard.writeText(
-                                              this.provider?.urlDownloadMetadata || "",
-                                          );
-                                      }}
-                                  >
-                                      ${msg("Copy download URL")}
-                                  </ak-action-button>
-                              </div>
-                              <div class="pf-c-card__footer">
-                                  <ak-codemirror
-                                      mode="xml"
-                                      readonly
-                                      value="${ifDefined(this.metadata?.metadata)}"
-                                  ></ak-codemirror>
+                                              return navigator.clipboard.writeText(
+                                                  this.provider?.urlDownloadMetadata || "",
+                                              );
+                                          }}
+                                      >
+                                          ${msg("Copy download URL")}
+                                      </ak-action-button>
+                                  </div>
+                                  <div class="pf-c-card__footer">
+                                      <ak-codemirror
+                                          mode="xml"
+                                          readonly
+                                          value="${ifDefined(this.metadata?.metadata)}"
+                                      ></ak-codemirror>
+                                  </div>
                               </div>
                           </div>
-                      </div>
-                  </div>`
-                : nothing}
+                      </div>`
+                    : nothing
+            }
         `;
     }
 

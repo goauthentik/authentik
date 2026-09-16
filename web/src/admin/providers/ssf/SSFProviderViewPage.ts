@@ -11,6 +11,14 @@ import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -30,15 +38,6 @@ import { ModelEnum, ProvidersApi, SSFProvider } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const PROVIDER_MODEL = ModelEnum.AuthentikProvidersSsfSsfprovider;
 
@@ -142,9 +141,11 @@ export class SSFProviderViewPage extends AKElement {
                                 readonly
                                 type="text"
                                 value=${this.provider.ssfUrl || ""}
-                                placeholder=${this.provider.ssfUrl
-                                    ? msg("SSF URL")
-                                    : msg("No assigned application")}
+                                placeholder=${
+                                    this.provider.ssfUrl
+                                        ? msg("SSF URL")
+                                        : msg("No assigned application")
+                                }
                             />`,
                         ],
                         [

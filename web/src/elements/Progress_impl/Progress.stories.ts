@@ -1,5 +1,4 @@
 import "../Progress";
-
 import { akProgress, Progress, ProgressProps, ProgressSeverity, ProgressSize } from "../Progress";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -509,11 +508,13 @@ export const BuilderDynamic: Story = {
                             >
                                 <span>${task.name}</span>
                                 <small style="opacity: 0.7;">
-                                    ${task.progress === 0
-                                        ? "Pending"
-                                        : task.progress === 100
-                                          ? "Complete"
-                                          : "In Progress"}
+                                    ${
+                                        task.progress === 0
+                                            ? "Pending"
+                                            : task.progress === 100
+                                              ? "Complete"
+                                              : "In Progress"
+                                    }
                                 </small>
                             </div>
                         `,

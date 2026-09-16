@@ -1,4 +1,9 @@
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -7,12 +12,6 @@ import { AppleChallengeResponseRequest, AppleLoginChallenge } from "@goauthentik
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {
@@ -60,16 +59,18 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             <span slot="title">${msg("Authenticating with Apple...")}</span>
             <form class="pf-c-form">
                 <ak-empty-state loading></ak-empty-state>
-                ${!this.isModalShown
-                    ? html`<button
-                          class="pf-c-button pf-m-primary pf-m-block"
-                          @click=${() => {
-                              AppleID.auth.signIn();
-                          }}
-                      >
-                          ${msg("Retry")}
-                      </button>`
-                    : nothing}
+                ${
+                    !this.isModalShown
+                        ? html`<button
+                              class="pf-c-button pf-m-primary pf-m-block"
+                              @click=${() => {
+                                  AppleID.auth.signIn();
+                              }}
+                          >
+                              ${msg("Retry")}
+                          </button>`
+                        : nothing
+                }
             </form>
         </ak-flow-card>`;
     }

@@ -1,4 +1,7 @@
 import "#elements/buttons/Dropdown";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
@@ -17,10 +20,6 @@ import { CoreApi, type UserSelf, UserSwitchActionEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 @customElement("ak-user-switcher")
 export class UserSwitcher extends WithSession(AKElement) {
@@ -71,13 +70,15 @@ export class UserSwitcher extends WithSession(AKElement) {
                         <span part="name">${label}</span>
                         ${description ? html`<span part="description">${description}</span>` : null}
                     </span>
-                    ${user.isCurrent
-                        ? html`<i
-                              class="fas fa-check"
-                              part="current-indicator"
-                              aria-hidden="true"
-                          ></i>`
-                        : null}
+                    ${
+                        user.isCurrent
+                            ? html`<i
+                                  class="fas fa-check"
+                                  part="current-indicator"
+                                  aria-hidden="true"
+                              ></i>`
+                            : null
+                    }
                 </span>
             </button>
         </li>`;
@@ -123,22 +124,24 @@ export class UserSwitcher extends WithSession(AKElement) {
             >
                 ${users.map((user) => this.#renderUser(user))}
                 ${users.length ? html` <li class="pf-c-divider" role="separator"></li> ` : null}
-                ${enabled
-                    ? html`<li role="presentation">
-                          <button
-                              class="pf-c-dropdown__menu-item"
-                              part="menu-item"
-                              role="menuitem"
-                              type="button"
-                              @click=${() => this.#startSwitch()}
-                          >
-                              <i class="fas fa-plus" aria-hidden="true"></i>
-                              ${msg("Add another user", {
-                                  id: "user-switcher.actions.add-user.label",
-                              })}
-                          </button>
-                      </li>`
-                    : null}
+                ${
+                    enabled
+                        ? html`<li role="presentation">
+                              <button
+                                  class="pf-c-dropdown__menu-item"
+                                  part="menu-item"
+                                  role="menuitem"
+                                  type="button"
+                                  @click=${() => this.#startSwitch()}
+                              >
+                                  <i class="fas fa-plus" aria-hidden="true"></i>
+                                  ${msg("Add another user", {
+                                      id: "user-switcher.actions.add-user.label",
+                                  })}
+                              </button>
+                          </li>`
+                        : null
+                }
                 <li role="presentation">
                     <a
                         class="pf-c-dropdown__menu-item"

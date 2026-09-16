@@ -1,4 +1,6 @@
 import "#elements/buttons/Dropdown";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
@@ -16,9 +18,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
@@ -477,9 +476,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                             role="option"
                             id="suggestion-${idx}"
                             aria-selected=${this.selectionIndex === idx ? "true" : "false"}
-                            class="pf-c-search-input__menu-list-item ${this.selectionIndex === idx
-                                ? "selected"
-                                : ""}"
+                            class="pf-c-search-input__menu-list-item ${
+                                this.selectionIndex === idx ? "selected" : ""
+                            }"
                         >
                             <button
                                 class="pf-c-search-input__menu-item"
@@ -509,9 +508,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             role="combobox"
             aria-label=${ifPresent(this.label)}
             aria-haspopup="listbox"
-            aria-activedescendant=${this.selectionIndex === -1
-                ? ""
-                : `suggestion-${this.selectionIndex}`}
+            aria-activedescendant=${
+                this.selectionIndex === -1 ? "" : `suggestion-${this.selectionIndex}`
+            }
         >
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">

@@ -1,3 +1,6 @@
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
 import { AKControlElement } from "#elements/ControlElement";
 import { type Spread } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -9,9 +12,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 export interface IFooterLinkInput {
     footerLink: FooterLink;

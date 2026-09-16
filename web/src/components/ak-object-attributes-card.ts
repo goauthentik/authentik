@@ -1,4 +1,6 @@
 import "#components/ak-status-label";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -9,9 +11,6 @@ import { isMatching, match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 /**
  * Formats a value for display based on its type.
@@ -42,10 +41,11 @@ function formatValue(value: unknown): TemplateResult | string {
  * and optionally excludes the `notes` attribute (since it's typically displayed separately).
  *
  * Value types are rendered appropriately:
- * - string/number: Plain text
- * - boolean: ak-status-label component
- * - simple arrays: Comma-separated list
- * - objects/complex arrays: Formatted JSON in code block
+ *
+ * - String/number: Plain text
+ * - Boolean: ak-status-label component
+ * - Simple arrays: Comma-separated list
+ * - Objects/complex arrays: Formatted JSON in code block
  */
 @customElement("ak-object-attributes-card")
 export class ObjectAttributesCard extends AKElement {
@@ -77,15 +77,17 @@ export class ObjectAttributesCard extends AKElement {
         return html`
             <div class="pf-c-card__title">${msg("Custom Attributes")}</div>
             <div class="pf-c-card__body">
-                ${attrs.length > 0
-                    ? renderDescriptionList(
-                          attrs.map(([key, value]) => [
-                              key,
-                              formatValue(value),
-                          ]) as DescriptionPair[],
-                          { horizontal: true },
-                      )
-                    : html`<p>${msg("No custom attributes defined.")}</p>`}
+                ${
+                    attrs.length > 0
+                        ? renderDescriptionList(
+                              attrs.map(([key, value]) => [
+                                  key,
+                                  formatValue(value),
+                              ]) as DescriptionPair[],
+                              { horizontal: true },
+                          )
+                        : html`<p>${msg("No custom attributes defined.")}</p>`
+                }
             </div>
         `;
     }

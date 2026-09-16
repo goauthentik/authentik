@@ -2,7 +2,6 @@ import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
@@ -135,11 +134,13 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 tooltip = msg("Object permission");
             }
             baseRow.push(
-                html`${tooltip
-                    ? html`<pf-tooltip position="top" content=${tooltip}
-                          ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
-                      ></pf-tooltip>`
-                    : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`} `,
+                html`${
+                    tooltip
+                        ? html`<pf-tooltip position="top" content=${tooltip}
+                              ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
+                          ></pf-tooltip>`
+                        : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`
+                } `,
             );
         });
 

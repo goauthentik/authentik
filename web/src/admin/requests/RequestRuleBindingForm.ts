@@ -3,7 +3,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -20,9 +19,10 @@ import {
     RequestsRulesListRequest,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property, state } from "lit/decorators.js";
 
 function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair {

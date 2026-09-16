@@ -1,5 +1,4 @@
 import "../ak-simple-table.js";
-
 import { SimpleTable } from "../ak-simple-table.js";
 import { TableSortEvent } from "../TableColumn.js";
 import type { TableRow } from "../types.js";

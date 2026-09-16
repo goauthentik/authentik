@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
@@ -58,9 +57,11 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,
-            html`${sessionCount !== undefined
-                ? sessionCount
-                : html`<ak-spinner size="sm"></ak-spinner>`}`,
+            html`${
+                sessionCount !== undefined
+                    ? sessionCount
+                    : html`<ak-spinner size="sm"></ak-spinner>`
+            }`,
         ];
     }
 }

@@ -1,3 +1,5 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -7,8 +9,6 @@ import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 // Custom implementation because there are rules for when to show this.
 

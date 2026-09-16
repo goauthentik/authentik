@@ -11,6 +11,7 @@ import "#admin/providers/ssf/SSFProviderViewPage";
 import "#admin/providers/wsfed/WSFederationProviderViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 
@@ -24,8 +25,6 @@ import { spread } from "@open-wc/lit-helpers";
 
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {

@@ -4,7 +4,6 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#admin/endpoints/ak-endpoints-device-group-search";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -25,7 +24,7 @@ const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 /**
  * Enrollment Token Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {

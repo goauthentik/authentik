@@ -1,4 +1,5 @@
 import "#elements/maps/ak-map";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { EventWithContext } from "#common/events";
 
@@ -14,13 +15,9 @@ import { Event } from "@goauthentik/api";
 import { css, CSSResult, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
 /**
- *
  * @event {select-events} - Fired when an event column is selected on the map. The ids of the
  *      column's events are contained in the `detail.eventIds` field.
- *
  */
 @customElement("ak-events-map")
 export class EventMap extends WithBrandConfig(AKElement) {

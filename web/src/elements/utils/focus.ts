@@ -1,5 +1,5 @@
 /**
- * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
+ * @file Utilities for DOM element interaction, focus management, and event handling.
  */
 
 import { isInteractiveElement, isInteractiveTextElement } from "#elements/utils/interactivity";
@@ -73,9 +73,8 @@ export function isActiveElement(
 /**
  * Type predicate to check if an element is focusable.
  *
- * @param target The element to check.
- *
  * @category DOM
+ * @param target The element to check.
  */
 export function isFocusable<T extends Element | null | undefined>(
     target: T,

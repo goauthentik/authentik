@@ -1,6 +1,10 @@
 import "#admin/stages/invitation/InvitationSendEmailForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
@@ -13,11 +17,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {

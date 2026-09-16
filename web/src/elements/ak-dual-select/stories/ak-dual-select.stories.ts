@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-dual-select.js";
-
 import { AkDualSelect } from "../ak-dual-select.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";

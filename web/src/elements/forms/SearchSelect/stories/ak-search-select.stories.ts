@@ -1,6 +1,5 @@
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
-
 import { sampleData } from "./sampleData.js";
 
 import { groupBy } from "#common/utils";

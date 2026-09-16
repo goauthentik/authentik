@@ -1,7 +1,6 @@
 import "#elements/forms/FormGroup";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";

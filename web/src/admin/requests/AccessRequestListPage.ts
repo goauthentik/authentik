@@ -1,5 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -21,9 +23,6 @@ import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit-html";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 function statusLabel(status: RequestStatus): string {
     switch (status) {

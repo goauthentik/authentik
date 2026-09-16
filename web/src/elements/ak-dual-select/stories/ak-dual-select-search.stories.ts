@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../components/ak-search-bar.js";
-
 import { AkSearchbar } from "../components/ak-search-bar.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";

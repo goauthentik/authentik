@@ -4,6 +4,14 @@ import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#elements/router/core/RouterView";
 import "#components/ak-nav-tabs";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { globalAK } from "#common/global";
 import { UIConfig } from "#common/ui/config";
@@ -39,15 +47,6 @@ import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 type Feature = keyof UIConfig["enabledFeatures"];
 
@@ -194,9 +193,11 @@ class UserInterface extends WithLicenseSummary(
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
-                    ${!backgroundStyles
-                        ? html`<div part="background-default-slant"></div>`
-                        : nothing}
+                    ${
+                        !backgroundStyles
+                            ? html`<div part="background-default-slant"></div>`
+                            : nothing
+                    }
                 </div>
                 <header
                     role="banner"
@@ -215,19 +216,23 @@ class UserInterface extends WithLicenseSummary(
                             })}
                         </a>
                     </div>
-                    ${navItems.length > 1
-                        ? html`<ak-nav-tabs
-                              class="pf-c-page__header-nav"
-                              .items=${navItems}
-                          ></ak-nav-tabs>`
-                        : nothing}
+                    ${
+                        navItems.length > 1
+                            ? html`<ak-nav-tabs
+                                  class="pf-c-page__header-nav"
+                                  .items=${navItems}
+                              ></ak-nav-tabs>`
+                            : nothing
+                    }
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">
                     <div
-                        class="pf-c-drawer ${this.drawer.notifications || this.drawer.api
-                            ? "pf-m-expanded"
-                            : "pf-m-collapsed"}"
+                        class="pf-c-drawer ${
+                            this.drawer.notifications || this.drawer.api
+                                ? "pf-m-expanded"
+                                : "pf-m-collapsed"
+                        }"
                     >
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">

@@ -3,7 +3,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/agents/UserAgentForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 

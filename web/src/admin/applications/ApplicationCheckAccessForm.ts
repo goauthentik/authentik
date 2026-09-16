@@ -2,6 +2,7 @@ import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -22,8 +23,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {

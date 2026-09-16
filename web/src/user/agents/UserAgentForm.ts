@@ -1,7 +1,6 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";

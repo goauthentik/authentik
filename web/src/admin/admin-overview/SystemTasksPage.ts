@@ -6,15 +6,6 @@ import "#components/tasks/ScheduleList";
 import "#components/tasks/TaskList";
 import "#admin/rbac/ObjectPermissionModal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -23,6 +14,14 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+import { AKElement } from "#elements/Base";
+
+import { setPageDetails } from "#components/ak-page-navbar";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-system-tasks")
 export class SystemTasksPage extends AKElement {

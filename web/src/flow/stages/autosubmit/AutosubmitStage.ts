@@ -1,5 +1,10 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -9,12 +14,6 @@ import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauth
 
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, query } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<

@@ -1,12 +1,11 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-source-kerberos-connectivity")
 export class KerberosSourceConnectivity extends AKElement {

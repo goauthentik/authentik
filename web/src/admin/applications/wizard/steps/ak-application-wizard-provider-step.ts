@@ -7,7 +7,6 @@ import "#admin/applications/wizard/steps/providers/ak-application-wizard-provide
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml-metadata";
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-scim";
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-wsfed";
-
 import { omitKeys } from "#common/objects";
 
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -37,7 +36,7 @@ const providerToTag = {
 type ProviderModel = keyof typeof providerToTag;
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {

@@ -6,6 +6,9 @@ import "#admin/users/UserOverviewTab";
 import "#admin/users/UserRolesTab";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
@@ -28,10 +31,6 @@ import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(

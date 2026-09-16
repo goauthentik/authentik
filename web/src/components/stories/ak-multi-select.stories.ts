@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-multi-select.js";
-
 import AkMultiSelect from "../ak-multi-select.js";
 
 import { Meta } from "@storybook/web-components";

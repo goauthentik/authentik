@@ -1,7 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/messages/MessageContainer";
 import "../ak-crypto-certificate-search.js";
-
 import AkCryptoCertificateSearch from "../ak-crypto-certificate-search.js";
 import { dummyCryptoCertsSearch } from "./samples.js";
 

@@ -11,7 +11,6 @@ import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import {
     groupsProvider,
     groupsSelector,

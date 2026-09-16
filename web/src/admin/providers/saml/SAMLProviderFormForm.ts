@@ -9,7 +9,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
@@ -202,15 +201,17 @@ export function renderForm({
                     )}
                     @input=${setHasSlsUrl}
                 ></ak-text-input>
-                ${hasSlsUrl
-                    ? renderHasSlsUrl(
-                          provider,
-                          hasPostBinding,
-                          setSlsBinding,
-                          logoutMethod,
-                          setLogoutMethod,
-                      )
-                    : nothing}
+                ${
+                    hasSlsUrl
+                        ? renderHasSlsUrl(
+                              provider,
+                              hasPostBinding,
+                              setSlsBinding,
+                              logoutMethod,
+                              setLogoutMethod,
+                          )
+                        : nothing
+                }
             </div>
         </ak-form-group>
 
@@ -443,36 +444,46 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent
+                            }
                         >
                             ${msg("Persistent")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress
+                            }
                         >
                             ${msg("Email address")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName
+                            }
                         >
                             ${msg("Windows")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName
+                            }
                         >
                             ${msg("X509 Subject")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient
+                            }
                         >
                             ${msg("Transient")}
                         </option>
@@ -494,8 +505,10 @@ export function renderForm({
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.digestAlgorithm === opt.value ||
-                                    (!provider?.digestAlgorithm && opt.default)}
+                                    ?selected=${
+                                        provider?.digestAlgorithm === opt.value ||
+                                        (!provider?.digestAlgorithm && opt.default)
+                                    }
                                 >
                                     ${opt.label}
                                 </option>
@@ -526,9 +539,11 @@ export function renderForm({
                             return html`
                                 <option
                                     value=${algorithmValue}
-                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable &&
-                                        hash === DEFAULT_HASH_ALGORITHM)}
+                                    ?selected=${
+                                        provider?.signatureAlgorithm === algorithmValue ||
+                                        (!isCurrentAlgorithmAvailable &&
+                                            hash === DEFAULT_HASH_ALGORITHM)
+                                    }
                                 >
                                     ${hash}
                                 </option>

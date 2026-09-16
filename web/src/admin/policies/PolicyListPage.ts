@@ -12,7 +12,6 @@ import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -62,13 +61,15 @@ export class PolicyListPage extends TablePage<Policy> {
     protected override row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Assigned to ${item.boundTo} object(s).`)}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Warning: Policy is not assigned.")}
-                      </ak-label>`}`,
+                ${
+                    (item.boundTo || 0) > 0
+                        ? html`<ak-label color=${PFColor.Green} compact>
+                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Warning: Policy is not assigned.")}
+                          </ak-label>`
+                }`,
             html`${item.verboseName}`,
             Timestamp(item.lastUpdated),
             html`<div class="ak-c-table__actions">

@@ -1,5 +1,4 @@
 import "@goauthentik/core/environment/load/node";
-
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";

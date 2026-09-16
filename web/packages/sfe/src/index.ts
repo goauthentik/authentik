@@ -2,7 +2,6 @@ import "formdata-polyfill";
 import "weakmap-polyfill";
 import "core-js/actual/object/assign";
 import "@webcomponents/template";
-
 import {
     type AccessDeniedChallenge,
     type AuthenticatorValidationChallenge,
@@ -235,9 +234,11 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
             >
                 <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
-                ${this.challenge.applicationPre
-                    ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
-                    : nothing}
+                ${
+                    this.challenge.applicationPre
+                        ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
+                        : nothing
+                }
                 <div class="form-label-group my-3 has-validation">
                     <input
                         type="text"
@@ -247,19 +248,21 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                         placeholder="Email / Username"
                     />
                 </div>
-                ${this.challenge.passwordFields
-                    ? html`<div class="form-label-group my-3 has-validation">
-                          <input
-                              type="password"
-                              class="form-control ${this.error("password").length > 0
-                                  ? IS_INVALID
-                                  : ""}"
-                              name="password"
-                              placeholder="Password"
-                          />
-                          ${this.renderInputError("password")}
-                      </div>`
-                    : nothing}
+                ${
+                    this.challenge.passwordFields
+                        ? html`<div class="form-label-group my-3 has-validation">
+                              <input
+                                  type="password"
+                                  class="form-control ${
+                                      this.error("password").length > 0 ? IS_INVALID : ""
+                                  }"
+                                  name="password"
+                                  placeholder="Password"
+                              />
+                              ${this.renderInputError("password")}
+                          </div>`
+                        : nothing
+                }
                 ${this.renderNonFieldErrors()}
                 <button class="btn btn-primary w-100 py-2" type="submit">
                     ${this.challenge.primaryAction}
@@ -411,6 +414,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
     /**
      * Encodes the binary data in the assertion into strings for posting to the server.
+     *
      * @param {PublicKeyCredential} newAssertion
      */
     transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
@@ -468,9 +472,11 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             html`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
-                ${challenges.length > 0
-                    ? html`<p>Select an authentication method.</p>`
-                    : html`<p>No compatible authentication method available</p>`}
+                ${
+                    challenges.length > 0
+                        ? html`<p>Select an authentication method.</p>`
+                        : html`<p>No compatible authentication method available</p>`
+                }
                 ${challenges.map((challenge) => {
                     let label = undefined;
 

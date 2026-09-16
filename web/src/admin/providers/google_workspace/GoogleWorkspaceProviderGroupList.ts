@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";

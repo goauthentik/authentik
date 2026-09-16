@@ -1,6 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 
@@ -11,8 +12,6 @@ import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ObjectAttributeModelForm<

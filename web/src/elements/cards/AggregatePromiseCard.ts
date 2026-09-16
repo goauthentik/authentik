@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { PFSize } from "#common/enums";
 
 import { AggregateCard, type IAggregateCard } from "#elements/cards/AggregateCard";
@@ -15,7 +14,7 @@ export interface IAggregatePromiseCard extends IAggregateCard {
 }
 
 /**
- * class AggregatePromiseCard
+ * Class AggregatePromiseCard
  * element ak-aggregate-card-promise
  *
  * Card component with a specific layout for quick informational blurbs, fills in its main content
@@ -55,8 +54,9 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         } catch (error: unknown) {
             console.warn(error);
 
-            return html`<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;${this
-                    .failureMessage}`;
+            return html`<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;${
+                    this.failureMessage
+                }`;
         }
     }
 

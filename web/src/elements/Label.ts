@@ -1,3 +1,5 @@
+import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+
 import { AKElement } from "#elements/Base";
 import type { SlottedTemplateResult, Spread } from "#elements/types";
 
@@ -6,8 +8,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 
 export enum PFColor {
     Green = "pf-m-green",

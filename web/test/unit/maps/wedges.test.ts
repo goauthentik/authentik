@@ -54,7 +54,7 @@ const ringArea = (ring: number[][]) => {
 const closedHexRing = (cell: string) => {
     const ring = cellToBoundary(cell, true);
 
- // [lng, lat] pairs
+    // [lng, lat] pairs
     return [...ring, ring[0]!];
 };
 

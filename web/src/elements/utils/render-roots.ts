@@ -3,7 +3,8 @@ import { LitElement } from "lit";
 /**
  * Returns the root interface element of the page.
  *
- * @param ownerDocument The document to query for the interface element. Defaults to the global document.
+ * @param ownerDocument The document to query for the interface element. Defaults to the global
+ *   document.
  */
 export function resolveInterface<T extends HTMLElement = LitElement>(ownerDocument = document): T {
     const element = ownerDocument.getElementById("interface-root") as T | null;
@@ -31,7 +32,8 @@ export function findTopmost(ownerDocument = document): HTMLElement {
 }
 
 /**
- * Given a node, finds the nearest parent element, traversing through shadow DOM and document fragments if necessary.
+ * Given a node, finds the nearest parent element, traversing through shadow DOM and document
+ * fragments if necessary.
  *
  * @param node The node to find the nearest parent element for.
  */
@@ -61,10 +63,12 @@ export function findClosestHost<T extends Element = Element | HTMLElement>(
 }
 
 /**
- * Given a node, finds the nearest parent element that matches the provided predicate, traversing through shadow DOM and document fragments if necessary.
+ * Given a node, finds the nearest parent element that matches the provided predicate, traversing
+ * through shadow DOM and document fragments if necessary.
  *
  * @param node The node to find the nearest parent element for.
- * @param predicate A function that takes an element and returns a boolean indicating whether it matches the desired criteria.
+ * @param predicate A function that takes an element and returns a boolean indicating whether it
+ *   matches the desired criteria.
  */
 export function findClosestHostMatch<T extends Element = Element | HTMLElement>(
     node: Node,
@@ -86,9 +90,8 @@ export function findClosestHostMatch<T extends Element = Element | HTMLElement>(
 /**
  * Given a node, finds the nearest parent dialog element.
  *
- * @see {@linkcode findClosestHostMatch} for the underlying implementation.
- *
  * @param node The node to find the nearest parent dialog for.
+ * @see {@linkcode findClosestHostMatch} for the underlying implementation.
  */
 export function findNearestDialog(node: Node): HTMLDialogElement | null {
     return findClosestHostMatch(node, (element): element is HTMLDialogElement => {

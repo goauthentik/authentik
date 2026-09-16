@@ -1,6 +1,5 @@
 import "rapidoc";
 import "#types/rapi-doc";
-
 import styles from "./index.entrypoint.css";
 
 import { CSRFHeaderName } from "#common/api/middleware";

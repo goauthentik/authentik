@@ -7,7 +7,9 @@
  *
  * @param a The first element to compare.
  * @param b The second element to compare.
- * @returns A negative number if `a` should come before `b`, a positive number if `a` should come after `b`, or 0 if they are equal.
+ *
+ * @returns A negative number if `a` should come before `b`, a positive number if `a` should come
+ *   after `b`, or 0 if they are equal.
  */
 export type Comparator<T> = (a: T, b: T) => number;
 

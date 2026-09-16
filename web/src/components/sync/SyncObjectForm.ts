@@ -2,7 +2,6 @@ import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -119,12 +118,16 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderForm() {
-        return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
-                ? this.renderSelectUser()
-                : nothing}
-            ${this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
-                ? this.renderSelectGroup()
-                : nothing}
+        return html` ${
+                this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
+                    ? this.renderSelectUser()
+                    : nothing
+            }
+            ${
+                this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
+                    ? this.renderSelectGroup()
+                    : nothing
+            }
             <ak-switch-input
                 name="overrideDryRun"
                 label=${msg("Override dry-run mode")}

@@ -1,7 +1,9 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 
@@ -11,10 +13,6 @@ import { ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
 import { CSSResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {

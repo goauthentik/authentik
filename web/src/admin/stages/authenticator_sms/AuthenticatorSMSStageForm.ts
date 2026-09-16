@@ -5,7 +5,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -225,9 +224,11 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             ${msg("Number the SMS will be sent from.")}
                         </p>
                     </ak-form-element-horizontal>
-                    ${this.provider === ProviderEnum.Generic
-                        ? this.renderProviderGeneric()
-                        : this.renderProviderTwillio()}
+                    ${
+                        this.provider === ProviderEnum.Generic
+                            ? this.renderProviderGeneric()
+                            : this.renderProviderTwillio()
+                    }
                     <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
                         <ak-search-select
                             .fetchObjects=${async (

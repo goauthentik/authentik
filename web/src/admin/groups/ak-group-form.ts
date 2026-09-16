@@ -7,7 +7,6 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";

@@ -9,7 +9,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
@@ -275,14 +274,15 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
-                    label="${mode === ProxyMode.ForwardDomain
-                        ? msg("Unauthenticated URLs")
-                        : msg("Unauthenticated Paths")}"
+                    label="${
+                        mode === ProxyMode.ForwardDomain
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths")
+                    }"
                     name="skipPathRegex"
                 >
                     <textarea class="pf-c-form-control pf-m-monospace">
-${provider.skipPathRegex}</textarea
-                    >
+${provider.skipPathRegex}</textarea>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",

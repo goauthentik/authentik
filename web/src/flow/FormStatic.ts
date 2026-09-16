@@ -1,3 +1,5 @@
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+
 import { AKElement } from "#elements/Base";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -11,8 +13,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
 export class AKFormStatic extends AKElement {
@@ -33,19 +33,23 @@ export class AKFormStatic extends AKElement {
         }
 
         return html`<div class="primary-content">
-                ${this.avatar && !isDefaultAvatar(this.avatar)
-                    ? html`<img
-                          class="pf-c-avatar"
-                          src=${this.avatar}
-                          alt=${this.username
-                              ? msg(str`Avatar for ${this.username}`, {
-                                    id: "avatar.alt-text-for-user",
-                                })
-                              : msg("User avatar", {
-                                    id: "avatar.alt-text",
-                                })}
-                      />`
-                    : nothing}
+                ${
+                    this.avatar && !isDefaultAvatar(this.avatar)
+                        ? html`<img
+                              class="pf-c-avatar"
+                              src=${this.avatar}
+                              alt=${
+                                  this.username
+                                      ? msg(str`Avatar for ${this.username}`, {
+                                            id: "avatar.alt-text-for-user",
+                                        })
+                                      : msg("User avatar", {
+                                            id: "avatar.alt-text",
+                                        })
+                              }
+                          />`
+                        : nothing
+                }
                 <div class="username" aria-description=${msg("Username")}>${this.username}</div>
             </div>
             <div class="links">
@@ -68,15 +72,17 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                 .avatar=${ifPresent(pendingUserAvatar)}
                 username=${ifPresent(pendingUser)}
             >
-                ${flowInfo?.cancelUrl
-                    ? html`
-                          <div slot="link">
-                              <a href=${flowInfo.cancelUrl} @click=${RememberMeStorage.reset}
-                                  >${msg("Not you?")}</a
-                              >
-                          </div>
-                      `
-                    : nothing}
+                ${
+                    flowInfo?.cancelUrl
+                        ? html`
+                              <div slot="link">
+                                  <a href=${flowInfo.cancelUrl} @click=${RememberMeStorage.reset}
+                                      >${msg("Not you?")}</a
+                                  >
+                              </div>
+                          `
+                        : nothing
+                }
             </ak-form-static>`,
     );
 };

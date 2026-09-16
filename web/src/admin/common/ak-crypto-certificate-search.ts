@@ -1,5 +1,4 @@
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
@@ -31,7 +30,6 @@ const renderValue = (item: CertificateKeyPair | null) => item?.pk;
  * A wrapper around SearchSelect for the many searches of cryptographic key-pairs used throughout our
  * code base. This is another one of those "If it's not error-free, at least it's localized to one
  * place" issues.
- *
  */
 
 @customElement("ak-crypto-certificate-search")
@@ -54,6 +52,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     /**
      * Set to `true` to allow certificates without private key to be selected. When set to `false`,
      * keypairs without a private key are listed but cannot be chosen.
+     *
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
@@ -71,8 +70,11 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     /**
      * When allowedKeyTypes is set, only certificates or keypairs with matching
      * key algorithms can be selected. Others are listed but cannot be chosen.
+     *
+     * @example
+     *     [KeyTypeEnum.Rsa, KeyTypeEnum.Ec];
+     *
      * @attr
-     * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
      */
     @property({ type: Array, attribute: "allowed-key-types" })
     public allowedKeyTypes?: KeyTypeEnum[];

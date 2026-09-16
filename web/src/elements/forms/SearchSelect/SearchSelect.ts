@@ -1,6 +1,5 @@
 import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
-
 import { SearchSelectView } from "./ak-search-select-view.js";
 
 import { EVENT_REFRESH } from "#common/constants";
@@ -91,7 +90,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the dropdown component can be left blank
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -99,7 +99,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the component allows creating custom values not in the list
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -107,7 +108,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Prevent user interaction while still rendering the current value.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean, attribute: "readonly" })
@@ -116,6 +118,7 @@ export abstract class SearchSelectBase<T>
     /**
      * An initial string to filter the search contents,
      * and the value of the input which further serves to restrict the search.
+     *
      * @property
      */
     @property({ type: String })
@@ -127,6 +130,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * The currently selected object.
+     *
      * @property
      */
     @property({ attribute: false })
@@ -134,6 +138,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the name of the object
+     *
      * @property
      */
     @property({ type: String })
@@ -141,6 +146,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -148,6 +154,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the input label.
+     *
      * @property
      */
     @property()
@@ -157,7 +164,8 @@ export abstract class SearchSelectBase<T>
      * The textual placeholder for the search's <input> object, if currently empty.
      *
      * Used as the native <input> object's `placeholder` field.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: String })
@@ -177,7 +185,7 @@ export abstract class SearchSelectBase<T>
      * "Create new...". Activating it fires an `ak-search-select-action` event
      * instead of changing the selection.
      *
-     * @property
+     * @property *
      * @attr
      */
     @property({ type: String, attribute: "action-label" })

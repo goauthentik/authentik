@@ -5,7 +5,6 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-
 import { AKElement } from "#elements/Base";
 import {
     DialogInit,
@@ -28,10 +27,11 @@ import { AKWizard } from "#elements/wizard/Wizard";
 
 import { TypeCreate } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
+
+import { msg, str } from "@lit/localize";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export class CreateWizard extends AKElement implements TransclusionChildElement {
@@ -62,8 +62,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     /**
      * Show a modal containing this form.
      *
-     * @see {@linkcode renderModal} for the underlying implementation.
      * @returns A promise that resolves when the modal is closed.
+     * @see {@linkcode renderModal} for the underlying implementation.
      */
     public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new (this as unknown as CustomElementConstructor)(), init);
@@ -145,8 +145,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     }
 
     /**
-     * An optional description to show on the initial page of the wizard,
-     * used to explain the different types or provide general information about the creation process.
+     * An optional description to show on the initial page of the wizard, used to explain the
+     * different types or provide general information about the creation process.
      */
     @property({ type: String })
     public description: string | null = null;
@@ -201,6 +201,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      * Fetches data from the API endpoint.
      *
      * @param requestInit Optional request initialization parameters.
+     *
      * @returns A promise that resolves to the fetched data.
      */
     protected apiEndpoint?(requestInit?: RequestInit): Promise<TypeCreate[]>;
@@ -232,6 +233,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      *
      * @param type The selected creation type.
      * @param currentSteps The current steps of the wizard.
+     *
      * @returns The filtered steps to use for the wizard.
      */
     protected selectSteps(type: TypeCreate, _currentSteps: string[]): string[] {
@@ -281,7 +283,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     //#region Rendering
 
     /**
-     * Optional method to render additional content on the initial page, for example to explain the different types.
+     * Optional method to render additional content on the initial page, for example to explain the
+     * different types.
      */
     protected renderInitialPageContent?(): SlottedTemplateResult;
 
@@ -325,15 +328,17 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
                 layout=${this.layout}
                 group-label=${ifPresent(this.groupLabel)}
                 group-description=${ifPresent(this.groupDescription)}
-                headline=${this.verboseName
-                    ? msg(str`Choose ${this.verboseName} Type`, {
-                          id: "wizard.step.choose-type",
-                          desc: "Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.",
-                      })
-                    : msg("Choose type", {
-                          id: "wizard.step.choose-type.generic",
-                          desc: "Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.",
-                      })}
+                headline=${
+                    this.verboseName
+                        ? msg(str`Choose ${this.verboseName} Type`, {
+                              id: "wizard.step.choose-type",
+                              desc: "Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.",
+                          })
+                        : msg("Choose type", {
+                              id: "wizard.step.choose-type.generic",
+                              desc: "Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.",
+                          })
+                }
                 @ak-type-create-select=${this.typeSelectListener}
             >
                 ${this.renderCreateBefore()}

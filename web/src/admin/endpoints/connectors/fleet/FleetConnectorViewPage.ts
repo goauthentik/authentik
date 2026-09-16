@@ -6,6 +6,11 @@ import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -21,12 +26,6 @@ import { EndpointsApi, FleetConnector, ModelEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const FLEET_CONNECTOR_MODEL = ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector;
 

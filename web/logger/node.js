@@ -1,8 +1,13 @@
 /**
  * Application logger.
  *
- * @import { LoggerOptions, Logger, Level, ChildLoggerOptions } from "pino"
- * @import { PrettyOptions } from "pino-pretty"
+ * @import {
+ *   ChildLoggerOptions,
+ *   Level,
+ *   Logger,
+ *   LoggerOptions
+ * } from "pino"
+ * @import {PrettyOptions} from "pino-pretty"
  */
 
 import { pino } from "pino";
@@ -32,7 +37,8 @@ export const DEFAULT_PINO_LOGGER_OPTIONS = {
 
 /**
  * Read the log level from the environment.
- * @return {Level}
+ *
+ * @returns {Level}
  */
 export function readLogLevel() {
     return process.env.AK_LOG_LEVEL || DEFAULT_PINO_LOGGER_OPTIONS.level;
@@ -47,6 +53,7 @@ export function readLogLevel() {
  * @param {string} fixtureName
  * @param {string} [testName]
  * @param {ChildLoggerOptions} [options]
+ *
  * @returns {FixtureLogger}
  */
 function createFixtureLogger(fixtureName, testName, options) {
@@ -77,8 +84,8 @@ function createFixtureLogger(fixtureName, testName, options) {
  * ConsoleLogger.info("Hello, world!");
  * ```
  *
- * @runtime node
  * @type {ConsoleLogger}
+ * @runtime node
  */
 export const ConsoleLogger = Object.assign(
     pino({

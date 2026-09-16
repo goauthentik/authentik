@@ -14,7 +14,6 @@ import { customElement, property } from "lit/decorators.js";
  * Form page for OAuth2 Dynamic Client Registration configuration
  *
  * @element ak-provider-oauth2-dcr-form
- *
  */
 @customElement("ak-provider-oauth2-dcr-form")
 export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, string> {

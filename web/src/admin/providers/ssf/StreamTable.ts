@@ -2,6 +2,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 
@@ -17,8 +18,6 @@ import { SsfApi, SSFStream } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {

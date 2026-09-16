@@ -14,6 +14,10 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -40,15 +44,11 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -241,20 +241,22 @@ export class UserListPage extends WithLicenseSummary(
                     });
                 }}
             >
-                ${shouldShowWarning
-                    ? html`<div slot="notice" class="pf-c-form__alert">
-                          <div class="pf-c-alert pf-m-inline pf-m-warning">
-                              <div class="pf-c-alert__icon">
-                                  <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                ${
+                    shouldShowWarning
+                        ? html`<div slot="notice" class="pf-c-form__alert">
+                              <div class="pf-c-alert pf-m-inline pf-m-warning">
+                                  <div class="pf-c-alert__icon">
+                                      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                  </div>
+                                  <h4 class="pf-c-alert__title">
+                                      ${msg(
+                                          str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
+                                      )}
+                                  </h4>
                               </div>
-                              <h4 class="pf-c-alert__title">
-                                  ${msg(
-                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
-                                  )}
-                              </h4>
-                          </div>
-                      </div>`
-                    : nothing}
+                          </div>`
+                        : nothing
+                }
                 <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                     ${msg("Delete")}
                 </button>
@@ -322,20 +324,22 @@ export class UserListPage extends WithLicenseSummary(
             html`${userTypeToLabel(item.type)}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(UserForm, item.pk, displayName)}
-                ${showImpersonation
-                    ? html`<button
-                          class="pf-c-button pf-m-tertiary"
-                          ${UserImpersonateForm.asInstanceInvoker(item.pk)}
-                          aria-label=${msg(str`Impersonate ${displayName}`)}
-                      >
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Temporarily assume the identity of this user")}
+                ${
+                    showImpersonation
+                        ? html`<button
+                              class="pf-c-button pf-m-tertiary"
+                              ${UserImpersonateForm.asInstanceInvoker(item.pk)}
+                              aria-label=${msg(str`Impersonate ${displayName}`)}
                           >
-                              <span>${msg("Impersonate")}</span>
-                          </pf-tooltip>
-                      </button>`
-                    : null}
+                              <pf-tooltip
+                                  position="top"
+                                  content=${msg("Temporarily assume the identity of this user")}
+                              >
+                                  <span>${msg("Impersonate")}</span>
+                              </pf-tooltip>
+                          </button>`
+                        : null
+                }
             </div>`,
         ];
     }

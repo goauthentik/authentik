@@ -3,7 +3,6 @@
  */
 
 import "#components/tasks/TaskList";
-
 import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";

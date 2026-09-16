@@ -6,12 +6,11 @@ import type { MermaidConfig } from "mermaid";
  *
  * @remarks
  *
- * Colors are parsed through a 1x1 canvas so that any valid CSS color form
- * (named, rgb/rgba, hsl, or a `var()` chain) collapses to a hex string Mermaid
- * can consume. Fully transparent values resolve to `"transparent"`.
- *
- * PatternFly 4 handles light/dark theming at the token level, so a single token
- * set resolves correctly under either theme — no per-theme branching needed.
+ *   Colors are parsed through a 1x1 canvas so that any valid CSS color form
+ *   (named, rgb/rgba, hsl, or a `var()` chain) collapses to a hex string Mermaid
+ *   can consume. Fully transparent values resolve to `"transparent"`.
+ *   PatternFly 4 handles light/dark theming at the token level, so a single token
+ *   set resolves correctly under either theme — no per-theme branching needed.
  */
 export class MermaidThemeAdapter {
     canvas = new OffscreenCanvas(1, 1);
@@ -61,8 +60,8 @@ export class MermaidThemeAdapter {
      *
      * @remarks
      *
-     * Requires `theme: "base"` in the Mermaid config — other built-in themes
-     * ignore most of these overrides.
+     *   Requires `theme: "base"` in the Mermaid config — other built-in themes
+     *   ignore most of these overrides.
      */
     public toThemeVariables(darkMode?: boolean): MermaidConfig["themeVariables"] {
         const { readHexColorVariable: read, readSurface } = this;

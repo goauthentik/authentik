@@ -1,7 +1,6 @@
 import "#elements/messages/MessageContainer";
 import "../components/ak-dual-select-available-pane.js";
 import "./sb-host-provider.js";
-
 import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane.js";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";

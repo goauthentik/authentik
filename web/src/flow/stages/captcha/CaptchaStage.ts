@@ -1,5 +1,9 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
@@ -33,11 +37,6 @@ import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 export type TokenListener = (token: string) => void;
 

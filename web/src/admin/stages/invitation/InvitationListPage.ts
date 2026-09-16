@@ -4,6 +4,7 @@ import "#admin/stages/invitation/InvitationListLink";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -23,8 +24,6 @@ import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthen
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -110,15 +109,17 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${!item.flowObj && this.multipleEnrollmentFlows
-                    ? html`
-                          <ak-label color=${PFColor.Orange}>
-                              ${msg(
-                                  "Invitation not limited to any flow, and can be used with any enrollment flow.",
-                              )}
-                          </ak-label>
-                      `
-                    : null}`,
+                ${
+                    !item.flowObj && this.multipleEnrollmentFlows
+                        ? html`
+                              <ak-label color=${PFColor.Orange}>
+                                  ${msg(
+                                      "Invitation not limited to any flow, and can be used with any enrollment flow.",
+                                  )}
+                              </ak-label>
+                          `
+                        : null
+                }`,
             html`<div>
                     <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}
                         >${item.createdBy.username}</a
@@ -153,15 +154,17 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override render(): SlottedTemplateResult {
-        return html`${this.invitationStageExists
-                ? null
-                : html`
-                      <div class="pf-c-banner pf-m-warning">
-                          ${msg(
-                              "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
-                          )}
-                      </div>
-                  `}
+        return html`${
+                this.invitationStageExists
+                    ? null
+                    : html`
+                          <div class="pf-c-banner pf-m-warning">
+                              ${msg(
+                                  "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
+                              )}
+                          </div>
+                      `
+            }
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;

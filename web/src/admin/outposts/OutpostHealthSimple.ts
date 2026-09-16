@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 

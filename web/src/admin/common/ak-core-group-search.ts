@@ -35,7 +35,6 @@ const renderValue = (group: Group | null) => group?.pk;
  * A wrapper around SearchSelect for the 8 search of groups used throughout our code
  * base.  This is one of those "If it's not error-free, at least it's localized to
  * one place" issues.
- *
  */
 
 @customElement("ak-core-group-search")

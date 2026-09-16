@@ -84,9 +84,8 @@ export const remarkAdmonition: Plugin<[], Root, VFile> = () => {
 /**
  * Match a Docusaurus-style admonition opening line:
  *
- * ```
  *     :::info Title
- *```
+ *
  * `remark-directive` only understands the spec form `:::name[label]{attrs}`,
  * so a bare-space label silently falls through as plain text. Rewrite
  * the source so the directive parser sees the bracketed form.

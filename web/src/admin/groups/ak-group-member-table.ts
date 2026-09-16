@@ -1,7 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/table/ak-table-filter-select";
-
 import { aki } from "#common/api/client";
 
 import { FilterOption } from "#elements/table/ak-table-filter-select";

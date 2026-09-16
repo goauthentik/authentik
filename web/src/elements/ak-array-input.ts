@@ -1,3 +1,7 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
 import { AKControlElement } from "#elements/ControlElement";
 import { SlottedTemplateResult, type Spread } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
@@ -8,10 +12,6 @@ import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 export type InputCell<T> = (el: T, idx: number) => SlottedTemplateResult | typeof nothing;
 
@@ -113,8 +113,8 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
     }
 
     protected getNamedElements(): (HTMLInputElement & AKControlElement<T>)[] {
-        return Array.from(this.inputGroups ?? []).map(
-            (group) => group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")!,
+        return Array.from(this.inputGroups ?? []).map((group) =>
+            group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")!,
         );
     }
 

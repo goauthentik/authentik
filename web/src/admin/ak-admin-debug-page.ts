@@ -1,3 +1,8 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
 import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -13,11 +18,6 @@ import * as Sentry from "@sentry/browser";
 
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {

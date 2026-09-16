@@ -16,9 +16,6 @@ export interface ISelectTable extends ISimpleTable {
 }
 
 /**
- * @element ak-select-table
- * @class SelectTable
- *
  * Extends the SimpleTable with a select column, emitting a `change` event whenever the selected
  * table updates. The `multiple` keyword creates a multi-select table. Sorting behavior resembles
  * that of `SimpleTable`.
@@ -35,23 +32,17 @@ export interface ISelectTable extends ISimpleTable {
  *
  * - @prop content (see types): The content to show. The simplest content is just `string[][]`, but
  *   see the types.
- *
- * - @prop columns (see types): The column headers for the table.  Can be just a `string[]`, but see
+ * - @prop columns (see types): The column headers for the table. Can be just a `string[]`, but see
  *   the types.
- *
- * - @attr (string, optional): The current column to order the content by.  By convention, prefix
- *   with a `-` to indicate a reverse sort order.  (See "Does not handle sorting" above).
- *
+ * - @attr (string, optional): The current column to order the content by. By convention, prefix with
+ *   a `-` to indicate a reverse sort order. (See "Does not handle sorting" above).
  * - @attr multiple (boolean): If true, this table is "multi-select" and a 'select all' checkbox will
  *   be available.
- *
  * - @attr value (string): If set, will set the value of the component. For multi-select, will split
- *   on the `valueSep` (see next entry).  Get is the reverse: either the value of the component,
- *   or for multi-select, the value of the component `.join()`ed with the `valueSep`
- *
+ *   on the `valueSep` (see next entry). Get is the reverse: either the value of the component, or
+ *   for multi-select, the value of the component `.join()`ed with the `valueSep`
  * - @attr valueSep (string): For multi-select only, the (ideally one) characters which will separate
  *   values.
- *
  * - @prop selected (string[]): The values selected. Always an array, even for mult-select. When not
  *   multi-select, will have zero or one items only.
  *
@@ -87,6 +78,8 @@ export interface ISelectTable extends ISimpleTable {
  * cannot access the select-cell via `cell-0`; that would be the first data column. This is due to a
  * limitation on the `part::` semantics.
  *
+ * @element ak-select-table
+ * @class SelectTable
  */
 
 @customElement("ak-select-table")

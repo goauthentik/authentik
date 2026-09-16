@@ -4,7 +4,6 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";

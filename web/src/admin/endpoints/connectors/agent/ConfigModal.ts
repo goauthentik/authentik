@@ -1,7 +1,6 @@
 import "#elements/CodeMirror";
 import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
-
 import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";

@@ -11,6 +11,9 @@ import "#admin/admin-overview/charts/SyncStatusChart";
 import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
 import "#elements/Divider";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { formatUserDisplayName } from "#common/users";
 
@@ -26,10 +29,6 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const AdminOverviewBase = WithLicenseSummary(WithSession(AKElement));
 
@@ -156,11 +155,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
             <div class=${classMap(classes)}>
                 <ak-admin-status-card-workers> </ak-admin-status-card-workers>
             </div>
-            ${isEnterprise
-                ? html` <div class=${classMap(classes)}>
-                      <ak-admin-fips-status-system> </ak-admin-fips-status-system>
-                  </div>`
-                : nothing} `;
+            ${
+                isEnterprise
+                    ? html` <div class=${classMap(classes)}>
+                          <ak-admin-fips-status-system> </ak-admin-fips-status-system>
+                      </div>`
+                    : nothing
+            } `;
     }
 
     updated(changed: PropertyValues<this>) {

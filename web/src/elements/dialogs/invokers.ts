@@ -28,10 +28,11 @@ export function asInvoker(
     init?: DialogInit,
 ): () => Promise<void>;
 /**
- * A utility function that takes either a {@linkcode CustomElementConstructor}
- * or a {@linkcode ModalTemplate} and returns a function that renders the corresponding modal dialog.
+ * A utility function that takes either a {@linkcode CustomElementConstructor} or a
+ * {@linkcode ModalTemplate} and returns a function that renders the corresponding modal dialog.
  *
- * @param factory The input to render as a modal dialog, either a custom element constructor or a function that returns a template result.
+ * @param factory The input to render as a modal dialog, either a custom element constructor or a
+ *   function that returns a template result.
  * @param init Initialization options for the modal dialog.
  */
 export function asInvoker(

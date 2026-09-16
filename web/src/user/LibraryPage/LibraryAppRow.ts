@@ -1,6 +1,5 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
-
 import { PFSize } from "#common/enums";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -86,11 +85,13 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
         ></ak-app-icon>
         <div part="row-text" class="row-text">
             <div id=${titleID} part="row-title" class="row-title">${application.name}</div>
-            ${metaParts.length
-                ? html`<div id=${metaID} part="row-meta" class="row-meta">
-                      ${metaParts.join(" · ")}
-                  </div>`
-                : nothing}
+            ${
+                metaParts.length
+                    ? html`<div id=${metaID} part="row-meta" class="row-meta">
+                          ${metaParts.join(" · ")}
+                      </div>`
+                    : nothing
+            }
         </div>
     `;
 

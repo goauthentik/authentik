@@ -5,7 +5,6 @@ import "#elements/forms/Radio";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 import { DefaultUIConfig } from "#common/ui/config";
 
@@ -207,29 +206,33 @@ export class UserForm extends ObjectAttributeModelForm<User, number> {
                 help=${msg("The user's display name.")}
             ></ak-text-input>
 
-            ${this.userType
-                ? null
-                : html`<ak-radio-input
-                      label=${msg("User type")}
-                      required
-                      name="type"
-                      .value=${this.instance?.type}
-                      .options=${[
-                          ...UserTypeOptions,
-                          ...(this.instance
-                              ? [
-                                    {
-                                        label: msg("Internal Service account"),
-                                        value: UserTypeEnum.InternalServiceAccount,
-                                        disabled: true,
-                                        description: html`${msg(
-                                            "Managed by authentik and cannot be assigned manually.",
-                                        )}`,
-                                    },
-                                ]
-                              : []),
-                      ] satisfies RadioOption<UserTypeEnum>[]}
-                  ></ak-radio-input>`}
+            ${
+                this.userType
+                    ? null
+                    : html`<ak-radio-input
+                          label=${msg("User type")}
+                          required
+                          name="type"
+                          .value=${this.instance?.type}
+                          .options=${
+                              [
+                                  ...UserTypeOptions,
+                                  ...(this.instance
+                                      ? [
+                                            {
+                                                label: msg("Internal Service account"),
+                                                value: UserTypeEnum.InternalServiceAccount,
+                                                disabled: true,
+                                                description: html`${msg(
+                                                    "Managed by authentik and cannot be assigned manually.",
+                                                )}`,
+                                            },
+                                        ]
+                                      : []),
+                              ] satisfies RadioOption<UserTypeEnum>[]
+                          }
+                      ></ak-radio-input>`
+            }
             <ak-text-input
                 name="email"
                 label=${msg("Email Address")}

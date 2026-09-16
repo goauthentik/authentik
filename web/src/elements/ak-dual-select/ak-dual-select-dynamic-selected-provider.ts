@@ -1,5 +1,4 @@
 import "./ak-dual-select.js";
-
 import { AkDualSelectProvider } from "./ak-dual-select-provider.js";
 import type { DualSelectPairSource } from "./types.js";
 

@@ -1,5 +1,7 @@
 import "#admin/roles/ak-related-role-table";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
@@ -9,9 +11,6 @@ import { User } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-roles-tab")
 export class UserRolesTab extends WithLazyTabs(AKElement) {

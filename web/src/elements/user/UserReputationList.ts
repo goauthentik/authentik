@@ -1,5 +1,4 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -78,9 +77,11 @@ export class UserReputationList extends Table<Reputation> {
     row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { renderForm } from "./WSFederationProviderFormForm.js";
 
 import { aki } from "#common/api/client";

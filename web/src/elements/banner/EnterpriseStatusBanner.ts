@@ -1,3 +1,5 @@
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -7,8 +9,6 @@ import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
@@ -70,10 +70,11 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         }
 
         return html`<div
-            class="pf-c-banner pf-m-sticky ${this.licenseSummary?.status ===
-            LicenseSummaryStatusEnum.ReadOnly
-                ? "pf-m-red"
-                : "pf-m-gold"}"
+            class="pf-c-banner pf-m-sticky ${
+                this.licenseSummary?.status === LicenseSummaryStatusEnum.ReadOnly
+                    ? "pf-m-red"
+                    : "pf-m-gold"
+            }"
         >
             ${message}
             <a href=${toAdminInterface("enterprise/licenses")}
@@ -84,16 +85,20 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
 
     renderFlagBanner() {
         return html`
-            ${this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.Trial)
-                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
-                      ${msg("This authentik instance uses a Trial license.")}
-                  </div>`
-                : nothing}
-            ${this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.NonProduction)
-                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
-                      ${msg("This authentik instance uses a Non-production license.")}
-                  </div>`
-                : nothing}
+            ${
+                this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.Trial)
+                    ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                          ${msg("This authentik instance uses a Trial license.")}
+                      </div>`
+                    : nothing
+            }
+            ${
+                this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.NonProduction)
+                    ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                          ${msg("This authentik instance uses a Non-production license.")}
+                      </div>`
+                    : nothing
+            }
         `;
     }
 

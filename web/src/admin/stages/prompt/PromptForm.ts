@@ -2,6 +2,8 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -20,9 +22,6 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
-
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;
@@ -189,26 +188,30 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </ak-stage-prompt>
                     </div>
                 </div>
-                ${this.previewError
-                    ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Preview errors")}</div>
-                              <div class="pf-c-card__body">
-                                  ${AKFormErrors({ errors: [this.previewError] })}
+                ${
+                    this.previewError
+                        ? html`
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__body">${msg("Preview errors")}</div>
+                                  <div class="pf-c-card__body">
+                                      ${AKFormErrors({ errors: [this.previewError] })}
+                                  </div>
                               </div>
-                          </div>
-                      `
-                    : nothing}
-                ${this.previewResult
-                    ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Data preview")}</div>
-                              <div class="pf-c-card__body">
-                                  <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
+                          `
+                        : nothing
+                }
+                ${
+                    this.previewResult
+                        ? html`
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__body">${msg("Data preview")}</div>
+                                  <div class="pf-c-card__body">
+                                      <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
+                                  </div>
                               </div>
-                          </div>
-                      `
-                    : nothing}
+                          `
+                        : nothing
+                }
             </div>
         `;
     }

@@ -3,6 +3,7 @@ import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import {
@@ -32,8 +33,6 @@ import { match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 
@@ -307,12 +306,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected override renderForm(): TemplateResult {
-        return html`${this.allowedTypes.length > 1
-                ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
-                      <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                      <div class="pf-c-card__footer">${this.renderTarget()}</div>
-                  </div>`
-                : this.renderTarget()}
+        return html`${
+                this.allowedTypes.length > 1
+                    ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
+                          <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+                          <div class="pf-c-card__footer">${this.renderTarget()}</div>
+                      </div>`
+                    : this.renderTarget()
+            }
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}

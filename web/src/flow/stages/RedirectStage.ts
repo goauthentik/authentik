@@ -1,4 +1,9 @@
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -14,12 +19,6 @@ import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/ap
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {

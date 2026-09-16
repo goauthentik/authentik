@@ -3,7 +3,6 @@ import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/timestamp/ak-timestamp";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";

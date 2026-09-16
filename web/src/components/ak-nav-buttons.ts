@@ -3,6 +3,12 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
@@ -21,13 +27,6 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends WithNotifications(WithSession(AKElement)) {

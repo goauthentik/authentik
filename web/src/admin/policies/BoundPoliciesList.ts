@@ -7,7 +7,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
@@ -248,11 +247,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return nothing;
         }
 
-        return html`${this.findSlotted("description")
-                ? html`<p class="policy-desc">
-                      <slot name="description"></slot>
-                  </p>`
-                : nothing}
+        return html`${
+                this.findSlotted("description")
+                    ? html`<p class="policy-desc">
+                          <slot name="description"></slot>
+                      </p>`
+                    : nothing
+            }
             <p class="policy-desc">
                 ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
                 ${policyEngineMode.description}

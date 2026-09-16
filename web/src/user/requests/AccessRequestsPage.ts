@@ -3,6 +3,9 @@ import "#elements/a11y/ak-skip-to-content";
 import "#user/requests/BrowseRequestable";
 import "#user/requests/MyGrantRequestsList";
 import "#user/requests/PendingReviewList";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -21,10 +24,6 @@ import { GrantRequest, RequestsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-access-requests-page")
 export class AccessRequestsPage extends AKElement {
@@ -65,12 +64,14 @@ export class AccessRequestsPage extends AKElement {
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-                ${(this.toReview?.pagination.count || 0) > 0
-                    ? html`<div class="pf-c-banner pf-m-info">
-                          ${msg("Requests to review: ")}
-                          <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
-                      </div>`
-                    : nothing}
+                ${
+                    (this.toReview?.pagination.count || 0) > 0
+                        ? html`<div class="pf-c-banner pf-m-info">
+                              ${msg("Requests to review: ")}
+                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                          </div>`
+                        : nothing
+                }
                 <ak-tabs
                     routed
                     role="main"

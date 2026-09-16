@@ -1,3 +1,5 @@
+import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
+
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/Expand.css";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
@@ -7,8 +9,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 
 export interface IExpand {
     expanded?: boolean;
@@ -31,9 +31,9 @@ export class Expand extends AKElement implements IExpand {
 
     render() {
         return html`<div
-            class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
-                ? "pf-m-expanded"
-                : ""}"
+            class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${
+                this.expanded ? "pf-m-expanded" : ""
+            }"
         >
             <button
                 type="button"

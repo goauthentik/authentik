@@ -1,3 +1,5 @@
+import PFFontAwesomeIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
+
 import { PFSize } from "#common/enums";
 import { resolveThemedUrl } from "#common/theme";
 
@@ -10,8 +12,6 @@ import type { ThemedUrls } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFFontAwesomeIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
 
 export interface IAppIcon {
     name?: string | null;
