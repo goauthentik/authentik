@@ -1,7 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -15,9 +14,10 @@ import {
     SourcesApi,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-group-form")
@@ -37,6 +37,7 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
 
     async send(data: GroupLDAPSourceConnection) {
         data.source = this.source?.pk || "";
+
         return aki(SourcesApi).sourcesGroupConnectionsLdapCreate({
             groupLDAPSourceConnectionRequest: data,
         });
@@ -49,10 +50,13 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await aki(CoreApi).coreGroupsList(args);
+
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {

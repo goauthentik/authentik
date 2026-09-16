@@ -221,7 +221,9 @@ test.describe("User switching", () => {
                 adminEntry,
                 "Administrator is listed and marked as the current account",
             ).toBeDisabled();
+
             await expect(switcher.$addUser, "Add another user is offered").toBeVisible();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is available to the administrator",
@@ -250,10 +252,12 @@ test.describe("User switching", () => {
                 secondaryEntry,
                 "Secondary account is marked as the current account",
             ).toBeDisabled();
+
             await expect(
                 adminEntry,
                 "Administrator remains selectable as a switch target",
             ).toBeEnabled();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is hidden for the non-superuser account",
@@ -269,6 +273,7 @@ test.describe("User switching", () => {
                 session.$passwordStage,
                 "Switching opens on the password stage, identification having been skipped",
             ).toBeVisible({ timeout: 15_000 });
+
             await expect(
                 session.$identificationStage,
                 "Identification is not asked again for a known switch target",
@@ -284,10 +289,12 @@ test.describe("User switching", () => {
                 adminEntry,
                 "Administrator is marked as the current account",
             ).toBeDisabled();
+
             await expect(
                 secondaryEntry,
                 "Secondary account remains selectable as a switch target",
             ).toBeEnabled();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is available again",
@@ -307,6 +314,7 @@ test.describe("User switching", () => {
                 switcher.entry(ADMIN_ENTRY_NAME),
                 "Administrator is marked as the current account",
             ).toBeDisabled();
+
             await expect(switcher.$addUser, "Add another user is offered").toBeVisible();
         });
     });

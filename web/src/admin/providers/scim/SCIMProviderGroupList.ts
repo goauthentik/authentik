@@ -2,7 +2,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -51,6 +50,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("SCIM Group(s)")}
             .objects=${this.selectedElements}

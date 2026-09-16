@@ -52,6 +52,7 @@ export class FormWizardPage<S extends WizardPageState = WizardPageState> extends
                             formData: responseData,
                         },
                     );
+
                     throw new TypeError("Expected slot to be defined on WizardPage.");
                 }
 

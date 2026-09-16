@@ -116,4 +116,4 @@ export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] =
     [null, msg("Enterprise"), null, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
-]]
+]];

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -55,7 +53,6 @@ import {
 
 /**
  * @type ModelRequest
- *
  * @export
  */
 export type ModelRequest =
