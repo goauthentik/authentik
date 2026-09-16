@@ -304,6 +304,17 @@ export class CaptchaStage
             return;
         }
 
+        if (
+            changedProperties.has("activeTheme") &&
+            changedProperties.get("activeTheme") &&
+            this.activeController
+        ) {
+            this.#logger.debug(`Theme changed to \`${this.activeTheme}\``);
+            this.#load();
+
+            return;
+        }
+
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }
