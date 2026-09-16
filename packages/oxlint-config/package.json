@@ -8,11 +8,12 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/oxlint-config"
     },
-    "scripts": {
-        "build": "tsc -p .",
-        "prepare": "tsc -p .",
-        "verify": "node scripts/verify-fixtures.mjs"
-    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
     "type": "module",
     "types": "./out/index.d.ts",
     "exports": {
@@ -26,6 +27,14 @@
             "types": "./out/plugin.d.ts"
         }
     },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "prepare": "tsc -p .",
+        "verify": "node scripts/verify-fixtures.mjs"
+    },
     "dependencies": {
         "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-wc": "^3.1.0"
@@ -37,16 +46,7 @@
     "peerDependencies": {
         "oxlint": ">=1.75.0 <2"
     },
-    "files": [
-        "out/**/*.js",
-        "out/**/*.d.ts",
-        "out/**/*.map",
-        "src"
-    ],
     "engines": {
         "node": ">=24.0"
-    },
-    "publishConfig": {
-        "access": "public"
     }
 }

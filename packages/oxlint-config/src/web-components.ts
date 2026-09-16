@@ -1,11 +1,10 @@
 /**
- * @file lit-html and Web Component lint rules, sourced from `eslint-plugin-lit` and
- * `eslint-plugin-wc`.
- *
- * oxlint's JS-plugin host is ESLint v9-compatible, so it loads these ESLint plugins directly via
- * `jsPlugins` — authentik consumes them unmodified rather than re-implementing the rules. The
- * enabled set mirrors each plugin's `flat/recommended` config, which is the exact set the former
- * `@goauthentik/eslint-config` applied.
+ * @file Lit-html and Web Component lint rules, sourced from `eslint-plugin-lit` and
+ *   `eslint-plugin-wc`.
+ *   oxlint's JS-plugin host is ESLint v9-compatible, so it loads these ESLint plugins directly via
+ *   `jsPlugins` — authentik consumes them unmodified rather than re-implementing the rules. The
+ *   enabled set mirrors each plugin's `flat/recommended` config, which is the exact set the former
+ *   `@goauthentik/eslint-config` applied.
  */
 
 /** A `jsPlugins` entry aliasing an ESLint plugin so its rules resolve under a short namespace. */
@@ -25,7 +24,8 @@ export const WebComponentJsPlugins: JsPluginAlias[] = [
 
 /**
  * The `flat/recommended` rules of `eslint-plugin-wc` and `eslint-plugin-lit`. These cover
- * web-component class pitfalls and lit-html template correctness that oxlint's built-in rules do not.
+ * web-component class pitfalls and lit-html template correctness that oxlint's built-in rules do
+ * not.
  */
 export const WebComponentRules: Record<string, string> = {
     // eslint-plugin-wc — flat/recommended

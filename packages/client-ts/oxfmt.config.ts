@@ -2,9 +2,6 @@
  * @file Oxfmt configuration.
  */
 
-import { authentikOxfmtConfig, DefaultIgnorePatterns } from "@goauthentik/oxfmt-config";
+import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config";
 
-export default {
-    ...authentikOxfmtConfig,
-    ignorePatterns: [...DefaultIgnorePatterns, "fixtures/**"],
-};
+export default authentikOxfmtConfig;
