@@ -1,5 +1,7 @@
 """policy process tests"""
 
+from unittest.mock import Mock, patch
+
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
@@ -242,3 +244,17 @@ class TestPolicyProcess(TestCase):
         event = events.first()
         self.assertEqual(event.user["username"], self.user.username)
         self.assertIn("Policy failed to execute", event.context["message"])
+
+    @patch.object(PolicyProcess, "profiling_wrapper", side_effect=RuntimeError("failure"))
+    def test_unexpected_failure_retains_source_binding(self, _mock: Mock):
+        """Unexpected process failures retain their source binding."""
+        binding = PolicyBinding(policy=Policy.objects.create(name=generate_id()))
+        connection = Mock()
+        process = PolicyProcess(binding, PolicyRequest(self.user), connection)
+
+        process.run()
+
+        result = connection.send.call_args.args[0]
+        self.assertEqual(result.passing, False)
+        self.assertEqual(result.messages, ("failure",))
+        self.assertEqual(result.source_binding, binding)
