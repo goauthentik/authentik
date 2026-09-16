@@ -84,6 +84,9 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: read
+      # Required so the "Report Playwright results" step can create and update
+      # its marker comment through the issues API.
+      pull-requests: write
       # Required so the codecov upload below can mint an OIDC token.
       id-token: write
     env:
@@ -205,9 +208,13 @@ jobs:
         run: pnpm run test:e2e
       # Reporting / upload steps below intentionally use `!cancelled()` rather
       # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
-      # not a real result and shouldn't be reported. `if-no-files-found: ignore`
-      # keeps the "passed" case quiet.
+      # not a real result and shouldn't produce reviewer-facing artifacts or
+      # comments. `if-no-files-found: ignore` keeps the "passed" case quiet.
+      # This step's `artifact-url` output is what the report links point at, so
+      # a reviewer reaches the report from the PR rather than by hunting through
+      # the run page for the artifact.
       - name: Upload Playwright HTML report
+        id: report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -240,6 +247,20 @@ jobs:
           flags: e2e-web
           use_oidc: true
           report_type: test_results
+      # The rendering lives in scripts/node/ci/playwright-report.ts: it writes the
+      # job summary — which needs no download and is the only reporting a fork PR
+      # gets — and updates the PR's result comment in place.
+      - name: Report Playwright results
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Empty when the upload step found no report to upload.
+          REPORT_ARTIFACT_URL: ${{ steps.report.outputs.artifact-url }}
+          # Empty for pushes, and for fork pull requests: those run with a
+          # read-only GITHUB_TOKEN even after maintainer approval, so commenting
+          # would 403. The script skips the comment when this is empty.
+          PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.number || '' }}
+        run: node ./scripts/node/ci/playwright-report.ts web/playwright-report/results.json
   ci-web-mark:
     if: always()
     needs:
