@@ -5,6 +5,7 @@ import type { DirectiveResult } from "lit-html/directive.js";
 import type { Context, ContextProvider, ContextType } from "@lit/context";
 import type {
     LitElement,
+    noChange,
     nothing,
     ReactiveController,
     ReactiveControllerHost,
@@ -334,6 +335,7 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
 export type SlottedTemplateResult =
     | string
     | TemplateResult
+    | typeof noChange
     | typeof nothing
     | null
     | DirectiveResult
