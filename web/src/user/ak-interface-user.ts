@@ -14,7 +14,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { globalAK } from "#common/global";
-import { UIConfig } from "#common/ui/config";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -25,6 +24,7 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -47,15 +47,6 @@ import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-type Feature = keyof UIConfig["enabledFeatures"];
-
-interface UserNavItem {
-    label: string;
-    link: string;
-    feature?: Feature;
-    capability?: CapabilitiesEnum;
-}
 
 @customElement("ak-interface-user")
 class UserInterface extends WithLicenseSummary(
@@ -115,39 +106,49 @@ class UserInterface extends WithLicenseSummary(
 
             const { base } = globalAK().api;
 
-            return html`<a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                    href="${base}if/admin/"
-                    slot="extra"
+            return html`<a class="pf-c-button pf-m-secondary pf-m-small" href="${base}if/admin/">
+                <span class="pf-u-display-none pf-u-display-block-on-md"
+                    >${msg("Admin interface")}</span
                 >
-                    ${msg("Admin interface")}
-                </a>
-                <a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                    href="${base}if/admin/"
-                    slot="extra"
-                >
-                    ${msg("Admin")}
-                </a>`;
+                <span class="pf-u-display-none-on-md pf-u-display-block">${msg("Admin")}</span>
+            </a>`;
         });
     }
 
-    protected canUseNavItem = ({ feature, capability }: UserNavItem) => {
-        if (!feature && !capability) {
-            return true;
-        }
+    protected renderNavTabs(): SlottedTemplateResult {
+        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const { requests, agents } = this.uiConfig.enabledFeatures;
 
-        const LE = LicenseSummaryStatusEnum;
-        const licensed: ReadonlySet<LicenseSummaryStatusEnum> = new Set([LE.Valid, LE.ExpirySoon]);
-        const { status } = this.licenseSummary ?? {};
+        // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
+        // Otherwise late-arriving permissions won't re-render the tabs.
+        const canRequest = this.can(CapabilitiesEnum.CanRequest);
+        const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
 
-        return (
-            status &&
-            licensed.has(status) &&
-            (!feature || this.uiConfig.enabledFeatures[feature]) &&
-            (!capability || this.can(capability))
-        );
-    };
+        return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
+            if (licensed) return null;
+
+            const navItems = [];
+
+            // Requests are an enterprise feature, can be disabled for the user interface
+            // and are only shown when the admin has configured at least one request rule
+            // We can't easily check if this user actually has something they can request,
+            // that is a semi-expensive request.
+            if (requests && canRequest) {
+                navItems.push({ label: msg("Discover"), link: "/requests" });
+            }
+
+            if (agents && canAgentSelfService) {
+                navItems.push({ label: msg("Agents"), link: "/agents" });
+            }
+
+            if (!navItems.length) return null;
+
+            return html`<ak-nav-tabs
+                class="pf-c-page__header-nav"
+                .items=${[{ label: msg("Applications"), link: "/library" }, ...navItems]}
+            ></ak-nav-tabs>`;
+        });
+    }
 
     protected render() {
         const { currentUser } = this;
@@ -167,29 +168,6 @@ class UserInterface extends WithLicenseSummary(
         }
 
         const backgroundStyles = this.uiConfig.theme.background;
-
-        // Requests are an enterprise feature, can be disabled for the user interface
-        // and are only shown when the admin has configured at least one request rule
-        // We can't easily check if this user actually has something they can request,
-        // that is a semi-expensive request
-
-        const CE = CapabilitiesEnum;
-
-        const navItems: UserNavItem[] = [
-            { label: msg("Applications"), link: toUserInterface("library") },
-            {
-                label: msg("Discover"),
-                link: toUserInterface("requests"),
-                feature: "requests" as Feature,
-                capability: CE.CanRequest,
-            },
-            {
-                label: msg("Agents"),
-                link: toUserInterface("agents"),
-                feature: "agents" as Feature,
-                capability: CE.CanAgentSelfService,
-            },
-        ].filter(this.canUseNavItem);
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
@@ -217,14 +195,7 @@ class UserInterface extends WithLicenseSummary(
                             })}
                         </a>
                     </div>
-                    ${
-                        navItems.length > 1
-                            ? html`<ak-nav-tabs
-                                  class="pf-c-page__header-nav"
-                                  .items=${navItems}
-                              ></ak-nav-tabs>`
-                            : nothing
-                    }
+                    ${this.renderNavTabs()}
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">
