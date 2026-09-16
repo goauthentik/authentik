@@ -23410,6 +23410,15 @@ paths:
         name: type
         schema:
           $ref: '#/components/schemas/SecretTypeEnum'
+      - in: query
+        name: type__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       tags:
       - secrets
       security:

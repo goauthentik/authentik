@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * A rotated value, hidden when the caller cannot view it.
+ *
  * @export
  * @interface RotatedSecret
  */
 export interface RotatedSecret {
-    /**
-     *
-     */
     readonly value: string | null;
 }
 
