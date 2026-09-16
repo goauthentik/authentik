@@ -262,10 +262,10 @@
             "command": "lit-analyzer src"
         },
         "locales:repair": {
-            "command": "prettier --write ./src/locale-codes.ts"
+            "command": "oxfmt --write ./src/locale-codes.ts"
         },
         "precommit": {
-            "command": "prettier --write .",
+            "command": "oxfmt --write .",
             "dependencies": [
                 "lint",
                 "lint:types",

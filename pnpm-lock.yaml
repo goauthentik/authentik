@@ -235,9 +235,6 @@ importers:
       cspell:
         specifier: ^10.0.1
         version: 10.0.1
-      eslint:
-        specifier: 'catalog:'
-        version: 9.39.5(jiti@2.7.0)(supports-color@8.1.1)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
