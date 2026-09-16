@@ -103,7 +103,10 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
                     setattr(instance, field, field_value)
                 instance.save(update_fields=[*validated_data, "last_updated"])
             if value is not None:
-                instance.replace_value(value, self.context.get("request"))
+                try:
+                    instance.replace_value(value, self.context.get("request"))
+                except DjangoValidationError as exc:
+                    raise ValidationError({"value": exc.messages}) from exc
         return instance
 
     class Meta:
