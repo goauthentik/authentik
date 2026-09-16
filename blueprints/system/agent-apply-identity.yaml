@@ -1,0 +1,42 @@
+version: 1
+metadata:
+  name: System - authentik Agent - Bounded apply identity
+  labels:
+    blueprints.goauthentik.io/system: "true"
+    blueprints.goauthentik.io/description: |
+      A least-privilege service account the authentik Agent applies proposed
+      Blueprints as. Its role grants add/change on only the Application and
+      OAuth2/SAML provider models, so an agent apply can never create or alter
+      tokens, users, groups, roles, permissions, crypto or blueprint objects —
+      the server-side boundary behind the Agent's client-side content validator.
+entries:
+  - model: authentik_rbac.role
+    id: role
+    identifiers:
+      name: authentik Agent Apply
+    attrs:
+      permissions:
+        - authentik_core.add_application
+        - authentik_core.change_application
+        - authentik_providers_oauth2.add_oauth2provider
+        - authentik_providers_oauth2.change_oauth2provider
+        - authentik_providers_saml.add_samlprovider
+        - authentik_providers_saml.change_samlprovider
+  - model: authentik_core.group
+    id: group
+    identifiers:
+      name: authentik Agent Apply
+    attrs:
+      roles:
+        - !KeyOf role
+      is_superuser: false
+  - model: authentik_core.user
+    id: user
+    identifiers:
+      username: ak-agent-apply
+    attrs:
+      name: authentik Agent Apply
+      type: internal_service_account
+      path: goauthentik.io/agents
+      groups:
+        - !KeyOf group

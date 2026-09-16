@@ -5,6 +5,8 @@ export * from "./AccountLockdownStage";
 export * from "./AccountLockdownStageRequest";
 export * from "./Agent";
 export * from "./AgentAuthenticationResponse";
+export * from "./AgentBlueprintApplyRequest";
+export * from "./AgentBlueprintApplyResult";
 export * from "./AgentConfig";
 export * from "./AgentConnector";
 export * from "./AgentConnectorRequest";
