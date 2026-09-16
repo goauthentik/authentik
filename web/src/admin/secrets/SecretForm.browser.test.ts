@@ -150,3 +150,36 @@ test("a restricted create form submits its allowed type", async () => {
     await form.submit(new SubmitEvent("submit"));
     expect(create.mock.calls[0][0].secretRequest.type).toBe(SecretTypeEnum.Multiline);
 });
+
+test("upload covers its button and forgets a file when changing type", async () => {
+    const form = document.createElement("ak-secret-form");
+    document.body.append(form);
+    await vi.waitFor(() => expect(form.shadowRoot?.querySelector("ak-radio-input")).toBeTruthy());
+    const chooseType = async (value: SecretTypeEnum) => {
+        const radio = form.shadowRoot!.querySelector("ak-radio-input")!;
+        radio.value = value;
+        radio.dispatchEvent(new InputEvent("input", { bubbles: true }));
+        await form.updateComplete;
+    };
+    await chooseType(SecretTypeEnum.File);
+    const input = form.shadowRoot!.querySelector<HTMLInputElement>('input[type="file"]')!;
+    const transfer = new DataTransfer();
+    transfer.items.add(new File(["contents"], "review-secret.txt"));
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("change"));
+    await form.updateComplete;
+    expect(form.shadowRoot!.querySelector(".secret-file-name")?.textContent).toBe(
+        "review-secret.txt",
+    );
+    const button = form.shadowRoot!.querySelector(".secret-upload")!;
+    expect(input.getBoundingClientRect().height).toBeCloseTo(button.clientHeight, 0);
+    expect(input.getBoundingClientRect().width).toBeCloseTo(button.clientWidth, 0);
+    await chooseType(SecretTypeEnum.Text);
+    await chooseType(SecretTypeEnum.File);
+    expect(form.shadowRoot!.querySelector(".secret-file-name")?.textContent).toBe(
+        "No file selected",
+    );
+    expect(
+        form.shadowRoot!.querySelector<HTMLInputElement>('input[type="file"]')!.files!.length,
+    ).toBe(0);
+});
