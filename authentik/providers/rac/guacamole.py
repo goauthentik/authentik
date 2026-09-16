@@ -1,23 +1,12 @@
 """Helpers for filtering Guacamole WebSocket tunnel instructions."""
 
-from typing import Never, TypeVar, cast
+from typing import Never, cast
 
 INSTRUCTION_MAX_LENGTH = 8192
 INSTRUCTION_MAX_DIGITS = 5
 INSTRUCTION_MAX_ELEMENTS = 64
 PING_ELEMENT_COUNT = 3
 MAX_BMP_CODEPOINT = 0xFFFF
-
-GuacamoleData = str | bytes
-GuacamoleResponses = list[str] | list[bytes]
-GuacamoleDataType = TypeVar("GuacamoleDataType", str, bytes)
-
-
-def _wire_length(data: GuacamoleData) -> int:
-    """Return the length used by Guacamole for a text or binary payload."""
-    if isinstance(data, bytes):
-        return len(data)
-    return sum(2 if ord(character) > MAX_BMP_CODEPOINT else 1 for character in data)
 
 
 class GuacamoleProtocolError(ValueError):
@@ -28,32 +17,32 @@ class GuacamoleInstructionParser:
     """Incrementally parse and filter Guacamole tunnel instructions."""
 
     def __init__(self):
-        self._buffer: GuacamoleData = ""
+        self._buffer: str = ""
 
-    def receive(self, data: GuacamoleData) -> tuple[GuacamoleResponses, GuacamoleData]:
+    def _wire_length(self, data: str) -> int:
+        """Return the length used by Guacamole for a text or binary payload."""
+        if isinstance(data, bytes):
+            return len(data)
+        return sum(2 if ord(character) > MAX_BMP_CODEPOINT else 1 for character in data)
+
+    def receive(self, data: str) -> tuple[list[str], str]:
         """Return tunnel ping responses and non-internal data to forward."""
-        if isinstance(data, str):
-            if isinstance(self._buffer, bytes) and self._buffer:
-                self._fail("Cannot mix text and binary Guacamole data")
-            buffer = (self._buffer if isinstance(self._buffer, str) else "") + data
-            responses, forwarded, self._buffer = self._parse(buffer, ".", ",", ";")
-        else:
-            if isinstance(self._buffer, str) and self._buffer:
-                self._fail("Cannot mix text and binary Guacamole data")
-            buffer = (self._buffer if isinstance(self._buffer, bytes) else b"") + data
-            responses, forwarded, self._buffer = self._parse(buffer, b".", b",", b";")
+        if isinstance(self._buffer, bytes) and self._buffer:
+            self._fail("Cannot mix text and binary Guacamole data")
+        buffer = (self._buffer if isinstance(self._buffer, str) else "") + data
+        responses, forwarded, self._buffer = self._parse(buffer, ".", ",", ";")
         return responses, forwarded
 
     def _parse(
         self,
-        buffer: GuacamoleDataType,
-        period: GuacamoleDataType,
-        comma: GuacamoleDataType,
-        semicolon: GuacamoleDataType,
-    ) -> tuple[list[GuacamoleDataType], GuacamoleDataType, GuacamoleDataType]:
-        responses: list[GuacamoleDataType] = []
-        forwarded: list[GuacamoleDataType] = []
-        elements: list[GuacamoleDataType] = []
+        buffer: str,
+    ) -> tuple[list[str], str, str]:
+        period = "."
+        comma = ","
+        semicolon = ";"
+        responses: list[str] = []
+        forwarded: list[str] = []
+        elements: list[str] = []
         instruction_start = 0
         position = 0
 
@@ -86,7 +75,7 @@ class GuacamoleInstructionParser:
                 self._fail("Guacamole instruction contains too many elements")
 
             position = content_end + 1
-            if _wire_length(buffer[instruction_start:position]) > INSTRUCTION_MAX_LENGTH:
+            if self._wire_length(buffer[instruction_start:position]) > INSTRUCTION_MAX_LENGTH:
                 self._fail("Guacamole instruction exceeds maximum length")
 
             if terminator == semicolon:
@@ -104,17 +93,12 @@ class GuacamoleInstructionParser:
                 elements = []
                 instruction_start = position
 
-        if _wire_length(buffer[instruction_start:]) > INSTRUCTION_MAX_LENGTH:
+        if self._wire_length(buffer[instruction_start:]) > INSTRUCTION_MAX_LENGTH:
             self._fail("Guacamole instruction exceeds maximum length")
-        if isinstance(buffer, str):
-            forwarded_data = "".join(cast(list[str], forwarded))
-        else:
-            forwarded_data = b"".join(cast(list[bytes], forwarded))
-        return responses, cast(GuacamoleDataType, forwarded_data), buffer[instruction_start:]
+        forwarded_data = "".join(cast(list[str], forwarded))
+        return responses, forwarded_data, buffer[instruction_start:]
 
-    def _content_end(
-        self, buffer: GuacamoleDataType, content_start: int, element_length: int
-    ) -> int | None:
+    def _content_end(self, buffer: str, content_start: int, element_length: int) -> int | None:
         if isinstance(buffer, bytes):
             content_end = content_start + element_length
             return content_end if content_end <= len(buffer) else None
@@ -129,9 +113,7 @@ class GuacamoleInstructionParser:
         return content_end if code_units == element_length else None
 
     @staticmethod
-    def _is_digits(value: GuacamoleData) -> bool:
-        if isinstance(value, bytes):
-            return all(ord("0") <= character <= ord("9") for character in value)
+    def _is_digits(value: str) -> bool:
         return value.isascii() and value.isdigit()
 
     def _fail(self, message: str) -> Never:
