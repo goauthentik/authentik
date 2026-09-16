@@ -43,11 +43,13 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
+
         if (source.secret) {
             try {
                 const { value } = await aki(SecretsApi).secretsSecretsViewValueRetrieve({
                     secretUuid: source.secret,
                 });
+
                 this.plexToken = value;
                 this.initialToken = value;
                 await this.loadServers();
@@ -55,6 +57,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 await showAPIErrorMessage(error);
             }
         }
+
         return source;
     }
 
@@ -77,12 +80,15 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             data.allowedServers = this.instance.allowedServers;
             data.allowFriends = this.instance.allowFriends;
         }
+
         if (this.instance?.secret) {
             data.secret = this.instance.secret;
         }
+
         if (this.plexToken && this.plexToken !== this.initialToken) {
             data.secret = await this.saveTokenSecret(data.name || this.instance?.name || "Plex");
         }
+
         if (this.instance?.pk) {
             return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
@@ -101,20 +107,25 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
 
     private async saveTokenSecret(sourceName: string): Promise<string> {
         const target = this.instance?.secret ?? this.createdSecretPk;
+
         if (target) {
             await aki(SecretsApi).secretsSecretsPartialUpdate({
                 secretUuid: target,
                 patchedSecretRequest: { value: this.plexToken },
             });
+
             return target;
         }
+
         const secret = await aki(SecretsApi).secretsSecretsCreate({
             secretRequest: {
                 name: `${sourceName} Plex token (${crypto.randomUUID()})`,
                 value: this.plexToken,
             },
         });
+
         this.createdSecretPk = secret.pk;
+
         return secret.pk;
     }
 
@@ -133,6 +144,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
+
         try {
             this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
         } catch (error) {

@@ -241,14 +241,16 @@ export function renderForm({
                     label=${msg("Client Secret")}
                     value=${ifPresent(provider.secret)}
                     blankable
-                    help=${provider.pk
-                        ? msg("Secret the client authenticates with.", {
-                              id: "provider.oauth2.form.secret.description.edit",
-                          })
-                        : msg(
-                              "Secret the client authenticates with. Leave empty to create one for this provider.",
-                              { id: "provider.oauth2.form.secret.description.create" },
-                          )}
+                    help=${
+                        provider.pk
+                            ? msg("Secret the client authenticates with.", {
+                                  id: "provider.oauth2.form.secret.description.edit",
+                              })
+                            : msg(
+                                  "Secret the client authenticates with. Leave empty to create one for this provider.",
+                                  { id: "provider.oauth2.form.secret.description.create" },
+                              )
+                    }
                     ?hidden=${!showClientSecret}
                 ></ak-secret-search-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
