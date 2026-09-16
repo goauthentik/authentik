@@ -23,9 +23,6 @@ export interface AgentPSSODeviceRegistrationResponse {
     jwksEndpoint: string;
     audience: string;
     nonceEndpoint: string;
-    /**
-     *
-     */
     authorizationEndpoint: string;
 }
 
