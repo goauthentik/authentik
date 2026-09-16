@@ -67,8 +67,6 @@ class JSONSecretReferenceField(SecretReferenceField):
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
 
-    structured_consumers = ("kubernetes_connections",)
-
     def validate_value(self, value: str) -> str:
         if value == "":
             raise SkipField
@@ -81,11 +79,6 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
             or request.user.has_perm("authentik_crypto_secrets.rotate_secret", instance)
         ):
             raise PermissionDenied(_("You do not have permission to replace this value."))
-        if any(getattr(instance, relation).exists() for relation in self.structured_consumers):
-            try:
-                Secret(type=instance.type, value=value).get_json()
-            except ValueError:
-                raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
         return value
 
     def validate(self, attrs: dict) -> dict:
