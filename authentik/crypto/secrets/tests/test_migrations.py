@@ -85,6 +85,12 @@ LATEST_MIGRATIONS = [
 ]
 
 
+def migrate_to(targets):
+    executor = MigrationExecutor(connection)
+    executor.migrate(targets)
+    return executor.loader.project_state(targets)
+
+
 class TestSecretMigration(TransactionTestCase):
     """Upgrade populated credential columns, then downgrade edited secrets."""
 
@@ -92,8 +98,7 @@ class TestSecretMigration(TransactionTestCase):
     def test_upgrade_and_downgrade(self, _send_outpost_update):
         get_broker().join(TESTING_QUEUE, timeout=10_000)
         self.addCleanup(lambda: MigrationExecutor(connection).migrate(LATEST_MIGRATIONS))
-        (executor := MigrationExecutor(connection)).migrate(OLD_MIGRATIONS)
-        state = executor.loader.project_state(OLD_MIGRATIONS)
+        state = migrate_to(OLD_MIGRATIONS)
         consumers = [
             ("authentik_events", "NotificationTransport", {"webhook_url": "secret"}),
             ("authentik_providers_oauth2", "OAuth2Provider", {"client_secret": "secret"}),
@@ -236,8 +241,7 @@ class TestSecretMigration(TransactionTestCase):
                 (app, model_name, obj.pk, {field: "secret"}, {field: ""}, {field: "text"})
             )
 
-        (executor := MigrationExecutor(connection)).migrate(LATEST_MIGRATIONS)
-        state = executor.loader.project_state(LATEST_MIGRATIONS)
+        state = migrate_to(LATEST_MIGRATIONS)
         for app, model_name, pk, fields, values, expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
             with self.subTest(model=model_name):
@@ -270,8 +274,7 @@ class TestSecretMigration(TransactionTestCase):
                     )
                     secret.save(update_fields=["value"])
 
-        (executor := MigrationExecutor(connection)).migrate(OLD_MIGRATIONS)
-        state = executor.loader.project_state(OLD_MIGRATIONS)
+        state = migrate_to(OLD_MIGRATIONS)
         for app, model_name, pk, fields, values, _expected_types in records:
             obj = state.apps.get_model(app, model_name).objects.get(pk=pk)
             with self.subTest(downgrade=model_name):
