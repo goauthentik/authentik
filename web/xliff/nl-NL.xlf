@@ -11383,6 +11383,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
 </trans-unit>
+<trans-unit id="common.actions.copy.label">
+  <source>Copy</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

@@ -73,24 +73,37 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
-        return html`<ak-forms-delete-bulk
-            object-label=${msg("Property Mapping(s)")}
-            .objects=${this.selectedElements}
-            .usedBy=${(item: PropertyMapping) => {
-                return aki(PropertymappingsApi).propertymappingsAllUsedByList({
-                    pmUuid: item.pk,
-                });
-            }}
-            .delete=${(item: PropertyMapping) => {
-                return aki(PropertymappingsApi).propertymappingsAllDestroy({
-                    pmUuid: item.pk,
-                });
-            }}
-        >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
+        const copyDisabled = this.selectedElements.length !== 1;
+        const selected = this.selectedElements[0];
+        return html`<button
+                type="button"
+                class="pf-c-button pf-m-secondary"
+                ?disabled=${copyDisabled}
+                ${modalInvoker(AKPropertyMappingWizard, {
+                    copyFromPk: selected?.pk ?? null,
+                    copyFromComponent: selected?.component ?? null,
+                })}
+            >
+                ${msg("Copy", { id: "common.actions.copy.label" })}
             </button>
-        </ak-forms-delete-bulk>`;
+            <ak-forms-delete-bulk
+                object-label=${msg("Property Mapping(s)")}
+                .objects=${this.selectedElements}
+                .usedBy=${(item: PropertyMapping) => {
+                    return aki(PropertymappingsApi).propertymappingsAllUsedByList({
+                        pmUuid: item.pk,
+                    });
+                }}
+                .delete=${(item: PropertyMapping) => {
+                    return aki(PropertymappingsApi).propertymappingsAllDestroy({
+                        pmUuid: item.pk,
+                    });
+                }}
+            >
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>`;
     }
 
     protected override row(item: PropertyMapping): SlottedTemplateResult[] {

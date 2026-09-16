@@ -36,9 +36,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
         if (data.clientIp?.toString() === "") data.clientIp = null;
         if (data.app?.toString() === "") data.app = null;
         if (data.model?.toString() === "") data.model = null;
-        if (this.instance) {
+        if (this.instancePk) {
             return aki(PoliciesApi).policiesEventMatcherUpdate({
-                policyUuid: this.instance.pk || "",
+                policyUuid: this.instancePk,
                 eventMatcherPolicyRequest: data,
             });
         }

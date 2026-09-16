@@ -37,9 +37,9 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
             data.asns = (data.asns as unknown as string).split(",").map(Number);
         }
 
-        if (this.instance) {
+        if (this.instancePk) {
             return aki(PoliciesApi).policiesGeoipUpdate({
-                policyUuid: this.instance.pk || "",
+                policyUuid: this.instancePk,
                 geoIPPolicyRequest: data,
             });
         }

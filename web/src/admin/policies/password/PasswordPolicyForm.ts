@@ -43,9 +43,9 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     }
 
     async send(data: PasswordPolicy): Promise<PasswordPolicy> {
-        if (this.instance) {
+        if (this.instancePk) {
             return aki(PoliciesApi).policiesPasswordUpdate({
-                policyUuid: this.instance.pk || "",
+                policyUuid: this.instancePk,
                 passwordPolicyRequest: data,
             });
         }

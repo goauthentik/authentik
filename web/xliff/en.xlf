@@ -10175,6 +10175,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbfa75b6f146142d8">
   <source>Primary user</source>
 </trans-unit>
+<trans-unit id="common.actions.copy.label">
+  <source>Copy</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
