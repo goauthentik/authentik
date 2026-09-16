@@ -214,15 +214,9 @@ importers:
 
   .:
     dependencies:
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 9.39.5
       '@goauthentik/docusaurus-config':
         specifier: workspace:*
         version: link:packages/docusaurus-config
-      '@goauthentik/eslint-config':
-        specifier: workspace:*
-        version: link:packages/eslint-config
       '@goauthentik/logger-js':
         specifier: workspace:*
         version: link:packages/logger-js
@@ -232,9 +226,6 @@ importers:
       '@goauthentik/oxlint-config':
         specifier: workspace:*
         version: link:packages/oxlint-config
-      '@goauthentik/prettier-config':
-        specifier: workspace:*
-        version: link:packages/prettier-config
       '@goauthentik/tsconfig':
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -256,18 +247,9 @@ importers:
       pino-pretty:
         specifier: ^13.1.3
         version: 13.1.3
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.3
-      prettier-plugin-packagejson:
-        specifier: 'catalog:'
-        version: 3.0.2(prettier@3.8.3)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.67.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       yaml:
         specifier: ^2.9.0
         version: 2.9.0

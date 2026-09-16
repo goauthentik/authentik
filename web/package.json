@@ -198,7 +198,8 @@
         "@esbuild/darwin-arm64": "^0.28.1",
         "@esbuild/linux-arm64": "^0.28.1",
         "@esbuild/linux-x64": "^0.28.1",
-        "@goauthentik/prettier-config-dev": "link:../packages/prettier-config",
+        "@goauthentik/oxfmt-config-dev": "link:../packages/oxfmt-config",
+        "@goauthentik/oxlint-config-dev": "link:../packages/oxlint-config",
         "@rollup/rollup-darwin-arm64": "^4.63.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.63.1",
         "@rollup/rollup-linux-x64-gnu": "^4.63.1"
@@ -295,6 +296,5 @@
             "onFail": "error"
         }
     },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c",
-    "prettier": "./prettier.config.mjs"
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
 }
