@@ -16,7 +16,7 @@ from authentik.endpoints.models import (
     DeviceUserBinding,
 )
 from authentik.flows.stage import StageView
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
@@ -208,6 +208,36 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")
         verbose_name_plural = _("Apple Nonces")
+
+
+class AppleAuthorizationCode(InternallyManagedMixin, ExpiringModel):
+    """Short-lived code issued by the authorize endpoint, exchanged for tokens."""
+
+    code = models.TextField(default=generate_id)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    connector = models.ForeignKey("AgentConnector", on_delete=models.CASCADE)
+    state = models.TextField(default="")
+    scope = models.TextField()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Authorization Code")
+        verbose_name_plural = _("Apple Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["code"]),
+        ]
+
+
+class AppleUnlockKey(InternallyManagedMixin, ExpiringModel):
+    """Server-provisioned EC256 key for Platform SSO v2.0 user_unlock."""
+
+    identifier = models.UUIDField(primary_key=True, default=uuid4)
+    device_user = models.ForeignKey(AgentDeviceUserBinding, on_delete=models.CASCADE)
+    private_key = models.TextField()
+    certificate_der = models.TextField(default="")
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Unlock Key")
+        verbose_name_plural = _("Apple Unlock Keys")
 
 
 class AppleIndependentSecureEnclave(Authenticator):

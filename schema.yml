@@ -36086,8 +36086,11 @@ components:
           type: string
         nonce_endpoint:
           type: string
+        authorization_endpoint:
+          type: string
       required:
       - audience
+      - authorization_endpoint
       - client_id
       - issuer
       - jwks_endpoint

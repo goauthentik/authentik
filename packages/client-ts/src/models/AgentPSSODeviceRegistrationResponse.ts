@@ -42,6 +42,10 @@ export interface AgentPSSODeviceRegistrationResponse {
      *
      */
     nonceEndpoint: string;
+    /**
+     *
+     */
+    authorizationEndpoint: string;
 }
 
 /**
@@ -80,6 +84,13 @@ export function instanceOfAgentPSSODeviceRegistrationResponse(
             (value as Record<string, any>)["nonce_endpoint"] === undefined)
     )
         return false;
+    if (
+        (!("authorizationEndpoint" in (value as Record<string, any>)) &&
+            !("authorization_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationEndpoint"] === undefined &&
+            (value as Record<string, any>)["authorization_endpoint"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -103,6 +114,7 @@ export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
         jwksEndpoint: json["jwks_endpoint"],
         audience: json["audience"],
         nonceEndpoint: json["nonce_endpoint"],
+        authorizationEndpoint: json["authorization_endpoint"],
     };
 }
 
@@ -127,5 +139,6 @@ export function AgentPSSODeviceRegistrationResponseToJSONTyped(
         jwks_endpoint: value["jwksEndpoint"],
         audience: value["audience"],
         nonce_endpoint: value["nonceEndpoint"],
+        authorization_endpoint: value["authorizationEndpoint"],
     };
 }
