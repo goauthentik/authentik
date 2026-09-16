@@ -16,7 +16,7 @@
         "build": "pnpm run clean && tsc -b tsconfig.json",
         "clean": "tsc -b --clean tsconfig.json",
         "fix:oxfmt": "oxfmt --write .",
-        "fix:oxlint": "oxlint --fix && oxlint --fix",
+        "fix:oxlint": "oxlint --fix --quiet && oxlint --fix --quiet",
         "lint": "run-s lint:oxlint lint:oxfmt",
         "lint:fix": "run-s fix:oxlint fix:oxfmt",
         "lint:oxfmt": "oxfmt --check .",

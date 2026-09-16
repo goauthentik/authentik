@@ -6,8 +6,8 @@
         "strict": true,
         "newLine": "lf",
         "target": "ESNext",
-        // The generator emits extensionless relative imports, which `NodeNext` rejects. Every
-        // consumer links this package and bundles `src` directly, so resolve the way they do.
+        // The generator emits extensionless relative imports, which `NodeNext` rejects.
+        // Every consumer links this package and bundles `src` directly, so resolve the way they do.
         "module": "preserve",
         "moduleResolution": "bundler",
         "outDir": "dist",
@@ -18,8 +18,6 @@
         "declarationMap": true,
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
     },
-    // Without this, `tsc` sweeps `**/*`, pulls in the tooling configs and `scripts/`, and emits
-    // their JS next to the source because they fall outside `rootDir`.
     "include": ["src"],
     "exclude": ["node_modules", "./out/**/*", "./dist/**/*"],
 }
