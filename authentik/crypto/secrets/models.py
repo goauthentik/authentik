@@ -86,8 +86,8 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         self.validate_value(value)
         previous_value, previous_updated = self.value, self.last_updated
-        try:
-            with transaction.atomic():
+        with transaction.atomic():
+            try:
                 self.value = value
                 with audit_ignore():
                     self.save(update_fields=["value", "last_updated"])
@@ -97,9 +97,9 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 else:
                     event.save()
                 secret_value_changed.send(sender=Secret, secret=self)
-        except Exception:
-            self.value, self.last_updated = previous_value, previous_updated
-            raise
+            except Exception:
+                self.value, self.last_updated = previous_value, previous_updated
+                raise
 
     def rotate(self, request: Request | None = None) -> str:
         """Generate and store a new text value."""
