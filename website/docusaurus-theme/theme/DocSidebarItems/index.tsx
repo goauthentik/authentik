@@ -1,5 +1,4 @@
 import "./styles.css";
-
 import { isGlossaryItem } from "../utils/glossaryUtils";
 
 import { VersionPicker } from "#components/VersionPicker/index.tsx";

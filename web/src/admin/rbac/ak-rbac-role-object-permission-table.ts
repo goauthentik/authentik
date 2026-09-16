@@ -2,7 +2,6 @@ import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
@@ -47,22 +46,28 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         if (!this.objectPk || !this.model) {
             return createPaginatedResponse([]);
         }
+
         const perms = await aki(RbacApi).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             model: this.model,
             objectPk: this.objectPk.toString(),
         });
+
         const [appLabel, modelName] = this.model.split(".");
+
         const modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
         });
+
         modelPermissions.results = modelPermissions.results.filter((value) => {
             return value.codename !== `add_${modelName}`;
         });
+
         this.modelPermissions = modelPermissions;
         this.requestUpdate("columns");
+
         return perms;
     }
 
@@ -86,6 +91,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
@@ -115,15 +121,18 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         const baseRow = [
             html` <a href=${toAdminInterface(`identity/roles/${item.rolePk}`)}>${item.name}</a>`,
         ];
+
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,
             );
+
             const assignedToObject = item.objectPermissions
                 .filter((uPerm) => uPerm.objectPk === this.objectPk)
                 .some((uPerm) => uPerm.codename === perm.codename);
 
             let tooltip: string | null = null;
+
             if (assignedToModel && assignedToObject) {
                 tooltip = msg("Global and object permission");
             } else if (assignedToModel) {
@@ -131,14 +140,18 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             } else if (assignedToObject) {
                 tooltip = msg("Object permission");
             }
+
             baseRow.push(
-                html`${tooltip
-                    ? html`<pf-tooltip position="top" content=${tooltip}
-                          ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
-                      ></pf-tooltip>`
-                    : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`} `,
+                html`${
+                    tooltip
+                        ? html`<pf-tooltip position="top" content=${tooltip}
+                              ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
+                          ></pf-tooltip>`
+                        : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`
+                } `,
             );
         });
+
         return baseRow;
     }
 }

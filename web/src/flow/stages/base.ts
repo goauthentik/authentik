@@ -1,5 +1,4 @@
 import "#flow/FormStatic";
-
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -20,9 +19,11 @@ import { property } from "lit/decorators.js";
 export function readFileAsync(file: Blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
+
         reader.onload = () => {
             resolve(reader.result);
         };
+
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
@@ -34,8 +35,8 @@ export function readFileAsync(file: Blob) {
  * Base class for all flow stages.
  *
  * @template Tin The type of the challenge this stage accepts.
- * @prop {StageHost} host The host managing this stage.
- * @prop {Tin} challenge The challenge provided to this stage.
+ * @property {StageHost} host The host managing this stage.
+ * @property {Tin} challenge The challenge provided to this stage.
  */
 export abstract class BaseStage<Tin extends StageChallengeLike | FlowErrorChallenge, Tout = unknown>
     extends WithLocale(AKElement)
@@ -68,6 +69,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike | FlowErrorChalle
 
         if (!focusTarget) {
             this.logger.info("Skipping focus. No empty candidate.");
+
             return;
         }
 
@@ -77,6 +79,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike | FlowErrorChalle
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();

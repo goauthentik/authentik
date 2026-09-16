@@ -78,7 +78,7 @@ export interface SubmitOptions {
 
 // Make the "component" field optional, since the Executor controls what component type is being
 // manipulated.
-type PartialComponent<T> = T extends { component: infer C } & infer Rest
+type PartialComponent<T> = T extends { component: infer C } & (infer Rest)
     ? { component?: C } & Omit<Rest, "component">
     : never;
 

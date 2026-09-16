@@ -24,9 +24,8 @@ export class ToggleGroupEvent<T = string> extends Event {
  * An implementation of the Patternfly Toggle Group as a LitElement. This component is not intended
  * to be used as a control. If you need that, use RadioGroup.
  *
- * @element ak-toggle-group
- *
  * @fires ak-toggle - Fired when someone clicks on a toggle option. Carries the value of the option.
+ * @element ak-toggle-group
  */
 
 export class ToggleGroup extends LitElement {
@@ -51,9 +50,11 @@ export class ToggleGroup extends LitElement {
 
     public connectedCallback() {
         super.connectedCallback();
+
         this.optionsObserver = new MutationObserver((_mutations) => {
             requestAnimationFrame(() => this.requestUpdate());
         });
+
         this.optionsObserver.observe(this, {
             subtree: true,
             childList: true,
@@ -74,13 +75,11 @@ export class ToggleGroup extends LitElement {
     }
 
     get options(): Option[] {
-        return Array.from(this.rawOptions).map(
-            (option: HTMLOptionElement): Option => [
-                option.getAttribute("value") ?? "",
-                option.textContent ?? "",
-                { disabled: option.hasAttribute("disabled") },
-            ],
-        );
+        return Array.from(this.rawOptions).map((option: HTMLOptionElement): Option => [
+            option.getAttribute("value") ?? "",
+            option.textContent ?? "",
+            { disabled: option.hasAttribute("disabled") },
+        ]);
     }
 
     get values(): Set<string> {
@@ -89,6 +88,7 @@ export class ToggleGroup extends LitElement {
 
     render() {
         const values = this.values;
+
         const mkClick = (v: string) => () => {
             this.dispatchEvent(new ToggleGroupEvent(v));
         };

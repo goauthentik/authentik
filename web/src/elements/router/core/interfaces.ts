@@ -1,11 +1,10 @@
 /**
  * @file Cross-interface href builders.
- *
- * The only sanctioned channel for referencing another interface: these return
- * full, base-path-aware URL strings for use with plain `<a href>` /
- * `location.assign`. Crossing interfaces is a real page load (a different
- * bundle). Fixes the hardcoded `/if/user/` literals that break under a
- * non-root `web.path`.
+ *   The only sanctioned channel for referencing another interface: these return
+ *   full, base-path-aware URL strings for use with plain `<a href>` /
+ *   `location.assign`. Crossing interfaces is a real page load (a different
+ *   bundle). Fixes the hardcoded `/if/user/` literals that break under a
+ *   non-root `web.path`.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";

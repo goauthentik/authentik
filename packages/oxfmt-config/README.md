@@ -2,9 +2,6 @@
 
 authentik's shared [oxfmt](https://oxc.rs) formatter configuration.
 
-Replaces `@goauthentik/prettier-config`. oxfmt covers natively what previously needed three
-Prettier plugins: import organization, JSDoc formatting, and `package.json` key ordering.
-
 ## Install
 
 ```sh
@@ -15,14 +12,27 @@ npm install -D @goauthentik/oxfmt-config oxfmt
 
 ## Usage
 
-oxfmt has no `extends`, so spread the config into your own `oxfmt.config.ts` (oxfmt auto-discovers
+oxfmt has no `extends`, so build the config in your own `oxfmt.config.ts` (oxfmt auto-discovers
 it):
 
 ```ts
-import { authentikOxfmtConfig } from "@goauthentik/oxfmt-config"
+import { createOxfmtConfig } from "@goauthentik/oxfmt-config";
 
-export default {
-	...authentikOxfmtConfig,
-	// per-repo tweaks, e.g. ignorePatterns
-}
+export default createOxfmtConfig();
 ```
+
+`createOxfmtConfig` takes the same shape of options as `createOxlintConfig` in
+`@goauthentik/oxlint-config`:
+
+```ts
+import { createOxfmtConfig, DefaultIgnorePatterns } from "@goauthentik/oxfmt-config";
+
+export default createOxfmtConfig({
+    ignorePatterns: [...DefaultIgnorePatterns, "fixtures/**"],
+    // `overrides.overrides` appends to the shared per-file overrides; every other
+    // key replaces its base counterpart.
+    overrides: { printWidth: 120 },
+});
+```
+
+`authentikOxfmtConfig` is still exported for callers that want the raw object.
