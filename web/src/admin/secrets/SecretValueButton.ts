@@ -1,10 +1,10 @@
+import "#elements/SecretValue";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { PFSize } from "#common/enums";
 
-import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { renderModal } from "#elements/dialogs";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 
@@ -37,15 +37,11 @@ export function SecretValueButton(secret: Secret, control = false) {
                 button.disabled = false;
                 button.focus();
                 await renderModal(
-                    html`<textarea
-                            class="pf-c-form-control pf-m-monospace"
-                            aria-label=${label}
-                            rows=${secret.type === SecretTypeEnum.Multiline ? 8 : 3}
-                            readonly
-                            spellcheck="false"
-                            .value=${value}
-                        ></textarea>
-                        ${IconCopyButton({ source: value, entityLabel: secret.name })}`,
+                    html`<ak-secret-value
+                        .value=${value}
+                        .label=${secret.name}
+                        ?multiline=${secret.type === SecretTypeEnum.Multiline}
+                    ></ak-secret-value>`,
                     { headline: secret.name, invokerElement: button, size: PFSize.Medium },
                 );
             }
