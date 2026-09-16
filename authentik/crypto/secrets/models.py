@@ -88,6 +88,11 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 
             validate_kubeconfig(Secret(type=self.type, value=value))
+        if self.google_workspace_providers.exists():
+            try:
+                Secret(type=self.type, value=value).get_json()
+            except ValueError:
+                raise ValidationError(_("Secret must contain a JSON or YAML object.")) from None
         if self.notification_transports.filter(
             mode__in=(TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK)
         ).exists():

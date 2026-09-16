@@ -267,6 +267,7 @@ class TestSecretsAPI(APITestCase):
         secret.replace_value("https://example.com/replacement")
         secret.refresh_from_db()
         self.assertEqual(secret.value, "https://example.com/replacement")
+
     def test_replacement_rejected_after_validation_rolls_back_metadata(self):
         serializer = SecretSerializer(
             instance=self.secret, data={"name": "renamed", "value": "replacement"}, partial=True
