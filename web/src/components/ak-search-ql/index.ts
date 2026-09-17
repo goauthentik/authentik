@@ -1,4 +1,6 @@
 import "#elements/buttons/Dropdown";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
@@ -17,12 +19,10 @@ import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } 
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-
 export class QL extends DjangoQL {
     createCompletionElement() {
         this.completionEnabled = !!this.options.completionEnabled;
+
         return;
     }
     generateSuggestions() {
@@ -134,8 +134,10 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         if (!value?.autocomplete) {
             return;
         }
+
         if (!this.#ql) {
             this.#autocompleteCache = value.autocomplete as unknown as Introspections;
+
             return;
         }
 
@@ -203,6 +205,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             selector: textarea,
             autoResize: false,
         });
+
         if (this.#autocompleteCache) {
             this.#autocompleteCache = null;
         }
@@ -212,6 +215,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         if (!this.#ctx) {
             console.error("authentik/ql: failed to get canvas context");
+
             return;
         }
 
@@ -230,6 +234,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #selectCompletion(index: number) {
         if (!this.#ql) {
             console.debug(`authentik/ql: Skipping selection of index ${index}, QL not initialized`);
+
             return;
         }
 
@@ -262,6 +267,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         if (this.#ql.suggestions.length < 1 || this.#ql.loading) {
             this.open = false;
+
             return;
         }
 
@@ -470,9 +476,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                             role="option"
                             id="suggestion-${idx}"
                             aria-selected=${this.selectionIndex === idx ? "true" : "false"}
-                            class="pf-c-search-input__menu-list-item ${this.selectionIndex === idx
-                                ? "selected"
-                                : ""}"
+                            class="pf-c-search-input__menu-list-item ${
+                                this.selectionIndex === idx ? "selected" : ""
+                            }"
                         >
                             <button
                                 class="pf-c-search-input__menu-item"
@@ -502,9 +508,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             role="combobox"
             aria-label=${ifPresent(this.label)}
             aria-haspopup="listbox"
-            aria-activedescendant=${this.selectionIndex === -1
-                ? ""
-                : `suggestion-${this.selectionIndex}`}
+            aria-activedescendant=${
+                this.selectionIndex === -1 ? "" : `suggestion-${this.selectionIndex}`
+            }
         >
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">

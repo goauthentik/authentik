@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
@@ -22,7 +21,7 @@ interface NamedInstance {
 }
 
 /*
- * Type for saving and retrieving data ops from the Authentik API.
+ * Type for saving and retrieving data ops from the authentik API.
  */
 export interface ModelEndpoints<T, PKT extends string | number = string, D = T> {
     load: (pk: PKT) => Promise<T>;
@@ -50,9 +49,8 @@ function isNamedInstance(instance: unknown): instance is NamedInstance {
  * @template T The type of the model instance.
  * @template PKT The type of the primary key of the model instance.
  * @template D The result of `toJSON()`, which is the data sent to the server on submit.
- *
- * @prop {T} instance - The current instance being edited or viewed.
- * @prop {PKT} instancePk - The primary key of the instance to load.
+ * @property {T} instance - The current instance being edited or viewed.
+ * @property {PKT} instancePk - The primary key of the instance to load.
  */
 export abstract class ModelForm<
     T extends object | null = object,
@@ -94,7 +92,8 @@ export abstract class ModelForm<
     /**
      * A helper method to create an invoker for editing an instance of this form.
      *
-     * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
+     * The invoker will look for a `data-pk` attribute on the clicked element to determine which
+     * instance to load.
      *
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
@@ -117,6 +116,7 @@ export abstract class ModelForm<
      * An overridable method for loading an instance.
      *
      * @param pk The primary key of the instance to load.
+     *
      * @returns A promise that resolves to the loaded instance.
      */
     protected loadInstance(pk: PKT): Promise<T | null> {
@@ -125,6 +125,7 @@ export abstract class ModelForm<
                 "Neither 'endpoints' or 'loadInstance' defined on ${this.localName}",
             );
         }
+
         return this.endpoints.load(pk);
     }
 
@@ -132,6 +133,7 @@ export abstract class ModelForm<
         if (!this.endpoints) {
             throw new TypeError("Neither 'endpoints' or 'send' defined on ${this.localName}");
         }
+
         return this.instancePk === null
             ? this.endpoints.create(data)
             : this.endpoints.update(this.instancePk, data);
@@ -139,6 +141,7 @@ export abstract class ModelForm<
 
     public override getSuccessMessage() {
         if (!this.verboseName) return super.getSuccessMessage();
+
         return this.instancePk === null
             ? msg(str`Successfully created ${this.verboseName}`)
             : msg(str`Successfully updated ${this.verboseName}`);
@@ -161,9 +164,8 @@ export abstract class ModelForm<
     /**
      * An overridable method for loading any data, beyond the instance.
      *
-     *
-     * @see {@linkcode loadInstance}
      * @returns A promise that resolves when the data has been loaded.
+     * @see {@linkcode loadInstance}
      */
     protected async load?(): Promise<void | boolean>;
 
@@ -196,9 +198,11 @@ export abstract class ModelForm<
     }
 
     /**
-     * A helper method to create a default instance when the form is used for creation instead of editing.
+     * A helper method to create a default instance when the form is used for creation instead of
+     * editing.
      *
-     * By default, this returns `null`, but it can be overridden to provide a default instance with pre-filled values.
+     * By default, this returns `null`, but it can be overridden to provide a default instance with
+     * pre-filled values.
      *
      * @returns A default instance of the model, or null if not applicable.
      */
@@ -266,6 +270,7 @@ export abstract class ModelForm<
 
                 if (result === false) {
                     this.logger.debug("Load method returned false, skipping instance load");
+
                     return;
                 }
 
@@ -283,6 +288,7 @@ export abstract class ModelForm<
     protected retryLoad = (): Promise<void> => {
         this.error = null;
         this.#loadedAt = null;
+
         return this.doLoad();
     };
 
@@ -293,6 +299,7 @@ export abstract class ModelForm<
     public refresh = async (): Promise<void> => {
         if (!this.instancePk) {
             this.logger.info("Skipping refresh. No instance PK provided.");
+
             return;
         }
 
@@ -337,6 +344,7 @@ export abstract class ModelForm<
                 instance: !!this.instance,
                 loadedAt: !!this.#loadedAt,
             });
+
             return html`<ak-empty-state
                 class="${ready ? "" : "ak-fade-in ak-m-delayed"}"
                 loading

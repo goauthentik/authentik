@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,30 +17,14 @@ import type { VendorEnum } from "./VendorEnum";
 import { VendorEnumFromJSON } from "./VendorEnum";
 
 /**
- *
  * @export
  * @interface DeviceFactSnapshot
  */
 export interface DeviceFactSnapshot {
-    /**
-     *
-     */
     data: DeviceFacts;
-    /**
-     *
-     */
     connection: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly expires: Date | null;
-    /**
-     *
-     */
     readonly vendor: VendorEnum;
 }
 

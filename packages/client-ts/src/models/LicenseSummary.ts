@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,29 +21,15 @@ import {
 
 /**
  * Serializer for license status
+ *
  * @export
  * @interface LicenseSummary
  */
 export interface LicenseSummary {
-    /**
-     *
-     */
     internalUsers: number;
-    /**
-     *
-     */
     externalUsers: number;
-    /**
-     *
-     */
     status: LicenseSummaryStatusEnum;
-    /**
-     *
-     */
     latestValid: Date;
-    /**
-     *
-     */
     licenseFlags: Array<LicenseFlagsEnum>;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,17 +19,12 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 
 /**
  * AuthenticatorSMSStage Serializer
+ *
  * @export
  * @interface AuthenticatorSMSStage
  */
 export interface AuthenticatorSMSStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,36 +42,21 @@ export interface AuthenticatorSMSStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     provider: ProviderEnum;
-    /**
-     *
-     */
     fromNumber: string;
-    /**
-     *
-     */
     accountSid: string;
-    /**
-     *
-     */
     authType?: AuthTypeEnum;
     /**
-     * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
+     * When enabled, the Phone number is only used during enrollment to verify the users
+     * authenticity. Only a hash of the phone number is saved to ensure it is not reused in the
+     * future.
      */
     verifyOnly?: boolean;
     /**
