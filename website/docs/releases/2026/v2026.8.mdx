@@ -4839,19 +4839,23 @@ Changed content type : `application/json`
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
     Updated `authentik_providers_scim.scimprovider` provider_model:
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
-    - Changed property `compatibility_mode` (string) > Alter authentik behavior for vendor-specific SCIM implementations.
+    - Changed property `compatibility_mode` (string)
 
-                      Added enum value:
+        > Alter authentik behavior for vendor-specific SCIM implementations.
 
-                      * `gitlab`
+        Added enum value:
 
-        Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
+        - `gitlab`
+
+    Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
 
     - Added property `saml_version` (object)
+
         > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
     Updated `authentik_providers_oauth2.oauth2provider` provider_model:
