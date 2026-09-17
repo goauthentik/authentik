@@ -124,6 +124,7 @@ export class CodeMirrorTextarea<
             return parseCodeMirrorSource(innerValue, this.mode);
         } catch (error: unknown) {
             const message = pluckErrorDetail(error);
+
             console.debug("codemirror/parse-error", message);
 
             return innerValue;
@@ -136,6 +137,7 @@ export class CodeMirrorTextarea<
 
     async #initialize(root: ShadowRoot | Document) {
         console.debug("ak-codemirror: initializing editor...");
+
         const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
 
         this.#editor = new CodeMirrorEditor({
@@ -184,6 +186,7 @@ export class CodeMirrorTextarea<
 
         if (this.#editor) {
             console.debug("ak-codemirror: destroying editor");
+
             this.#editor.dispose();
         }
     }

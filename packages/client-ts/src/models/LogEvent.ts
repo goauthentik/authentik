@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,29 +16,15 @@ import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
 
 /**
  * Single log message with all context logged.
+ *
  * @export
  * @interface LogEvent
  */
 export interface LogEvent {
-    /**
-     *
-     */
     timestamp: Date;
-    /**
-     *
-     */
     logLevel: LogLevelEnum;
-    /**
-     *
-     */
     logger: string;
-    /**
-     *
-     */
     event: string;
-    /**
-     *
-     */
     attributes: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,49 +16,20 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge for ending a session
+ *
  * @export
  * @interface SessionEndChallenge
  */
 export interface SessionEndChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     applicationName?: string;
-    /**
-     *
-     */
     applicationLaunchUrl?: string;
-    /**
-     *
-     */
     invalidationFlowUrl?: string;
-    /**
-     *
-     */
     overviewUrl?: string;
-    /**
-     *
-     */
     brandName: string;
 }
 

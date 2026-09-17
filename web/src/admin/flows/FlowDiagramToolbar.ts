@@ -1,7 +1,6 @@
 import "#admin/policies/ak-policy-wizard";
 import "#admin/stages/register";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import {
     IconEditButton,
     IconEditButtonByTagName,

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,41 +12,18 @@
 
 /**
  * OAuth2 Provider Metadata serializer
+ *
  * @export
  * @interface OAuth2ProviderSetupURLs
  */
 export interface OAuth2ProviderSetupURLs {
-    /**
-     *
-     */
     readonly issuer: string;
-    /**
-     *
-     */
     readonly authorize: string;
-    /**
-     *
-     */
     readonly token: string;
-    /**
-     *
-     */
     readonly userInfo: string;
-    /**
-     *
-     */
     readonly providerInfo: string;
-    /**
-     *
-     */
     readonly logout: string;
-    /**
-     *
-     */
     readonly jwks: string;
-    /**
-     *
-     */
     readonly dcrRegistration: string | null;
 }
 

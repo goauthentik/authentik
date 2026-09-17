@@ -7,7 +7,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -173,8 +172,10 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${ServiceBindMethodEnum.Simple}
-                                ?selected=${!this.instance?.serviceBindMethod ||
-                                this.instance.serviceBindMethod === ServiceBindMethodEnum.Simple}
+                                ?selected=${
+                                    !this.instance?.serviceBindMethod ||
+                                    this.instance.serviceBindMethod === ServiceBindMethodEnum.Simple
+                                }
                             >
                                 ${msg("Simple or anonymous bind", {
                                     id: "ldap-source.service-bind-method.simple.label",
@@ -182,8 +183,10 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             </option>
                             <option
                                 value=${ServiceBindMethodEnum.SaslExternal}
-                                ?selected=${this.instance?.serviceBindMethod ===
-                                ServiceBindMethodEnum.SaslExternal}
+                                ?selected=${
+                                    this.instance?.serviceBindMethod ===
+                                    ServiceBindMethodEnum.SaslExternal
+                                }
                             >
                                 ${msg("SASL EXTERNAL", {
                                     id: "ldap-source.service-bind-method.sasl-external.label",
@@ -295,10 +298,13 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
@@ -320,8 +326,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${
+                                this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                            }"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

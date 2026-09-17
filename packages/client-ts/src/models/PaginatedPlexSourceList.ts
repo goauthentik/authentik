@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { PlexSource } from "./PlexSource";
 import { PlexSourceFromJSON, PlexSourceToJSON } from "./PlexSource";
 
 /**
- *
  * @export
  * @interface PaginatedPlexSourceList
  */
 export interface PaginatedPlexSourceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<PlexSource>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 
