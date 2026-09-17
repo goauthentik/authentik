@@ -31,13 +31,13 @@ catalog:
   oxfmt: "0.68.0"
   oxlint: "^1.82.0"
   "@types/node": "^26.1.2"
-  "@vitest/browser": "^4.1.10"
-  "@vitest/browser-playwright": "^4.1.10"
+  "@vitest/browser": "^4.1.11"
+  "@vitest/browser-playwright": "^4.1.11"
   esbuild: "^0.28.1"
   playwright: "^1.62.1"
   typescript: "^6.0.3"
   vite: "^8.2.0"
-  vitest: "^4.1.10"
+  vitest: "^4.1.11"
 
 overrides:
   "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
