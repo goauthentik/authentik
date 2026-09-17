@@ -13,12 +13,8 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-<<<<<<< HEAD
-import { applyBackgroundImageProperty } from "#common/theme";
-import { AKSessionAuthenticatedEvent } from "#common/ws/events";
-=======
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
->>>>>>> 6283e4809 (web: resolve themed icon URLs everywhere (#25103))
+import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
