@@ -241,7 +241,7 @@ jobs:
       # Test analytics only — no coverage is collected for the browser suite.
       - name: Upload Playwright results to codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
+        uses: codecov/codecov-action@0b35c9ecc4f0529d0eb674914510c22f85b196b4 # v5
         with:
           files: web/playwright-report/results.xml
           flags: e2e-web

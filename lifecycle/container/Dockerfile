@@ -82,7 +82,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.12.15@sha256:62f8c047d0a0e9ece6b53fc63df902585a67a47a7f318ddec4a37db586edc8e3 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:1398f8cb54b83088235c93c6cab381d6ab428983bb39653d84ed21a106efb987 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:8fbe8133ae97919e99cc24d3156c76f46bcdfef2f18611e39161dd46eed445fd AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
