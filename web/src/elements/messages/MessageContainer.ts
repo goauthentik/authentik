@@ -157,7 +157,7 @@ export class MessageContainer extends AKElement {
         }
     };
 
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (changedProperties.has("messages") && this.messages.length) {
