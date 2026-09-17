@@ -289,16 +289,34 @@ async function scheduleOffboarding(
     });
 }
 
+/**
+ * The raw JSON block on an event detail page.
+ *
+ * Scoped to `ak-event-view`: the dev-mode "consecutive requests" notification also
+ * renders a `<pre>`, so a bare `page.locator("pre")` is ambiguous whenever one is
+ * on screen.
+ */
+function rawEventJSON(page: Page) {
+    return page.locator("ak-event-view").locator("pre");
+}
+
 async function openOffboardingList(context: BrowserContext) {
     return openAdminPage(context, "Events", "Offboardings", "User Offboardings");
 }
 
-async function setOnlyPending(list: ReturnType<Page["getByRole"]>, value: boolean): Promise<void> {
-    const filter = list.getByRole("checkbox", { name: "Only show pending offboardings" });
+const ONLY_PENDING_FILTER = "Only show pending offboardings";
 
-    if ((await filter.isChecked()) !== value) {
-        await filter.click();
-    }
+async function setOnlyPending(
+    { form }: BrowserContext,
+    list: ReturnType<Page["getByRole"]>,
+    value: boolean,
+): Promise<void> {
+    // Through the fixture, not by clicking the checkbox: `ak-switch-input` renders
+    // the PatternFly switch, whose `.pf-c-switch__toggle` covers the `<input>` and
+    // intercepts the pointer event.
+    await form.setInputCheck(ONLY_PENDING_FILTER, value, list);
+
+    const filter = list.getByRole("checkbox", { name: ONLY_PENDING_FILTER });
 
     if (value) {
         await expect(filter, "Only pending offboardings filter is enabled").toBeChecked();
@@ -364,14 +382,20 @@ async function waitForOffboardingEvent(
     username: string,
     action: "deactivate" | "delete",
 ) {
-    const { form } = context;
+    const { form, page } = context;
     const eventLog = await openAdminPage(context, "Events", "Logs", "Event Log");
 
     const searchInput = await form.findTextualInput(/search/i, eventLog);
     const query = `action = "user_offboarded" and context.message = "User ${username} was offboarded (${action})"`;
+    // The row shows the action label and the acting admin, never the target, so a
+    // row left over from an earlier test's search is indistinguishable from this
+    // one's. Reload each attempt: it clears any filtered result the nav-link click
+    // preserved, and refetches when the query is unchanged between attempts.
     const eventRow = eventLog.getByRole("row", { name: /User was offboarded/ });
 
     await expect(async () => {
+        await page.reload();
+
         await form.fill(searchInput, query);
         await searchInput.press("Enter");
 
@@ -391,6 +415,12 @@ async function waitForOffboardingEvent(
 }
 
 test.describe("User offboarding", () => {
+    // Serial, because "Execute due user offboardings" is a single instance-wide
+    // schedule: running it drains every due offboarding, including ones another
+    // test just scheduled and has not asserted on yet. `playwright.config.js` sets
+    // `fullyParallel`, so without this the workers race through each other's state.
+    test.describe.configure({ mode: "serial" });
+
     const identities = new Map<string, UserIdentity>();
 
     test.beforeEach(
@@ -496,7 +526,7 @@ test.describe("User offboarding", () => {
         });
 
         list = await openOffboardingList(context);
-        await setOnlyPending(list, false);
+        await setOnlyPending(context, list, false);
         row = await form.search(identity.username, list);
         await expect(row, "Canceled offboarding remains in history").toContainText("Canceled");
 
@@ -623,7 +653,7 @@ test.describe("User offboarding", () => {
             timeout: 10_000,
         });
 
-        await setOnlyPending(list, false);
+        await setOnlyPending(context, list, false);
         const canceledRows = await searchRows(context, list, sharedUsername);
 
         await expect(canceledRows, "Canceled offboardings remain in history").toHaveCount(2, {
@@ -666,7 +696,7 @@ test.describe("User offboarding", () => {
         const eventRow = await waitForOffboardingEvent(context, identity.username, "deactivate");
         await eventRow.getByRole("link").last().click();
 
-        await expect(page.locator("pre"), "Audit event retains the target username").toContainText(
+        await expect(rawEventJSON(page), "Audit event retains the target username").toContainText(
             identity.username,
         );
 
@@ -699,7 +729,7 @@ test.describe("User offboarding", () => {
             await page.reload();
             await expect(list, "Offboarding list is visible").toBeVisible({ timeout: 10_000 });
 
-            await setOnlyPending(list, false);
+            await setOnlyPending(context, list, false);
 
             const completedRow = await form.search(identity.username, list);
 
@@ -736,7 +766,7 @@ test.describe("User offboarding", () => {
         const eventRow = await waitForOffboardingEvent(context, identity.username, "delete");
         await eventRow.getByRole("link").last().click();
 
-        const rawEvent = page.locator("pre");
+        const rawEvent = rawEventJSON(page);
 
         await expect(rawEvent, "Delete audit event remains available").toContainText(
             identity.username,
