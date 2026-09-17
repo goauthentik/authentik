@@ -90,6 +90,53 @@ To let the new user set their own password, point `login_url` at your recovery f
 For the built-in ways to send a set-password link, see [User credentials recovery](../../users-sources/user/user_basic_operations.mdx#user-credentials-recovery).
 :::
 
+## Create LDAP users from authentik events
+
+This expression policy creates an `inetOrgPerson` entry on an external LDAP server for each user `model_created` event. It leaves existing LDAP entries unchanged and does not synchronize later changes or link the accounts.
+
+Replace `my-ldap-source` with an enabled LDAP source's slug and `ou=users,dc=example,dc=com` with an existing target DN. The source's bind account needs permission to add entries there. Adapt the object classes and attributes, including the surname `sn`, to your directory.
+
+```python
+from ldap3.core.exceptions import LDAPEntryAlreadyExistsResult
+from ldap3.utils.dn import escape_rdn
+
+from authentik.core.models import User
+from authentik.sources.ldap.models import LDAPSource
+
+event = request.context.get("event")
+if not event or event.action != "model_created":
+    return False
+
+model = event.context.get("model", {})
+if model.get("app") != "authentik_core" or model.get("model_name") != "user":
+    return False
+
+user = User.objects.filter(pk=model.get("pk")).first()
+if not user:
+    return False
+
+source = LDAPSource.objects.get(slug="my-ldap-source", enabled=True)
+conn = source.connection()
+try:
+    conn.add(
+        f"uid={escape_rdn(user.username)},ou=users,dc=example,dc=com",
+        object_class=["top", "person", "organizationalPerson", "inetOrgPerson"],
+        attributes={
+            "uid": user.username,
+            "cn": user.name or user.username,
+            "sn": user.name or user.username,
+        },
+    )
+except LDAPEntryAlreadyExistsResult:
+    ak_logger.info("LDAP entry already exists; leaving it unchanged")
+finally:
+    conn.unbind()
+
+return False
+```
+
+[Bind the expression policy to a notification rule](./notifications.mdx#3-create-a-notification-rule-and-bind-it-to-the-policy). No notification destination or transport is needed; returning `False` suppresses the notification after the LDAP write. LDAP source sync does not emit `model_created` events for imported users.
+
 ## Trigger alert when user logs in from unknown device
 
 This expression policy matches login events from an unknown device. Use it with a notification rule to alert administrators, or enable **Send notification to event user** on the rule to alert the user who logged in.
