@@ -53,8 +53,9 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                 outline: 2px solid var(--pf-global--active-color--100);
             }
             .secret-file-name {
-                margin-inline-start: var(--pf-global--spacer--sm);
-                overflow-wrap: anywhere;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         `,
     ];
@@ -156,25 +157,29 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                             ? msg("New file", { id: "secret.form.new-file.label" })
                             : msg("File", { id: "secret.form.file.label" }),
                     )}
-                    <span class="pf-c-button pf-m-secondary secret-upload">
-                        <i class="fas fa-upload" aria-hidden="true"></i>
-                        ${msg("Upload file", { id: "secret.form.file.upload.label" })}
-                        <input
-                            type="file"
-                            id="secret-file-input"
-                            ?required=${!this.instance}
-                            @change=${(event: Event) => {
-                                this.fileName =
-                                    (event.target as HTMLInputElement).files?.[0]?.name ?? "";
-                            }}
-                        />
-                    </span>
-                    <span class="secret-file-name" aria-live="polite"
-                        >${
-                            this.fileName ||
-                            msg("No file selected", { id: "secret.form.file.empty.label" })
-                        }</span
-                    >
+                    <div class="pf-c-input-group">
+                        <span class="pf-c-form-control secret-file-name" aria-live="polite"
+                            >${
+                                this.fileName ||
+                                msg("No file selected", { id: "secret.form.file.empty.label" })
+                            }</span
+                        >
+                        <span
+                            class="pf-c-button pf-m-control secret-upload"
+                            title=${msg("Upload file", { id: "secret.form.file.upload.label" })}
+                        >
+                            <i class="fas fa-upload" aria-hidden="true"></i>
+                            <input
+                                type="file"
+                                id="secret-file-input"
+                                ?required=${!this.instance}
+                                @change=${(event: Event) => {
+                                    this.fileName =
+                                        (event.target as HTMLInputElement).files?.[0]?.name ?? "";
+                                }}
+                            />
+                        </span>
+                    </div>
                     ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
                 </ak-form-element-horizontal>`;
             default:
