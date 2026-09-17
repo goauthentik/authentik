@@ -377,7 +377,12 @@ async function runDueOffboardings(context: BrowserContext) {
         const schedules = systemTasks.getByRole("tabpanel", { name: "Schedules" });
         await expect(schedules, "Schedules tab is visible").toBeVisible();
 
-        const scheduleRow = await form.search("Execute due user offboardings.", schedules);
+        // By actor name, not by the schedule's description. The schedules API searches
+        // id/identifier/_uid/actor_name (authentik/tasks/schedules/api.py), so the
+        // human-readable description matches nothing and filters the table to empty --
+        // which this step survived only while the search intermittently failed to
+        // submit and left the table unfiltered.
+        const scheduleRow = await form.search("execute_due_offboardings", schedules);
         await expect(scheduleRow, "Due offboarding schedule is visible").toBeVisible();
 
         const runButton = scheduleRow.locator("ak-action-button").getByRole("button");
