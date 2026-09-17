@@ -32,6 +32,12 @@ class MismatchedRequestID(SAMLException):
     default_message = "The SAML Response ID does not match the original request ID."
 
 
+class MismatchedBinding(SAMLException):
+    """Exception raised when the Response is not addressed to this Source."""
+
+    default_message = "The SAML Response is not addressed to this Source."
+
+
 class MissingSAMLResponse(SAMLException):
     """Exception raised when request does not contain SAML Response."""
 
