@@ -212,6 +212,11 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
                         {
+                            label: msg("GitLab"),
+                            value: CompatibilityModeEnum.Gitlab,
+                            description: html`${msg("Altered behavior for usage with GitLab.")}`,
+                        },
+                        {
                             label: msg("Webex"),
                             value: CompatibilityModeEnum.Webex,
                             description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
