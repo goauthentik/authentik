@@ -1,0 +1,42 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Email Templates
+entries:
+  - identifiers:
+      managed: goauthentik.io/email/password-reset
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Password Reset
+      body: !File ["authentik/stages/email/templates/email/password_reset.html", ""]
+  - identifiers:
+      managed: goauthentik.io/email/account-confirmation
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Account Confirmation
+      body: !File ["authentik/stages/email/templates/email/account_confirmation.html", ""]
+  - identifiers:
+      managed: goauthentik.io/email/email-otp
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Email OTP
+      body: !File ["authentik/stages/authenticator_email/templates/email/email_otp.html", ""]
+  - identifiers:
+      managed: goauthentik.io/email/event-notification
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Event Notification
+      body: !File ["authentik/stages/email/templates/email/event_notification.html", ""]
+  - identifiers:
+      managed: goauthentik.io/email/invitation
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Invitation
+      body: !File ["authentik/stages/email/templates/email/invitation.html", ""]
+  - identifiers:
+      managed: goauthentik.io/email/setup
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      name: Test Email
+      body: !File ["authentik/stages/email/templates/email/setup.html", ""]

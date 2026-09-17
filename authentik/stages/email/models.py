@@ -2,18 +2,22 @@
 
 from os import R_OK, access
 from pathlib import Path
+from uuid import uuid4
 
 from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
+from django.template import engines
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.models import ManagedModel
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 EMAIL_RECOVERY_MAX_ATTEMPTS = 5
@@ -65,6 +69,32 @@ def get_template_choices():
     return static_choices
 
 
+class EmailTemplate(SerializerModel, ManagedModel):
+    """A single email template"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    name = models.TextField(unique=True)
+    description = models.TextField(blank=True, default="")
+    body = models.TextField(blank=True, default="")
+
+    def render(self, context: dict) -> str:
+        return engines["django"].from_string(self.body).render(context)
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.email.api import EmailTemplateSerializer
+
+        return EmailTemplateSerializer
+
+    def __str__(self) -> str:
+        return f"Email Template {self.name}"
+
+    class Meta:
+        verbose_name = _("Email Template")
+        verbose_name_plural = _("Email Templates")
+        ordering = ("name",)
+
+
 class EmailStage(Stage):
     """Send an Email to the user with a token to confirm their Email address."""
 
@@ -106,7 +136,14 @@ class EmailStage(Stage):
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
     subject = models.TextField(default="authentik")
-    template = models.TextField(default=EmailTemplates.PASSWORD_RESET)
+    template = models.ForeignKey(
+        "EmailTemplate",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        help_text=_("Email template to use"),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

@@ -4,13 +4,13 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.email.models import EmailStage, get_template_choices
+from authentik.stages.email.models import EmailStage, EmailTemplate, get_template_choices
 
 
 class EmailStageSerializer(StageSerializer):
@@ -88,3 +88,11 @@ class EmailStageViewSet(UsedByMixin, ModelViewSet):
                 }
             )
         return Response(TypeCreateSerializer(choices, many=True).data)
+
+
+class EmailTemplateSerializer(ModelSerializer):
+    """EmailTemplate Serializer"""
+
+    class Meta:
+        model = EmailTemplate
+        fields = ["uuid", "name", "description", "body", "managed"]
