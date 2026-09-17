@@ -1,9 +1,13 @@
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface, toCurrentInterface } from "#elements/router/core/interfaces";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -13,9 +17,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export interface SidebarItemProperties {
     path?: string | null;
@@ -61,6 +62,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
         children.forEach((child) => (child.parent = this));
+
         return children;
     }
 
@@ -85,7 +87,9 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         cancelAnimationFrame(this.#scrollAnimationFrame);
     }
 
-    public updated(changedProperties: PropertyValues): void {
+    protected override updated(changedProperties: PropertyValues): void {
+        super.updated(changedProperties);
+
         const previousExpanded = changedProperties.get("expanded");
 
         if (typeof previousExpanded !== "boolean") return;
@@ -113,6 +117,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     @listen("hashchange", { target: window })
     public synchronize = (): void => {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
+
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
@@ -128,6 +133,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         const ourPath = this.path.split(";")[0];
         const pathIsWholePath = new RegExp(`^${ourPath}$`).test(path);
         const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
+
         return pathIsWholePath || pathIsAnActivePath;
     }
 
@@ -136,6 +142,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             item.parent.expanded = true;
             this.requestUpdate();
         }
+
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
@@ -154,9 +161,11 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <button
                 part="button button-with-children"
                 class="pf-c-nav__link"
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 aria-expanded=${this.expanded ? "true" : "false"}
                 aria-controls="subnav-${this.path}"
                 type="button"
@@ -194,9 +203,11 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         >
             ${this.label}
             <button
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 part="button button-with-path-and-children"
                 class="pf-c-nav__link"
                 aria-expanded=${this.expanded ? "true" : "false"}
@@ -220,7 +231,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     }
 
     renderEnterpriseRequired() {
-        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+        return html`<a href=${toAdminInterface("enterprise/licenses")} class="pf-c-nav__link">
             ${this.label}
             <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
         </a>`;
@@ -229,13 +240,17 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     renderWithPath() {
         if (this.enterprise && !this.hasEnterpriseLicense) {
             if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+
             return this.renderEnterpriseRequired();
         }
+
         return html`
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                href="${
+                    this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")
+                }"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >

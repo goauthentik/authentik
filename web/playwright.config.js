@@ -1,9 +1,10 @@
 /**
+ * @import {
+ *   LogFn,
+ *   Logger
+ * } from "pino"
  * @file Playwright configuration.
- *
  * @see https://playwright.dev/docs/test-configuration
- *
- * @import { LogFn, Logger } from "pino"
  */
 
 import { ConsoleLogger } from "#logger/node";
@@ -25,6 +26,15 @@ export default defineConfig({
     forbidOnly: CI,
     retries: CI ? 1 : 0,
     workers: "50%",
+    // Every action here is a round trip to a real authentik instance that the other
+    // workers are hitting too — creating an entity is a POST plus a table refresh, not a
+    // local state change. Playwright's 5s assertion default is written for in-process UI
+    // and is optimistic for that, so raise the floor rather than sprinkling per-assertion
+    // timeouts. Individual steps that are slow for a known reason still say so locally.
+    timeout: 60_000,
+    expect: {
+        timeout: 15_000,
+    },
     maxFailures: CI ? 5 : 2,
     reporter: CI
         ? [
@@ -32,6 +42,8 @@ export default defineConfig({
               ["github"],
               ["html", { open: "never", outputFolder: "playwright-report" }],
               ["json", { outputFile: "playwright-report/results.json" }],
+              // Codecov test analytics ingests JUnit XML, not Playwright's JSON.
+              ["junit", { outputFile: "playwright-report/results.xml" }],
           ]
         : [
               // ---
@@ -57,6 +69,7 @@ export default defineConfig({
                         logger = ConsoleLogger.child({
                             name: `Playwright ${name.toUpperCase()}`,
                         });
+
                         LoggerCache.set(name, logger);
                     }
 

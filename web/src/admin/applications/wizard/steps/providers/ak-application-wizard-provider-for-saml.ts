@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
@@ -42,12 +41,14 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                 logoutMethod: SAMLLogoutMethods.FrontchannelIframe,
             };
         }
+
         return values;
     }
 
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
+
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
@@ -55,6 +56,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
 
         const setHasSlsUrl = (ev: Event) => {
             const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+
             if (!akTextInput) return;
 
             const value = akTextInput.value || "";
@@ -101,6 +103,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("SAML Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm();
     }
 }

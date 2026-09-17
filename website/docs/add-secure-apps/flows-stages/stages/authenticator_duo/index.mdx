@@ -12,10 +12,16 @@ This stage connects authentik to Duo and stores a Duo-backed authenticator for t
 ## Configuration options
 
 - **API Hostname**: the Duo API hostname for your tenant.
-- **Client ID**: Duo Auth API client identifier.
-- **Client Secret**: Duo Auth API secret.
-- **Admin integration key**: optional Duo Admin API integration key, used for importing existing Duo users and authenticators.
-- **Admin secret key**: optional Duo Admin API secret, used together with the admin integration key.
+
+Under **Duo Auth API**:
+
+- **Integration key**: Duo Auth API integration key.
+- **Secret key**: Duo Auth API secret.
+
+Under **Duo Admin API (optional)**:
+
+- **Integration key**: optional Duo Admin API integration key, used for importing existing Duo users and authenticators.
+- **Secret key**: optional Duo Admin API secret, used together with the Admin API integration key.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.
 - **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
@@ -28,7 +34,7 @@ To require Duo during authentication, add an [Authenticator Validation stage](..
 ## Notes
 
 - Duo authenticators created through this stage are tied to the stage because authentik needs that stage's API credentials during authentication.
-- Deleting the stage also removes the Duo authenticators associated with it.
+- Because of that link, the stage cannot be deleted while authenticators created through it still exist. Delete those authenticators first, then delete the stage.
 
 ### Import existing Duo authenticators
 

@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
  * Search for flows that may have a fallback specified by the brand settings
  *
  * @element ak-branded-flow-search
- *
  */
 
 @customElement("ak-branded-flow-search")

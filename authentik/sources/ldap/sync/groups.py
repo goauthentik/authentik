@@ -125,7 +125,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
 
                 if parent:
                     group.parents.add(parent)
-                self._logger.debug("Created group with attributes", **defaults)
+                self._logger.debug("Created group with attributes", attributes=defaults)
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:

@@ -1,11 +1,10 @@
 /**
  * @file Cross-interface href builders.
- *
- * The only sanctioned channel for referencing another interface: these return
- * full, base-path-aware URL strings for use with plain `<a href>` /
- * `location.assign`. Crossing interfaces is a real page load (a different
- * bundle). Fixes the hardcoded `/if/user/` literals that break under a
- * non-root `web.path`.
+ *   The only sanctioned channel for referencing another interface: these return
+ *   full, base-path-aware URL strings for use with plain `<a href>` /
+ *   `location.assign`. Crossing interfaces is a real page load (a different
+ *   bundle). Fixes the hardcoded `/if/user/` literals that break under a
+ *   non-root `web.path`.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
@@ -67,6 +66,16 @@ export function toAdminInterface(path?: string, params?: RouterParameterInit): s
  */
 export function toUserInterface(path?: string, params?: RouterParameterInit): string {
     return formatInterfaceURL("user", path, params);
+}
+
+/**
+ * Build a URL into the currently-configured interface.
+ *
+ * For interface-agnostic shared components (sidebar, navbar) that link within
+ * whichever interface booted the router, rather than a fixed target.
+ */
+export function toCurrentInterface(path?: string, params?: RouterParameterInit): string {
+    return formatInterfaceURL(getRouterConfig().interfaceName, path, params);
 }
 
 /**

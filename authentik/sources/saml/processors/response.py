@@ -2,11 +2,12 @@
 
 from base64 import b64decode
 from datetime import UTC, datetime
+from hashlib import sha256
 from time import mktime
 from typing import TYPE_CHECKING
+from uuid import uuid4
 
 import xmlsec
-from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
@@ -37,9 +38,11 @@ from authentik.core.models import (
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.xml import lxml_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    MismatchedBinding,
     MismatchedRequestID,
     MissingSAMLResponse,
     SAMLException,
@@ -56,7 +59,11 @@ LOGGER = get_logger()
 if TYPE_CHECKING:
     from xml.etree.ElementTree import Element  # nosec
 
-CACHE_SEEN_REQUEST_ID = "authentik_saml_seen_ids_%s"
+# One entry for each Source and assertion
+CACHE_SEEN_ASSERTION_ID = "goauthentik.io/sources/saml/seen_assertion/%s/%s"
+# 24 hours, longer than the validity of most assertions
+CACHE_SEEN_ASSERTION_TIMEOUT = 60 * 60 * 24
+SAML_SUBJECT_CONFIRMATION_METHOD_BEARER = "urn:oasis:names:tc:SAML:2.0:cm:bearer"
 
 
 class ResponseProcessor:
@@ -83,7 +90,7 @@ class ResponseProcessor:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
         # Check if response is compressed, b64 decode it
         self._root_xml = b64decode(raw_response.encode())
-        self._root = fromstring(self._root_xml)
+        self._root = lxml_from_string(self._root_xml)
 
         # Verify response signature BEFORE decryption (signature covers encrypted content)
         if self._source.verification_kp and self._source.signed_response:
@@ -99,6 +106,9 @@ class ResponseProcessor:
         self._verify_request_id()
         self._verify_status()
         self._verify_conditions()
+        self._verify_destination()
+        self._verify_subject_confirmation()
+        self._verify_not_seen_before()
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
@@ -114,6 +124,9 @@ class ResponseProcessor:
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
             raise InvalidEncryption()
+        # Register Id attributes so a KeyInfo RetrievalMethod referencing a sibling
+        # EncryptedKey by #Id can be resolved by xmlsec
+        xmlsec.tree.add_ids(encrypted_assertion, ["Id"])
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
@@ -200,23 +213,111 @@ class ResponseProcessor:
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
-            # If IdP-initiated SSO flows are enabled, we want to cache the Response ID
-            # somewhat mitigate replay attacks
-            seen_ids = cache.get(CACHE_SEEN_REQUEST_ID % self._source.pk, [])
-            if self._root.attrib["ID"] in seen_ids:
-                raise SuspiciousOperation("Replay attack detected")
-            seen_ids.append(self._root.attrib["ID"])
-            cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
-        if (
-            SESSION_KEY_REQUEST_ID not in self._http_request.session
-            or "InResponseTo" not in self._root.attrib
+        # The Response and the assertion can both name the request that they answer. Read
+        # both, as only the value inside the assertion is covered by the signature. The
+        # value inside the assertion is checked in _verify_subject_confirmation.
+        in_response_to = self._root.attrib.get("InResponseTo")
+        confirmed_ids = [
+            data.attrib.get("InResponseTo") for data in self._get_bearer_confirmation_data()
+        ]
+        if SESSION_KEY_REQUEST_ID not in self._http_request.session or not any(
+            [in_response_to, *confirmed_ids]
         ):
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if self._http_request.session[SESSION_KEY_REQUEST_ID] != self._root.attrib["InResponseTo"]:
+        if in_response_to and in_response_to != self._http_request.session[SESSION_KEY_REQUEST_ID]:
             raise MismatchedRequestID("Mismatched request ID")
+
+    def _get_bearer_confirmation_data(self) -> list[_Element]:
+        """Get the SubjectConfirmationData of every bearer SubjectConfirmation of the
+        assertion."""
+        assertion = self.get_assertion()
+        if assertion is None:
+            return []
+        confirmations = []
+        for confirmation in assertion.findall(
+            f"{{{NS_SAML_ASSERTION}}}Subject/{{{NS_SAML_ASSERTION}}}SubjectConfirmation"
+        ):
+            method = confirmation.attrib.get("Method")
+            if method is not None and method != SAML_SUBJECT_CONFIRMATION_METHOD_BEARER:
+                continue
+            data = confirmation.find(f"{{{NS_SAML_ASSERTION}}}SubjectConfirmationData")
+            if data is None:
+                continue
+            confirmations.append(data)
+        return confirmations
+
+    def _verify_destination(self):
+        """Verify that the Response names the ACS URL of this Source"""
+        destination = self._root.attrib.get("Destination")
+        if not destination:
+            return
+        acs_url = self._source.build_full_url(self._http_request)
+        if destination.lower() != acs_url.lower():
+            LOGGER.warning(
+                "Destination of Response does not match ACS URL",
+                destination=destination,
+                acs_url=acs_url,
+            )
+            raise MismatchedBinding("The Destination does not match the ACS URL of this Source.")
+
+    def _verify_subject_confirmation(self):
+        """One confirmation of the subject must name this Source. An assertion can carry
+        more than one, and satisfying one of them is enough."""
+        first_error = None
+        for data in self._get_bearer_confirmation_data():
+            try:
+                self._check_subject_confirmation(data)
+                return
+            except SAMLException as exc:
+                if first_error is None:
+                    first_error = exc
+        if first_error is not None:
+            raise first_error
+        raise MismatchedBinding(
+            "The assertion carries no confirmation of the subject for this Source."
+        )
+
+    def _check_subject_confirmation(self, data: _Element):
+        """Check one SubjectConfirmationData"""
+        recipient = data.attrib.get("Recipient")
+        if recipient:
+            acs_url = self._source.build_full_url(self._http_request)
+            if recipient.lower() != acs_url.lower():
+                LOGGER.warning(
+                    "Recipient of assertion does not match ACS URL",
+                    recipient=recipient,
+                    acs_url=acs_url,
+                )
+                raise MismatchedBinding("The Recipient does not match the ACS URL of this Source.")
+        on_or_after = data.attrib.get("NotOnOrAfter")
+        if on_or_after:
+            if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < now():
+                raise SAMLException("Assertion is not valid yet or expired.")
+        in_response_to = data.attrib.get("InResponseTo")
+        if in_response_to and not self._source.allow_idp_initiated:
+            if in_response_to != self._http_request.session.get(SESSION_KEY_REQUEST_ID):
+                raise MismatchedRequestID("Mismatched request ID")
+
+    def _verify_not_seen_before(self):
+        """Verify that the assertion was not used before"""
+        assertion = self.get_assertion()
+        if assertion is None:
+            return
+        assertion_id = assertion.attrib.get("ID")
+        if not assertion_id:
+            LOGGER.warning("Assertion has no ID, cannot check for re-use")
+            return
+        key = CACHE_SEEN_ASSERTION_ID % (
+            self._source.pk,
+            sha256(assertion_id.encode()).hexdigest(),
+        )
+        marker = uuid4().hex
+        cache.add(key, marker, timeout=CACHE_SEEN_ASSERTION_TIMEOUT)
+        if cache.get(key) != marker:
+            raise SuspiciousOperation("Replay attack detected")
 
     def _verify_status(self):
         """Check for SAML Status elements"""
