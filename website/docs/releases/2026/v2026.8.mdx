@@ -748,13 +748,11 @@ Added: `filter_has_attributes` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
-
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -769,7 +767,6 @@ Changed content type : `application/json`
     > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
 - Changed property `flags` (object)
-
     - Changed property `core_default_app_access` (boolean)
         > Applications with no policies bound can be accessed by any user.
 
@@ -778,13 +775,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
-
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -799,7 +794,6 @@ Changed content type : `application/json`
     > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
 - Changed property `flags` (object)
-
     - Changed property `core_default_app_access` (boolean)
         > Applications with no policies bound can be accessed by any user.
 
@@ -808,13 +802,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
-
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -851,7 +843,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -879,7 +870,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -907,7 +897,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -923,7 +912,6 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `content_type` (object)
 
         New required properties:
@@ -992,7 +980,6 @@ Changed: `actions` in `query`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `content_type` (object)
 
         New required properties:
@@ -1058,7 +1045,6 @@ Changed: `top_n` in `query`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `reviewer` (object)
 
         > Partial User Serializer, does not include child relations.
@@ -1134,13 +1120,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1152,7 +1136,6 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
-
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1161,7 +1144,6 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
-
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1183,7 +1165,6 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1195,7 +1176,6 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
-
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -1204,7 +1184,6 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
-
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1220,13 +1199,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1238,7 +1215,6 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
-
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1247,7 +1223,6 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
-
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1269,7 +1244,6 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1281,7 +1255,6 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
-
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -1290,7 +1263,6 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
-
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1306,13 +1278,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1324,7 +1294,6 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
-
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1333,7 +1302,6 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
-
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1381,7 +1349,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `content_type` (object)
 
         New required properties:
@@ -1395,11 +1362,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_task_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `PUT` /tasks/schedules/&#123;id&#125;/
@@ -1409,11 +1374,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_task_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `PATCH` /tasks/schedules/&#123;id&#125;/
@@ -1423,11 +1386,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_task_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /core/applications/&#123;slug&#125;/
@@ -1569,7 +1530,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -1591,11 +1551,9 @@ Added: `flow_user_switch` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Brand Serializer
-
         - Added property `branding_map_tiles` (string)
 
             > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -1627,7 +1585,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `system_config` (object)
 
         > Serialize authentik Config into DRF Object
@@ -1636,7 +1593,6 @@ Changed response : **200 OK**
             Changed items (string):
 
             Added enum values:
-
             - `can_request`
             - `can_agent_self_service`
 
@@ -1675,7 +1631,6 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > PolicyBinding Serializer
@@ -1694,11 +1649,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1714,7 +1667,6 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1726,11 +1678,9 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1746,7 +1696,6 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1758,11 +1707,9 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1782,11 +1729,9 @@ Changed response : **200 OK**
 - Changed content type : `application/json`
 
     Changed items (object): > Count of events of action created on day for a single event action
-
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1800,11 +1745,9 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `reviews` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
         - Changed property `reviewer` (object)
 
             > Partial User Serializer, does not include child relations.
@@ -1880,11 +1823,9 @@ Changed response : **200 OK**
 - Changed content type : `application/json`
 
     Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
     - Changed property `reviews` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
         - Changed property `reviewer` (object)
 
             > Partial User Serializer, does not include child relations.
@@ -1958,7 +1899,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -2005,7 +1945,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -2052,7 +1991,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -2099,7 +2037,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2121,7 +2058,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2143,7 +2079,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2180,7 +2115,6 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > PolicyBinding Serializer
@@ -2203,7 +2137,6 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -2215,7 +2148,6 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
-
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -2224,7 +2156,6 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
-
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2240,13 +2171,11 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -2258,7 +2187,6 @@ Changed response : **201 Created**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
-
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -2267,7 +2195,6 @@ Changed response : **201 Created**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
-
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2289,17 +2216,14 @@ Changed: `action` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Event Matcher Policy Serializer
-
         - Changed property `action` (string)
 
             > Match created events with this action type. When left empty, all action types will be matched.
 
             Added enum values:
-
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -2311,7 +2235,6 @@ Changed response : **200 OK**
             > Match events created by selected application. When left empty, all applications are matched.
 
             Added enum values:
-
             - `authentik.enterprise.agents`
             - `authentik.enterprise.requests`
 
@@ -2320,7 +2243,6 @@ Changed response : **200 OK**
             > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
             Added enum values:
-
             - `authentik_core.objectattribute`
             - `authentik_core.actor`
             - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2338,7 +2260,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Provider Serializer
@@ -2360,7 +2281,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2378,7 +2298,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2396,7 +2315,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2407,11 +2325,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_sync_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /providers/microsoft_entra/&#123;id&#125;/
@@ -2421,7 +2337,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2439,7 +2354,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2457,7 +2371,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2468,11 +2381,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_sync_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /providers/scim/&#123;id&#125;/
@@ -2482,7 +2393,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2492,7 +2402,6 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
-
         - `gitlab`
 
 ##### `PUT` /providers/scim/&#123;id&#125;/
@@ -2510,7 +2419,6 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
-
     - `gitlab`
 
 ###### Return Type:
@@ -2518,7 +2426,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2528,7 +2435,6 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
-
         - `gitlab`
 
 ##### `PATCH` /providers/scim/&#123;id&#125;/
@@ -2546,7 +2452,6 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
-
     - `gitlab`
 
 ###### Return Type:
@@ -2554,7 +2459,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2564,7 +2468,6 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
-
         - `gitlab`
 
 ##### `GET` /providers/scim/&#123;id&#125;/sync/status/
@@ -2574,11 +2477,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_sync_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /providers/ssf/&#123;id&#125;/
@@ -2588,7 +2489,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `oidc_auth_providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2610,7 +2510,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `oidc_auth_providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2632,7 +2531,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `oidc_auth_providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -2662,7 +2560,6 @@ Changed response : **200 OK**
         > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
         Enum values:
-
         - `1.1`
         - `2.0`
 
@@ -2726,7 +2623,6 @@ Changed content type : `application/json`
 - Changed property `model` (string)
 
     Added enum values:
-
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2746,7 +2642,6 @@ Changed content type : `application/json`
 - Changed property `model` (string)
 
     Added enum values:
-
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2764,11 +2659,9 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
         - Changed property `content_type` (object)
 
             New required properties:
@@ -2782,13 +2675,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `capabilities` (array)
 
         Changed items (string):
 
         Added enum values:
-
         - `can_request`
         - `can_agent_self_service`
 
@@ -2799,11 +2690,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_sync_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /sources/ldap/&#123;slug&#125;/
@@ -2813,7 +2702,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2831,7 +2719,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2849,7 +2736,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2860,11 +2746,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `last_sync_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /sources/oauth/&#123;slug&#125;/
@@ -2874,7 +2758,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -2894,7 +2777,6 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
-
         - `azuread`
 
 ##### `PUT` /sources/oauth/&#123;slug&#125;/
@@ -2922,7 +2804,6 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
-
     - `azuread`
 
 ###### Return Type:
@@ -2930,7 +2811,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -2950,7 +2830,6 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
-
         - `azuread`
 
 ##### `PATCH` /sources/oauth/&#123;slug&#125;/
@@ -2978,7 +2857,6 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
-
     - `azuread`
 
 ###### Return Type:
@@ -2986,7 +2864,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -3006,7 +2883,6 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
-
         - `azuread`
 
 ##### `GET` /sources/saml/&#123;slug&#125;/
@@ -3101,7 +2977,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `provider_obj` (object)
 
         > SSFProvider Serializer
@@ -3126,15 +3001,12 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object):
-
         - Changed property `last_task_status` (string)
 
             Added enum value:
-
             - `waiting_for_dependencies`
 
 ##### `POST` /core/applications/
@@ -3184,7 +3056,6 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Application Serializer
@@ -3228,7 +3099,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `application` (object)
 
         > Application Serializer
@@ -3278,7 +3148,6 @@ Changed response : **200 OK**
     * Added property `users` (array)
 
         Items (object): > User Serializer for information a user can retrieve about themselves
-
         - Property `pk` (integer)
 
         - Property `username` (string)
@@ -3302,7 +3171,6 @@ Changed response : **200 OK**
         - Property `groups` (array)
 
             Items (object):
-
             - Property `name` (string)
 
             - Property `pk` (string)
@@ -3326,7 +3194,6 @@ Changed response : **200 OK**
         - Property `type` (string)
 
             Enum values:
-
             - `internal`
             - `external`
             - `service_account`
@@ -3356,7 +3223,6 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
-
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -3368,11 +3234,9 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -3390,15 +3254,12 @@ Changed: `actions` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Event Serializer
-
         - Changed property `action` (string)
 
             Added enum values:
-
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -3412,14 +3273,12 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
-
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -3438,7 +3297,6 @@ Changed content type : `application/json`
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -3450,14 +3308,12 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
-
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -3476,7 +3332,6 @@ Changed content type : `application/json`
     - Changed property `action` (string)
 
         Added enum values:
-
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -3488,14 +3343,12 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
-
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -3509,15 +3362,12 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
         - Changed property `reviews` (array)
 
             Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
             - Changed property `reviewer` (object)
 
                 > Partial User Serializer, does not include child relations.
@@ -3591,7 +3441,6 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -3638,11 +3487,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
-
         - Changed property `reviewer_groups_obj` (array)
 
             Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -3689,7 +3536,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `provider` (object)
 
         > Provider Serializer
@@ -3711,7 +3557,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `provider` (object)
 
         > Provider Serializer
@@ -3733,7 +3578,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `provider` (object)
 
         > Provider Serializer
@@ -3755,7 +3599,6 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -3777,11 +3620,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Outpost Serializer
-
         - Changed property `providers_obj` (array)
 
             Changed items (object): > Provider Serializer
@@ -3803,11 +3644,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > LDAPProvider Serializer
-
         - Changed property `application_slug` (string)
             > Prioritize backchannel slug over direct application slug
 
@@ -3825,7 +3664,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3836,11 +3674,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > GoogleWorkspaceProvider Serializer
-
         - Added property `discovery_enabled` (boolean)
             > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3858,7 +3694,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3869,11 +3704,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > MicrosoftEntraProvider Serializer
-
         - Added property `discovery_enabled` (boolean)
             > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3884,13 +3717,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
-
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `PUT` /providers/oauth2/&#123;id&#125;/
@@ -3904,7 +3735,6 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
-
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -3912,13 +3742,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
-
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `PATCH` /providers/oauth2/&#123;id&#125;/
@@ -3932,7 +3760,6 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
-
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -3940,13 +3767,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
-
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `POST` /providers/scim/
@@ -3964,7 +3789,6 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
-
     - `gitlab`
 
 ###### Return Type:
@@ -3972,7 +3796,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -3982,7 +3805,6 @@ Changed response : **201 Created**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
-
         - `gitlab`
 
 ##### `GET` /providers/scim/
@@ -3992,11 +3814,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > SCIMProvider Serializer
-
         - Added property `discovery_enabled` (boolean)
 
             > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -4006,7 +3826,6 @@ Changed response : **200 OK**
             > Alter authentik behavior for vendor-specific SCIM implementations.
 
             Added enum value:
-
             - `gitlab`
 
 ##### `POST` /providers/ssf/
@@ -4016,7 +3835,6 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `oidc_auth_providers_obj` (array)
 
         Changed items (object): > Provider Serializer
@@ -4038,11 +3856,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > SSFProvider Serializer
-
         - Changed property `oidc_auth_providers_obj` (array)
 
             Changed items (object): > Provider Serializer
@@ -4092,7 +3908,6 @@ Added: `saml_version` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > WSFederationProvider Serializer
@@ -4120,7 +3935,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -4135,11 +3949,9 @@ Added: `sync_group_hierarchy` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > LDAP Source Serializer
-
         - Added property `sync_group_hierarchy` (boolean)
             > Sync group parentage/hierarchy from LDAP directories.
 
@@ -4168,7 +3980,6 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
-
     - `azuread`
 
 ###### Return Type:
@@ -4176,7 +3987,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -4196,7 +4006,6 @@ Changed response : **201 Created**
     - Changed property `provider_type` (string)
 
         Removed enum value:
-
         - `azuread`
 
 ##### `GET` /sources/oauth/
@@ -4206,11 +4015,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > OAuth Source Serializer
-
         - Changed property `request_token_url` (string)
 
             > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -4230,7 +4037,6 @@ Changed response : **200 OK**
         - Changed property `provider_type` (string)
 
             Removed enum value:
-
             - `azuread`
 
 ##### `POST` /sources/saml/
@@ -4278,7 +4084,6 @@ Deleted: `issuer` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > SAMLSource Serializer
@@ -4303,11 +4108,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > SSFStream Serializer
-
         - Changed property `provider_obj` (object)
 
             > SSFProvider Serializer
@@ -4332,7 +4135,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -4350,7 +4152,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -4368,7 +4169,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -4379,11 +4179,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `request_content_type` (string)
 
         Enum values:
-
         - `application/x-www-form-urlencoded`
         - `application/json`
 
@@ -4400,7 +4198,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `request_content_type` (string)
 
 ##### `PATCH` /stages/captcha/&#123;stage_uuid&#125;/
@@ -4416,7 +4213,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `request_content_type` (string)
 
 ##### `GET` /stages/source/&#123;stage_uuid&#125;/
@@ -4426,7 +4222,6 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `resume_on_match_failures` (array)
 
         > Source matching failure reasons for which the flow should resume.
@@ -4434,7 +4229,6 @@ Changed response : **200 OK**
         Items (string):
 
         Enum value:
-
         - `missing_property`
 
 ##### `PUT` /stages/source/&#123;stage_uuid&#125;/
@@ -4451,7 +4245,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -4469,7 +4262,6 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -4480,19 +4272,16 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `state` (string)
 
         > Task status
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
     - Changed property `aggregated_status` (string)
 
         Added enum value:
-
         - `waiting_for_dependencies`
 
 ##### `GET` /core/user_consent/
@@ -4502,11 +4291,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > UserConsent Serializer
-
         - Changed property `application` (object)
 
             > Application Serializer
@@ -4550,18 +4337,15 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Notification Serializer
-
         - Changed property `event` (object)
 
             > Event Serializer
             - Changed property `action` (string)
 
                 Added enum values:
-
                 - `user_offboarded`
                 - `access_request_created`
                 - `access_request_approved`
@@ -4575,11 +4359,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Serializer for BaseGrantModel and RefreshToken
-
         - Changed property `provider` (object)
 
             > Provider Serializer
@@ -4601,11 +4383,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Serializer for BaseGrantModel and ExpiringBaseGrant
-
         - Changed property `provider` (object)
 
             > Provider Serializer
@@ -4627,11 +4407,9 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > Serializer for BaseGrantModel and RefreshToken
-
         - Changed property `provider` (object)
 
             > Provider Serializer
@@ -4657,7 +4435,6 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
-
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -4665,13 +4442,11 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
-
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `GET` /providers/oauth2/
@@ -4681,17 +4456,14 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > OAuth2Provider Serializer
-
         - Changed property `grant_types` (array)
 
             Changed items (string):
 
             Added enum value:
-
             - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `POST` /stages/authenticator/webauthn/
@@ -4708,7 +4480,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -4719,11 +4490,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > AuthenticatorWebAuthnStage Serializer
-
         - Deleted property `prevent_duplicate_devices` (boolean)
             > When enabled, a given device can only be registered once.
 
@@ -4740,7 +4509,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `request_content_type` (string)
 
 ##### `GET` /stages/captcha/
@@ -4750,11 +4518,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > CaptchaStage Serializer
-
         - Added property `request_content_type` (string)
 
 ##### `POST` /stages/source/
@@ -4771,7 +4537,6 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
-
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -4782,11 +4547,9 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object): > SourceStage Serializer
-
         - Added property `resume_on_match_failures` (array)
             > Source matching failure reasons for which the flow should resume.
 
@@ -4803,23 +4566,19 @@ Changed: `aggregated_status` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
-
     - Changed property `results` (array)
 
         Changed items (object):
-
         - Changed property `state` (string)
 
             > Task status
 
             Added enum value:
-
             - `waiting_for_dependencies`
 
         - Changed property `aggregated_status` (string)
 
             Added enum value:
-
             - `waiting_for_dependencies`
 
 ##### `PUT` /core/transactional/applications/
@@ -4839,7 +4598,6 @@ Changed content type : `application/json`
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
     Updated `authentik_providers_scim.scimprovider` provider_model:
-
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -4849,11 +4607,9 @@ Changed content type : `application/json`
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
-
         - `gitlab`
 
     Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
-
     - Added property `saml_version` (object)
 
         > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
@@ -4864,5 +4620,4 @@ Changed content type : `application/json`
         Changed items (string):
 
         Added enum value:
-
         - `urn:ietf:params:oauth:grant-type:token-exchange`
