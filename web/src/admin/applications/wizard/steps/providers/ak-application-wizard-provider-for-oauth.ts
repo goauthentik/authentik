@@ -25,6 +25,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
 
     constructor() {
         super();
+
         aki(SourcesApi)
             .sourcesOauthList({
                 ordering: "name",
@@ -39,9 +40,11 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+
         const showLogoutMethodCallback = (show: boolean) => {
             this.showLogoutMethod = show;
         };
+
         return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
@@ -59,6 +62,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.provider, this.wizard.errors);
     }
 }

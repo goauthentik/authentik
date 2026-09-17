@@ -3,7 +3,6 @@ import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
-
 import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -55,10 +54,13 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                                 const args: EndpointsConnectorsListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const users = await aki(EndpointsApi).endpointsConnectorsList(args);
+
                                 return users.results;
                             }}
                             .renderElement=${(connector: Connector): string => {

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,6 +27,7 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * LDAP Source Serializer
+ *
  * @export
  * @interface PatchedLDAPSourceRequest
  */
@@ -41,12 +40,10 @@ export interface PatchedLDAPSourceRequest {
      * Internal source name, used in URLs.
      */
     slug?: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -57,33 +54,15 @@ export interface PatchedLDAPSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
-    /**
-     *
-     */
     serverUri?: string;
     /**
      * Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
@@ -93,29 +72,14 @@ export interface PatchedLDAPSourceRequest {
      * Client certificate to authenticate against the LDAP Server's Certificate.
      */
     clientCertificate?: string | null;
-    /**
-     *
-     */
     bindCn?: string;
-    /**
-     *
-     */
     bindPassword?: string;
     /**
      * Authentication method used for LDAP synchronization and writeback.
      */
     serviceBindMethod?: ServiceBindMethodEnum;
-    /**
-     *
-     */
     startTls?: boolean;
-    /**
-     *
-     */
     sni?: boolean;
-    /**
-     *
-     */
     baseDn?: string;
     /**
      * Prepended to Base DN for User-queries.
@@ -149,28 +113,22 @@ export interface PatchedLDAPSourceRequest {
      * Update internal authentik password when login succeeds with LDAP
      */
     passwordLoginUpdateInternalPassword?: boolean;
-    /**
-     *
-     */
     syncUsers?: boolean;
     /**
-     * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
+     * When a user changes their password, sync it back to LDAP. This can only be enabled on a
+     * single LDAP source.
      */
     syncUsersPassword?: boolean;
-    /**
-     *
-     */
     syncGroups?: boolean;
-    /**
-     *
-     */
     syncParentGroup?: string | null;
     /**
-     * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
+     * Lookup group membership based on a user attribute instead of a group attribute. This allows
+     * nested group resolution on systems like FreeIPA and Active Directory
      */
     lookupGroupsFromUser?: boolean;
     /**
-     * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
+     * Delete authentik users and groups which were previously supplied by this source, but are now
+     * missing from it.
      */
     deleteNotFoundObjects?: boolean;
     /**

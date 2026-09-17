@@ -1,0 +1,61 @@
+{
+    "name": "@goauthentik/oxlint-config",
+    "version": "1.0.0",
+    "description": "authentik's Oxlint config",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/oxlint-config"
+    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./out/index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./plugin": {
+            "import": "./out/plugin.js",
+            "types": "./out/plugin.d.ts"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "fix": "run-s lint format",
+        "check": "run-s lint:check format:check",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
+        "prepare": "tsc -p .",
+        "verify": "node scripts/verify-fixtures.mjs"
+    },
+    "dependencies": {
+        "eslint-plugin-lit": "^2.3.1",
+        "eslint-plugin-wc": "^3.1.0"
+    },
+    "devDependencies": {
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "typescript": "catalog:"
+    },
+    "peerDependencies": {
+        "oxlint": ">=1.75.0 <2"
+    },
+    "engines": {
+        "node": ">=24.0"
+    }
+}

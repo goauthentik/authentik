@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,25 +16,14 @@ import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClas
 
 /**
  * Single device challenge
+ *
  * @export
  * @interface DeviceChallengeRequest
  */
 export interface DeviceChallengeRequest {
-    /**
-     *
-     */
     deviceClass: DeviceClassesEnum;
-    /**
-     *
-     */
     deviceUid: string;
-    /**
-     *
-     */
     challenge: { [key: string]: any };
-    /**
-     *
-     */
     lastUsed: Date | null;
 }
 

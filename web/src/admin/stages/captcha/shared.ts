@@ -180,6 +180,7 @@ export function deriveCapSiteVerifyURL(endpoint: string): string | null {
     }
 
     const endpointURL = new URL(trimmedEndpoint);
+
     const normalizedEndpoint = endpointURL.href.endsWith("/")
         ? endpointURL.href
         : `${endpointURL.href}/`;
@@ -198,6 +199,7 @@ function isCapWidgetURL(jsUrl?: string | null): boolean {
     }
 
     const { pathname } = new URL(jsUrl);
+
     return pathname.includes("cap-widget") || pathname.endsWith("/assets/widget.js");
 }
 
@@ -235,6 +237,7 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 
 /**
  * Get the form values to display, with clear precedence:
+ *
  * 1. If editing an existing instance, use instance values
  * 2. Otherwise, use the current preset defaults
  */

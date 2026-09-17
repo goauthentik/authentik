@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
  * Search for flows that connect to user sources
  *
  * @element ak-source-flow-search
- *
  */
 
 @customElement("ak-source-flow-search")

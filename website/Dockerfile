@@ -27,9 +27,9 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/pnpm-workspace.yaml,src=./pnpm-workspace.yaml \
     --mount=type=bind,target=/work/packages/docusaurus-config/package.json,src=./packages/docusaurus-config/package.json \
     --mount=type=bind,target=/work/packages/esbuild-plugin-live-reload/package.json,src=./packages/esbuild-plugin-live-reload/package.json \
-    --mount=type=bind,target=/work/packages/eslint-config/package.json,src=./packages/eslint-config/package.json \
+    --mount=type=bind,target=/work/packages/oxlint-config/package.json,src=./packages/oxlint-config/package.json \
     --mount=type=bind,target=/work/packages/logger-js/package.json,src=./packages/logger-js/package.json \
-    --mount=type=bind,target=/work/packages/prettier-config/package.json,src=./packages/prettier-config/package.json \
+    --mount=type=bind,target=/work/packages/oxfmt-config/package.json,src=./packages/oxfmt-config/package.json \
     --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
     --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
     --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
@@ -60,7 +60,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     pnpm run build
 
-FROM docker.io/library/nginx:1.31.5-trixie@sha256:05b8cb60c354a44ab824ea6e7dc69b46d50762cdbe728a347a5b656e6fb3d7c4
+FROM docker.io/library/nginx:1.31.6-trixie@sha256:78758a47dc59a81fc8354d83d17135d52cfaf6894c696886b807b9371c3648a4
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

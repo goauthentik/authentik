@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { TokenModel } from "./TokenModel";
 import { TokenModelFromJSON, TokenModelToJSON } from "./TokenModel";
 
 /**
- *
  * @export
  * @interface PaginatedTokenModelList
  */
 export interface PaginatedTokenModelList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<TokenModel>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 
