@@ -42,7 +42,7 @@ export function SecretValueButton(secret: Secret, control = false) {
                 await renderModal(
                     html`<ak-secret-value
                         .value=${value}
-                        .label=${secret.name}
+                        .label=${msg("Value", { id: "secret.value.label" })}
                         ?multiline=${secret.type === SecretTypeEnum.Multiline}
                     ></ak-secret-value>`,
                     { headline: secret.name, invokerElement: button, size: PFSize.Medium },
