@@ -20414,6 +20414,39 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/scim/{id}/resource_types/:
+    get:
+      operationId: providers_scim_resource_types_retrieve
+      description: Inspect the destination's advertised resource types without changing
+        sync behavior.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      - in: query
+        name: refresh
+        schema:
+          type: boolean
+          default: false
+        description: Bypass the cached discovery result.
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMResourceTypeDiscovery'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /providers/scim/{id}/sync/object/:
     post:
       operationId: providers_scim_sync_object_create
@@ -58370,6 +58403,88 @@ components:
       - provider
       - scim_id
       - user
+    SCIMResourceType:
+      type: object
+      description: A resource type advertised by the SCIM destination.
+      properties:
+        id:
+          type: string
+          readOnly: true
+          nullable: true
+        name:
+          type: string
+          readOnly: true
+        endpoint:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        schema:
+          type: string
+          readOnly: true
+        schema_extensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMResourceTypeExtension'
+          readOnly: true
+      required:
+      - description
+      - endpoint
+      - id
+      - name
+      - schema
+      - schema_extensions
+    SCIMResourceTypeDiscovery:
+      type: object
+      description: Diagnostic result of querying the destination's ResourceTypes endpoint.
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SCIMResourceTypeDiscoveryStatusEnum'
+          readOnly: true
+        resource_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMResourceType'
+          readOnly: true
+        fetched_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Time the discovery attempt completed, including failed attempts.
+        cached:
+          type: boolean
+          readOnly: true
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - cached
+      - detail
+      - fetched_at
+      - resource_types
+      - status
+    SCIMResourceTypeDiscoveryStatusEnum:
+      enum:
+      - success
+      - unavailable
+      - error
+      type: string
+    SCIMResourceTypeExtension:
+      type: object
+      description: A schema extension advertised by the SCIM destination.
+      properties:
+        schema:
+          type: string
+          readOnly: true
+        required:
+          type: boolean
+          readOnly: true
+      required:
+      - required
+      - schema
     SCIMSource:
       type: object
       description: SCIMSource Serializer

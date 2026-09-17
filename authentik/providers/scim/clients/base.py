@@ -43,7 +43,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     can_discover = True
 
-    def __init__(self, provider: SCIMProvider):
+    def __init__(self, provider: SCIMProvider, *, fetch_service_provider_config: bool = True):
         super().__init__(provider)
         self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
@@ -55,7 +55,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if base_url.endswith("/"):
             base_url = base_url[:-1]
         self.base_url = base_url
-        self._config = self.get_service_provider_config()
+        self._config = (
+            self.get_service_provider_config()
+            if fetch_service_provider_config
+            else ServiceProviderConfiguration.default()
+        )
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
@@ -79,7 +83,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             if response.status_code == HttpResponseNotFound.status_code:
                 raise NotFoundSyncException(response)
             if response.status_code in [HTTP_TOO_MANY_REQUESTS, HTTP_SERVICE_UNAVAILABLE]:
-                raise TransientSyncException()
+                raise TransientSyncException(response)
             if response.status_code == HTTP_CONFLICT:
                 raise ObjectExistsSyncException(response)
             self.logger.warning(
