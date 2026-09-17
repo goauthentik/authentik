@@ -38,7 +38,10 @@ export class SessionFixture extends PageFixture {
     public $usernameField = this.page.getByLabel("Username");
 
     public $passwordStage = this.page.locator("ak-stage-password");
-    public $passwordField = this.page.getByLabel("Password");
+    // Exact match: the password stage's "Show password" visibility toggle
+    // (ak-flow-password-input) also carries a "…password" accessible name, so a
+    // substring getByLabel("Password") matches two elements.
+    public $passwordField = this.page.getByLabel("Password", { exact: true });
 
     public $rememberMeCheckbox = this.page.getByRole("checkbox", {
         name: "Remember me on this device",
@@ -138,5 +141,21 @@ export class SessionFixture extends PageFixture {
 
     public async toLoginPage(page: Page = this.page) {
         await page.goto(SessionFixture.pathname);
+    }
+
+    /**
+     * Sign the current user out, landing back on the identification stage.
+     *
+     * Sign-out lives behind the user switcher's dropdown toggle rather than as a bare link,
+     * so the menu has to be opened before the item exists in the accessibility tree.
+     */
+    public async signOut(page: Page = this.page): Promise<void> {
+        this.logger.info("Signing out...");
+
+        await page.getByRole("button", { name: "Switch user" }).click();
+
+        await page.getByRole("menuitem", { name: "Sign out current user" }).click();
+
+        await this.$identificationStage.waitFor({ state: "visible" });
     }
 }
