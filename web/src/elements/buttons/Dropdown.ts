@@ -1,3 +1,4 @@
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";
@@ -5,7 +6,14 @@ import { listen } from "#elements/decorators/listen";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import type { PfTooltip } from "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
 import { customElement } from "lit/decorators.js";
+
+/**
+ * Enter events sourced from pf-tooltip.
+ */
+const EnterEvents = ["focusin", "tap", "mouseenter"];
 
 @customElement("ak-dropdown")
 export class DropdownButton extends AKElement {
@@ -23,6 +31,7 @@ export class DropdownButton extends AKElement {
 
     protected menu: HTMLMenuElement | null = null;
     protected toggleButton: HTMLButtonElement | null = null;
+    protected tooltip: PfTooltip | null = null;
     protected abortController: AbortController | null = null;
 
     protected logger = ConsoleLogger.prefix("dropdown");
@@ -44,6 +53,7 @@ export class DropdownButton extends AKElement {
         button.ariaExpanded = (!this.menu.hidden).toString();
 
         event.stopPropagation();
+        this.tooltip?.hide();
     };
 
     @listen("click", { target: window })
@@ -76,6 +86,7 @@ export class DropdownButton extends AKElement {
 
         if (!this.menu) {
             this.logger.warn("No menu found");
+
             return;
         }
 
@@ -85,6 +96,7 @@ export class DropdownButton extends AKElement {
 
         if (!this.toggleButton) {
             this.logger.warn("No toggle button found");
+
             return;
         }
 
@@ -104,7 +116,39 @@ export class DropdownButton extends AKElement {
                 signal: this.abortController.signal,
             });
         }
+
+        this.tooltip = this.querySelector("pf-tooltip");
+
+        if (this.tooltip && !this.tooltip.hasAttribute("trigger")) {
+            const trigger = this.querySelector("[data-tooltip-target]") || this;
+
+            console.debug("Setting tooltip trigger to", trigger);
+
+            this.tooltip.trigger = trigger;
+
+            for (const eventName of EnterEvents) {
+                this.addEventListener(eventName, this.interceptTooltipEvent, { capture: true });
+            }
+        }
     }
+
+    /**
+     * Intercepts tooltip events and prevents them from propagating when the menu is open.
+     * This ensures that the tooltip does not interfere with the dropdown menu's behavior.
+     */
+    protected interceptTooltipEvent = (event: Event): void => {
+        if (!this.tooltip) return;
+
+        const menuHidden = this.menu && this.menu.hidden;
+
+        if (event.type === "click" && !menuHidden) {
+            this.hide();
+        }
+
+        if (!menuHidden) {
+            event.stopPropagation();
+        }
+    };
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();

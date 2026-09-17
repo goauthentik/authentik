@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,16 +11,10 @@
  */
 
 /**
- *
  * @export
  * @interface ImpersonationRequest
  */
 export interface ImpersonationRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ImpersonationRequest
-     */
     reason: string;
 }
 

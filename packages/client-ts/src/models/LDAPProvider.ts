@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,146 +15,85 @@ import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAcc
 
 /**
  * LDAPProvider Serializer
+ *
  * @export
  * @interface LDAPProvider
  */
 export interface LDAPProvider {
-    /**
-     *
-     * @type {number}
-     * @memberof LDAPProvider
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof LDAPProvider
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof LDAPProvider
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     invalidationFlow: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof LDAPProvider
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof LDAPProvider
      */
     readonly metaModelName: string;
     /**
      * DN under which objects are accessible.
-     * @type {string}
-     * @memberof LDAPProvider
      */
     baseDn?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof LDAPProvider
-     */
     certificate?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LDAPProvider
-     */
     tlsServerName?: string;
     /**
-     * The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
-     * @type {number}
-     * @memberof LDAPProvider
+     * The start for uidNumbers, this number is added to the user.pk to make sure that the numbers
+     * aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local
+     * users uidNumber
      */
     uidStartNumber?: number;
     /**
-     * The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-     * @type {number}
-     * @memberof LDAPProvider
+     * The start for gidNumbers, this number is added to a number generated from the group.pk to
+     * make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we
+     * don't collide with local groups or users primary groups gidNumber
      */
     gidStartNumber?: number;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof LDAPProvider
-     */
     readonly outpostSet: Array<string>;
-    /**
-     *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPProvider
-     */
     searchMode?: LDAPAPIAccessMode;
-    /**
-     *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPProvider
-     */
     bindMode?: LDAPAPIAccessMode;
     /**
-     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof LDAPProvider
+     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
+     * the TOTP code to the password. This should only be enabled if all users that will bind to
+     * this provider have a TOTP device configured, as otherwise a password may incorrectly be
+     * rejected if it contains a semicolon.
      */
     mfaSupport?: boolean;
 }

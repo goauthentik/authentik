@@ -23,7 +23,7 @@ from authentik.flows.views.executor import (
     SESSION_KEY_POST,
     ToDefaultFlow,
 )
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBindingModel
@@ -32,7 +32,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 
-class RequestValidationError(SentryIgnoredException):
+class RequestValidationError(TracingIgnoredException):
     """Error raised in pre_permission_check, when a request is invalid."""
 
     response: HttpResponse | None

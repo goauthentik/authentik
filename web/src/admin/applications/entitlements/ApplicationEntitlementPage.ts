@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
@@ -48,6 +47,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Generic cache stats for an object
+ *
  * @export
  * @interface Cache
  */
 export interface Cache {
-    /**
-     *
-     * @type {number}
-     * @memberof Cache
-     */
     readonly count: number;
 }
 

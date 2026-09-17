@@ -30,3 +30,6 @@
 /networking/cloudflare-access                                      /security/cloudflare-access 301!
 
 /platforms/microsoft                                               /platforms/microsoft-saml 301!
+
+/hypervisors-orchestrators/nutanix-ahv                             /hypervisors-orchestrators/nutanix-pc 301!
+/hypervisors-orchestrators/nutanix-ahv/                            /hypervisors-orchestrators/nutanix-pc/ 301!

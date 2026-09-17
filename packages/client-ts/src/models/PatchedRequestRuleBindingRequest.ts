@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,44 +16,22 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface PatchedRequestRuleBindingRequest
  */
 export interface PatchedRequestRuleBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
-     */
     uuid?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedRequestRuleBindingRequest
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
-     */
     rule?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
-     */
     target?: string;
     /**
-     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
+     * How long a request against this binding stays pending before it automatically lapses if not
+     * approved or denied.
      */
     expiryPending?: string;
     /**
      * The maximum duration a grant approved against this binding can last.
-     * @type {string}
-     * @memberof PatchedRequestRuleBindingRequest
      */
     expiryGrantedMax?: string;
 }

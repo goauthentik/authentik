@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,56 +12,34 @@
 
 /**
  * MicrosoftEntraProviderMapping Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderMapping
  */
 export interface MicrosoftEntraProviderMapping {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
-     */
     readonly pk: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
-     */
     expression: string;
     /**
      * Get object's component so that we know how to edit the object
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof MicrosoftEntraProviderMapping
      */
     readonly metaModelName: string;
 }

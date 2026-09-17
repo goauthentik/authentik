@@ -32,6 +32,7 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
+from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import (
     SAMLBindings,
     SAMLPropertyMapping,
@@ -871,3 +872,18 @@ class TestAuthNRequest(TestCase):
             b64encode(request.encode()).decode(), "test_state"
         )
         self.assertTrue(parsed_request.force_authn)
+
+    def test_doctype(self):
+        """Test that a request with a document type declaration is refused"""
+        request = (
+            '<?xml version="1.0"?>'
+            "<!DOCTYPE samlp:AuthnRequest>"
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+        )
+
+        with self.assertRaisesMessage(
+            CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
+        ):
+            AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())

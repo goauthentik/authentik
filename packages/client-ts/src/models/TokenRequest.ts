@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,56 +10,28 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { IntentEnum } from "./IntentEnum";
 import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
 
 /**
  * Token Serializer
+ *
  * @export
  * @interface TokenRequest
  */
 export interface TokenRequest {
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof TokenRequest
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof TokenRequest
-     */
     identifier: string;
-    /**
-     *
-     * @type {IntentEnum}
-     * @memberof TokenRequest
-     */
     intent?: IntentEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof TokenRequest
-     */
     user?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof TokenRequest
-     */
     description?: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof TokenRequest
-     */
     expires?: Date | null;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TokenRequest
-     */
     expiring?: boolean;
 }
 
@@ -97,7 +67,7 @@ export function TokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
     };
 }
@@ -120,7 +90,7 @@ export function TokenRequestToJSONTyped(
         intent: IntentEnumToJSON(value["intent"]),
         user: value["user"],
         description: value["description"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         expiring: value["expiring"],
     };
 }

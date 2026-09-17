@@ -1,8 +1,8 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -38,24 +38,31 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     "Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).",
                 )}</span
             >
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Source")} required name="source">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Source[]> => {
                         const args: SourcesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(SourcesApi).sourcesAllList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(source: Source): string => {

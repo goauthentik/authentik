@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-dual-select.js";
-
 import { AkDualSelect } from "../ak-dual-select.js";
 import { DualSelectEventType, type DualSelectPair } from "../types.js";
 
@@ -75,6 +74,7 @@ export class AkSbFruity extends LitElement {
 
     constructor() {
         super();
+
         this.page = {
             count: this.options.length,
             current: 1,
@@ -84,6 +84,7 @@ export class AkSbFruity extends LitElement {
             previous: 0,
             totalPages: Math.ceil(this.options.length / this.pageLength),
         };
+
         this.onNavigation = this.onNavigation.bind(this);
         this.addEventListener(DualSelectEventType.NavigateTo, this.onNavigation);
     }
@@ -91,12 +92,15 @@ export class AkSbFruity extends LitElement {
     onNavigation(evt: Event) {
         const current: number = (evt as CustomEvent).detail;
         const index = current - 1;
+
         if (index * this.pageLength > this.options.length) {
             console.warn(
                 `Attempted to index from ${index} for options length ${this.options.length}`,
             );
+
             return;
         }
+
         const endCount = this.pageLength * (index + 1);
         const endIndex = Math.min(endCount, this.options.length);
 

@@ -3,6 +3,13 @@ import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { renderSourceIcon } from "#elements/sources/utils";
 
@@ -17,9 +24,11 @@ import WebauthnController from "#flow/stages/identification/controllers/Webauthn
 import Styles from "#flow/stages/identification/styles.css";
 import {
     compareLoginSource,
+    createOrListFormatter,
     formatUIFieldLabel,
-    OR_LIST_FORMATTERS,
 } from "#flow/stages/identification/utils";
+
+import AKFieldset from "#styles/authentik/components/Fieldset/fieldset.css";
 
 import {
     FlowDesignationEnum,
@@ -31,20 +40,12 @@ import {
 } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
+import { ref } from "lit-html/directives/ref.js";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
 
@@ -68,6 +69,7 @@ export class IdentificationStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
+        AKFieldset,
         ...RememberMeController.styles,
         Styles,
     ];
@@ -79,8 +81,6 @@ export class IdentificationStage extends BaseStage<
      */
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
-
-    protected passwordFieldRef = createRef<HTMLInputElement>();
 
     #form?: HTMLFormElement;
 
@@ -118,12 +118,9 @@ export class IdentificationStage extends BaseStage<
             });
 
             this.#createHelperForm();
-        }
-    }
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
-        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+            this.focus();
+        }
     }
 
     public override disconnectedCallback(): void {
@@ -132,7 +129,9 @@ export class IdentificationStage extends BaseStage<
         cancelAnimationFrame(this.#prepareRememberMeFrame);
     }
 
-    public override firstUpdated(): void {
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
         this.focus();
     }
 
@@ -155,8 +154,8 @@ export class IdentificationStage extends BaseStage<
         if (!this.rememberMeController) {
             this.rememberMeController = new RememberMeController(this, {
                 identificationFieldID: this.inputID,
-                identificationFieldRef: this.autofocusTarget.reference,
-                passwordFieldRef: this.passwordFieldRef,
+                identificationFieldRef: this.primaryFocusTarget.reference,
+                passwordFieldRef: this.secondaryFocusTarget.reference,
                 pendingUserIdentifier,
             });
 
@@ -174,6 +173,7 @@ export class IdentificationStage extends BaseStage<
         const compatMode = "ShadyDOM" in window;
         this.#form = document.createElement("form");
         document.documentElement.appendChild(this.#form);
+
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
         if (!compatMode) {
@@ -183,8 +183,10 @@ export class IdentificationStage extends BaseStage<
             username.setAttribute("type", "text");
             username.setAttribute("name", "username"); // username as name for high compatibility
             username.setAttribute("autocomplete", "username");
+
             username.onkeyup = (ev: Event) => {
                 const el = ev.target as HTMLInputElement;
+
                 (this.shadowRoot || this)
                     .querySelectorAll<HTMLInputElement>("input[name=uidField]")
                     .forEach((input) => {
@@ -194,14 +196,17 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
+
             this.#form.appendChild(username);
         }
+
         // Only add the password field when we don't already show a password field
         if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
+
             password.onkeyup = (event: KeyboardEvent) => {
                 if (event.key === "Enter") {
                     event.preventDefault();
@@ -213,6 +218,7 @@ export class IdentificationStage extends BaseStage<
                 // and we want to 'prefill' the password for the user,
                 // save it globally
                 PasswordManagerPrefill.password = el.value;
+
                 // Because password managers fill username, then password,
                 // we need to re-focus the uid_field here too
                 (this.shadowRoot || this)
@@ -232,6 +238,7 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
+
         totp.onkeyup = (event: KeyboardEvent) => {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -243,6 +250,7 @@ export class IdentificationStage extends BaseStage<
             // and we want to 'prefill' the totp for the user,
             // save it globally
             PasswordManagerPrefill.totp = el.value;
+
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
             (this.shadowRoot || this)
@@ -266,7 +274,7 @@ export class IdentificationStage extends BaseStage<
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
 
-        const passwordField = this.passwordFieldRef.value;
+        const passwordField = this.secondaryFocusTarget.target;
 
         if (passwordField) {
             passwordField.focus();
@@ -300,7 +308,7 @@ export class IdentificationStage extends BaseStage<
         }
 
         return html`<input
-            ${ref(this.autofocusTarget.reference)}
+            ${ref(this.primaryFocusTarget.reference)}
             id=${id}
             type=${type}
             name="uidField"
@@ -319,8 +327,9 @@ export class IdentificationStage extends BaseStage<
 
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
+
         return html`<ak-flow-input-password
-            .inputRef=${this.passwordFieldRef}
+            .inputRef=${this.secondaryFocusTarget.reference}
             label=${msg("Password")}
             input-id="ak-stage-identification-password"
             class="pf-c-form__group"
@@ -350,7 +359,9 @@ export class IdentificationStage extends BaseStage<
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
 
-        const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
+        const label = createOrListFormatter(this.activeLanguageTag).format(
+            fields.map((field) => formatUIFieldLabel(field)),
+        );
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
@@ -394,6 +405,7 @@ export class IdentificationStage extends BaseStage<
         const { name, iconUrl, challenge } = source;
 
         const icon = renderSourceIcon(name, iconUrl);
+
         return html`<button
             type="button"
             @click=${() => this.#dispatchChallengeToHost(challenge)}
@@ -469,19 +481,25 @@ export class IdentificationStage extends BaseStage<
             class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
-            ${enrollUrl
-                ? html`<div class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>
-                  </div>`
-                : nothing}
-            ${recoveryUrl
-                ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" data-ouia-component-id="recovery"
-                          >${msg("Forgot username or password?")}</a
-                      >
-                  </div>`
-                : nothing}
+            ${
+                enrollUrl
+                    ? html`<div class="pf-c-login__main-footer-band-item">
+                          ${msg("Need an account?")}
+                          <a href="${enrollUrl}" data-ouia-component-id="enroll"
+                              >${msg("Sign up.")}</a
+                          >
+                      </div>`
+                    : nothing
+            }
+            ${
+                recoveryUrl
+                    ? html`<div class="pf-c-login__main-footer-band-item">
+                          <a href="${recoveryUrl}" data-ouia-component-id="recovery"
+                              >${msg("Forgot username or password?")}</a
+                          >
+                      </div>`
+                    : nothing
+            }
         </fieldset>`;
     }
 

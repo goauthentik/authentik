@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,134 +15,57 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * EmailStage Serializer
+ *
  * @export
  * @interface EmailStage
  */
 export interface EmailStage {
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof EmailStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof EmailStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof EmailStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof EmailStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof EmailStage
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
-     * @type {boolean}
-     * @memberof EmailStage
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     host?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStage
-     */
     port?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     username?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EmailStage
-     */
     useTls?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EmailStage
-     */
     useSsl?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStage
-     */
     timeout?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     fromAddress?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-     * @type {string}
-     * @memberof EmailStage
      */
     tokenExpiry?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     subject?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStage
-     */
     template?: string;
     /**
      * Activate users upon completion of stage.
-     * @type {boolean}
-     * @memberof EmailStage
      */
     activateUserOnSuccess?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStage
-     */
     recoveryMaxAttempts?: number;
     /**
-     * The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof EmailStage
+     * The time window used to count recent account recovery attempts. If the number of attempts
+     * exceed recovery_max_attempts within this period, further attempts will be rate-limited.
+     * (Format: hours=1;minutes=2;seconds=3).
      */
     recoveryCacheTimeout?: string;
 }

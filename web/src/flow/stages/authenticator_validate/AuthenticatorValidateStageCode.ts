@@ -1,5 +1,4 @@
 import "#flow/components/ak-flow-card";
-
 import { formatDeviceChallengeMessage } from "#common/labels";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -40,7 +39,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     staticDevice ? msg("Static token") : msg("Authentication code"),
                 )}
                 <input
-                    ${this.autofocusTarget.toRef()}
+                    ${this.primaryFocusTarget.toRef()}
                     id="validation-code-input"
                     aria-describedby="validation-code-help"
                     type="text"

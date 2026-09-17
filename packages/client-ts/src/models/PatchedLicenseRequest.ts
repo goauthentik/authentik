@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * License Serializer
+ *
  * @export
  * @interface PatchedLicenseRequest
  */
 export interface PatchedLicenseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLicenseRequest
-     */
     key?: string;
 }
 

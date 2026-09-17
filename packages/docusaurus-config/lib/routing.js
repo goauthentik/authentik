@@ -3,7 +3,7 @@
  */
 
 /**
- * @typedef {'production'|'development'} NodeEnvironment
+ * @typedef {"production" | "development"} NodeEnvironment
  */
 
 const NodeEnvironment = /** @type {NodeEnvironment} */ (process.env.NODE_ENV || "development");

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * UserLogoutStage Serializer
+ *
  * @export
  * @interface UserLogoutStageRequest
  */
 export interface UserLogoutStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserLogoutStageRequest
-     */
     name: string;
 }
 

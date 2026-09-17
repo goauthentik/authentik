@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,69 +17,36 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorTOTPStage Serializer
+ *
  * @export
  * @interface AuthenticatorTOTPStage
  */
 export interface AuthenticatorTOTPStage {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorTOTPStage
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStage
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {DigitsEnum}
-     * @memberof AuthenticatorTOTPStage
-     */
     digits: DigitsEnum;
 }
 

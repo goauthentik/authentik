@@ -26,7 +26,7 @@ packages/           # Shared workspace packages, polyglot:
                     #   client-go / client-rust / client-ts  — GENERATED API clients (do not hand-edit)
                     #   ak-axum / ak-common / ak-guardian     — Rust crates
                     #   django-*                              — reusable Django apps (channels, dramatiq, cache)
-                    #   eslint-config / prettier-config / tsconfig / theme / docusaurus-config — shared JS config
+                    #   oxlint-config / oxfmt-config / tsconfig / theme / docusaurus-config — shared JS config
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup
@@ -144,9 +144,9 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 - `setup/full-dev-environment.mdx` — full backend + frontend dev environment.
 - `setup/frontend-dev-environment.mdx` — web-only setup.
-- `setup/debugging.md` — attaching a debugger (VS Code config included).
+- `setup/debugging.mdx` — attaching a debugger (VS Code config included).
 - `docs/style-guide.mdx` — the canonical prose style guide (also governs this repo's docs).
-- `contributing.md` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
+- `contributing.mdx` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
 
 ## Tech stack
 
