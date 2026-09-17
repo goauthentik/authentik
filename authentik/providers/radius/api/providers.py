@@ -9,7 +9,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from pyrad.dictionary import Attribute, Dictionary
 from pyrad.packet import AuthPacket
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -80,7 +80,11 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
     """RadiusProvider Serializer"""
 
     application_slug = CharField(source="application.slug")
-    auth_flow_slug = CharField(source="authorization_flow.slug")
+    auth_flow_slug = SerializerMethodField()
+
+    def get_auth_flow_slug(self, instance: RadiusProvider) -> str:
+        brand = self.context["request"].brand
+        return (instance.authorization_flow or brand.flow_provider_authorization).slug
 
     class Meta:
         model = RadiusProvider

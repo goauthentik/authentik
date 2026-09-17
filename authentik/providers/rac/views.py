@@ -41,7 +41,10 @@ class RACStartView(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start flow planner for RAC provider"""
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authz_flow = (
+            self.provider.authorization_flow or self.request.brand.flow_provider_authorization
+        )
+        planner = FlowPlanner(authz_flow)
         planner.allow_empty_flows = True
         try:
             plan = planner.plan(
@@ -60,7 +63,7 @@ class RACStartView(PolicyAccessView):
                 provider=self.provider,
             )
         )
-        return plan.to_redirect(request, self.provider.authorization_flow)
+        return plan.to_redirect(request, authz_flow)
 
 
 class RACInterface(InterfaceView):
