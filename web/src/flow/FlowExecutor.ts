@@ -16,7 +16,6 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
@@ -167,8 +166,6 @@ export class FlowExecutor
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();

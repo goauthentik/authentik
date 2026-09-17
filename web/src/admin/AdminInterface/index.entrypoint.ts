@@ -1,3 +1,4 @@
+import "#common/sentry/apply";
 import "#admin/AdminInterface/AboutModal";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
@@ -13,7 +14,6 @@ import {
 } from "./AdminSidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -100,8 +100,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
     };
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
