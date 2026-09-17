@@ -79,7 +79,6 @@ class LicenseSerializer(ModelSerializer):
         }
 
 
-
 class LicenseUserCountsParameters(PassiveSerializer):
     """Parameters for active user counts."""
 
@@ -192,9 +191,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
     @validate(LicenseUserCountsParameters, "query")
-    def user_counts(
-        self, request: Request, query: LicenseUserCountsParameters
-    ) -> Response:
+    def user_counts(self, request: Request, query: LicenseUserCountsParameters) -> Response:
         """Get active user totals and counts for relative or absolute date ranges.
 
         At least one positive relative count step or a complete absolute range is required.

@@ -118,6 +118,7 @@ export class EnterpriseStatusCard extends AKElement {
 
         const progressBar = (label: string, current: number, allowed: number) => {
             const percentage = this.calcUserPercentage(allowed, current);
+
             // prettier-ignore
             const severity = match(percentage)
                 .when((p) => p <= 80, () => "success")

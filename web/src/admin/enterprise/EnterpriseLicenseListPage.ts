@@ -136,6 +136,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         this.userCounts = await aki(EnterpriseApi).enterpriseLicenseUserCountsRetrieve({
             countSteps: ["days=30", "days=90", "days=365"],
         });
+
         this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
             cached: false,
         });
@@ -205,6 +206,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             activeExternalUsers = 0,
             ranges = [],
         } = this.userCounts || {};
+
         const countsByInterval = new Map(ranges.map((range) => [range.interval, range]));
         const last30Days = countsByInterval.get("days=30");
         const last90Days = countsByInterval.get("days=90");

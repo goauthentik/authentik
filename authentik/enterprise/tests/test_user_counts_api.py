@@ -23,9 +23,7 @@ class TestUserCountsAPI(APITestCase):
         self.internal_users = LicenseKey.get_internal_user_count()
         self.external_users = LicenseKey.get_external_user_count()
 
-    def create_user(
-        self, user_type: UserTypes, age_days: int, *, is_active: bool = True
-    ) -> User:
+    def create_user(self, user_type: UserTypes, age_days: int, *, is_active: bool = True) -> User:
         """Create a user with a specific account age."""
         user = create_test_user(type=user_type, is_active=is_active)
         User.objects.filter(pk=user.pk).update(date_joined=now() - timedelta(days=age_days))
