@@ -510,7 +510,7 @@ dev = [
     { name = "pytest-timeout", specifier = "==2.4.0" },
     { name = "requests-mock", specifier = "==1.12.1" },
     { name = "ruff", specifier = "==0.16.7" },
-    { name = "selenium", specifier = "==4.48.0" },
+    { name = "selenium", specifier = "==4.49.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-docker", specifier = "==7.2.0.20260827" },
     { name = "types-jwcrypto", specifier = "==1.6.0.20260903" },
@@ -3665,7 +3665,7 @@ wheels = [
 
 [[package]]
 name = "selenium"
-version = "4.48.0"
+version = "4.49.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
@@ -3675,9 +3675,9 @@ dependencies = [
     { name = "urllib3", extra = ["socks"] },
     { name = "websocket-client" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/8c/db97bdc1a8b41e7b6bf9d3099722ed8e7ac61328af8637f20004015c642b/selenium-4.48.0.tar.gz", hash = "sha256:045c1ec054c94e3be6c10febc509aa513b4c05e9146d1a9cf3de5375ec6ca2a1", size = 1055269, upload-time = "2026-08-27T20:05:51.235Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5d/1c/d4346c986b21ccaa0bbd9407191590557b77bc34336bd4fb4fa76526d5e7/selenium-4.49.0.tar.gz", hash = "sha256:c9d91274e5f55835e12b524adf1f231739ea811a8866d810e5bb42ba87cd8eda", size = 1059027, upload-time = "2026-09-09T15:30:21.074Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/ee/5d1b0e9cb43965902f0a9f7add527134db71cabf2f26766ae2fdb7774b9a/selenium-4.48.0-py3-none-any.whl", hash = "sha256:b2a1d77019db92513e59aa2376710fe3d42b65a4d493dccd0c799c1a0d574d93", size = 9561411, upload-time = "2026-08-27T20:05:48.778Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/ce/fbd8987bffad130556307abad83adb524797703347e818ad1c19167d5bae/selenium-4.49.0-py3-none-any.whl", hash = "sha256:0d1de9ec6977aa2d5f766d923d5076fdffa91681a8d4ffc9e3381a36839a20f2", size = 11792644, upload-time = "2026-09-09T15:30:18.712Z" },
 ]
 
 [[package]]
