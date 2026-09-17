@@ -281,9 +281,9 @@
         "@esbuild/linux-x64": "^0.28.1",
         "@goauthentik/oxfmt-config-dev": "link:../packages/oxfmt-config",
         "@goauthentik/oxlint-config-dev": "link:../packages/oxlint-config",
-        "@rollup/rollup-darwin-arm64": "^4.63.1",
-        "@rollup/rollup-linux-arm64-gnu": "^4.63.1",
-        "@rollup/rollup-linux-x64-gnu": "^4.63.1"
+        "@rollup/rollup-darwin-arm64": "^4.63.2",
+        "@rollup/rollup-linux-arm64-gnu": "^4.63.2",
+        "@rollup/rollup-linux-x64-gnu": "^4.63.2"
     },
     "devEngines": {
         "runtime": {
