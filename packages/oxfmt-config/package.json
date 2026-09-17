@@ -8,10 +8,12 @@
         "url": "git+https://github.com/goauthentik/authentik.git",
         "directory": "packages/oxfmt-config"
     },
-    "scripts": {
-        "build": "tsc -p .",
-        "prepare": "tsc -p ."
-    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
     "type": "module",
     "types": "./out/index.d.ts",
     "exports": {
@@ -21,25 +23,32 @@
             "types": "./out/index.d.ts"
         }
     },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "fix": "run-s lint format",
+        "check": "run-s lint:check format:check",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
+        "prepare": "tsc -p ."
+    },
     "devDependencies": {
         "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
         "typescript": "catalog:"
     },
     "peerDependencies": {
         "oxfmt": ">=0.67.0 <1",
         "typescript": "^6.0.3 || ^7.0.0"
     },
-    "files": [
-        "out/**/*.js",
-        "out/**/*.d.ts",
-        "out/**/*.map",
-        "src"
-    ],
     "engines": {
         "node": ">=24.0"
-    },
-    "publishConfig": {
-        "access": "public"
     }
 }

@@ -190,7 +190,7 @@ export class SessionFixture extends PageFixture {
     public async signOut(page: Page = this.page): Promise<void> {
         this.logger.info("Signing out...");
 
-        await page.getByRole("button", { name: "Switch user" }).click();
+        await page.getByRole("button", { name: "Toggle user navigation menu" }).click();
 
         await page.getByRole("menuitem", { name: "Sign out current user" }).click();
 

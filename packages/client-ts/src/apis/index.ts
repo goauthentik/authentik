@@ -3,6 +3,7 @@ export * from "./AgentsApi";
 export * from "./AuthenticatorsApi";
 export * from "./CoreApi";
 export * from "./CryptoApi";
+export * from "./DebugApi";
 export * from "./EndpointsApi";
 export * from "./EnterpriseApi";
 export * from "./EventsApi";

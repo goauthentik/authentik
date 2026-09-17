@@ -92,7 +92,7 @@ lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that d
 	node ./scripts/node/lint-catalogs.ts
 
 lint-check-types:  ## Type-check the repository's Node.js scripts.
-	pnpm run check-types
+	pnpm run build:types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
@@ -196,7 +196,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
-	npx prettier --write changelog.md
+	pnpm exec oxfmt --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
 	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
@@ -209,7 +209,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	rm schema-old.yml
 	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
 	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
-	npx prettier --write diff.md
+	pnpm exec oxfmt --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build
@@ -267,7 +267,7 @@ web-storybook-watch:  ## Build and run the storybook documentation server
 	pnpm --dir web run storybook
 
 web-lint-fix:
-	pnpm --dir web run prettier
+	pnpm --dir web run format
 
 web-lint:
 	pnpm --dir web run lint
@@ -289,7 +289,7 @@ docs-install: node-install  ## Install the necessary libraries to build the Auth
 	pnpm --dir website install --frozen-lockfile
 
 docs-lint-fix: lint-spellcheck
-	pnpm --dir website run prettier
+	pnpm --dir website run format
 
 docs-build:
 	node ./scripts/node/lint-runtime.ts website
@@ -370,8 +370,12 @@ ci-lint-clippy: ci--meta-debug
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
 
+ci-lint-oxlint-fixtures: ci--meta-debug
+	pnpm --filter @goauthentik/oxlint-config run build
+	pnpm --filter @goauthentik/oxlint-config run verify
+
 ci-lint-check-types: ci--meta-debug
-	pnpm run check-types
+	pnpm run build:types
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

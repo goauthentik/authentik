@@ -46,11 +46,11 @@ npx vitest run path/to/file.test.ts
 ### Linting & Formatting
 
 ```bash
-npm run lint           # ESLint with --fix
-npm run lint-check     # ESLint, no fixes (CI mode, max-warnings: 0)
-npm run lint:types     # TypeScript type checking (tsc --noEmit)
-npm run prettier       # Format all files
-npm run format         # Combined prettier + lint
+npm run lint           # Oxlint with --fix
+npm run lint:check     # Oxlint, no fixes (CI mode, max-warnings: 0)
+npm run build:types    # TypeScript type checking (tsc --noEmit)
+npm run format         # Oxfmt with auto-fixes
+npm run format:check   # Oxfmt in check-only mode
 npm run precommit      # Full pre-commit check (format, lint, types, etc.)
 ```
 

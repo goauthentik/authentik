@@ -16,4 +16,4 @@ build:
 		--git-user-id goauthentik
 	rm -rf "${PWD}/.openapi-generator"
 	pnpm run post-process
-	pnpm run lint:fix
+	pnpm run fix
