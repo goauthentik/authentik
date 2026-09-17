@@ -329,12 +329,26 @@ async function searchRows(
     { form }: BrowserContext,
     list: ReturnType<Page["getByRole"]>,
     query: string,
+    expected: number,
 ) {
     const searchInput = await form.findTextualInput(/search/i, list);
-    await form.fill(searchInput, query);
-    await searchInput.press("Enter");
+    const rows = list.getByRole("row").filter({ hasText: query });
 
-    return list.getByRole("row").filter({ hasText: query });
+    // Submitting refetches even when the query has not changed, so re-submitting is how
+    // a row created after the last fetch gets picked up. Without that the table holds
+    // its previous result set and a short count never settles on its own, however long
+    // the assertion waits -- the DOM simply stops changing.
+    await expect(async () => {
+        await form.fill(searchInput, query);
+        await searchInput.press("Enter");
+
+        await expect(rows).toHaveCount(expected, { timeout: 2_000 });
+    }, `Table settles on ${expected} row(s) matching "${query}"`).toPass({
+        timeout: 30_000,
+        intervals: [1_000, 2_000],
+    });
+
+    return rows;
 }
 
 async function waitUntilDue(scheduledAt: Date): Promise<void> {
@@ -621,7 +635,7 @@ test.describe("User offboarding", () => {
         }
 
         const list = await openOffboardingList(context);
-        const rows = await searchRows(context, list, sharedUsername);
+        const rows = await searchRows(context, list, sharedUsername, 2);
 
         await expect(rows, "Both pending offboardings are listed").toHaveCount(2, {
             timeout: 10_000,
@@ -654,7 +668,7 @@ test.describe("User offboarding", () => {
         });
 
         await setOnlyPending(context, list, false);
-        const canceledRows = await searchRows(context, list, sharedUsername);
+        const canceledRows = await searchRows(context, list, sharedUsername, 2);
 
         await expect(canceledRows, "Canceled offboardings remain in history").toHaveCount(2, {
             timeout: 10_000,
@@ -777,7 +791,7 @@ test.describe("User offboarding", () => {
         );
 
         const usersList = await openUsers(context);
-        const deletedRows = await searchRows(context, usersList, identity.username);
+        const deletedRows = await searchRows(context, usersList, identity.username, 0);
 
         await expect(deletedRows, "Deleted user is removed from the users list").toHaveCount(0, {
             timeout: 10_000,
