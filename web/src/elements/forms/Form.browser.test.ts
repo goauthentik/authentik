@@ -65,3 +65,24 @@ test.each(["ak-visibility-form", "ak-visibility-model-form"])(
         );
     },
 );
+
+test("disconnecting one form keeps another form observed", async () => {
+    const first = document.createElement("ak-visibility-form") as Form;
+    const second = document.createElement("ak-visibility-form") as Form;
+
+    first.style.cssText = second.style.cssText =
+        "position: fixed; top: 0; width: 400px; height: 300px";
+
+    document.body.append(first, second);
+
+    await vi.waitFor(() => {
+        expect(first.visible).toBe(true);
+        expect(second.visible).toBe(true);
+    });
+
+    second.style.top = "-10000px";
+    await vi.waitFor(() => expect(second.visible).toBe(false));
+    first.remove();
+    second.style.top = "0";
+    await vi.waitFor(() => expect(second.visible).toBe(true));
+});
