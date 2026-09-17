@@ -1,0 +1,30 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 5090.
+#	http://www.ietf.org/rfc/rfc5090.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Digest-Response				103	string
+ATTRIBUTE	Digest-Realm				104	string
+ATTRIBUTE	Digest-Nonce				105	string
+ATTRIBUTE	Digest-Response-Auth			106	string
+ATTRIBUTE	Digest-Nextnonce			107	string
+ATTRIBUTE	Digest-Method				108	string
+ATTRIBUTE	Digest-URI				109	string
+ATTRIBUTE	Digest-Qop				110	string
+ATTRIBUTE	Digest-Algorithm			111	string
+ATTRIBUTE	Digest-Entity-Body-Hash			112	string
+ATTRIBUTE	Digest-CNonce				113	string
+ATTRIBUTE	Digest-Nonce-Count			114	string
+ATTRIBUTE	Digest-Username				115	string
+ATTRIBUTE	Digest-Opaque				116	string
+ATTRIBUTE	Digest-Auth-Param			117	string
+ATTRIBUTE	Digest-AKA-Auts				118	string
+ATTRIBUTE	Digest-Domain				119	string
+ATTRIBUTE	Digest-Stale				120	string
+ATTRIBUTE	Digest-HA1				121	string
+ATTRIBUTE	SIP-AOR					122	string
