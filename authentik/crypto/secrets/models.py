@@ -88,7 +88,11 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 
             validate_kubeconfig(Secret(type=self.type, value=value))
-        if self.google_workspace_providers.exists():
+        if (
+            self.google_workspace_providers.exists()
+            or self.google_chrome_connectors.exists()
+            or self.gdtc_stages.exists()
+        ):
             try:
                 Secret(type=self.type, value=value).get_json()
             except ValueError:

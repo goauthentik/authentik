@@ -20,7 +20,7 @@ export interface GoogleChromeConnectorRequest {
     connectorUuid?: string;
     name: string;
     enabled?: boolean;
-    credentials: { [key: string]: any };
+    secret: string;
 }
 
 /**
@@ -30,7 +30,7 @@ export function instanceOfGoogleChromeConnectorRequest(
     value: object,
 ): value is GoogleChromeConnectorRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -49,7 +49,7 @@ export function GoogleChromeConnectorRequestFromJSONTyped(
         connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
         name: json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
-        credentials: json["credentials"],
+        secret: json["secret"],
     };
 }
 
@@ -69,6 +69,6 @@ export function GoogleChromeConnectorRequestToJSONTyped(
         connector_uuid: value["connectorUuid"],
         name: value["name"],
         enabled: value["enabled"],
-        credentials: value["credentials"],
+        secret: value["secret"],
     };
 }

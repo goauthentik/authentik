@@ -45,7 +45,7 @@ export interface AuthenticatorEndpointGDTCStage {
      */
     configureFlow?: string | null;
     friendlyName?: string;
-    credentials: { [key: string]: any };
+    secret: string;
 }
 
 /**
@@ -85,7 +85,7 @@ export function instanceOfAuthenticatorEndpointGDTCStage(
             (value as Record<string, any>)["flow_set"] === undefined)
     )
         return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -115,7 +115,7 @@ export function AuthenticatorEndpointGDTCStageFromJSONTyped(
                   ? null
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        credentials: json["credentials"],
+        secret: json["secret"],
     };
 }
 
@@ -138,6 +138,6 @@ export function AuthenticatorEndpointGDTCStageToJSONTyped(
         name: value["name"],
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
-        credentials: value["credentials"],
+        secret: value["secret"],
     };
 }
