@@ -277,6 +277,100 @@ class TestFilterPolicyEngine(TestCase):
                         f"{message}: mismatch for user {user.pk}",
                     )
 
+    def test_static_bindings_match_single_user_engine(self):
+        """Cross-validate static group/user bindings against the per-user PolicyEngine,
+        including group hierarchy and users matching several bindings, and make sure
+        users matching several bindings (or several descendant groups) aren't duplicated."""
+        group_parent = Group.objects.create(name=generate_id())
+        group_child = Group.objects.create(name=generate_id())
+        group_grandchild = Group.objects.create(name=generate_id())
+        group_child.parents.add(group_parent)
+        group_grandchild.parents.add(group_child)
+        group_other = Group.objects.create(name=generate_id())
+
+        user_top = create_test_user()  # parent only
+        user_leaf = create_test_user()  # grandchild only
+        user_all = create_test_user()  # parent, child, grandchild and other
+        user_other = create_test_user()  # other only
+        user_none = create_test_user()  # no groups
+
+        user_top.groups.add(group_parent)
+        user_leaf.groups.add(group_grandchild)
+        user_all.groups.add(group_parent, group_child, group_grandchild, group_other)
+        user_other.groups.add(group_other)
+
+        all_users = [user_top, user_leaf, user_all, user_other, user_none]
+        users_qs = User.objects.filter(pk__in=[u.pk for u in all_users])
+
+        scenarios = [
+            ("group with descendants", PolicyEngineMode.MODE_ANY, [{"group": group_parent}]),
+            ("child group", PolicyEngineMode.MODE_ANY, [{"group": group_child}]),
+            (
+                "two groups, MODE_ANY",
+                PolicyEngineMode.MODE_ANY,
+                [{"group": group_parent}, {"group": group_other}],
+            ),
+            (
+                "two groups, MODE_ALL",
+                PolicyEngineMode.MODE_ALL,
+                [{"group": group_parent}, {"group": group_other}],
+            ),
+            (
+                "user and group, MODE_ANY",
+                PolicyEngineMode.MODE_ANY,
+                [{"user": user_none}, {"group": group_child}],
+            ),
+            (
+                "user and group, MODE_ALL",
+                PolicyEngineMode.MODE_ALL,
+                [{"user": user_all}, {"group": group_grandchild}],
+            ),
+        ]
+
+        for message, mode, binding_specs in scenarios:
+            with self.subTest(message):
+                pbm = PolicyBindingModel.objects.create(policy_engine_mode=mode)
+                for idx, spec in enumerate(binding_specs):
+                    PolicyBinding.objects.create(target=pbm, order=idx, **spec)
+
+                result = FilterPolicyEngine(pbm, users_qs).build().result
+                batch = list(result.values_list("pk", flat=True))
+                self.assertEqual(len(batch), len(set(batch)), f"{message}: duplicate rows")
+                self.assertEqual(result.count(), len(set(batch)), f"{message}: count mismatch")
+
+                for user in all_users:
+                    single = PolicyEngine(pbm, user)
+                    single.use_cache = False
+                    self.assertEqual(
+                        user.pk in batch,
+                        single.build().passing,
+                        f"{message}: mismatch for user {user.pk}",
+                    )
+
+    def test_static_group_binding_uses_exists(self):
+        """Static group bindings are translated to EXISTS instead of a join, so the result
+        needs no DISTINCT (which would sort every user column of the whole set)"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_b, order=1)
+        result = FilterPolicyEngine(pbm, self.users).build().result
+        self.assertFalse(result.query.distinct)
+        self.assertIn("EXISTS", str(result.query))
+        # user_b is in both bound groups
+        self.assertEqual(
+            sorted(result.values_list("pk", flat=True)),
+            sorted([self.user_a.pk, self.user_b.pk]),
+        )
+
+    def test_static_bindings_respect_base_filters(self):
+        """Filters applied to the user queryset (e.g. pk ranges used by outgoing sync pages)
+        restrict the result"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+        users = self.users.filter(pk__gte=self.user_b.pk, pk__lte=self.user_c.pk)
+        result = FilterPolicyEngine(pbm, users).build().result
+        self.assertEqual(set(result.values_list("pk", flat=True)), {self.user_b.pk})
+
     def test_bulk_cache_prefetch_single_round_trip(self):
         """The slow (per-user Policy) path must fetch cache entries via a single
         cache.get_many() call instead of one cache.get() per (binding, user) pair."""
