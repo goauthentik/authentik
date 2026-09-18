@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.secrets.models import SecretType
 from authentik.lib.sync.api import SyncStatusSerializer
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.kerberos.models import KerberosSource
@@ -36,22 +37,24 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_users",
             "sync_users_password",
             "sync_principal",
-            "sync_password",
-            "sync_keytab",
-            "sync_ccache",
+            "secret",
+            "sync_keytab_secret",
+            "sync_ccache_secret",
             "connectivity",
             "spnego_server_name",
-            "spnego_keytab",
-            "spnego_ccache",
+            "spnego_keytab_secret",
+            "spnego_ccache_secret",
             "password_login_update_internal_password",
             "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
-            "sync_password": {"write_only": True},
-            "sync_keytab": {"write_only": True},
-            "sync_ccache": {"write_only": True},
-            "spnego_keytab": {"write_only": True},
-            "spnego_ccache": {"write_only": True},
+            field: {"allowed_types": (SecretType.MULTILINE, SecretType.FILE)}
+            for field in (
+                "sync_keytab_secret",
+                "sync_ccache_secret",
+                "spnego_keytab_secret",
+                "spnego_ccache_secret",
+            )
         }
 
 
