@@ -7,7 +7,7 @@ from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 
 from django.core.cache import cache
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Count, Exists, OuterRef, Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
 from structlog.stdlib import BoundLogger, get_logger
@@ -472,20 +472,23 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     def _filter_static(
         self, base: QuerySet[User], bindings: list[PolicyBinding], mode: PolicyEngineMode
     ) -> QuerySet[User]:
-        """Apply static (group/user) bindings to `base` using SQL only."""
+        """Apply static (group/user) bindings to `base` using SQL only.
+
+        Every binding translates to a join-free expression (`pk=` or a correlated
+        `EXISTS`, see `_binding_to_q`), so filtering can't duplicate rows and no
+        `.distinct()` is needed. Avoiding `SELECT DISTINCT` over all user columns keeps
+        counts and pages from sorting the whole in-scope set."""
         if mode == PolicyEngineMode.MODE_ALL:
             qs = base
             for binding in bindings:
                 qs = qs.filter(self._binding_to_q(binding))
-            # Chained filters can produce duplicates if the same row satisfies multiple
-            # JOINs trivially; .distinct() guarantees uniqueness.
-            return qs.distinct()
+            return qs
 
         # MODE_ANY (and any unknown mode) -> OR-combine per-binding Q
         combined = self._binding_to_q(bindings[0])
         for binding in bindings[1:]:
             combined |= self._binding_to_q(binding)
-        return base.filter(combined).distinct()
+        return base.filter(combined)
 
     def _binding_to_q(self, binding: PolicyBinding) -> Q:
         """Translate a single static PolicyBinding into a Q expression matching users
@@ -496,8 +499,17 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             # Group binding: match users in the bound group OR any descendant.
             # "binding.group in user.all_groups()" is equivalent to
             # "user is in binding.group.with_descendants()".
+            # Use a correlated EXISTS over the membership table instead of joining
+            # `groups`, so users in several matching groups aren't duplicated.
             descendants = Group.objects.filter(pk=binding.group_id).with_descendants()
-            match = Q(groups__in=descendants)
+            match = Q(
+                Exists(
+                    User.groups.through.objects.filter(
+                        user_id=OuterRef("pk"),
+                        group_id__in=descendants.values("pk"),
+                    )
+                )
+            )
         if binding.negate:
             match = ~match
         return match
