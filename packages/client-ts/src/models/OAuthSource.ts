@@ -119,6 +119,7 @@ export interface OAuthSource {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey: string;
+    secret: string;
     /**
      * Get OAuth Callback URL
      */
@@ -192,6 +193,7 @@ export function instanceOfOAuthSource(value: object): value is OAuthSource {
             (value as Record<string, any>)["consumer_key"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("callbackUrl" in (value as Record<string, any>)) &&
             !("callback_url" in (value as Record<string, any>))) ||
@@ -282,6 +284,7 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
+        secret: json["secret"],
         callbackUrl: json["callback_url"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         type: SourceTypeFromJSON(json["type"]),
@@ -341,6 +344,7 @@ export function OAuthSourceToJSONTyped(
         profile_url: value["profileUrl"],
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
+        secret: value["secret"],
         additional_scopes: value["additionalScopes"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],

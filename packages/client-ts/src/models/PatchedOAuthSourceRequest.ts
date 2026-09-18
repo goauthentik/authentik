@@ -90,7 +90,7 @@ export interface PatchedOAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey?: string;
-    consumerSecret?: string;
+    secret?: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -187,7 +187,7 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
-        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -233,7 +233,7 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         profile_url: value["profileUrl"],
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
-        consumer_secret: value["consumerSecret"],
+        secret: value["secret"],
         additional_scopes: value["additionalScopes"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
