@@ -27,20 +27,33 @@ To create or edit an LDAP source, open the authentik Admin interface and navigat
 
 ### Connection settings
 
-| Setting                                   | Description                                                                                                                                                                                                                                                                |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Server URI**                            | URI to your LDAP server or domain controller. You can specify multiple servers by separating URIs with a comma, such as `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple records, authentik selects a random entry when first connecting. |
-| **Enable StartTLS**                       | Enable to upgrade a `ldap://` connection to TLS before binding. Leave disabled for LDAP without StartTLS or for LDAPS (`ldaps://`).                                                                                                                                        |
-| **Use Server URI for SNI verification**   | Sends the hostname from **Server URI** as the TLS Server Name Indication (SNI). Enable when the LDAP server requires SNI. Required for servers using TLS 1.3+.                                                                                                             |
-| **TLS Verification Certificate**          | Optionally, select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections.                                                                 |
-| **TLS Client authentication certificate** | Client certificate and key pair used to authenticate to the LDAP server.                                                                                                                                                                                                   |
-| **Bind CN**                               | Identifier used to authenticate the bind account. This is typically the bind account's distinguished name (DN) or another identifier supported by the directory, such as an Active Directory user principal name (UPN) in the format `user@domain.tld`.                    |
-| **Bind Password**                         | Password used during the bind process.                                                                                                                                                                                                                                     |
-| **Base DN**                               | Base distinguished name for synchronization searches. **Additional User DN** and **Additional Group DN** narrow the user and group search bases, respectively.                                                                                                             |
+| Setting                                   | Description                                                                                                                                                                                                                                                                                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Server URI**                            | URI to your LDAP server or domain controller. You can specify multiple servers by separating URIs with a comma, such as `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple records, authentik selects a random entry when first connecting.                                                                                   |
+| **Enable StartTLS**                       | Enable to upgrade a `ldap://` connection to TLS before binding. Leave disabled for LDAP without StartTLS or for LDAPS (`ldaps://`).                                                                                                                                                                                                                          |
+| **Use Server URI for SNI verification**   | Sends the hostname from **Server URI** as the TLS Server Name Indication (SNI). Enable when the LDAP server requires SNI. Required for servers using TLS 1.3+.                                                                                                                                                                                               |
+| **TLS Verification Certificate**          | Optionally, select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.                                                                      |
+| **Service bind method**                   | Authentication method for synchronization, searches, and password writeback.<br /><br />**Simple or anonymous bind:** Uses **Bind CN** and **Bind Password**, or binds anonymously if both are empty. This is the default.<br /><br />**SASL EXTERNAL:** :ak-version[2026.11] Uses the TLS client certificate identity. See [SASL EXTERNAL](#sasl-external). |
+| **TLS Client authentication certificate** | Client certificate and key pair presented to the LDAP server. Required for SASL EXTERNAL.                                                                                                                                                                                                                                                                    |
+| **Bind CN**                               | Identifier used to authenticate the bind account. This is typically the bind account's distinguished name (DN) or another identifier supported by the directory, such as an Active Directory user principal name (UPN) in the format `user@domain.tld`. SASL EXTERNAL ignores this field for service connections.                                            |
+| **Bind Password**                         | Password used during the bind process. SASL EXTERNAL ignores this field for service connections.                                                                                                                                                                                                                                                             |
+| **Base DN**                               | Base distinguished name for synchronization searches. **Additional User DN** and **Additional Group DN** narrow the user and group search bases, respectively.                                                                                                                                                                                               |
 
-:::info TLS handshake failures
-If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also configure `AUTHENTIK_LDAP__TLS__CIPHERS` if the server requires a specific cipher suite.
-:::
+#### SASL EXTERNAL
+
+SASL EXTERNAL authenticates only the service connection used for synchronization, searches, and password writeback. LDAP password login still uses a simple bind with the user's distinguished name to verify the submitted password.
+
+To use SASL EXTERNAL:
+
+- Select a **TLS Client authentication certificate** that includes its private key.
+- Use `ldap://` with **Enable StartTLS** selected, or `ldaps://` with it cleared. If **Server URI** contains multiple URIs, use the same scheme for all of them.
+- Configure the LDAP server to trust the certificate and map it to an identity with the required directory permissions.
+
+For Active Directory, use `ldap://` with **Enable StartTLS** selected. Over LDAPS, Active Directory treats the client certificate as an implicit bind and rejects the subsequent SASL EXTERNAL bind.
+
+#### TLS handshake failures
+
+If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also [configure `AUTHENTIK_LDAP__TLS__CIPHERS`](../../../../install-config/configuration/configuration.mdx#authentik_ldap__tls__ciphers) if the server requires a specific cipher suite.
 
 ### LDAP attribute mapping
 
