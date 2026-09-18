@@ -22,7 +22,7 @@ catalog:
   oxfmt: "0.68.0"
   oxlint: "^1.82.0"
   playwright: "^1.62.1"
-  typescript: "^6.0.3"
+  typescript: "^7.0.2"
   vite: "^8.2.0"
   vitest: "^4.1.10"
 
