@@ -27,6 +27,12 @@ pub enum EventActions {
     SuspiciousRequest,
     #[serde(rename = "password_set")]
     PasswordSet,
+    #[serde(rename = "next_action_set")]
+    NextActionSet,
+    #[serde(rename = "next_action_removed")]
+    NextActionRemoved,
+    #[serde(rename = "next_action_completed")]
+    NextActionCompleted,
     #[serde(rename = "secret_view")]
     SecretView,
     #[serde(rename = "secret_rotate")]
@@ -101,6 +107,9 @@ impl std::fmt::Display for EventActions {
             Self::UserOffboarded => write!(f, "user_offboarded"),
             Self::SuspiciousRequest => write!(f, "suspicious_request"),
             Self::PasswordSet => write!(f, "password_set"),
+            Self::NextActionSet => write!(f, "next_action_set"),
+            Self::NextActionRemoved => write!(f, "next_action_removed"),
+            Self::NextActionCompleted => write!(f, "next_action_completed"),
             Self::SecretView => write!(f, "secret_view"),
             Self::SecretRotate => write!(f, "secret_rotate"),
             Self::InvitationUsed => write!(f, "invitation_used"),
