@@ -6,9 +6,43 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### Credential fields are now Secret objects
+
+Credentials stored on authentik objects are now stored in separate [Secret](../../sys-mgmt/secrets/index.mdx) objects, which are referenced by the object that uses them. This applies to credentials such as:
+
+- OAuth2/OpenID client secrets
+- Proxy provider cookie secrets
+- RADIUS shared secrets
+- LDAP and Kerberos source bind or sync passwords
+- OAuth, Plex, and Telegram source credentials
+- SCIM provider tokens
+- SMTP passwords
+- Duo, captcha, and SMS stage keys
+- Notification transport webhook URLs
+- Microsoft Entra and Fleet enterprise credentials
+- Google service-account JSON
+- Kubernetes kubeconfig
+- Kerberos keytabs and credential caches
+
+During migration, authentik creates a Secret for each existing credential and preserves its exact value. Empty OAuth2 and RADIUS secrets remain empty.
+
+The previous credential database columns will be retained until 2027.2 to support downgrades. Existing role permissions are also copied to the migrated Secret as per-object grants, preserving the previous write-only access to credential values.
+
+The previous string and JSON API fields, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, have been removed from the API and blueprints. Use the new `secret` reference field instead and point it to a Secret object.
+
+Objects that store multiple credentials use separate Secret references. For example, Kerberos sources use `sync_keytab_secret` and `spnego_ccache_secret`.
+
+In blueprints, define the Secret as a separate entry and reference it using `!KeyOf` or `!Find`. If a text secret's `value` is omitted, authentik generates one server-side.
+
+For more information, see [Secrets in the API and blueprints](../../sys-mgmt/secrets/api-and-blueprints.mdx).
 
 ## New features and improvements
+
+### Secrets
+
+Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Each secret has its own permissions. Text secrets can be rotated through the Admin interface or API. See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## Upgrading
 
