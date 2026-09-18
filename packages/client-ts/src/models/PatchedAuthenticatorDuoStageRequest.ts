@@ -25,10 +25,10 @@ export interface PatchedAuthenticatorDuoStageRequest {
     configureFlow?: string | null;
     friendlyName?: string;
     clientId?: string;
-    clientSecret?: string;
+    secret?: string;
     apiHostname?: string;
     adminIntegrationKey?: string;
-    adminSecretKey?: string;
+    adminSecret?: string | null;
 }
 
 /**
@@ -63,11 +63,16 @@ export function PatchedAuthenticatorDuoStageRequestFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         apiHostname: json["api_hostname"] == null ? undefined : json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
-        adminSecretKey: json["admin_secret_key"] == null ? undefined : json["admin_secret_key"],
+        adminSecret:
+            json["admin_secret"] === undefined
+                ? undefined
+                : json["admin_secret"] === null
+                  ? null
+                  : json["admin_secret"],
     };
 }
 
@@ -90,9 +95,9 @@ export function PatchedAuthenticatorDuoStageRequestToJSONTyped(
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        secret: value["secret"],
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
-        admin_secret_key: value["adminSecretKey"],
+        admin_secret: value["adminSecret"],
     };
 }

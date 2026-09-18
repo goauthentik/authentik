@@ -766,8 +766,6 @@ export interface StagesAuthenticatorSmsDestroyRequest {
 
 export interface StagesAuthenticatorSmsListRequest {
     accountSid?: string;
-    auth?: string;
-    authPassword?: string;
     authType?: AuthTypeEnum;
     configureFlow?: string;
     friendlyName?: string;
@@ -791,7 +789,6 @@ export interface StagesAuthenticatorSmsListRequest {
      * A search term.
      */
     search?: string;
-    stageUuid?: string;
     verifyOnly?: boolean;
 }
 
@@ -5216,14 +5213,6 @@ export class StagesApi extends runtime.BaseAPI {
             queryParameters["account_sid"] = requestParameters["accountSid"];
         }
 
-        if (requestParameters["auth"] != null) {
-            queryParameters["auth"] = requestParameters["auth"];
-        }
-
-        if (requestParameters["authPassword"] != null) {
-            queryParameters["auth_password"] = requestParameters["authPassword"];
-        }
-
         if (requestParameters["authType"] != null) {
             queryParameters["auth_type"] = requestParameters["authType"];
         }
@@ -5266,10 +5255,6 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
-        }
-
-        if (requestParameters["stageUuid"] != null) {
-            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         if (requestParameters["verifyOnly"] != null) {

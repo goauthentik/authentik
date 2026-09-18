@@ -7,6 +7,7 @@ from django.urls.base import reverse
 from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -226,7 +227,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         duo_stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            secret=create_test_secret(generate_key()),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(

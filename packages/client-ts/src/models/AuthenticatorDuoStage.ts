@@ -46,8 +46,10 @@ export interface AuthenticatorDuoStage {
     configureFlow?: string | null;
     friendlyName?: string;
     clientId: string;
+    secret: string;
     apiHostname: string;
     adminIntegrationKey?: string;
+    adminSecret?: string | null;
 }
 
 /**
@@ -92,6 +94,7 @@ export function instanceOfAuthenticatorDuoStage(value: object): value is Authent
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("apiHostname" in (value as Record<string, any>)) &&
             !("api_hostname" in (value as Record<string, any>))) ||
@@ -129,9 +132,16 @@ export function AuthenticatorDuoStageFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
+        secret: json["secret"],
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
+        adminSecret:
+            json["admin_secret"] === undefined
+                ? undefined
+                : json["admin_secret"] === null
+                  ? null
+                  : json["admin_secret"],
     };
 }
 
@@ -155,7 +165,9 @@ export function AuthenticatorDuoStageToJSONTyped(
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
         client_id: value["clientId"],
+        secret: value["secret"],
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
+        admin_secret: value["adminSecret"],
     };
 }
