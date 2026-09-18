@@ -607,7 +607,7 @@ class UsersFilter(FilterSet):
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
         try:
-            __ = len(queryset.filter(**qs))
+            queryset.filter(**qs).exists()
             return queryset.filter(**qs)
         except ValueError:
             return queryset
