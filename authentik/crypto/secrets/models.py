@@ -13,9 +13,9 @@ from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
 from authentik.events.middleware import audit_ignore
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, TransportMode
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
@@ -84,6 +84,14 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             from authentik.providers.oauth2.utils import validate_client_secret
 
             validate_client_secret(value)
+        if self.kubernetes_connections.filter(local=False).exists():
+            from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
+
+            validate_kubeconfig(Secret(type=self.type, value=value))
+        if self.notification_transports.filter(
+            mode__in=(TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK)
+        ).exists():
+            DomainlessURLValidator()(value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

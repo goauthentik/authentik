@@ -22,10 +22,7 @@ export interface PatchedKubernetesServiceConnectionRequest {
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
      */
     local?: boolean;
-    /**
-     * Paste your kubeconfig here. authentik will automatically use the currently selected context.
-     */
-    kubeconfig?: { [key: string]: any };
+    secret?: string | null;
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -57,7 +54,12 @@ export function PatchedKubernetesServiceConnectionRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         local: json["local"] == null ? undefined : json["local"],
-        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
     };
 }
@@ -79,7 +81,7 @@ export function PatchedKubernetesServiceConnectionRequestToJSONTyped(
     return {
         name: value["name"],
         local: value["local"],
-        kubeconfig: value["kubeconfig"],
+        secret: value["secret"],
         verify_ssl: value["verifySsl"],
     };
 }

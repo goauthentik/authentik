@@ -2,11 +2,9 @@
 
 from dataclasses import asdict
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from kubernetes.client.configuration import Configuration
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.kube_config import load_kube_config_from_dict
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
@@ -21,6 +19,9 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.crypto.secrets.api import JSONSecretReferenceField
+from authentik.crypto.secrets.models import Secret
+from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -108,26 +109,27 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
 
-    def validate_kubeconfig(self, kubeconfig):
-        """Validate kubeconfig by attempting to load it"""
-        if kubeconfig == {}:
-            if not self.initial_data["local"]:
+    secret = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=False, allow_null=True
+    )
+
+    def validate(self, attrs):
+        local = attrs.get("local", getattr(self.instance, "local", False))
+        secret = attrs.get("secret", getattr(self.instance, "secret", None))
+        if not local:
+            if not secret:
                 raise serializers.ValidationError(
-                    _("You can only use an empty kubeconfig when connecting to a local cluster.")
+                    {"secret": _("A kubeconfig secret is required for a remote cluster.")}
                 )
-            # Empty kubeconfig is valid
-            return kubeconfig
-        config = Configuration()
-        try:
-            load_kube_config_from_dict(kubeconfig, client_configuration=config)
-        except ConfigException:
-            raise serializers.ValidationError(_("Invalid kubeconfig")) from None
-        return kubeconfig
+            try:
+                validate_kubeconfig(secret)
+            except DjangoValidationError as exc:
+                raise serializers.ValidationError({"secret": exc.messages}) from exc
+        return attrs
 
     class Meta:
         model = KubernetesServiceConnection
-        fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig", "verify_ssl"]
-        secret_fields = ["kubeconfig"]
+        fields = ServiceConnectionSerializer.Meta.fields + ["secret", "verify_ssl"]
 
 
 class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):

@@ -10,7 +10,10 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.crypto.secrets.api import SecretSerializer
 from authentik.crypto.secrets.models import Secret, SecretType
-from authentik.events.models import Event, EventAction
+from authentik.crypto.secrets.tests.utils import KUBECONFIG
+from authentik.events.models import Event, EventAction, NotificationTransport, TransportMode
+from authentik.outposts.api.service_connections import KubernetesServiceConnectionSerializer
+from authentik.outposts.models import KubernetesServiceConnection
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -197,6 +200,73 @@ class TestSecretsAPI(APITestCase):
         secret.refresh_from_db()
         self.assertEqual(secret.value, "ascii")
 
+    def test_kubernetes_consumer_requires_structured_value(self):
+        self.client.force_login(self.admin)
+        secret = Secret.objects.create(
+            name="kubernetes", type=SecretType.MULTILINE, value=KUBECONFIG
+        )
+        KubernetesServiceConnection.objects.create(name="kubernetes", secret=secret)
+        for value in [
+            "[]",
+            "invalid: [",
+            "clusters: []",
+            "current-context: test\ncontexts: {}",
+            "current-context: test\ncontexts: [null]",
+            KUBECONFIG.replace("clusters:", "clusters: 1\nignored-clusters:"),
+        ]:
+            with self.subTest(value=value):
+                response = self.client.patch(
+                    reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+                    {"value": value},
+                )
+                self.assertEqual(response.status_code, 400, response.content)
+                with self.assertRaises(DjangoValidationError):
+                    secret.replace_value(value)
+                secret.refresh_from_db()
+                self.assertEqual(secret.value, KUBECONFIG)
+                invalid = Secret.objects.create(
+                    name=f"invalid-{Secret.objects.count()}",
+                    type=SecretType.MULTILINE,
+                    value=value,
+                )
+                serializer = KubernetesServiceConnectionSerializer(
+                    data={"name": "invalid", "local": False, "secret": str(invalid.pk)}
+                )
+                self.assertFalse(serializer.is_valid())
+                self.assertIn("secret", serializer.errors)
+
+        replacement = KUBECONFIG.replace("cluster-token", "new-cluster-token")
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+            {"value": replacement},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, replacement)
+
+    def test_webhook_consumer_rejects_invalid_replacement_and_rotation(self):
+        self.client.force_login(self.admin)
+        secret = Secret.objects.create(name="webhook", value="https://example.com/webhook")
+        NotificationTransport.objects.create(
+            name="webhook", mode=TransportMode.WEBHOOK, secret=secret
+        )
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+            {"value": "not a URL"},
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        response = self.client.post(
+            reverse("authentik_api:secret-rotate", kwargs={"pk": secret.pk})
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        with self.assertRaises(DjangoValidationError):
+            secret.rotate()
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "https://example.com/webhook")
+        self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+        secret.replace_value("https://example.com/replacement")
+        secret.refresh_from_db()
+        self.assertEqual(secret.value, "https://example.com/replacement")
     def test_replacement_rejected_after_validation_rolls_back_metadata(self):
         serializer = SecretSerializer(
             instance=self.secret, data={"name": "renamed", "value": "replacement"}, partial=True

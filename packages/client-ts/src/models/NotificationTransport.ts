@@ -27,7 +27,7 @@ export interface NotificationTransport {
      * Return selected mode with a UI Label
      */
     readonly modeVerbose: string;
-    webhookUrl?: string;
+    secret?: string | null;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
      */
@@ -81,7 +81,12 @@ export function NotificationTransportFromJSONTyped(
         name: json["name"],
         mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
         modeVerbose: json["mode_verbose"],
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         webhookCa:
             json["webhook_ca"] === undefined
                 ? undefined
@@ -122,7 +127,7 @@ export function NotificationTransportToJSONTyped(
     return {
         name: value["name"],
         mode: TransportModeEnumToJSON(value["mode"]),
-        webhook_url: value["webhookUrl"],
+        secret: value["secret"],
         webhook_ca: value["webhookCa"],
         webhook_mapping_body: value["webhookMappingBody"],
         webhook_mapping_headers: value["webhookMappingHeaders"],
