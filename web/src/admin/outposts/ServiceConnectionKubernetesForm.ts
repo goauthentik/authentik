@@ -1,13 +1,12 @@
-import "#elements/CodeMirror";
+import "#components/ak-secret-search-input";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ifPresent } from "#elements/utils/attributes";
 
-import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
-
-import YAML from "yaml";
+import { KubernetesServiceConnection, OutpostsApi, SecretTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -57,16 +56,17 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 help=${msg("Requires Docker socket/Kubernetes Integration.")}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-secret-search-input
+                name="secret"
+                .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                label=${msg("Kubeconfig", { id: "outpost.kubeconfig.label" })}
+                value=${ifPresent(this.instance?.secret)}
+                blankable
+                help=${msg(
+                    "Select a secret containing the kubeconfig as YAML or JSON. Leave empty for a local connection.",
+                    { id: "outpost.kubeconfig.description" },
+                )}
+            ></ak-secret-search-input>
             <ak-switch-input
                 name="verifySsl"
                 label=${msg("Verify Kubernetes API SSL Certificate")}

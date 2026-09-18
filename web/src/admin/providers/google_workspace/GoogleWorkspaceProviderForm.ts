@@ -1,5 +1,5 @@
+import "#components/ak-secret-search-input";
 import "#components/ak-radio-input";
-import "#elements/CodeMirror";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -11,6 +11,8 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -25,6 +27,7 @@ import {
     Group,
     OutgoingSyncDeleteAction,
     ProvidersApi,
+    SecretTypeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -58,19 +61,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Credentials")}
+                    <ak-secret-search-input
+                        name="secret"
+                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                        label=${msg("Credentials", { id: "google.credentials.label" })}
+                        value=${ifPresent(this.instance?.secret)}
                         required
-                        name="credentials"
-                    >
-                        <ak-codemirror
-                            mode="javascript"
-                            .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Google Cloud credentials file.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                        help=${msg(
+                            "Select a secret containing the Google Cloud credentials JSON file.",
+                            { id: "google.credentials.description" },
+                        )}
+                    ></ak-secret-search-input>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
                         required

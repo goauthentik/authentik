@@ -1,9 +1,11 @@
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -96,13 +98,15 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-secret-text-input
-                        name="clientSecret"
+                    <ak-secret-search-input
+                        name="secret"
                         label=${msg("Secret key")}
-                        input-hint="code"
-                        ?required=${!this.instance}
-                        ?revealed=${!this.instance}
-                    ></ak-secret-text-input>
+                        value=${ifPresent(this.instance?.secret ?? undefined)}
+                        required
+                        help=${msg("Secret key of the Duo Auth API application.", {
+                            id: "stage.authenticator-duo.form.secret.description",
+                        })}
+                    ></ak-secret-search-input>
                 </div>
             </ak-form-group>
             <ak-form-group
@@ -124,12 +128,15 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             spellcheck="false"
                         />
                     </ak-form-element-horizontal>
-                    <ak-secret-text-input
-                        name="adminSecretKey"
+                    <ak-secret-search-input
+                        name="adminSecret"
                         label=${msg("Secret key")}
-                        input-hint="code"
-                        ?revealed=${!this.instance}
-                    ></ak-secret-text-input>
+                        value=${ifPresent(this.instance?.adminSecret ?? undefined)}
+                        blankable
+                        help=${msg("Secret key of the Duo Admin API application.", {
+                            id: "stage.authenticator-duo.form.admin-secret.description",
+                        })}
+                    ></ak-secret-search-input>
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Stage-specific settings")}">

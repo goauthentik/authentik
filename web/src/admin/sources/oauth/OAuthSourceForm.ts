@@ -1,7 +1,7 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
-import "#components/ak-secret-textarea-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
@@ -16,6 +16,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { ifPreviousValue } from "#elements/utils/properties";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -31,6 +32,7 @@ import {
     OAuthSourceRequest,
     PKCEMethodEnum,
     ProviderTypeEnum,
+    SecretTypeEnum,
     SourcesApi,
     SourceType,
     UsageEnum,
@@ -430,14 +432,20 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-secret-textarea-input
+                    <ak-secret-search-input
+                        name="secret"
+                        .types=${[
+                            this.providerType?.name === ProviderTypeEnum.Apple
+                                ? SecretTypeEnum.Multiline
+                                : SecretTypeEnum.Text,
+                        ]}
                         label=${msg("Consumer secret")}
-                        name="consumerSecret"
-                        input-hint="code"
-                        help=${msg("Also known as Client Secret.")}
-                        ?required=${!this.instance}
-                        ?revealed=${!this.instance}
-                    ></ak-secret-textarea-input>
+                        value=${ifPresent(this.instance?.secret)}
+                        required
+                        help=${msg("Also known as Client Secret.", {
+                            id: "source.oauth.form.secret.description",
+                        })}
+                    ></ak-secret-search-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
