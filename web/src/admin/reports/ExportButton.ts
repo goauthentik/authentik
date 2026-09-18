@@ -1,5 +1,8 @@
 import "#elements/forms/ConfirmationForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { parseAPIResponseError } from "#common/errors/network";
 import { docLink } from "#common/global";
@@ -16,10 +19,6 @@ import renderDescriptionList, { DescriptionPair } from "#components/DescriptionL
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-reports-export-button")
 export class ExportButton extends WithCapabilitiesConfig(
@@ -45,6 +44,7 @@ export class ExportButton extends WithCapabilitiesConfig(
     connectedCallback() {
         super.connectedCallback();
         const detectedDisplay = getComputedStyle(this).display;
+
         if (detectedDisplay) {
             this.cachedDisplay = detectedDisplay;
         }
@@ -60,6 +60,7 @@ export class ExportButton extends WithCapabilitiesConfig(
         if (typeof this.createExport !== "function") {
             throw new TypeError("`createExport` property must be a function");
         }
+
         return this.createExport(this.params).catch(async (error) => {
             const apiError = await parseAPIResponseError(error);
             showAPIErrorMessage(apiError);
@@ -77,6 +78,7 @@ export class ExportButton extends WithCapabilitiesConfig(
                     >${msg("Learn more")}</a
                 >`;
         }
+
         return html`<p>
                 ${msg(
                     str`${this.brand.brandingTitle} will collect all objects with the specified parameters:`,
@@ -101,6 +103,7 @@ export class ExportButton extends WithCapabilitiesConfig(
         if (!this.hasEnterpriseLicense) {
             return nothing;
         }
+
         return html`<ak-forms-confirm
             successMessage=${msg("Successfully requested data export")}
             errorMessage=${msg("Failed to export data")}

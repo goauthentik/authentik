@@ -1,23 +1,15 @@
 /**
  * @file Cross-interface href builders.
- *
- * The only sanctioned channel for referencing another interface: these return
- * full, base-path-aware URL strings for use with plain `<a href>` /
- * `location.assign`. Crossing interfaces is a real page load (a different
- * bundle). Fixes the hardcoded `/if/user/` literals that break under a
- * non-root `web.path`.
+ *   The only sanctioned channel for referencing another interface: these return
+ *   full, base-path-aware URL strings for use with plain `<a href>` /
+ *   `location.assign`. Crossing interfaces is a real page load (a different
+ *   bundle). Fixes the hardcoded `/if/user/` literals that break under a
+ *   non-root `web.path`.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
 import { recordToSearchParams, type RouterParameterInit } from "#elements/router/core/parameters";
-
-function ensureTrailingSlash(value: string): string {
-    return value.endsWith("/") ? value : `${value}/`;
-}
-
-function stripLeadingSlash(value: string): string {
-    return value.replace(/^\/+/, "");
-}
+import { ensureTrailingSlash, stripLeadingSlash, stripPrefix } from "#elements/router/core/paths";
 
 /**
  * Build the pathname prefix owned by an interface, e.g. `/auth/if/admin/`.
@@ -35,6 +27,18 @@ function buildSearch(params?: RouterParameterInit): string {
     const search = recordToSearchParams(params).toString();
 
     return search ? `?${search}` : "";
+}
+
+/**
+ * The current pathname relative to the interface that created the router.
+ *
+ * This is useful for interface-agnostic components such as the sidebar
+ * that need to know which routes are active without owning an outlet of their own.
+ */
+export function currentInterfacePath(pathname: string = window.location.pathname): string {
+    const { base, interfaceName } = getRouterConfig();
+
+    return stripPrefix(pathname, formatInterfacePrefix(base, interfaceName));
 }
 
 /**

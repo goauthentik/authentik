@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,18 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RequestRuleBindingRequest
  */
 export interface RequestRuleBindingRequest {
-    /**
-     *
-     */
     uuid?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     rule: string;
-    /**
-     *
-     */
     target: string;
     /**
-     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+     * How long a request against this binding stays pending before it automatically lapses if not
+     * approved or denied.
      */
     expiryPending?: string;
     /**

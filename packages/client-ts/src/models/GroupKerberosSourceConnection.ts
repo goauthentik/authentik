@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,37 +16,17 @@ import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupKerberosSourceConnection
  */
 export interface GroupKerberosSourceConnection {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly group: string;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
 }
 

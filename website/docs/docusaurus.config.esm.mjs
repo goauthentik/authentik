@@ -1,9 +1,9 @@
 /**
- * @file Docusaurus Documentation config.
- *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
+ *
+ * @import {AKReleasesPluginOptions} from "@goauthentik/docusaurus-theme/releases/common"
  * @import { NormalizedSidebar, NormalizedSidebarItemCategory, SidebarItemsGeneratorArgs } from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
+ * @file Docusaurus Documentation config.
  */
 
 import { cp } from "node:fs/promises";
@@ -64,10 +64,11 @@ const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirecto
  * Generate Sidebar structure for CVEs. Items are grouped by year and sorted newest to old.
  *
  * @param {SidebarItemsGeneratorArgs} args
+ *
  * @returns {NormalizedSidebar}
  */
 export function generateCVESidebar(args) {
-    /** @type {{ [key: string]: NormalizedSidebarItemCategory}} */
+    /** @type {{ [key: string]: NormalizedSidebarItemCategory }} */
     const yearCategories = {};
     args.docs
         .filter((item) => item.sourceDirName === "security/cves")

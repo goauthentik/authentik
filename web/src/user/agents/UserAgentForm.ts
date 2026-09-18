@@ -1,7 +1,6 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -38,16 +37,20 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
         const result = await aki(AgentsApi).agentsAgentsCreate({
             agentCreateRequest: data,
         });
+
         this.result = result;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = false;
         }
+
         return result;
     }
 
     public override reset(): void {
         super.reset();
         this.result = null;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = true;
         }
@@ -92,6 +95,7 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 }

@@ -1,7 +1,9 @@
 import "#elements/ak-list-select/ak-list-select";
-
 import { SearchSelectMenuController } from "./SearchSelectMenuController.js";
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
@@ -15,10 +17,6 @@ import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 export interface ISearchSelectView {
     options: SelectOptions;
@@ -47,9 +45,9 @@ export interface ISearchSelectView {
  * - @attr open (boolean): if the menu dropdown is visible
  * - @attr blankable (boolean): if true, the component is blankable and can return `undefined`
  * - @attr managed (boolean): if true, the options and search are managed by a higher-level
-     component.
+ * component.
  * - @attr caseSensitive (boolean): if `managed`, local searches will be case sensitive. False by
-     default.
+ * default.
  * - @attr name? (string): The name of the component, for forms
  * - @attr placeholder (string): What to show when the input is empty
  * - @attr emptyOption (string): What to show in the menu to indicate "leave this undefined". Only
@@ -66,11 +64,10 @@ export interface ISearchSelectView {
  *
  * Note that this is more on the HTML / Web Component side of the operational line: the keys which
  * represent the values we pass back to clients are always strings here. This component is strictly
- * for *rendering* and *interacting* with the items as the user sees them.  If the host client is
+ * for _rendering_ and _interacting_ with the items as the user sees them.  If the host client is
  * not using strings for the values it ultimately keeps inside, it must map them forward to the
- * string-based keys we use here (along with the label and description), and map them *back* to
+ * string-based keys we use here (along with the label and description), and map them _back_ to
  * the object that key references when extracting the value for use.
- *
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
@@ -88,7 +85,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
      * the `./types.ts` file for variants and how to use them.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -110,15 +107,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * The keys of the options that are shown but cannot be chosen. Forwarded to the menu, which
      * renders them grayed out.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public disabledOptions: string[] = [];
 
     /**
-     * The current value.  Must be one of the keys in the options group above.
+     * The current value. Must be one of the keys in the options group above.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string;
@@ -184,6 +181,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -194,7 +192,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * list of options sent downstream will be filtered by the contents of the `<input>` field
      * locally.
      *
-     *@attr
+     * @attr
      */
     @property({ type: Boolean })
     public managed = false;
@@ -321,6 +319,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     #blurListener = (event: FocusEvent) => {
         // If we lost focus but the menu got it, don't do anything;
         const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+
         if (
             relatedTarget &&
             (this.contains(relatedTarget) ||
@@ -330,11 +329,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         ) {
             return;
         }
+
         this.open = false;
+
         if (!this.value) {
             if (this.#inputRef.value) {
                 this.#inputRef.value.value = "";
             }
+
             this.setValue(undefined);
         }
     };
@@ -346,19 +348,24 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     findValueForInput() {
         const value = this.#inputRef.value?.value;
+
         if (value === undefined || value.trim() === "") {
             this.setValue(undefined);
+
             return;
         }
 
         const matchesFound = findFlatOptions(this.#flatOptions, value).filter(
             ([key]) => !this.disabledOptions.includes(key),
         );
+
         if (matchesFound.length > 0) {
             const newValue = matchesFound[0][0];
+
             if (newValue === value) {
                 return;
             }
+
             this.setValue(newValue);
         } else {
             this.setValue(undefined);
@@ -372,6 +379,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.findValueForInput();
             this.requestUpdate();
         }
+
         this.open = true;
     };
 
@@ -413,14 +421,17 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         event.stopPropagation();
 
         const value = (event.currentTarget as ListSelect).value ?? undefined;
+
         if (value) {
             const newDisplayValue = this.findDisplayForValue(value);
+
             if (this.#inputRef.value) {
                 this.#inputRef.value.value = newDisplayValue ?? value;
             }
         } else if (this.#inputRef.value) {
             this.#inputRef.value.value = "";
         }
+
         this.open = false;
         this.setValue(value);
     };
@@ -429,6 +440,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     findDisplayForValue(value: string) {
         const newDisplayValue = this.#flatOptions.find((option) => option[0] === value);
+
         return newDisplayValue ? newDisplayValue[1][1] : undefined;
     }
 
@@ -441,6 +453,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         if (changed.has("value")) {
             if (this.value) {
                 const newDisplayValue = this.findDisplayForValue(this.value);
+
                 if (newDisplayValue) {
                     this.displayValue = newDisplayValue;
                 } else {
@@ -478,6 +491,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const emptyOption = this.blankable
             ? this.emptyOption || this.placeholder || msg("Select an option...")
             : null;
+
         const hasMenuContent =
             this.#flatOptions.length > 0 || Boolean(emptyOption) || Boolean(this.actionLabel);
 
@@ -507,25 +521,27 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                     </div>
                 </div>
             </div>
-            ${hasMenuContent
-                ? html`<ak-list-select
-                      popover="auto"
-                      id="menu-${this.getAttribute("data-ouia-component-id")}"
-                      ${ref(this.#menuRef)}
-                      .options=${this.managedOptions}
-                      .disabledOptions=${this.disabledOptions}
-                      value=${ifDefined(this.value)}
-                      @change=${this.#changeListener}
-                      @blur=${this.#blurListener}
-                      @toggle=${this.#menuController.handleMenuToggle}
-                      @wheel=${this.#menuController.handleMenuWheel}
-                      emptyOption=${ifPresent(emptyOption)}
-                      actionLabel=${ifPresent(this.actionLabel)}
-                      @ak-select-action=${this.#actionListener}
-                      @keydown=${this.#listKeydownListener}
-                      @keyup=${this.#listKeyupListener}
-                  ></ak-list-select>`
-                : nothing}`;
+            ${
+                hasMenuContent
+                    ? html`<ak-list-select
+                          popover="auto"
+                          id="menu-${this.getAttribute("data-ouia-component-id")}"
+                          ${ref(this.#menuRef)}
+                          .options=${this.managedOptions}
+                          .disabledOptions=${this.disabledOptions}
+                          value=${ifDefined(this.value)}
+                          @change=${this.#changeListener}
+                          @blur=${this.#blurListener}
+                          @toggle=${this.#menuController.handleMenuToggle}
+                          @wheel=${this.#menuController.handleMenuWheel}
+                          emptyOption=${ifPresent(emptyOption)}
+                          actionLabel=${ifPresent(this.actionLabel)}
+                          @ak-select-action=${this.#actionListener}
+                          @keydown=${this.#listKeydownListener}
+                          @keyup=${this.#listKeyupListener}
+                      ></ak-list-select>`
+                    : nothing
+            }`;
     }
 
     //#endregion
