@@ -1,7 +1,7 @@
 import { pageBounds, PaginatorPageBounds } from "./bounds";
 import { PageChangeEvent } from "./events";
 import { AKElement } from "#elements/Base";
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -36,8 +36,8 @@ const NAV_LABELS = {
 export class Paginator extends AKElement {
     static readonly styles = [PFButton, PFFormControl, PFPagination, Styles];
 
-    @property({ type: Number, attribute: "total-items" })
-    totalItems = 0;
+    @property({ type: Number, attribute: "item-count" })
+    itemCount = 0;
 
     @property({ type: Number, attribute: "items-per-page" })
     itemsPerPage = 20;
@@ -49,7 +49,7 @@ export class Paginator extends AKElement {
     public label: string | null = null;
 
     protected get bounds(): PaginatorPageBounds {
-        return pageBounds(this.totalItems, this.itemsPerPage, this.page);
+        return pageBounds(this.itemCount, this.itemsPerPage, this.page);
     }
 
     // Note that we don't actually *do* anything. It's up to the client code to honor the request,
@@ -57,7 +57,6 @@ export class Paginator extends AKElement {
     // on a change to `this.page`, which the client gives us in the attribute when they've updated.
     protected goto(page: number) {
         const { page: nextPage } = pageBounds(this.itemCount, this.itemsPerPage, page);
-
         if (nextPage == this.bounds.page || this.disabled) {
             return;
         }
@@ -68,7 +67,7 @@ export class Paginator extends AKElement {
         const { modifier, icon } = NAV_CONTROLS[action];
         return html`<div part="nav-control ${modifier}">
             <button
-                class="pf-c-button pf-m-plain"
+                part="paginator-button ${modifier}"
                 data-action=${action}
                 ?disable=${disabled}
                 aria-label=${NAV_LABELS[action]}
@@ -79,8 +78,31 @@ export class Paginator extends AKElement {
         </div>`;
     }
 
-    protected renderPageSelect(bounds: PaginatorPageBounds) {
-        return nothing;
+    protected renderPageSelect({ page, totalPages }: PaginatorPageBounds) {
+        return html`<div part="page-select">
+            <input
+                part="page-select-control"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max=${Math.max(totalPages, 1)}
+                value=${page}
+                ?disabled=${this.disabled || totalPages <= 1}
+                aria-label=${msg("Current page", { id: "pagination.current-page.aria-label" })}
+                @input=${this.onInput}
+                @keydown=${this.onKeyDown}
+                @blur=${this.onBlur}
+            />
+            <span aria-hidden="true">
+                ${msg(str`of ${totalPages}`, { id: "pagination.page-select-of-pages" })}
+            </span>
+        </div>`;
+    }
+
+    protected renderTotalItems(start: number, end: number, total: number) {
+        return html`<div part="total-count">
+            ${msg(str`${start} - ${end} of ${total}`, { id: "pagination.total-count.summary" })}
+        </div>`;
     }
 
     protected get navAriaLabel() {
@@ -97,6 +119,7 @@ export class Paginator extends AKElement {
         const atEnd = this.disabled || totalPages === 0 || page >= totalPages;
 
         return html`<nav part="pagination" aria-label="${this.navAriaLabel}">
+            ${this.renderTotalItems(startIndex, endIndex, this.itemCount)}
             <div part="pagination-nav">
                 ${this.compact ? nothing : this.renderControl("first", 1, atStart)}
                 ${this.renderControl("prev", page - 1, atStart)}

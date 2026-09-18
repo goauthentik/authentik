@@ -4,7 +4,7 @@ export interface PaginatorPageBounds {
     page: number;
     totalPages: number;
     startIndex: number;
-    lastIndex: number;
+    endIndex: number;
 }
 
 export interface PaginatorState {
@@ -18,20 +18,20 @@ export const clamp = (min: number, num: number, max: number) => Math.min(Math.ma
 export function pageBounds(
     totalItems: number,
     itemsPerPage: number,
-    currentPage: number,
+    currentPage: number
 ): PaginatorPageBounds {
     const fixedItemsPerPage = Math.max(1, Math.floor(itemsPerPage || 0));
     const fixedTotalItems = Math.max(0, Math.floor(totalItems || 0));
     const totalPages = fixedTotalItems === 0 ? 0 : Math.ceil(fixedTotalItems / fixedItemsPerPage);
     const page = clamp(Math.floor(currentPage) || 1, 1, Math.max(totalPages, 1));
     const startIndex = totalPages === 0 ? 0 : (page - 1) * fixedItemsPerPage + 1;
-    const lastIndex = totalPages === 0 ? 0 : Math.min(page * fixedItemsPerPage, fixedTotalItems);
+    const endIndex = totalPages === 0 ? 0 : Math.min(page * fixedItemsPerPage, fixedTotalItems);
 
     return {
         page,
         totalPages,
         startIndex,
-        lastIndex,
+        endIndex,
     };
 }
 
@@ -61,6 +61,5 @@ export function paginationCalc(pagination: Pagination): PaginatorState {
 
 export function paginatedBounds(pagination: Pagination): PaginatorPageBounds {
     const { itemCount, itemsPerPage, page } = paginationCalc(pagination);
-
     return pageBounds(itemCount, itemsPerPage, page);
 }

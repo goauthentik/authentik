@@ -1,4 +1,4 @@
-import { pageBounds } from "#elements/Paginator_impl/bounds";
+import { pageBounds, paginatedBounds } from "#elements/Paginator_impl/bounds";
 
 import { describe, expect, it } from "vitest";
 
@@ -8,7 +8,7 @@ describe("pageBounds", () => {
             page: 1,
             totalPages: 24,
             startIndex: 1,
-            lastIndex: 20,
+            endIndex: 20,
         });
     });
 
@@ -17,7 +17,7 @@ describe("pageBounds", () => {
             page: 3,
             totalPages: 24,
             startIndex: 41,
-            lastIndex: 60,
+            endIndex: 60,
         });
     });
 
@@ -26,7 +26,7 @@ describe("pageBounds", () => {
             page: 24,
             totalPages: 24,
             startIndex: 461,
-            lastIndex: 471,
+            endIndex: 471,
         });
     });
 
@@ -35,16 +35,16 @@ describe("pageBounds", () => {
             page: 1,
             totalPages: 0,
             startIndex: 0,
-            lastIndex: 0,
+            endIndex: 0,
         });
     });
 
-    it("gives you page 1 of 1 pages and the lastIndex equals item count when there are less than itemsPerPage items", () => {
+    it("gives you page 1 of 1 pages and the endIndex equals item count when there are less than itemsPerPage items", () => {
         expect(pageBounds(7, 20, 1)).toStrictEqual({
             page: 1,
             totalPages: 1,
             startIndex: 1,
-            lastIndex: 7,
+            endIndex: 7,
         });
     });
 
@@ -62,14 +62,14 @@ describe("pageBounds", () => {
             page: 1,
             totalPages: 5,
             startIndex: 1,
-            lastIndex: 1,
+            endIndex: 1,
         });
 
         expect(pageBounds(5, -5, 1)).toStrictEqual({
             page: 1,
             totalPages: 5,
             startIndex: 1,
-            lastIndex: 1,
+            endIndex: 1,
         });
     });
 
@@ -78,7 +78,7 @@ describe("pageBounds", () => {
             page: 1,
             totalPages: 0,
             startIndex: 0,
-            lastIndex: 0,
+            endIndex: 0,
         });
     });
 });
@@ -97,17 +97,24 @@ function fakeDjangoPagination(overrides: Partial<Pagination>): Pagination {
 }
 
 describe("paginationCalc", () => {
-    expect(
-        paginationBounds(
-            fakeDjangoPagination({
-                count: 471,
-                current: 3,
-                totalPages: 27,
-                startIndex: 41,
-                endIndex: 60,
-            }),
-        ),
-    ).toStrictEqual({ totalItems: 471, itemsPerPage: 20, currentPage: 3 });
+    it("finds the middle page as sent by Django", () => {
+        expect(
+            paginatedBounds(
+                fakeDjangoPagination({
+                    count: 471,
+                    current: 3,
+                    totalPages: 27,
+                    startIndex: 41,
+                    endIndex: 60,
+                })
+            )
+        ).toStrictEqual({
+            page: 3,
+            totalPages: 24,
+            startIndex: 41,
+            endIndex: 60,
+        });
+    });
 });
 
 //describe("paginationBounds", () => {
@@ -126,7 +133,7 @@ describe("paginationCalc", () => {
 //            page: 3,
 //            totalPages: 24,
 //            startIndex: 41,
-//            lastIndex: 60,
+//            endIndex: 60,
 //        });
 //    });
 //});

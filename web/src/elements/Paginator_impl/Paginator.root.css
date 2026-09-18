@@ -1,0 +1,99 @@
+:root {
+    --ak-c-pagination--JustifyContent: flex-end;
+    --ak-c-pagination--JustifyContent--spaced: space-between;
+    --ak-c-pagination--inset: 0;
+    --ak-c-pagination--PaddingRight: var(--ak-c-pagination--inset);
+    --ak-c-pagination--PaddingLeft: var(--ak-c-pagination--inset);
+
+    --ak-c-pagination--indicator--Color: var(--pf-global--Color--200);
+    --ak-c-pagination--indicator--hover--Color: var(--pf-global--Color--100);
+    --ak-c-pagination--indicator--focus--Color: var(--pf-global--Color--100);
+    --ak-c-pagination--indicator--active--Color: var(--pf-global--Color--100);
+    --ak-c-pagination--indicator--disabled--Color: var(--pf-global--disabled-color--200);
+
+    --pf-v5-c-pagination--m-page-insets--inset: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-page-insets--xl--inset: var(--pf-v5-global--spacer--lg);
+    --pf-v5-c-pagination--child--MarginRight: var(--pf-v5-global--spacer--lg);
+    --pf-v5-c-pagination--m-bottom--child--MarginRight: 0;
+    --pf-v5-c-pagination--m-bottom--child--md--MarginRight: var(--pf-v5-global--spacer--lg);
+    --pf-v5-c-pagination--m-compact--child--MarginRight: var(--pf-v5-global--spacer--sm);
+    --pf-v5-c-pagination__nav--Display: none;
+    --pf-v5-c-pagination--m-display-summary__nav--Display: none;
+    --pf-v5-c-pagination--m-display-full__nav--Display: inline-flex;
+    --pf-v5-c-pagination__nav-control--c-button--PaddingRight: var(--pf-v5-global--spacer--sm);
+    --pf-v5-c-pagination__nav-control--c-button--PaddingLeft: var(--pf-v5-global--spacer--sm);
+    --pf-v5-c-pagination__nav-control--c-button--FontSize: var(--pf-v5-global--FontSize--md);
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--OutlineOffset: calc(
+        var(--pf-v5-global--spacer--xs) * -1
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--PaddingTop: var(
+        --pf-v5-global--spacer--md
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--PaddingBottom: var(
+        --pf-v5-global--spacer--md
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--PaddingRight: var(
+        --pf-v5-global--spacer--md
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--md--PaddingTop: var(
+        --pf-v5-global--spacer--form-element
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--md--PaddingRight: var(
+        --pf-v5-global--spacer--sm
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--md--PaddingBottom: var(
+        --pf-v5-global--spacer--form-element
+    );
+    --pf-v5-c-pagination--m-bottom__nav-control--c-button--md--PaddingLeft: var(
+        --pf-v5-global--spacer--sm
+    );
+    --pf-v5-c-pagination--m-compact__nav-control--nav-control--MarginLeft: var(
+        --pf-v5-global--spacer--md
+    );
+    --pf-v5-c-pagination__nav-page-select--FontSize: var(--pf-v5-global--FontSize--sm);
+    --pf-v5-c-pagination__nav-page-select--PaddingLeft: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination__nav-page-select--PaddingRight: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination__nav-page-select--child--MarginRight: var(--pf-v5-global--spacer--xs);
+    --pf-v5-c-pagination__nav-page-select--c-form-control--width-base: calc(
+        var(--pf-v5-global--spacer--sm) * 2 + var(--pf-v5-global--BorderWidth--sm) * 2
+    );
+    --pf-v5-c-pagination__nav-page-select--c-form-control--width-chars: 2;
+    --pf-v5-c-pagination__nav-page-select--c-form-control--Width: calc(
+        var(--pf-v5-c-pagination__nav-page-select--c-form-control--width-base) +
+            (var(--pf-v5-c-pagination__nav-page-select--c-form-control--width-chars) * 1ch)
+    );
+    --pf-v5-c-pagination__total-items--Display: block;
+    --pf-v5-c-pagination--m-display-summary__total-items--Display: block;
+    --pf-v5-c-pagination--m-display-full__total-items--Display: none;
+    --pf-v5-c-pagination--m-sticky--BackgroundColor: var(--pf-v5-global--BackgroundColor--100);
+    --pf-v5-c-pagination--m-sticky--BoxShadow: var(--pf-v5-global--BoxShadow--sm-bottom);
+    --pf-v5-c-pagination--m-sticky--md--PaddingTop: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-sticky--md--PaddingRight: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-sticky--md--PaddingBottom: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-sticky--md--PaddingLeft: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-sticky--ZIndex: var(--pf-v5-global--ZIndex--xs);
+    --pf-v5-c-pagination--m-sticky--Top: 0;
+    --pf-v5-c-pagination--m-bottom--BackgroundColor: var(--pf-v5-global--BackgroundColor--100);
+    --pf-v5-c-pagination--m-bottom--BoxShadow: var(--pf-v5-global--BoxShadow--sm-top);
+    --pf-v5-c-pagination--m-bottom--Bottom: 0;
+    --pf-v5-c-pagination--m-bottom--md--PaddingTop: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-bottom--md--PaddingRight: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-bottom--md--PaddingBottom: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-bottom--md--PaddingLeft: var(--pf-v5-global--spacer--md);
+    --pf-v5-c-pagination--m-bottom--xl--PaddingRight: var(--pf-v5-global--spacer--lg);
+    --pf-v5-c-pagination--m-bottom--xl--PaddingLeft: var(--pf-v5-global--spacer--lg);
+    --pf-v5-c-pagination--m-bottom--m-sticky--BoxShadow: var(--pf-v5-global--BoxShadow--sm-top);
+    --pf-v5-c-pagination--c-menu-toggle--FontSize: var(--pf-v5-global--FontSize--sm);
+    --pf-v5-c-pagination--c-menu-toggle--Display--base: inline-flex;
+    --pf-v5-c-pagination--c-menu-toggle--Display: none;
+    --pf-v5-c-pagination--c-menu-toggle--md--Display: var(
+        --pf-v5-c-pagination--c-menu-toggle--Display--base
+    );
+    --pf-v5-c-pagination--m-display-summary--c-menu-toggle--Display: none;
+    --pf-v5-c-pagination--m-display-full--c-menu-toggle--Display: var(
+        --pf-v5-c-pagination--c-menu-toggle--Display--base
+    );
+    --pf-v5-c-pagination--m-bottom--c-menu-toggle--Display: var(
+        --pf-v5-c-pagination--c-menu-toggle--Display--base
+    );
+}

@@ -57,8 +57,8 @@ export const Default: Story = {
     render: (args) =>
         container(
             html`<ak-paginator
-                itemCount="712"
-                itemsPerPage="20"
+                item-count="712"
+                items-per-page="20"
                 page="5"
                 @ak-page-changed=${record}
             ></ak-paginator>`
