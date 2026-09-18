@@ -2,6 +2,7 @@ import "formdata-polyfill";
 import "weakmap-polyfill";
 import "core-js/actual/object/assign";
 import "@webcomponents/template";
+
 import {
     type AccessDeniedChallenge,
     type AuthenticatorValidationChallenge,
@@ -26,58 +27,18 @@ import { html, nothing, render, TemplateResult } from "lit-html";
 interface GlobalAuthentik {
     brand: {
         branding_logo: string;
-        branding_logo_themed_urls?: {
-            light?: string | null;
-            dark?: string | null;
-        } | null;
     };
     api: {
         base: string;
     };
 }
 
-function readMeta(name: string): string | null {
-    return document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)?.content || null;
-}
-
-function readJSONScript<T>(id: string): T | null {
-    const element = document.getElementById(id);
-
-    if (!element?.textContent) return null;
-
-    try {
-        return JSON.parse(element.textContent) as T;
-    } catch {
-        return null;
-    }
-}
-
-let context: GlobalAuthentik | null = null;
-
-/**
- * The values the server injected into this document.
- *
- * `base/header_js.html` renders them as data — a `json_script` block for the
- * brand and `<meta>` tags for the scalars — rather than assigning
- * `window.authentik`. This reader is deliberately standalone: the main bundle's
- * equivalent in `web/src/common/global.ts` pulls in the generated API client,
- * which would dwarf this one.
- *
- * The brand block is the serializer's own output, so its keys stay snake_case
- * here rather than being converted the way the main bundle converts them.
- */
 function ak(): GlobalAuthentik {
-    return (context ??= {
-        brand: readJSONScript<GlobalAuthentik["brand"]>("ak-brand") ?? { branding_logo: "" },
-        api: { base: readMeta("ak-base-url") ?? "/" },
-    });
-}
-
-// The SFE is rendered without dark mode support, so always use the light variant.
-function brandLogo(): string {
-    const brand = ak().brand;
-
-    return brand.branding_logo_themed_urls?.light ?? brand.branding_logo;
+    return (
+        window as unknown as {
+            authentik: GlobalAuthentik;
+        }
+    ).authentik;
 }
 
 class SimpleFlowExecutor {
@@ -100,7 +61,6 @@ class SimpleFlowExecutor {
 
     start() {
         this.loading();
-
         $.ajax({
             type: "GET",
             url: this.apiURL,
@@ -115,19 +75,15 @@ class SimpleFlowExecutor {
         $("button[type=submit]").addClass("disabled")
             .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span role="status">Loading...</span>`);
-
         let finalData: { [key: string]: unknown } = {};
-
         if (data instanceof FormData) {
             finalData = {};
-
             data.forEach((value, key) => {
                 finalData[key] = value;
             });
         } else {
             finalData = data;
         }
-
         $.ajax({
             type: "POST",
             url: this.apiURL,
@@ -190,7 +146,6 @@ abstract class Stage<T extends FlowInfoChallenge> {
         if (!this.challenge.responseErrors) {
             return [];
         }
-
         return this.challenge.responseErrors[fieldName] || [];
     }
 
@@ -236,13 +191,11 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
-                ${
-                    this.challenge.applicationPre
-                        ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
-                        : nothing
-                }
+                ${this.challenge.applicationPre
+                    ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
+                    : nothing}
                 <div class="form-label-group my-3 has-validation">
                     <input
                         type="text"
@@ -252,28 +205,25 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                         placeholder="Email / Username"
                     />
                 </div>
-                ${
-                    this.challenge.passwordFields
-                        ? html`<div class="form-label-group my-3 has-validation">
-                              <input
-                                  type="password"
-                                  class="form-control ${
-                                      this.error("password").length > 0 ? IS_INVALID : ""
-                                  }"
-                                  name="password"
-                                  placeholder="Password"
-                              />
-                              ${this.renderInputError("password")}
-                          </div>`
-                        : nothing
-                }
+                ${this.challenge.passwordFields
+                    ? html`<div class="form-label-group my-3 has-validation">
+                          <input
+                              type="password"
+                              class="form-control ${this.error("password").length > 0
+                                  ? IS_INVALID
+                                  : ""}"
+                              name="password"
+                              placeholder="Password"
+                          />
+                          ${this.renderInputError("password")}
+                      </div>`
+                    : nothing}
                 ${this.renderNonFieldErrors()}
                 <button class="btn btn-primary w-100 py-2" type="submit">
                     ${this.challenge.primaryAction}
                 </button>
             </form>`,
         );
-
         $("#ident-form input[name=uid_field]").trigger("focus");
     }
 }
@@ -289,7 +239,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3">
                     <input
@@ -312,7 +262,6 @@ class PasswordStage extends Stage<PasswordChallenge> {
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`,
         );
-
         $("#password-form input").trigger("focus");
     }
 }
@@ -327,7 +276,7 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
     render() {
         this.html(
             html`<form id="autosubmit-form" action="${this.challenge.url}" method="post">
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {
                     return html`<input type="hidden" name="${key}" value="${value}" />`;
@@ -339,7 +288,6 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
                 </div>
             </form>`,
         );
-
         $("#autosubmit-form").submit();
     }
 }
@@ -389,15 +337,11 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         if ("credentials" in navigator) {
             return true;
         }
-
         if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
             console.warn("WebAuthn requires this page to be accessed via HTTPS.");
-
             return false;
         }
-
         console.warn("WebAuthn not supported by browser.");
-
         return false;
     }
 
@@ -409,7 +353,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
             (credentialDescriptor) => {
                 const id = this.u8arr(credentialDescriptor.id.toString());
-
                 return Object.assign({}, credentialDescriptor, { id });
             },
         );
@@ -422,7 +365,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
     /**
      * Encodes the binary data in the assertion into strings for posting to the server.
-     *
      * @param {PublicKeyCredential} newAssertion
      */
     transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
@@ -452,11 +394,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         if (this.challenge.deviceChallenges.length === 1) {
             this.deviceChallenge = this.challenge.deviceChallenges[0];
         }
-
         if (!this.deviceChallenge) {
             return this.renderChallengePicker();
         }
-
         switch (this.deviceChallenge.deviceClass) {
             case "static":
             case "totp":
@@ -464,6 +404,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 break;
             case "webauthn":
                 this.renderWebauthn();
+                break;
+            case "duo":
+                this.renderDuo();
                 break;
             default:
                 break;
@@ -476,19 +419,15 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 ? undefined
                 : challenge,
         );
-
         this.html(
             html`<form id="picker-form">
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
-                ${
-                    challenges.length > 0
-                        ? html`<p>Select an authentication method.</p>`
-                        : html`<p>No compatible authentication method available</p>`
-                }
+                ${challenges.length > 0
+                    ? html`<p>Select an authentication method.</p>`
+                    : html`<p>No compatible authentication method available</p>`}
                 ${challenges.map((challenge) => {
                     let label = undefined;
-
                     switch (challenge.deviceClass) {
                         case "static":
                             label = "Recovery keys";
@@ -499,12 +438,13 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                         case "webauthn":
                             label = "Security key";
                             break;
+                        case "duo":
+                            label = "Duo push";
+                            break;
                     }
-
                     if (!label) {
                         return "";
                     }
-
                     return html`<div class="form-label-group my-3 has-validation">
                         <button
                             class="btn btn-secondary w-100 py-2"
@@ -532,7 +472,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     this.executor.submit(data);
                 }}
             >
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input
@@ -548,14 +488,13 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`,
         );
-
         $("#totp-form input").trigger("focus");
     }
 
     renderWebauthn() {
         this.html(html`
             <form id="totp-form">
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
@@ -564,7 +503,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 </div>
             </form>
         `);
-
         navigator.credentials
             .get({
                 publicKey: this.transformCredentialRequestOptions(
@@ -575,7 +513,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 if (!assertion) {
                     throw new Error("No assertion");
                 }
-
                 try {
                     // we now have an authentication assertion! encode the byte arrays contained
                     // in the assertion data as strings for posting to the server
@@ -593,10 +530,31 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             })
             .catch((error) => {
                 console.warn(error);
-
                 this.deviceChallenge = undefined;
                 this.render();
             });
+    }
+
+    renderDuo() {
+        // Duo push has no client-side surface: we submit the selected device's UID and
+        // the backend blocks on the request while it sends the push and waits for the
+        // user to approve or deny it. Just show a spinner and auto-submit, mirroring the
+        // default flow executor's ak-stage-authenticator-validate-duo behaviour.
+        this.html(html`
+            <form id="duo-form">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <p class="text-center">Sending Duo push notification...</p>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </form>
+        `);
+        this.executor.submit({
+            duo: this.deviceChallenge?.deviceUid,
+        });
     }
 }
 
@@ -604,7 +562,7 @@ class AccessDeniedStage extends Stage<AccessDeniedChallenge> {
     render() {
         this.html(
             html`<form id="access-denied">
-                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <p>${this.challenge.errorMessage ?? "Access denied."}</p>
             </form>`,
