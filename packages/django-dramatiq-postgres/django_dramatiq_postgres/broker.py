@@ -411,6 +411,17 @@ class _PostgresConsumer(Consumer):
             return None
 
         with self.locks_connection.cursor() as cursor:
+            # Take the lock on its own first. Every consumer is notified of every message, so most
+            # attempts lose the race to another consumer. Unlocking a lock that isn't held logs a
+            # "you don't own a lock" warning in PostgreSQL, so only unlock when we acquired it.
+            cursor.execute(
+                "SELECT pg_try_advisory_lock(%s)",
+                (self._get_message_lock_id(message_id),),
+            )
+            row = cursor.fetchone()
+            if row is None or not row[0]:
+                return None
+
             cursor.execute(
                 sql.SQL("""
                     UPDATE {table}
@@ -421,8 +432,6 @@ class _PostgresConsumer(Consumer):
                         {table}.{state} = ANY(%(consumable_states)s)
                         AND
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
-                        AND
-                        pg_try_advisory_lock(%(lock_id)s)
                     """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
@@ -436,10 +445,11 @@ class _PostgresConsumer(Consumer):
                     "message_id": message_id,
                     "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
                     "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
-                    "lock_id": self._get_message_lock_id(message_id),
                 },
             )
             if cursor.rowcount != 1:
+                # We hold the lock but the message isn't consumable (already done, rejected or
+                # not due yet), release it.
                 self._unlock_message(message_id)
                 return None
 
