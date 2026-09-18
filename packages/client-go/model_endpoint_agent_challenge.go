@@ -26,6 +26,7 @@ type EndpointAgentChallenge struct {
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	Challenge            string                    `json:"challenge"`
 	ChallengeIdleTimeout int32                     `json:"challenge_idle_timeout"`
+	FrameUrl             string                    `json:"frame_url"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,12 +36,13 @@ type _EndpointAgentChallenge EndpointAgentChallenge
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEndpointAgentChallenge(challenge string, challengeIdleTimeout int32) *EndpointAgentChallenge {
+func NewEndpointAgentChallenge(challenge string, challengeIdleTimeout int32, frameUrl string) *EndpointAgentChallenge {
 	this := EndpointAgentChallenge{}
 	var component string = "ak-stage-endpoint-agent"
 	this.Component = &component
 	this.Challenge = challenge
 	this.ChallengeIdleTimeout = challengeIdleTimeout
+	this.FrameUrl = frameUrl
 	return &this
 }
 
@@ -198,6 +200,30 @@ func (o *EndpointAgentChallenge) SetChallengeIdleTimeout(v int32) {
 	o.ChallengeIdleTimeout = v
 }
 
+// GetFrameUrl returns the FrameUrl field value
+func (o *EndpointAgentChallenge) GetFrameUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.FrameUrl
+}
+
+// GetFrameUrlOk returns a tuple with the FrameUrl field value
+// and a boolean to check if the value has been set.
+func (o *EndpointAgentChallenge) GetFrameUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FrameUrl, true
+}
+
+// SetFrameUrl sets field value
+func (o *EndpointAgentChallenge) SetFrameUrl(v string) {
+	o.FrameUrl = v
+}
+
 func (o EndpointAgentChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -219,6 +245,7 @@ func (o EndpointAgentChallenge) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["challenge"] = o.Challenge
 	toSerialize["challenge_idle_timeout"] = o.ChallengeIdleTimeout
+	toSerialize["frame_url"] = o.FrameUrl
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -234,6 +261,7 @@ func (o *EndpointAgentChallenge) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"challenge",
 		"challenge_idle_timeout",
+		"frame_url",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -268,6 +296,7 @@ func (o *EndpointAgentChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "response_errors")
 		delete(additionalProperties, "challenge")
 		delete(additionalProperties, "challenge_idle_timeout")
+		delete(additionalProperties, "frame_url")
 		o.AdditionalProperties = additionalProperties
 	}
 
