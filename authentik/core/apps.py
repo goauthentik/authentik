@@ -1,7 +1,27 @@
 """authentik core app config"""
 
+import os
+
+from django.utils.translation import gettext_lazy as _
+
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.config import CONFIG
+from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR, setup_post_fork, setup_pre_fork
 from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tenants.flags import Flag
+
+
+class Setup(Flag[bool], key="setup"):
+
+    default = False
+    visibility = "system"
+
+
+class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
+
+    default = True
+    visibility = "none"
+    description = _("Applications with no policies bound can be accessed by any user.")
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
@@ -12,6 +32,19 @@ class AuthentikCoreConfig(ManagedAppConfig):
     verbose_name = "authentik Core"
     mountpoint = ""
     default = True
+
+    def ready(self) -> None:
+        if CONFIG.get_bool("error_reporting.enabled", False):
+            setup_pre_fork()
+            # Under gunicorn's preload_app, some backends must finish initializing after
+            # the fork instead (see lifecycle/gunicorn.conf.py's post_fork hook)
+            if not os.environ.get(TRACER_DEFER_POSTFORK_ENV_VAR):
+                setup_post_fork()
+        return super().ready()
+
+    def import_related(self):
+        super().import_related()
+        self.import_module("authentik.core.setup.signals")
 
     @ManagedAppConfig.reconcile_tenant
     def source_inbuilt(self):

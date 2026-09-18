@@ -1,5 +1,12 @@
-import { ConstructorWithMixin, createMixin, LitElementConstructor } from "#elements/types";
+import {
+    AbstractLitElementConstructor,
+    ConstructorWithMixin,
+    createMixin,
+    LitElementConstructor,
+} from "#elements/types";
 import { CustomEventDetail, isCustomEvent } from "#elements/utils/customEvents";
+
+import { LitElement } from "lit";
 
 export interface CustomEventEmitterMixin<EventType extends string = string> {
     dispatchCustomEvent<D extends CustomEventDetail>(
@@ -11,7 +18,7 @@ export interface CustomEventEmitterMixin<EventType extends string = string> {
 
 export function CustomEmitterElement<
     EventType extends string = string,
-    T extends LitElementConstructor = LitElementConstructor,
+    T extends LitElementConstructor | AbstractLitElementConstructor = LitElementConstructor,
 >(SuperClass: T) {
     abstract class CustomEventEmmiter
         extends SuperClass
@@ -31,7 +38,7 @@ export function CustomEmitterElement<
                 normalizedDetail = detail;
             }
 
-            this.dispatchEvent(
+            (this as unknown as LitElement).dispatchEvent(
                 new CustomEvent(eventType, {
                     composed: true,
                     bubbles: true,
@@ -49,6 +56,7 @@ export function CustomEmitterElement<
 }
 
 type CustomEventListener<D = unknown> = (ev: CustomEvent<D>) => void;
+
 type EventMap<D = unknown> = WeakMap<CustomEventListener<D>, CustomEventListener<D>>;
 
 export interface CustomEventTarget<EventType extends string = string> {
@@ -59,8 +67,8 @@ export interface CustomEventTarget<EventType extends string = string> {
 /**
  * A mixin that enables Lit Elements to handle custom events in a more straightforward manner.
  *
- * @todo Can we lean on the native `EventTarget` class for this?
  * @category Mixin
+ * @todo Can we lean on the native `EventTarget` class for this?
  */
 export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClass }) => {
     return class ListenerElementHandler extends SuperClass implements CustomEventTarget {

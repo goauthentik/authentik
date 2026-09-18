@@ -1,6 +1,10 @@
 import "#elements/EmptyState";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -9,11 +13,6 @@ import { EndpointAgentChallenge, EndpointAgentChallengeResponseRequest } from "@
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 interface BrowserExtensionData {
     _ak_ext: string;
@@ -33,12 +32,15 @@ export class EndpointAgentStage extends BaseStage<
         if (ev.data._ak_ext !== "authentik-platform-sso") {
             return;
         }
+
         if (!ev.data.response) {
             return;
         }
+
         if (this.#timeout !== null) {
             clearTimeout(this.#timeout);
         }
+
         this.host?.submit(
             {
                 response: ev.data?.response,
@@ -66,10 +68,12 @@ export class EndpointAgentStage extends BaseStage<
             if (this.challenge.responseErrors) {
                 return;
             }
+
             window.postMessage({
                 _ak_ext: "authentik-platform-sso",
                 challenge: this.challenge.challenge,
             });
+
             const delaySeconds = this.challenge?.challengeIdleTimeout ?? 3;
 
             // Fallback in case we don't get a response
@@ -99,9 +103,11 @@ export class EndpointAgentStage extends BaseStage<
                       <ak-empty-state icon="fa-times"
                           ><span>${msg("Failed to validate device.")}</span>
                           <div slot="body">
-                              ${this.challenge.responseErrors.response.map((err) => {
-                                  return html`<p>${err.string}</p>`;
-                              })}
+                              ${this.challenge.responseErrors.response.map(
+                                  (err) => {
+                                      return html`<p>${err.string}</p>`;
+                                  },
+                              )}
                           </div>
                       </ak-empty-state>
                   `

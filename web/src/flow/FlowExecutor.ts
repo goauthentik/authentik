@@ -4,30 +4,38 @@ import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/inspector/FlowInspectorButton";
 import "#flow/tabs/broadcast";
-
+import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
+import { FlowMultitabController } from "./controllers/FlowMultitabController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
-import { applyBackgroundImageProperty } from "#common/theme";
-import { AKSessionAuthenticatedEvent } from "#common/ws/events";
-import { WebsocketClient } from "#common/ws/WebSocketClient";
+import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
-import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
-import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import { AKFlowAdvanceEvent } from "#flow/events";
+import {
+    AKFlowAdvanceEvent,
+    AKFlowSubmitRequest,
+    AKFlowUpdateChallengeRequest,
+} from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
+import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
-import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
-import type { StageHost, SubmitOptions } from "#flow/types";
+import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
+import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -50,21 +58,13 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 /// <reference types="../../types/lit.d.ts" />
 
 /**
  * An executor for authentik flows.
  *
+ * @property {ChallengeTypes | null} challenge - The current challenge to render.
  * @attr {string} slug - The slug of the flow to execute.
- * @prop {ChallengeTypes | null} challenge - The current challenge to render.
- *
  * @part main - The main container for the flow content.
  * @part content - The container for the stage content.
  * @part content-iframe - The iframe element when using a frame background layout.
@@ -118,6 +118,12 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     #api: FlowsApi;
 
+    // Listen for challenge-forwarding events from iframe-based third-party verifiers (Device Compliance)
+    #flowIframeMessageController = new FlowIframeMessageController(this);
+
+    // Listen for authentik state-change events from other tabs
+    #flowMultitabController = new FlowMultitabController(this);
+
     //#endregion
 
     //#region Accessors
@@ -126,68 +132,49 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         return this.challenge?.flowInfo ?? null;
     }
 
+    //region Live event handlers
+
+    handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
+        this.challenge = event.challenge;
+    };
+
+    handleSubordinateSubmit = (event: AKFlowSubmitRequest) => {
+        // prettier-ignore
+        const { request: { payload, options } } = event;
+        this.submit(payload, options);
+    };
+
+    //endregion
+
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
-
-        WebsocketClient.connect();
-
-        this.#api = new FlowsApi(DEFAULT_CONFIG);
-
-        window.addEventListener("message", (event) => {
-            const msg: {
-                source?: string;
-                context?: string;
-                message: string;
-            } = event.data;
-
-            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
-                return;
-            }
-            if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest, {
-                    invisible: true,
-                });
-            }
-        });
-
-        window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
-            if (
-                this.challenge?.component === "ak-stage-identification" &&
-                this.challenge.applicationPreLaunch &&
-                this.challenge.applicationPreLaunch !== "blank://blank"
-            ) {
-                multiTabOrchestrateLeave();
-                window.location.assign(this.challenge.applicationPreLaunch);
-                return;
-            }
-            const qs = new URLSearchParams(window.location.search);
-            const next = qs.get("next");
-            if (next) {
-                const url = new URL(next, window.location.origin);
-                if (url.origin !== window.location.origin) {
-                    multiTabOrchestrateLeave();
-                }
-                window.location.assign(url);
-            }
-        });
+        this.#api = aki(FlowsApi);
+        this.addController(this.#flowIframeMessageController);
+        this.addController(this.#flowMultitabController);
+        this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
+        this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
 
     /**
      * Synchronize flow info such as background image with the current state.
      */
+    get #layoutUsesSidebarFrames() {
+        return (
+            this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
+            this.layout === FlowLayoutEnum.SidebarRightFrameBackground
+        );
+    }
+
     #synchronizeFlowInfo() {
-        if (!this.flowInfo) return;
+        if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
 
-        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
-        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
-
-        const background =
-            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        const background = resolveThemedUrl(
+            this.activeTheme,
+            this.flowInfo.backgroundThemedUrls,
+            this.flowInfo.background,
+        );
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
@@ -196,25 +183,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 : this.ownerDocument.body;
 
         applyBackgroundImageProperty(background, { target });
+
+        for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
+            showMessage(message);
+        }
     }
 
     //#region Listeners
-
-    @listen(AKSessionAuthenticatedEvent)
-    protected sessionAuthenticatedListener = () => {
-        if (!document.hidden) {
-            return;
-        }
-
-        console.debug("authentik/ws: Reloading after session authenticated event");
-        window.location.reload();
-    };
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-
-        WebsocketClient.close();
-    }
 
     private setFlowErrorChallenge(error: APIError) {
         this.challenge = {
@@ -227,6 +202,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
+
             return Promise.resolve();
         }
 
@@ -239,12 +215,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 this.challenge = challenge;
+
                 return !!this.challenge;
             })
             .catch(async (error) => {
                 const parsedError = await parseAPIResponseError(error);
                 showAPIErrorMessage(parsedError);
                 this.setFlowErrorChallenge(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -252,7 +230,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             });
     };
 
-    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+    protected override async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
 
         this.refresh().then(() => {
@@ -261,7 +239,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         document.title = match(this.challenge?.flowInfo?.title)
@@ -282,10 +260,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Public Methods
 
     public submit = async (
-        payload?: FlowChallengeResponseRequest,
+        payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
+
         if (!this.challenge) throw new Error("No challenge provided");
 
         if (!this.flowSlug) {
@@ -298,7 +277,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             throw new Error("No flow slug provided");
         }
 
-        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+        // This order is deliberate; the executor always specifies the component token.
+        const flowChallengeResponseRequest = {
+            ...payload,
+            component: this.challenge.component as FlowChallengeResponseRequest["component"],
+        } as FlowChallengeResponseRequest;
 
         if (!options?.invisible) {
             this.loading = true;
@@ -308,15 +291,25 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
-                flowChallengeResponseRequest: payload,
+                flowChallengeResponseRequest,
             })
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
+
+                if (challenge.component === "ak-stage-autosubmit") {
+                    submitAutosubmitChallenge(challenge);
+                    this.inert = true;
+
+                    return true;
+                }
+
                 this.challenge = challenge;
+
                 return !this.challenge.responseErrors;
             })
             .catch((error: APIError) => {
                 this.setFlowErrorChallenge(error);
+
                 return false;
             })
             .finally(() => {
@@ -396,12 +389,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     protected renderFrameBackground(): SlottedTemplateResult {
         return guard([this.layout, this.challenge], () => {
-            if (
-                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
-                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
-            ) {
-                return nothing;
-            }
+            if (!this.#layoutUsesSidebarFrames) return;
 
             const src = this.challenge?.flowInfo?.background;
 
@@ -426,9 +414,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 aria-label=${msg("Site footer")}
                 name="site-footer"
                 part="footer"
-                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
-                    ? "pf-m-dark"
-                    : ""}"
+                class="pf-c-login__footer ${
+                    this.layout === FlowLayoutEnum.Stacked ? "pf-m-dark" : ""
+                }"
             >
                 <slot name="footer"></slot>
             </footer>`;
@@ -438,12 +426,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
 
-        return html`<ak-locale-select
+        return html`<div class="pf-c-login" data-layout=${this.layout} part="login">
+            <ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">
                 <ak-flow-inspector-button></ak-flow-inspector-button>
             </header>
@@ -469,7 +458,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         : this.renderLoading();
                 })}
             </main>
-            ${this.renderFooter()}`;
+            ${this.renderFooter()}
+        </div>`;
     }
 
     //#endregion

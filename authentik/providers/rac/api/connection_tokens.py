@@ -40,7 +40,9 @@ class ConnectionTokenViewSet(
 ):
     """ConnectionToken Viewset"""
 
-    queryset = ConnectionToken.objects.all().select_related("session", "endpoint")
+    queryset = (
+        ConnectionToken.objects.including_expired().all().select_related("session", "endpoint")
+    )
     serializer_class = ConnectionTokenSerializer
     filterset_fields = ["endpoint", "session__user", "provider"]
     search_fields = ["endpoint__name", "provider__name"]

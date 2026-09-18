@@ -1,0 +1,78 @@
+---
+title: Integrate with Memos
+sidebar_label: Memos
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is Memos?
+
+> Memos is an open-source, self-hosted note-taking application for quick notes, daily logs, links, and snippets.
+>
+> -- https://usememos.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `memos.company` is the FQDN of the self-hosted Memos installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Memos with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Set the **Launch URL** to `https://memos.company`.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://memos.company/auth/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+## Memos configuration
+
+1. Log in to Memos as an administrator and open **Settings**.
+2. Under **Admin**, select **SSO**, and then click **Create**.
+3. Configure the basic settings:
+    - **Type**: `OAUTH2`
+    - **Template**: `Custom`
+    - **Provider ID**: `authentik`
+    - **Name**: `authentik`
+4. Confirm that the displayed **Redirect URL** is `https://memos.company/auth/callback`.
+5. Configure the OAuth settings:
+    - **Client ID**: enter the client ID from authentik.
+    - **Client secret**: enter the client secret from authentik.
+    - **Authorization endpoint**: `https://authentik.company/application/o/authorize/`
+    - **Token endpoint**: `https://authentik.company/application/o/token/`
+    - **User endpoint**: `https://authentik.company/application/o/userinfo/`
+    - **Scopes**: `openid profile email`
+6. Configure the field mapping:
+    - **Identifier**: `sub`
+    - **Display Name**: `name`
+    - **Email**: `email`
+7. Click **Create**.
+
+Memos can create a user during their first SSO login only when user registration is allowed. If user registration is disabled, an existing Memos user must link their authentik identity under **Settings** > **My Account** before signing in with SSO.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Memos, log out, open Memos, and click **Continue with authentik**. You should be redirected to authentik and then returned to Memos after a successful login.
+
+## Resources
+
+- [Memos documentation - Authentication](https://usememos.com/docs/configuration/authentication)
+- [Memos documentation - Linked identities](https://usememos.com/docs/usage/linked-identities)
+- [Memos documentation - Security](https://usememos.com/docs/configuration/security)

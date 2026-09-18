@@ -1,28 +1,31 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { globalAK } from "#common/global";
+import { resolveThemedUrl } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
+import { toCurrentInterface } from "#elements/router/core/interfaces";
 import { isAdminRoute } from "#elements/router/utils";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#components/ak-page-navbar.css";
 
+import type { ThemedUrls } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export class PageDetailsUpdate extends Event {
     static readonly eventName = "ak-page-details-update";
@@ -40,8 +43,9 @@ export function setPageDetails(header: PageHeaderInit) {
 
 export interface PageHeaderInit {
     header?: string | null;
-    description?: string | null;
+    description?: SlottedTemplateResult;
     icon?: string | null;
+    iconThemedUrls?: ThemedUrls | null;
     iconImage?: boolean;
 }
 
@@ -53,7 +57,6 @@ export interface PageHeaderInit {
  *
  * @event ak-page-nav-menu-toggle
  * @event ak-page-details-update
- *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -68,8 +71,6 @@ export class AKPageNavbar
         PFDrawer,
         PFNotificationBadge,
         PFContent,
-        PFAvatar,
-        PFDropdown,
         Styles,
     ];
 
@@ -77,20 +78,23 @@ export class AKPageNavbar
 
     //#region Properties
 
-    @state()
-    icon?: string | null = null;
+    @property({ attribute: false })
+    public icon?: string | null = null;
 
-    @state()
-    iconImage = false;
+    @property({ attribute: false })
+    public iconThemedUrls?: ThemedUrls | null = null;
 
-    @state()
-    header?: string | null = null;
+    @property({ attribute: false })
+    public iconImage = false;
 
-    @state()
-    description?: string | null = null;
+    @property({ attribute: false })
+    public header?: string | null = null;
 
-    @state()
-    hasIcon = true;
+    @property({ attribute: false })
+    public description?: SlottedTemplateResult = null;
+
+    @property({ attribute: false })
+    public hasIcon = true;
 
     //#endregion
 
@@ -102,10 +106,12 @@ export class AKPageNavbar
         if (isAdminRoute()) {
             title = `${msg("Admin")} - ${title}`;
         }
+
         // Prepend the header to the title
         if (header) {
             title = `${header} - ${title}`;
         }
+
         document.title = title;
     }
 
@@ -114,10 +120,11 @@ export class AKPageNavbar
     //#region Event Handlers
 
     #onPageDetails = (ev: PageDetailsUpdate) => {
-        const { header, description, icon, iconImage } = ev.header;
+        const { header, description, icon, iconThemedUrls, iconImage } = ev.header;
         this.header = header;
         this.description = description;
         this.icon = icon;
+        this.iconThemedUrls = iconThemedUrls;
         this.iconImage = iconImage || false;
         this.hasIcon = !!icon;
     };
@@ -147,13 +154,15 @@ export class AKPageNavbar
     //#region Render
 
     protected renderIcon() {
-        return guard([this.icon, this.iconImage], () => {
+        return guard([this.icon, this.iconThemedUrls, this.iconImage, this.activeTheme], () => {
             if (this.icon) {
                 if (this.iconImage && !this.icon.startsWith("fa://")) {
                     return html`<img
                         aria-hidden="true"
                         class="accent-icon pf-icon"
-                        src="${this.icon}"
+                        src=${ifPresent(
+                            resolveThemedUrl(this.activeTheme, this.iconThemedUrls, this.icon),
+                        )}
                         alt="page icon"
                     />`;
                 }
@@ -172,7 +181,7 @@ export class AKPageNavbar
             [this.brandingLogo, this.brandingLogoThemedUrls, this.activeTheme],
             () =>
                 html`<aside role="presentation" class="brand">
-                    <a aria-label="${msg("Home")}" href="#/">
+                    <a aria-label="${msg("Home")}" href=${toCurrentInterface()}>
                         <div class="logo">
                             ${ThemedImage({
                                 src: this.brandingLogo,
@@ -194,22 +203,28 @@ export class AKPageNavbar
 
                 <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
                     <h1 aria-labelledby="page-navbar-heading" class="page-title">
-                        ${this.hasIcon
-                            ? html`<slot aria-hidden="true" name="icon">${this.renderIcon()}</slot>`
-                            : nothing}
+                        ${
+                            this.hasIcon
+                                ? html`<slot aria-hidden="true" name="icon"
+                                      >${this.renderIcon()}</slot
+                                  >`
+                                : nothing
+                        }
                         <span id="page-navbar-heading">${this.header}</span>
                     </h1>
                 </div>
-                ${this.description
-                    ? html`<div
-                          role="heading"
-                          aria-level="2"
-                          aria-label="${this.description}"
-                          class="items page-description pf-c-content"
-                      >
-                          <p>${this.description}</p>
-                      </div>`
-                    : nothing}
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label="${this.description}"
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : nothing
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
@@ -217,10 +232,10 @@ export class AKPageNavbar
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
-                                slot="extra"
                             >
                                 ${msg("User interface")}
                             </a>
+                            <slot name="nav-buttons"></slot>
                         </ak-nav-buttons>
                     </div>
                 </div>

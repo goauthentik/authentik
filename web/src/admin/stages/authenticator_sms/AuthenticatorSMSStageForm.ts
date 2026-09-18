@@ -1,20 +1,22 @@
+import "#components/ak-secret-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorSMSStage,
+    AuthenticatorSMSStageRequest,
     AuthTypeEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     NotificationWebhookMapping,
     PropertymappingsApi,
@@ -30,13 +32,14 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
     loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesAuthenticatorSmsRetrieve({
                 stageUuid: pk,
             })
             .then((stage) => {
                 this.provider = stage.provider;
                 this.authType = stage.authType;
+
                 return stage;
             });
     }
@@ -49,13 +52,14 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
+            return aki(StagesApi).stagesAuthenticatorSmsPartialUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorSMSStageRequest: data,
+                patchedAuthenticatorSMSStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-            authenticatorSMSStageRequest: data,
+
+        return aki(StagesApi).stagesAuthenticatorSmsCreate({
+            authenticatorSMSStageRequest: data as unknown as AuthenticatorSMSStageRequest,
         });
     }
 
@@ -77,19 +81,14 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Twilio Auth Token")} required name="auth">
-                <input
-                    type="text"
-                    value="${this.instance?.auth ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Get this value from https://console.twilio.com")}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-secret-text-input
+                name="auth"
+                label=${msg("Twilio Auth Token")}
+                input-hint="code"
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
+                help=${msg("Get this value from https://console.twilio.com")}
+            ></ak-secret-text-input>`;
     }
 
     renderProviderGeneric(): TemplateResult {
@@ -132,36 +131,23 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("API Auth Username")} required name="auth">
-                <input
-                    type="text"
-                    value="${this.instance?.auth ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "This is the username to be used with basic auth or the token when used with bearer token",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Auth password")}
-                ?required=${false}
+            <ak-secret-text-input
+                name="auth"
+                label=${msg("API Auth Username")}
+                input-hint="code"
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
+                help=${msg(
+                    "This is the username to be used with basic auth or the token when used with bearer token",
+                )}
+            ></ak-secret-text-input>
+            <ak-secret-text-input
                 name="authPassword"
-            >
-                <input
-                    type="text"
-                    value="${this.instance?.authPassword ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("This is the password to be used with basic auth")}
-                </p>
-            </ak-form-element-horizontal>
+                label=${msg("API Auth password")}
+                input-hint="code"
+                ?revealed=${!this.instance}
+                help=${msg("This is the password to be used with basic auth")}
+            ></ak-secret-text-input>
         `;
     }
 
@@ -169,14 +155,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -234,9 +224,11 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             ${msg("Number the SMS will be sent from.")}
                         </p>
                     </ak-form-element-horizontal>
-                    ${this.provider === ProviderEnum.Generic
-                        ? this.renderProviderGeneric()
-                        : this.renderProviderTwillio()}
+                    ${
+                        this.provider === ProviderEnum.Generic
+                            ? this.renderProviderGeneric()
+                            : this.renderProviderTwillio()
+                    }
                     <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
                         <ak-search-select
                             .fetchObjects=${async (
@@ -245,12 +237,16 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 const args: PropertymappingsNotificationListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query) {
                                     args.search = query;
                                 }
-                                const items = await new PropertymappingsApi(
-                                    DEFAULT_CONFIG,
-                                ).propertymappingsNotificationList(args);
+
+                                const items =
+                                    await aki(PropertymappingsApi).propertymappingsNotificationList(
+                                        args,
+                                    );
+
                                 return items.results;
                             }}
                             .renderElement=${(item: NotificationWebhookMapping): string => {
@@ -285,15 +281,15 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

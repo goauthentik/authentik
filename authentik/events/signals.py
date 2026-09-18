@@ -11,13 +11,14 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.signals import login_failed, password_changed
+from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,
     PLAN_CONTEXT_OUTPOST,
     PLAN_CONTEXT_SOURCE,
+    PLAN_CONTEXT_USER_SWITCH_FROM_USER,
     FlowPlan,
 )
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -50,6 +51,10 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_DEVICE in flow_plan.context:
             # Save device
             kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
+        if from_user := flow_plan.context.get(PLAN_CONTEXT_USER_SWITCH_FROM_USER):
+            # Record that this login came from a user switch.
+            kwargs["is_user_switch"] = True
+            kwargs[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = from_user
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()
@@ -93,11 +98,13 @@ def on_login_failed(
     credentials: dict[str, str],
     request: HttpRequest,
     stage: Stage | None = None,
+    context: dict[str, Any] | None = None,
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
     user = User.objects.filter(username=credentials.get("username")).first()
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(
+    context = context or {}
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **context).from_http(
         request, user
     )
 
@@ -110,8 +117,15 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
     )
 
 
+@receiver(password_hash_changed)
 @receiver(password_changed)
-def on_password_changed(sender, user: User, password: str, request: HttpRequest | None, **_):
+def on_password_changed(
+    sender,
+    user: User,
+    password: str | None = None,
+    request: HttpRequest | None = None,
+    **_,
+):
     """Log password change"""
     Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 

@@ -6,13 +6,11 @@
 
     --ak-menu-item-color-hover-active: var(--ifm-color-emphasis-400);
     --ak-menu-item-border-width: 0.5px;
-    --ifm-menu-color-background-active: hsl(240 24% 98%);
 
     /* Ensures that the scrollbar color retains its visibility. */
     --ak-scrollbar-color: hsl(0deg 0% 0% / 20%);
 
     &[data-theme="dark"] {
-        --ifm-menu-color-background-active: hsl(240 20% 12%);
         --ak-menu-item-color-hover: var(--ifm-color-primary-light);
 
         --ak-scrollbar-color: hsla(0, 0%, 100%, 0.2);

@@ -81,11 +81,11 @@ class TokenBackend(InbuiltBackend):
             User().set_password(password, request=request)
             return None
 
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             user=user, key=password, intent=TokenIntents.INTENT_APP_PASSWORD
         )
         if not tokens.exists():
             return None
         token = tokens.first()
         self.set_method("token", request, token=token)
-        return token.user
+        return token.user if self.user_can_authenticate(token.user) else None

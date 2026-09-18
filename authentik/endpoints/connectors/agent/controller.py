@@ -15,6 +15,8 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.controller import BaseController
+from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device
 from authentik.lib.generators import generate_id
@@ -55,8 +57,8 @@ class AgentController(BaseController[AgentConnector]):
     def vendor_identifier() -> str:
         return "goauthentik.io/platform"
 
-    def supported_enrollment_methods(self):
-        return []
+    def capabilities(self) -> list[Capabilities]:
+        return [Capabilities.STAGE_ENDPOINTS]
 
     def generate_device_challenge(self):
         keypair = CertificateKeyPair.objects.get(pk=self.connector.challenge_key_id)
@@ -196,13 +198,7 @@ class AgentController(BaseController[AgentConnector]):
                             "AllowDeviceIdentifiersInAttestation": True,
                             "AuthenticationMethod": "UserSecureEnclaveKey",
                             "EnableAuthorization": True,
-                            "EnableCreateUserAtLogin": True,
-                            "FileVaultPolicy": ["RequireAuthentication"],
-                            "LoginPolicy": ["RequireAuthentication"],
-                            "NewUserAuthorizationMode": "Standard",
-                            "UnlockPolicy": ["RequireAuthentication"],
                             "UseSharedDeviceKeys": True,
-                            "UserAuthorizationMode": "Standard",
                         },
                     },
                 ],

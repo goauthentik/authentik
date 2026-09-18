@@ -10,6 +10,10 @@ import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
 import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
+import "#elements/Divider";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { formatUserDisplayName } from "#common/users";
 
@@ -17,7 +21,7 @@ import { AKElement } from "#elements/Base";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
@@ -25,11 +29,6 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const AdminOverviewBase = WithLicenseSummary(WithSession(AKElement));
 
@@ -39,7 +38,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
         PFGrid,
         PFPage,
         PFContent,
-        PFDivider,
         css`
             .pf-l-grid__item {
                 height: 100%;
@@ -61,10 +59,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
     ];
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
-        [msg("Check the logs"), paramURL("/events/log")],
+        [
+            msg("Create a new application"),
+            toAdminInterface("core/applications", { "create-wizard": "application" }),
+        ],
+        [msg("Check the logs"), toAdminInterface("events/log")],
         [msg("Explore integrations"), "https://integrations.goauthentik.io/", true],
-        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Manage users"), toAdminInterface("identity/users")],
         [msg("Check the release notes"), import.meta.env.AK_DOCS_RELEASE_NOTES_URL, true],
     ];
 
@@ -83,7 +84,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-zone"
                             label=${msg("Outpost status")}
-                            headerLink="#/outpost/outposts"
+                            headerLink=${toAdminInterface("outpost/outposts")}
                         >
                             <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                         </ak-aggregate-card>
@@ -98,15 +99,15 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col">
-                        <hr class="pf-c-divider" />
+                        <ak-divider></ak-divider>
                     </div>
                     ${this.renderCards()}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                    <ak-recent-events pageSize="6"></ak-recent-events>
+                    <ak-recent-events></ak-recent-events>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
-                    <hr class="pf-c-divider" />
+                    <ak-divider></ak-divider>
                 </div>
                 <!-- row 3 -->
                 <div
@@ -135,6 +136,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
     renderCards() {
         const isEnterprise = this.hasEnterpriseLicense;
+
         const classes = {
             "card-container": true,
             "pf-l-grid__item": true,
@@ -154,11 +156,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
             <div class=${classMap(classes)}>
                 <ak-admin-status-card-workers> </ak-admin-status-card-workers>
             </div>
-            ${isEnterprise
-                ? html` <div class=${classMap(classes)}>
-                      <ak-admin-fips-status-system> </ak-admin-fips-status-system>
-                  </div>`
-                : nothing} `;
+            ${
+                isEnterprise
+                    ? html` <div class=${classMap(classes)}>
+                          <ak-admin-fips-status-system> </ak-admin-fips-status-system>
+                      </div>`
+                    : nothing
+            } `;
     }
 
     updated(changed: PropertyValues<this>) {

@@ -1,19 +1,28 @@
+import "#elements/EmptyState";
 import { TableColumn } from "./TableColumn.js";
 import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types.js";
 import { convertContent } from "./utils.js";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
+import {
+    isTransclusionParentElement,
+    NamedEntityElement,
+    TransclusionChildElement,
+    TransclusionChildSymbol,
+} from "#elements/dialogs/shared";
+import { WithLocale } from "#elements/mixins/locale";
+import { SlottedTemplateResult } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
+import { msg, str } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
 
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
 export type RawContent = string | number | TemplateResult;
+
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
 
 export interface ISimpleTable {
@@ -68,45 +77,91 @@ export interface ISimpleTable {
  * - @part row: The `<tr>` element for a standard row
  * - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
  *   which is zero-indexed
- *
  */
-
 @customElement("ak-simple-table")
-export class SimpleTable extends AKElement implements ISimpleTable {
-    static styles = [
+export class SimpleTable
+    extends WithLocale(AKElement)
+    implements ISimpleTable, TransclusionChildElement
+{
+    declare ["constructor"]: Required<NamedEntityElement>;
+
+    public static verboseName: string = msg("Object");
+    public static verboseNamePlural: string = msg("Objects");
+
+    public static styles = [
         PFTable,
         css`
-            .pf-c-table thead .pf-c-table__check {
-                min-width: 3rem;
-            }
-            .pf-c-table tbody .pf-c-table__check input {
-                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-            }
             .pf-c-toolbar__content {
                 row-gap: var(--pf-global--spacer--sm);
             }
             .pf-c-toolbar__item .pf-c-input-group {
                 padding: 0 var(--pf-global--spacer--sm);
             }
+
+            tr:last-child {
+                --pf-c-table--BorderColor: transparent;
+            }
         `,
     ];
 
+    public [TransclusionChildSymbol] = true;
+
+    #verboseName: string | null = null;
+
+    /**
+     * Optional singular label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseName` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name" })
+    public set verboseName(value: string | null) {
+        this.#verboseName = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseName(): string | null {
+        return this.#verboseName || this.constructor.verboseName || null;
+    }
+
+    #verboseNamePlural: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseNamePlural` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name-plural" })
+    public set verboseNamePlural(value: string | null) {
+        this.#verboseNamePlural = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.#verboseNamePlural || this.constructor.verboseNamePlural || null;
+    }
+
     @property({ type: String, attribute: true, reflect: true })
-    order?: string;
+    public order?: string;
 
     @property({ type: Array, attribute: false })
-    columns: Column[] = [];
+    public columns: Column[] = [];
 
     @property({ type: Object, attribute: false })
-    set content(content: ContentType) {
-        this._content = convertContent(content);
+    public set content(content: ContentType) {
+        this.#content = convertContent(content);
     }
 
-    get content(): TableGrouped | TableFlat {
-        return this._content;
+    public get content(): TableGrouped | TableFlat {
+        return this.#content;
     }
 
-    private _content: TableGrouped | TableFlat = {
+    #content: TableGrouped | TableFlat = {
         kind: "flat",
         content: [],
     };
@@ -114,6 +169,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     protected get icolumns(): TableColumn[] {
         const hosted = (column: TableColumn) => {
             column.host = this;
+
             return column;
         };
 
@@ -141,62 +197,84 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         super.performUpdate();
     }
 
-    public renderRow(row: TableRow, _rownum: number) {
-        return html` <tr part="row">
+    protected renderEmpty(): SlottedTemplateResult {
+        const columnCount = this.columns.length || 1;
+
+        const verboseNamePlural = this.constructor.verboseNamePlural || msg("Objects");
+
+        const message = msg(
+            str`No ${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)} found.`,
+            {
+                id: "table.empty",
+                desc: "The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.",
+            },
+        );
+
+        return html`<tr role="presentation">
+            <td role="presentation" colspan=${columnCount + 1}>
+                <div class="pf-l-bullseye">
+                    <slot name="empty-table">
+                        <ak-empty-state><span>${message}</span></ak-empty-state>
+                    </slot>
+                </div>
+            </td>
+        </tr>`;
+    }
+
+    protected renderRow(row: TableRow, _rownum: number): SlottedTemplateResult {
+        return html`<tr part="row">
             ${map(row.content, (col, idx) => html`<td part="cell cell-${idx}">${col}</td>`)}
         </tr>`;
     }
 
-    public renderRows(rows: TableRow[]) {
+    protected renderRows(rows: TableRow[]): SlottedTemplateResult {
         return html`<tbody part="body">
-            ${repeat(rows, (row) => row.key, this.renderRow)}
+            ${rows.length ? repeat(rows, (row) => row.key, this.renderRow) : this.renderEmpty()}
         </tbody>`;
     }
 
-    @bound
-    public renderRowGroup({ group, content }: TableGroup) {
+    protected renderRowGroup = ({ group, content }: TableGroup): SlottedTemplateResult => {
         return html`<thead part="group-header">
                 <tr part="group-row">
                     <td colspan="200" part="group-head">${group}</td>
                 </tr>
             </thead>
             ${this.renderRows(content)}`;
-    }
+    };
 
-    @bound
-    public renderRowGroups(rowGroups: TableGroup[]) {
-        return html`${map(rowGroups, this.renderRowGroup)}`;
-    }
+    protected renderRowGroups = (rowGroups: TableGroup[]): SlottedTemplateResult => {
+        return map(rowGroups, this.renderRowGroup);
+    };
 
-    public renderBody() {
-        // prettier-ignore
-        return this.content.kind === 'flat'
+    protected renderBody(): SlottedTemplateResult {
+        return this.content.kind === "flat"
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }
 
-    public renderColumnHeaders() {
+    protected renderColumnHeaders(): SlottedTemplateResult {
         return html`<tr part="column-row" role="row">
             ${map(this.icolumns, (col) => col.render(this.order))}
         </tr>`;
     }
 
-    public renderTable() {
-        return html`
-            <table part="table" class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
-                <thead part="column-header">
-                    ${this.renderColumnHeaders()}
-                </thead>
-                ${this.renderBody()}
-            </table>
-        `;
+    protected renderTable(): SlottedTemplateResult {
+        return html`<table
+            part="table"
+            class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
+        >
+            <thead part="column-header">
+                ${this.renderColumnHeaders()}
+            </thead>
+            ${this.renderBody()}
+        </table> `;
     }
 
-    public render() {
+    protected render(): SlottedTemplateResult {
         return this.renderTable();
     }
 
-    public override updated() {
+    public override updated(): void {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 }

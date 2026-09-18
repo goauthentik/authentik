@@ -1,8 +1,8 @@
-html[data-theme="light"] .DocSearch-Button {
-    --docsearch-search-button-text-color: var(--ifm-color-primary-darkest);
-    --docsearch-highlight-color: var(--docsearch-search-button-text-color);
+:root {
+    --docsearch-search-button-background: transparent !important;
+    --docsearch-search-button-text-color: var(--ifm-navbar-link-color) !important;
 }
 
-html[data-theme="light"] .DocSearch-Button .DocSearch-Button-Placeholder {
-    color: var(--docsearch-search-button-text-color);
+.DocSearch-Button:hover {
+    --docsearch-search-button-background: var(--ifm-hover-overlay);
 }

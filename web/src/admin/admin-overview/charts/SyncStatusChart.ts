@@ -1,6 +1,5 @@
 import "#elements/forms/ConfirmationForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
@@ -67,20 +66,24 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const objects = await listObjects().catch(() => {
             return emptyResponse;
         });
+
         const metrics: { [key: string]: number } = {
             healthy: 0,
             failed: 0,
             unsynced: 0,
         };
+
         await Promise.all(
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
                 let objectKey = "healthy";
+
                 try {
                     const status = await fetchSyncStatus(element);
 
                     const now = new Date().getTime();
-                    const maxDelta = 12 * 60 * 60 * 1000; // 12 hours
+                    // 12 hours in milliseconds.
+                    const maxDelta = 12 * 60 * 60 * 1000;
 
                     if (
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||
@@ -97,15 +100,17 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 } catch {
                     objectKey = "unsynced";
                 }
+
                 metrics[objectKey] += 1;
             }),
         );
+
         return {
             healthy: metrics.healthy,
             failed: metrics.failed,
             unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
             total: objects.pagination.count,
-            label: label,
+            label,
         };
     }
 
@@ -113,10 +118,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const statuses = [
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersScimList();
+                    return aki(ProvidersApi).providersScimList();
                 },
                 (element) => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersScimSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -124,12 +129,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceList();
+                    return aki(ProvidersApi).providersGoogleWorkspaceList();
                 },
                 (element) => {
-                    return new ProvidersApi(
-                        DEFAULT_CONFIG,
-                    ).providersGoogleWorkspaceSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersGoogleWorkspaceSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -137,12 +140,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraList();
+                    return aki(ProvidersApi).providersMicrosoftEntraList();
                 },
                 (element) => {
-                    return new ProvidersApi(
-                        DEFAULT_CONFIG,
-                    ).providersMicrosoftEntraSyncStatusRetrieve({
+                    return aki(ProvidersApi).providersMicrosoftEntraSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
@@ -150,10 +151,10 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapList();
+                    return aki(SourcesApi).sourcesLdapList();
                 },
                 (element) => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
+                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                         slug: element.slug,
                     });
                 },
@@ -161,17 +162,19 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosList();
+                    return aki(SourcesApi).sourcesKerberosList();
                 },
                 (element) => {
-                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
+                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                         slug: element.slug,
                     });
                 },
                 msg("Kerberos Source"),
             ),
         ];
+
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
+
         return statuses;
     }
 

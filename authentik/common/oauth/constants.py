@@ -5,10 +5,26 @@ from django.utils.translation import gettext_lazy as _
 
 GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_IMPLICIT = "implicit"
+GRANT_TYPE_HYBRID = "hybrid"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
 GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
+GRANT_TYPE_TOKEN_EXCHANGE = "urn:ietf:params:oauth:grant-type:token-exchange"  # nosec
+
+# Token type identifiers for the token exchange grant
+# https://datatracker.ietf.org/doc/html/rfc8693#section-3
+TOKEN_TYPE_URI_ACCESS_TOKEN = "urn:ietf:params:oauth:token-type:access_token"  # nosec
+TOKEN_TYPE_URI_JWT = "urn:ietf:params:oauth:token-type:jwt"  # nosec
+# authentik's own built-in Token model (e.g. API tokens), not part of RFC 8693 -- only
+# meaningful as an actor_token_type, never as a subject_token/requested_token_type
+TOKEN_TYPE_URI_AUTHENTIK_TOKEN = "goauthentik.io/oauth/token-type/authentik_token"  # nosec
+
+# Access tokens are themselves JWTs, so both identifiers denote the same artifact
+TOKEN_EXCHANGE_TOKEN_TYPES = {TOKEN_TYPE_URI_ACCESS_TOKEN, TOKEN_TYPE_URI_JWT}
+# Token types accepted for actor_token specifically (RFC 8693 §4.1) -- adds authentik's
+# built-in Token model on top of the JWT types accepted for subject_token
+ACTOR_TOKEN_TYPES = TOKEN_EXCHANGE_TOKEN_TYPES | {TOKEN_TYPE_URI_AUTHENTIK_TOKEN}
 
 QS_LOGIN_HINT = "login_hint"
 
@@ -21,11 +37,17 @@ PROMPT_CONSENT = "consent"
 PROMPT_LOGIN = "login"
 
 PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS = "goauthentik.io/providers/oauth2/iframe_sessions"
+PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI = "goauthentik.io/providers/oauth2/post_logout_redirect_uri"
+
+OAUTH2_BINDING = "redirect"
 
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 SCOPE_OFFLINE_ACCESS = "offline_access"
+SCOPE_BOUND_KEY = "bound_key"
+SCOPE_AUTHENTIK_API = "goauthentik.io/api"
+SCOPE_AUTHENTIK_DCR = "goauthentik.io/oidc/dcr"
 
 UI_LOCALES = "ui_locales"
 
@@ -34,8 +56,10 @@ PKCE_METHOD_PLAIN = "plain"
 PKCE_METHOD_S256 = "S256"
 
 TOKEN_TYPE = "Bearer"  # nosec
+JWT_TYPE_DPOP_ID_TOKEN = "dpop+id_token"
 
-SCOPE_AUTHENTIK_API = "goauthentik.io/api"
+# URI schemes that are forbidden for redirect URIs
+FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 # Read/write full user (including email)
 SCOPE_GITHUB_USER = "user"

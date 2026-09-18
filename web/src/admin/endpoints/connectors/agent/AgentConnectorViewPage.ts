@@ -1,31 +1,26 @@
 import "#elements/Tabs";
-import "#components/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    AgentConnector,
-    EndpointsApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { AgentConnector, EndpointsApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-connector-agent-view")
 export class AgentConnectorViewPage extends AKElement {
@@ -41,7 +36,7 @@ export class AgentConnectorViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsAgentsConnectorsRetrieve({ connectorUuid: id })
             .then((conn) => {
                 this.connector = conn;
@@ -59,6 +54,7 @@ export class AgentConnectorViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-data-source",
             header: this.connector?.name,
@@ -90,7 +86,8 @@ export class AgentConnectorViewPage extends AKElement {
         if (!this.connector) {
             return nothing;
         }
-        return html`<ak-tabs>
+
+        return html`<ak-tabs routed>
             <div
                 role="tabpanel"
                 tabindex="0"
@@ -109,13 +106,11 @@ export class AgentConnectorViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.connector?.connectorUuid || ""}
-                            targetModelName=${this.connector?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
-                    </div>
+                    <ak-object-changelog
+                        targetModelPk=${this.connector?.connectorUuid || ""}
+                        targetModelName=${this.connector?.metaModelName || ""}
+                    >
+                    </ak-object-changelog>
                 </div>
             </div>
             <ak-rbac-object-permission-page
@@ -124,7 +119,7 @@ export class AgentConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

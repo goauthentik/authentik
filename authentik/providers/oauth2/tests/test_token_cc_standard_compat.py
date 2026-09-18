@@ -22,6 +22,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_cert,
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -42,6 +43,7 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
+            grant_types=[GrantType.CLIENT_CREDENTIALS, GrantType.PASSWORD],
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)

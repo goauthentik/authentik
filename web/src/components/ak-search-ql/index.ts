@@ -1,11 +1,14 @@
 import "#elements/buttons/Dropdown";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
+import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
-import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
+import { resolveInterface } from "#elements/utils/render-roots";
 
 import Styles from "#components/ak-search-ql/styles.css";
 
@@ -14,16 +17,24 @@ import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 import { msg } from "@lit/localize";
 import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
         this.completionEnabled = !!this.options.completionEnabled;
+
         return;
+    }
+    generateSuggestions() {
+        try {
+            super.generateSuggestions();
+        } catch (error) {
+            // Never leave stale suggestions behind; an open menu captures Enter.
+            this.logError(`Failed to generate suggestions: ${error}`);
+            this.prefix = "";
+            this.suggestions = [];
+            this.selected = null;
+        }
     }
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
@@ -31,20 +42,6 @@ export class QL extends DjangoQL {
     textareaResize() {
         // Suppress auto-resize behavior
     }
-}
-
-/**
- * Given an array or length, return logical index of the element at the given delta.
- * This is effectively a modulo loop, allowing for positive and negative deltas.
- */
-function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): number {
-    const length = typeof lengthLike === "number" ? lengthLike : lengthLike.length;
-
-    if (delta < 0) {
-        return (length + delta) % length;
-    }
-
-    return ((delta % length) + length) % length;
 }
 
 @customElement("ak-search-ql")
@@ -109,10 +106,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public submit() {
         if (!this.form) return;
 
+        // Not composed, matching the native `submit` event. Composed lets a table's own
+        // search escape the shadow root and reach `window`, where every connected
+        // `Table` treats it as "a form was submitted, refresh" — so searching inside a
+        // dialog refetches the table behind it, and that re-render tears the dialog down.
         const submitEvent = new SubmitEvent("submit", {
             submitter: this,
             bubbles: true,
-            composed: true,
+            composed: false,
             cancelable: true,
         });
 
@@ -127,9 +128,16 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #ctx: OffscreenCanvasRenderingContext2D | null = null;
     #letterWidth = -1;
     #scrollContainer: HTMLElement | null = null;
+    #autocompleteCache: Introspections | null = null;
 
     public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
-        if (!value?.autocomplete || !this.#ql) {
+        if (!value?.autocomplete) {
+            return;
+        }
+
+        if (!this.#ql) {
+            this.#autocompleteCache = value.autocomplete as unknown as Introspections;
+
             return;
         }
 
@@ -143,8 +151,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.#scrollContainer =
-            rootInterface<LitElement>().renderRoot.querySelector("#main-content");
+        this.#scrollContainer = resolveInterface().renderRoot.querySelector("#main-content");
 
         this.#scrollContainer?.addEventListener("scroll", this.#updateDropdownPosition, {
             passive: true,
@@ -191,7 +198,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         this.#ql = new QL({
             completionEnabled: true,
-            introspections: {
+            introspections: this.#autocompleteCache || {
                 current_model: "",
                 models: {},
             },
@@ -199,11 +206,16 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             autoResize: false,
         });
 
+        if (this.#autocompleteCache) {
+            this.#autocompleteCache = null;
+        }
+
         const canvas = new OffscreenCanvas(300, 150);
         this.#ctx = canvas.getContext("2d");
 
         if (!this.#ctx) {
             console.error("authentik/ql: failed to get canvas context");
+
             return;
         }
 
@@ -222,6 +234,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #selectCompletion(index: number) {
         if (!this.#ql) {
             console.debug(`authentik/ql: Skipping selection of index ${index}, QL not initialized`);
+
             return;
         }
 
@@ -254,6 +267,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         if (this.#ql.suggestions.length < 1 || this.#ql.loading) {
             this.open = false;
+
             return;
         }
 
@@ -324,7 +338,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         const suggestionsLength = this.#ql?.suggestions.length;
 
+        // The completion engine attaches its own keydown listener to the textarea and would
+        // handle these keys a second time, with its own notion of the selected suggestion.
+        if (["Enter", "ArrowDown", "ArrowUp", "Tab", "Escape"].includes(event.key)) {
+            event.stopImmediatePropagation();
+        }
+
         if (event.key === "Enter" && !this.open && this.form) {
+            event.preventDefault();
             this.submit();
 
             return;
@@ -372,25 +393,40 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 return;
 
             case "Tab":
-                if (this.selectionIndex) {
+                // -1 means no selection; 0 is a valid (falsy) index
+                if (this.selectionIndex !== -1) {
                     this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
                 }
 
                 return;
-            case "Enter":
+            case "Enter": {
                 // Technically this is a textarea, due to automatic multi-line feature,
                 // but other than that it should look and behave like a normal input.
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
-                if (this.selectionIndex !== -1) {
-                    this.#selectCompletion(this.selectionIndex);
-                    this.selectionIndex = 0;
-                }
-
                 event.preventDefault();
 
+                const before = this.anchorRef.value?.value ?? "";
+
+                if (this.selectionIndex !== -1) {
+                    this.#selectCompletion(this.selectionIndex);
+                }
+
+                const after = this.anchorRef.value?.value ?? "";
+
+                // Nothing to complete, so Enter submits instead of trapping the user.
+                if (after === before) {
+                    this.open = false;
+                    this.submit();
+
+                    return;
+                }
+
+                this.selectionIndex = 0;
+
                 return;
+            }
             case "Escape":
                 this.open = false;
                 return;
@@ -440,9 +476,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                             role="option"
                             id="suggestion-${idx}"
                             aria-selected=${this.selectionIndex === idx ? "true" : "false"}
-                            class="pf-c-search-input__menu-list-item ${this.selectionIndex === idx
-                                ? "selected"
-                                : ""}"
+                            class="pf-c-search-input__menu-list-item ${
+                                this.selectionIndex === idx ? "selected" : ""
+                            }"
                         >
                             <button
                                 class="pf-c-search-input__menu-item"
@@ -472,9 +508,9 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             role="combobox"
             aria-label=${ifPresent(this.label)}
             aria-haspopup="listbox"
-            aria-activedescendant=${this.selectionIndex === -1
-                ? ""
-                : `suggestion-${this.selectionIndex}`}
+            aria-activedescendant=${
+                this.selectionIndex === -1 ? "" : `suggestion-${this.selectionIndex}`
+            }
         >
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">
@@ -492,9 +528,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                         @focus=${this.#focusListener}
                         @blur=${this.#blurListener}
                         @keydown=${this.#keydownListener}
-                    >
-${ifDefined(this.#value)}</textarea
-                    >
+                        .value=${this.#value}
+                    ></textarea>
                 </span>
             </div>
             ${this.renderMenu()}

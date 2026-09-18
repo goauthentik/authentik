@@ -1,6 +1,5 @@
 """Source type manager"""
 
-from collections.abc import Callable
 from enum import Enum
 from typing import Any
 
@@ -114,7 +113,7 @@ class SourceTypeRegistry:
             )
         return found_type
 
-    def find(self, type_name: str, kind: RequestKind) -> Callable:
+    def find(self, type_name: str, kind: RequestKind) -> type[OAuthCallback | OAuthRedirect]:
         """Find fitting Source Type"""
         found_type = self.find_type(type_name)
         if kind == RequestKind.CALLBACK:

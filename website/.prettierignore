@@ -1,9 +1,0 @@
-# Ignore artifacts:
-build
-out
-coverage
-.docusaurus
-node_modules
-help
-static
-scripts/docsmg/target/

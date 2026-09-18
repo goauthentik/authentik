@@ -8,9 +8,9 @@ import (
 
 	"beryju.io/ldap"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/utils"
+	api "goauthentik.io/packages/client-go"
 )
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {

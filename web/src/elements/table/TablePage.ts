@@ -1,56 +1,48 @@
 import "#elements/EmptyState";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
-import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
+import Styles from "#elements/table/TablePage.css";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 export abstract class TablePage<T extends object> extends Table<T> {
+    public override searchParam = "q";
+
     static styles: CSSResult[] = [
         // ---
         ...super.styles,
         PFPage,
         PFContent,
         PFSidebar,
-        css`
-            :host {
-                display: flex;
-            }
-
-            .pf-c-sidebar__panel {
-                --pf-c-sidebar__panel--Position: static;
-                flex: 0 1 25%;
-            }
-            .pf-c-sidebar__content {
-                flex: 1 1 75%;
-            }
-        `,
+        Styles,
     ];
 
     //#region Abstract properties
 
     /**
      * The title of the page.
+     *
      * @abstract
      */
     public abstract pageTitle: string;
 
     /**
      * The description of the page.
+     *
      * @abstract
      */
     public abstract pageDescription: string;
 
     /**
      * The icon to display in the page header.
+     *
      * @abstract
      */
     public abstract pageIcon: string;
@@ -71,43 +63,31 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     /**
      * Render content before the sidebar.
+     *
      * @abstract
      */
-    protected renderSidebarBefore?(): TemplateResult;
+    protected renderSidebarBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the sidebar.
+     *
      * @abstract
      */
-    protected renderSidebarAfter?(): TemplateResult;
+    protected renderSidebarAfter?(): SlottedTemplateResult;
 
     /**
      * Render content before the main section.
+     *
      * @abstract
      */
-    protected renderSectionBefore?(): TemplateResult;
+    protected renderSectionBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the main section.
+     *
      * @abstract
      */
-    protected renderSectionAfter?(): TemplateResult;
-
-    //#endregion
-
-    //#region Protected methods
-
-    protected clearSearch = () => {
-        this.search = "";
-
-        this.requestUpdate();
-
-        updateURLParams({
-            search: "",
-        });
-
-        return this.fetch();
-    };
+    protected renderSectionAfter?(): SlottedTemplateResult;
 
     //#endregion
 
@@ -116,17 +96,21 @@ export abstract class TablePage<T extends object> extends Table<T> {
     /**
      * Render the empty state.
      */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${this.emptyStateMessage}</span>
-                      <div slot="body">
-                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
-                      </div>
-                      <div slot="primary">${this.renderObjectCreate()}</div>
-                  </ak-empty-state>`}
+            ${
+                inner
+                    ? inner
+                    : html`<ak-empty-state icon=${this.pageIcon}
+                          ><span>${this.formatEmptyStateMessage()}</span>
+                          <div slot="body">
+                              ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                          </div>
+                          <div slot="primary" class="empty-state-primary">
+                              ${this.renderObjectCreate()}
+                          </div>
+                      </ak-empty-state>`
+            }
         `);
     }
 
@@ -134,20 +118,13 @@ export abstract class TablePage<T extends object> extends Table<T> {
         if (!this.search) {
             return nothing;
         }
-        return html`<button
-            @click=${() => {
-                this.search = "";
-                this.requestUpdate();
-                this.fetch();
-                this.page = 1;
-            }}
-            class="pf-c-button pf-m-link"
-        >
+
+        return html`<button @click=${this.clearSearch} class="pf-c-button pf-m-link">
             ${msg("Clear search")}
         </button>`;
     }
 
-    render() {
+    protected override render(): SlottedTemplateResult {
         return html` ${this.renderSectionBefore?.()}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
@@ -165,6 +142,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,

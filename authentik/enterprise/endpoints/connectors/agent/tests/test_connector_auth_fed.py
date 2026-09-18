@@ -19,6 +19,7 @@ from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 class TestConnectorAuthFed(APITestCase):
 
     def setUp(self):
+        self.ssh_host_key = generate_id()
         self.connector = AgentConnector.objects.create(name=generate_id())
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
         self.device = Device.objects.create(
@@ -28,6 +29,19 @@ class TestConnectorAuthFed(APITestCase):
         self.connection = AgentDeviceConnection.objects.create(
             device=self.device,
             connector=self.connector,
+        )
+        self.connection.create_snapshot(
+            data={
+                "vendor": {
+                    "goauthentik.io/platform": {
+                        "ssh_host_keys": [
+                            "foo",
+                            self.ssh_host_key,
+                            "baz",
+                        ]
+                    }
+                }
+            }
         )
         self.user = create_test_user()
         self.provider = OAuth2Provider.objects.create(
@@ -40,12 +54,33 @@ class TestConnectorAuthFed(APITestCase):
         self.connector.jwt_federation_providers.add(self.provider)
 
     @reconcile_app("authentik_crypto")
-    def test_auth_fed(self):
+    def test_auth_fed_no_access(self):
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.device.name}",
             HTTP_AUTHORIZATION=f"Bearer {self.raw_token}",
         )
         self.assertEqual(response.status_code, 400)
+
+    @reconcile_app("authentik_crypto")
+    def test_auth_fed_policy_group_by_host_key(self):
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.access_group = device_group
+        self.device.save()
+
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+
+        PolicyBinding.objects.create(target=device_group, group=group, order=0)
+
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.ssh_host_key}",
+            HTTP_AUTHORIZATION=f"Bearer {self.raw_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        res = loads(response.content)
+        token = decode(res["token"], options={"verify_signature": False})
+        self.assertEqual(token["iss"], "goauthentik.io/platform")
+        self.assertEqual(token["aud"], str(self.device.pk))
 
     @reconcile_app("authentik_crypto")
     def test_auth_fed_policy_group(self):

@@ -15,6 +15,8 @@ import type {
     ChallengeTypes,
     ConsentChallenge,
     CurrentBrand,
+    FlowChallengeResponseRequest,
+    FlowErrorChallenge,
     PasswordChallenge,
     SessionEndChallenge,
     UserLoginChallenge,
@@ -54,8 +56,37 @@ export type StageChallengeLike = Partial<
     Pick<FormStaticChallenge, "pendingUserAvatar" | "pendingUser" | "flowInfo" | "responseErrors">
 >;
 
+/**
+ * Type-predicate to determine if a given challenge is a {@linkcode FormStaticChallenge}.
+ */
+export function isFormStaticChallengeLike(
+    challenge: StageChallengeLike | FlowErrorChallenge | null | undefined,
+): challenge is FormStaticChallenge {
+    if (!challenge) return false;
+
+    return (
+        "pendingUser" in challenge ||
+        "pendingUserAvatar" in challenge ||
+        "flowInfo" in challenge ||
+        "responseErrors" in challenge
+    );
+}
+
 export interface SubmitOptions {
     invisible: boolean;
+}
+
+// Make the "component" field optional, since the Executor controls what component type is being
+// manipulated.
+type PartialComponent<T> = T extends { component: infer C } & (infer Rest)
+    ? { component?: C } & Omit<Rest, "component">
+    : never;
+
+export type FlowChallengeResponseRequestBody = PartialComponent<FlowChallengeResponseRequest>;
+
+export interface SubmitRequest {
+    payload: FlowChallengeResponseRequestBody;
+    options: SubmitOptions;
 }
 
 export interface StageHost {
@@ -74,6 +105,12 @@ export interface IBaseStage<Tin extends StageChallengeLike, Tout = never>
     challenge: Tin | null;
     submitForm: (event?: SubmitEvent, defaults?: Tout) => Promise<boolean>;
     reset?(): void;
+}
+
+export interface ExecutorMessage {
+    source?: string;
+    context?: string;
+    message: string;
 }
 
 export type BaseStageConstructor<

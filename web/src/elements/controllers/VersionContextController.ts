@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isGuest } from "#common/users";
 
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
@@ -20,6 +20,7 @@ export class VersionContextController extends ReactiveContextController<Version>
         super();
 
         this.host = host;
+
         this.context = new ContextProvider(this.host, {
             context: VersionContext,
             initialValue,
@@ -27,7 +28,7 @@ export class VersionContextController extends ReactiveContextController<Version>
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
-        return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve(requestInit);
+        return aki(AdminApi).adminVersionRetrieve(requestInit);
     }
 
     protected doRefresh(version: Version) {

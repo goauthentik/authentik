@@ -25,6 +25,12 @@ export function themeMeta(theme: ResolvedUITheme) {
 export interface IFrameTemplateInit {
     challengeURL: URL | string;
     theme: ResolvedUITheme;
+    /**
+     * If `true`, the script element will fire `loadListener()` on load.
+     * Defaults to `true`.
+     */
+    scriptOnLoad?: boolean;
+    scriptType?: "classic" | "module";
 }
 
 /**
@@ -37,7 +43,7 @@ export interface IFrameTemplateInit {
  */
 export function iframeTemplate(
     children: TemplateResult,
-    { challengeURL, theme }: IFrameTemplateInit,
+    { challengeURL, theme, scriptOnLoad = true, scriptType = "classic" }: IFrameTemplateInit,
 ) {
     return createDocumentTemplate({
         head: html`
@@ -70,7 +76,7 @@ export function iframeTemplate(
             <style>
                 html,
                 body {
-                    background: ${ThemeColor[theme]};
+                    background: transparent;
                 }
 
                 body {
@@ -83,14 +89,25 @@ export function iframeTemplate(
                 }
 
                 .g-recaptcha,
-                .h-captcha {
+                .h-captcha,
+                .cap-container {
                     display: flex;
                     align-items: center;
                     justify-content: center;
                 }
+
+                .cap-container {
+                    box-sizing: border-box;
+                    padding-block: 0.5rem;
+                    width: 100%;
+                }
             </style>
             ${children}
-            <script onload="loadListener()" src="${challengeURL.toString()}"></script>
+            <script
+                ${scriptOnLoad ? 'onload="loadListener()"' : ""}
+                ${scriptType === "module" ? 'type="module"' : ""}
+                src="${challengeURL.toString()}"
+            ></script>
         `,
     });
 }

@@ -1,15 +1,4 @@
 import { SlottedTemplateResult } from "../types.js";
-
-import { PFSize } from "#common/enums";
-
-import { AKElement } from "#elements/Base";
-import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
-import { Form } from "#elements/forms/Form";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -21,19 +10,17 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
+import { Form } from "#elements/forms/Form";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 export const MODAL_BUTTON_STYLES = css`
-    /**
-     * Fixes padding in scrollable modal bodies, splitting the space between
-     * header and body.
-     */
-    .pf-c-modal-box__header {
-        padding-bottom: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
-    }
-
-    .pf-c-modal-box__body {
-        padding-top: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
-    }
-
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
@@ -117,6 +104,7 @@ export abstract class ModalButton extends AKElement {
     #closeListener = () => {
         const evt = new ModalHideEvent(this);
         this.dispatchEvent(evt);
+
         this.querySelectorAll<AKElement>("*").forEach((child) => {
             child.dispatchEvent(evt);
         });

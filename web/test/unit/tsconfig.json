@@ -1,0 +1,32 @@
+// @file TSConfig used by the web package during development.
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "types": ["node"],
+        "checkJs": true,
+        "allowJs": true,
+        "composite": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true,
+        "emitDeclarationOnly": true,
+        "target": "esnext",
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+
+        "noUncheckedIndexedAccess": true
+    },
+    "include": ["./**/*", "../**/*"],
+    "exclude": [
+        // ---
+        "**/out/**/*",
+        "**/dist/**/*",
+        "storybook-static"
+    ],
+    "references": [
+        {
+            "path": "../.."
+        }
+    ]
+}

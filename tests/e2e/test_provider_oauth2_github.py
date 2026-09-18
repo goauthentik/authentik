@@ -13,12 +13,14 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
 )
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2Github(SeleniumTestCase):
@@ -29,7 +31,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.client_secret = generate_key()
         super().setUp()
         self.run_container(
-            image="grafana/grafana:7.1.0",
+            image=self.pinned_image("grafana", "e2e/compose.yml"),
             ports={
                 "3000": "3000",
             },
@@ -77,11 +79,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(
             name=generate_id(),
@@ -134,11 +137,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         app = Application.objects.create(
             name=generate_id(),
@@ -207,11 +211,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         app = Application.objects.create(
             name=generate_id(),

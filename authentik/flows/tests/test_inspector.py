@@ -33,7 +33,7 @@ class TestFlowInspector(APITestCase):
         FlowStageBinding.objects.create(
             target=flow,
             stage=ident_stage,
-            order=1,
+            order=0,
             invalid_response_action=InvalidResponseAction.RESTART_WITH_CONTEXT,
         )
         dummy_stage = DummyStage.objects.create(name=generate_id())
@@ -55,6 +55,7 @@ class TestFlowInspector(APITestCase):
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": flow.title,
                     "layout": "stacked",
+                    "messages": [],
                 },
                 "flow_designation": "authentication",
                 "passkey_challenge": None,

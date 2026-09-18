@@ -11,12 +11,12 @@ from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
+from authentik.lib.models import DomainlessURLValidator, ExpiringModel, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -161,7 +161,12 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
-        self.client_type = ClientTypes.CONFIDENTIAL
+        self.grant_types = [
+            GrantType.AUTHORIZATION_CODE,
+            GrantType.CLIENT_CREDENTIALS,
+            GrantType.PASSWORD,
+        ]
+        self.client_type = ClientType.CONFIDENTIAL
         self.signing_key = None
         self.include_claims_in_id_token = True
         scopes = ScopeMapping.objects.filter(

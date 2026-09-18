@@ -1,35 +1,18 @@
-import "#elements/tasks/ScheduleList";
-import "#admin/rbac/ObjectPermissionsPage";
+/**
+ * @file Display details for a federated Kerberos Identity Source: Overview, Changelog, Permissions
+ */
+
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-
-import { AKElement } from "#elements/Base";
-import { SlottedTemplateResult } from "#elements/types";
-
-import {
-    KerberosSource,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
-
-import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
+import "#components/sync/SyncStatusCard";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -39,13 +22,31 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { scheduleCard } from "#components/tasks/scheduleCard";
+
+import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
+
+import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.mdx";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+const SOURCE_MODEL = ModelEnum.AuthentikSourcesKerberosKerberossource;
+
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesKerberosRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -68,6 +69,7 @@ export class KerberosSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
             this.sourceSlug = this.source?.slug;
@@ -78,9 +80,9 @@ export class KerberosSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikSourcesKerberosKerberossource.split(".");
+
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -129,7 +131,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Kerberos Source")}</span>
                                     <ak-source-kerberos-form
                                         slot="form"
@@ -147,9 +149,7 @@ export class KerberosSourceViewPage extends AKElement {
                         >
                             <ak-sync-status-card
                                 .fetch=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesKerberosSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                                         slug: this.source?.slug,
                                     });
                                 }}
@@ -165,17 +165,8 @@ export class KerberosSourceViewPage extends AKElement {
                                 ></ak-source-kerberos-connectivity>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                <p>${msg("Schedules")}</p>
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${this.source.pk}"
-                                ></ak-schedule-list>
-                            </div>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            ${scheduleCard(SOURCE_MODEL, this.source.pk)}
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
@@ -194,25 +185,21 @@ export class KerberosSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_kerberos"
-                                    targetModelName="kerberossource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesKerberosKerberossource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesKerberosKerberossource}
+                    model=${ModelEnum.AuthentikSourcesKerberosKerberossource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

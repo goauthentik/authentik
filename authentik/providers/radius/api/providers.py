@@ -18,12 +18,15 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.outposts.permissions import IsOutpostDelegatedRequest, IsOutpostServiceAccount
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -51,7 +54,11 @@ class RadiusProviderSerializer(
             "mfa_support",
             "certificate",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        secret_fields = ["shared_secret"]
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class RadiusProviderViewSet(UsedByMixin, ModelViewSet):
@@ -94,6 +101,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     queryset = RadiusProvider.objects.filter(application__isnull=False)
     serializer_class = RadiusOutpostConfigSerializer
+    permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
@@ -163,12 +171,15 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         },
         operation_id="outposts_radius_access_check",
     )
-    @action(detail=True)
+    # Access checks are run by the outpost on behalf of the user that is authenticating,
+    # using that user's session, and are authenticated by the outpost's own token
+    @action(detail=True, permission_classes=[IsOutpostDelegatedRequest])
     def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
         provider = get_object_or_404(RadiusProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         engine.build()
         result = engine.result

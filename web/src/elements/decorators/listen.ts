@@ -18,7 +18,7 @@ export interface ListenDecoratorOptions extends AddEventListenerOptions {
      *
      * @default window
      */
-    target?: EventTarget | null;
+    target?: EventTarget;
 }
 
 /**
@@ -53,10 +53,11 @@ export type EventConstructor<K extends keyof WindowEventMap = keyof WindowEventM
  *
  * @remarks
  *
- * Type-safety for this is limited due to the dynamic nature of event listeners.
+ *   Type-safety for this is limited due to the dynamic nature of event listeners.
  */
 function isEventListenerLike(input: unknown): input is EventListenerOrEventListenerObject {
     if (!input) return false;
+
     if (typeof input === "function") return true;
 
     return typeof (input as EventListenerObject).handleEvent === "function";
@@ -65,10 +66,9 @@ function isEventListenerLike(input: unknown): input is EventListenerOrEventListe
 /**
  * Registers the connected and disconnected callbacks to manage event listeners.
  *
- * @see {@linkcode listen} for usage.
- *
  * @param target The target class to register the callbacks on.
  * @internal
+ * @see {@linkcode listen} for usage.
  */
 function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecoratorStore {
     const { connectedCallback, disconnectedCallback } = target;
@@ -88,7 +88,7 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
 
         // Register all listeners
         for (const [propKey, eventType] of propToEventName) {
-            const { target: eventTarget = window, ...options } = propToOptions.get(propKey) || {};
+            const { target: eventTarget = this, ...options } = propToOptions.get(propKey) || {};
             const listener = this[propKey as keyof T];
 
             if (!listener) {
@@ -99,13 +99,11 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
 
             if (!isEventListenerLike(listener)) {
                 throw new TypeError(
-                    `Listener "${String(
-                        propKey,
-                    )}" is not a valid event listener. It must be a function or an object with a handleEvent method.`,
+                    `Listener "${String(propKey)}" is not a valid event listener. It must be a function or an object with a handleEvent method.`,
                 );
             }
 
-            (eventTarget || this).addEventListener(eventType, listener, {
+            eventTarget.addEventListener(eventType, listener, {
                 passive: true,
                 ...options,
                 signal: abortController.signal,
@@ -152,6 +150,7 @@ export function listen<K extends keyof WindowEventMap>(
     EventConstructor: EventConstructor<K>,
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
+
 /**
  * Adds an event listener to the `window` object that is automatically
  * removed when the element is disconnected.
@@ -164,6 +163,7 @@ export function listen<K extends keyof WindowEventMap>(
     type: K,
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
+
 /**
  * Adds an event listener to the `window` object that is automatically
  * removed when the element is disconnected.

@@ -1,9 +1,11 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#components/sync/SyncObjectForm";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
+import { aki } from "#common/api/client";
+import { formatUserDisplayName } from "#common/users";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -30,14 +32,14 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
-                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersScimSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -49,11 +51,12 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersDestroy({
+                return aki(ProvidersApi).providersScimUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -65,14 +68,14 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
+        return aki(ProvidersApi).providersScimUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
     protected override rowLabel(item: SCIMProviderUser): string {
-        return item.userObj.name || item.userObj.username;
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [
@@ -83,7 +86,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     row(item: SCIMProviderUser): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

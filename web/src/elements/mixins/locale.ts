@@ -37,6 +37,11 @@ export interface LocaleMixin {
     /**
      * The current locale language tag.
      *
+     * @remarks
+     *
+     *   This may load asynchronously, which Lit will not know about.
+     *   Use {@linkcode LOCALE_STATUS_EVENT} to listen for when the locale
+     *   is ready after setting a new language tag.
      * @format BCP 47
      */
     activeLanguageTag: TargetLanguageTag;
@@ -68,6 +73,7 @@ export const WithLocale = createMixin<LocaleMixin>(
                         console.warn(
                             `[WithLocale] The locale context is not available on <${this.constructor.name}>. Did you forget to add the LocaleContextController?`,
                         );
+
                         this.#contextWarning = true;
                     }
 

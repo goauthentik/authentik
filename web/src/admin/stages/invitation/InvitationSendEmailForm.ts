@@ -1,7 +1,8 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#components/ak-textarea-input";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
@@ -15,13 +16,11 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
     ccAddresses?: string;
     bccAddresses?: string;
-    template?: TypeCreate;
+    template?: string;
 }
 
 @customElement("ak-invitation-send-email-form")
@@ -41,9 +40,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
     fetchAvailableTemplates = async (): Promise<void> => {
         try {
-            this.availableTemplates = await new StagesApi(
-                DEFAULT_CONFIG,
-            ).stagesEmailTemplatesList();
+            this.availableTemplates = await aki(StagesApi).stagesEmailTemplatesList();
         } catch (error) {
             console.error("Failed to fetch email templates:", error);
         }
@@ -76,17 +73,18 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 message: msg("Please enter at least one email address"),
                 level: MessageLevel.error,
             });
+
             return;
         }
 
         try {
-            await new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsSendEmailCreate({
+            await aki(StagesApi).stagesInvitationInvitationsSendEmailCreate({
                 inviteUuid: this.invitation?.pk || "",
                 invitationSendEmailRequest: {
                     emailAddresses: addresses,
                     ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
                     bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
-                    template: data.template?.name,
+                    template: data.template,
                 },
             });
 

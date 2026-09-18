@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
                     ("require_superuser", "Require Superuser"),
                     ("require_redirect", "Require Redirect"),
                     ("require_outpost", "Require Outpost"),
+                    ("require_token", "Require Token"),
                 ],
                 default="none",
                 help_text="Required level of authentication and authorization to access a flow.",

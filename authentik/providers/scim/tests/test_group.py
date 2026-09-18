@@ -1,6 +1,7 @@
 """SCIM Group tests"""
 
 from json import loads
+from unittest.mock import patch
 
 from django.test import TestCase
 from jsonschema import validate
@@ -9,10 +10,12 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderGroup
 from authentik.providers.scim.tasks import scim_sync
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMGroupTests(TestCase):
     """SCIM Group tests"""
 
@@ -66,6 +69,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
 
@@ -105,6 +109,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         group.name = generate_id()
@@ -142,6 +147,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         group.delete()
@@ -180,6 +186,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         conn = SCIMProviderGroup.objects.filter(group=group).first()
@@ -188,6 +195,7 @@ class SCIMGroupTests(TestCase):
             "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
             "externalId": str(group.pk),
             "displayName": group.name,
+            "members": [],
         }
         conn.save()
         mock.get(
@@ -206,6 +214,103 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "GET")
         self.assertNotIn("PUT", [req.method for req in mock.request_history])
+
+    @Mocker()
+    def test_group_update_records_remote_state(self, mock: Mocker):
+        """Test that the remote state is recorded on update, so the next write is a noop"""
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        group = Group.objects.create(
+            name=generate_id(),
+        )
+        group.name = generate_id()
+        remote_group = {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+            "id": scim_id,
+            "externalId": str(group.pk),
+            "displayName": group.name,
+            "members": [],
+        }
+        mock.put(f"https://localhost/Groups/{scim_id}", json=remote_group)
+        mock.get(f"https://localhost/Groups/{scim_id}", json=remote_group)
+
+        group.save()
+        connection = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
+        self.assertEqual(connection.attributes, remote_group)
+
+        group.save()
+        self.assertEqual([req.method for req in mock.request_history].count("PUT"), 1)
+
+    @Mocker()
+    def test_group_diff_nested_attribute(self, mock: Mocker):
+        """Test nested attribute changes are detected without mutating cached data"""
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        connection = SCIMProviderGroup(attributes={"custom": {"value": "old"}})
+
+        self.assertTrue(
+            SCIMGroupClient(self.provider).diff(
+                {"custom": {"value": "new"}},
+                connection,
+            )
+        )
+        self.assertEqual(connection.attributes["custom"]["value"], "old")
+
+    @Mocker()
+    def test_discover(self, mock: Mocker):
+        group = Group.objects.create(name="acl_admins")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.get(
+            "https://localhost/Groups",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 1,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                        "id": "3",
+                        "displayName": "acl_admins",
+                        "meta": {"resourceType": "Group"},
+                        "members": [],
+                    },
+                ],
+            },
+        )
+        mock.get(
+            "https://localhost/Groups?startIndex=2",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 2,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                        "id": "10",
+                        "displayName": "test",
+                        "meta": {"resourceType": "Group"},
+                        "members": [],
+                    },
+                ],
+            },
+        )
+        self.provider.client_for_model(Group).discover()
+        connection = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
+        self.assertIsNotNone(connection)
+        self.assertEqual(connection.scim_id, "3")
 
     def _create_stale_provider_group(self, scim_id: str) -> Group:
         """Create a group that is outside the provider's scope (via group_filters) with an

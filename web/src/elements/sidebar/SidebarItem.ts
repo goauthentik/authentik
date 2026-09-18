@@ -1,12 +1,16 @@
-import "#admin/common/ak-license-notice";
-
-import { WithCapabilitiesConfig } from "../mixins/capabilities";
-import { WithLicenseSummary } from "../mixins/license";
-
-import { ROUTE_SEPARATOR } from "#common/constants";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
-import { listen } from "#elements/decorators/listen";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import {
+    currentInterfacePath,
+    toAdminInterface,
+    toCurrentInterface,
+} from "#elements/router/core/interfaces";
+import { RouterNavigateEvent } from "#elements/router/core/navigation";
+import { readSidebarExpansion, writeSidebarExpansion } from "#elements/sidebar/expansion";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -17,11 +21,9 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 export interface SidebarItemProperties {
     path?: string | null;
+    key?: string | null;
     activeWhen?: string[];
     expanded?: boolean | null;
     enterprise?: boolean;
@@ -29,7 +31,9 @@ export interface SidebarItemProperties {
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKElement)) {
-    static styles: CSSResult[] = [
+    protected static instanceCount = 0;
+
+    public static styles: CSSResult[] = [
         // ---
         PFPage,
         PFNav,
@@ -41,6 +45,17 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
 
     @property({ type: String })
     public label: string | null = null;
+
+    /**
+     * Stable identity for persisting this group's expansion across reloads.
+     *
+     * Group entries have no `path`, and their labels are translated, so neither
+     * survives as a storage key. Set this explicitly on any group whose open or
+     * closed state should be remembered; a group without one still expands and
+     * collapses, it just starts from its declared default every load.
+     */
+    @property({ type: String })
+    public key: string | null = null;
 
     activeMatchers: RegExp[] = [];
 
@@ -58,12 +73,18 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
 
     public parent?: SidebarItem;
 
+    /**
+     * Per-instance id for the `aria-controls`/`id` pair.
+     */
+    #subnavID = `sidebar-subnav-${++SidebarItem.instanceCount}`;
+
     @property({ type: Boolean })
     public enterprise = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
         children.forEach((child) => (child.parent = this));
+
         return children;
     }
 
@@ -78,17 +99,51 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         return this.activeMatchers;
     }
 
+    /**
+     * @returns Key this item or `null` when it should not be remembered.
+     */
+    get #persistenceKey(): string | null {
+        return this.key ?? this.path;
+    }
+
+    #toggleExpanded = (): void => {
+        this.expanded = !this.expanded;
+
+        if (this.#persistenceKey) {
+            writeSidebarExpansion(this.#persistenceKey, this.expanded);
+        }
+    };
+
     public override connectedCallback(): void {
         super.connectedCallback();
+
+        // Restore before synchronizing so that a group containing the active
+        // route still ends up expanded even if it was collapsed by hand.
+        // The matching descendant connects after us and expands its ancestors.
+        const persisted = this.#persistenceKey ? readSidebarExpansion(this.#persistenceKey) : null;
+
+        if (persisted !== null) {
+            this.expanded = persisted;
+        }
+
+        window.addEventListener(RouterNavigateEvent.eventName, this.synchronize);
+        window.addEventListener("popstate", this.synchronize);
+
         this.synchronize();
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
+
+        window.removeEventListener(RouterNavigateEvent.eventName, this.synchronize);
+        window.removeEventListener("popstate", this.synchronize);
+
         cancelAnimationFrame(this.#scrollAnimationFrame);
     }
 
-    public updated(changedProperties: PropertyValues): void {
+    protected override updated(changedProperties: PropertyValues): void {
+        super.updated(changedProperties);
+
         const previousExpanded = changedProperties.get("expanded");
 
         if (typeof previousExpanded !== "boolean") return;
@@ -113,14 +168,37 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         this.#scrollBehavior ??= "smooth";
     };
 
-    @listen("hashchange")
+    /**
+     * Expands all ancestor sidebar items until a deeply loaded active leaf is visible.
+     *
+     * This intentionally walks the light DOM (`parentElement` + `closest`) instead
+     * of using {@linkcode parent}. The `parent` field is populated only after an
+     * ancestor reads {@linkcode childItems}.
+     *
+     * On initial loads, ancestors can connect before this item exists, so that linkage may not be
+     * set yet.
+     */
+    #expandAncestors(): void {
+        let ancestor = this.parentElement?.closest<SidebarItem>("ak-sidebar-item");
+
+        while (ancestor) {
+            ancestor.expanded = true;
+            ancestor = ancestor.parentElement?.closest<SidebarItem>("ak-sidebar-item");
+        }
+    }
+
     public synchronize = (): void => {
-        const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
+        const activePath = currentInterfacePath();
+
+        this.current = this.matchesPath(activePath);
+
+        if (this.current) {
+            this.#expandAncestors();
+        }
+
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
-
-        this.current = this.matchesPath(activePath);
     };
 
     private matchesPath(path: string): boolean {
@@ -128,9 +206,9 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             return false;
         }
 
-        const ourPath = this.path.split(";")[0];
-        const pathIsWholePath = new RegExp(`^${ourPath}$`).test(path);
+        const pathIsWholePath = this.path === path;
         const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
+
         return pathIsWholePath || pathIsAnActivePath;
     }
 
@@ -139,6 +217,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             item.parent.expanded = true;
             this.requestUpdate();
         }
+
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
@@ -157,15 +236,15 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <button
                 part="button button-with-children"
                 class="pf-c-nav__link"
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 aria-expanded=${this.expanded ? "true" : "false"}
-                aria-controls="subnav-${this.path}"
+                aria-controls=${this.#subnavID}
                 type="button"
-                @click=${() => {
-                    this.expanded = !this.expanded;
-                }}
+                @click=${this.#toggleExpanded}
             >
                 ${this.label}
                 <span class="pf-c-nav__toggle">
@@ -176,13 +255,12 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             </button>
             <div class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
                 <ul
-                    id="subnav-${this.path}"
+                    id=${this.#subnavID}
                     role="navigation"
                     aria-label=${msg(str`${this.label} navigation`)}
                     class="pf-c-nav__list"
-                    ?hidden=${!this.expanded}
                 >
-                    ${this.expanded ? html`<slot></slot>` : nothing}
+                    <slot></slot>
                 </ul>
             </div>
         </li>`;
@@ -197,16 +275,16 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         >
             ${this.label}
             <button
-                aria-label=${this.expanded
-                    ? msg(str`Collapse ${this.label}`)
-                    : msg(str`Expand ${this.label}`)}
+                aria-label=${
+                    this.expanded
+                        ? msg(str`Collapse ${this.label}`)
+                        : msg(str`Expand ${this.label}`)
+                }
                 part="button button-with-path-and-children"
                 class="pf-c-nav__link"
                 aria-expanded=${this.expanded ? "true" : "false"}
                 type="button"
-                @click=${() => {
-                    this.expanded = !this.expanded;
-                }}
+                @click=${this.#toggleExpanded}
             >
                 <span class="pf-c-nav__toggle">
                     <span class="pf-c-nav__toggle-icon">
@@ -223,7 +301,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     }
 
     renderEnterpriseRequired() {
-        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+        return html`<a href=${toAdminInterface("enterprise/licenses")} class="pf-c-nav__link">
             ${this.label}
             <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
         </a>`;
@@ -232,13 +310,17 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     renderWithPath() {
         if (this.enterprise && !this.hasEnterpriseLicense) {
             if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+
             return this.renderEnterpriseRequired();
         }
+
         return html`
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                href="${
+                    this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")
+                }"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
