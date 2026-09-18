@@ -23,7 +23,7 @@ from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
-from django.db import models
+from django.db import models, transaction
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -54,6 +54,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.models import create_named_secret
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import (
     DomainlessURLValidator,
@@ -219,6 +220,15 @@ class ScopeMapping(PropertyMapping):
 class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
+    # Remove the legacy credential columns in 2027.2.
+    _client_secret = models.CharField(
+        blank=True,
+        db_column="client_secret",
+        default=generate_client_secret,
+        max_length=255,
+        verbose_name=_("Client Secret"),
+    )
+
     client_type = models.CharField(
         max_length=30,
         choices=ClientType.choices,
@@ -236,11 +246,14 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client ID"),
         default=generate_id,
     )
-    client_secret = models.CharField(
-        max_length=255,
-        blank=True,
+    secret = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
-        default=generate_client_secret,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="oauth2_providers",
     )
     _redirect_uris = models.JSONField(
         default=list,
@@ -357,10 +370,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
-            return self.client_secret, JWTAlgorithms.HS256
+            return self.secret.value, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            if not self.secret_id:
+                self.secret = create_named_secret(f"{self.name} client secret")
+                if (update_fields := kwargs.get("update_fields")) is not None:
+                    kwargs["update_fields"] = set(update_fields) | {"secret"}
+            return super().save(*args, **kwargs)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
