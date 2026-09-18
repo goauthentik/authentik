@@ -48,7 +48,7 @@ test.describe("RAC", () => {
         await test.step("Create RAC provider", async () => {
             await expect(providerDialog, "Provider wizard is initially closed").toBeHidden();
 
-            await click("New Provider", "button");
+            await click("New Provider", "button", page.getByLabel("Providers actions"));
 
             await expect(providerDialog, "Provider wizard opens").toBeVisible();
 
