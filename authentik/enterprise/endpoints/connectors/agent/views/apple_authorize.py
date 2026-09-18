@@ -68,19 +68,21 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
     authorization code which the device redeems at the token endpoint."""
 
     connector: AgentConnector
-    device_connection: AgentDeviceConnection | None
+    device_connection: AgentDeviceConnection
 
     def resolve_provider_application(self):
         self.connector = get_object_or_404(AgentConnector, pk=self.kwargs["connector_uuid"])
         self.device_connection = self.resolve_device_connection()
 
-    def resolve_device_connection(self) -> AgentDeviceConnection | None:
+    def resolve_device_connection(self) -> AgentDeviceConnection:
         """dynamicOpenID federation POSTs a device-signed JWT ('request' form field) next to the
-        same query string a plain GET would carry; use it to identify the device the request
-        came from. Plain (non-dynamic) federation has no such JWT and no known device."""
+        same query string a plain GET would carry; it identifies the device the request came
+        from. Only dynamicOpenID is supported, plain federation carries no device identity and
+        could neither be policy-checked nor bound to the authorization code it receives."""
         assertion = self.request.POST.get("request")
         if not assertion:
-            return None
+            LOGGER.warning("Platform SSO authorization request without a request object")
+            raise Http404
         try:
             connection = (
                 AgentDeviceConnection.objects.filter(
@@ -105,7 +107,7 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
 
     def user_has_access(self, user=None, pbm=None):
         result = self.check_license()
-        if not result.passing or not self.device_connection:
+        if not result.passing:
             return result
         return check_device_policies(
             self.device_connection.device, user or self.request.user, self.request
@@ -116,12 +118,9 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET[QS_LOGIN_HINT]
         return super().modify_flow_context(flow, context)
 
-    # The query string is identical for both methods (request.GET reads the URL regardless of
-    # method), dynamicOpenID federation just POSTs a signed request object alongside it.
+    # dynamicOpenID POSTs the signed request object alongside the same query string a plain
+    # GET would carry, so the parameters are still read from request.GET.
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return self.get(request, *args, **kwargs)
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if request.GET.get("redirect_uri") != REDIRECT_URI:
             return HttpResponseBadRequest("Invalid redirect_uri")
         if not self.connector.authorization_flow:
@@ -133,6 +132,7 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
             PLAN_CONTEXT_PSSO: {
                 "state": request.GET.get("state", ""),
                 "connector": self.connector,
+                "device_connection": self.device_connection,
                 "scope": request.GET.get("scope", "openid profile email"),
             }
         }
@@ -153,6 +153,7 @@ class PSSOAuthFulfillmentStage(StageView):
         auth_code = AppleAuthorizationCode.objects.create(
             user=request.user,
             connector=psso["connector"],
+            device_connection=psso["device_connection"],
             state=psso["state"],
             scope=psso["scope"],
             expires=now() + timedelta(minutes=5),

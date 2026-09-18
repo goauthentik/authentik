@@ -216,6 +216,8 @@ class AppleAuthorizationCode(InternallyManagedMixin, ExpiringModel):
     code = models.TextField(default=generate_id)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     connector = models.ForeignKey("AgentConnector", on_delete=models.CASCADE)
+    # The device the code was issued to, it is the only one allowed to redeem it
+    device_connection = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
     state = models.TextField(default="")
     scope = models.TextField()
 

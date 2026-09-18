@@ -290,6 +290,10 @@ class TokenView(View):
         if not auth_code:
             LOGGER.warning("Authorization code not found")
             return HttpResponse(status=400)
+        # Without this, any other device enrolled in the same connector could redeem the code
+        if auth_code.device_connection_id != self.device_connection.pk:
+            LOGGER.warning("Authorization code redeemed by a different device")
+            return HttpResponse(status=400)
         user = auth_code.user
         auth_code.delete()
         return self.login_response(user)

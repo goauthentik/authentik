@@ -16,6 +16,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleAuthorizationCode,
     AppleIndependentSecureEnclave,
     AppleNonce,
     AppleUnlockKey,
@@ -321,3 +322,67 @@ class TestAppleToken(TestCase):
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    def _authorization_code_request(self, code: str) -> dict:
+        """POST body redeeming `code` as the device set up in setUp()"""
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        return {
+            "assertion": assertion,
+            "platform_sso_version": "1.0",
+            "grant_type": "authorization_code",
+            "code": code,
+        }
+
+    @reconcile_app("authentik_crypto")
+    def test_authorization_code(self):
+        """A code bound to the redeeming device is accepted"""
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=self.user,
+            connector=self.connector,
+            device_connection=self.connection,
+            scope="openid",
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data=self._authorization_code_request(auth_code.code),
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
+
+    @reconcile_app("authentik_crypto")
+    def test_authorization_code_other_device(self):
+        """A code issued to another device of the same connector must not be redeemable"""
+        other_connection = AgentDeviceConnection.objects.create(
+            device=Device.objects.create(name=generate_id(), identifier=generate_id()),
+            connector=self.connector,
+            apple_sign_key_id=generate_id(),
+        )
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=self.user,
+            connector=self.connector,
+            device_connection=other_connection,
+            scope="openid",
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data=self._authorization_code_request(auth_code.code),
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
