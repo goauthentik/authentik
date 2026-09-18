@@ -25,8 +25,5 @@ def get_element_text(element: _Element) -> str:
 def x509_certificate_b64(cert: Certificate) -> str:
     """Encode a single certificate as base64 DER, the format used by ds:X509Certificate.
 
-    Encoding the parsed certificate rather than stripping the PEM headers off the stored
-    text ensures that a certificate chain (e.g. certbot's fullchain.pem) only results in
-    the leaf certificate being included, instead of the concatenated base64 of all
-    certificates in the chain, which is not a valid certificate."""
+    Encodes the parsed certificate, so a keypair holding a chain only yields the leaf."""
     return base64.b64encode(cert.public_bytes(Encoding.DER)).decode()
