@@ -536,10 +536,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     renderDuo() {
-        // Duo push has no client-side surface: we submit the selected device's UID and
-        // the backend blocks on the request while it sends the push and waits for the
-        // user to approve or deny it. Just show a spinner and auto-submit, mirroring the
-        // default flow executor's ak-stage-authenticator-validate-duo behaviour.
         this.html(html`
             <form id="duo-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
