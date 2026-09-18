@@ -27,7 +27,7 @@ env:
 jobs:
   check-inputs:
     name: Check inputs validity
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: check
         env:
@@ -63,7 +63,7 @@ jobs:
     name: Bump authentik version
     needs:
       - check-inputs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       release-commit: "${{ steps.commit.outputs.release-commit }}"
     steps:
@@ -138,7 +138,7 @@ jobs:
     needs:
       - bump-version
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       # Needed for checkout
       contents: read
@@ -186,9 +186,9 @@ jobs:
           - proxy
         target:
           - triple: x86_64-unknown-linux-gnu
-            runs-on: ubuntu-latest
+            runs-on: ubuntu-26.04
           - triple: aarch64-unknown-linux-gnu
-            runs-on: ubuntu-24.04-arm
+            runs-on: ubuntu-26.04-arm
           - triple: x86_64-apple-darwin
             runs-on: macos-15-intel
           - triple: aarch64-apple-darwin
@@ -223,7 +223,7 @@ jobs:
           include-hidden-files: true
   test:
     name: Pre-release test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - check-inputs
       - bump-version
@@ -255,7 +255,7 @@ jobs:
       - build-go-binaries
       - build-rust-binaries
       - test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       id-token: write
       attestations: write
