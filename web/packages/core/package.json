@@ -1,15 +1,26 @@
 {
     "name": "@goauthentik/core",
     "version": "1.0.0",
+    "private": true,
     "description": "Core functionality for the authentik monorepo",
     "license": "MIT",
-    "private": true,
-    "scripts": {
-        "build": "tsc -p ."
-    },
-    "main": "index.js",
     "type": "module",
+    "main": "index.js",
     "types": "./out/index.d.ts",
+    "imports": {
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
     "exports": {
         "./package.json": "./package.json",
         "./*/browser": {
@@ -29,19 +40,8 @@
             "import": "./index.js"
         }
     },
-    "imports": {
-        "#*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "#*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "#*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+    "scripts": {
+        "build": "tsc -p ."
     },
     "dependencies": {
         "@goauthentik/tsconfig": "^2.0.0",

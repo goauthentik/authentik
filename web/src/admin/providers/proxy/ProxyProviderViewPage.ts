@@ -8,31 +8,6 @@ import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-
-import { aki } from "#common/api/client";
-import { EVENT_REFRESH } from "#common/constants";
-
-import type { Replacer } from "#elements/ak-mdx/index";
-import { AKElement } from "#elements/Base";
-import { getURLParam } from "#elements/router/RouteMatch";
-import { formatSlug } from "#elements/router/utils";
-import { SlottedTemplateResult } from "#elements/types";
-
-import { ModelEnum, ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
-
-import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
-import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "~docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "~docs/add-secure-apps/providers/proxy/_traefik_compose.md";
-import MDTraefikIngress from "~docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "~docs/add-secure-apps/providers/proxy/header_authentication.mdx";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -44,8 +19,33 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import type { Replacer } from "#elements/ak-mdx/index";
+import { AKElement } from "#elements/Base";
+import { getSearchParam } from "#elements/router/core/search-params";
+import { formatSlug } from "#elements/router/utils";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ModelEnum, ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
+
+import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.mdx";
+import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.mdx";
+import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.mdx";
+import MDNginxStandalone from "~docs/add-secure-apps/providers/proxy/_nginx_standalone.mdx";
+import MDTraefikCompose from "~docs/add-secure-apps/providers/proxy/_traefik_compose.mdx";
+import MDTraefikIngress from "~docs/add-secure-apps/providers/proxy/_traefik_ingress.mdx";
+import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_standalone.mdx";
+import MDHeaderAuthentication from "~docs/add-secure-apps/providers/proxy/header_authentication.mdx";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
+
     switch (action) {
         case ProxyMode.Proxy:
             return msg("Proxy");
@@ -98,6 +98,7 @@ export class ProxyProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -147,17 +148,21 @@ export class ProxyProviderViewPage extends AKElement {
                 md: MDCaddyStandalone,
             },
         ];
+
         const replacers: Replacer[] = [
             (input: string): string => {
                 // The generated config is pretty unreliable currently so
                 // put it behind a flag
-                if (!getURLParam("generatedConfig", false)) {
+                if (!getSearchParam("generatedConfig", false)) {
                     return input;
                 }
+
                 if (!this.provider) {
                     return input;
                 }
+
                 const extHost = new URL(this.provider.externalHost);
+
                 // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
@@ -172,9 +177,11 @@ export class ProxyProviderViewPage extends AKElement {
                         .replaceAll("https://app.company", extHost.toString())
                         .replaceAll("app.company", extHost.hostname);
                 }
+
                 return input;
             },
         ];
+
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${servers.map((server) => {
                 return html`<div
@@ -195,8 +202,9 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -248,6 +256,7 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -279,16 +288,21 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html`${this.provider?.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by any Outpost.")}
-                  </div>`
-                : nothing}
+
+        return html`${
+                this.provider?.assignedApplicationName
+                    ? nothing
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
+            ${
+                this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by any Outpost.")}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -415,9 +429,11 @@ export class ProxyProviderViewPage extends AKElement {
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${msg("Setup")}</div>
                     <div class="pf-c-card__body">
-                        ${isForward(this.provider?.mode || ProxyMode.Proxy)
-                            ? html` ${this.renderConfig()} `
-                            : html` <p>${msg("No additional setup is required.")}</p> `}
+                        ${
+                            isForward(this.provider?.mode || ProxyMode.Proxy)
+                                ? html` ${this.renderConfig()} `
+                                : html` <p>${msg("No additional setup is required.")}</p> `
+                        }
                     </div>
                 </div>
             </div>`;

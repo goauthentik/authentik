@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,27 +15,16 @@ import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for totp authenticator devices
+ *
  * @export
  * @interface TOTPDevice
  */
 export interface TOTPDevice {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof TOTPDevice
      */
     name: string;
-    /**
-     *
-     * @type {number}
-     * @memberof TOTPDevice
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof TOTPDevice
-     */
     readonly user: PartialUser;
 }
 

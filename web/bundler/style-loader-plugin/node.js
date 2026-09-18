@@ -1,8 +1,12 @@
 /**
+ * @import {
+ *   BuildContext,
+ *   BuildOptions,
+ *   Plugin,
+ *   PluginBuild
+ * } from "esbuild"
+ * @import {BaseLogger} from "pino"
  * @file MDX plugin for ESBuild.
- *
- * @import { Plugin, PluginBuild, BuildContext, BuildOptions } from "esbuild"
- * @import { BaseLogger } from "pino"
  */
 
 import { readFile } from "node:fs/promises";
@@ -21,7 +25,6 @@ const CSSNamespace = /** @type {const} */ ({
 
 /**
  * @typedef StyleLoaderPluginOptions
- *
  * @property {boolean} [watch] Whether to watch for file changes.
  * @property {BaseLogger} [logger]
  */
@@ -30,6 +33,7 @@ const CSSNamespace = /** @type {const} */ ({
  * Selectively apply the ESBuild `css` loader.
  *
  * @param {StyleLoaderPluginOptions} [options]
+ *
  * @returns {Plugin}
  */
 export function styleLoaderPlugin({
@@ -44,6 +48,7 @@ export function styleLoaderPlugin({
      *
      * This is necessary because Patternfly's CSS references fonts via relative paths
      * that ESBuild cannot resolve automatically.
+     *
      * @type {Parameters<PluginBuild["onResolve"]>}
      */
     const fontResolverArgs = [
@@ -114,6 +119,31 @@ export function styleLoaderPlugin({
             });
 
             /**
+             * Handle plain `.css` text imports, i.e. a component's `static styles`.
+             *
+             * These bypass ESBuild's CSS pipeline entirely, so their authored source —
+             * native nesting included — reaches ShadyCSS verbatim. Lower the nesting
+             * here for the same reason the bundled path does.
+             *
+             * @see {@linkcode CSSNamespace.Bundled} for the rationale.
+             */
+            build.onLoad({ filter: /\.css$/, namespace: "file" }, async (args) => {
+                const cssContent = await readFile(args.path, "utf8");
+
+                const { code } = await build.esbuild.transform(cssContent, {
+                    loader: "css",
+                    minify: build.initialOptions.minify || false,
+                    supported: { nesting: false },
+                    logLevel: "silent",
+                });
+
+                return {
+                    contents: code,
+                    loader: "text",
+                };
+            });
+
+            /**
              * Handle `with { type: "bundled-text" }` imports.
              *
              * Bundle the CSS and return as text...
@@ -141,9 +171,9 @@ export function styleLoaderPlugin({
                      * Flattening here keeps declarations and nested rules in separate
                      * top-level rules that ShadyCSS can process intact.
                      *
-                     * ShadyCSS predates native CSS nesting.
-                     * Internally, `stringify` drops a rule's own declarations whenever
-                     * that rule also contains nested rules, discarding them while retaining the nested rules.
+                     * ShadyCSS predates native CSS nesting. Internally, `stringify` drops a rule's
+                     * own declarations whenever that rule also contains nested rules, discarding
+                     * them while retaining the nested rules.
                      *
                      * We should remove this after compatibility mode drops.
                      *

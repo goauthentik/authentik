@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,39 +12,15 @@
 
 /**
  * Serializer for User settings for stages and sources
+ *
  * @export
  * @interface UserSetting
  */
 export interface UserSetting {
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     objectUid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     component: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     title: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     configureUrl?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     iconUrl?: string;
 }
 

@@ -16,7 +16,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public findTextualInput = async (
         fieldName: string | RegExp,
@@ -25,6 +25,7 @@ export class FormFixture extends PageFixture {
         const textbox = context.getByRole("textbox", { name: fieldName });
         const searchbox = context.getByRole("searchbox", { name: fieldName });
         const spinbutton = context.getByRole("spinbutton", { name: fieldName });
+
         // Comboboxes (e.g. the Query Language input) wrap an inner textbox.
         const comboboxTextbox = context
             .getByRole("combobox", { name: fieldName })
@@ -41,7 +42,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param target The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public fill = async (
         target: string | RegExp | Locator,
@@ -68,7 +69,16 @@ export class FormFixture extends PageFixture {
         query: string,
         context: LocatorContext = this.page,
     ): Promise<Locator> => {
-        const searchInput = await this.findTextualInput(/search/i, context);
+        // Scoped to `ak-table-search` rather than the whole page: tables render either a
+        // plain searchbox or a query-language combobox, so the match has to stay
+        // role-based — but pages that mount a wizard (e.g. providers) also carry the
+        // dual-list-select search boxes for scopes, sources, and providers, which an
+        // unscoped match picks up and then fails strict mode on.
+        const searchInput = await this.findTextualInput(
+            /search/i,
+            context.locator("ak-table-search"),
+        );
+
         // We have to wait for the user to appear in the table,
         // but several UI elements will be rendered asynchronously.
         // We attempt several times to find the user to avoid flakiness.
@@ -95,6 +105,7 @@ export class FormFixture extends PageFixture {
 
             if (found) {
                 this.logger.info(`"${query}" found in the table`);
+
                 return $rowEntry;
             }
         }
@@ -106,7 +117,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public setInputCheck = async (
         fieldName: string,
@@ -136,7 +147,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param pattern the value to set.
+     * @param pattern The value to set.
      */
     public setRadio = async (
         groupName: string,
@@ -158,7 +169,7 @@ export class FormFixture extends PageFixture {
      * @param pattern The text to match against the search select entry.
      */
     public selectSearchValue = async (
-        fieldLabel: string,
+        fieldLabel: string | RegExp,
         pattern: string | RegExp,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
@@ -179,7 +190,7 @@ export class FormFixture extends PageFixture {
         await control.click();
 
         if (typeof pattern === "string") {
-            this.fill(control, pattern, parent);
+            await this.fill(control, pattern, parent);
         }
 
         const button = this.page
@@ -211,6 +222,7 @@ export class FormFixture extends PageFixture {
 
         if (currentOpen === value) {
             this.logger.debug(`Form group ${pattern} is already ${value ? "open" : "closed"}`);
+
             return;
         }
 

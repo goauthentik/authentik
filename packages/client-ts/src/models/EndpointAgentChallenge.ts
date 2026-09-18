@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,39 +16,15 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Signed challenge for authentik agent to respond to
+ *
  * @export
  * @interface EndpointAgentChallenge
  */
 export interface EndpointAgentChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof EndpointAgentChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointAgentChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof EndpointAgentChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointAgentChallenge
-     */
     challenge: string;
-    /**
-     *
-     * @type {number}
-     * @memberof EndpointAgentChallenge
-     */
     challengeIdleTimeout: number;
 }
 

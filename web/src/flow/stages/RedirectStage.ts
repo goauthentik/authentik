@@ -1,4 +1,9 @@
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -15,16 +20,12 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @state()
     startedRedirect = false;
+
+    #keydownController: AbortController | null = null;
 
     static styles: CSSResult[] = [
         PFLogin,
@@ -40,31 +41,51 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge?.to || "", document.baseURI).toString();
+        return new URL(this.challenge?.to || "", this.ownerDocument.baseURI).toString();
     }
 
     // The current implementation expects the button and the stage to share the same DOM context,
     // and the same rootNode. If that changes, this will need to be updated.
-    get promptUser() {
+    public get promptUser(): boolean {
         return !!(this.getRootNode() as Element | undefined)?.querySelector(
             "ak-flow-inspector-button",
         )?.open;
     }
 
-    updated(changed: PropertyValues<this>): void {
+    protected keydownListener = (event: KeyboardEvent): void => {
+        if (event.key === "Enter") {
+            this.redirect();
+        }
+    };
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.#keydownController?.abort();
+        this.#keydownController = null;
+    }
+
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (!changed.has("challenge")) {
             return;
         }
+
         if (this.promptUser) {
-            document.addEventListener("keydown", (ev) => {
-                if (ev.key === "Enter") {
-                    this.redirect();
-                }
-            });
+            // Register the listener once for the element's lifetime; `updated` runs on every
+            // challenge change, and the AbortController tears it down on disconnect.
+            if (!this.#keydownController) {
+                this.#keydownController = new AbortController();
+
+                this.ownerDocument.addEventListener("keydown", this.keydownListener, {
+                    signal: this.#keydownController.signal,
+                });
+            }
+
             return;
         }
+
         this.redirect();
     }
 
@@ -78,6 +99,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
         const finalRedirect = this.challenge?.finalRedirect ?? false;
+
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
@@ -98,6 +120,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
+
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
@@ -109,6 +132,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 </ak-empty-state>
             </ak-flow-card>`;
         }
+
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 

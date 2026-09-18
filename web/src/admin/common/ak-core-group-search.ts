@@ -14,10 +14,13 @@ async function fetchObjects(query?: string): Promise<Group[]> {
         ordering: "name",
         includeUsers: false,
     };
+
     if (query !== undefined) {
         args.search = query;
     }
+
     const groups = await aki(CoreApi).coreGroupsList(args);
+
     return groups.results;
 }
 
@@ -33,7 +36,6 @@ const renderValue = (group: Group | null) => group?.pk;
  * A wrapper around SearchSelect for the 8 search of groups used throughout our code
  * base.  This is one of those "If it's not error-free, at least it's localized to
  * one place" issues.
- *
  */
 
 @customElement("ak-core-group-search")
@@ -66,11 +68,14 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
     connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
+
         if (!horizontalContainer) {
             throw new Error("This search can only be used in a named ak-form-element-horizontal");
         }
+
         const name = horizontalContainer.getAttribute("name");
         const myName = this.getAttribute("name");
+
         if (name !== null && name !== myName) {
             this.setAttribute("name", name);
         }

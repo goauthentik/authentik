@@ -1,9 +1,8 @@
 /**
  * @file Re-exports every public token handle.
- *
- * Importing this module ensures all token modules execute their side-effects
- * — registering variables and theme overrides against the singleton styleframe
- * instance in `../shared.js` — before any consumer reaches `transpile()`.
+ *   Importing this module ensures all token modules execute their side-effects
+ *   — registering variables and theme overrides against the singleton styleframe
+ *   instance in `../shared.js` — before any consumer reaches `transpile()`.
  */
 
 export * from "./color.js";
