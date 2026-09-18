@@ -7,6 +7,8 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.crypto.secrets.models import SecretType
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProvider,
@@ -35,7 +37,7 @@ class GoogleWorkspaceUserTests(TestCase):
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
             name=generate_id(),
-            credentials={},
+            secret=create_test_secret("{}", SecretType.MULTILINE),
             delegated_subject="",
             exclude_users_service_account=True,
             default_group_email_domain="goauthentik.io",

@@ -55,7 +55,7 @@ export interface GoogleWorkspaceProvider {
      */
     readonly metaModelName: string;
     delegatedSubject: string;
-    credentials: { [key: string]: any };
+    secret: string;
     scopes?: string;
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string | null;
@@ -129,7 +129,7 @@ export function instanceOfGoogleWorkspaceProvider(value: object): value is Googl
             (value as Record<string, any>)["delegated_subject"] === undefined)
     )
         return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
             !("default_group_email_domain" in (value as Record<string, any>))) ||
@@ -164,7 +164,7 @@ export function GoogleWorkspaceProviderFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         delegatedSubject: json["delegated_subject"],
-        credentials: json["credentials"],
+        secret: json["secret"],
         scopes: json["scopes"] == null ? undefined : json["scopes"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -218,7 +218,7 @@ export function GoogleWorkspaceProviderToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         delegated_subject: value["delegatedSubject"],
-        credentials: value["credentials"],
+        secret: value["secret"],
         scopes: value["scopes"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],

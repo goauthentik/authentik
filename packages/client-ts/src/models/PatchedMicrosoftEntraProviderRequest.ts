@@ -30,7 +30,7 @@ export interface PatchedMicrosoftEntraProviderRequest {
      */
     propertyMappingsGroup?: Array<string>;
     clientId?: string;
-    clientSecret?: string;
+    secret?: string;
     tenantId?: string;
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string | null;
@@ -82,7 +82,7 @@ export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        secret: json["secret"] == null ? undefined : json["secret"],
         tenantId: json["tenant_id"] == null ? undefined : json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -128,7 +128,7 @@ export function PatchedMicrosoftEntraProviderRequestToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        secret: value["secret"],
         tenant_id: value["tenantId"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],

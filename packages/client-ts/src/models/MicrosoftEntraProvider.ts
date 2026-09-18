@@ -55,6 +55,7 @@ export interface MicrosoftEntraProvider {
      */
     readonly metaModelName: string;
     clientId: string;
+    secret: string;
     tenantId: string;
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string | null;
@@ -127,6 +128,7 @@ export function instanceOfMicrosoftEntraProvider(value: object): value is Micros
             (value as Record<string, any>)["client_id"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     if (
         (!("tenantId" in (value as Record<string, any>)) &&
             !("tenant_id" in (value as Record<string, any>))) ||
@@ -161,6 +163,7 @@ export function MicrosoftEntraProviderFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         clientId: json["client_id"],
+        secret: json["secret"],
         tenantId: json["tenant_id"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -213,6 +216,7 @@ export function MicrosoftEntraProviderToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         client_id: value["clientId"],
+        secret: value["secret"],
         tenant_id: value["tenantId"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],
