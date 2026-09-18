@@ -45,38 +45,29 @@ class TestAppleAuthorize(FlowTestCase):
             kwargs={"connector_uuid": str(self.connector.pk)},
         )
 
-    def request_object(self, key=None) -> str:
-        key = key or self.apple_sign_key
-        return encode(
-            {"iss": str(self.connector.pk)},
-            key.private_key,
-            headers={"kid": key.kid},
-            algorithm=JWTAlgorithms.from_private_key(key.private_key),
-        )
-
-    def form_body(self, request_object: str) -> dict:
-        """Platform SSO posts the request object as a form field, the API test client would
-        otherwise default to JSON"""
-        return {
-            "data": urlencode({"request": request_object}),
-            "content_type": "application/x-www-form-urlencoded",
-        }
-
-    def allow_device(self):
-        """Device policies are deny-by-default, bind a passing policy for self.user"""
+    @enterprise_test()
+    def test_authorize_binds_device(self):
+        """The issued code is bound to the device that signed the request object"""
+        # Device policies are deny-by-default, bind a passing policy for self.user
         group = Group.objects.create(name=generate_id())
         group.users.add(self.user)
         self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
         self.device.save()
         PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
 
-    @enterprise_test()
-    def test_authorize_binds_device(self):
-        self.allow_device()
         self.client.force_login(self.user)
+        request_object = encode(
+            {"iss": str(self.connector.pk)},
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
         res = self.client.post(
             f"{self.url}?redirect_uri={REDIRECT_URI}",
-            **self.form_body(self.request_object()),
+            # Platform SSO posts the request object as a form field, the API test client
+            # would otherwise default to JSON
+            data=urlencode({"request": request_object}),
+            content_type="application/x-www-form-urlencoded",
         )
         self.assertEqual(res.status_code, 302)
         # The flow is empty, so running the executor once reaches the fulfillment stage
@@ -95,7 +86,12 @@ class TestAppleAuthorize(FlowTestCase):
     @enterprise_test()
     def test_authorize_without_request_object(self):
         """Plain federation carries no device identity and is not supported"""
-        self.allow_device()
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.save()
+        PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
+
         self.client.force_login(self.user)
         res = self.client.post(f"{self.url}?redirect_uri={REDIRECT_URI}")
         self.assertEqual(res.status_code, 404)
@@ -103,11 +99,24 @@ class TestAppleAuthorize(FlowTestCase):
     @enterprise_test()
     def test_authorize_unknown_device(self):
         """A request object signed by a key no enrolled device uses is rejected"""
-        self.allow_device()
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.save()
+        PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
+
         self.client.force_login(self.user)
+        other_key = create_test_cert(PrivateKeyAlg.ECDSA)
+        request_object = encode(
+            {"iss": str(self.connector.pk)},
+            other_key.private_key,
+            headers={"kid": other_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(other_key.private_key),
+        )
         res = self.client.post(
             f"{self.url}?redirect_uri={REDIRECT_URI}",
-            **self.form_body(self.request_object(create_test_cert(PrivateKeyAlg.ECDSA))),
+            data=urlencode({"request": request_object}),
+            content_type="application/x-www-form-urlencoded",
         )
         self.assertEqual(res.status_code, 404)
 
@@ -115,9 +124,16 @@ class TestAppleAuthorize(FlowTestCase):
     def test_authorize_device_policy_denied(self):
         """Without a passing device policy no code is issued"""
         self.client.force_login(self.user)
+        request_object = encode(
+            {"iss": str(self.connector.pk)},
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
         res = self.client.post(
             f"{self.url}?redirect_uri={REDIRECT_URI}",
-            **self.form_body(self.request_object()),
+            data=urlencode({"request": request_object}),
+            content_type="application/x-www-form-urlencoded",
         )
         self.assertNotEqual(res.status_code, 302)
         self.assertFalse(AppleAuthorizationCode.objects.exists())
