@@ -14,8 +14,6 @@ from rest_framework.fields import CharField
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
-from authentik.endpoints.controller import BaseController
-from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device

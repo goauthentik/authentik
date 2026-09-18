@@ -1,10 +1,6 @@
-from typing import Any
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.template.response import TemplateResponse
-from django.utils.decorators import method_decorator
-from django.views import View
-from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from authentik.endpoints.models import EndpointStage
 from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
@@ -13,25 +9,19 @@ from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
     GoogleChromeController,
 )
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
-from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE
+from authentik.flows.views.frame import FlowFrameView
 
 
-@method_decorator(xframe_options_sameorigin, name="dispatch")
-class GoogleChromeDeviceTrustConnector(View):
+class GoogleChromeDeviceTrustConnector(FlowFrameView[EndpointStage]):
     """Google Chrome Device-trust connector based endpoint authenticator"""
 
-    def get_flow_plan(self) -> FlowPlan:
-        flow_plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
-        return flow_plan
-
-    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
-        super().setup(request, *args, **kwargs)
-        stage: EndpointStage = self.get_flow_plan().bindings[0].stage
-        connector = GoogleChromeConnector.objects.filter(pk=stage.connector_id).first()
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        connector = GoogleChromeConnector.objects.filter(pk=self.stage.connector_id).first()
         if not connector:
             return HttpResponseBadRequest()
         self.controller: GoogleChromeController = connector.controller(connector)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest) -> HttpResponse:
         x_device_trust = request.headers.get(HEADER_DEVICE_TRUST)
@@ -40,7 +30,6 @@ class GoogleChromeDeviceTrustConnector(View):
             return self.controller.generate_challenge(request)
         if x_access_challenge_response:
             device = self.controller.validate_challenge(x_access_challenge_response)
-            flow_plan = self.get_flow_plan()
-            flow_plan.context[PLAN_CONTEXT_DEVICE] = device
-            self.request.session[SESSION_KEY_PLAN] = flow_plan
+            with self.active_flow_plan() as plan:
+                plan.context[PLAN_CONTEXT_DEVICE] = device
         return TemplateResponse(request, "flows/frame-submit.html")
