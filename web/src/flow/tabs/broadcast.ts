@@ -104,7 +104,7 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     /**
      * Sends a message to all other tabs to discover their tab IDs.
      *
-     * @returns A promise that resolves with a set of discovered tab IDs.
+     * @returns A promise that resolves with a snapshot of the discovered tab IDs.
      */
     public async discoverTabs(): Promise<Set<string>> {
         this.discoveredTabIDs.clear();
@@ -118,7 +118,10 @@ export class Broadcast extends BroadcastChannel implements Disposable {
             setTimeout(r, 20);
         });
 
-        return this.discoveredTabIDs;
+        // Return a copy. The leader iterates an earlier result while `waitForTabExit` discovers
+        // again. Clearing and re-adding the entries of a `Set` during `for...of` visits them again,
+        // so returning the live set made the leader resume a lingering follower forever.
+        return new Set(this.discoveredTabIDs);
     }
 
     /**
