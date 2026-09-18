@@ -1,4 +1,3 @@
-
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from rest_framework.exceptions import ValidationError
