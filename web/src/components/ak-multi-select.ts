@@ -1,4 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 import { AKControlElement } from "#elements/ControlElement";
 
@@ -7,9 +9,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 type Pair = [string, string];
 
@@ -104,6 +103,7 @@ export class AkMultiSelect extends AKControlElement {
             this.values = Array.from(this.selectRef.value!.querySelectorAll("option"))
                 .filter((option) => option.selected)
                 .map((option) => option.value);
+
             this.dispatchEvent(
                 new CustomEvent("ak-select", {
                     detail: this.values,

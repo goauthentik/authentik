@@ -887,7 +887,7 @@
   <target>Не используется никаким другим объектом.</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
+  <source><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
   <target>
         <x id="0" equiv-text="${ub.name}"/>(
         <x id="1" equiv-text="${consequence}"/>)</target>
@@ -4024,10 +4024,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
   <target>Сертификат аутентификации клиента TLS</target>
-</trans-unit>
-<trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
-  <target>Пара ключей сертификата клиента для аутентификации по сертификату сервера LDAP.</target>
 </trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
@@ -7320,10 +7316,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
 </trans-unit>
-<trans-unit id="h3b1f38bb34f8b1b6">
-  <source> A valid OCI manifest URL, prefixed with the protocol
-                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
-</trans-unit>
 <trans-unit id="sc19e397bee1e67f7">
   <source>Read more about</source>
 </trans-unit>
@@ -8529,11 +8521,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
 </trans-unit>
-<trans-unit id="h30bbf18fbf87fa57">
-  <source>To create a data export, navigate to
-                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
-                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -8850,7 +8837,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
@@ -10083,7 +10070,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Copy to clipboard</source>
 </trans-unit>
 <trans-unit id="entity.edit.named">
-  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
+  <source>Edit "<x id="0" equiv-text="${label}"/>" <x id="1" equiv-text="${noun}"/></source>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
@@ -10697,8 +10684,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
-                                        to self-host Cap and configure the endpoint.</source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            to self-host Cap and configure the endpoint.</source>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
 <trans-unit id="s71fed01f96762c78">
@@ -11489,9 +11476,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="brand.form.flow-user-switch.description">
   <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
 </trans-unit>
-<trans-unit id="user-switcher.toggle.label">
-  <source>Switch user</source>
-</trans-unit>
 <trans-unit id="user-switcher.actions.add-user.label">
   <source>Add another user</source>
 </trans-unit>
@@ -11765,12 +11749,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdfea8f885f8806d9">
   <source>Pre-flow policies</source>
 </trans-unit>
-<trans-unit id="s6aca06ce9d4e3ae0">
-  <source>Stage (<x id="0" equiv-text="${verboseName}"/>)</source>
-</trans-unit>
-<trans-unit id="s62ea8b66e4a87f6e">
-  <source>Policy (<x id="0" equiv-text="${verboseName}"/>)</source>
-</trans-unit>
 <trans-unit id="s2f47ae5526f68b0c">
   <source>Flow authentication requirement</source>
 </trans-unit>
@@ -11794,6 +11772,66 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="router.view.error.heading">
   <source>This page failed to load.</source>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.missing-private-key.description">
+  <source>This certificate is not a valid option here: it has no private key.</source>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.unsupported-key-type.description">
+  <source>This certificate is not a valid option here: unsupported key type.</source>
+</trans-unit>
+<trans-unit id="h36fac547ff79f28c">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;identity/users&quot;)}&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or
+                            to <x id="2" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sf0f541e1ea73d4c8">
+  <source>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</source>
+</trans-unit>
+<trans-unit id="sbfa75b6f146142d8">
+  <source>Primary user</source>
+</trans-unit>
+<trans-unit id="hcdfe21735336b5ca">
+  <source> A valid OCI manifest URL, prefixed with the
+                                                  protocol e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.label">
+  <source>Service bind method</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.simple.label">
+  <source>Simple or anonymous bind</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.sasl-external.label">
+  <source>SASL EXTERNAL</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.description">
+  <source>Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.</source>
+</trans-unit>
+<trans-unit id="ldap-source.client-certificate.description">
+  <source>Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.</source>
+</trans-unit>
+<trans-unit id="user-switcher.avatar.alt">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.current-user.label">
+  <source>Current user "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.switch-to-user.label">
+  <source>Switch to user "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.tooltip">
+  <source>Toggle user navigation menu</source>
+</trans-unit>
+<trans-unit id="user-switcher.open.tooltip">
+  <source>Open user navigation menu</source>
+</trans-unit>
+<trans-unit id="user-switcher.menu.label">
+  <source>User navigation menu</source>
+</trans-unit>
+<trans-unit id="scc6c6c028bc1968a">
+  <source>GitLab</source>
+</trans-unit>
+<trans-unit id="sa9f8a401cf399e4b">
+  <source>Altered behavior for usage with GitLab.</source>
 </trans-unit>
 </body>
 </file>

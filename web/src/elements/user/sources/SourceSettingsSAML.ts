@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";

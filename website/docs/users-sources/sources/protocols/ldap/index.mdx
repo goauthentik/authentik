@@ -28,10 +28,19 @@ To create or edit a source in authentik, open the Admin interface and navigate t
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
 - **TLS Verification Certificate**: Select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.
-- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP server's certificate.
-- **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
-- **Bind Password**: Password used during the bind process.
+- **Service bind method**: Authentication method used for synchronization, searches, and password writeback.
+    - **Simple or anonymous bind**: Use **Bind CN** and **Bind Password** for a simple bind. If both fields are empty, authentik performs an anonymous bind. This is the default and preserves the behavior of sources created before SASL EXTERNAL support was added.
+    - **SASL EXTERNAL**: Use the identity established by the TLS client certificate. This option requires **TLS Client authentication certificate** and either an `ldap://` URI with **Enable StartTLS** selected or an `ldaps://` URI with **Enable StartTLS** cleared. The LDAP server must trust and map the certificate to an identity with the required directory permissions.
+- **TLS Client authentication certificate**: Client certificate keypair presented to the LDAP server. This field is required for SASL EXTERNAL.
+- **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`. SASL EXTERNAL ignores this field for service connections.
+- **Bind Password**: Password used during the bind process. SASL EXTERNAL ignores this field for service connections.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
+
+SASL EXTERNAL only changes the service connection. When a synchronized user signs in with an LDAP password, authentik still performs a simple bind as that user's distinguished name to verify the submitted password.
+
+:::note Active Directory client certificate authentication
+Active Directory supports SASL EXTERNAL after StartTLS. Configure an `ldap://` URI and enable **Enable StartTLS**. Active Directory treats a client certificate presented directly over LDAPS as an implicit bind and rejects a subsequent SASL EXTERNAL bind.
+:::
 
 :::note TLS handshake failures
 If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also configure `AUTHENTIK_LDAP__TLS__CIPHERS` if the server requires a specific cipher suite.
