@@ -575,52 +575,6 @@ importers:
 
   packages/node-domexception: {}
 
-  packages/oxfmt-config:
-    devDependencies:
-      '@goauthentik/oxlint-config':
-        specifier: link:../oxlint-config
-        version: link:../oxlint-config
-      '@goauthentik/tsconfig':
-        specifier: link:../tsconfig
-        version: link:../tsconfig
-      npm-run-all:
-        specifier: ^4.1.5
-        version: 4.1.5
-      oxfmt:
-        specifier: 'catalog:'
-        version: 0.68.0
-      oxlint:
-        specifier: 'catalog:'
-        version: 1.83.0
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-
-  packages/oxlint-config:
-    dependencies:
-      eslint-plugin-lit:
-        specifier: ^2.3.1
-        version: 2.3.1(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-wc:
-        specifier: ^3.1.0
-        version: 3.1.0(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
-    devDependencies:
-      '@goauthentik/tsconfig':
-        specifier: link:../tsconfig
-        version: link:../tsconfig
-      npm-run-all:
-        specifier: ^4.1.5
-        version: 4.1.5
-      oxfmt:
-        specifier: 'catalog:'
-        version: 0.68.0
-      oxlint:
-        specifier: 'catalog:'
-        version: 1.83.0
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-
   packages/sfe:
     dependencies:
       '@goauthentik/api':
