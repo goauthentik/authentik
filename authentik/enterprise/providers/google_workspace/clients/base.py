@@ -40,6 +40,9 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
             raise StopSync(exc) from exc
         self.__prefetch_domains()
 
+    def get_identifier(self, connection: TConnection) -> str:
+        return connection.google_id
+
     def __prefetch_domains(self):
         self.domains = []
         domains = self._request(self.directory_service.domains().list(customer="my_customer"))
