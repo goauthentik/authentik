@@ -33,6 +33,11 @@ class FlowInterfaceView(InterfaceView):
         kwargs["flow"] = flow
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
+        # `?compat` forces the ShadyDOM shim on for a single page load, the way
+        # `?sfe` forces the simplified executor. The flow's own setting still wins
+        # when it is enabled; this only adds a way to exercise the compatibility
+        # path without flipping a shared flow, which every other session sees.
+        kwargs["compatibility_mode"] = flow.compatibility_mode or "compat" in self.request.GET
         return super().get_context_data(**kwargs)
 
     def compat_needs_sfe(self) -> bool:
