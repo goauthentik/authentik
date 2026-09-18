@@ -393,28 +393,65 @@ class SyncTasks:
             task.warning("No provider found. Is it assigned to an application?")
             return
 
-        # Check if the object is allowed within the provider's restrictions.
-        # The queryset we get from the provider must include the instance we've got given
-        # otherwise ignore this provider. We use .exists() rather than `not queryset`
-        # because `bool(queryset)` materializes the entire queryset (calls _fetch_all),
-        # which is wasteful when we only need to know whether any row matches.
+        # Group filters only control whether the group itself is synchronized. A
+        # filtered group can still grant application access, so removals must also
+        # recheck the affected users.
         queryset: QuerySet = provider.get_object_qs(Group, pk=group_pk)
-        if not queryset.exists():
+        if queryset.exists():
+            client = provider.client_for_model(Group)
+            try:
+                operation = None
+                if action == "post_add":
+                    operation = Direction.add
+                if action == "post_remove":
+                    operation = Direction.remove
+                client.update_group(group, operation, pk_set)
+            except NotFoundSyncException:
+                if action != "post_remove":
+                    raise
+                self.logger.info(
+                    "Group not found in remote provider",
+                    group_pk=group_pk,
+                    provider_pk=provider.pk,
+                )
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except SkipObjectException:
+                return
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run event", exc=exc)
+            except StopSync as exc:
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+                return
+
+        if action != "post_remove" or not pk_set:
             return
 
-        client = provider.client_for_model(Group)
-        try:
-            operation = None
-            if action == "post_add":
-                operation = Direction.add
-            if action == "post_remove":
-                operation = Direction.remove
-            client.update_group(group, operation, pk_set)
-        except TransientSyncException as exc:
-            raise Retry() from exc
-        except SkipObjectException:
-            return
-        except DryRunRejected as exc:
-            self.logger.info("Rejected dry-run event", exc=exc)
-        except StopSync as exc:
-            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        # Recheck current application access after membership removal. Only mappings
+        # for users named by this event are considered, which preserves other bindings
+        # and makes delayed removal events safe.
+        user_client = provider.client_for_model(User)
+        in_scope = provider.get_object_qs(User, pk__in=pk_set).values("pk")
+        stale = user_client.connection_type.objects.filter(
+            provider=provider,
+            **{f"{user_client.connection_type_query}__pk__in": pk_set},
+        ).exclude(
+            **{f"{user_client.connection_type_query}__pk__in": in_scope}
+        )
+        for connection in stale:
+            try:
+                user_client.delete(connection.scim_id)
+                task.info("Deleted out-of-scope user", scim_id=connection.scim_id)
+            except NotFoundSyncException as exc:
+                self.logger.info(
+                    "Object not found in remote provider",
+                    scim_id=connection.scim_id,
+                    exc=exc,
+                )
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run cleanup event", exc=exc)
+            except StopSync as exc:
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+                return
