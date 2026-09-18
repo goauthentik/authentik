@@ -48,6 +48,10 @@ export interface CaptchaStage {
      * Public key, acquired your captcha Provider.
      */
     publicKey: string;
+    /**
+     * Private key, acquired your captcha Provider.
+     */
+    secret: string;
     jsUrl?: string;
     apiUrl?: string;
     requestContentType?: RequestContentTypeEnum;
@@ -104,6 +108,7 @@ export function instanceOfCaptchaStage(value: object): value is CaptchaStage {
             (value as Record<string, any>)["public_key"] === undefined)
     )
         return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -124,6 +129,7 @@ export function CaptchaStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         metaModelName: json["meta_model_name"],
         flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
         publicKey: json["public_key"],
+        secret: json["secret"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
         requestContentType:
@@ -158,6 +164,7 @@ export function CaptchaStageToJSONTyped(
     return {
         name: value["name"],
         public_key: value["publicKey"],
+        secret: value["secret"],
         js_url: value["jsUrl"],
         api_url: value["apiUrl"],
         request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),

@@ -31,7 +31,7 @@ export interface CaptchaStageRequest {
     /**
      * Private key, acquired your captcha Provider.
      */
-    privateKey: string;
+    secret: string;
     jsUrl?: string;
     apiUrl?: string;
     requestContentType?: RequestContentTypeEnum;
@@ -58,13 +58,7 @@ export function instanceOfCaptchaStageRequest(value: object): value is CaptchaSt
             (value as Record<string, any>)["public_key"] === undefined)
     )
         return false;
-    if (
-        (!("privateKey" in (value as Record<string, any>)) &&
-            !("private_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["privateKey"] === undefined &&
-            (value as Record<string, any>)["private_key"] === undefined)
-    )
-        return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -82,7 +76,7 @@ export function CaptchaStageRequestFromJSONTyped(
     return {
         name: json["name"],
         publicKey: json["public_key"],
-        privateKey: json["private_key"],
+        secret: json["secret"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
         requestContentType:
@@ -114,7 +108,7 @@ export function CaptchaStageRequestToJSONTyped(
     return {
         name: value["name"],
         public_key: value["publicKey"],
-        private_key: value["privateKey"],
+        secret: value["secret"],
         js_url: value["jsUrl"],
         api_url: value["apiUrl"],
         request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),

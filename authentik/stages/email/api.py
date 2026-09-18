@@ -35,7 +35,7 @@ class EmailStageSerializer(StageSerializer):
             "host",
             "port",
             "username",
-            "password",
+            "secret",
             "use_tls",
             "use_ssl",
             "timeout",
@@ -47,7 +47,6 @@ class EmailStageSerializer(StageSerializer):
             "recovery_max_attempts",
             "recovery_cache_timeout",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
 
 
 class EmailStageViewSet(UsedByMixin, ModelViewSet):

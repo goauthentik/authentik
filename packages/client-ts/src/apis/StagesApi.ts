@@ -644,13 +644,11 @@ export interface StagesAuthenticatorEmailListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    password?: string;
     port?: number;
     /**
      * A search term.
      */
     search?: string;
-    stageUuid?: string;
     subject?: string;
     template?: string;
     timeout?: number;
@@ -4155,20 +4153,12 @@ export class StagesApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters["password"] != null) {
-            queryParameters["password"] = requestParameters["password"];
-        }
-
         if (requestParameters["port"] != null) {
             queryParameters["port"] = requestParameters["port"];
         }
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
-        }
-
-        if (requestParameters["stageUuid"] != null) {
-            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         if (requestParameters["subject"] != null) {
