@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   build-compute-tags:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       safe-branch-name: "${{ steps.compute-tags.outputs.safe-branch-name }}"
       tag-full: "${{ steps.compute-tags.outputs.tag-full }}"
@@ -100,7 +100,7 @@ jobs:
             deps: rust
           - job: rustfmt
             deps: rust-nightly
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -116,7 +116,7 @@ jobs:
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -132,7 +132,7 @@ jobs:
       - name: ensure schema is up-to-date
         run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
   test-migrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -140,7 +140,7 @@ jobs:
       - name: run migrations
         run: uv run python -m lifecycle.migrate
   test-make-seed:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: seed
         run: |
@@ -149,7 +149,7 @@ jobs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs: test-make-seed
     strategy:
@@ -232,7 +232,7 @@ jobs:
           flags: unit-migrate
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs: test-make-seed
     strategy:
@@ -260,7 +260,7 @@ jobs:
         with:
           flags: unit
   test-integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -279,7 +279,7 @@ jobs:
           flags: integration
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-compute-tags
@@ -376,7 +376,7 @@ jobs:
           flags: e2e
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -436,7 +436,7 @@ jobs:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
   test-rust:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -479,7 +479,7 @@ jobs:
       - test-integration
       - test-e2e
       - test-rust
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
@@ -499,7 +499,7 @@ jobs:
       artifact-metadata: write
       # Needed for checkout
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -540,7 +540,7 @@ jobs:
     needs:
       - build-compute-tags
       - publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       # Needed to write comments on PRs
       pull-requests: write

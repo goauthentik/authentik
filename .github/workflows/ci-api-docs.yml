@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +45,7 @@ jobs:
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -85,7 +85,7 @@ jobs:
           path: website/api/build
           retention-days: 7
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - lint
       - build

@@ -34,7 +34,7 @@ jobs:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-26.04
       ref: "${{ inputs.ref }}"
       image-name: "${{ inputs.image-name }}"
       image-arch: amd64
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
-      runs-on: ubuntu-24.04-arm
+      runs-on: ubuntu-26.04-arm
       ref: "${{ inputs.ref }}"
       image-name: "${{ inputs.image-name }}"
       image-arch: arm64
@@ -57,7 +57,7 @@ jobs:
       cache-suffix: "${{ inputs.cache-suffix }}"
 
   merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - build-amd64
       - build-arm64
