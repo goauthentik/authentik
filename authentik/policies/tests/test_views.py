@@ -9,6 +9,8 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.planner import PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.policies.views import (
@@ -114,3 +116,26 @@ class TestPolicyViews(TestCase):
         res = TestView.as_view()(req)
         self.assertEqual(res.status_code, 302)
         self.assertEqual(res.url, "/if/flow/default-authentication-flow/?next=%2F")
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_pav_continuous_login_hold_context(self):
+        """Provider views can release continuous-login tabs after authentication."""
+        provider = Provider.objects.create(name=generate_id())
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        flow = Flow.objects.get(slug="default-authentication-flow")
+
+        class TestView(PolicyAccessView):
+            def resolve_provider_application(self):
+                self.provider = provider
+                self.application = app
+
+            def continuous_login_hold_required(self) -> bool:
+                return False
+
+        req = self.factory.get("/")
+        req.brand = create_test_brand(flow_authentication=flow)
+
+        response = TestView.as_view()(req)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(req.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD])

@@ -1,0 +1,19 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% trans "Redirecting..." %}</title>
+    </head>
+    <body onload="document.forms[0].submit()">
+        <form method="post" action="{{ redirect_uri }}">
+            {% for key, value in attrs.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}" />
+            {% endfor %}
+            <noscript>
+                <p>{% trans "Your browser does not support JavaScript, please click below to continue." %}</p>
+                <button type="submit">{% trans "Continue" %}</button>
+            </noscript>
+        </form>
+    </body>
+</html>
