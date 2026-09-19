@@ -410,46 +410,61 @@ class _PostgresConsumer(Consumer):
             self.logger.debug("Message already consumed by self", message_id=message_id)
             return None
 
+        table = sql.Identifier(self.query_set.model._meta.db_table)
+        consumable = sql.SQL("""
+            {table}.{message_id} = %(message_id)s
+            AND
+            {table}.{state} = ANY(%(consumable_states)s)
+            AND
+            ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
+        """).format(
+            table=table,
+            message_id=sql.Identifier("message_id"),
+            state=sql.Identifier("state"),
+            eta=sql.Identifier("eta"),
+        )
+        consumable_params: dict[str, Any] = {
+            "message_id": message_id,
+            "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
+            "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
+        }
+
         with self.locks_connection.cursor() as cursor:
-            # Take the lock on its own first. Every consumer is notified of every message, so most
-            # attempts lose the race to another consumer. Unlocking a lock that isn't held logs a
-            # "you don't own a lock" warning in PostgreSQL, so only unlock when we acquired it.
+            # Every consumer is notified of every message, so most attempts lose the race to
+            # another consumer. Unlocking a lock that isn't held logs a "you don't own a lock"
+            # warning in PostgreSQL, so we only unlock locks we acquired.
+            # The lock is only attempted for a consumable message: no row means the message is
+            # done, rejected or not due yet, and no lock was taken.
             cursor.execute(
-                "SELECT pg_try_advisory_lock(%s)",
-                (self._get_message_lock_id(message_id),),
+                sql.SQL(
+                    "SELECT pg_try_advisory_lock(%(lock_id)s) FROM {table} WHERE {consumable}"
+                ).format(
+                    table=table,
+                    consumable=consumable,
+                ),
+                {**consumable_params, "lock_id": self._get_message_lock_id(message_id)},
             )
             row = cursor.fetchone()
             if row is None or not row[0]:
                 return None
 
             cursor.execute(
-                sql.SQL("""
-                    UPDATE {table}
-                    SET {state} = %(state)s, {mtime} = %(mtime)s
-                    WHERE
-                        {table}.{message_id} = %(message_id)s
-                        AND
-                        {table}.{state} = ANY(%(consumable_states)s)
-                        AND
-                        ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
-                    """).format(
-                    table=sql.Identifier(self.query_set.model._meta.db_table),
+                sql.SQL(
+                    "UPDATE {table} SET {state} = %(state)s, {mtime} = %(mtime)s WHERE {consumable}"
+                ).format(
+                    table=table,
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
-                    message_id=sql.Identifier("message_id"),
-                    eta=sql.Identifier("eta"),
+                    consumable=consumable,
                 ),
                 {
+                    **consumable_params,
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
-                    "message_id": message_id,
-                    "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
-                    "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
                 },
             )
             if cursor.rowcount != 1:
-                # We hold the lock but the message isn't consumable (already done, rejected or
-                # not due yet), release it.
+                # The message changed between the lock and the update, release our lock.
                 self._unlock_message(message_id)
                 return None
 

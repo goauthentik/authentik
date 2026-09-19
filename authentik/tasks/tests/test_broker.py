@@ -1,11 +1,18 @@
-from unittest.mock import MagicMock
+from datetime import timedelta
+from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase, TransactionTestCase
+from django.test.utils import CaptureQueriesContext
+from django.utils.timezone import now
 from django_dramatiq_postgres.broker import CONSUMABLE_TASK_STATES, PostgresBroker
 from django_dramatiq_postgres.models import TaskState
+from django_tenants.utils import get_public_schema_name
 from dramatiq.broker import MessageProxy
 from dramatiq.message import Message
+
+from authentik.tasks.models import Task
+from authentik.tenants.models import Tenant
 
 
 class TestPostgresConsumer(SimpleTestCase):
@@ -18,13 +25,13 @@ class TestPostgresConsumer(SimpleTestCase):
         consumer.to_unlock = set()
         return consumer
 
-    def _consumer_with_cursor(self, lock_acquired: bool, rowcount: int = 0):
+    def _consumer_with_cursor(self, lock_row: tuple[bool] | None, rowcount: int = 0):
         consumer = self._consumer()
         consumer.queue_name = "default"
         consumer.timeout = 30
         consumer.broker.query_set.model._meta.db_table = "authentik_tasks_task"
         cursor = MagicMock()
-        cursor.fetchone.return_value = (lock_acquired,)
+        cursor.fetchone.return_value = lock_row
         cursor.rowcount = rowcount
         consumer._locks_connection = MagicMock()
         consumer._locks_connection.is_usable.return_value = True
@@ -35,29 +42,46 @@ class TestPostgresConsumer(SimpleTestCase):
     def _executed_sql(cursor) -> list[str]:
         return [str(call.args[0]) for call in cursor.execute.call_args_list]
 
-    def test_consume_one_does_not_unlock_when_lock_not_acquired(self):
-        consumer, cursor = self._consumer_with_cursor(lock_acquired=False)
+    def test_consume_one_does_not_lock_when_message_not_consumable(self):
+        consumer, cursor = self._consumer_with_cursor(lock_row=None)
         message_id = "00000000-0000-0000-0000-000000000001"
 
         self.assertIsNone(consumer._consume_one(message_id))
 
-        cursor.execute.assert_called_once_with(
-            "SELECT pg_try_advisory_lock(%s)",
-            (consumer._get_message_lock_id(message_id),),
-        )
+        executed = self._executed_sql(cursor)
+        self.assertEqual(len(executed), 1)
+        self.assertIn("pg_try_advisory_lock", executed[0])
+        self.assertIn("consumable_states", executed[0])
+        self.assertIn("maximum_eta", executed[0])
+        params = cursor.execute.call_args.args[1]
+        self.assertEqual(params["message_id"], message_id)
+        self.assertEqual(params["lock_id"], consumer._get_message_lock_id(message_id))
         consumer.broker.query_set.defer.assert_not_called()
         self.assertEqual(consumer.to_unlock, set())
         self.assertNotIn(message_id, consumer.in_processing)
 
-    def test_consume_one_unlocks_owned_lock_when_message_not_consumable(self):
-        consumer, cursor = self._consumer_with_cursor(lock_acquired=True, rowcount=0)
+    def test_consume_one_does_not_unlock_when_lock_not_acquired(self):
+        consumer, cursor = self._consumer_with_cursor(lock_row=(False,))
+        message_id = "00000000-0000-0000-0000-000000000001"
+
+        self.assertIsNone(consumer._consume_one(message_id))
+
+        executed = self._executed_sql(cursor)
+        self.assertEqual(len(executed), 1)
+        self.assertIn("pg_try_advisory_lock", executed[0])
+        consumer.broker.query_set.defer.assert_not_called()
+        self.assertEqual(consumer.to_unlock, set())
+        self.assertNotIn(message_id, consumer.in_processing)
+
+    def test_consume_one_unlocks_owned_lock_when_update_misses(self):
+        consumer, cursor = self._consumer_with_cursor(lock_row=(True,), rowcount=0)
         message_id = "00000000-0000-0000-0000-000000000001"
 
         self.assertIsNone(consumer._consume_one(message_id))
 
         executed = self._executed_sql(cursor)
         self.assertEqual(len(executed), 3)
-        self.assertEqual(executed[0], "SELECT pg_try_advisory_lock(%s)")
+        self.assertIn("pg_try_advisory_lock", executed[0])
         self.assertIn("UPDATE", executed[1])
         self.assertNotIn("pg_try_advisory_lock", executed[1])
         cursor.execute.assert_called_with(
@@ -68,7 +92,7 @@ class TestPostgresConsumer(SimpleTestCase):
         self.assertNotIn(message_id, consumer.in_processing)
 
     def test_consume_one_keeps_lock_when_message_consumed(self):
-        consumer, cursor = self._consumer_with_cursor(lock_acquired=True, rowcount=1)
+        consumer, cursor = self._consumer_with_cursor(lock_row=(True,), rowcount=1)
         message = Message(
             queue_name="default",
             actor_name="test.actor",
@@ -191,8 +215,11 @@ class TestPostgresConsumer(SimpleTestCase):
         self.assertEqual(pending, {"00000000-0000-0000-0000-000000000001"})
 
 
-class TestPostgresConsumerAdvisoryLocks(TestCase):
-    """Consumers racing for the same message, with real advisory locks"""
+class TestPostgresConsumerAdvisoryLocks(TransactionTestCase):
+    """Consumers racing for the same message, with real advisory locks.
+
+    Uses committed rows, since each consumer's locks connection is a separate database session.
+    """
 
     UNOWNED_LOCK_WARNING = "you don't own a lock of type ExclusiveLock"
 
@@ -201,12 +228,29 @@ class TestPostgresConsumerAdvisoryLocks(TestCase):
         self.winner = self.broker.consume(queue_name="default")
         self.loser = self.broker.consume(queue_name="default")
         self.message_id = str(uuid4())
-        self.lock_id = self.loser._get_message_lock_id(self.message_id)
 
     def tearDown(self):
         for consumer in (self.winner, self.loser):
             if consumer._locks_connection is not None:
                 consumer._locks_connection.close()
+
+    def _create_task(self, **kwargs) -> Task:
+        message = Message(
+            queue_name="default",
+            actor_name="test.actor",
+            args=(),
+            kwargs={},
+            options={},
+            message_id=self.message_id,
+        )
+        return Task.objects.create(
+            message_id=self.message_id,
+            queue_name="default",
+            actor_name="test.actor",
+            message=message.encode(),
+            tenant=Tenant.objects.get(schema_name=get_public_schema_name()),
+            **kwargs,
+        )
 
     @staticmethod
     def _capture_notices(consumer) -> list[str]:
@@ -234,22 +278,50 @@ class TestPostgresConsumerAdvisoryLocks(TestCase):
         self.assertIn(self.UNOWNED_LOCK_WARNING, notices)
 
     def test_losing_consumer_does_not_unlock(self):
-        with self.winner.locks_connection.cursor() as cursor:
-            cursor.execute("SELECT pg_try_advisory_lock(%s)", (self.lock_id,))
-            self.assertTrue(cursor.fetchone()[0])
-        notices = self._capture_notices(self.loser)
+        self._create_task(state=TaskState.QUEUED)
+        winner_notices = self._capture_notices(self.winner)
+        loser_notices = self._capture_notices(self.loser)
 
-        self.assertIsNone(self.loser._consume_one(self.message_id))
+        consumed = self.winner._consume_one(self.message_id)
+        self.assertIsNotNone(consumed)
+        self.assertEqual(consumed.message_id, self.message_id)
 
-        self.assertEqual(notices, [])
+        with patch.object(
+            self.loser, "_unlock_message", wraps=self.loser._unlock_message
+        ) as unlock:
+            self.assertIsNone(self.loser._consume_one(self.message_id))
+            unlock.assert_not_called()
+
+        self.assertEqual(winner_notices, [])
+        self.assertEqual(loser_notices, [])
         self.assertEqual(self._held_advisory_locks(self.winner), 1)
         self.assertEqual(self._held_advisory_locks(self.loser), 0)
+        self.assertEqual(Task.objects.get(message_id=self.message_id).state, TaskState.CONSUMED)
 
-    def test_not_consumable_message_releases_lock(self):
-        """No task row matches, so the lock taken by the consumer is released"""
-        notices = self._capture_notices(self.loser)
+    def test_not_consumable_message_takes_no_lock(self):
+        """Missing, finished or not yet due messages are skipped without taking the lock"""
+        cases = {
+            "missing": None,
+            "done": {"state": TaskState.DONE},
+            "rejected": {"state": TaskState.REJECTED},
+            "not due": {"state": TaskState.QUEUED, "eta": now() + timedelta(hours=1)},
+        }
+        for name, task_kwargs in cases.items():
+            with self.subTest(name):
+                self.message_id = str(uuid4())
+                if task_kwargs is not None:
+                    self._create_task(**task_kwargs)
+                notices = self._capture_notices(self.loser)
 
-        self.assertIsNone(self.loser._consume_one(self.message_id))
+                with (
+                    patch.object(
+                        self.loser, "_unlock_message", wraps=self.loser._unlock_message
+                    ) as unlock,
+                    CaptureQueriesContext(self.loser.locks_connection) as queries,
+                ):
+                    self.assertIsNone(self.loser._consume_one(self.message_id))
 
-        self.assertEqual(notices, [])
-        self.assertEqual(self._held_advisory_locks(self.loser), 0)
+                unlock.assert_not_called()
+                self.assertEqual(len(queries), 1)
+                self.assertEqual(notices, [])
+                self.assertEqual(self._held_advisory_locks(self.loser), 0)
