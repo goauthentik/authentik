@@ -10,13 +10,14 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX, check_password, make_password
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -369,6 +370,9 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
     user_permissions = None
 
+    # Set by the `password` setter when the password device has unsaved changes.
+    _password_device_dirty = False
+
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
@@ -379,7 +383,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     roles = models.ManyToManyField(
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
-    password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -396,7 +399,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ]
         indexes = [
             models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
@@ -407,6 +409,17 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if self._password_device_dirty:
+            # The user and their password device hold what used to be a single row, so
+            # they have to be written together.
+            with transaction.atomic():
+                super().save(*args, **kwargs)
+                self.password_device.save()
+            self._password_device_dirty = False
+        else:
+            super().save(*args, **kwargs)
 
     @staticmethod
     def default_path() -> str:
@@ -559,6 +572,40 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
+    @property
+    def password(self) -> str:
+        """Password hash of this user, stored on their password device.
+
+        Declaring this property also removes the `password` field that would otherwise be
+        inherited from Django's AbstractBaseUser, so the hash has a single home.
+        """
+        try:
+            return self.password_device.password
+        except ObjectDoesNotExist:
+            return UNUSABLE_PASSWORD_PREFIX
+
+    @password.setter
+    def password(self, password_hash: str):
+        """Set a password hash on the password device. As with any other field, `save()`
+        persists it."""
+        from authentik.stages.password.models import PasswordDevice
+
+        try:
+            device = self.password_device
+        except ObjectDoesNotExist:
+            device = PasswordDevice(user=self, name="Password")
+            self.password_device = device
+        device.password = password_hash
+        self._password_device_dirty = True
+
+    @property
+    def password_change_date(self) -> datetime:
+        """Date the user's password was last changed, stored on their password device."""
+        try:
+            return self.password_device.password_change_date
+        except ObjectDoesNotExist:
+            return self.date_joined
+
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
@@ -566,14 +613,15 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             if not sender:
                 sender = self
             password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        self.password_change_date = now()
-        return super().set_password(raw_password)
+        result = super().set_password(raw_password)
+        self.password_device.password_change_date = now()
+        return result
 
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored directly on the user.
+        must already be validated by the caller, and it is stored as-is.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
@@ -585,7 +633,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender = self
             password_hash_changed.send(sender=sender, user=self, request=request)
         self.password = password_hash
-        self.password_change_date = now()
+        self.password_device.password_change_date = now()
 
     def check_password(self, raw_password: str) -> bool:
         """
@@ -596,10 +644,11 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """
 
         def setter(raw_password):
-            self.set_password(raw_password, signal=False)
-            # Password hash upgrades shouldn't be considered password changes.
-            self._password = None
-            self.save(update_fields=["password"])
+            # Password hash upgrades shouldn't be considered password changes, so only the
+            # device is written and password_change_date is left alone.
+            self.password = make_password(raw_password)
+            self.password_device.save()
+            self._password_device_dirty = False
 
         return check_password(raw_password, self.password, setter)
 
