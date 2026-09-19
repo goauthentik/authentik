@@ -46,7 +46,7 @@ class RACProviderSerializer(ProviderSerializer):
             "delete_token_on_disconnect",
         ]
         extra_kwargs = {
-            "authorization_flow": {"required": True, "allow_null": False},
+            **ProviderSerializer.Meta.extra_write_kwargs,
         }
 
 

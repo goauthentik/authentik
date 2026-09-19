@@ -10,6 +10,11 @@ entries:
   - model: authentik_blueprints.metaapplyblueprint
     attrs:
       identifiers:
+        name: Default - Provider authorization flow (implicit consent)
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
         name: Default - Invalidation flow
       required: false
   - model: authentik_blueprints.metaapplyblueprint
@@ -25,6 +30,8 @@ entries:
   - attrs:
       flow_authentication:
         !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      flow_provider_authorization:
+        !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
       flow_invalidation:
         !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings:

@@ -65,6 +65,7 @@ class BrandSerializer(ModelSerializer):
             "branding_map_tiles",
             "flow_authentication",
             "flow_user_switch",
+            "flow_provider_authorization",
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
@@ -83,6 +84,9 @@ class BrandSerializer(ModelSerializer):
             "domain": {"validators": [UniqueValidator(Brand.objects.all())]},
             "web_certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
             "client_certificates": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+            # Providers fall back to this when they don't set their own authorization_flow,
+            # so every brand must have one.
+            "flow_provider_authorization": {"required": True, "allow_null": False},
         }
 
 
@@ -205,6 +209,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "branding_default_flow_background",
         "flow_authentication",
         "flow_user_switch",
+        "flow_provider_authorization",
         "flow_invalidation",
         "flow_recovery",
         "flow_unenrollment",
