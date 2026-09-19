@@ -465,6 +465,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             case "webauthn":
                 this.renderWebauthn();
                 break;
+            case "duo":
+                this.renderDuo();
+                break;
             default:
                 break;
         }
@@ -498,6 +501,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                             break;
                         case "webauthn":
                             label = "Security key";
+                            break;
+                        case "duo":
+                            label = "Duo push";
                             break;
                     }
 
@@ -597,6 +603,25 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 this.deviceChallenge = undefined;
                 this.render();
             });
+    }
+
+    renderDuo() {
+        this.html(html`
+            <form id="duo-form">
+                <img class="mb-4 brand-icon" src="${brandLogo()}" alt="" />
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <p class="text-center">Sending Duo push notification...</p>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </form>
+        `);
+
+        this.executor.submit({
+            duo: this.deviceChallenge?.deviceUid,
+        });
     }
 }
 
