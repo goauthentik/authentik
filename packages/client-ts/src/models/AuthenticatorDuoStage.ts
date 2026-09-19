@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,81 +15,38 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorDuoStage Serializer
+ *
  * @export
  * @interface AuthenticatorDuoStage
  */
 export interface AuthenticatorDuoStage {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorDuoStage
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     clientId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     apiHostname: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStage
-     */
     adminIntegrationKey?: string;
 }
 

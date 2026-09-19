@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Set token's key
+ *
  * @export
  * @interface TokenSetKeyRequest
  */
 export interface TokenSetKeyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof TokenSetKeyRequest
-     */
     key: string;
 }
 

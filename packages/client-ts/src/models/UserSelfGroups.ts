@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface UserSelfGroups
  */
 export interface UserSelfGroups {
-    /**
-     *
-     * @type {string}
-     * @memberof UserSelfGroups
-     */
     readonly name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSelfGroups
-     */
     readonly pk: string;
 }
 

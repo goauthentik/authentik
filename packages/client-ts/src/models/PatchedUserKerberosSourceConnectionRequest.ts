@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * User source connection
+ *
  * @export
  * @interface PatchedUserKerberosSourceConnectionRequest
  */
 export interface PatchedUserKerberosSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserKerberosSourceConnectionRequest
-     */
     source?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserKerberosSourceConnectionRequest
-     */
     identifier?: string;
 }
 

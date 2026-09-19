@@ -17,17 +17,31 @@ from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddlew
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
-from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.crypto import get_cookie_signing_key
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = get_cookie_signing_key()
+
+
+class LivenessMiddleware:
+    """Short-circuit liveness probe requests to bypass database and tenant middleware."""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        if request.path == "/-/health/live/":
+            return HttpResponse(status=200)
+        return self.get_response(request)
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -256,10 +270,8 @@ class ClientIPMiddleware:
                 delegated_ip=delegated_ip,
             )
             return None
-        # Update sentry scope to include correct IP
-        sentry_user = Scope.get_isolation_scope()._user or {}
-        sentry_user["ip_address"] = delegated_ip
-        Scope.get_isolation_scope().set_user(sentry_user)
+        # Update the current span to include the correct client IP
+        active_tracer().set_tag("client.address", delegated_ip)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
         try:
@@ -358,7 +370,7 @@ class LoggingMiddleware:
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
         # Those are logged by the server above
-        if request.path in ("/-/metrics/", "/-/health/live/", "/-/health/ready/"):
+        if request.path in ("/-/metrics/", "/-/health/ready/"):
             return
         for header in self.headers_to_log:
             header_value = request.headers.get(header)

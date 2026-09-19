@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Role } from "./Role";
 import { RoleFromJSON, RoleToJSON } from "./Role";
 
 /**
- *
  * @export
  * @interface PaginatedRoleList
  */
 export interface PaginatedRoleList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRoleList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Role>}
-     * @memberof PaginatedRoleList
-     */
     results: Array<Role>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRoleList
-     */
     autocomplete: { [key: string]: any };
 }
 

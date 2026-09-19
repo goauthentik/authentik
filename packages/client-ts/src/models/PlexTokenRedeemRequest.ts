@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Serializer to redeem a plex token
+ *
  * @export
  * @interface PlexTokenRedeemRequest
  */
 export interface PlexTokenRedeemRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PlexTokenRedeemRequest
-     */
     plexToken: string;
 }
 

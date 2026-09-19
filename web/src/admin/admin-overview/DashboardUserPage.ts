@@ -1,6 +1,10 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
 import "#elements/cards/AggregateCard";
 import "#elements/Divider";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -11,11 +15,6 @@ import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
@@ -43,10 +42,12 @@ export class DashboardUserPage extends AKElement {
                     >
                         <ak-aggregate-card label=${msg("Users created per day in the last month")}>
                             <ak-charts-admin-model-per-day
-                                .query=${{
-                                    contextModelApp: "authentik_core",
-                                    contextModelName: "user",
-                                } as EventsEventsVolumeListRequest}
+                                .query=${
+                                    {
+                                        contextModelApp: "authentik_core",
+                                        contextModelName: "user",
+                                    } as EventsEventsVolumeListRequest
+                                }
                                 label=${msg("Users created")}
                             >
                             </ak-charts-admin-model-per-day>
@@ -85,6 +86,7 @@ export class DashboardUserPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-user",
             header: msg("User Statistics"),

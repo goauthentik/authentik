@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedMicrosoftEntraProviderGroupList
  */
 export interface PaginatedMicrosoftEntraProviderGroupList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<MicrosoftEntraProviderGroup>}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     results: Array<MicrosoftEntraProviderGroup>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,68 +23,41 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * Flow Serializer
+ *
  * @export
  * @interface PatchedFlowRequest
  */
 export interface PatchedFlowRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedFlowRequest
-     */
     name?: string;
     /**
      * Visible in the URL.
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     slug?: string;
     /**
      * Shown as the Title in Flow pages.
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     title?: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-     * @type {FlowDesignationEnum}
-     * @memberof PatchedFlowRequest
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation?: FlowDesignationEnum;
     /**
      * Background shown during execution
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     background?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedFlowRequest
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
-     * @type {boolean}
-     * @memberof PatchedFlowRequest
      */
     compatibilityMode?: boolean;
-    /**
-     *
-     * @type {FlowLayoutEnum}
-     * @memberof PatchedFlowRequest
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
-     * @type {DeniedActionEnum}
-     * @memberof PatchedFlowRequest
      */
     deniedAction?: DeniedActionEnum;
     /**
      * Required level of authentication and authorization to access a flow.
-     * @type {AuthenticationEnum}
-     * @memberof PatchedFlowRequest
      */
     authentication?: AuthenticationEnum;
 }

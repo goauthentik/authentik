@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,45 +18,16 @@ import {
 
 /**
  * Challenge used for Code-based and WebAuthn authenticators
+ *
  * @export
  * @interface AuthenticatorValidationChallengeResponseRequest
  */
 export interface AuthenticatorValidationChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {DeviceChallengeRequest}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     selectedChallenge?: DeviceChallengeRequest;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     selectedStage?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     code?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     webauthn?: { [key: string]: any };
-    /**
-     *
-     * @type {number}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
     duo?: number;
 }
 

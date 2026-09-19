@@ -33,7 +33,7 @@ where
     }
 }
 
-fn ip_addr_trusted(ip: &IpAddr) -> Option<IpNet> {
+pub(crate) fn ip_addr_trusted(ip: &IpAddr) -> Option<IpNet> {
     let trusted_proxy_cidrs = &config::get().listen.trusted_proxy_cidrs;
     for net in trusted_proxy_cidrs {
         if net.contains(&ip.to_canonical()) {

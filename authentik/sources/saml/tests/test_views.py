@@ -1,6 +1,7 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
@@ -13,7 +14,10 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
+GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
+
+@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
 class TestViews(TestCase):
     """Test SAML Views"""
 

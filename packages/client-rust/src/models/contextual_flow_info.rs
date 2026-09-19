@@ -28,6 +28,8 @@ pub struct ContextualFlowInfo {
     pub cancel_url: String,
     #[serde(rename = "layout")]
     pub layout: models::ContextualFlowInfoLayoutEnum,
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<models::FlowMessage>>,
 }
 
 impl ContextualFlowInfo {
@@ -42,6 +44,7 @@ impl ContextualFlowInfo {
             background_themed_urls: None,
             cancel_url,
             layout,
+            messages: None,
         }
     }
 }

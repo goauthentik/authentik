@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface MDMConfigResponse
  */
 export interface MDMConfigResponse {
-    /**
-     *
-     * @type {string}
-     * @memberof MDMConfigResponse
-     */
     config: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MDMConfigResponse
-     */
     mimeType: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MDMConfigResponse
-     */
     filename: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Schedule } from "./Schedule";
 import { ScheduleFromJSON, ScheduleToJSON } from "./Schedule";
 
 /**
- *
  * @export
  * @interface PaginatedScheduleList
  */
 export interface PaginatedScheduleList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedScheduleList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Schedule>}
-     * @memberof PaginatedScheduleList
-     */
     results: Array<Schedule>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedScheduleList
-     */
     autocomplete: { [key: string]: any };
 }
 

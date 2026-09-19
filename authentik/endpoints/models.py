@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from django.core.cache import cache
-from django.db import models
-from django.db.models import OuterRef, Subquery
+from django.db import models, transaction
+from django.db.models import OuterRef, Q, Subquery
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -43,6 +43,15 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
         "DeviceAccessGroup", null=True, on_delete=models.SET_DEFAULT, default=None
     )
 
+    @staticmethod
+    @transaction.atomic
+    def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
+        defaults = defaults or {}
+        try:
+            return Device.objects.get(Q(identifier=identifier) | Q(name=name))
+        except Device.DoesNotExist:
+            return Device.objects.create(name=name, identifier=identifier, **defaults)
+
     @property
     def cache_key_facts(self):
         return f"goauthentik.io/endpoints/devices/{self.device_uuid}/facts"
@@ -71,6 +80,12 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             MERGE_LIST_UNIQUE.merge(data, snapshot_data)
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
+
+    @property
+    def primary_user_binding(self) -> DeviceUserBinding | None:
+        if hasattr(self, "user_bindings"):
+            return next((b for b in self.user_bindings if b.is_primary), None)
+        return DeviceUserBinding.objects.filter(target=self, is_primary=True).first()
 
     def __str__(self):
         return f"Device {self.name} {self.identifier} ({self.pk})"
@@ -187,7 +202,6 @@ class Connector(ScheduledModel, SerializerModel):
 
 
 class DeviceAccessGroup(AttributesMixin, SerializerModel, PolicyBindingModel):
-
     name = models.TextField(unique=True)
 
     @property

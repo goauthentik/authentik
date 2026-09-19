@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,14 @@
 
 /**
  * GoogleChromeConnector Serializer
+ *
  * @export
  * @interface GoogleChromeConnectorRequest
  */
 export interface GoogleChromeConnectorRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleChromeConnectorRequest
-     */
     connectorUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleChromeConnectorRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof GoogleChromeConnectorRequest
-     */
     enabled?: boolean;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleChromeConnectorRequest
-     */
     credentials: { [key: string]: any };
 }
 

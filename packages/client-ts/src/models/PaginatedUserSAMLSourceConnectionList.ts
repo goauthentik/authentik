@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import {
 } from "./UserSAMLSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserSAMLSourceConnectionList
  */
 export interface PaginatedUserSAMLSourceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserSAMLSourceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserSAMLSourceConnection>}
-     * @memberof PaginatedUserSAMLSourceConnectionList
-     */
     results: Array<UserSAMLSourceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserSAMLSourceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

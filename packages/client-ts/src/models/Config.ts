@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,39 +17,15 @@ import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./Erro
 
 /**
  * Serialize authentik Config into DRF Object
+ *
  * @export
  * @interface Config
  */
 export interface Config {
-    /**
-     *
-     * @type {ErrorReportingConfig}
-     * @memberof Config
-     */
     errorReporting: ErrorReportingConfig;
-    /**
-     *
-     * @type {Array<CapabilitiesEnum>}
-     * @memberof Config
-     */
     capabilities: Array<CapabilitiesEnum>;
-    /**
-     *
-     * @type {number}
-     * @memberof Config
-     */
     cacheTimeout: number;
-    /**
-     *
-     * @type {number}
-     * @memberof Config
-     */
     cacheTimeoutFlows: number;
-    /**
-     *
-     * @type {number}
-     * @memberof Config
-     */
     cacheTimeoutPolicies: number;
 }
 
