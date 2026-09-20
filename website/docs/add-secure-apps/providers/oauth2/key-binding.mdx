@@ -1,0 +1,339 @@
+---
+title: OpenID Connect key binding
+sidebar_label: Key binding
+description: Request key-bound ID tokens with DPoP, exchange authorization and device codes, and refresh with the same client key.
+authentik_version: "2026.8"
+---
+
+authentik supports [OpenID Connect Key Binding](https://openid.github.io/connect-key-binding/main.html) for clients that need ID tokens tied to a client-held asymmetric key. The client requests the `bound_key` scope and proves possession of its private key with a signed Demonstrating Proof of Possession (DPoP) JWT at the token endpoint.
+
+The resulting ID token has the JOSE header `typ: dpop+id_token` and a `cnf.jwk` claim containing the client's public key. authentik still signs the ID token with the provider's signing key. The client key and the provider signing key have different purposes.
+
+:::warning Access tokens remain bearer tokens
+This implementation binds ID tokens. Access tokens have no key-binding `cnf` claim, and the token response still uses `token_type: Bearer`. Call APIs and UserInfo with `Authorization: Bearer <access_token>`. Requesting `bound_key` does not make these access tokens resistant to theft or require APIs to validate DPoP proofs.
+:::
+
+A service accepting a bound ID token must validate the ID token and require proof of possession of the key in `cnf.jwk` according to its application protocol. Reading the claim alone does not prove that the presenter holds the private key.
+
+## Availability and supported flows
+
+Key binding is available starting with [authentik 2026.8](../../../releases/2026/v2026.8.mdx#openid-key-binding).
+
+- Authorization code: Send `bound_key` and `dpop_jkt` in the authorization request, then a DPoP proof when exchanging the code. PKCE can be used alongside key binding.
+- Device code: Send `bound_key` and `dpop_jkt` in the device authorization request, then a new DPoP proof for every token polling request.
+- Refresh token: Refresh tokens issued through either path retain the original key binding. Every refresh requires a new proof signed by that key.
+
+Use `response_type=code` for browser authorization. Tokens returned directly by implicit or hybrid authorization responses are not key-bound. The authorization-code portion of a hybrid flow can be exchanged with a proof, but this does not bind tokens already returned through the browser. Client credentials and the [RFC 8693 token exchange grant](./token_exchange.mdx) do not establish this ID-token binding.
+
+## Configure the provider and client
+
+1. [Create an OAuth2 provider](./create-oauth2-provider.mdx) and associate it with an application.
+2. In the provider's **Advanced protocol settings**, select the `openid` and `bound_key` scope mappings. The built-in binding mapping is named **authentik default OAuth Mapping: OpenID 'bound_key'**. Select `offline_access` as well if the client needs refresh tokens.
+3. Enable the required grant types on the provider: authorization code or device code, plus refresh token if needed. For device code, also [configure a device code flow on the brand](./device_code.mdx#create-and-apply-a-device-code-flow).
+4. Configure the client's redirect URI and authentication method as usual. Confidential clients still authenticate to the token endpoint. DPoP does not replace a client secret or PKCE.
+
+Read discovery at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`. The path uses the application's slug, not the provider name or client ID. Check that `scopes_supported` includes `bound_key` and that `dpop_signing_alg_values_supported` includes the client's algorithm. Advertising DPoP algorithms does not mean that access tokens are DPoP-bound.
+
+Request scopes explicitly, for example `openid bound_key offline_access`. If the authorization request omits scopes, authentik defaults to all configured scopes, which can include `bound_key` and require `dpop_jkt`. Scopes without a mapping on the provider are removed before key-binding checks. Merely adding a `DPoP` header to an ordinary code exchange does not enable binding.
+
+## Generate a key and its `dpop_jkt`
+
+Generate an asymmetric key pair on the client. Keep the private key for the lifetime of the authorization and any resulting refresh token. Send only the public JWK in proofs.
+
+Supported keys and signing algorithms are:
+
+- EC P-256 with `ES256`, P-384 with `ES384`, or P-521 with `ES512`.
+- RSA with a key size from 2048 through 8192 bits and `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, or `PS512`.
+
+Symmetric keys, `HS256`, `none`, and OKP keys such as Ed25519 are not supported for these proofs.
+
+Compute `dpop_jkt` as the [RFC 7638 SHA-256 JWK thumbprint](https://www.rfc-editor.org/rfc/rfc7638):
+
+1. Take only the required public JWK members: `crv`, `kty`, `x`, and `y` for EC, or `e`, `kty`, and `n` for RSA.
+2. Serialize them as JSON with lexicographically sorted member names and no whitespace.
+3. Hash the UTF-8 bytes with SHA-256.
+4. Base64url-encode the full digest without `=` padding.
+
+The result is a 43-character string. Do not hash a PEM file or include optional JWK members such as `kid`, `alg`, or `use` in the thumbprint input.
+
+## Request authorization
+
+For authorization code, send the following parameters to `/application/o/authorize/` using a URL-encoding library:
+
+```text
+response_type=code
+client_id=<client_id>
+redirect_uri=<redirect_uri>
+scope=openid bound_key offline_access
+state=<random_state>
+nonce=<random_nonce>
+code_challenge=<pkce_s256_challenge>
+code_challenge_method=S256
+dpop_jkt=<jwk_thumbprint>
+```
+
+Keep the key, PKCE verifier, state, and nonce until the callback completes. Validate the callback's state before exchanging its code. The key thumbprint must be present in this initial request; sending it only at the token endpoint is too late.
+
+For device code, POST form data to `/application/o/device/` with `client_id`, `scope=openid bound_key offline_access`, and `dpop_jkt`. Follow the returned verification URL and polling interval as described in the [device code guide](./device_code.mdx).
+
+## Construct the DPoP proof
+
+Sign a new JWT with the client's private key immediately before each token request. Put it in the HTTP `DPoP` header. Use this JOSE header structure:
+
+```json
+{
+    "typ": "dpop+jwt",
+    "alg": "ES256",
+    "jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "<public_x_coordinate>",
+        "y": "<public_y_coordinate>"
+    }
+}
+```
+
+The `jwk` must contain the public key whose thumbprint matches the original `dpop_jkt`. A `kid` alone is insufficient. Do not include private fields such as `d`, `p`, or `q`.
+
+| Payload claim | Required value                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `htm`         | `POST`, matching the token request method.                                                 |
+| `htu`         | The absolute token endpoint URL, such as `https://authentik.company/application/o/token/`. |
+| `iat`         | The current Unix time as an integer in seconds, within 60 seconds of authentik's clock.    |
+| `jti`         | A fresh, unpredictable string for every request, such as a random UUID.                    |
+| `c_s256`      | Required for authorization-code and device-code exchanges. Omit for refresh.               |
+
+For `htu`, authentik compares the scheme, host and port, and path, ignoring query strings and fragments. Preserve the trailing slash and use the externally visible token URL. If authentik is behind a reverse proxy, it must reconstruct the same scheme and host.
+
+Compute the code hash as:
+
+```text
+c_s256 = BASE64URL_NO_PADDING(SHA256(UTF8(code)))
+```
+
+Use the decoded authorization `code` value or the `device_code` value, before form encoding. For device flow, do not hash the human-facing `user_code`. Use the full SHA-256 digest. This claim is different from the ID token's `c_hash`, the PKCE challenge, and the DPoP access-token hash `ath`.
+
+Proofs do not require `ath` or a server-issued DPoP nonce in this implementation. The OIDC authorization `nonce` is separate. authentik caches used `jti` values for 180 seconds to reject replay. Generate a fresh proof even when retrying a failed request or polling after `authorization_pending`.
+
+## Exchange codes and refresh tokens
+
+POST URL-encoded form data to `/application/o/token/`, with the proof in `DPoP` and the client's usual authentication:
+
+- Authorization code: Include `grant_type=authorization_code`, `code`, `redirect_uri`, and `code_verifier` if PKCE was used. The proof must hash the authorization code.
+- Device code: Include `grant_type=urn:ietf:params:oauth:grant-type:device_code` and `device_code`. The proof must hash the device code for every poll.
+- Refresh token: Include `grant_type=refresh_token` and `refresh_token`. The proof does not need `c_s256`.
+
+Public clients include `client_id` in the form.
+
+Confidential clients must also supply their configured client authentication, for example HTTP Basic authentication or `client_id` and `client_secret` in the form. The successful response contains an ID token with `typ: dpop+id_token` and `cnf.jwk`. Validate the provider's signature, issuer, audience, expiration, and initial authorization nonce before trusting it. Check that the thumbprint of `cnf.jwk` equals the key requested by the client.
+
+To receive a refresh token, both configure and request `offline_access`. Omit `scope` from refresh requests to retain the original scopes. If specifying it, include `offline_access` and do not add scopes that were absent from the original grant.
+
+Sign each refresh proof with the original private key. Removing `bound_key` from the refresh request's scope does not remove the binding. If authentik rotates the refresh token, store the replacement and retain the same key; otherwise keep the existing refresh token. A lost key requires a new authorization flow. A new key cannot be substituted during refresh.
+
+## Run a client example
+
+This Python example performs authorization code with PKCE, verifies the bound ID token, and refreshes it with the same key. It keeps tokens and the private key in memory and prints the verified public key. Run it on the machine with your browser.
+
+Configure a test provider with:
+
+- A **Public** client type.
+- Authorization code and refresh token grant types.
+- The `openid`, `bound_key`, and `offline_access` scope mappings.
+- A strict redirect URI of `http://localhost:8765/callback`.
+- An RSA **Signing Key**, producing `RS256` ID tokens, and no **Encryption Key**. The client's DPoP key in this example independently uses `ES256`.
+
+Install the dependencies in a virtual environment:
+
+```shell
+python3 -m venv .venv
+.venv/bin/python -m pip install 'PyJWT[crypto]==2.10.1' 'requests==2.32.5'
+```
+
+Save the following as `key_binding_client.py`:
+
+```python title="key_binding_client.py"
+import base64
+import hashlib
+import json
+import os
+import secrets
+import time
+from urllib.parse import parse_qs, urlencode, urlsplit
+
+import jwt
+import requests
+from cryptography.hazmat.primitives.asymmetric import ec
+
+
+def b64url(value):
+    return base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+
+
+def sha256_b64url(value):
+    return b64url(hashlib.sha256(value.encode("utf-8")).digest())
+
+
+def thumbprint(public_jwk):
+    members = {name: public_jwk[name] for name in ("crv", "kty", "x", "y")}
+    return sha256_b64url(json.dumps(members, sort_keys=True, separators=(",", ":")))
+
+
+def make_proof(key, public_jwk, token_url, code=None):
+    claims = {
+        "htm": "POST",
+        "htu": token_url,
+        "iat": int(time.time()),
+        "jti": secrets.token_urlsafe(32),
+    }
+    if code is not None:
+        claims["c_s256"] = sha256_b64url(code)
+    return jwt.encode(
+        claims, key, algorithm="ES256",
+        headers={"typ": "dpop+jwt", "jwk": public_jwk},
+    )
+
+
+def main():
+    discovery_url = os.environ["AK_DISCOVERY_URL"]
+    client_id = os.environ["AK_CLIENT_ID"]
+    redirect_uri = "http://localhost:8765/callback"
+    response = requests.get(discovery_url, timeout=30)
+    response.raise_for_status()
+    metadata = response.json()
+    if "bound_key" not in metadata["scopes_supported"]:
+        raise ValueError("Configure the bound_key scope mapping on the provider")
+    if "ES256" not in metadata["dpop_signing_alg_values_supported"]:
+        raise ValueError("Provider does not advertise ES256 proofs")
+
+    key = ec.generate_private_key(ec.SECP256R1())
+    public_jwk = json.loads(jwt.algorithms.ECAlgorithm.to_jwk(key.public_key()))
+    jkt = thumbprint(public_jwk)
+    state, nonce, verifier = (secrets.token_urlsafe(32) for _ in range(3))
+    parameters = {
+        "response_type": "code", "client_id": client_id,
+        "redirect_uri": redirect_uri, "scope": "openid bound_key offline_access",
+        "state": state, "nonce": nonce, "dpop_jkt": jkt,
+        "code_challenge": sha256_b64url(verifier), "code_challenge_method": "S256",
+    }
+    print("Open this URL in your browser:")
+    print(metadata["authorization_endpoint"] + "?" + urlencode(parameters))
+    callback = urlsplit(input("Paste the full callback URL from the address bar: ").strip())
+    expected = urlsplit(redirect_uri)
+    if (callback.scheme, callback.netloc, callback.path) != (
+        expected.scheme, expected.netloc, expected.path
+    ):
+        raise ValueError("Unexpected callback URL")
+    query = parse_qs(callback.query)
+    if query.get("state") != [state]:
+        raise ValueError("Callback state mismatch")
+    if "error" in query:
+        raise RuntimeError(query)
+    code = query["code"][0]
+    jwks = jwt.PyJWKClient(metadata["jwks_uri"])
+
+    def exchange(form, code=None):
+        response = requests.post(
+            metadata["token_endpoint"],
+            data={"client_id": client_id, **form},
+            headers={"DPoP": make_proof(key, public_jwk, metadata["token_endpoint"], code)},
+            timeout=30, allow_redirects=False,
+        )
+        if response.status_code != 200:
+            raise RuntimeError(f"Token endpoint: {response.status_code} {response.text}")
+        return response.json()
+
+    def verify(tokens, expected_nonce=None):
+        encoded = tokens["id_token"]
+        signing_key = jwks.get_signing_key_from_jwt(encoded).key
+        claims = jwt.decode(
+            encoded, signing_key, algorithms=["RS256"],
+            audience=client_id, issuer=metadata["issuer"],
+            options={"require": ["iss", "sub", "aud", "exp", "iat", "cnf"]},
+        )
+        if jwt.get_unverified_header(encoded).get("typ") != "dpop+id_token":
+            raise ValueError("ID token is not key-bound")
+        if thumbprint(claims["cnf"]["jwk"]) != jkt:
+            raise ValueError("ID token is bound to a different key")
+        if expected_nonce is not None and claims.get("nonce") != expected_nonce:
+            raise ValueError("ID token nonce mismatch")
+        if tokens["token_type"].lower() != "bearer":
+            raise ValueError("Unexpected access token type")
+        print("Verified bound ID token; access token is Bearer.")
+        print(json.dumps(claims["cnf"], indent=2))
+
+    tokens = exchange({
+        "grant_type": "authorization_code", "code": code,
+        "redirect_uri": redirect_uri, "code_verifier": verifier,
+    }, code=code)
+    verify(tokens, expected_nonce=nonce)
+    refresh_token = tokens["refresh_token"]
+    refreshed = exchange({"grant_type": "refresh_token", "refresh_token": refresh_token})
+    verify(refreshed)
+    refresh_token = refreshed.get("refresh_token", refresh_token)
+    print("Refresh succeeded with the same key.")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run it with your discovery URL and client ID:
+
+```shell
+export AK_DISCOVERY_URL='https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration'
+export AK_CLIENT_ID='<client_id>'
+.venv/bin/python key_binding_client.py
+```
+
+After logging in and authorizing the request, the browser redirects to localhost. This example deliberately has no callback listener, so the browser displays a connection error. Copy the entire URL, including `code` and `state`, from the address bar into the script's prompt. Do not share that URL. Leave port 8765 unused while running the example.
+
+The script should report a verified bound ID token twice and a successful refresh. A production client should receive the callback directly, protect stored private keys and refresh tokens, and retain the latest refresh token for subsequent use. It must explicitly support `dpop+id_token` and the required `c_s256` claim; generic DPoP support alone is insufficient.
+
+## Troubleshoot common failures
+
+### Authorization or device request fails
+
+The authorization endpoint reports:
+
+```text
+invalid_request
+```
+
+Check that `bound_key` and `dpop_jkt` are both present, that the provider has the `bound_key` mapping selected, and that the thumbprint is 43 base64url characters without padding. A thumbprint supplied without the effective scope is also rejected.
+
+The device authorization endpoint distinguishes these cases:
+
+```text
+dpop_jkt_required
+dpop_jkt_not_allowed
+invalid_dpop_jkt
+```
+
+Supply the missing thumbprint, enable and request `bound_key`, or correct the thumbprint encoding, respectively.
+
+### Token exchange or refresh fails
+
+Key-binding validation failures at the token endpoint return HTTP 400 with:
+
+```json
+{ "error": "invalid_request" }
+```
+
+Inspect authentik's logs for `DPoP validation failed` or `Missing DPoP proof for key-bound token`. Check the following:
+
+| Cause                                 | Correction                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Missing proof or incorrect JWT header | Send `DPoP: <signed_jwt>` with `typ: dpop+jwt`, a supported `alg`, and a public `jwk`.                                      |
+| Wrong key                             | Use the private key whose public thumbprint was sent at authorization, including after refresh rotation.                    |
+| Missing or incorrect `c_s256`         | Hash the full authorization code or device code, not the PKCE verifier, user code, or refresh token.                        |
+| Replayed `jti`                        | Generate a new proof for every attempt, including device polls and retries.                                                 |
+| Clock skew                            | Synchronize clocks and generate `iat` in integer seconds immediately before the request.                                    |
+| `htm` or `htu` mismatch               | Use `POST` and the absolute token URL with the correct scheme, host, port, and trailing slash. Check reverse proxy headers. |
+| Unsupported or private key material   | Use a supported EC or RSA public JWK in the header and keep private fields on the client.                                   |
+
+An `invalid_grant` response can instead indicate an expired or already-used authorization code, a wrong PKCE verifier, or an expired or revoked refresh token. Correct those before troubleshooting the proof. An `invalid_scope` on refresh can indicate that `offline_access` was omitted from an explicit scope list or that new scopes were added.
+
+### Successful response has no binding
+
+A DPoP header alone does not opt an existing unbound authorization or refresh token into key binding. Start a new authorization request with the configured `bound_key` scope and `dpop_jkt`. Inspect the ID token after signature verification. Looking for `cnf` in the access token will not work because it remains a bearer token.
