@@ -64,7 +64,7 @@ class PlexSource(ScheduledModel, Source):
         default=True,
         help_text=_("Allow friends to authenticate, even if you don't share a server."),
     )
-    secret = models.ForeignKey(
+    plex_token_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Plex token"),
         help_text=_("Plex token used to check friends"),

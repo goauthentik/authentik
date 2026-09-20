@@ -9,6 +9,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
 from authentik.core.signals import deactivation_token_cleanup_inhibited
+from authentik.crypto.secrets.models import Secret, secret_value_validating
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
@@ -19,7 +20,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
-from authentik.providers.oauth2.utils import build_frontchannel_logout_url
+from authentik.providers.oauth2.utils import build_frontchannel_logout_url, validate_client_secret
 from authentik.providers.oauth2.views.provider import claims_cache_key
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
@@ -141,3 +142,10 @@ def scope_mapping_post_save_cache(sender, instance: ScopeMapping | ProviderPrope
     if isinstance(instance, ProviderPropertyMapping):
         keys.append(claims_cache_key(instance.provider))
     cache.delete_many(keys)
+
+
+@receiver(secret_value_validating, sender=Secret)
+def validate_oauth2_secret(sender, secret: Secret, value: str, **_):
+    """Keep client secrets valid for HTTP Basic authentication."""
+    if secret.oauth2_providers.exists():
+        validate_client_secret(value)

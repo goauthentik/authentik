@@ -35,7 +35,7 @@ class EmailStageSerializer(StageSerializer):
             "host",
             "port",
             "username",
-            "secret",
+            "password_ref",
             "use_tls",
             "use_ssl",
             "timeout",

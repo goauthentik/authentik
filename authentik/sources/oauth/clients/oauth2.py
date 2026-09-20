@@ -60,7 +60,7 @@ class OAuth2Client(BaseOAuthClient):
 
     def get_client_secret(self) -> str:
         """Get client secret"""
-        return self.source.secret.value
+        return self.source.consumer_secret_ref.value
 
     def get_access_token_args(self, callback: str | None, code: str | None) -> dict[str, Any]:
         args = {

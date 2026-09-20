@@ -66,7 +66,7 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
-    secret = models.ForeignKey(
+    consumer_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Consumer secret"),
         on_delete=models.PROTECT,

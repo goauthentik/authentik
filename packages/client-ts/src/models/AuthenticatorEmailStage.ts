@@ -53,7 +53,7 @@ export interface AuthenticatorEmailStage {
     host?: string;
     port?: number;
     username?: string;
-    secret?: string | null;
+    passwordRef?: string | null;
     useTls?: boolean;
     useSsl?: boolean;
     timeout?: number;
@@ -135,12 +135,12 @@ export function AuthenticatorEmailStageFromJSONTyped(
         host: json["host"] == null ? undefined : json["host"],
         port: json["port"] == null ? undefined : json["port"],
         username: json["username"] == null ? undefined : json["username"],
-        secret:
-            json["secret"] === undefined
+        passwordRef:
+            json["password_ref"] === undefined
                 ? undefined
-                : json["secret"] === null
+                : json["password_ref"] === null
                   ? null
-                  : json["secret"],
+                  : json["password_ref"],
         useTls: json["use_tls"] == null ? undefined : json["use_tls"],
         useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
@@ -174,7 +174,7 @@ export function AuthenticatorEmailStageToJSONTyped(
         host: value["host"],
         port: value["port"],
         username: value["username"],
-        secret: value["secret"],
+        password_ref: value["passwordRef"],
         use_tls: value["useTls"],
         use_ssl: value["useSsl"],
         timeout: value["timeout"],

@@ -28,7 +28,7 @@ class TestTypeApple(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=f"{self.service_identifier};{self.team_id};{self.key_id}",
-            secret=create_test_secret(self.kp.key_data),
+            consumer_secret_ref=create_test_secret(self.kp.key_data),
         )
         self.factory = RequestFactory()
 
