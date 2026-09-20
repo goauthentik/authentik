@@ -52,7 +52,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     from_number = models.TextField()
 
     account_sid = models.TextField()
-    auth_secret = models.ForeignKey(
+    auth_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Auth token"),
         on_delete=models.PROTECT,
@@ -61,7 +61,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         default=None,
         related_name="sms_stages_auth",
     )
-    auth_password_secret = models.ForeignKey(
+    auth_password_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Auth password"),
         on_delete=models.PROTECT,
@@ -103,7 +103,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
-        client = Client(self.account_sid, self.auth_secret.value)
+        client = Client(self.account_sid, self.auth_ref.value)
         message_body = str(self.get_message(token))
         if self.mapping:
             payload = sanitize_item(
@@ -150,15 +150,15 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                headers={"Authorization": f"Bearer {self.auth_secret.value}"},
+                headers={"Authorization": f"Bearer {self.auth_ref.value}"},
             )
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
                 auth=(
-                    self.auth_secret.value,
-                    self.auth_password_secret.value if self.auth_password_secret else "",
+                    self.auth_ref.value,
+                    self.auth_password_ref.value if self.auth_password_ref else "",
                 ),
             )
         else:

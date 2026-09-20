@@ -84,11 +84,11 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 </p>
             </ak-form-element-horizontal>
             <ak-secret-search-input
-                name="authSecret"
+                name="authRef"
                 label=${msg("Twilio Auth Token", {
                     id: "stage.authenticator-sms.form.twilio-auth-secret.label",
                 })}
-                value=${ifPresent(this.instance?.authSecret ?? undefined)}
+                value=${ifPresent(this.instance?.authRef ?? undefined)}
                 required
                 help=${msg("Auth token from https://console.twilio.com.", {
                     id: "stage.authenticator-sms.form.twilio-auth-secret.description",
@@ -137,7 +137,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 </p>
             </ak-form-element-horizontal>
             <ak-secret-search-input
-                name="authSecret"
+                name="authRef"
                 label=${
                     this.authType === AuthTypeEnum.Bearer
                         ? msg("Bearer token", {
@@ -147,16 +147,16 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                               id: "stage.authenticator-sms.form.api-auth-username-secret.label",
                           })
                 }
-                value=${ifPresent(this.instance?.authSecret ?? undefined)}
+                value=${ifPresent(this.instance?.authRef ?? undefined)}
                 required
             ></ak-secret-search-input>
             <ak-secret-search-input
-                name="authPasswordSecret"
+                name="authPasswordRef"
                 ?hidden=${this.authType === AuthTypeEnum.Bearer}
                 label=${msg("API Auth password", {
                     id: "stage.authenticator-sms.form.api-auth-password-secret.label",
                 })}
-                value=${ifPresent(this.instance?.authPasswordSecret ?? undefined)}
+                value=${ifPresent(this.instance?.authPasswordRef ?? undefined)}
                 blankable
                 help=${msg("The password to be used with basic auth.", {
                     id: "stage.authenticator-sms.form.auth-password-secret.description",

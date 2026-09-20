@@ -76,9 +76,9 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         </p>
                     </ak-form-element-horizontal>
                     <ak-secret-search-input
-                        name="secret"
+                        name="clientSecretRef"
                         label=${msg("Client Secret")}
-                        value=${ifPresent(this.instance?.secret ?? undefined)}
+                        value=${ifPresent(this.instance?.clientSecretRef ?? undefined)}
                         required
                         help=${msg("Client secret for the app registration.", {
                             id: "provider.microsoft-entra.form.secret.description",

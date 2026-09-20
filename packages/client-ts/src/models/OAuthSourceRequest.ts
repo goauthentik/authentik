@@ -90,7 +90,7 @@ export interface OAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey: string;
-    secret: string;
+    consumerSecretRef: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -121,7 +121,13 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             (value as Record<string, any>)["consumer_key"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
+    if (
+        (!("consumerSecretRef" in (value as Record<string, any>)) &&
+            !("consumer_secret_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["consumerSecretRef"] === undefined &&
+            (value as Record<string, any>)["consumer_secret_ref"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -199,7 +205,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        secret: json["secret"],
+        consumerSecretRef: json["consumer_secret_ref"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -245,7 +251,7 @@ export function OAuthSourceRequestToJSONTyped(
         profile_url: value["profileUrl"],
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
-        secret: value["secret"],
+        consumer_secret_ref: value["consumerSecretRef"],
         additional_scopes: value["additionalScopes"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],

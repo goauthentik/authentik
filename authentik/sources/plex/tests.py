@@ -41,7 +41,7 @@ class TestPlexSource(TestCase):
         self.source: PlexSource = PlexSource.objects.create(
             name="test",
             slug="test",
-            secret=Secret.objects.create(name="Plex token"),
+            plex_token_ref=Secret.objects.create(name="Plex token"),
         )
 
     def test_login_challenge(self):
@@ -89,7 +89,7 @@ class TestPlexSource(TestCase):
 
     def test_missing_token(self):
         """Missing credentials produce a configuration error without contacting Plex."""
-        self.source.secret = None
+        self.source.plex_token_ref = None
         self.source.save()
         self.client.force_login(create_test_admin_user())
         with Mocker() as mocker:

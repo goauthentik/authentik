@@ -20,7 +20,7 @@ class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
         self.flow = create_test_flow()
         self.stage = AuthenticatorEndpointGDTCStage.objects.create(
             name=generate_id(),
-            secret=create_test_secret("{}", SecretType.MULTILINE),
+            credentials_ref=create_test_secret("{}", SecretType.MULTILINE),
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

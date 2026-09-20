@@ -100,21 +100,29 @@ class TestSecretMigration(TransactionTestCase):
         self.addCleanup(lambda: MigrationExecutor(connection).migrate(LATEST_MIGRATIONS))
         state = migrate_to(OLD_MIGRATIONS)
         consumers = [
-            ("authentik_events", "NotificationTransport", {"webhook_url": "secret"}),
-            ("authentik_providers_oauth2", "OAuth2Provider", {"client_secret": "secret"}),
-            ("authentik_providers_radius", "RadiusProvider", {"shared_secret": "secret"}),
-            ("authentik_providers_scim", "SCIMProvider", {"token": "secret"}),
-            ("authentik_sources_ldap", "LDAPSource", {"bind_password": "secret"}),
+            ("authentik_events", "NotificationTransport", {"webhook_url": "webhook_url_ref"}),
+            (
+                "authentik_providers_oauth2",
+                "OAuth2Provider",
+                {"client_secret": "client_secret_ref"},
+            ),
+            (
+                "authentik_providers_radius",
+                "RadiusProvider",
+                {"shared_secret": "shared_secret_ref"},
+            ),
+            ("authentik_providers_scim", "SCIMProvider", {"token": "token_ref"}),
+            ("authentik_sources_ldap", "LDAPSource", {"bind_password": "bind_password_ref"}),
             (
                 "authentik_sources_oauth",
                 "OAuthSource",
-                {"consumer_secret": "secret"},
+                {"consumer_secret": "consumer_secret_ref"},
                 {"provider_type": "github"},
             ),
             (
                 "authentik_sources_oauth",
                 "OAuthSource",
-                {"consumer_secret": "secret"},
+                {"consumer_secret": "consumer_secret_ref"},
                 {
                     "name": "OAuthSource Apple",
                     "slug": "oauthsource-apple",
@@ -122,56 +130,56 @@ class TestSecretMigration(TransactionTestCase):
                     "consumer_secret": "private\nkey",
                 },
             ),
-            ("authentik_sources_plex", "PlexSource", {"plex_token": "secret"}),
-            ("authentik_sources_telegram", "TelegramSource", {"bot_token": "secret"}),
+            ("authentik_sources_plex", "PlexSource", {"plex_token": "plex_token_ref"}),
+            ("authentik_sources_telegram", "TelegramSource", {"bot_token": "bot_token_ref"}),
             (
                 "authentik_stages_authenticator_duo",
                 "AuthenticatorDuoStage",
-                {"client_secret": "secret", "admin_secret_key": "admin_secret"},
+                {"client_secret": "client_secret_ref", "admin_secret_key": "admin_secret_key_ref"},
             ),
             (
                 "authentik_stages_authenticator_email",
                 "AuthenticatorEmailStage",
-                {"password": "secret"},
+                {"password": "password_ref"},
             ),
             (
                 "authentik_stages_authenticator_sms",
                 "AuthenticatorSMSStage",
-                {"auth": "auth_secret", "auth_password": "auth_password_secret"},
+                {"auth": "auth_ref", "auth_password": "auth_password_ref"},
             ),
-            ("authentik_stages_captcha", "CaptchaStage", {"private_key": "secret"}),
-            ("authentik_stages_email", "EmailStage", {"password": "secret"}),
-            ("authentik_endpoints_connectors_fleet", "FleetConnector", {"token": "secret"}),
+            ("authentik_stages_captcha", "CaptchaStage", {"private_key": "private_key_ref"}),
+            ("authentik_stages_email", "EmailStage", {"password": "password_ref"}),
+            ("authentik_endpoints_connectors_fleet", "FleetConnector", {"token": "token_ref"}),
             (
                 "authentik_providers_microsoft_entra",
                 "MicrosoftEntraProvider",
-                {"client_secret": "secret"},
+                {"client_secret": "client_secret_ref"},
             ),
             (
                 "authentik_providers_google_workspace",
                 "GoogleWorkspaceProvider",
-                {"credentials": "secret"},
+                {"credentials": "credentials_ref"},
             ),
             (
                 "authentik_endpoints_connectors_google_chrome",
                 "GoogleChromeConnector",
-                {"credentials": "secret"},
+                {"credentials": "credentials_ref"},
             ),
             (
                 "authentik_stages_authenticator_endpoint_gdtc",
                 "AuthenticatorEndpointGDTCStage",
-                {"credentials": "secret"},
+                {"credentials": "credentials_ref"},
             ),
-            ("authentik_outposts", "KubernetesServiceConnection", {"kubeconfig": "secret"}),
+            ("authentik_outposts", "KubernetesServiceConnection", {"kubeconfig": "kubeconfig_ref"}),
             (
                 "authentik_sources_kerberos",
                 "KerberosSource",
                 {
-                    "sync_password": "secret",
-                    "sync_keytab": "sync_keytab_secret",
-                    "sync_ccache": "sync_ccache_secret",
-                    "spnego_keytab": "spnego_keytab_secret",
-                    "spnego_ccache": "spnego_ccache_secret",
+                    "sync_password": "sync_password_ref",
+                    "sync_keytab": "sync_keytab_ref",
+                    "sync_ccache": "sync_ccache_ref",
+                    "spnego_keytab": "spnego_keytab_ref",
+                    "spnego_ccache": "spnego_ccache_ref",
                 },
             ),
         ]
@@ -238,7 +246,7 @@ class TestSecretMigration(TransactionTestCase):
                 name=f"{model_name} empty", **{field: ""}
             )
             records.append(
-                (app, model_name, obj.pk, {field: "secret"}, {field: ""}, {field: "text"})
+                (app, model_name, obj.pk, {field: f"{field}_ref"}, {field: ""}, {field: "text"})
             )
 
         state = migrate_to(LATEST_MIGRATIONS)
@@ -260,13 +268,21 @@ class TestSecretMigration(TransactionTestCase):
                         columns = connection.introspection.get_table_description(
                             cursor, obj._meta.db_table
                         )
-                    self.assertIn(legacy.column, {column.name for column in columns})
+                    self.assertEqual(legacy.column, old_field)
+                    self.assertIn(old_field, {column.name for column in columns})
+                    self.assertFalse(
+                        RoleObjectPermission.objects.filter(
+                            role=role,
+                            object_pk=str(secret.pk),
+                            permission__codename__in=["change_secret", "rotate_secret"],
+                        ).exists()
+                    )
                     if values[old_field] and app != "authentik_providers_proxy":
                         self.assertTrue(
                             RoleObjectPermission.objects.filter(
                                 role=role,
                                 object_pk=str(secret.pk),
-                                permission__codename="rotate_secret",
+                                permission__codename="view_secret",
                             ).exists()
                         )
                     secret.value = (
@@ -295,15 +311,15 @@ class TestSecretPermissionMigration(TestCase):
         provider = OAuth2Provider.objects.create(name="provider")
         other_provider = OAuth2Provider.objects.create(name="other provider")
         ldap = LDAPSource.objects.create(
-            name="ldap", slug="ldap", secret=Secret.objects.create(name="ldap")
+            name="ldap", slug="ldap", bind_password_ref=Secret.objects.create(name="ldap")
         )
         transport = NotificationTransport.objects.create(
-            name="transport", secret=Secret.objects.create(name="webhook")
+            name="transport", webhook_url_ref=Secret.objects.create(name="webhook")
         )
         sms = AuthenticatorSMSStage.objects.create(
             name="sms",
-            auth_secret=Secret.objects.create(name="auth"),
-            auth_password_secret=Secret.objects.create(name="password"),
+            auth_ref=Secret.objects.create(name="auth"),
+            auth_password_ref=Secret.objects.create(name="password"),
         )
         reader = create_test_user()
         editor = create_test_user()
@@ -335,28 +351,42 @@ class TestSecretPermissionMigration(TestCase):
         migration.preserve_role_permissions(apps, connection.schema_editor())
         self.assertEqual(RoleObjectPermission.objects.count(), count)
 
-        self.assertTrue(reader.has_perm("authentik_crypto_secrets.view_secret", provider.secret))
-        self.assertFalse(
-            reader.has_perm("authentik_crypto_secrets.view_secret_value", provider.secret)
-        )
-        self.assertFalse(reader.has_perm("authentik_crypto_secrets.rotate_secret", provider.secret))
         self.assertTrue(
-            editor.has_perm("authentik_crypto_secrets.view_secret_value", provider.secret)
+            reader.has_perm("authentik_crypto_secrets.view_secret", provider.client_secret_ref)
         )
-        self.assertTrue(editor.has_perm("authentik_crypto_secrets.rotate_secret", provider.secret))
         self.assertFalse(
-            editor.has_perm("authentik_crypto_secrets.view_secret", other_provider.secret)
+            reader.has_perm(
+                "authentik_crypto_secrets.view_secret_value", provider.client_secret_ref
+            )
+        )
+        self.assertFalse(
+            reader.has_perm("authentik_crypto_secrets.rotate_secret", provider.client_secret_ref)
         )
         self.assertTrue(
-            global_editor.has_perm("authentik_crypto_secrets.rotate_secret", other_provider.secret)
+            editor.has_perm(
+                "authentik_crypto_secrets.view_secret_value", provider.client_secret_ref
+            )
+        )
+        self.assertFalse(
+            editor.has_perm("authentik_crypto_secrets.rotate_secret", provider.client_secret_ref)
+        )
+        self.assertFalse(
+            editor.has_perm(
+                "authentik_crypto_secrets.view_secret", other_provider.client_secret_ref
+            )
+        )
+        self.assertFalse(
+            global_editor.has_perm(
+                "authentik_crypto_secrets.rotate_secret", other_provider.client_secret_ref
+            )
         )
         self.assertFalse(global_editor.has_perm("authentik_crypto_secrets.rotate_secret"))
         self.assertTrue(
-            reader.has_perm("authentik_crypto_secrets.view_secret_value", transport.secret)
+            reader.has_perm("authentik_crypto_secrets.view_secret_value", transport.webhook_url_ref)
         )
-        for secret in [ldap.secret, sms.auth_secret, sms.auth_password_secret]:
-            self.assertTrue(editor.has_perm("authentik_crypto_secrets.change_secret", secret))
-            self.assertTrue(editor.has_perm("authentik_crypto_secrets.rotate_secret", secret))
+        for secret in [ldap.bind_password_ref, sms.auth_ref, sms.auth_password_ref]:
+            self.assertFalse(editor.has_perm("authentik_crypto_secrets.change_secret", secret))
+            self.assertFalse(editor.has_perm("authentik_crypto_secrets.rotate_secret", secret))
             self.assertFalse(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
         self.assertEqual(
             RoleModelPermission.objects.filter(
@@ -406,10 +436,17 @@ class TestSecretPermissionMigration(TestCase):
                     apps, connection.schema_editor(), [(app_label, model_name)]
                 )
                 for secret in secrets.values():
+                    self.assertFalse(
+                        RoleObjectPermission.objects.filter(
+                            role=role,
+                            object_pk=str(secret.pk),
+                            permission__codename__in=["change_secret", "rotate_secret"],
+                        ).exists()
+                    )
                     self.assertTrue(
                         RoleObjectPermission.objects.filter(
                             role=role,
                             object_pk=str(secret.pk),
-                            permission__codename="rotate_secret",
+                            permission__codename="view_secret",
                         ).exists()
                     )

@@ -44,10 +44,10 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             slug: pk,
         });
 
-        if (source.secret) {
+        if (source.plexTokenRef) {
             try {
                 const { value } = await aki(SecretsApi).secretsSecretsViewValueRetrieve({
-                    secretUuid: source.secret,
+                    secretUuid: source.plexTokenRef,
                 });
 
                 this.plexToken = value;
@@ -81,12 +81,14 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             data.allowFriends = this.instance.allowFriends;
         }
 
-        if (this.instance?.secret) {
-            data.secret = this.instance.secret;
+        if (this.instance?.plexTokenRef) {
+            data.plexTokenRef = this.instance.plexTokenRef;
         }
 
         if (this.plexToken && this.plexToken !== this.initialToken) {
-            data.secret = await this.saveTokenSecret(data.name || this.instance?.name || "Plex");
+            data.plexTokenRef = await this.saveTokenSecret(
+                data.name || this.instance?.name || "Plex",
+            );
         }
 
         if (this.instance?.pk) {
@@ -106,7 +108,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     private createdSecretPk?: string;
 
     private async saveTokenSecret(sourceName: string): Promise<string> {
-        const target = this.instance?.secret ?? this.createdSecretPk;
+        const target = this.instance?.plexTokenRef ?? this.createdSecretPk;
 
         if (target) {
             await aki(SecretsApi).secretsSecretsPartialUpdate({

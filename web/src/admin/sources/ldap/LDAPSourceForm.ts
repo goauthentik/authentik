@@ -237,9 +237,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                     </ak-form-element-horizontal>
                     <ak-secret-search-input
-                        name="secret"
+                        name="bindPasswordRef"
                         label=${msg("Bind Password")}
-                        value=${ifPresent(this.instance?.secret)}
+                        value=${ifPresent(this.instance?.bindPasswordRef)}
                         blankable
                         help=${msg("Password used to bind to the LDAP server.", {
                             id: "source.ldap.form.secret.description",

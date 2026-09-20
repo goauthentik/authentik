@@ -18,7 +18,7 @@ from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     """GoogleWorkspaceProvider Serializer"""
 
-    secret = JSONSecretReferenceField(
+    credentials_ref = JSONSecretReferenceField(
         queryset=Secret.objects.all(), required=True, allow_null=False
     )
 
@@ -36,7 +36,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "verbose_name_plural",
             "meta_model_name",
             "delegated_subject",
-            "secret",
+            "credentials_ref",
             "scopes",
             "exclude_users_service_account",
             "filter_group",

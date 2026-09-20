@@ -27,7 +27,7 @@ class TestSCIMOAuthAuth(APITestCase):
             slug=generate_id(),
             access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
-            secret=create_test_secret(generate_id()),
+            consumer_secret_ref=create_test_secret(generate_id()),
             provider_type="openidconnect",
         )
         self.provider = SCIMProvider.objects.create(

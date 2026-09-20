@@ -342,7 +342,7 @@ class TestCrypto(APITestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            secret=create_test_secret(generate_key()),
+            client_secret_ref=create_test_secret(generate_key()),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
@@ -374,7 +374,7 @@ class TestCrypto(APITestCase):
         OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            secret=create_test_secret(generate_key()),
+            client_secret_ref=create_test_secret(generate_key()),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,

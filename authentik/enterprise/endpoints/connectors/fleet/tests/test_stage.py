@@ -22,7 +22,7 @@ class FleetConnectorStageTests(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", secret=create_test_secret(generate_id())
+            name=generate_id(), url="http://localhost", token_ref=create_test_secret(generate_id())
         )
 
         controller = self.connector.controller(self.connector)

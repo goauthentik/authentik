@@ -237,9 +237,9 @@ export function renderForm({
                 >
                 </ak-text-input>
                 <ak-secret-search-input
-                    name="secret"
+                    name="clientSecretRef"
                     label=${msg("Client Secret")}
-                    value=${ifPresent(provider.secret)}
+                    value=${ifPresent(provider.clientSecretRef)}
                     blankable
                     help=${
                         provider.pk

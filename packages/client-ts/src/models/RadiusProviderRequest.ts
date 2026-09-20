@@ -40,7 +40,7 @@ export interface RadiusProviderRequest {
     /**
      * Shared secret between clients and server to hash packets.
      */
-    secret?: string | null;
+    sharedSecretRef?: string | null;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
      * the TOTP code to the password. This should only be enabled if all users that will bind to
@@ -96,12 +96,12 @@ export function RadiusProviderRequestFromJSONTyped(
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        secret:
-            json["secret"] === undefined
+        sharedSecretRef:
+            json["shared_secret_ref"] === undefined
                 ? undefined
-                : json["secret"] === null
+                : json["shared_secret_ref"] === null
                   ? null
-                  : json["secret"],
+                  : json["shared_secret_ref"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
         certificate:
             json["certificate"] === undefined
@@ -131,7 +131,7 @@ export function RadiusProviderRequestToJSONTyped(
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
         client_networks: value["clientNetworks"],
-        secret: value["secret"],
+        shared_secret_ref: value["sharedSecretRef"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
     };

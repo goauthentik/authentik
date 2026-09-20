@@ -142,9 +142,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 </ak-radio>
             </ak-form-element-horizontal>
             <ak-secret-search-input
-                name="secret"
+                name="webhookUrlRef"
                 label=${msg("Webhook URL")}
-                value=${ifPresent(this.instance?.secret ?? undefined)}
+                value=${ifPresent(this.instance?.webhookUrlRef ?? undefined)}
                 blankable
                 ?required=${this.showWebhook}
                 ?hidden=${!this.showWebhook}

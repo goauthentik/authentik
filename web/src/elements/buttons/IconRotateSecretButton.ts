@@ -86,6 +86,12 @@ export function IconRotateSecretButton({
                     )}
                 </p>
                 <p>
+                    ${msg(
+                        "If this secret is used for proxy cookies, rotating it invalidates all sessions for those proxy providers.",
+                        { id: "secret-rotate.confirm.proxy-sessions.description" },
+                    )}
+                </p>
+                <p>
                     <a
                         href=${docLink("/sys-mgmt/secrets/rotation/")}
                         target="_blank"

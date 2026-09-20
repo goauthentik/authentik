@@ -82,7 +82,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     _client_secret = models.TextField(db_column="client_secret")
 
     client_id = models.TextField()
-    secret = models.ForeignKey(
+    client_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
         on_delete=models.PROTECT,
@@ -167,7 +167,9 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
 
     def microsoft_credentials(self):
         return {
-            "credentials": ClientSecretCredential(self.tenant_id, self.client_id, self.secret.value)
+            "credentials": ClientSecretCredential(
+                self.tenant_id, self.client_id, self.client_secret_ref.value
+            )
         }
 
     @property

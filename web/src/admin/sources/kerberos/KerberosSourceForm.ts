@@ -265,9 +265,9 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
                     <ak-secret-search-input
-                        name="secret"
+                        name="syncPasswordRef"
                         label=${msg("Sync password")}
-                        value=${ifPresent(this.instance?.secret)}
+                        value=${ifPresent(this.instance?.syncPasswordRef)}
                         blankable
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
@@ -275,10 +275,10 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
-                        name="syncKeytabSecret"
+                        name="syncKeytabRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Sync keytab")}
-                        value=${ifPresent(this.instance?.syncKeytabSecret)}
+                        value=${ifPresent(this.instance?.syncKeytabRef)}
                         blankable
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
@@ -286,10 +286,10 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
-                        name="syncCcacheSecret"
+                        name="syncCcacheRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Sync credentials cache")}
-                        value=${ifPresent(this.instance?.syncCcacheSecret)}
+                        value=${ifPresent(this.instance?.syncCcacheRef)}
                         blankable
                         help=${msg(
                             "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",
@@ -309,10 +309,10 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         )}
                     ></ak-text-input>
                     <ak-secret-search-input
-                        name="spnegoKeytabSecret"
+                        name="spnegoKeytabRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("SPNEGO keytab")}
-                        value=${ifPresent(this.instance?.spnegoKeytabSecret)}
+                        value=${ifPresent(this.instance?.spnegoKeytabRef)}
                         blankable
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
@@ -320,10 +320,10 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
-                        name="spnegoCcacheSecret"
+                        name="spnegoCcacheRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("SPNEGO credentials cache")}
-                        value=${ifPresent(this.instance?.spnegoCcacheSecret)}
+                        value=${ifPresent(this.instance?.spnegoCcacheRef)}
                         blankable
                         help=${msg(
                             "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",

@@ -433,14 +433,14 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
                     <ak-secret-search-input
-                        name="secret"
+                        name="consumerSecretRef"
                         .types=${[
                             this.providerType?.name === ProviderTypeEnum.Apple
                                 ? SecretTypeEnum.Multiline
                                 : SecretTypeEnum.Text,
                         ]}
                         label=${msg("Consumer secret")}
-                        value=${ifPresent(this.instance?.secret)}
+                        value=${ifPresent(this.instance?.consumerSecretRef)}
                         required
                         help=${msg("Also known as Client Secret.", {
                             id: "source.oauth.form.secret.description",

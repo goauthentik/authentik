@@ -41,7 +41,7 @@ class MicrosoftEntraUserTests(APITestCase):
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            secret=create_test_secret(generate_id()),
+            client_secret_ref=create_test_secret(generate_id()),
             tenant_id=generate_id(),
             exclude_users_service_account=True,
         )
