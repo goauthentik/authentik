@@ -36,6 +36,39 @@ During the full sync, if a user or group exists in both authentik and Entra ID, 
 
 Additionally, any users or groups present in authentik but absent in Entra ID will be created and linked.
 
+## Deletion and offboarding
+
+The provider's **User deletion action** and **Group deletion action** control what happens to the linked Entra ID object when you delete its counterpart in authentik. Both settings default to **Delete**. Deletion is processed by a background sync task and requires the provider to remain assigned to an application. Dry-run mode prevents changes to the remote directory.
+
+| Action                         | When an authentik user is deleted                                                                         | When an authentik group is deleted                                          |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **Delete** (`delete`, default) | Deletes the linked Entra ID user account.                                                                 | Deletes the linked Entra ID group.                                          |
+| **Suspend** (`suspend`)        | Keeps the Entra ID account and disables sign-in by setting Microsoft Graph's `accountEnabled` to `false`. | Unsupported. Treated as **Do Nothing**, leaving the remote group unchanged. |
+| **Do Nothing** (`do_nothing`)  | Leaves the Entra ID account unchanged, including its enabled or suspended status.                         | Leaves the Entra ID group unchanged.                                        |
+
+All three actions remove authentik's connection record for the deleted user or group. **Suspend** retains the remote user account; it does not retain the deleted authentik user. **Do Nothing** does not revoke access to the remote account.
+
+Suspension applies only to users. The **Group deletion action** field offers **Delete** and **Do Nothing**. If `group_delete_action` is set to `suspend` through the API or a blueprint, authentik removes the connection record without modifying the remote group.
+
+The Entra ID provider's Admin interface currently offers **Delete** and **Do Nothing** for users. To use suspension on deletion, set `user_delete_action` to `suspend` through the API or a blueprint.
+
+### Deactivate a user without deleting the account
+
+Marking an authentik user inactive is an update, so it does not use **User deletion action**. With the default user property mapping, authentik sets `account_enabled` to `False`, which becomes `accountEnabled: false` in Microsoft Graph. The authentik user and its connection record remain, and reactivating the user allows the default mapping to enable the remote account again.
+
+This requires the user to remain included in synchronization. Custom property mappings can change whether active status is synchronized.
+
+### Offboard users and groups
+
+- To retain a user's accounts while disabling sign-in, mark the authentik user inactive and verify that synchronization has disabled the Entra ID account before removing the user from synchronization filters.
+- To delete an authentik user while retaining the remote account, configure **User deletion action** as `suspend` before deleting the user. Use **Do Nothing** only if you intend to manage the remote account's access separately.
+- To delete the remote user or group as well, use **Delete**. Complete any required data retention or ownership transfers in Entra ID before deleting the authentik object.
+- After offboarding, check the provider's sync tasks for errors and verify the account or group state in Entra ID.
+
+Removing a user from the provider's filtering group, changing **User filtering** to exclude the user, or skipping a user with `SkipObject` does not itself delete or suspend the remote account. These changes exclude the user from provisioning updates. Removing group membership can also remove that membership in Entra ID, but it does not disable the account.
+
+Do not rely on filtering alone to revoke access. If you later delete a previously linked authentik user, its retained connection record still allows the configured deletion action to run.
+
 ## Error handling
 
 Property mappings are evaluated in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings.
