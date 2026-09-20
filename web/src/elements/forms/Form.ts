@@ -51,7 +51,7 @@ import { instanceOfValidationError } from "@goauthentik/api";
 import { createRef, ref } from "lit-html/directives/ref.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, noChange, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -823,7 +823,8 @@ export class Form<T = Record<string, unknown>, D = T>
 
     protected override render(): SlottedTemplateResult {
         if (!this.visible) {
-            return nothing;
+            // Preserve unsaved inputs when layout changes temporarily hide the form.
+            return noChange;
         }
 
         return [
