@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Test property mapping execution for a user/group with context
+ *
  * @export
  * @interface PropertyMappingTestRequest
  */
 export interface PropertyMappingTestRequest {
-    /**
-     *
-     * @type {number}
-     * @memberof PropertyMappingTestRequest
-     */
     user?: number | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PropertyMappingTestRequest
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     * @type {string}
-     * @memberof PropertyMappingTestRequest
-     */
     group?: string | null;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,52 +12,19 @@
 
 /**
  * OAuth2 Provider Metadata serializer
+ *
  * @export
  * @interface OAuth2ProviderSetupURLs
  */
 export interface OAuth2ProviderSetupURLs {
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly issuer: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly authorize: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly token: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly userInfo: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly providerInfo: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly logout: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
-     */
     readonly jwks: string;
+    readonly dcrRegistration: string | null;
 }
 
 /**
@@ -85,6 +50,13 @@ export function instanceOfOAuth2ProviderSetupURLs(value: object): value is OAuth
         return false;
     if (!("logout" in value) || value["logout"] === undefined) return false;
     if (!("jwks" in value) || value["jwks"] === undefined) return false;
+    if (
+        (!("dcrRegistration" in (value as Record<string, any>)) &&
+            !("dcr_registration" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["dcrRegistration"] === undefined &&
+            (value as Record<string, any>)["dcr_registration"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -107,6 +79,7 @@ export function OAuth2ProviderSetupURLsFromJSONTyped(
         providerInfo: json["provider_info"],
         logout: json["logout"],
         jwks: json["jwks"],
+        dcrRegistration: json["dcr_registration"],
     };
 }
 
@@ -117,7 +90,14 @@ export function OAuth2ProviderSetupURLsToJSON(json: any): OAuth2ProviderSetupURL
 export function OAuth2ProviderSetupURLsToJSONTyped(
     value?: Omit<
         OAuth2ProviderSetupURLs,
-        "issuer" | "authorize" | "token" | "userInfo" | "providerInfo" | "logout" | "jwks"
+        | "issuer"
+        | "authorize"
+        | "token"
+        | "userInfo"
+        | "providerInfo"
+        | "logout"
+        | "jwks"
+        | "dcrRegistration"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

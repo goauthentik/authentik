@@ -1,6 +1,9 @@
 use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc};
 
-use ak_axum::{router::wrap_router, server};
+use ak_axum::{
+    router::{make_request_body_limit_layer, wrap_router},
+    server,
+};
 use ak_common::{
     arbiter::{Arbiter, Tasks},
     config,
@@ -71,6 +74,7 @@ fn build_router(state: Arc<Metrics>) -> Router {
             .with_state(state),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }
 
 pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {

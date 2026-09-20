@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-use ak_axum::router::wrap_router;
+use ak_axum::router::{make_request_body_limit_layer, wrap_router};
 use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
 use ak_common::{
     Tasks,
@@ -66,7 +66,7 @@ impl Outpost for ProxyOutpost {
     async fn new(controller: Arc<OutpostController>) -> Result<Self> {
         Ok(Self {
             controller,
-            apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
+            apps: ArcSwap::from_pointee(HashMap::new()),
             certificate_store: CertificateStore::new(),
             default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
         })
@@ -283,4 +283,5 @@ fn build_router(outpost: Arc<ProxyOutpost>) -> Router {
             .with_state(outpost),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }

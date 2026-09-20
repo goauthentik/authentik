@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use ak_axum::{error::Result, router::wrap_router};
+use ak_axum::{
+    error::Result,
+    router::{make_request_body_limit_layer, wrap_router},
+};
 use ak_common::db;
 use axum::{Router, extract::State, http::StatusCode, routing::any};
 use tracing::{instrument, warn};
@@ -69,4 +72,5 @@ pub(super) fn build_router(workers: Arc<Workers>) -> Router {
             .with_state(workers),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }

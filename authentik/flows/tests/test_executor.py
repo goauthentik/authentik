@@ -822,6 +822,7 @@ class TestFlowExecutor(FlowTestCase):
                 "cancel_url": "/flows/-/cancel/?next=%2Ffoo",
                 "layout": "stacked",
                 "title": flow.title,
+                "messages": [],
             },
         )
 

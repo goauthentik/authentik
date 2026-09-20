@@ -2,7 +2,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
@@ -33,8 +32,12 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                 )}
             </span>
             <ak-text-input
-                label=${msg("Stage Name")}
-                placeholder=${msg("Type a name for this stage...")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
                 required
                 name="name"
                 value=${ifPresent(this.instance?.name || "")}

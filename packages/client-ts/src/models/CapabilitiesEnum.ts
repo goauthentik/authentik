@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,7 +11,6 @@
  */
 
 /**
- *
  * @export
  */
 export const CapabilitiesEnum = {
@@ -24,6 +21,8 @@ export const CapabilitiesEnum = {
     CanImpersonate: "can_impersonate",
     CanDebug: "can_debug",
     IsEnterprise: "is_enterprise",
+    CanRequest: "can_request",
+    CanAgentSelfService: "can_agent_self_service",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type CapabilitiesEnum = (typeof CapabilitiesEnum)[keyof typeof CapabilitiesEnum];

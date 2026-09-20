@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,86 +18,38 @@ import {
 
 /**
  * MicrosoftEntraProvider Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderRequest
  */
 export interface MicrosoftEntraProviderRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     name: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof MicrosoftEntraProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     clientId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     clientSecret: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     tenantId: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     filterGroup?: string | null;
-    /**
-     *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     userDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof MicrosoftEntraProviderRequest
-     */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof MicrosoftEntraProviderRequest
      */
     syncPageSize?: number;
     /**
+     * When enabled, authentik will attempt to discover existing resources in the remote system.
+     */
+    discoveryEnabled?: boolean;
+    /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof MicrosoftEntraProviderRequest
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof MicrosoftEntraProviderRequest
      */
     dryRun?: boolean;
 }
@@ -173,6 +123,7 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
                 ? undefined
                 : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
         syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
@@ -202,6 +153,7 @@ export function MicrosoftEntraProviderRequestToJSONTyped(
         user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
         group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
         sync_page_size: value["syncPageSize"],
+        discovery_enabled: value["discoveryEnabled"],
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
     };

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,14 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Dummy challenge
+ *
  * @export
  * @interface DummyChallenge
  */
 export interface DummyChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof DummyChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof DummyChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof DummyChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof DummyChallenge
-     */
     name: string;
 }
 

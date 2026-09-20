@@ -9,9 +9,12 @@ use std::{
     },
 };
 
-use ak_axum::extract::{
-    host::{Host, host_middleware},
-    trusted_proxy::trusted_proxy_middleware,
+use ak_axum::{
+    extract::{
+        host::{Host, host_middleware},
+        trusted_proxy::trusted_proxy_middleware,
+    },
+    router::make_request_body_limit_layer,
 };
 use ak_common::{Arbiter, Event, Tasks, config, tls::self_signed};
 use arc_swap::ArcSwapOption;
@@ -238,6 +241,7 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
             },
             _ = check_interval.tick() => {
                 if !server.is_alive().await {
+                    arbiter.do_fast_shutdown().await;
                     return Err(eyre!("the server has exited unexpectedly"));
                 }
             },
@@ -306,7 +310,8 @@ fn build_router(server: &Arc<Server>) -> Result<Router> {
         .fallback(any(route_core_and_outpost))
         .with_state((core_router, proxy_router, Arc::clone(&server.proxy_outpost)))
         .layer(from_fn(host_middleware))
-        .layer(from_fn(trusted_proxy_middleware)))
+        .layer(from_fn(trusted_proxy_middleware))
+        .layer(make_request_body_limit_layer()))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {

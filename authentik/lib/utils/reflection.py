@@ -16,7 +16,7 @@ LOGGER = get_logger()
 
 
 def all_subclasses[T: type](cls: T, sort=True) -> list[T] | set[T]:
-    """Recursively return all subclassess of cls"""
+    """Recursively return all subclasses of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
     )

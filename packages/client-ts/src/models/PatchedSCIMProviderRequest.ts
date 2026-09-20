@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,104 +23,62 @@ import {
 
 /**
  * SCIMProvider Serializer
+ *
  * @export
  * @interface PatchedSCIMProviderRequest
  */
 export interface PatchedSCIMProviderRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
     /**
      * Base URL to SCIM requests, usually ends in /v2
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     url?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
-     */
     verifyCertificates?: boolean;
     /**
      * Authentication token
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     token?: string;
-    /**
-     *
-     * @type {SCIMAuthenticationModeEnum}
-     * @memberof PatchedSCIMProviderRequest
-     */
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * OAuth Source used for authentication
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     authOauth?: string | null;
     /**
      * Additional OAuth parameters, such as grant_type
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedSCIMProviderRequest
      */
     authOauthParams?: { [key: string]: any };
     /**
      * Alter authentik behavior for vendor-specific SCIM implementations.
-     * @type {CompatibilityModeEnum}
-     * @memberof PatchedSCIMProviderRequest
      */
     compatibilityMode?: CompatibilityModeEnum;
     /**
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     serviceProviderConfigCacheTimeout?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
-     */
     excludeUsersServiceAccount?: boolean;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof PatchedSCIMProviderRequest
      */
     syncPageSize?: number;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     syncPageTimeout?: string;
     /**
+     * When enabled, authentik will attempt to discover existing resources in the remote system.
+     */
+    discoveryEnabled?: boolean;
+    /**
      * Group filters used to define sync-scope for groups.
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
      */
     groupFilters?: Array<string>;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
      */
     dryRun?: boolean;
 }
@@ -181,6 +137,7 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
                 : json["exclude_users_service_account"],
         syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
+        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
@@ -213,6 +170,7 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         sync_page_size: value["syncPageSize"],
         sync_page_timeout: value["syncPageTimeout"],
+        discovery_enabled: value["discoveryEnabled"],
         group_filters: value["groupFilters"],
         dry_run: value["dryRun"],
     };

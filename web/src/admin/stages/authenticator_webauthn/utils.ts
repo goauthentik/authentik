@@ -6,6 +6,7 @@ import { html } from "lit";
 
 export function deviceTypeRestrictionPair(item: WebAuthnDeviceType): DualSelectPair {
     const label = item.description ? item.description : item.aaguid;
+
     return [
         item.aaguid,
         html`<div class="selection-main">${label}</div>

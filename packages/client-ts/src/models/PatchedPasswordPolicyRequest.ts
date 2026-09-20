@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,98 +12,37 @@
 
 /**
  * Password Policy Serializer
+ *
  * @export
  * @interface PatchedPasswordPolicyRequest
  */
 export interface PatchedPasswordPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     name?: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PatchedPasswordPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof PatchedPasswordPolicyRequest
      */
     passwordField?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     amountDigits?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     amountUppercase?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     amountLowercase?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     amountSymbols?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     lengthMin?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     symbolCharset?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     errorMessage?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     checkStaticRules?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     checkHaveIBeenPwned?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPasswordPolicyRequest
-     */
     checkZxcvbn?: boolean;
     /**
      * How many times the password hash is allowed to be on haveibeenpwned
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
      */
     hibpAllowedCount?: number;
     /**
      * If the zxcvbn score is equal or less than this value, the policy will fail.
-     * @type {number}
-     * @memberof PatchedPasswordPolicyRequest
      */
     zxcvbnScoreThreshold?: number;
 }

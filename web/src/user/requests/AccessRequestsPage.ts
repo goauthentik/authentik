@@ -3,6 +3,9 @@ import "#elements/a11y/ak-skip-to-content";
 import "#user/requests/BrowseRequestable";
 import "#user/requests/MyGrantRequestsList";
 import "#user/requests/PendingReviewList";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -10,20 +13,17 @@ import { PaginatedResponse } from "#common/api/responses";
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AccessRequestFulfillForm } from "#user/requests/AccessRequestFulfillForm";
 import Styles from "#user/user-settings/styles.css";
 
 import { GrantRequest, RequestsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-access-requests-page")
 export class AccessRequestsPage extends AKElement {
@@ -32,8 +32,12 @@ export class AccessRequestsPage extends AKElement {
     @state()
     toReview?: PaginatedResponse<GrantRequest>;
 
+    @property({ attribute: "request-to-fulfill" })
+    requestToFulfill: string | null = null;
+
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
+
         try {
             this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
         } catch (error) {
@@ -41,21 +45,35 @@ export class AccessRequestsPage extends AKElement {
         }
     }
 
+    protected updated(changedProperties: PropertyValues): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("requestToFulfill") && this.requestToFulfill !== null) {
+            aki(RequestsApi)
+                .requestsGrantRequestsRetrieve({
+                    uuid: this.requestToFulfill,
+                })
+                .then((req) => {
+                    const form = new AccessRequestFulfillForm();
+                    form.request = req;
+                    form.showModal();
+                });
+        }
+    }
+
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-                ${(this.toReview?.pagination.count || 0) > 0
-                    ? html`<div class="pf-c-banner pf-m-info">
-                          ${msg("Requests to review: ")}
-                          <a
-                              href=${paramURL("/requests", {
-                                  page: "page-for-review",
-                              })}
-                              >${msg("Review")}</a
-                          >
-                      </div>`
-                    : nothing}
+                ${
+                    (this.toReview?.pagination.count || 0) > 0
+                        ? html`<div class="pf-c-banner pf-m-info">
+                              ${msg("Requests to review: ")}
+                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                          </div>`
+                        : nothing
+                }
                 <ak-tabs
+                    routed
                     role="main"
                     aria-label=${msg("Access requests")}
                     ${AKSkipToContent.ref}

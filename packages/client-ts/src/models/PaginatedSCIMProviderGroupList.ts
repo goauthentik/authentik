@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { SCIMProviderGroup } from "./SCIMProviderGroup";
 import { SCIMProviderGroupFromJSON, SCIMProviderGroupToJSON } from "./SCIMProviderGroup";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMProviderGroupList
  */
 export interface PaginatedSCIMProviderGroupList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMProviderGroupList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SCIMProviderGroup>}
-     * @memberof PaginatedSCIMProviderGroupList
-     */
     results: Array<SCIMProviderGroup>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMProviderGroupList
-     */
     autocomplete: { [key: string]: any };
 }
 

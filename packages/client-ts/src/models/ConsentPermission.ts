@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Permission used for consent
+ *
  * @export
  * @interface ConsentPermission
  */
 export interface ConsentPermission {
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentPermission
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentPermission
-     */
     id: string;
 }
 

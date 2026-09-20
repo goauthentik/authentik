@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,33 +18,14 @@ import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL";
 
 /**
  * Challenge for iframe logout
+ *
  * @export
  * @interface IframeLogoutChallenge
  */
 export interface IframeLogoutChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof IframeLogoutChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof IframeLogoutChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof IframeLogoutChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<LogoutURL>}
-     * @memberof IframeLogoutChallenge
-     */
     logoutUrls?: Array<LogoutURL>;
 }
 

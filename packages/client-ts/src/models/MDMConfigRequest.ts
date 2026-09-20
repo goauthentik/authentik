@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,12 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface MDMConfigRequest
  */
 export interface MDMConfigRequest {
-    /**
-     *
-     * @type {DeviceFactsOSFamily}
-     * @memberof MDMConfigRequest
-     */
     platform: DeviceFactsOSFamily;
-    /**
-     *
-     * @type {string}
-     * @memberof MDMConfigRequest
-     */
     enrollmentToken: string;
 }
 

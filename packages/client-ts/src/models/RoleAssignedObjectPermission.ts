@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,33 +17,14 @@ import { RoleObjectPermissionFromJSON, RoleObjectPermissionToJSON } from "./Role
 
 /**
  * Roles assigned object permission serializer
+ *
  * @export
  * @interface RoleAssignedObjectPermission
  */
 export interface RoleAssignedObjectPermission {
-    /**
-     *
-     * @type {string}
-     * @memberof RoleAssignedObjectPermission
-     */
     readonly rolePk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleAssignedObjectPermission
-     */
     readonly name: string;
-    /**
-     *
-     * @type {Array<RoleObjectPermission>}
-     * @memberof RoleAssignedObjectPermission
-     */
     objectPermissions: Array<RoleObjectPermission>;
-    /**
-     *
-     * @type {Array<RoleModelPermission>}
-     * @memberof RoleAssignedObjectPermission
-     */
     modelPermissions: Array<RoleModelPermission>;
 }
 

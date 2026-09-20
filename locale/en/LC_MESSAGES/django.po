@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-31 00:31+0000\n"
+"POT-Creation-Date: 2026-09-17 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,11 @@ msgstr ""
 msgid "User lacks permission to create {model}"
 msgstr ""
 
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "Invalid blueprint file: {exc}"
+msgstr ""
+
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
 msgstr ""
@@ -167,6 +172,16 @@ msgstr ""
 msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
+msgstr ""
+
+#: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ "
+"templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
 msgstr ""
 
 #: authentik/brands/models.py
@@ -238,6 +253,18 @@ msgstr ""
 msgid "User does not have permission to add members to this group."
 msgstr ""
 
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr ""
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add a superuser parent group."
+msgstr ""
+
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr ""
+
 #: authentik/core/api/object_attributes.py
 msgid "Unique cannot be enabled for arrays."
 msgstr ""
@@ -262,14 +289,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Can't change internal service account to other user type."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to add members to a superuser group."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to assign roles."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -642,6 +661,30 @@ msgstr ""
 msgid "Object Attributes"
 msgstr ""
 
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
+msgstr ""
+
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid ""
@@ -665,6 +708,10 @@ msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
+msgstr ""
+
+#: authentik/core/sources/matcher.py
+msgid "Missing property"
 msgstr ""
 
 #: authentik/core/tasks.py
@@ -802,6 +849,19 @@ msgstr ""
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Key type {key_type} is not supported. Supported key types are: {allowed}."
+msgstr ""
+
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Unable to determine the key type of this certificate. Supported key types "
+"are: {allowed}."
 msgstr ""
 
 #: authentik/endpoints/api/stages.py
@@ -946,6 +1006,30 @@ msgstr ""
 
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Only internal user accounts can create agents."
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -1501,6 +1585,18 @@ msgstr ""
 msgid "Generate data export."
 msgstr ""
 
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents can request access through this endpoint."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "This agent has no owner who could approve its request."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents with an expiry can request access."
+msgstr ""
+
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
 msgstr ""
@@ -1724,6 +1820,10 @@ msgid ""
 msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
+msgid "Source matching failure reasons for which the flow should resume."
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
 msgstr ""
 
@@ -1890,57 +1990,6 @@ msgstr ""
 msgid "Flow not applicable to current user/request: {messages}"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Policy ({type})"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Binding {order}"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy passed"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Stage ({type})"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy denied"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "End of the flow"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement not fulfilled"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Flow authentication requirement"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement fulfilled"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Pre-flow policies"
-msgstr ""
-
-#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
-msgid "Flow"
-msgstr ""
-
-#: authentik/flows/apps.py
-msgid "Refresh other tabs after successful authentication."
-msgstr ""
-
 #: authentik/flows/apps.py
 msgid ""
 "Upon successful authentication, re-start authentication in other open tabs."
@@ -1985,6 +2034,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
+msgstr ""
+
+#: authentik/flows/models.py
+msgid "Flow"
 msgstr ""
 
 #: authentik/flows/models.py
@@ -2063,6 +2116,12 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
@@ -3058,10 +3117,6 @@ msgid ""
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py
-msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
-msgstr ""
-
-#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr ""
 
@@ -3492,6 +3547,10 @@ msgstr ""
 msgid "Can manage media files"
 msgstr ""
 
+#: authentik/rbac/tasks.py
+msgid "Remove object-level permissions whose object no longer exists."
+msgstr ""
+
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
 msgstr ""
@@ -3621,6 +3680,23 @@ msgstr ""
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 
+#: authentik/sources/ldap/api/sources.py
+msgid "SASL EXTERNAL requires a client certificate with a private key."
+msgstr ""
+
+#: authentik/sources/ldap/api/sources.py
+msgid ""
+"SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without StartTLS."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Simple or anonymous bind"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "SASL EXTERNAL"
+msgstr ""
+
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
 msgstr ""
@@ -3638,6 +3714,10 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Bind CN"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Authentication method used for LDAP synchronization and writeback."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -4094,6 +4174,10 @@ msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr ""
 
 #: authentik/sources/saml/models.py
+msgid "Audience value this IdP sends for authentik."
+msgstr ""
+
+#: authentik/sources/saml/models.py
 msgid "SSO URL"
 msgstr ""
 
@@ -4247,6 +4331,22 @@ msgstr ""
 
 #: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS certificate verification failed."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS error."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "An internal error occurred while importing devices."
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
@@ -5352,6 +5452,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
 msgstr ""
 
 #: authentik/tenants/models.py

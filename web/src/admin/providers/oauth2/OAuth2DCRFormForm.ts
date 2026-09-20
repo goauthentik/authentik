@@ -1,7 +1,6 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/LicenseNotice";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -9,7 +8,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-radio-input";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -27,8 +25,8 @@ export interface OAuth2DCRFormProps {
 
 export function renderForm({ dcr }: OAuth2DCRFormProps) {
     dcr ||= {};
-    return html`<ak-license-notice></ak-license-notice>
-        <ak-text-input
+
+    return html`<ak-text-input
             name="defaultApplicationGroup"
             label=${msg("Default application group")}
             value="${ifDefined(dcr.defaultApplicationGroup)}"
@@ -78,7 +76,7 @@ export function renderForm({ dcr }: OAuth2DCRFormProps) {
             ></ak-dual-select-dynamic-selected>
             <p class="pf-c-form__helper-text">
                 ${msg(
-                    "Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.",
+                    "Scope mappings applied to dynamically registered clients. When not selected, scope mappings of the parent provider are used.",
                 )}
             </p>
         </ak-form-element-horizontal>

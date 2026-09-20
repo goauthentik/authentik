@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,28 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface RequestRuleChildBindingRequest
  */
 export interface RequestRuleChildBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleChildBindingRequest
-     */
     uuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleChildBindingRequest
-     */
     binding: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleChildBindingRequest
-     */
     target: string;
 }
 
