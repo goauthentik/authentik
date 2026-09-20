@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_client_secret", "secret", None, "client secret")]
+FIELDS = [("_client_secret", "client_secret_ref", None, "client secret")]
 
 
 def migrate_client_secret(apps, schema_editor):
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="microsoftentraprovider",
-            name="secret",
+            name="client_secret_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

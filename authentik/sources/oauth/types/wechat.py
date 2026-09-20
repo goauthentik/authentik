@@ -37,7 +37,7 @@ class WeChatOAuth2Client(OAuth2Client):
         token_url = self.source.source_type.access_token_url
         params = {
             "appid": self.get_client_id(),
-            "secret": self.get_client_secret(),
+            "consumer_secret_ref": self.get_client_secret(),
             "code": code,
             "grant_type": "authorization_code",
         }

@@ -53,13 +53,13 @@ class NotificationTransportSerializer(ModelSerializer):
         """Ensure the required fields are set."""
         mode = attrs.get("mode", getattr(self.instance, "mode", None))
         if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
-            secret = attrs.get("secret", getattr(self.instance, "secret", None))
+            secret = attrs.get("webhook_url_ref", getattr(self.instance, "webhook_url_ref", None))
             if not secret:
-                raise ValidationError({"secret": "Webhook URL may not be empty."})
+                raise ValidationError({"webhook_url_ref": "Webhook URL may not be empty."})
             try:
                 DomainlessURLValidator()(secret.value)
             except DjangoValidationError as exc:
-                raise ValidationError({"secret": exc.messages}) from exc
+                raise ValidationError({"webhook_url_ref": exc.messages}) from exc
         return attrs
 
     class Meta:
@@ -69,7 +69,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "name",
             "mode",
             "mode_verbose",
-            "secret",
+            "webhook_url_ref",
             "webhook_ca",
             "webhook_mapping_body",
             "webhook_mapping_headers",

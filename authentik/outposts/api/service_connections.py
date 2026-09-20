@@ -109,27 +109,27 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
 
-    secret = JSONSecretReferenceField(
+    kubeconfig_ref = JSONSecretReferenceField(
         queryset=Secret.objects.all(), required=False, allow_null=True
     )
 
     def validate(self, attrs):
         local = attrs.get("local", getattr(self.instance, "local", False))
-        secret = attrs.get("secret", getattr(self.instance, "secret", None))
+        secret = attrs.get("kubeconfig_ref", getattr(self.instance, "kubeconfig_ref", None))
         if not local:
             if not secret:
                 raise serializers.ValidationError(
-                    {"secret": _("A kubeconfig secret is required for a remote cluster.")}
+                    {"kubeconfig_ref": _("A kubeconfig secret is required for a remote cluster.")}
                 )
             try:
                 validate_kubeconfig(secret)
             except DjangoValidationError as exc:
-                raise serializers.ValidationError({"secret": exc.messages}) from exc
+                raise serializers.ValidationError({"kubeconfig_ref": exc.messages}) from exc
         return attrs
 
     class Meta:
         model = KubernetesServiceConnection
-        fields = ServiceConnectionSerializer.Meta.fields + ["secret", "verify_ssl"]
+        fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig_ref", "verify_ssl"]
 
 
 class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):

@@ -65,11 +65,13 @@ class OAuthSourceSerializer(SourceSerializer):
             "provider_type",
             self.instance.provider_type if self.instance else None,
         )
-        secret = attrs.get("secret", self.instance.secret if self.instance else None)
+        secret = attrs.get(
+            "consumer_secret_ref", self.instance.consumer_secret_ref if self.instance else None
+        )
         expected_type = SecretType.MULTILINE if provider_type_name == "apple" else SecretType.TEXT
         if secret and secret.type != expected_type:
             raise ValidationError(
-                {"secret": _("This secret type is not supported by this source.")}
+                {"consumer_secret_ref": _("This secret type is not supported by this source.")}
             )
         source_type = registry.find_type(provider_type_name)
 
@@ -148,7 +150,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "profile_url",
             "pkce",
             "consumer_key",
-            "secret",
+            "consumer_secret_ref",
             "callback_url",
             "additional_scopes",
             "type",
@@ -158,7 +160,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "secret": {
+            "consumer_secret_ref": {
                 "required": True,
                 "allow_null": False,
                 "allowed_types": (SecretType.TEXT, SecretType.MULTILINE),

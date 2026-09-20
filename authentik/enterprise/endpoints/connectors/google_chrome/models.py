@@ -25,7 +25,7 @@ class GoogleChromeConnector(Connector):
     # Remove the legacy credential columns in 2027.2.
     credentials = models.JSONField(default=dict)
 
-    secret = models.ForeignKey(
+    credentials_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Google credentials"),
         on_delete=models.PROTECT,
@@ -39,7 +39,7 @@ class GoogleChromeConnector(Connector):
         try:
             return {
                 "credentials": Credentials.from_service_account_info(
-                    self.secret.get_json(),
+                    self.credentials_ref.get_json(),
                     scopes=["https://www.googleapis.com/auth/verifiedaccess"],
                 ),
             }

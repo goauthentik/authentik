@@ -14,7 +14,7 @@ class CaptchaStageSerializer(StageSerializer):
         model = CaptchaStage
         fields = StageSerializer.Meta.fields + [
             "public_key",
-            "secret",
+            "private_key_ref",
             "js_url",
             "api_url",
             "request_content_type",
@@ -24,7 +24,7 @@ class CaptchaStageSerializer(StageSerializer):
             "error_on_invalid_score",
         ]
         extra_kwargs = {
-            "secret": {"required": True, "allow_null": False},
+            "private_key_ref": {"required": True, "allow_null": False},
         }
 
 

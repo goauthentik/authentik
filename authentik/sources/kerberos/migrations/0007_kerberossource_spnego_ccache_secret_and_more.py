@@ -11,10 +11,10 @@ from authentik.crypto.secrets.migrations._credential_values import (
 )
 
 FIELDS = [
-    ("sync_keytab", "sync_keytab_secret", "multiline", "sync keytab"),
-    ("sync_ccache", "sync_ccache_secret", "multiline", "sync ccache"),
-    ("spnego_keytab", "spnego_keytab_secret", "multiline", "spnego keytab"),
-    ("spnego_ccache", "spnego_ccache_secret", "multiline", "spnego ccache"),
+    ("sync_keytab", "sync_keytab_ref", "multiline", "sync keytab"),
+    ("sync_ccache", "sync_ccache_ref", "multiline", "sync ccache"),
+    ("spnego_keytab", "spnego_keytab_ref", "multiline", "spnego keytab"),
+    ("spnego_ccache", "spnego_ccache_ref", "multiline", "spnego ccache"),
 ]
 
 
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="kerberossource",
-            name="spnego_ccache_secret",
+            name="spnego_ccache_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="kerberossource",
-            name="spnego_keytab_secret",
+            name="spnego_keytab_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="kerberossource",
-            name="sync_ccache_secret",
+            name="sync_ccache_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="kerberossource",
-            name="sync_keytab_secret",
+            name="sync_keytab_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

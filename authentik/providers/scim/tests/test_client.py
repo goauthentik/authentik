@@ -26,7 +26,7 @@ class SCIMClientTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            secret=create_test_secret(generate_id()),
+            token_ref=create_test_secret(generate_id()),
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),
@@ -42,7 +42,7 @@ class SCIMClientTests(TestCase):
 
     def test_empty_token(self):
         """A provider without a token still sends its request."""
-        self.provider.secret = None
+        self.provider.token_ref = None
         self.provider.save()
         with Mocker() as mock:
             mock.get("https://localhost/ServiceProviderConfig", json={})

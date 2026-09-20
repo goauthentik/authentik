@@ -22,7 +22,7 @@ export interface KubernetesServiceConnectionRequest {
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
      */
     local?: boolean;
-    secret?: string | null;
+    kubeconfigRef?: string | null;
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -55,12 +55,12 @@ export function KubernetesServiceConnectionRequestFromJSONTyped(
     return {
         name: json["name"],
         local: json["local"] == null ? undefined : json["local"],
-        secret:
-            json["secret"] === undefined
+        kubeconfigRef:
+            json["kubeconfig_ref"] === undefined
                 ? undefined
-                : json["secret"] === null
+                : json["kubeconfig_ref"] === null
                   ? null
-                  : json["secret"],
+                  : json["kubeconfig_ref"],
         verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
     };
 }
@@ -82,7 +82,7 @@ export function KubernetesServiceConnectionRequestToJSONTyped(
     return {
         name: value["name"],
         local: value["local"],
-        secret: value["secret"],
+        kubeconfig_ref: value["kubeconfigRef"],
         verify_ssl: value["verifySsl"],
     };
 }
