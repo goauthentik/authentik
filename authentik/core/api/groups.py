@@ -1,11 +1,9 @@
 """Groups API Viewset"""
 
-from json import loads
-
 from django.db.models import Prefetch
 from django.http import Http404
 from django.utils.translation import gettext as _
-from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from djangoql.schema import BoolField, StrField
 from drf_spectacular.utils import (
@@ -311,13 +309,6 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
 class GroupFilter(FilterSet):
     """Filter for groups"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     members_by_username = ModelMultipleChoiceFilter(
         field_name="users__username",
         to_field_name="username",
@@ -329,26 +320,9 @@ class GroupFilter(FilterSet):
         distinct=False,
     )
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
-        if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            queryset.filter(**qs).exists()
-            return queryset.filter(**qs)
-        except ValueError:
-            return queryset
-
     class Meta:
         model = Group
-        fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
+        fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
 
 
 class GroupViewSet(UsedByMixin, ModelViewSet):

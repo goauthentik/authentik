@@ -642,10 +642,6 @@ export interface CoreGroupsDestroyRequest {
 
 export interface CoreGroupsListRequest {
     /**
-     * Attributes
-     */
-    attributes?: string;
-    /**
      *
      */
     includeChildren?: boolean;
@@ -1025,10 +1021,6 @@ export interface CoreUsersDestroyRequest {
 
 export interface CoreUsersExportCreateRequest {
     /**
-     * Attributes
-     */
-    attributes?: string;
-    /**
      *
      */
     dateJoined?: Date;
@@ -1142,10 +1134,6 @@ export interface CoreUsersImpersonateCreateRequest {
 }
 
 export interface CoreUsersListRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
     /**
      *
      */
@@ -3785,10 +3773,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
-
         if (requestParameters["includeChildren"] != null) {
             queryParameters["include_children"] = requestParameters["includeChildren"];
         }
@@ -5818,10 +5802,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
-
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(
                 requestParameters["dateJoined"] as any,
@@ -6110,10 +6090,6 @@ export class CoreApi extends runtime.BaseAPI {
         requestParameters: CoreUsersListRequest,
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
-
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
 
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(
