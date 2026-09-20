@@ -189,7 +189,7 @@ class TestSecretsAPI(APITestCase):
     def test_oauth_consumer_requires_ascii_value(self):
         self.client.force_login(self.admin)
         secret = Secret.objects.create(name="oauth", value="ascii")
-        OAuth2Provider.objects.create(name="provider", secret=secret)
+        OAuth2Provider.objects.create(name="provider", client_secret_ref=secret)
 
         response = self.client.patch(
             reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
@@ -205,7 +205,7 @@ class TestSecretsAPI(APITestCase):
         secret = Secret.objects.create(
             name="kubernetes", type=SecretType.MULTILINE, value=KUBECONFIG
         )
-        KubernetesServiceConnection.objects.create(name="kubernetes", secret=secret)
+        KubernetesServiceConnection.objects.create(name="kubernetes", kubeconfig_ref=secret)
         for value in [
             "[]",
             "invalid: [",
@@ -230,10 +230,10 @@ class TestSecretsAPI(APITestCase):
                     value=value,
                 )
                 serializer = KubernetesServiceConnectionSerializer(
-                    data={"name": "invalid", "local": False, "secret": str(invalid.pk)}
+                    data={"name": "invalid", "local": False, "kubeconfig_ref": str(invalid.pk)}
                 )
                 self.assertFalse(serializer.is_valid())
-                self.assertIn("secret", serializer.errors)
+                self.assertIn("kubeconfig_ref", serializer.errors)
 
         replacement = KUBECONFIG.replace("cluster-token", "new-cluster-token")
         response = self.client.patch(
@@ -248,7 +248,7 @@ class TestSecretsAPI(APITestCase):
         self.client.force_login(self.admin)
         secret = Secret.objects.create(name="webhook", value="https://example.com/webhook")
         NotificationTransport.objects.create(
-            name="webhook", mode=TransportMode.WEBHOOK, secret=secret
+            name="webhook", mode=TransportMode.WEBHOOK, webhook_url_ref=secret
         )
         response = self.client.patch(
             reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),

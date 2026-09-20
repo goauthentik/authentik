@@ -37,7 +37,7 @@ class GoogleWorkspaceGroupTests(TestCase):
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
             name=generate_id(),
-            secret=create_test_secret("{}", SecretType.MULTILINE),
+            credentials_ref=create_test_secret("{}", SecretType.MULTILINE),
             delegated_subject="",
             exclude_users_service_account=True,
             default_group_email_domain="goauthentik.io",

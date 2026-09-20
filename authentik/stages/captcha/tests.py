@@ -33,7 +33,7 @@ class TestCaptchaStage(FlowTestCase):
         self.stage: CaptchaStage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -46,7 +46,7 @@ class TestCaptchaStage(FlowTestCase):
             data={"name": generate_id(), "public_key": RECAPTCHA_PUBLIC_KEY},
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("secret", response.json())
+        self.assertIn("private_key_ref", response.json())
 
     @Mocker()
     def test_valid(self, mock: Mocker):
@@ -105,7 +105,7 @@ class TestCaptchaStage(FlowTestCase):
     @Mocker()
     def test_valid_override(self, mock: Mocker):
         """Test valid captcha"""
-        self.stage.secret.replace_value(generate_id())
+        self.stage.private_key_ref.replace_value(generate_id())
         self.stage.public_key = generate_id()
         mock.post(
             "https://www.recaptcha.net/recaptcha/api/siteverify",

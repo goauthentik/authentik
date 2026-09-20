@@ -4,13 +4,12 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 import authentik.lib.models
-
 from authentik.crypto.secrets.migrations._credential_values import (
     migrate_credentials,
     restore_credentials,
 )
 
-FIELDS = [("_webhook_url", "secret", None, "webhook URL")]
+FIELDS = [("_webhook_url", "webhook_url_ref", None, "webhook URL")]
 
 
 def migrate_webhook_url(apps, schema_editor):
@@ -45,7 +44,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="notificationtransport",
-            name="secret",
+            name="webhook_url_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

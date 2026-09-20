@@ -76,7 +76,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     Protocols by using a Reverse-Proxy."""
 
     # Remove the legacy credential columns in 2027.2.
-    _cookie_secret = models.TextField(default="")
+    cookie_secret = models.TextField(default=get_cookie_secret)
 
     internal_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],

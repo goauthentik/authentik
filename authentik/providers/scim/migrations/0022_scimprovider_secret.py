@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_token", "secret", None, "SCIM token")]
+FIELDS = [("_token", "token_ref", None, "SCIM token")]
 
 
 def migrate_token(apps, schema_editor):
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="scimprovider",
-            name="secret",
+            name="token_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_bind_password", "secret", None, "bind password")]
+FIELDS = [("_bind_password", "bind_password_ref", None, "bind password")]
 
 
 def migrate_bind_password(apps, schema_editor):
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="ldapsource",
-            name="secret",
+            name="bind_password_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -24,7 +24,7 @@ class RadiusProvider(OutpostModel, Provider):
         help_text=_("Shared secret between clients and server to hash packets."),
     )
 
-    secret = models.ForeignKey(
+    shared_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Shared Secret"),
         help_text=_("Shared secret between clients and server to hash packets."),
@@ -66,10 +66,10 @@ class RadiusProvider(OutpostModel, Provider):
 
     def save(self, *args, **kwargs):
         with transaction.atomic():
-            if not self.secret_id:
-                self.secret = create_named_secret(f"{self.name} shared secret")
+            if not self.shared_secret_ref_id:
+                self.shared_secret_ref = create_named_secret(f"{self.name} shared secret")
                 if (update_fields := kwargs.get("update_fields")) is not None:
-                    kwargs["update_fields"] = set(update_fields) | {"secret"}
+                    kwargs["update_fields"] = set(update_fields) | {"shared_secret_ref"}
             return super().save(*args, **kwargs)
 
     @property

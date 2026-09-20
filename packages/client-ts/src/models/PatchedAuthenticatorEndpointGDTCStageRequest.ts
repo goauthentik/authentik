@@ -24,7 +24,7 @@ export interface PatchedAuthenticatorEndpointGDTCStageRequest {
      */
     configureFlow?: string | null;
     friendlyName?: string;
-    secret?: string;
+    credentialsRef?: string;
 }
 
 /**
@@ -58,7 +58,7 @@ export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSONTyped(
                   ? null
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
-        secret: json["secret"] == null ? undefined : json["secret"],
+        credentialsRef: json["credentials_ref"] == null ? undefined : json["credentials_ref"],
     };
 }
 
@@ -80,6 +80,6 @@ export function PatchedAuthenticatorEndpointGDTCStageRequestToJSONTyped(
         name: value["name"],
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
-        secret: value["secret"],
+        credentials_ref: value["credentialsRef"],
     };
 }

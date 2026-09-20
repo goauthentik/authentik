@@ -37,23 +37,23 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_users",
             "sync_users_password",
             "sync_principal",
-            "secret",
-            "sync_keytab_secret",
-            "sync_ccache_secret",
+            "sync_password_ref",
+            "sync_keytab_ref",
+            "sync_ccache_ref",
             "connectivity",
             "spnego_server_name",
-            "spnego_keytab_secret",
-            "spnego_ccache_secret",
+            "spnego_keytab_ref",
+            "spnego_ccache_ref",
             "password_login_update_internal_password",
             "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
             field: {"allowed_types": (SecretType.MULTILINE, SecretType.FILE)}
             for field in (
-                "sync_keytab_secret",
-                "sync_ccache_secret",
-                "spnego_keytab_secret",
-                "spnego_ccache_secret",
+                "sync_keytab_ref",
+                "sync_ccache_ref",
+                "spnego_keytab_ref",
+                "spnego_ccache_ref",
             )
         }
 

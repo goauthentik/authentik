@@ -89,7 +89,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/")],
             authorization_flow=authorization_flow,
@@ -139,7 +139,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -213,7 +213,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             name=generate_id(),
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -294,7 +294,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
@@ -379,7 +379,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(

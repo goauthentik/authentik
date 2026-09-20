@@ -21,7 +21,7 @@ class TestChromeDTCView(FlowTestCase):
         self.flow = create_test_flow()
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            secret=create_test_secret("{}", SecretType.MULTILINE),
+            credentials_ref=create_test_secret("{}", SecretType.MULTILINE),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()

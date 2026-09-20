@@ -39,7 +39,7 @@ entries:
         name: "%(uid)s-source"
         provider_type: discord
         consumer_key: "%(uid)s"
-        secret: !KeyOf source-secret
+        consumer_secret_ref: !KeyOf source-secret
         icon: https://goauthentik.io/img/icon.png
   flow:
     - model: authentik_flows.flow

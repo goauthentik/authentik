@@ -19,7 +19,7 @@ class TestOAuthClient(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
-            secret=create_test_secret(generate_id()),
+            consumer_secret_ref=create_test_secret(generate_id()),
         )
         self.factory = RequestFactory()
 
