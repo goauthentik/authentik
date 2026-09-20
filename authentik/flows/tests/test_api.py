@@ -34,20 +34,24 @@ flow_start --> done[["End of the flow"]]"""
 class TestFlowsAPI(APITestCase):
     """API tests"""
 
-    def test_cache_key_matching(self) -> None:
-        cache.set_many({"count/first": 1, "count/last": 2}, version=7)
-        cache.set("count/expired", 3, timeout=0, version=7)
-        cache.set("count/other-version", 4, version=8)
-        for pattern, expected in (
-            ("count/first", 1),
-            ("count/*", 3),
-            ("count/*st", 2),
-            ("count/missing*", 0),
-        ):
-            with self.subTest(pattern=pattern):
-                self.assertEqual(cache.count_keys(pattern, version=7), expected)
-                self.assertEqual(len(cache.keys(pattern, version=7)), expected)
-        self.assertEqual(cache.count_keys("count/*", version=8), 1)
+    def test_cache_count(self) -> None:
+        """Count flow entries in the current cache version, including expired entries."""
+        self.client.force_login(create_test_admin_user())
+        flow = create_test_flow()
+        other_flow = create_test_flow()
+        detail_url = reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug})
+        cache_info_url = reverse("authentik_api:flow-cache-info")
+        self.assertEqual(self.client.get(detail_url).data["cache_count"], 0)
+        self.assertEqual(self.client.get(cache_info_url).data["count"], 0)
+
+        cache.set(f"{cache_key(flow)}#first", "cached-plan")
+        cache.set(f"{cache_key(flow)}#expired", "cached-plan", timeout=0)
+        cache.set(f"{cache_key(flow)}#other-version", "cached-plan", version=cache.version + 1)
+        cache.set(f"{cache_key(other_flow)}#first", "cached-plan")
+        cache.set("unrelated", "value")
+
+        self.assertEqual(self.client.get(detail_url).data["cache_count"], 2)
+        self.assertEqual(self.client.get(cache_info_url).data["count"], 3)
 
     def test_models(self):
         """Test that ui_user_settings returns none"""
