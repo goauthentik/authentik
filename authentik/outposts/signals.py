@@ -7,6 +7,7 @@ from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Provider
+from authentik.core.signals import impersonation_changed
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
@@ -165,3 +166,10 @@ def outpost_logout_revoke(sender: type[AuthenticatedSession], instance: Authenti
     """Catch logout by expiring sessions being deleted"""
     if Outpost.objects.exists():
         outpost_session_end.send(instance.session.session_key)
+
+
+@receiver(impersonation_changed)
+def outpost_impersonation_revoke(sender, session_key: str, **_):
+    """Reauthorize outpost sessions after the browser's effective identity changes."""
+    if Outpost.objects.exists():
+        outpost_session_end.send(session_key)

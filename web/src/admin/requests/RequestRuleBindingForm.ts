@@ -3,7 +3,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -20,9 +19,10 @@ import {
     RequestsRulesListRequest,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
+
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property, state } from "lit/decorators.js";
 
 function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair {
@@ -47,12 +47,14 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     protected async loadInstance(pk: string): Promise<RequestRuleBinding> {
         const binding = await aki(RequestsApi).requestsRuleBindingsRetrieve({ uuid: pk });
         await this.#loadChildBindings(pk);
+
         return binding;
     }
 
     #loadChildBindings = async (bindingPk: string): Promise<void> => {
         if (!this.targetPk) {
             this.selectedEntitlementPairs = [];
+
             return;
         }
 
@@ -83,6 +85,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
             page,
             search,
         };
+
         return this.#coreApi.coreApplicationEntitlementsList(args).then((results) => {
             return {
                 pagination: results.pagination,
@@ -97,6 +100,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         const relatedTargets = (data.relatedTargets ?? []).map((target) => String(target));
 
         const binding = this.instance?.uuid
@@ -150,10 +154,13 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
                         const args: RequestsRulesListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const rules = await aki(RequestsApi).requestsRulesList(args);
+
                         return rules.results;
                     }}
                     .renderElement=${(rule: RequestRule) => rule.name}
@@ -198,6 +205,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (!this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal
             label=${msg("Additional entitlements")}
             name="relatedTargets"

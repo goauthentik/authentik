@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,32 +18,20 @@ import {
 
 /**
  * SourceStage Serializer
+ *
  * @export
  * @interface SourceStageRequest
  */
 export interface SourceStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof SourceStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SourceStageRequest
-     */
     source: string;
     /**
-     * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof SourceStageRequest
+     * Amount of time a user can take to return from the source to continue the flow (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     resumeTimeout?: string;
     /**
      * Source matching failure reasons for which the flow should resume.
-     * @type {Array<ResumeOnMatchFailuresEnum>}
-     * @memberof SourceStageRequest
      */
     resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }

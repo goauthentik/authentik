@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,50 +20,28 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * FlowStageBinding Serializer
+ *
  * @export
  * @interface FlowStageBindingRequest
  */
 export interface FlowStageBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBindingRequest
-     */
     target: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBindingRequest
-     */
     stage: string;
     /**
      * Evaluate policies during the Flow planning process.
-     * @type {boolean}
-     * @memberof FlowStageBindingRequest
      */
     evaluateOnPlan?: boolean;
     /**
      * Evaluate policies when the Stage is presented to the user.
-     * @type {boolean}
-     * @memberof FlowStageBindingRequest
      */
     reEvaluatePolicies?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof FlowStageBindingRequest
-     */
     order: number;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof FlowStageBindingRequest
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-     * @type {InvalidResponseActionEnum}
-     * @memberof FlowStageBindingRequest
+     * Configure how the flow executor should handle an invalid response to a challenge. RETRY
+     * returns the error message and a similar challenge to the executor. RESTART restarts the flow
+     * from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current
+     * context.
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Payload to create and email a recovery link
+ *
  * @export
  * @interface UserRecoveryEmailRequest
  */
 export interface UserRecoveryEmailRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserRecoveryEmailRequest
-     */
     tokenDuration?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserRecoveryEmailRequest
-     */
     emailStage: string;
 }
 

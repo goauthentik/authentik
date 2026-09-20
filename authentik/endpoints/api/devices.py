@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Prefetch, Subquery
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
@@ -15,7 +15,8 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
 from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
-from authentik.endpoints.models import Device, DeviceFactSnapshot
+from authentik.endpoints.api.device_user_bindings import DeviceUserBindingSerializer
+from authentik.endpoints.models import Device, DeviceFactSnapshot, DeviceUserBinding
 
 
 class EndpointDeviceSerializer(ModelSerializer):
@@ -23,6 +24,10 @@ class EndpointDeviceSerializer(ModelSerializer):
     access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
     facts = SerializerMethodField(allow_null=True)
+
+    primary_binding_obj = DeviceUserBindingSerializer(
+        source="primary_user_binding", read_only=True, allow_null=True
+    )
 
     def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
         try:
@@ -42,6 +47,7 @@ class EndpointDeviceSerializer(ModelSerializer):
             "expires",
             "facts",
             "attributes",
+            "primary_binding_obj",
         ]
 
 
@@ -72,7 +78,13 @@ class DeviceViewSet(
     GenericViewSet,
 ):
 
-    queryset = Device.objects.all().select_related("access_group")
+    queryset = (
+        Device.objects.all()
+        .select_related("access_group")
+        .prefetch_related(
+            Prefetch("bindings", queryset=DeviceUserBinding.objects.all(), to_attr="user_bindings")
+        )
+    )
     serializer_class = EndpointDeviceSerializer
     search_fields = [
         "name",

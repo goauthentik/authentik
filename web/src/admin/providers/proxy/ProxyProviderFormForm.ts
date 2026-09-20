@@ -9,11 +9,11 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -32,6 +32,7 @@ import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
+
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {
@@ -255,6 +256,7 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         .certificate=${provider.certificate}
+                        .allowedKeyTypes=${TLSKeyTypes}
                     ></ak-crypto-certificate-search>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
@@ -273,14 +275,15 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
-                    label="${mode === ProxyMode.ForwardDomain
-                        ? msg("Unauthenticated URLs")
-                        : msg("Unauthenticated Paths")}"
+                    label="${
+                        mode === ProxyMode.ForwardDomain
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths")
+                    }"
                     name="skipPathRegex"
                 >
                     <textarea class="pf-c-form-control pf-m-monospace">
-${provider.skipPathRegex}</textarea
-                    >
+${provider.skipPathRegex}</textarea>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",

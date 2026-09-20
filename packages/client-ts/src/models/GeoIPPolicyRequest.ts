@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,69 +15,24 @@ import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnu
 
 /**
  * GeoIP Policy Serializer
+ *
  * @export
  * @interface GeoIPPolicyRequest
  */
 export interface GeoIPPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GeoIPPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof GeoIPPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof GeoIPPolicyRequest
-     */
     asns?: Array<number>;
-    /**
-     *
-     * @type {Array<CountryCodeEnum>}
-     * @memberof GeoIPPolicyRequest
-     */
     countries: Array<CountryCodeEnum>;
-    /**
-     *
-     * @type {boolean}
-     * @memberof GeoIPPolicyRequest
-     */
     checkHistoryDistance?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof GeoIPPolicyRequest
-     */
     historyMaxDistanceKm?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof GeoIPPolicyRequest
-     */
     distanceToleranceKm?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof GeoIPPolicyRequest
-     */
     historyLoginCount?: number;
-    /**
-     *
-     * @type {boolean}
-     * @memberof GeoIPPolicyRequest
-     */
     checkImpossibleTravel?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof GeoIPPolicyRequest
-     */
     impossibleToleranceKm?: number;
 }
 

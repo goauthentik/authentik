@@ -1,5 +1,6 @@
 ---
 title: Default
+description: An overview of the default web interface for running flows.
 ---
 
 This is the default, web-based environment that flows are executed in. All stages are compatible with this environment and no limitations are imposed.

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,39 +12,15 @@
 
 /**
  * Info about a single blueprint instance file
+ *
  * @export
  * @interface PatchedBlueprintInstanceRequest
  */
 export interface PatchedBlueprintInstanceRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
-     */
     path?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedBlueprintInstanceRequest
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedBlueprintInstanceRequest
-     */
     enabled?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedBlueprintInstanceRequest
-     */
     content?: string;
 }
 

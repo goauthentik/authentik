@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +10,19 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { EventActions } from "./EventActions";
 import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Count of events of action created on day for a single event action
+ *
  * @export
  * @interface EventVolume
  */
 export interface EventVolume {
-    /**
-     *
-     * @type {EventActions}
-     * @memberof EventVolume
-     */
     action: EventActions;
-    /**
-     *
-     * @type {Date}
-     * @memberof EventVolume
-     */
     time: Date;
-    /**
-     *
-     * @type {number}
-     * @memberof EventVolume
-     */
     count: number;
 }
 
@@ -61,7 +46,7 @@ export function EventVolumeFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         action: EventActionsFromJSON(json["action"]),
-        time: new Date(json["time"]),
+        time: json["time"] == null ? json["time"] : parseDateTime(json["time"]),
         count: json["count"],
     };
 }
@@ -80,7 +65,7 @@ export function EventVolumeToJSONTyped(
 
     return {
         action: EventActionsToJSON(value["action"]),
-        time: value["time"].toISOString(),
+        time: value["time"] == null ? value["time"] : serializeDateTime(value["time"]),
         count: value["count"],
     };
 }

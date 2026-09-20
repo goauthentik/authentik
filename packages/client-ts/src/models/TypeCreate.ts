@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,51 +12,17 @@
 
 /**
  * Types of an object that can be created
+ *
  * @export
  * @interface TypeCreate
  */
 export interface TypeCreate {
-    /**
-     *
-     * @type {string}
-     * @memberof TypeCreate
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof TypeCreate
-     */
     description: string;
-    /**
-     *
-     * @type {string}
-     * @memberof TypeCreate
-     */
     component: string;
-    /**
-     *
-     * @type {string}
-     * @memberof TypeCreate
-     */
     modelName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof TypeCreate
-     */
     iconUrl?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TypeCreate
-     */
     requiresEnterprise?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TypeCreate
-     */
     deprecated?: boolean;
 }
 

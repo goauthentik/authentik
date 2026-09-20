@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Get CertificateKeyPair's data
+ *
  * @export
  * @interface CertificateData
  */
 export interface CertificateData {
-    /**
-     *
-     * @type {string}
-     * @memberof CertificateData
-     */
     readonly data: string;
 }
 

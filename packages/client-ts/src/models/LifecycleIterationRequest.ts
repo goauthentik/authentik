@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,15 +16,11 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleIterationRequest
  */
 export interface LifecycleIterationRequest {
-    /**
-     *
-     * @type {ContentTypeEnum}
-     * @memberof LifecycleIterationRequest
-     */
     contentType: ContentTypeEnum;
 }
 

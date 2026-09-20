@@ -4,7 +4,6 @@ import "#elements/forms/FormGroup";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-
 import {
     policiesProvider,
     policiesSelector,
@@ -62,20 +61,22 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                             available-label="${msg("Available Fields")}"
                             selected-label="${msg("Selected Fields")}"
                         ></ak-dual-select-dynamic-selected>
-                        ${this.instance
-                            ? html`<ak-forms-modal size=${PFSize.XLarge}>
-                                  <span slot="submit">${msg("Create")}</span>
-                                  <span slot="header">${msg("Create Prompt")}</span>
-                                  <ak-prompt-form slot="form"> </ak-prompt-form>
-                                  <button
-                                      type="button"
-                                      slot="trigger"
-                                      class="pf-c-button pf-m-primary"
-                                  >
-                                      ${msg("Create")}
-                                  </button>
-                              </ak-forms-modal>`
-                            : nothing}
+                        ${
+                            this.instance
+                                ? html`<ak-forms-modal size=${PFSize.XLarge}>
+                                      <span slot="submit">${msg("Create")}</span>
+                                      <span slot="header">${msg("Create Prompt")}</span>
+                                      <ak-prompt-form slot="form"> </ak-prompt-form>
+                                      <button
+                                          type="button"
+                                          slot="trigger"
+                                          class="pf-c-button pf-m-primary"
+                                      >
+                                          ${msg("Create")}
+                                      </button>
+                                  </ak-forms-modal>`
+                                : nothing
+                        }
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Validation Policies")}

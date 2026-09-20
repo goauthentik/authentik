@@ -7,6 +7,9 @@ import "#admin/users/UserPasswordLockForm";
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/ModalForm";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -37,10 +40,6 @@ import {
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-user-info-card")
 export class UserInfoCard extends AKElement {
@@ -81,6 +80,7 @@ export class UserInfoCard extends AKElement {
             this.user.type === UserTypeEnum.InternalServiceAccount
         ) {
             this.pendingOffboarding = null;
+
             return;
         }
 
@@ -89,6 +89,7 @@ export class UserInfoCard extends AKElement {
                 userUuid: this.user.uuid,
                 status: OffboardingStatusEnum.Pending,
             });
+
             this.pendingOffboarding = offboardings.results.at(0) ?? null;
         } catch (error) {
             // Don't swallow: a transient failure must not flip the button to
@@ -109,16 +110,19 @@ export class UserInfoCard extends AKElement {
         if (!this.pendingOffboarding) {
             return;
         }
+
         // ak-forms-confirm surfaces errors and refreshes the parent; we only
         // need to reload the local state so the button flips back to "Schedule".
         await this.#lifecycleApi.lifecycleUserOffboardingDestroy({
             id: this.pendingOffboarding.id,
         });
+
         await this.#loadOffboarding();
     };
 
     protected renderActionButtons(user: User) {
         const showImpersonate = this.canImpersonate && user.pk !== this.currentUserPk;
+
         const showEnterpriseActions =
             this.hasEnterpriseLicense &&
             user.pk !== this.currentUserPk &&
@@ -139,44 +143,51 @@ export class UserInfoCard extends AKElement {
                 className: "pf-m-block",
                 hasEnterpriseLicense: this.hasEnterpriseLicense,
             })}
-            ${showEnterpriseActions
-                ? html`<button
-                      class="pf-c-button pf-m-danger pf-m-block"
-                      @click=${this.lockdownUser}
-                      type="button"
-                  >
-                      ${msg("Account Lockdown")}
-                  </button>`
-                : nothing}
-            ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
-            ${showImpersonate
-                ? html`<button
-                      class="pf-c-button pf-m-tertiary pf-m-block"
-                      ${UserImpersonateForm.asInstanceInvoker(user.pk)}
-                      aria-label=${msg(str`Impersonate ${displayName}`)}
-                  >
-                      <pf-tooltip
-                          position="top"
-                          content=${msg("Temporarily assume the identity of this user")}
+            ${
+                showEnterpriseActions
+                    ? html`<button
+                          class="pf-c-button pf-m-danger pf-m-block"
+                          @click=${this.lockdownUser}
+                          type="button"
                       >
-                          <span>${msg("Impersonate")}</span>
-                      </pf-tooltip>
-                  </button>`
-                : nothing}
+                          ${msg("Account Lockdown")}
+                      </button>`
+                    : nothing
+            }
+            ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
+            ${
+                showImpersonate
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary pf-m-block"
+                          ${UserImpersonateForm.asInstanceInvoker(user.pk)}
+                          aria-label=${msg(str`Impersonate ${displayName}`)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : nothing
+            }
         </div> `;
     }
 
     protected renderOffboardingButton(user: User) {
         if (this.pendingOffboarding) {
             const offboarding = this.pendingOffboarding;
+
             const actionLabel =
                 offboarding.action === OffboardingActionEnum.Delete
                     ? msg("Delete", { id: "offboarding.action.delete.label" })
                     : msg("Deactivate", { id: "offboarding.action.deactivate.label" });
+
             const yesNo = (value?: boolean) =>
                 value
                     ? msg("Yes", { id: "common.boolean.yes" })
                     : msg("No", { id: "common.boolean.no" });
+
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully cancelled offboarding.", {
                     id: "offboarding.cancel.success",
