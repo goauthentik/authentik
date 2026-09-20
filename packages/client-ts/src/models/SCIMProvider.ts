@@ -67,6 +67,10 @@ export interface SCIMProvider {
     verifyCertificates?: boolean;
     authMode?: SCIMAuthenticationModeEnum;
     /**
+     * Username used for Basic authentication
+     */
+    authBasicUser?: string;
+    /**
      * OAuth Source used for authentication
      */
     authOauth?: string | null;
@@ -210,6 +214,7 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -279,6 +284,7 @@ export function SCIMProviderToJSONTyped(
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_basic_user: value["authBasicUser"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),
