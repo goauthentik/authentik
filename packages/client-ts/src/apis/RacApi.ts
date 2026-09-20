@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -46,9 +44,6 @@ export interface RacConnectionTokensDestroyRequest {
 }
 
 export interface RacConnectionTokensListRequest {
-    /**
-     *
-     */
     endpoint?: string;
     /**
      * Which field to use when ordering the results.
@@ -62,17 +57,11 @@ export interface RacConnectionTokensListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sessionUser?: number;
 }
 
@@ -81,9 +70,6 @@ export interface RacConnectionTokensPartialUpdateRequest {
      * A UUID string identifying this RAC Connection token.
      */
     connectionTokenUuid: string;
-    /**
-     *
-     */
     patchedConnectionTokenRequest?: PatchedConnectionTokenRequest;
 }
 
@@ -99,9 +85,6 @@ export interface RacConnectionTokensUpdateRequest {
      * A UUID string identifying this RAC Connection token.
      */
     connectionTokenUuid: string;
-    /**
-     *
-     */
     connectionTokenRequest: ConnectionTokenRequest;
 }
 
@@ -113,9 +96,6 @@ export interface RacConnectionTokensUsedByListRequest {
 }
 
 export interface RacEndpointsCreateRequest {
-    /**
-     *
-     */
     endpointRequest: EndpointRequest;
 }
 
@@ -127,9 +107,6 @@ export interface RacEndpointsDestroyRequest {
 }
 
 export interface RacEndpointsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -143,17 +120,11 @@ export interface RacEndpointsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     superuserFullList?: boolean;
 }
 
@@ -162,9 +133,6 @@ export interface RacEndpointsPartialUpdateRequest {
      * A UUID string identifying this RAC Endpoint.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     patchedEndpointRequest?: PatchedEndpointRequest;
 }
 
@@ -180,9 +148,6 @@ export interface RacEndpointsUpdateRequest {
      * A UUID string identifying this RAC Endpoint.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     endpointRequest: EndpointRequest;
 }
 
@@ -193,9 +158,6 @@ export interface RacEndpointsUsedByListRequest {
     pbmUuid: string;
 }
 
-/**
- *
- */
 export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racConnectionTokensDestroy without sending the request
@@ -307,7 +269,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/connection_tokens/`;
+        const urlPath = `/rac/connection_tokens/`;
 
         return {
             path: urlPath,
@@ -659,7 +621,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/endpoints/`;
+        const urlPath = `/rac/endpoints/`;
 
         return {
             path: urlPath,
@@ -804,7 +766,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/endpoints/`;
+        const urlPath = `/rac/endpoints/`;
 
         return {
             path: urlPath,

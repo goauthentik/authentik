@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,49 +17,20 @@ import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface AgentConfig
  */
 export interface AgentConfig {
-    /**
-     *
-     */
     readonly deviceId: string;
-    /**
-     *
-     */
     readonly refreshInterval: number;
-    /**
-     *
-     */
     readonly authorizationFlow: string | null;
-    /**
-     *
-     */
     readonly jwksAuth: { [key: string]: any };
-    /**
-     *
-     */
     readonly jwksChallenge: { [key: string]: any } | null;
-    /**
-     *
-     */
     nssUidOffset: number;
-    /**
-     *
-     */
     nssGidOffset: number;
-    /**
-     *
-     */
     authTerminateSessionOnExpiry: boolean;
-    /**
-     *
-     */
     readonly systemConfig: Config;
-    /**
-     *
-     */
     readonly licenseStatus: LicenseStatusEnum | null;
 }
 

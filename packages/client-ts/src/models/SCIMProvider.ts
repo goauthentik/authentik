@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,21 +24,13 @@ import {
 
 /**
  * SCIMProvider Serializer
+ *
  * @export
  * @interface SCIMProvider
  */
 export interface SCIMProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
@@ -74,13 +64,7 @@ export interface SCIMProvider {
      * Base URL to SCIM requests, usually ends in /v2
      */
     url: string;
-    /**
-     *
-     */
     verifyCertificates?: boolean;
-    /**
-     *
-     */
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * OAuth Source used for authentication
@@ -90,21 +74,9 @@ export interface SCIMProvider {
      * Additional OAuth parameters, such as grant_type
      */
     authOauthParams?: { [key: string]: any };
-    /**
-     *
-     */
     readonly authOauthTokenLastUpdated: Date | null;
-    /**
-     *
-     */
     readonly authOauthTokenExpires: Date | null;
-    /**
-     *
-     */
     readonly authOauthUrlCallback: string | null;
-    /**
-     *
-     */
     readonly authOauthUrlStart: string | null;
     /**
      * Alter authentik behavior for vendor-specific SCIM implementations.
@@ -114,9 +86,6 @@ export interface SCIMProvider {
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
      */
     serviceProviderConfigCacheTimeout?: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
     /**
      * Controls the number of objects synced in a single task

@@ -919,7 +919,7 @@
   <target>Von keinem anderen Objekt verwendet.</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
+  <source><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
   <target>
         <x id="0" equiv-text="${ub.name}"/>(
         <x id="1" equiv-text="${consequence}"/>)</target>
@@ -4238,10 +4238,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
   <target>TLS Client-Authentifizierungszertifikat</target>
-</trans-unit>
-<trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
-  <target>Client-Zertifikat-Schlüsselpaar zur Authentifizierung des Zertifikates des LDAP-Servers.</target>
 </trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
@@ -7649,12 +7645,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>OCI URL</source>
   <target>OCI URL</target>
 </trans-unit>
-<trans-unit id="h3b1f38bb34f8b1b6">
-  <source> A valid OCI manifest URL, prefixed with the protocol
-                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
-  <target> Eine gültige OCI-Manifest-URL mit Protokoll-Präfix
-                                              z.B. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></target>
-</trans-unit>
 <trans-unit id="sc19e397bee1e67f7">
   <source>Read more about</source>
   <target>Mehr erfahren über</target>
@@ -9202,7 +9192,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
@@ -11049,8 +11039,8 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
-                                        to self-host Cap and configure the endpoint.</source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            to self-host Cap and configure the endpoint.</source>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
 <trans-unit id="s71fed01f96762c78">
@@ -11841,9 +11831,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="brand.form.flow-user-switch.description">
   <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
 </trans-unit>
-<trans-unit id="user-switcher.toggle.label">
-  <source>Switch user</source>
-</trans-unit>
 <trans-unit id="user-switcher.actions.add-user.label">
   <source>Add another user</source>
 </trans-unit>
@@ -12154,6 +12141,52 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="sf0f541e1ea73d4c8">
   <source>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</source>
+</trans-unit>
+<trans-unit id="sbfa75b6f146142d8">
+  <source>Primary user</source>
+</trans-unit>
+<trans-unit id="hcdfe21735336b5ca">
+  <source> A valid OCI manifest URL, prefixed with the
+                                                  protocol e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.label">
+  <source>Service bind method</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.simple.label">
+  <source>Simple or anonymous bind</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.sasl-external.label">
+  <source>SASL EXTERNAL</source>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.description">
+  <source>Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.</source>
+</trans-unit>
+<trans-unit id="ldap-source.client-certificate.description">
+  <source>Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.</source>
+</trans-unit>
+<trans-unit id="user-switcher.avatar.alt">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.current-user.label">
+  <source>Current user "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.switch-to-user.label">
+  <source>Switch to user "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.tooltip">
+  <source>Toggle user navigation menu</source>
+</trans-unit>
+<trans-unit id="user-switcher.open.tooltip">
+  <source>Open user navigation menu</source>
+</trans-unit>
+<trans-unit id="user-switcher.menu.label">
+  <source>User navigation menu</source>
+</trans-unit>
+<trans-unit id="scc6c6c028bc1968a">
+  <source>GitLab</source>
+</trans-unit>
+<trans-unit id="sa9f8a401cf399e4b">
+  <source>Altered behavior for usage with GitLab.</source>
 </trans-unit>
 </body>
 </file>

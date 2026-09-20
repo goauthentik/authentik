@@ -1251,11 +1251,19 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
+    def evaluate(
+        self,
+        user: User | None,
+        request: HttpRequest | None,
+        globals: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        if globals:
+            evaluator._globals.update(globals)
         try:
             return evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
@@ -1547,7 +1555,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True
