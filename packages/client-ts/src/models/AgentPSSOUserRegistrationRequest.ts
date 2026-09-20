@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Register Apple device user via Platform SSO
+ *
  * @export
  * @interface AgentPSSOUserRegistrationRequest
  */
 export interface AgentPSSOUserRegistrationRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
-     */
     userAuth: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
-     */
     userSecureEnclaveKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
-     */
     enclaveKeyId: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { PasswordStage } from "./PasswordStage";
 import { PasswordStageFromJSON, PasswordStageToJSON } from "./PasswordStage";
 
 /**
- *
  * @export
  * @interface PaginatedPasswordStageList
  */
 export interface PaginatedPasswordStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedPasswordStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<PasswordStage>}
-     * @memberof PaginatedPasswordStageList
-     */
     results: Array<PasswordStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPasswordStageList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -2,12 +2,22 @@ import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ak-library-application-empty-list.js";
-
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import { ViewMode } from "./types.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { StorageAccessor } from "#common/storage";
 import { groupBy } from "#common/utils";
@@ -16,7 +26,7 @@ import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { navigate } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
@@ -32,18 +42,6 @@ import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 function createViewToggleContent(
     viewMode: ViewMode,
@@ -67,6 +65,7 @@ function createViewToggleContent(
             </svg>`,
         ];
     }
+
     return [
         msg("Switch to grid view", {
             id: "user.library.view-toggle.to-grid",
@@ -93,9 +92,9 @@ function createViewToggleContent(
  * apps: a list of the applications available to the user.
  *
  * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
  *
+ * - Display the list of applications available to the user
+ * - Filter that list using the search bar
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends WithSession(AKElement) {
@@ -109,7 +108,7 @@ export class LibraryPage extends WithSession(AKElement) {
      * Whether to enable the datalist for search suggestions.
      *
      * @remarks
-     * Disabled on Firefox due to performance issues between renders.
+     *   Disabled on Firefox due to performance issues between renders.
      */
     static DataListEnabled = !isFirefox();
 
@@ -143,7 +142,7 @@ export class LibraryPage extends WithSession(AKElement) {
     #applications: Application[] = [];
 
     /**
-     * The *complete* list of applications for this user. Not paginated.
+     * The _complete_ list of applications for this user. Not paginated.
      *
      * @attr
      */
@@ -207,9 +206,15 @@ export class LibraryPage extends WithSession(AKElement) {
             this.visibleApplications = this.apps.filter(appHasLaunchUrl);
         }
 
-        updateURLParams({
-            q: this.#query,
-        });
+        const url = new URL(window.location.href);
+
+        if (this.#query) {
+            url.searchParams.set("q", this.#query);
+        } else {
+            url.searchParams.delete("q");
+        }
+
+        navigate(url, { mode: "replace" });
     }
 
     protected fuse = new Fuse<Application>([], {
@@ -234,6 +239,7 @@ export class LibraryPage extends WithSession(AKElement) {
     constructor() {
         super();
         this.#gridModeMatcher = window.matchMedia("(width > 768px)");
+
         this.#gridModeMatcher.addEventListener("change", this.#gridModeMediaQueryListener, {
             passive: true,
         });
@@ -242,7 +248,7 @@ export class LibraryPage extends WithSession(AKElement) {
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.query = getURLParam<string | null>("q", "");
+        this.query = new URLSearchParams(window.location.search).get("q") || "";
 
         this.addEventListener(
             "focus",
@@ -290,23 +296,37 @@ export class LibraryPage extends WithSession(AKElement) {
         this.query = inputElement.value;
     };
 
+    /**
+     * Open the row `targetRef` points at, once the render that binds it has run.
+     *
+     * `selectedApp` is null while the query is empty, so no row carries the ref
+     * until a query exists. Committing a search from empty dispatches `input`
+     * and `change` in the same task: the query setter has narrowed
+     * `visibleApplications` synchronously, but Lit's re-render — and with it the
+     * ref binding — is still pending. Reading `targetRef` before awaiting would
+     * find the previous render's element, or nothing at all on a first search.
+     */
+    async #openSelected(): Promise<void> {
+        await this.updateComplete;
+
+        const target = this.targetRef.value;
+
+        if (!target) return;
+
+        target.focus();
+        target.click();
+    }
+
     #changeListener = () => {
-        if (this.targetRef.value && this.visibleApplications.length === 1) {
-            this.targetRef.value.focus();
-            this.targetRef.value.click();
-            return;
-        }
+        if (this.visibleApplications.length !== 1) return;
+
+        this.#openSelected();
     };
 
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
 
-        if (this.targetRef.value) {
-            this.targetRef.value.focus();
-            this.targetRef.value.click();
-
-            return;
-        }
+        this.#openSelected();
     };
 
     #rootKeyDownListener = (event: KeyboardEvent) => {
@@ -321,6 +341,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
         if (this.renderRoot instanceof ShadowRoot) {
             const focusedElement = this.renderRoot.activeElement;
+
             if (isInteractiveElement(focusedElement)) {
                 focusedElement.click();
             }
@@ -329,6 +350,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();
@@ -348,6 +370,7 @@ export class LibraryPage extends WithSession(AKElement) {
     protected synchronizeViewModeWithMediaQuery(matches = this.#gridModeMatcher.matches) {
         if (!matches) {
             this.viewMode = ViewMode.List;
+
             return;
         }
 
@@ -368,6 +391,7 @@ export class LibraryPage extends WithSession(AKElement) {
             ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
                 if (selectedApp) {
                     if (groupAppsA.includes(selectedApp)) return -1;
+
                     if (groupAppsB.includes(selectedApp)) return 1;
                 }
 
@@ -444,15 +468,17 @@ export class LibraryPage extends WithSession(AKElement) {
                 ${this.renderDataList(showDataList)}
 
                 <span id="search-action-hint" class="sr-only">
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.search.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : msg("Type to filter applications", {
-                              id: "user.library.search.type-to-filter-hint",
-                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
-                          })}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.search.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : msg("Type to filter applications", {
+                                  id: "user.library.search.type-to-filter-hint",
+                                  desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                              })
+                    }
                 </span>
             </form>
         </search>`;
@@ -533,12 +559,14 @@ export class LibraryPage extends WithSession(AKElement) {
             >
                 <p>${message}</p>
                 <p>
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.application-count.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : nothing}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.application-count.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : nothing
+                    }
                 </p>
             </output>`;
         });

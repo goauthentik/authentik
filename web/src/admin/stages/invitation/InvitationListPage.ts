@@ -4,11 +4,13 @@ import "#admin/stages/invitation/InvitationListLink";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,8 +24,6 @@ import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthen
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -56,12 +56,15 @@ export class InvitationListPage extends TablePage<Invitation> {
             const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
+
             this.invitationStageExists = stages.pagination.count > 0;
             this.expandable = this.invitationStageExists;
+
             stages.results.forEach((stage) => {
                 const enrollmentFlows = (stage.flowSet || []).filter(
                     (flow) => flow.designation === FlowDesignationEnum.Enrollment,
                 );
+
                 if (enrollmentFlows.length > 1) {
                     this.multipleEnrollmentFlows = true;
                 }
@@ -69,6 +72,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         } catch {
             // assuming we can't fetch stages, ignore the error
         }
+
         return aki(StagesApi).stagesInvitationInvitationsList({
             ...(await this.defaultEndpointConfig()),
         });
@@ -83,6 +87,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
@@ -106,17 +111,21 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${!item.flowObj && this.multipleEnrollmentFlows
-                    ? html`
-                          <ak-label color=${PFColor.Orange}>
-                              ${msg(
-                                  "Invitation not limited to any flow, and can be used with any enrollment flow.",
-                              )}
-                          </ak-label>
-                      `
-                    : null}`,
+                ${
+                    !item.flowObj && this.multipleEnrollmentFlows
+                        ? html`
+                              <ak-label color=${PFColor.Orange}>
+                                  ${msg(
+                                      "Invitation not limited to any flow, and can be used with any enrollment flow.",
+                                  )}
+                              </ak-label>
+                          `
+                        : null
+                }`,
             html`<div>
-                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                    <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}
+                        >${item.createdBy.username}</a
+                    >
                 </div>
                 <small>${item.createdBy.name}</small>`,
             item.expires?.toLocaleString() || msg("-"),
@@ -147,15 +156,17 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override render(): SlottedTemplateResult {
-        return html`${this.invitationStageExists
-                ? null
-                : html`
-                      <div class="pf-c-banner pf-m-warning">
-                          ${msg(
-                              "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
-                          )}
-                      </div>
-                  `}
+        return html`${
+                this.invitationStageExists
+                    ? null
+                    : html`
+                          <div class="pf-c-banner pf-m-warning">
+                              ${msg(
+                                  "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
+                              )}
+                          </div>
+                      `
+            }
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;

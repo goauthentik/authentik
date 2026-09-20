@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,51 +19,35 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Event Matcher Policy Serializer
+ *
  * @export
  * @interface EventMatcherPolicyRequest
  */
 export interface EventMatcherPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof EventMatcherPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof EventMatcherPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
-     * Match created events with this action type. When left empty, all action types will be matched.
-     * @type {EventActions}
-     * @memberof EventMatcherPolicyRequest
+     * Match created events with this action type. When left empty, all action types will be
+     * matched.
      */
     action?: EventActions | null;
     /**
      * Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
-     * @type {string}
-     * @memberof EventMatcherPolicyRequest
      */
     clientIp?: string | null;
     /**
      * Match events created by selected application. When left empty, all applications are matched.
-     * @type {AppEnum}
-     * @memberof EventMatcherPolicyRequest
      */
     app?: AppEnum | null;
     /**
-     * Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-     * @type {ModelEnum}
-     * @memberof EventMatcherPolicyRequest
+     * Match events created by selected model. When left empty, all models are matched. When an app
+     * is selected, all the application's models are matched.
      */
     model?: ModelEnum | null;
-    /**
-     *
-     * @type {string}
-     * @memberof EventMatcherPolicyRequest
-     */
     query?: string | null;
 }
 

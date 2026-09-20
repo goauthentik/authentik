@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,16 +13,12 @@
 /**
  * Validate response, fields are dynamically created based
  * on the stage
+ *
  * @export
  * @interface PromptChallengeResponseRequest
  */
 export interface PromptChallengeResponseRequest {
     [key: string]: any | any;
-    /**
-     *
-     * @type {string}
-     * @memberof PromptChallengeResponseRequest
-     */
     component?: string;
 }
 

@@ -55,7 +55,7 @@ If you configure application bindings, ensure that `cml-ldap`, `cml-users`, and 
 ### Configure LDAP authentication
 
 :::warning LDAP lockout
-After you save LDAP as the authentication method, Cisco Modeling Labs authenticates every login against LDAP, including the local administrator account. Always use **Test Authentication** before you click **Save**. If you save incorrect settings and can no longer log in, recover access with the authentication reset in the CML system administration cockpit.
+After you save LDAP as the authentication method, Cisco Modeling Labs authenticates every login against LDAP, including the local administrator account. Always use **Test Authentication** before you click **Save**. If you save incorrect settings and can no longer log in, recover access with the authentication reset in the CML cockpit.
 :::
 
 1. Log in to Cisco Modeling Labs as a user with administrator privileges.
@@ -79,19 +79,8 @@ After you save LDAP as the authentication method, Cisco Modeling Labs authentica
     - **Email Address LDAP Attribute**: `mail`
 6. If the LDAP outpost certificate is issued by a private CA, paste that CA certificate into **Certificate Chain**.
 7. Click **Test Authentication**, enter the **Manager Password** if the field is empty, and test with an authentik username and password. **Authenticated** should be `true`. For a user in `cml-admins`, the test should also show that the admin filter matched.
-8. Click **Save**.
-
-### Create the LDAP groups
-
-Cisco Modeling Labs does not create groups from LDAP automatically. After you save the LDAP settings, create groups whose names match the authentik groups so that CML can synchronize membership on login.
-
-1. Navigate to **Tools** > **System Administration**.
-2. Click **Group Administration**.
-3. Click **Add**.
-4. Set the group name to `cml-users`, click **Next** through the optional wizard steps, and click **Create**.
-5. Repeat these steps for `cml-admins`.
-
-Do not add members in the wizard. CML reads group membership from authentik when each user logs in.
+8. Optionally, assign a **Resource Pool** template. This will clone the template for every user registered through LDAP. This is useful for preventing resource abuse on multi-user systems. Refer to the CML Documentation on how to create and configure a resource pool template.
+9. Click **Save**.
 
 ## Configuration verification
 
@@ -101,4 +90,4 @@ To confirm that authentik is properly configured with Cisco Modeling Labs, open 
 
 - [Cisco Modeling Labs documentation - Configuring LDAP Authentication](https://developer.cisco.com/docs/modeling-labs/configuring-ldap-authentication/)
 - [Cisco Modeling Labs documentation - CML User Authentication](https://developer.cisco.com/docs/modeling-labs/cml-user-authentication/)
-- [Cisco Modeling Labs documentation - Creating Groups](https://developer.cisco.com/docs/modeling-labs/creating-a-group/)
+- [Cisco Modeling Labs documentation- Creating a Resource Pool](https://developer.cisco.com/docs/modeling-labs/creating-a-resource-pool/)

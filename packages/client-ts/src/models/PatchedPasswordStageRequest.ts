@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,56 +15,42 @@ import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
 
 /**
  * PasswordStage Serializer
+ *
  * @export
  * @interface PatchedPasswordStageRequest
  */
 export interface PatchedPasswordStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
-     */
     name?: string;
     /**
      * Selection of backends to test the password against.
-     * @type {Array<BackendsEnum>}
-     * @memberof PatchedPasswordStageRequest
      */
     backends?: Array<BackendsEnum>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.
-     * @type {number}
-     * @memberof PatchedPasswordStageRequest
+     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does
+     * not lock the user's password.
      */
     failedAttemptsBeforeCancel?: number;
     /**
-     * How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.
-     * @type {number}
-     * @memberof PatchedPasswordStageRequest
+     * How many consecutive failed attempts lock the user's password until an administrator unlocks
+     * it. Set to 0 to never lock.
      */
     failedAttemptsBeforeLockout?: number;
     /**
-     * Warning shown when the user has one password attempt remaining. Leave blank to show no warning.
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
+     * Warning shown when the user has one password attempt remaining. Leave blank to show no
+     * warning.
      */
     lastAttemptWarningMessage?: string;
     /**
      * Message shown when the user's password has been locked. Leave blank to show no message.
-     * @type {string}
-     * @memberof PatchedPasswordStageRequest
      */
     lockoutMessage?: string;
     /**
      * When enabled, provides a 'show password' button with the password input field.
-     * @type {boolean}
-     * @memberof PatchedPasswordStageRequest
      */
     allowShowPassword?: boolean;
 }

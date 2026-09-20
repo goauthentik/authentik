@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -39,34 +37,61 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface RacConnectionTokensDestroyRequest {
+    /**
+     * A UUID string identifying this RAC Connection token.
+     */
     connectionTokenUuid: string;
 }
 
 export interface RacConnectionTokensListRequest {
     endpoint?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     sessionUser?: number;
 }
 
 export interface RacConnectionTokensPartialUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Connection token.
+     */
     connectionTokenUuid: string;
     patchedConnectionTokenRequest?: PatchedConnectionTokenRequest;
 }
 
 export interface RacConnectionTokensRetrieveRequest {
+    /**
+     * A UUID string identifying this RAC Connection token.
+     */
     connectionTokenUuid: string;
 }
 
 export interface RacConnectionTokensUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Connection token.
+     */
     connectionTokenUuid: string;
     connectionTokenRequest: ConnectionTokenRequest;
 }
 
 export interface RacConnectionTokensUsedByListRequest {
+    /**
+     * A UUID string identifying this RAC Connection token.
+     */
     connectionTokenUuid: string;
 }
 
@@ -75,40 +100,64 @@ export interface RacEndpointsCreateRequest {
 }
 
 export interface RacEndpointsDestroyRequest {
+    /**
+     * A UUID string identifying this RAC Endpoint.
+     */
     pbmUuid: string;
 }
 
 export interface RacEndpointsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     superuserFullList?: boolean;
 }
 
 export interface RacEndpointsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Endpoint.
+     */
     pbmUuid: string;
     patchedEndpointRequest?: PatchedEndpointRequest;
 }
 
 export interface RacEndpointsRetrieveRequest {
+    /**
+     * A UUID string identifying this RAC Endpoint.
+     */
     pbmUuid: string;
 }
 
 export interface RacEndpointsUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Endpoint.
+     */
     pbmUuid: string;
     endpointRequest: EndpointRequest;
 }
 
 export interface RacEndpointsUsedByListRequest {
+    /**
+     * A UUID string identifying this RAC Endpoint.
+     */
     pbmUuid: string;
 }
 
-/**
- *
- */
 export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racConnectionTokensDestroy without sending the request
@@ -220,7 +269,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/connection_tokens/`;
+        const urlPath = `/rac/connection_tokens/`;
 
         return {
             path: urlPath,
@@ -572,7 +621,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/endpoints/`;
+        const urlPath = `/rac/endpoints/`;
 
         return {
             path: urlPath,
@@ -717,7 +766,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rac/endpoints/`;
+        const urlPath = `/rac/endpoints/`;
 
         return {
             path: urlPath,

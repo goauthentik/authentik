@@ -26,12 +26,22 @@ docker compose run --rm server hash_password
 For automation, pipe the password through standard input:
 
 ```bash
-echo "$PASSWORD" | docker compose run --rm server hash_password
+printf '%s' "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 ### "Prevent duplicate device" in WebAuthn setup stage removed
 
 The **Prevent duplicate devices** option of the [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) has been removed. It compared attestation certificates, which manufacturers deliberately share across entire production batches, so it rejected legitimate enrollments of a second security key bought at the same time as the first. The option was disabled by default in 2026.5.4 and is now gone; no configuration is required to replace it, and no action is needed when upgrading.
+
+### Forwarded headers are now restricted to trusted proxies
+
+Starting with authentik 2026.8, the authentik server only uses forwarded request headers such as `X-Forwarded-Proto`, `X-Forwarded-Host`, and `X-Forwarded-For` when the connection comes from a trusted proxy network. Previous versions did not apply this restriction consistently to all forwarded headers.
+
+This change prevents clients from supplying forged proxy headers and more strictly enforces the existing trusted proxy configuration.
+
+Before upgrading, verify that your reverse proxy sends the [required proxy headers](../../install-config/reverse-proxy.mdx#required-proxy-headers) and that every address or network from which it connects directly to authentik is included in [`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](../../install-config/reverse-proxy.mdx#trusted-proxy-networks).
+
+An incorrect configuration can cause authentik to interpret HTTPS requests as HTTP, resulting in blocked mixed content, an endless loading indicator, or authentication errors.
 
 ## New features and improvements
 
@@ -204,7 +214,7 @@ The following source guides were recently added. A big thanks to our contributor
 
 ## Upgrading
 
-This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+This release does not introduce new configuration options, but it more strictly enforces trusted proxy configuration. Review the [breaking change](#forwarded-headers-are-now-restricted-to-trusted-proxies) before upgrading. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
 :::warning
 When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
@@ -215,7 +225,7 @@ When you upgrade, be aware that the version of the authentik instance and of any
 To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/2026.8/lifecycle/container/compose.yml
+wget -O compose.yml https://goauthentik.io/version/2026.8/lifecycle/container/compose.yml
 docker compose up -d
 ```
 
@@ -239,71 +249,71 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 ## Minor changes/fixes
 
 - api: replace orjson with msgspec (#23528)
-- blueprints Add `EQ` and `NEQ` modes to the `!Condition` tag (cherry-pick #20315 to version-2026.8) (#24842)
-- blueprints: emit draft-07 definitions instead of $defs (cherry-pick #24981 to version-2026.8) (#24985)
+- blueprints Add `EQ` and `NEQ` modes to the `!Condition` tag (#20315)
+- blueprints: emit draft-07 definitions instead of $defs (#24981)
 - blueprints: fix ignoring hidden paths (#24222)
-- blueprints: fix mismatched stage name in example 2fa login flow (cherry-pick #24668 to version-2026.8) (#24750)
+- blueprints: fix mismatched stage name in example 2fa login flow (#24668)
 - blueprints: fix YAMLTag repr raising on unresolved tags (#23607)
-- blueprints: handle invalid yaml, add dry run to apply_blueprint (cherry-pick #24813 to version-2026.8) (#24821)
-- blueprints: run initial migration before flows are created (cherry-pick #24880 to version-2026.8) (#24883)
-- brands: expose authenticated flags correct in current brand (cherry-pick #24577 to version-2026.8) (#24597)
+- blueprints: handle invalid yaml, add dry run to `apply_blueprint` (#24813)
+- blueprints: run initial migration before flows are created (#24880)
+- brands: expose authenticated flags correct in current brand (#24577)
 - brands: fix schema for current brand's flags (#24376)
 - core, flows: drop maximum-scale=1 from viewport meta (#23261)
 - core, internal, packages: fix British spellings flagged by cspell (#22819)
 - core, web, docs: introduce base URL (#24159)
 - core, web: Remove stale compatibility paths (#22192)
-- core: Actors (cherry-pick #24353 to version-2026.8) (#24709)
-- core: add admin_authenticated_session_deleted signal for admin deleted session (#24434)
+- core: Actors (#24353)
+- core: add `admin_authenticated_session_deleted` signal for admin deleted session (#24434)
 - core: add user switching (#22659)
-- core: adjust label for clarity for core_default_app_access (#24326)
+- core: adjust label for clarity for `core_default_app_access` (#24326)
 - core: Agent instructions. (#23363)
 - core: align django-channels-postgres psycopg\[pool\] floor with #22201 (#22363)
 - core: cache S3 file storage clients (#23168)
 - core: Defer status posts until GitHub Actions finishes. (#22340)
-- core: delete all user sessions when user is deactivated (cherry-pick #25088 to version-2026.8) (#25104)
-- core: delete expired actor tokens (cherry-pick #24767 to version-2026.8) (#24783)
-- core: fix group source connection source object (cherry-pick #24626 to version-2026.8) (#24673)
-- core: fix object attributes not setting allow_blank (#24298)
-- core: fix user_type check to correctly prevent internal_service_account (#23848)
+- core: delete all user sessions when user is deactivated (#25088)
+- core: delete expired actor tokens (#24767)
+- core: fix group source connection source object (#24626)
+- core: fix object attributes not setting `allow_blank` (#24298)
+- core: fix `user_type` check to correctly prevent `internal_service_account` (#23848)
 - core: harden npm install against supply-chain attacks (#22245)
 - core: make all m2m models explicit (#23315)
 - core: object attributes - minor fixes (#24292)
 - core: Object attributes (#21544)
 - core: prompt securely when hashing passwords (#24126)
-- core: return the intended status code from error views for all request methods (cherry-pick #24902 to version-2026.8) (#24958)
+- core: return the intended status code from error views for all request methods (#24902)
 - core: run debugpy within worker process so it's DAP-attachable again (#23401)
-- core: scope user path_startswith filter to the path subtree (cherry-pick #25093 to version-2026.8) (#25145)
+- core: scope user `path_startswith` filter to the path subtree (#25093)
 - core: update psycopg\[pool\] requirement from &lt;4,&gt;=3 to &gt;=3.3.4,&lt;4 (#22201)
 - core: validate imported password hashes at the API boundary (#24130)
-- core/groups: fix n+1 queries for list groups when include_users=false (#23216)
+- core/groups: fix n+1 queries for list groups when `include_users=false` (#23216)
 - crypto: cache parsed certificates and private keys across model instances (#24454)
 - docs/social-logins: Add jumpcloud oidc and saml (#24048)
-- endpoints: handle error in facts (cherry-pick #25028 to version-2026.8) (#25032)
-- endpoints/agent: fix Secure Enclave key dropped on first Platform SSO user registration (cherry-pick #24587 to version-2026.8) (#24590)
-- endpoints/agent: return 400 instead of 500 for invalid Platform SSO token requests (cherry-pick #24588 to version-2026.8) (#24593)
+- endpoints: handle error in facts (#25028)
+- endpoints/agent: fix Secure Enclave key dropped on first Platform SSO user registration (#24587)
+- endpoints/agent: return 400 instead of 500 for invalid Platform SSO token requests (#24588)
 - endpoints/connectors/agent: fix auth schema correctly (#24327)
-- enterprise: fix enterprise_test skipping tests when used as class decorator (#24138)
+- enterprise: fix `enterprise_test` skipping tests when used as class decorator (#24138)
 - enterprise: simplify tests (#18404)
-- enterprise/agents: add (cherry-pick #24598 to version-2026.8) (#24790)
-- enterprise/agents: fix enterprise required check for agents (cherry-pick #24814 to version-2026.8) (#24825)
+- enterprise/agents: add (#24598)
+- enterprise/agents: fix enterprise required check for agents (#24814)
 - enterprise/core: add scheduled user offboarding (#23624)
-- enterprise/endpoints/connectors/agent: add login_hint to auth_ia (cherry-pick #25122 to version-2026.8) (#25124)
-- enterprise/endpoints/connectors/fleet: decrease page size (cherry-pick #24908 to version-2026.8) (#24911)
-- enterprise/endpoints/connectors/fleet: decrease page size (cherry-pick #24995 to version-2026.8) (#24997)
+- enterprise/endpoints/connectors/agent: add `login_hint` to `auth_ia` (#25122)
+- enterprise/endpoints/connectors/fleet: decrease page size (#24908)
+- enterprise/endpoints/connectors/fleet: decrease page size (#24995)
 - enterprise/endpoints/connectors/fleet: fix exception when host has no policies (#24355)
 - enterprise/lifecycle: cleanup API (#23647)
 - enterprise/providers/oauth2: dynamic client registration (#24225)
 - enterprise/providers/ssf: log event user when sending SSF event (#24359)
 - enterprise/providers/ws_fed: add SAML 1.1 support (#23851)
 - enterprise/requests: Add ability to request access (#24183)
-- enterprise/requests: fix API schema for grant requests (cherry-pick #25111 to version-2026.8) (#25114)
-- enterprise/requests: integrate agents with requests (cherry-pick #24844 to version-2026.8) (#24952)
-- enterprise/requests: only show requests tab when usable (cherry-pick #24705 to version-2026.8) (#24743)
-- enterprise/requests: optimize db for requestable apps (cherry-pick #24984 to version-2026.8) (#24992)
-- enterprise/stages/source: configurable failure action (cherry-pick #24963 to version-2026.8) (#25027)
+- enterprise/requests: fix API schema for grant requests (#25111)
+- enterprise/requests: integrate agents with requests (#24844)
+- enterprise/requests: only show requests tab when usable (#24705)
+- enterprise/requests: optimize db for requestable apps (#24984)
+- enterprise/stages/source: configurable failure action (#24963)
 - events: add missing webhook property mappers to slack webhook function (#17377)
 - events: fix typo (#24161)
-- events: migrate top_per_user to serializer for params (#23779)
+- events: migrate `top_per_user` to serializer for params (#23779)
 - events: prevent migration changes when event actions modified (#24251)
 - events: show account changes in user event history (#24323)
 - fix release notes docker compose mention (#23386)
@@ -320,109 +330,109 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - internal/outpost/ak: handle empty outpost list during refresh (#23827)
 - internal/outpost/ldap: remove Printf in MemberForGroup loop (#22952)
 - lib: move ExpiringModel to lib from core (#24109)
-- lib/evaluator: use lazy proxy for http session (cherry-pick #24893 to version-2026.8) (#24909)
+- lib/evaluator: use lazy proxy for http session (#24893)
 - lib/sync: add Sync base model for storing past sync history (#23184)
-- lib/sync/outgoing: allow discovery to be deactivated (cherry-pick #24667 to version-2026.8) (#24678)
+- lib/sync/outgoing: allow discovery to be deactivated (#24667)
 - lifecycle: prevent version skipping upgrades (#24160)
 - lifecycle/container: increase start time to 120s (#23896)
 - outpost: grab log level from api config (#24459)
 - outpost: retry API retrieval (#24483)
-- outpost/proxy: fix envoy request routing (cherry-pick #24528 to version-2026.8) (#24536)
+- outpost/proxy: fix envoy request routing (#24528)
 - outpost/proxy: rewrite in rust (#21856)
 - outpost/proxy: send X-Forwarded-Proto with the backchannel Host override so the token issuer matches (#24489)
-- outposts/proxy: include query string in post-authentication redirect (cherry-pick #25043 to version-2026.8) (#25058)
+- outposts/proxy: include query string in post-authentication redirect (#25043)
 - packages: migrate shared pins to the pnpm catalog: protocol (#23784)
 - packages/ak-axum: Correctly canonicalize IP when checking for trusted reverse proxy (#24479)
-- packages/ak-axum: mark all unix requests as trusted (cherry-pick #24534 to version-2026.8) (#24574)
+- packages/ak-axum: mark all unix requests as trusted (#24534)
 - packages/ak-axum: re-add X-Forwarded-Host consideration (#24482)
 - packages/ak-common/db: ignore empty passwords (#24127)
-- packages/ak-common/db: truncate application name (cherry-pick #24552 to version-2026.8) (#24569)
+- packages/ak-common/db: truncate application name (#24552)
 - packages/ak-common/tracing: make console subscriber optional (#24219)
 - packages/django-dramatiq-postgres: minor fixes (#23181)
-- packages/django-dramatiq-postgres/broker: chunked purge queryset (cherry-pick #25102 to version-2026.8) (#25106)
+- packages/django-dramatiq-postgres/broker: chunked purge queryset (#25102)
 - packages/django-postgres-dramatiq: add support for task dependencies (#23064)
 - policies: list engine (#24174)
 - policies: make policy bindings expire-able (#24116)
 - providers/oauth: Logout remove static html (#23002)
 - providers/oauth2: add support for ed448 (#24013)
-- providers/oauth2: add token exchange targeting (cherry-pick #24874 to version-2026.8) (#24955)
-- providers/oauth2: automatically invalidate ProviderInfoView cached claims (cherry-pick #24944 to version-2026.8) (#24960)
-- providers/oauth2: cache ProviderInfoView get_claims (cherry-pick #24890 to version-2026.8) (#24914)
-- providers/oauth2: enforce VSCHAR for client_id and client_secret (#23760)
-- providers/oauth2: fix client_credentials regression (cherry-pick #24900 to version-2026.8) (#24901)
-- providers/oauth2: fix dcr missing csrf_exempt (cherry-pick #24983 to version-2026.8) (#24989)
+- providers/oauth2: add token exchange targeting (#24874)
+- providers/oauth2: automatically invalidate ProviderInfoView cached claims (#24944)
+- providers/oauth2: cache ProviderInfoView `get_claims` (#24890)
+- providers/oauth2: enforce VSCHAR for `client_id` and `client_secret` (#23760)
+- providers/oauth2: fix `client_credentials` regression (#24900)
+- providers/oauth2: fix dcr missing `csrf_exempt` (#24983)
 - providers/oauth2: fix iframe logout stage progression (#23919)
-- providers/oauth2: fix missing authorization event for oauth provider, add tests (cherry-pick #24819 to version-2026.8) (#24822)
-- providers/oauth2: fix token exchange provider lookup for actor/subject (cherry-pick #25110 to version-2026.8) (#25116)
-- providers/oauth2: move DCR to OSS (cherry-pick #24949 to version-2026.8) (#24953)
+- providers/oauth2: fix missing authorization event for oauth provider, add tests (#24819)
+- providers/oauth2: fix token exchange provider lookup for actor/subject (#25110)
+- providers/oauth2: move DCR to OSS (#24949)
 - providers/oauth2: OpenID key binding support (#22590)
-- providers/oauth2: optimize JWKS conversion (cherry-pick #24889 to version-2026.8) (#24907)
-- providers/oauth2: refactor token parsing logic (cherry-pick #24904 to version-2026.8) (#24906)
+- providers/oauth2: optimize JWKS conversion (#24889)
+- providers/oauth2: refactor token parsing logic (#24904)
 - providers/oauth2: run invalidation flow for unauthenticated end-session requests (#23773)
-- providers/oauth2: send back-channel logout requests when a user is deactivated (cherry-pick #24718 to version-2026.8) (#25109)
+- providers/oauth2: send back-channel logout requests when a user is deactivated (#24718)
 - providers/oauth2: token exchange (#23900)
-- providers/oauth2: token exchange delegation (cherry-pick #24356 to version-2026.8) (#24745)
-- providers/oauth2: ui/ux fixes around DCR (cherry-pick #24600 to version-2026.8) (#24660)
-- providers/radius: allow empty message authenticator (cherry-pick #25097 to version-2026.8) (#25197)
+- providers/oauth2: token exchange delegation (#24356)
+- providers/oauth2: ui/ux fixes around DCR (#24600)
+- providers/radius: allow empty message authenticator (#25097)
 - providers/saml: catch InvalidVersion from cryptography when parsing metadata (#21185)
 - providers/saml: support authnrequest forceauthn flag (#22489)
 - providers/scim: Add GitLab compatibility mode (#22906)
 - providers/scim: fix display of SCIMRequestException (2026.8) (#24833)
-- providers/scim: fix group membership removals (cherry-pick #25024 to version-2026.8) (#25067)
+- providers/scim: fix group membership removals (#25024)
 - providers/scim: fix scim changed detection for nested attributes (#24332)
 - providers/scim: ignore key casing in SCIM responses (#24441)
-- providers/scim: rework discovery with pageSize (cherry-pick #24490 to version-2026.8) (#24675)
-- rbac: use constant-time comparison in SecretKeyFilter (cherry-pick #24888 to version-2026.8) (#24948)
+- providers/scim: rework discovery with pageSize (#24490)
+- rbac: use constant-time comparison in SecretKeyFilter (#24888)
 - root, web, docs, packages/\*-config: Fix pnpm symlinks, version ranges (#23592)
 - root, web, docs: Update pnpm to 11.9.0 (#23582)
 - root: add .nvmrc (#24440)
 - root: Add .nvmrc to CODEOWNERS (#24444)
 - root: add a pnpm catalog drift lint + config cleanup (#23781)
-- root: add optional pyroscope for profiling (cherry-pick #24887 to version-2026.8) (#24945)
+- root: add optional pyroscope for profiling (#24887)
 - root: assign packages/theme to @goauthentik/frontend (#23344)
-- root: avoid looping indefinitely on embedded outpost start (cherry-pick #24553 to version-2026.8) (#24559)
-- root: avoid looping indefinitely on embedded outpost start (take 2) (cherry-pick #24824 to version-2026.8) (#24827)
+- root: avoid looping indefinitely on embedded outpost start (#24553)
+- root: avoid looping indefinitely on embedded outpost start (take 2) (#24824)
 - root: bind-mount .npmrc into Dockerfile npm ci stages (#22462)
 - root: bump requests & fix double slash (#23501)
 - root: bump version to 2026.8.0-rc1 (#22167)
 - root: don't fail fast cspell (#24223)
-- root: don't include debug info for rust release profile (cherry-pick #24664 to version-2026.8) (#24669)
+- root: don't include debug info for rust release profile (#24664)
 - root: fix "make gen" failing with "the input device is not a TTY" (#23546)
 - root: fix agents test instructions (#24119)
 - root: fix CODEOWNERS paths (#24259)
 - root: fix context processor name (#24421)
 - root: fix docker compose pg volume path for compatibility with pg18 (#23883)
-- root: fix fast shutdown log message (cherry-pick #24565 to version-2026.8) (#24571)
+- root: fix fast shutdown log message (#24565)
 - root: fix schema and API clients (#22735)
 - root: flag British spellings in cspell (#22821)
 - root: gitignore release generation artifacts (#22549)
-- root: Ignore local cached TypeScript build info. (cherry-pick #24579 to version-2026.8) (#24594)
+- root: Ignore local cached TypeScript build info. (#24579)
 - root: in-process per-IP rate throttle (#23015)
-- root: limit request body size (cherry-pick #24666 to version-2026.8) (#24671)
-- root: make clippy run on all targets (cherry-pick #24551 to version-2026.8) (#24555)
+- root: limit request body size (#24666)
+- root: make clippy run on all targets (#24551)
 - root: make tests run when running make all (#22186)
 - root: move server and worker healthcheck to rust (#23556)
-- root: pin pnpm 11.20.0 everywhere (cherry-pick #24789 to version-2026.8) (#24854)
+- root: pin pnpm 11.20.0 everywhere (#24789)
 - root: PostgreSQL direct-endpoint support for LISTEN/NOTIFY and advisory locks (#23013)
 - root: Replace (npm + Corepack) with pnpm (#22830)
 - root: rewrite server in rust (#24320)
 - root: Update CODEOWNERS for spellcheck dictionaries (#22408)
 - root: update gen-changelog to filter unnecessary commits (#22550)
 - root: Update PR template (#22185)
-- source/oauth: add cas source integration (cherry-pick #24737 to version-2026.8) (#24768)
+- source/oauth: add cas source integration (#24737)
 - sources/ldap: derive TLS SNI name from hostname, not full server URI (#22456)
 - sources/ldap: implement nested group parentship sync (#19069)
 - sources/oauth: allow long authorization URLs on OAuth sources (#24132)
 - sources/oauth: Fallback to `id` field when `sub` is missing in OIDC callback (#22672)
 - sources/oauth: prevent requests being made to disabled oauth social sources (#23822)
 - sources/oauth: support email retrieval for Twitter login (#20468)
-- sources/saml: add audience override field for SAML sources (cherry-pick #25029 to version-2026.8) (#25033)
-- sources/saml: fix issuer generation and change to issuer_override (#22177)
-- sources/saml: fix issuer_override default (#24221)
-- sources/telegram: restore next= redirect after pre_authentication_flow (cherry-pick #22762 to version-2026.8) (#25152)
+- sources/saml: add audience override field for SAML sources (#25029)
+- sources/saml: fix issuer generation and change to `issuer_override` (#22177)
+- sources/saml: fix `issuer_override` default (#24221)
+- sources/telegram: restore `next=` redirect after `pre_authentication_flow` (#22762)
 - stages/authenticator_duo: clarify duplicate Duo user enrollment (#23588)
-- stages/authenticator_validate: fix intermittnetly failing throttling test (cherry-pick #24568 to version-2026.8) (#24708)
-- stages/authenticator_validate: skip flaky test (cherry-pick #24554 to version-2026.8) (#24560)
+- stages/authenticator_validate: fix intermittently failing throttling test (#24568)
+- stages/authenticator_validate: skip flaky test (#24554)
 - stages/authenticator_webauthn: remove prevent_duplicate_devices (#24450)
 - stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#22772)
 - stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#23562)
@@ -431,10 +441,10 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - stages/authenticator: protect devices from stage deletion (#24324)
 - stages/captcha: add Cap and JSON verification support (#22373)
 - stages/captcha: fix hcaptcha height (#20901)
-- stages/email: fix test_email ignoring the given stage (cherry-pick #25166 to version-2026.8) (#25190)
+- stages/email: fix `test_email` ignoring the given stage (#25166)
 - stages/user_login: refuse to log in an unsaved pending user (#21691)
 - stages/user_write: only write user when data changes (#24158)
-- tasks: aggregate status from logs instead of legacy field (cherry-pick #24792 to version-2026.8) (#25004)
+- tasks: aggregate status from logs instead of legacy field (#24792)
 - tasks: ignore integrity error on tasklog insertion (#23178)
 - tests: add security regression tests for OAuth JWT-bearer and flow session handling (#23190)
 - tests/e2e: bump endpoints version in e2e test container (#22704)
@@ -443,33 +453,33 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - Update SAML configuration for SonarQube integration (#23220)
 - web, docs, packages/\*: Fix pnpm Workspace Catalogs (#23944)
 - web, locale: Normalize legacy locale file names (#24024)
-- web, packages/geo, server/static: Air Gapped Maps Merge Branch (cherry-pick #24254 to version-2026.8) (#24602)
+- web, packages/geo, server/static: Air Gapped Maps Merge Branch (#24254)
 - web: add build start/end log to build script (#24296)
 - web: add grid/list view toggle to user application library (#22132)
 - web: break preformatted desc list elements (#20372)
-- web: contain long text in tables and application cards (cherry-pick #24621 to version-2026.8) (#24689)
+- web: contain long text in tables and application cards (#24621)
 - web: decode lit-localize over-escaped entities across all localized strings (#23264)
 - web: exclude dependabot-materialized link deps from workspace glob (#24297)
 - web: fix British spellings flagged by cspell (#22820)
-- web: Fix content_left/right layouts. (cherry-pick #25025 to version-2026.8) (#25030)
+- web: Fix `content_left`/`content_right` layouts. (#25025)
 - web: fix email angle brackets rendering as HTML entities in localized UI (#23262)
-- web: fix file search input interactions (cherry-pick #24609 to version-2026.8) (#24811)
-- web: Fix issue where 0 value is not preserved. (cherry-pick #24460 to version-2026.8) (#24539)
-- web: Fix mangled nested CSS in compatibility mode. (cherry-pick #25053 to version-2026.8) (#25063)
+- web: fix file search input interactions (#24609)
+- web: Fix issue where 0 value is not preserved. (#24460)
+- web: Fix mangled nested CSS in compatibility mode. (#25053)
 - web: Flesh out frontend, E2E, agent instructions. (#22388)
-- web: hide plain action icons while loading (cherry-pick #24618 to version-2026.8) (#24688)
+- web: hide plain action icons while loading (#24618)
 - web: improve base url helper text (#24455)
-- web: improve user header at intermediate widths (cherry-pick #24608 to version-2026.8) (#24610)
+- web: improve user header at intermediate widths (#24608)
 - web: migrate brand assets to npm pkg (#22361)
 - web: Recovery Token CSS Safe Mode (#23152)
 - web: remove orphaned chromedriver dependency (#22251)
 - web: rework ak-search-select dropdown as an anchored popover (retire ak-portal) (#24104)
 - web/admin: better table filter (#24368)
-- web/admin: drop misleading delete consequences from user activation review (cherry-pick #24273 to version-2026.8) (#24787)
+- web/admin: drop misleading delete consequences from user activation review (#24273)
 - web/admin: enterprise status card properties (#24170)
-- web/admin: fix alignment of task list filters (cherry-pick #24752 to version-2026.8) (#24754)
+- web/admin: fix alignment of task list filters (#24752)
 - web/admin: fix leftover toggles in tables (#24436)
-- web/admin: fix missing preview banner for object attributes (cherry-pick #24982 to version-2026.8) (#24990)
+- web/admin: fix missing preview banner for object attributes (#24982)
 - web/admin: hide previous loglist when no previous logs available (#23954)
 - web/admin: maint/clean ldap source connectivity (#22941)
 - web/admin: QOL: Add "Expiring in `n` days" and "Expiring today" notices to LicenseStatusCard (#24300)
@@ -483,10 +493,10 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/bug: harmonize and make routine the display of tasks (part 4: schedule-list cards) (#23855)
 - web/bug: harmonize and make routine the display of tasks (part 6: sch… (#23859)
 - web/bug/22387 device user bindings failing (#23042)
-- web/cleanup/dedup default config (#23622)
+- web/cleanup/dedupe default config (#23622)
 - web/cleanup/there is no memo (#23641)
-- web/common: allow line-break in dom-purify (cherry-pick #24755 to version-2026.8) (#24784)
-- web/components: update styling for user account switcher (cherry-pick #24749 to version-2026.8) (#24753)
+- web/common: allow line-break in dom-purify (#24755)
+- web/components: update styling for user account switcher (#24749)
 - web/css: de-dupe and simplify CSS customizations (#23195)
 - web/css: enabling layers, part 3: vendoring (#23366)
 - web/css/enabling layers 2 (#23265)
@@ -496,7 +506,7 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/elements: Add location to sessions (#24422)
 - web/elements: add past-tense submitted formatter to Form (#23041)
 - web/elements: extract mermaid runtime, modernize `<ak-diagram>` (#22980)
-- web/elements: fix prioritization in form serialization for dotted input-fields (cherry-pick #24987 to version-2026.8) (#24996)
+- web/elements: fix prioritization in form serialization for dotted input-fields (#24987)
 - web/elements: key the message list so stacked toasts don't share state (#24361)
 - web/elements: P5 Drawer component with all capabilities (#21545)
 - web/elements: update the progress bar (#24134)
@@ -504,7 +514,7 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/enterprise: add UI for pending offboardings (#24266)
 - web/fix: clarify some secrets remain secret (#23132)
 - web/flows: Add new flow background image (#24511)
-- web/flows: fix missing required flag on password input (cherry-pick #24831 to version-2026.8) (#24837)
+- web/flows: fix missing required flag on password input (#24831)
 - web/flows: fix untranslated user field labels in identification stage (#23518)
 - web/maint: harmonize and make routine the display of tasks (part 1: cards) (#23837)
 - web/maint: Put API-aware status indicators in `components`; fix missing state (#22936)
@@ -512,17 +522,100 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/maint: upgrade ak-toggle-group (#24038)
 - web/maint/dependency: maint 1 (#22506)
 - web/maintenance: bump Typescript compiler to version 7 (#22172)
-- web/maintenance: eliminate the need for DEFAULT_CONFIG boilerplate everywhere (#22892)
+- web/maintenance: eliminate the need for `DEFAULT_CONFIG` boilerplate everywhere (#22892)
 - web/maintenance: Replace routine form endpoints (#23554)
 - web/maintenance/explicit model endpoints (#22897)
 - web/tests: fix `strict mode` issues in two tests (#23339)
-- web/user: fix request access URL from agent not working (cherry-pick #25113 to version-2026.8) (#25118)
+- web/user: fix request access URL from agent not working (#25113)
 - web/xliff: fix zh-Hans translation (#24512)
 - worker: fix healthcheck paths (#24481)
 
+## Fixed in 2026.8.1
+
+- core/sources: forward kwargs when updating an existing connection (#25204)
+- core/sources: reuse group property mapping manager across groups (#24699)
+- core: add user type-active-username index (#25223)
+- core: declare `authorization_flow and invalidation_flow` as nullable in root provider list (#25243)
+- core: set days=1 as default token duration for new installs (#25341)
+- crypto: don't dispatch discovery if one is queued (#25483)
+- endpoints/connectors: fix integrity error when device with same name exists already (#25237)
+- lib/expression: fix policy request context pollution (#25462)
+- lib/expression: use literal fallback in `ak_obj_attr` (#25414)
+- outpost/event: fix websocket connection with `AUTHENTIK_INSECURE=true` (#25472)
+- outpost/proxy: avoid breaking header parsing in non-compliant backends (#25439)
+- outpost/proxy: fix double host sent on token introspection (#25234)
+- outposts: fix docker controller for proxy outpost (#25353)
+- packages/ak-axum: extract the rightmost untrusted IP from X-Forwarded-For (#25397)
+- providers/saml: remove redundant backchannel logout call (#25086)
+- root: SECURITY.md vulnerability reporting channel (#25365)
+- root: update SECURITY.md supported versions (#25351)
+- server/core: handle unsupported HTTP method (#22498)
+- server/core: relay negotiated websocket subprotocol and stop offering extensions upstream (#25487)
+- sources/ldap/freeipa: handle list-valued krbLastPwdChange (#20600)
+- sources/oauth: cover object group property mappings (#25195)
+- sources: don't 500 on an object-shaped `groups` claim (#25208)
+- stages/identification: dynamic captcha keys when stage embedded in identification stage (#24079)
+- stages/identification: only join Source subtypes that can render a login button (#25238)
+- tenants: fix base URL validation rejecting internal hostnames (#25560)
+- web/admin/events: Allow selecting public cert only on transport form verification (#24771)
+- web/elements/table: show scrollbar instead of overflowing off the page (#25232)
+- web/user: fix missing enterprise check on agents tab in user interface (#25371)
+- web: Auto focus password field after login error. (#25026)
+- web: Fix Sentry Initialization (#25450)
+- web: Fix imports when in compatibility mode. (#25526)
+- web: Fix issues surrounding text field focus behavior. (#25159)
+- web: keep sticky form actions below nav menus (#25336)
+- web: keep the search-select dropdown inside its modal (#24812)
+
+## Fixed in 2026.8.2
+
+- core: explicitly check `is_active` in auth backends (#25729)
+- core: fix bulk session revocation (#25816)
+- lib: avoid DNS resolution in `fqdn_rand` (#25728)
+- lib/expression: fix PickleError due to resolver match when using `ak_call_policy` (#25763)
+- lifecycle: fix server prometheus metrics getting registered early with pid instead of worker ID (#25883)
+- packages/django-dramatiq-postgres: prevent crashing consumer thread on schedules with unknown actors (#25656)
+- rbac: guard for non-existent object in object permission API (#25601)
+- security: automated internal backport of patch 1751-secrets-read-permission.sec.patch to authentik-2026.8 (#25965)
+- security: automated internal backport of patch 1877-group-hierarchy-roles.sec.patch to authentik-2026.8 (#25966)
+- security: automated internal backport of patch 1914-saml.sec.patch to authentik-2026.8 (#25967)
+- security: automated internal backport of patch 2032-authenticator-email-recipient-override.sec.patch to authentik-2026.8 (#25968)
+- security: automated internal backport of patch 2190-libxml2-doctype.sec.patch to authentik-2026.8 (#25969)
+- tenants/settings: fix `flags` response (#25616)
+- web/admin: align command palette navigation with sidebar (#25732)
+- web/admin: fix schedule form (#25778)
+- web/admin: oauth provider: explain what happens when no signing key is selected (#25756)
+- web: fix switches in table toolbars (#25730)
+- web: preserve custom event action labels (#25655)
+- web: show pre-selected value in paginated search-selects (#25609)
+
+## Fixed in 2026.8.3
+
+- admin/files: make file search case-insensitive (#25736)
+- api: include JSON field relation models in search autocomplete (#26153)
+- blueprints: fix `employee_department` typo (#26046)
+- change docker compose to compose (#26087)
+- core: fix migrations (version-2026.8) (cherry-pick #26208) (#26209)
+- events: Note in logs when an agent makes a call (#26146)
+- flows: strip `login_hint` from next on cancel to prevent loop (#26111)
+- outposts: refresh sessions when impersonation changes (#26086)
+- packages/ak-axum/extract/client_ip: support X-Forwarded-For with ports (#25682)
+- policies: fix policybinding cache invalidation (#25989)
+- providers/ldap: fix memory leak in the cached searcher (#26028)
+- providers/oauth: handle token exchange when no signing key is set (#26049)
+- providers/oauth2: only expose URL-based avatars as picture claim (#26080)
+- root: document CNA in SECURITY.md (#26124)
+- root: fix metric gauges for multiprocessor mode (#25882)
+- server: preserve websocket close code when proxying to outposts (#26090)
+- sources/saml: Register ID attributes (#25706)
+- web/flows: fix hardcoded locale in identification stage's `OR_LIST_FORMATTERS` (#26017)
+- web/scim: Add gitlab compatibility option to form (#26154)
+
 ## API Changes
 
-### authentik (v 2026.8.0)
+### authentik (v 2026.8.3)
+
+**Notice**: There are breaking changes with authentik v 2026.5
 
 ---
 
@@ -655,11 +748,13 @@ Added: `filter_has_attributes` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
+
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -674,6 +769,7 @@ Changed content type : `application/json`
     > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
 - Changed property `flags` (object)
+
     - Changed property `core_default_app_access` (boolean)
         > Applications with no policies bound can be accessed by any user.
 
@@ -682,11 +778,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
+
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -701,6 +799,7 @@ Changed content type : `application/json`
     > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
 - Changed property `flags` (object)
+
     - Changed property `core_default_app_access` (boolean)
         > Applications with no policies bound can be accessed by any user.
 
@@ -709,11 +808,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `base_url` (string)
 
         > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
 
     - Changed property `flags` (object)
+
         - Changed property `core_default_app_access` (boolean)
             > Applications with no policies bound can be accessed by any user.
 
@@ -750,6 +851,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -777,6 +879,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -804,6 +907,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -812,22 +916,6 @@ Changed response : **200 OK**
 
     - Added property `flow_request` (string)
 
-##### `POST` /core/groups/&#123;group_uuid&#125;/add_user/
-
-##### `POST` /core/groups/&#123;group_uuid&#125;/remove_user/
-
-##### `POST` /core/users/&#123;id&#125;/impersonate/
-
-##### `POST` /core/users/&#123;id&#125;/recovery/
-
-##### `POST` /core/users/&#123;id&#125;/recovery_email/
-
-##### `POST` /core/users/&#123;id&#125;/set_password/
-
-##### `POST` /core/users/&#123;id&#125;/set_password_hash/
-
-##### `POST` /core/users/account_lockdown/
-
 ##### `POST` /core/users/export/
 
 ###### Return Type:
@@ -835,25 +923,18 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `content_type` (object)
 
         New required properties:
         - `fully_qualified_model`
         * Added property `fully_qualified_model` (string)
 
-##### `GET` /core/users/impersonate_end/
-
-##### `GET` /core/users/paths/
-
-##### `POST` /core/users/service_account/
-
 ##### `POST` /endpoints/agents/connectors/auth_ia/
 
 ###### Parameters:
 
 Added: `login_hint` in `query`
-
-##### `POST` /endpoints/agents/psso/register/device/
 
 ##### `GET` /endpoints/device_bindings/&#123;policy_binding_uuid&#125;/
 
@@ -911,6 +992,7 @@ Changed: `actions` in `query`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `content_type` (object)
 
         New required properties:
@@ -976,6 +1058,7 @@ Changed: `top_n` in `query`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `reviewer` (object)
 
         > Partial User Serializer, does not include child relations.
@@ -1051,11 +1134,13 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1067,6 +1152,7 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
+
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1075,6 +1161,7 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
+
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1096,6 +1183,7 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1107,6 +1195,7 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
+
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -1115,6 +1204,7 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
+
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1130,11 +1220,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1146,6 +1238,7 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
+
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1154,6 +1247,7 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
+
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1175,6 +1269,7 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1186,6 +1281,7 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
+
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -1194,6 +1290,7 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
+
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1209,11 +1306,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1225,6 +1324,7 @@ Changed response : **200 OK**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
+
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1233,6 +1333,7 @@ Changed response : **200 OK**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
+
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1242,6 +1343,24 @@ Changed response : **200 OK**
         - `authentik_requests.requestrulebinding`
         - `authentik_requests.requestrule`
         - `authentik_requests.grantrequest`
+
+##### `GET` /providers/all/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `authorization_flow`
+    - `invalidation_flow`
+    * Changed property `authorization_flow` (string)
+
+        > Flow used when authorizing this provider.
+
+    * Changed property `invalidation_flow` (string)
+        > Flow used ending the session from a provider.
 
 ##### `GET` /providers/oauth2/&#123;id&#125;/setup_urls/
 
@@ -1262,6 +1381,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `content_type` (object)
 
         New required properties:
@@ -1275,9 +1395,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_task_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `PUT` /tasks/schedules/&#123;id&#125;/
@@ -1287,9 +1409,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_task_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `PATCH` /tasks/schedules/&#123;id&#125;/
@@ -1299,9 +1423,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_task_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /core/applications/&#123;slug&#125;/
@@ -1316,6 +1442,34 @@ Changed response : **200 OK**
     - `pbm_uuid`
     * Added property `pbm_uuid` (string)
 
+    * Changed property `provider_obj` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+    * Changed property `backchannel_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
 ##### `PUT` /core/applications/&#123;slug&#125;/
 
 ###### Return Type:
@@ -1328,6 +1482,34 @@ Changed response : **200 OK**
     - `pbm_uuid`
     * Added property `pbm_uuid` (string)
 
+    * Changed property `provider_obj` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+    * Changed property `backchannel_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
 ##### `PATCH` /core/applications/&#123;slug&#125;/
 
 ###### Return Type:
@@ -1339,6 +1521,34 @@ Changed response : **200 OK**
     New required properties:
     - `pbm_uuid`
     * Added property `pbm_uuid` (string)
+
+    * Changed property `provider_obj` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+    * Changed property `backchannel_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
 
 ##### `POST` /core/brands/
 
@@ -1359,6 +1569,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `branding_map_tiles` (string)
 
         > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -1380,9 +1591,11 @@ Added: `flow_user_switch` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Brand Serializer
+
         - Added property `branding_map_tiles` (string)
 
             > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
@@ -1407,38 +1620,6 @@ Changed response : **200 OK**
 
     * Added property `flow_request` (string)
 
-    * Changed property `flags` (object)
-
-        New optional properties:
-        - `core_default_app_access`
-        - `enterprise_audit_include_expanded_diff`
-        * Deleted property `core_default_app_access` (boolean)
-
-            > Configure if applications without any policy/group/user bindings should be accessible to any user.
-
-        * Deleted property `enterprise_audit_include_expanded_diff` (boolean)
-            > Include additional information in audit logs, may incur a performance penalty.
-
-##### `DELETE` /core/groups/&#123;group_uuid&#125;/
-
-##### `GET` /core/groups/&#123;group_uuid&#125;/
-
-##### `PUT` /core/groups/&#123;group_uuid&#125;/
-
-##### `PATCH` /core/groups/&#123;group_uuid&#125;/
-
-##### `GET` /core/groups/&#123;group_uuid&#125;/used_by/
-
-##### `DELETE` /core/users/&#123;id&#125;/
-
-##### `GET` /core/users/&#123;id&#125;/
-
-##### `PUT` /core/users/&#123;id&#125;/
-
-##### `PATCH` /core/users/&#123;id&#125;/
-
-##### `GET` /core/users/&#123;id&#125;/used_by/
-
 ##### `GET` /endpoints/agents/connectors/agent_config/
 
 ###### Return Type:
@@ -1446,6 +1627,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `system_config` (object)
 
         > Serialize authentik Config into DRF Object
@@ -1454,6 +1636,7 @@ Changed response : **200 OK**
             Changed items (string):
 
             Added enum values:
+
             - `can_request`
             - `can_agent_self_service`
 
@@ -1492,6 +1675,7 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > PolicyBinding Serializer
@@ -1510,9 +1694,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1528,6 +1714,7 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1539,9 +1726,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1557,6 +1746,7 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1568,9 +1758,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1590,9 +1782,11 @@ Changed response : **200 OK**
 - Changed content type : `application/json`
 
     Changed items (object): > Count of events of action created on day for a single event action
+
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1606,9 +1800,11 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `reviews` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
         - Changed property `reviewer` (object)
 
             > Partial User Serializer, does not include child relations.
@@ -1684,9 +1880,11 @@ Changed response : **200 OK**
 - Changed content type : `application/json`
 
     Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
     - Changed property `reviews` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
         - Changed property `reviewer` (object)
 
             > Partial User Serializer, does not include child relations.
@@ -1760,6 +1958,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -1806,6 +2005,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -1852,6 +2052,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -1891,6 +2092,72 @@ Changed response : **200 OK**
 
         * Deleted property `uuid` (string)
 
+##### `GET` /outposts/instances/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `PUT` /outposts/instances/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `PATCH` /outposts/instances/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
 ##### `POST` /policies/bindings/
 
 ###### Return Type:
@@ -1913,6 +2180,7 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > PolicyBinding Serializer
@@ -1935,6 +2203,7 @@ Changed content type : `application/json`
     > Match created events with this action type. When left empty, all action types will be matched.
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -1946,6 +2215,7 @@ Changed content type : `application/json`
     > Match events created by selected application. When left empty, all applications are matched.
 
     Added enum values:
+
     - `authentik.enterprise.agents`
     - `authentik.enterprise.requests`
 
@@ -1954,6 +2224,7 @@ Changed content type : `application/json`
     > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
     Added enum values:
+
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -1969,11 +2240,13 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         > Match created events with this action type. When left empty, all action types will be matched.
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -1985,6 +2258,7 @@ Changed response : **201 Created**
         > Match events created by selected application. When left empty, all applications are matched.
 
         Added enum values:
+
         - `authentik.enterprise.agents`
         - `authentik.enterprise.requests`
 
@@ -1993,6 +2267,7 @@ Changed response : **201 Created**
         > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
         Added enum values:
+
         - `authentik_core.objectattribute`
         - `authentik_core.actor`
         - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2014,14 +2289,17 @@ Changed: `action` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Event Matcher Policy Serializer
+
         - Changed property `action` (string)
 
             > Match created events with this action type. When left empty, all action types will be matched.
 
             Added enum values:
+
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -2033,6 +2311,7 @@ Changed response : **200 OK**
             > Match events created by selected application. When left empty, all applications are matched.
 
             Added enum values:
+
             - `authentik.enterprise.agents`
             - `authentik.enterprise.requests`
 
@@ -2041,6 +2320,7 @@ Changed response : **200 OK**
             > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
             Added enum values:
+
             - `authentik_core.objectattribute`
             - `authentik_core.actor`
             - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2051,6 +2331,28 @@ Changed response : **200 OK**
             - `authentik_requests.requestrule`
             - `authentik_requests.grantrequest`
 
+##### `GET` /providers/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
 ##### `GET` /providers/google_workspace/&#123;id&#125;/
 
 ###### Return Type:
@@ -2058,6 +2360,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2075,6 +2378,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2092,6 +2396,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2102,9 +2407,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_sync_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /providers/microsoft_entra/&#123;id&#125;/
@@ -2114,6 +2421,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2131,6 +2439,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2148,6 +2457,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -2158,9 +2468,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_sync_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /providers/scim/&#123;id&#125;/
@@ -2170,6 +2482,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2179,6 +2492,7 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
+
         - `gitlab`
 
 ##### `PUT` /providers/scim/&#123;id&#125;/
@@ -2196,6 +2510,7 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
+
     - `gitlab`
 
 ###### Return Type:
@@ -2203,6 +2518,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2212,6 +2528,7 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
+
         - `gitlab`
 
 ##### `PATCH` /providers/scim/&#123;id&#125;/
@@ -2229,6 +2546,7 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
+
     - `gitlab`
 
 ###### Return Type:
@@ -2236,6 +2554,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -2245,6 +2564,7 @@ Changed response : **200 OK**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
+
         - `gitlab`
 
 ##### `GET` /providers/scim/&#123;id&#125;/sync/status/
@@ -2254,10 +2574,78 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_sync_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
+
+##### `GET` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `oidc_auth_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `PUT` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `oidc_auth_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `PATCH` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `oidc_auth_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
 
 ##### `GET` /providers/wsfed/&#123;id&#125;/
 
@@ -2274,6 +2662,7 @@ Changed response : **200 OK**
         > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
         Enum values:
+
         - `1.1`
         - `2.0`
 
@@ -2337,6 +2726,7 @@ Changed content type : `application/json`
 - Changed property `model` (string)
 
     Added enum values:
+
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2356,6 +2746,7 @@ Changed content type : `application/json`
 - Changed property `model` (string)
 
     Added enum values:
+
     - `authentik_core.objectattribute`
     - `authentik_core.actor`
     - `authentik_providers_oauth2.oauth2dynamicclientregistration`
@@ -2373,9 +2764,11 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
         - Changed property `content_type` (object)
 
             New required properties:
@@ -2389,11 +2782,13 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `capabilities` (array)
 
         Changed items (string):
 
         Added enum values:
+
         - `can_request`
         - `can_agent_self_service`
 
@@ -2404,9 +2799,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_sync_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /sources/ldap/&#123;slug&#125;/
@@ -2416,6 +2813,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2433,6 +2831,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2450,6 +2849,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -2460,9 +2860,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `last_sync_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /sources/oauth/&#123;slug&#125;/
@@ -2472,6 +2874,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -2491,6 +2894,7 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
+
         - `azuread`
 
 ##### `PUT` /sources/oauth/&#123;slug&#125;/
@@ -2518,6 +2922,7 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
+
     - `azuread`
 
 ###### Return Type:
@@ -2525,6 +2930,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -2544,6 +2950,7 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
+
         - `azuread`
 
 ##### `PATCH` /sources/oauth/&#123;slug&#125;/
@@ -2571,6 +2978,7 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
+
     - `azuread`
 
 ###### Return Type:
@@ -2578,6 +2986,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -2597,6 +3006,7 @@ Changed response : **200 OK**
     - Changed property `provider_type` (string)
 
         Removed enum value:
+
         - `azuread`
 
 ##### `GET` /sources/saml/&#123;slug&#125;/
@@ -2684,6 +3094,31 @@ Changed response : **200 OK**
     * Deleted property `issuer` (string)
         > Also known as Entity ID. Defaults the Metadata URL.
 
+##### `GET` /ssf/streams/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `provider_obj` (object)
+
+        > SSFProvider Serializer
+        - Changed property `oidc_auth_providers_obj` (array)
+
+            Changed items (object): > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
 ##### `GET` /tasks/schedules/
 
 ###### Return Type:
@@ -2691,12 +3126,15 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object):
+
         - Changed property `last_task_status` (string)
 
             Added enum value:
+
             - `waiting_for_dependencies`
 
 ##### `POST` /core/applications/
@@ -2711,6 +3149,34 @@ Changed response : **201 Created**
     - `pbm_uuid`
     * Added property `pbm_uuid` (string)
 
+    * Changed property `provider_obj` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+    * Changed property `backchannel_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
 ##### `GET` /core/applications/
 
 ###### Return Type:
@@ -2718,6 +3184,7 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Application Serializer
@@ -2726,9 +3193,33 @@ Changed response : **200 OK**
         - `pbm_uuid`
         * Added property `pbm_uuid` (string)
 
-##### `POST` /core/groups/
+        * Changed property `provider_obj` (object)
 
-##### `GET` /core/groups/
+            > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
+        * Changed property `backchannel_providers_obj` (array)
+
+            Changed items (object): > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
 
 ##### `GET` /core/user_consent/&#123;id&#125;/
 
@@ -2737,6 +3228,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `application` (object)
 
         > Application Serializer
@@ -2745,9 +3237,33 @@ Changed response : **200 OK**
         - `pbm_uuid`
         * Added property `pbm_uuid` (string)
 
-##### `POST` /core/users/
+        * Changed property `provider_obj` (object)
 
-##### `GET` /core/users/
+            > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
+        * Changed property `backchannel_providers_obj` (array)
+
+            Changed items (object): > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
 
 ##### `GET` /core/users/me/
 
@@ -2762,6 +3278,7 @@ Changed response : **200 OK**
     * Added property `users` (array)
 
         Items (object): > User Serializer for information a user can retrieve about themselves
+
         - Property `pk` (integer)
 
         - Property `username` (string)
@@ -2785,6 +3302,7 @@ Changed response : **200 OK**
         - Property `groups` (array)
 
             Items (object):
+
             - Property `name` (string)
 
             - Property `pk` (string)
@@ -2808,6 +3326,7 @@ Changed response : **200 OK**
         - Property `type` (string)
 
             Enum values:
+
             - `internal`
             - `external`
             - `service_account`
@@ -2828,33 +3347,6 @@ Changed response : **200 OK**
         * Added property `is_current` (boolean)
             > Return whether this user owns the current browser session.
 
-##### `GET` /endpoints/devices/&#123;device_uuid&#125;/
-
-###### Return Type:
-
-Changed response : **200 OK**
-
-- Changed content type : `application/json`
-    - Changed property `facts` (object)
-
-##### `PUT` /endpoints/devices/&#123;device_uuid&#125;/
-
-###### Return Type:
-
-Changed response : **200 OK**
-
-- Changed content type : `application/json`
-    - Changed property `facts` (object)
-
-##### `PATCH` /endpoints/devices/&#123;device_uuid&#125;/
-
-###### Return Type:
-
-Changed response : **200 OK**
-
-- Changed content type : `application/json`
-    - Changed property `facts` (object)
-
 ##### `POST` /events/events/
 
 ###### Request:
@@ -2864,6 +3356,7 @@ Changed content type : `application/json`
 - Changed property `action` (string)
 
     Added enum values:
+
     - `user_offboarded`
     - `access_request_created`
     - `access_request_approved`
@@ -2875,9 +3368,11 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -2895,12 +3390,15 @@ Changed: `actions` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Event Serializer
+
         - Changed property `action` (string)
 
             Added enum values:
+
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -2914,12 +3412,14 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
+
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -2938,6 +3438,7 @@ Changed content type : `application/json`
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -2949,12 +3450,14 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
+
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -2973,6 +3476,7 @@ Changed content type : `application/json`
     - Changed property `action` (string)
 
         Added enum values:
+
         - `user_offboarded`
         - `access_request_created`
         - `access_request_approved`
@@ -2984,12 +3488,14 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `event` (object)
 
         > Event Serializer
         - Changed property `action` (string)
 
             Added enum values:
+
             - `user_offboarded`
             - `access_request_created`
             - `access_request_approved`
@@ -3003,12 +3509,15 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
         - Changed property `reviews` (array)
 
             Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
             - Changed property `reviewer` (object)
 
                 > Partial User Serializer, does not include child relations.
@@ -3082,6 +3591,7 @@ Changed response : **200 OK**
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `reviewer_groups_obj` (array)
 
         Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -3128,9 +3638,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+
         - Changed property `reviewer_groups_obj` (array)
 
             Changed items (object): > Partial Group Serializer, does not include child relations.
@@ -3170,6 +3682,120 @@ Changed response : **200 OK**
 
             * Deleted property `uuid` (string)
 
+##### `GET` /oauth2/access_tokens/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `provider` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `GET` /oauth2/authorization_codes/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `provider` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `GET` /oauth2/refresh_tokens/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `provider` (object)
+
+        > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `POST` /outposts/instances/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    - Changed property `providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `GET` /outposts/instances/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > Outpost Serializer
+
+        - Changed property `providers_obj` (array)
+
+            Changed items (object): > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
 ##### `GET` /outposts/ldap/
 
 ###### Return Type:
@@ -3177,9 +3803,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > LDAPProvider Serializer
+
         - Changed property `application_slug` (string)
             > Prioritize backchannel slug over direct application slug
 
@@ -3197,6 +3825,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3207,9 +3836,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > GoogleWorkspaceProvider Serializer
+
         - Added property `discovery_enabled` (boolean)
             > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3227,6 +3858,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3237,9 +3869,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > MicrosoftEntraProvider Serializer
+
         - Added property `discovery_enabled` (boolean)
             > When enabled, authentik will attempt to discover existing resources in the remote system.
 
@@ -3250,11 +3884,13 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
+
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `PUT` /providers/oauth2/&#123;id&#125;/
@@ -3268,6 +3904,7 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
+
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -3275,11 +3912,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
+
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `PATCH` /providers/oauth2/&#123;id&#125;/
@@ -3293,6 +3932,7 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
+
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -3300,11 +3940,13 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
+
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `POST` /providers/scim/
@@ -3322,6 +3964,7 @@ Changed content type : `application/json`
     > Alter authentik behavior for vendor-specific SCIM implementations.
 
     Added enum value:
+
     - `gitlab`
 
 ###### Return Type:
@@ -3329,6 +3972,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -3338,6 +3982,7 @@ Changed response : **201 Created**
         > Alter authentik behavior for vendor-specific SCIM implementations.
 
         Added enum value:
+
         - `gitlab`
 
 ##### `GET` /providers/scim/
@@ -3347,9 +3992,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > SCIMProvider Serializer
+
         - Added property `discovery_enabled` (boolean)
 
             > When enabled, authentik will attempt to discover existing resources in the remote system.
@@ -3359,7 +4006,56 @@ Changed response : **200 OK**
             > Alter authentik behavior for vendor-specific SCIM implementations.
 
             Added enum value:
+
             - `gitlab`
+
+##### `POST` /providers/ssf/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    - Changed property `oidc_auth_providers_obj` (array)
+
+        Changed items (object): > Provider Serializer
+
+        New optional properties:
+        - `authorization_flow`
+        - `invalidation_flow`
+        * Changed property `authorization_flow` (string)
+
+            > Flow used when authorizing this provider.
+
+        * Changed property `invalidation_flow` (string)
+            > Flow used ending the session from a provider.
+
+##### `GET` /providers/ssf/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > SSFProvider Serializer
+
+        - Changed property `oidc_auth_providers_obj` (array)
+
+            Changed items (object): > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
 
 ##### `POST` /providers/wsfed/
 
@@ -3396,6 +4092,7 @@ Added: `saml_version` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > WSFederationProvider Serializer
@@ -3423,6 +4120,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `sync_group_hierarchy` (boolean)
         > Sync group parentage/hierarchy from LDAP directories.
 
@@ -3437,9 +4135,11 @@ Added: `sync_group_hierarchy` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > LDAP Source Serializer
+
         - Added property `sync_group_hierarchy` (boolean)
             > Sync group parentage/hierarchy from LDAP directories.
 
@@ -3468,6 +4168,7 @@ Changed content type : `application/json`
 - Changed property `provider_type` (string)
 
     Removed enum value:
+
     - `azuread`
 
 ###### Return Type:
@@ -3475,6 +4176,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `request_token_url` (string)
 
         > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -3494,6 +4196,7 @@ Changed response : **201 Created**
     - Changed property `provider_type` (string)
 
         Removed enum value:
+
         - `azuread`
 
 ##### `GET` /sources/oauth/
@@ -3503,9 +4206,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > OAuth Source Serializer
+
         - Changed property `request_token_url` (string)
 
             > URL used to request the initial token. This URL is only required for OAuth 1.
@@ -3525,6 +4230,7 @@ Changed response : **200 OK**
         - Changed property `provider_type` (string)
 
             Removed enum value:
+
             - `azuread`
 
 ##### `POST` /sources/saml/
@@ -3572,6 +4278,7 @@ Deleted: `issuer` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > SAMLSource Serializer
@@ -3589,6 +4296,35 @@ Changed response : **200 OK**
         * Deleted property `issuer` (string)
             > Also known as Entity ID. Defaults the Metadata URL.
 
+##### `GET` /ssf/streams/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > SSFStream Serializer
+
+        - Changed property `provider_obj` (object)
+
+            > SSFProvider Serializer
+            - Changed property `oidc_auth_providers_obj` (array)
+
+                Changed items (object): > Provider Serializer
+
+                New optional properties:
+                - `authorization_flow`
+                - `invalidation_flow`
+                * Changed property `authorization_flow` (string)
+
+                    > Flow used when authorizing this provider.
+
+                * Changed property `invalidation_flow` (string)
+                    > Flow used ending the session from a provider.
+
 ##### `GET` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
 
 ###### Return Type:
@@ -3596,6 +4332,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -3613,6 +4350,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -3630,6 +4368,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -3640,9 +4379,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `request_content_type` (string)
 
         Enum values:
+
         - `application/x-www-form-urlencoded`
         - `application/json`
 
@@ -3659,6 +4400,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `request_content_type` (string)
 
 ##### `PATCH` /stages/captcha/&#123;stage_uuid&#125;/
@@ -3674,6 +4416,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `request_content_type` (string)
 
 ##### `GET` /stages/source/&#123;stage_uuid&#125;/
@@ -3683,6 +4426,7 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `resume_on_match_failures` (array)
 
         > Source matching failure reasons for which the flow should resume.
@@ -3690,6 +4434,7 @@ Changed response : **200 OK**
         Items (string):
 
         Enum value:
+
         - `missing_property`
 
 ##### `PUT` /stages/source/&#123;stage_uuid&#125;/
@@ -3706,6 +4451,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -3723,6 +4469,7 @@ Changed content type : `application/json`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -3733,16 +4480,19 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `state` (string)
 
         > Task status
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
     - Changed property `aggregated_status` (string)
 
         Added enum value:
+
         - `waiting_for_dependencies`
 
 ##### `GET` /core/user_consent/
@@ -3752,9 +4502,11 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > UserConsent Serializer
+
         - Changed property `application` (object)
 
             > Application Serializer
@@ -3763,17 +4515,33 @@ Changed response : **200 OK**
             - `pbm_uuid`
             * Added property `pbm_uuid` (string)
 
-##### `GET` /endpoints/devices/
+            * Changed property `provider_obj` (object)
 
-###### Return Type:
+                > Provider Serializer
 
-Changed response : **200 OK**
+                New optional properties:
+                - `authorization_flow`
+                - `invalidation_flow`
+                * Changed property `authorization_flow` (string)
 
-- Changed content type : `application/json`
-    - Changed property `results` (array)
+                    > Flow used when authorizing this provider.
 
-        Changed items (object):
-        - Changed property `facts` (object)
+                * Changed property `invalidation_flow` (string)
+                    > Flow used ending the session from a provider.
+
+            * Changed property `backchannel_providers_obj` (array)
+
+                Changed items (object): > Provider Serializer
+
+                New optional properties:
+                - `authorization_flow`
+                - `invalidation_flow`
+                * Changed property `authorization_flow` (string)
+
+                    > Flow used when authorizing this provider.
+
+                * Changed property `invalidation_flow` (string)
+                    > Flow used ending the session from a provider.
 
 ##### `GET` /events/notifications/
 
@@ -3782,20 +4550,101 @@ Changed response : **200 OK**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > Notification Serializer
+
         - Changed property `event` (object)
 
             > Event Serializer
             - Changed property `action` (string)
 
                 Added enum values:
+
                 - `user_offboarded`
                 - `access_request_created`
                 - `access_request_approved`
                 - `access_request_denied`
                 - `access_request_revoked`
+
+##### `GET` /oauth2/access_tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and RefreshToken
+
+        - Changed property `provider` (object)
+
+            > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
+##### `GET` /oauth2/authorization_codes/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and ExpiringBaseGrant
+
+        - Changed property `provider` (object)
+
+            > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
+
+##### `GET` /oauth2/refresh_tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    - Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and RefreshToken
+
+        - Changed property `provider` (object)
+
+            > Provider Serializer
+
+            New optional properties:
+            - `authorization_flow`
+            - `invalidation_flow`
+            * Changed property `authorization_flow` (string)
+
+                > Flow used when authorizing this provider.
+
+            * Changed property `invalidation_flow` (string)
+                > Flow used ending the session from a provider.
 
 ##### `POST` /providers/oauth2/
 
@@ -3808,6 +4657,7 @@ Changed content type : `application/json`
     Changed items (string):
 
     Added enum value:
+
     - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ###### Return Type:
@@ -3815,11 +4665,13 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Changed property `grant_types` (array)
 
         Changed items (string):
 
         Added enum value:
+
         - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `GET` /providers/oauth2/
@@ -3829,14 +4681,17 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > OAuth2Provider Serializer
+
         - Changed property `grant_types` (array)
 
             Changed items (string):
 
             Added enum value:
+
             - `urn:ietf:params:oauth:grant-type:token-exchange`
 
 ##### `POST` /stages/authenticator/webauthn/
@@ -3853,6 +4708,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Deleted property `prevent_duplicate_devices` (boolean)
         > When enabled, a given device can only be registered once.
 
@@ -3863,9 +4719,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > AuthenticatorWebAuthnStage Serializer
+
         - Deleted property `prevent_duplicate_devices` (boolean)
             > When enabled, a given device can only be registered once.
 
@@ -3882,6 +4740,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `request_content_type` (string)
 
 ##### `GET` /stages/captcha/
@@ -3891,9 +4750,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > CaptchaStage Serializer
+
         - Added property `request_content_type` (string)
 
 ##### `POST` /stages/source/
@@ -3910,6 +4771,7 @@ Changed content type : `application/json`
 Changed response : **201 Created**
 
 - Changed content type : `application/json`
+
     - Added property `resume_on_match_failures` (array)
         > Source matching failure reasons for which the flow should resume.
 
@@ -3920,9 +4782,11 @@ Changed response : **201 Created**
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object): > SourceStage Serializer
+
         - Added property `resume_on_match_failures` (array)
             > Source matching failure reasons for which the flow should resume.
 
@@ -3939,19 +4803,23 @@ Changed: `aggregated_status` in `query`
 Changed response : **200 OK**
 
 - Changed content type : `application/json`
+
     - Changed property `results` (array)
 
         Changed items (object):
+
         - Changed property `state` (string)
 
             > Task status
 
             Added enum value:
+
             - `waiting_for_dependencies`
 
         - Changed property `aggregated_status` (string)
 
             Added enum value:
+
             - `waiting_for_dependencies`
 
 ##### `PUT` /core/transactional/applications/
@@ -3971,15 +4839,23 @@ Changed content type : `application/json`
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
     Updated `authentik_providers_scim.scimprovider` provider_model:
+
     - Added property `discovery_enabled` (boolean)
 
         > When enabled, authentik will attempt to discover existing resources in the remote system.
 
-    - Changed property `compatibility_mode` (string) > Alter authentik behavior for vendor-specific SCIM implementations.
+    - Changed property `compatibility_mode` (string)
 
-        Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
+        > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Added enum value:
+
+        - `gitlab`
+
+    Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
 
     - Added property `saml_version` (object)
+
         > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
     Updated `authentik_providers_oauth2.oauth2provider` provider_model:
@@ -3988,10 +4864,5 @@ Changed content type : `application/json`
         Changed items (string):
 
         Added enum value:
+
         - `urn:ietf:params:oauth:grant-type:token-exchange`
-
-#### Result
-
----
-
-API changes broke backward compatibility

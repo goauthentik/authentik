@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,11 @@
 
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { ServiceBindMethodEnum } from "./ServiceBindMethodEnum";
+import {
+    ServiceBindMethodEnumFromJSON,
+    ServiceBindMethodEnumToJSON,
+} from "./ServiceBindMethodEnum";
 import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
 import {
     SyncOutgoingTriggerModeEnumFromJSON,
@@ -24,224 +27,116 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * LDAP Source Serializer
+ *
  * @export
  * @interface PatchedLDAPSourceRequest
  */
 export interface PatchedLDAPSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     name?: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     slug?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedLDAPSourceRequest
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedLDAPSourceRequest
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedLDAPSourceRequest
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PatchedLDAPSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     userPathTemplate?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     icon?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     serverUri?: string;
     /**
      * Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     peerCertificate?: string | null;
     /**
      * Client certificate to authenticate against the LDAP Server's Certificate.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     clientCertificate?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     bindCn?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     bindPassword?: string;
     /**
-     *
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
+     * Authentication method used for LDAP synchronization and writeback.
      */
+    serviceBindMethod?: ServiceBindMethodEnum;
     startTls?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
-     */
     sni?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     baseDn?: string;
     /**
      * Prepended to Base DN for User-queries.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     additionalUserDn?: string;
     /**
      * Prepended to Base DN for Group-queries.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     additionalGroupDn?: string;
     /**
      * Consider Objects matching this filter to be Users.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     userObjectFilter?: string;
     /**
      * Consider Objects matching this filter to be Groups.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     groupObjectFilter?: string;
     /**
      * Field which contains members of a group.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     groupMembershipField?: string;
     /**
      * Attribute which matches the value of `group_membership_field`.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     userMembershipAttribute?: string;
     /**
      * Field which contains a unique Identifier.
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
      */
     objectUniquenessField?: string;
     /**
      * Update internal authentik password when login succeeds with LDAP
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
      */
     passwordLoginUpdateInternalPassword?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
-     */
     syncUsers?: boolean;
     /**
-     * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
+     * When a user changes their password, sync it back to LDAP. This can only be enabled on a
+     * single LDAP source.
      */
     syncUsersPassword?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
-     */
     syncGroups?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedLDAPSourceRequest
-     */
     syncParentGroup?: string | null;
     /**
-     * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
+     * Lookup group membership based on a user attribute instead of a group attribute. This allows
+     * nested group resolution on systems like FreeIPA and Active Directory
      */
     lookupGroupsFromUser?: boolean;
     /**
-     * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
+     * Delete authentik users and groups which were previously supplied by this source, but are now
+     * missing from it.
      */
     deleteNotFoundObjects?: boolean;
     /**
      * When to trigger sync for outgoing providers
-     * @type {SyncOutgoingTriggerModeEnum}
-     * @memberof PatchedLDAPSourceRequest
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
     /**
      * Sync group parentage/hierarchy from LDAP directories.
-     * @type {boolean}
-     * @memberof PatchedLDAPSourceRequest
      */
     syncGroupHierarchy?: boolean;
 }
@@ -313,6 +208,10 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                   : json["client_certificate"],
         bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
         bindPassword: json["bind_password"] == null ? undefined : json["bind_password"],
+        serviceBindMethod:
+            json["service_bind_method"] == null
+                ? undefined
+                : ServiceBindMethodEnumFromJSON(json["service_bind_method"]),
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
         baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
@@ -389,6 +288,7 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
         bind_password: value["bindPassword"],
+        service_bind_method: ServiceBindMethodEnumToJSON(value["serviceBindMethod"]),
         start_tls: value["startTls"],
         sni: value["sni"],
         base_dn: value["baseDn"],

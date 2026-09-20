@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,92 +17,60 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * PasswordStage Serializer
+ *
  * @export
  * @interface PasswordStage
  */
 export interface PasswordStage {
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PasswordStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof PasswordStage
-     */
     readonly flowSet: Array<FlowSet>;
     /**
      * Selection of backends to test the password against.
-     * @type {Array<BackendsEnum>}
-     * @memberof PasswordStage
      */
     backends: Array<BackendsEnum>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PasswordStage
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.
-     * @type {number}
-     * @memberof PasswordStage
+     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does
+     * not lock the user's password.
      */
     failedAttemptsBeforeCancel?: number;
     /**
-     * How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.
-     * @type {number}
-     * @memberof PasswordStage
+     * How many consecutive failed attempts lock the user's password until an administrator unlocks
+     * it. Set to 0 to never lock.
      */
     failedAttemptsBeforeLockout?: number;
     /**
-     * Warning shown when the user has one password attempt remaining. Leave blank to show no warning.
-     * @type {string}
-     * @memberof PasswordStage
+     * Warning shown when the user has one password attempt remaining. Leave blank to show no
+     * warning.
      */
     lastAttemptWarningMessage?: string;
     /**
      * Message shown when the user's password has been locked. Leave blank to show no message.
-     * @type {string}
-     * @memberof PasswordStage
      */
     lockoutMessage?: string;
     /**
      * When enabled, provides a 'show password' button with the password input field.
-     * @type {boolean}
-     * @memberof PasswordStage
      */
     allowShowPassword?: boolean;
 }

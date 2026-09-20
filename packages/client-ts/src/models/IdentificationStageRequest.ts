@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,92 +15,63 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
 
 /**
  * IdentificationStage Serializer
+ *
  * @export
  * @interface IdentificationStageRequest
  */
 export interface IdentificationStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof IdentificationStageRequest
-     */
     name: string;
     /**
      * Fields of the user object to match against. (Hold shift to select multiple options)
-     * @type {Array<UserFieldsEnum>}
-     * @memberof IdentificationStageRequest
      */
     userFields?: Array<UserFieldsEnum>;
     /**
      * When set, shows a password field, instead of showing the password field as separate step.
-     * @type {string}
-     * @memberof IdentificationStageRequest
      */
     passwordStage?: string | null;
     /**
-     * When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
-     * @type {string}
-     * @memberof IdentificationStageRequest
+     * When set, adds functionality exactly like a Captcha stage, but baked into the Identification
+     * stage.
      */
     captchaStage?: string | null;
     /**
      * When enabled, user fields are matched regardless of their casing.
-     * @type {boolean}
-     * @memberof IdentificationStageRequest
      */
     caseInsensitiveMatching?: boolean;
     /**
-     * When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
-     * @type {boolean}
-     * @memberof IdentificationStageRequest
+     * When a valid username/email has been entered, and this option is enabled, the user's username
+     * and avatar will be shown. Otherwise, the text that the user entered will be shown
      */
     showMatchedUser?: boolean;
     /**
      * Optional enrollment flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStageRequest
      */
     enrollmentFlow?: string | null;
     /**
      * Optional recovery flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStageRequest
      */
     recoveryFlow?: string | null;
     /**
      * Optional passwordless flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof IdentificationStageRequest
      */
     passwordlessFlow?: string | null;
     /**
      * Specify which sources should be shown.
-     * @type {Array<string>}
-     * @memberof IdentificationStageRequest
      */
     sources?: Array<string>;
-    /**
-     *
-     * @type {boolean}
-     * @memberof IdentificationStageRequest
-     */
     showSourceLabels?: boolean;
     /**
      * When enabled, the stage will succeed and continue even when incorrect user info is entered.
-     * @type {boolean}
-     * @memberof IdentificationStageRequest
      */
     pretendUserExists?: boolean;
     /**
-     * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
-     * @type {boolean}
-     * @memberof IdentificationStageRequest
+     * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight
+     * to entering their password.
      */
     enableRememberMe?: boolean;
     /**
-     * When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-     * @type {string}
-     * @memberof IdentificationStageRequest
+     * When set, and conditional WebAuthn is available, allow the user to use their passkey as a
+     * first factor.
      */
     webauthnStage?: string | null;
 }

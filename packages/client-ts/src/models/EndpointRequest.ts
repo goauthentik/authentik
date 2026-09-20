@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,57 +17,18 @@ import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 
 /**
  * Endpoint Serializer
+ *
  * @export
  * @interface EndpointRequest
  */
 export interface EndpointRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointRequest
-     */
     name: string;
-    /**
-     *
-     * @type {number}
-     * @memberof EndpointRequest
-     */
     provider: number;
-    /**
-     *
-     * @type {ProtocolEnum}
-     * @memberof EndpointRequest
-     */
     protocol: ProtocolEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointRequest
-     */
     host: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof EndpointRequest
-     */
     settings?: { [key: string]: any };
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof EndpointRequest
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     * @type {EndpointAuthModeEnum}
-     * @memberof EndpointRequest
-     */
     authMode: EndpointAuthModeEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof EndpointRequest
-     */
     maximumConnections?: number;
 }
 

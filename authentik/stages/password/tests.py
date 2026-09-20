@@ -3,6 +3,7 @@
 from threading import Thread
 from unittest.mock import MagicMock, patch
 
+from django.contrib.auth.hashers import PBKDF2PasswordHasher
 from django.core.exceptions import PermissionDenied
 from django.db import connection
 from django.test import RequestFactory, TestCase, TransactionTestCase
@@ -343,6 +344,23 @@ class TestPasswordLockout(FlowTestCase):
 
         self.assertEqual(self.device.failed_attempts, 0)
         self.assertTrue(self.device.locked)
+
+    def test_password_hash_upgrade_preserves_lock(self):
+        """Upgrading a cached password hash preserves a lock set by another request."""
+        password = generate_id()
+        old_hash = PBKDF2PasswordHasher().encode(password, "salt", iterations=1)
+        self.user.set_password_from_hash(old_hash)
+        self.user.save()
+        device = self.device
+        device.locked_at = now()
+        device.save()
+
+        self.assertTrue(self.user.check_password(password))
+
+        device.refresh_from_db()
+        self.assertTrue(device.locked)
+        self.assertNotEqual(device.password, old_hash)
+        self.assertEqual(device.password_change_date, self.user.password_change_date)
 
     def test_unlicensed_never_locks(self):
         """Test passwords are not locked without an enterprise license"""
