@@ -41,13 +41,13 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "configure_flow",
             "friendly_name",
             "client_id",
-            "secret",
+            "client_secret_ref",
             "api_hostname",
             "admin_integration_key",
-            "admin_secret",
+            "admin_secret_key_ref",
         ]
         extra_kwargs = {
-            "secret": {"required": True, "allow_null": False},
+            "client_secret_ref": {"required": True, "allow_null": False},
         }
 
 
@@ -164,7 +164,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     def import_devices_automatic(self, request: Request, pk: str) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
-        if not stage.admin_integration_key or not stage.admin_secret_id:
+        if not stage.admin_integration_key or not stage.admin_secret_key_ref_id:
             return Response(
                 data={
                     "non_field_errors": [

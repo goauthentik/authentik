@@ -27,13 +27,13 @@ class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializ
             reverse("authentik_endpoints_connectors_google_chrome:chrome")
         )
 
-    secret = JSONSecretReferenceField(
+    credentials_ref = JSONSecretReferenceField(
         queryset=Secret.objects.all(), required=True, allow_null=False
     )
 
     class Meta:
         model = GoogleChromeConnector
-        fields = ConnectorSerializer.Meta.fields + ["secret", "chrome_url"]
+        fields = ConnectorSerializer.Meta.fields + ["credentials_ref", "chrome_url"]
 
 
 class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):

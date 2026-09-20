@@ -30,9 +30,9 @@ class TestProviderSecret(APITestCase):
             client_type=ClientType.CONFIDENTIAL,
             authorization_flow=create_test_flow(),
         )
-        OAuth2Provider.objects.filter(pk=provider.pk).update(secret=None)
+        OAuth2Provider.objects.filter(pk=provider.pk).update(client_secret_ref=None)
         provider.refresh_from_db()
-        self.assertIsNone(provider.secret)
+        self.assertIsNone(provider.client_secret_ref)
         auth = b64encode(f"{provider.client_id}:".encode()).decode()
         request = RequestFactory().get("/", HTTP_AUTHORIZATION=f"Basic {auth}")
         self.assertIsNone(authenticate_provider(request))
@@ -46,14 +46,14 @@ class TestProviderSecret(APITestCase):
                 "name": generate_id(),
                 "authorization_flow": create_test_flow().pk,
                 "invalidation_flow": create_test_flow().pk,
-                "secret": str(secret.pk),
+                "client_secret_ref": str(secret.pk),
                 "redirect_uris": [],
             },
             format="json",
         )
         self.assertEqual(response.status_code, 201, response.content)
         provider = OAuth2Provider.objects.get(pk=response.json()["pk"])
-        self.assertEqual(provider.secret, secret)
+        self.assertEqual(provider.client_secret_ref, secret)
 
     def test_api_create_with_empty_secret_reference(self):
         """An empty picker requests a generated secret."""
@@ -65,14 +65,14 @@ class TestProviderSecret(APITestCase):
                         "name": generate_id(),
                         "authorization_flow": create_test_flow().pk,
                         "invalidation_flow": create_test_flow().pk,
-                        "secret": value,
+                        "client_secret_ref": value,
                         "redirect_uris": [],
                     },
                     format="json",
                 )
                 self.assertEqual(response.status_code, 201, response.content)
                 provider = OAuth2Provider.objects.get(pk=response.json()["pk"])
-                self.assertTrue(provider.secret.value)
+                self.assertTrue(provider.client_secret_ref.value)
 
     def test_api_rejects_non_ascii_secret_reference(self):
         """OAuth client secrets must remain valid HTTP Basic credentials."""
@@ -83,7 +83,7 @@ class TestProviderSecret(APITestCase):
                 "name": generate_id(),
                 "authorization_flow": create_test_flow().pk,
                 "invalidation_flow": create_test_flow().pk,
-                "secret": str(secret.pk),
+                "client_secret_ref": str(secret.pk),
                 "redirect_uris": [],
             },
             format="json",
@@ -91,7 +91,7 @@ class TestProviderSecret(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
-            {"secret": ["Client secret must consist of only ASCII characters."]},
+            {"client_secret_ref": ["Client secret must consist of only ASCII characters."]},
         )
 
     def test_api_rejects_incompatible_secret_reference(self):
@@ -108,17 +108,17 @@ class TestProviderSecret(APITestCase):
                         "name": generate_id(),
                         "authorization_flow": create_test_flow().pk,
                         "invalidation_flow": create_test_flow().pk,
-                        "secret": str(secret.pk),
+                        "client_secret_ref": str(secret.pk),
                         "redirect_uris": [],
                     },
                     format="json",
                 )
                 self.assertEqual(response.status_code, 400, response.content)
-                self.assertIn("secret", response.json())
+                self.assertIn("client_secret_ref", response.json())
 
     def test_replacement_preserves_oauth_constraints(self):
         provider = OAuth2Provider.objects.create(name=generate_id())
-        secret = provider.secret
+        secret = provider.client_secret_ref
         original = secret.value
         for value in ["x" * 256, "non-ascii-ú", "line\nbreak"]:
             with self.subTest(value=value):

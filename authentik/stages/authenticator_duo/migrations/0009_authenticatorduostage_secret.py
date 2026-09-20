@@ -9,8 +9,8 @@ from authentik.crypto.secrets.migrations._credential_values import (
 )
 
 FIELDS = [
-    ("_client_secret", "secret", None, "Duo client secret"),
-    ("_admin_secret_key", "admin_secret", None, "Duo admin secret"),
+    ("_client_secret", "client_secret_ref", None, "Duo client secret"),
+    ("_admin_secret_key", "admin_secret_key_ref", None, "Duo admin secret"),
 ]
 
 
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="authenticatorduostage",
-            name="admin_secret",
+            name="admin_secret_key_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="authenticatorduostage",
-            name="secret",
+            name="client_secret_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

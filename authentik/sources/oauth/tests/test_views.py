@@ -54,7 +54,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "google",
                     "consumer_key": "foo",
-                    "secret": Secret.objects.create(name=generate_id()).pk,
+                    "consumer_secret_ref": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": "",
                     "oidc_jwks_url": "",
                 }
@@ -67,7 +67,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "secret": Secret.objects.create(name=generate_id()).pk,
+                    "consumer_secret_ref": Secret.objects.create(name=generate_id()).pk,
                 }
             ).is_valid()
         )
@@ -94,7 +94,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "secret": Secret.objects.create(name=generate_id()).pk,
+                    "consumer_secret_ref": Secret.objects.create(name=generate_id()).pk,
                     "oidc_well_known_url": url,
                     "oidc_jwks_url": "",
                 },
@@ -126,7 +126,7 @@ class TestOAuthSource(APITestCase):
                     "slug": "bar",
                     "provider_type": "openidconnect",
                     "consumer_key": "foo",
-                    "secret": Secret.objects.create(name=generate_id()).pk,
+                    "consumer_secret_ref": Secret.objects.create(name=generate_id()).pk,
                     "authorization_url": "http://foo",
                     "access_token_url": "http://foo",
                     "profile_url": "http://foo",

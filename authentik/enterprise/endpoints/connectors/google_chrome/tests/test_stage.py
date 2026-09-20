@@ -15,7 +15,7 @@ class TestGoogleChromeStage(FlowTestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            secret=create_test_secret("{}", SecretType.MULTILINE),
+            credentials_ref=create_test_secret("{}", SecretType.MULTILINE),
         )
 
     def _setup_flow(self, mode: StageMode) -> str:

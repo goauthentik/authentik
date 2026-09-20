@@ -29,7 +29,7 @@ class TestSourceSecretTypes(TestCase):
                             "enabled": False,
                             "provider_type": provider_type,
                             "consumer_key": "client",
-                            "secret": str(secret.pk),
+                            "consumer_secret_ref": str(secret.pk),
                         }
                     )
                     self.assertEqual(
@@ -45,7 +45,7 @@ class TestSourceSecretTypes(TestCase):
                             partial=True,
                         )
                         self.assertFalse(changed.is_valid())
-                        self.assertIn("secret", changed.errors)
+                        self.assertIn("consumer_secret_ref", changed.errors)
                         source.delete()
 
     def test_migration_uses_provider_type(self):
@@ -64,5 +64,5 @@ class TestSourceSecretTypes(TestCase):
             ("github", SecretType.TEXT),
         ]:
             source = OAuthSource.objects.get(slug=provider_type)
-            self.assertEqual(source.secret.type, expected)
-            self.assertEqual(source.secret.value, "credential\nvalue")
+            self.assertEqual(source.consumer_secret_ref.type, expected)
+            self.assertEqual(source.consumer_secret_ref.value, "credential\nvalue")

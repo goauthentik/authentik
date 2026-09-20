@@ -84,7 +84,7 @@ class TestSourceOAuth1(SeleniumTestCase):
             enrollment_flow=enrollment_flow,
             provider_type="oauth1",
             consumer_key=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            consumer_secret_ref=create_test_secret(self.client_secret),
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])

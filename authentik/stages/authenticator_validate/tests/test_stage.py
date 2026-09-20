@@ -227,7 +227,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         duo_stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            secret=create_test_secret(generate_key()),
+            client_secret_ref=create_test_secret(generate_key()),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(

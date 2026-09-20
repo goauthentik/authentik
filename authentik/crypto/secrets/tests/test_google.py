@@ -31,7 +31,7 @@ class TestGoogleSecretReplacement(APITestCase):
             with self.subTest(model=model.__name__, type=secret_type):
                 value = "e30=" if secret_type == SecretType.FILE else "{}"
                 secret = create_test_secret(value, secret_type)
-                model.objects.create(name=secret.name, secret=secret)
+                model.objects.create(name=secret.name, credentials_ref=secret)
                 for replacement in ("[]", "invalid: [", '{"token":"updated"}'):
                     encoded = (
                         b64encode(replacement.encode()).decode()
@@ -57,7 +57,7 @@ class TestGoogleSecretReplacement(APITestCase):
         for model in GOOGLE_CONSUMERS:
             with self.subTest(model=model.__name__):
                 secret = Secret.objects.create(name=model.__name__, value="{}")
-                model.objects.create(name=secret.name, secret=secret)
+                model.objects.create(name=secret.name, credentials_ref=secret)
                 response = self.client.post(
                     reverse("authentik_api:secret-rotate", kwargs={"pk": secret.pk})
                 )
