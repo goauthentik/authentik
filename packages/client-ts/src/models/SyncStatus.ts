@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,21 +19,13 @@ import {
 
 /**
  * Provider/source sync status
+ *
  * @export
  * @interface SyncStatus
  */
 export interface SyncStatus {
-    /**
-     *
-     */
     isRunning: boolean;
-    /**
-     *
-     */
     lastSuccessfulSync?: Date;
-    /**
-     *
-     */
     lastSyncStatus?: TaskAggregatedStatusEnum;
 }
 

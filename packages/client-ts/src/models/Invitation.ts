@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,29 +18,15 @@ import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Invitation Serializer
+ *
  * @export
  * @interface Invitation
  */
 export interface Invitation {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     fixedData?: { [key: string]: any };
-    /**
-     *
-     */
     readonly createdBy: PartialUser;
     /**
      * When enabled, the invitation will be deleted after usage.
@@ -52,9 +36,6 @@ export interface Invitation {
      * When set, only the configured flow can use this invitation.
      */
     flow?: string | null;
-    /**
-     *
-     */
     readonly flowObj: Flow;
 }
 

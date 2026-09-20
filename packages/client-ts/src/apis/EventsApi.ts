@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -71,9 +69,6 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EventsEventsCreateRequest {
-    /**
-     *
-     */
     eventRequest: EventRequest;
 }
 
@@ -85,21 +80,12 @@ export interface EventsEventsDestroyRequest {
 }
 
 export interface EventsEventsExportCreateRequest {
-    /**
-     *
-     */
     action?: string;
-    /**
-     *
-     */
     actions?: Array<EventActions>;
     /**
      * Brand name
      */
     brandName?: string;
-    /**
-     *
-     */
     clientIp?: string;
     /**
      * Context Authorized application
@@ -136,21 +122,12 @@ export interface EventsEventsExportCreateRequest {
 }
 
 export interface EventsEventsListRequest {
-    /**
-     *
-     */
     action?: string;
-    /**
-     *
-     */
     actions?: Array<EventActions>;
     /**
      * Brand name
      */
     brandName?: string;
-    /**
-     *
-     */
     clientIp?: string;
     /**
      * Context Authorized application
@@ -199,9 +176,6 @@ export interface EventsEventsPartialUpdateRequest {
      * A UUID string identifying this Event.
      */
     eventUuid: string;
-    /**
-     *
-     */
     patchedEventRequest?: PatchedEventRequest;
 }
 
@@ -217,21 +191,12 @@ export interface EventsEventsStatsRetrieveRequest {
      * Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'
      */
     countSteps: Array<string>;
-    /**
-     *
-     */
     action?: string;
-    /**
-     *
-     */
     actions?: Array<EventActions>;
     /**
      * Brand name
      */
     brandName?: string;
-    /**
-     *
-     */
     clientIp?: string;
     /**
      * Context Authorized application
@@ -268,21 +233,12 @@ export interface EventsEventsStatsRetrieveRequest {
 }
 
 export interface EventsEventsTopPerUserListRequest {
-    /**
-     *
-     */
     action?: string;
-    /**
-     *
-     */
     actions?: Array<EventActions>;
     /**
      * Brand name
      */
     brandName?: string;
-    /**
-     *
-     */
     clientIp?: string;
     /**
      * Context Authorized application
@@ -312,9 +268,6 @@ export interface EventsEventsTopPerUserListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     topN?: number;
     /**
      * Username
@@ -327,28 +280,16 @@ export interface EventsEventsUpdateRequest {
      * A UUID string identifying this Event.
      */
     eventUuid: string;
-    /**
-     *
-     */
     eventRequest: EventRequest;
 }
 
 export interface EventsEventsVolumeListRequest {
-    /**
-     *
-     */
     action?: string;
-    /**
-     *
-     */
     actions?: Array<EventActions>;
     /**
      * Brand name
      */
     brandName?: string;
-    /**
-     *
-     */
     clientIp?: string;
     /**
      * Context Authorized application
@@ -370,9 +311,6 @@ export interface EventsEventsVolumeListRequest {
      * Context Model Primary Key
      */
     contextModelPk?: string;
-    /**
-     *
-     */
     historyDays?: number;
     /**
      * Which field to use when ordering the results.
@@ -396,17 +334,8 @@ export interface EventsNotificationsDestroyRequest {
 }
 
 export interface EventsNotificationsListRequest {
-    /**
-     *
-     */
     body?: string;
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     event?: string;
     /**
      * Which field to use when ordering the results.
@@ -424,17 +353,8 @@ export interface EventsNotificationsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     seen?: boolean;
-    /**
-     *
-     */
     severity?: SeverityEnum;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -443,9 +363,6 @@ export interface EventsNotificationsPartialUpdateRequest {
      * A UUID string identifying this Notification.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedNotificationRequest?: PatchedNotificationRequest;
 }
 
@@ -461,9 +378,6 @@ export interface EventsNotificationsUpdateRequest {
      * A UUID string identifying this Notification.
      */
     uuid: string;
-    /**
-     *
-     */
     notificationRequest?: NotificationRequest;
 }
 
@@ -475,9 +389,6 @@ export interface EventsNotificationsUsedByListRequest {
 }
 
 export interface EventsRulesCreateRequest {
-    /**
-     *
-     */
     notificationRuleRequest: NotificationRuleRequest;
 }
 
@@ -489,13 +400,7 @@ export interface EventsRulesDestroyRequest {
 }
 
 export interface EventsRulesListRequest {
-    /**
-     *
-     */
     destinationGroupName?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -513,9 +418,6 @@ export interface EventsRulesListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     severity?: SeverityEnum;
 }
 
@@ -524,9 +426,6 @@ export interface EventsRulesPartialUpdateRequest {
      * A UUID string identifying this Notification Rule.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     patchedNotificationRuleRequest?: PatchedNotificationRuleRequest;
 }
 
@@ -542,9 +441,6 @@ export interface EventsRulesUpdateRequest {
      * A UUID string identifying this Notification Rule.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     notificationRuleRequest: NotificationRuleRequest;
 }
 
@@ -556,9 +452,6 @@ export interface EventsRulesUsedByListRequest {
 }
 
 export interface EventsTransportsCreateRequest {
-    /**
-     *
-     */
     notificationTransportRequest: NotificationTransportRequest;
 }
 
@@ -570,13 +463,7 @@ export interface EventsTransportsDestroyRequest {
 }
 
 export interface EventsTransportsListRequest {
-    /**
-     *
-     */
     mode?: TransportModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -594,13 +481,7 @@ export interface EventsTransportsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sendOnce?: boolean;
-    /**
-     *
-     */
     webhookUrl?: string;
 }
 
@@ -609,9 +490,6 @@ export interface EventsTransportsPartialUpdateRequest {
      * A UUID string identifying this Notification Transport.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedNotificationTransportRequest?: PatchedNotificationTransportRequest;
 }
 
@@ -634,9 +512,6 @@ export interface EventsTransportsUpdateRequest {
      * A UUID string identifying this Notification Transport.
      */
     uuid: string;
-    /**
-     *
-     */
     notificationTransportRequest: NotificationTransportRequest;
 }
 
@@ -647,9 +522,6 @@ export interface EventsTransportsUsedByListRequest {
     uuid: string;
 }
 
-/**
- *
- */
 export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsActionsList without sending the request
@@ -668,7 +540,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/actions/`;
+        const urlPath = `/events/events/actions/`;
 
         return {
             path: urlPath,
@@ -730,7 +602,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/`;
+        const urlPath = `/events/events/`;
 
         return {
             path: urlPath,
@@ -895,7 +767,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/export/`;
+        const urlPath = `/events/events/export/`;
 
         return {
             path: urlPath,
@@ -906,7 +778,10 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async eventsEventsExportCreateRaw(
         requestParameters: EventsEventsExportCreateRequest,
@@ -919,7 +794,10 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async eventsEventsExportCreate(
         requestParameters: EventsEventsExportCreateRequest = {},
@@ -1004,7 +882,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/`;
+        const urlPath = `/events/events/`;
 
         return {
             path: urlPath,
@@ -1249,7 +1127,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/stats/`;
+        const urlPath = `/events/events/stats/`;
 
         return {
             path: urlPath,
@@ -1354,7 +1232,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/top_per_user/`;
+        const urlPath = `/events/events/top_per_user/`;
 
         return {
             path: urlPath,
@@ -1535,7 +1413,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/events/volume/`;
+        const urlPath = `/events/events/volume/`;
 
         return {
             path: urlPath,
@@ -1692,7 +1570,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/notifications/`;
+        const urlPath = `/events/notifications/`;
 
         return {
             path: urlPath,
@@ -1745,7 +1623,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/notifications/mark_all_seen/`;
+        const urlPath = `/events/notifications/mark_all_seen/`;
 
         return {
             path: urlPath,
@@ -1756,7 +1634,7 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Mark all the user\'s notifications as seen
+     * Mark all the user's notifications as seen
      */
     async eventsNotificationsMarkAllSeenCreateRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1768,7 +1646,7 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Mark all the user\'s notifications as seen
+     * Mark all the user's notifications as seen
      */
     async eventsNotificationsMarkAllSeenCreate(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2071,7 +1949,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/rules/`;
+        const urlPath = `/events/rules/`;
 
         return {
             path: urlPath,
@@ -2218,7 +2096,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/rules/`;
+        const urlPath = `/events/rules/`;
 
         return {
             path: urlPath,
@@ -2559,7 +2437,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/transports/`;
+        const urlPath = `/events/transports/`;
 
         return {
             path: urlPath,
@@ -2709,7 +2587,7 @@ export class EventsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/events/transports/`;
+        const urlPath = `/events/transports/`;
 
         return {
             path: urlPath,

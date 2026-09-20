@@ -3,6 +3,9 @@ import "#elements/a11y/ak-skip-to-content";
 import "#user/requests/BrowseRequestable";
 import "#user/requests/MyGrantRequestsList";
 import "#user/requests/PendingReviewList";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -22,10 +25,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 @customElement("ak-access-requests-page")
 export class AccessRequestsPage extends AKElement {
     static styles: CSSResult[] = [PFPage, PFBanner, PFContent, Styles];
@@ -38,6 +37,7 @@ export class AccessRequestsPage extends AKElement {
 
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
+
         try {
             this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
         } catch (error) {
@@ -47,6 +47,7 @@ export class AccessRequestsPage extends AKElement {
 
     protected updated(changedProperties: PropertyValues): void {
         super.updated(changedProperties);
+
         if (changedProperties.has("requestToFulfill") && this.requestToFulfill !== null) {
             aki(RequestsApi)
                 .requestsGrantRequestsRetrieve({
@@ -63,12 +64,14 @@ export class AccessRequestsPage extends AKElement {
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-                ${(this.toReview?.pagination.count || 0) > 0
-                    ? html`<div class="pf-c-banner pf-m-info">
-                          ${msg("Requests to review: ")}
-                          <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
-                      </div>`
-                    : nothing}
+                ${
+                    (this.toReview?.pagination.count || 0) > 0
+                        ? html`<div class="pf-c-banner pf-m-info">
+                              ${msg("Requests to review: ")}
+                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                          </div>`
+                        : nothing
+                }
                 <ak-tabs
                     routed
                     role="main"

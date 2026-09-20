@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,14 +11,10 @@
  */
 
 /**
- *
  * @export
  * @interface ScheduleRequest
  */
 export interface ScheduleRequest {
-    /**
-     *
-     */
     relObjId?: string | null;
     /**
      * When to schedule tasks

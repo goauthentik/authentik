@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,50 +17,24 @@ import {
 } from "./ObjectAttributeTypeEnum";
 
 /**
- *
  * @export
  * @interface ObjectAttributeRequest
  */
 export interface ObjectAttributeRequest {
-    /**
-     *
-     */
     objectType: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     key: string;
-    /**
-     *
-     */
     label: string;
-    /**
-     *
-     */
     regex?: string;
-    /**
-     *
-     */
     type: ObjectAttributeTypeEnum;
-    /**
-     *
-     */
     group?: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     */
     isUnique?: boolean;
-    /**
-     *
-     */
     isRequired?: boolean;
 }
 

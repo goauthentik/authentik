@@ -1,7 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/messages/MessageContainer";
 import "../ak-crypto-certificate-search.js";
-
 import AkCryptoCertificateSearch from "../ak-crypto-certificate-search.js";
 import { dummyCryptoCertsSearch } from "./samples.js";
 
@@ -47,6 +46,7 @@ const metadata: Meta<AkCryptoCertificateSearch> = {
 export default metadata;
 
 const LIGHT = "pf-t-light";
+
 function injectTheme() {
     setTimeout(() => {
         if (!document.body.classList.contains(LIGHT)) {
@@ -57,6 +57,7 @@ function injectTheme() {
 
 const container = (testItem: TemplateResult) => {
     injectTheme();
+
     return html` <div style="padding: 2em">
         <style>
             li {
@@ -77,6 +78,7 @@ export const CryptoCertificateSearch = () => {
     const showMessage = (ev: CustomEvent<any>) => {
         const detail = ev.detail;
         delete detail.target;
+
         document.getElementById("message-pad")!.innerText =
             `Event: ${JSON.stringify(detail, null, 2)}`;
     };

@@ -2,7 +2,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
-
 import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
@@ -52,6 +51,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
