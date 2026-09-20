@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,44 +15,24 @@ import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnu
 
 /**
  * Outpost Serializer
+ *
  * @export
  * @interface PatchedOutpostRequest
  */
 export interface PatchedOutpostRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedOutpostRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {OutpostTypeEnum}
-     * @memberof PatchedOutpostRequest
-     */
     type?: OutpostTypeEnum;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof PatchedOutpostRequest
-     */
     providers?: Array<number>;
     /**
-     * Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
-     * @type {string}
-     * @memberof PatchedOutpostRequest
+     * Select Service-Connection authentik should use to manage this outpost. Leave empty if
+     * authentik should not handle the deployment.
      */
     serviceConnection?: string | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedOutpostRequest
-     */
     config?: { [key: string]: any };
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedOutpostRequest
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
 }

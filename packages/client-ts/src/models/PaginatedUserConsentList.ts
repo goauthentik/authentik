@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { UserConsent } from "./UserConsent";
 import { UserConsentFromJSON, UserConsentToJSON } from "./UserConsent";
 
 /**
- *
  * @export
  * @interface PaginatedUserConsentList
  */
 export interface PaginatedUserConsentList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserConsentList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserConsent>}
-     * @memberof PaginatedUserConsentList
-     */
     results: Array<UserConsent>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserConsentList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,6 @@
 ---
 title: Flow Context
+description: An overview of the data stored in a flow context and how authentik uses it.
 toc_max_heading_level: 5
 ---
 
@@ -45,7 +46,9 @@ Stages that require a user, such as the [Password stage](../../stages/password/i
 }
 ```
 
-This data can be modified with policies. The data is also used by stages like [User write](../../stages/user_write/index.mdx), which takes data in `prompt_data` and writes it to `pending_user`.
+Policies can change this data. Stages such as [User Write](../../stages/user_write/index.mdx) can then store values from `prompt_data` on `pending_user`.
+
+For more information, see [Collect custom user attributes during enrollment](../collect-user-attributes.mdx).
 
 #### `redirect` (string)
 

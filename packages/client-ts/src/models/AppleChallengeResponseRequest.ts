@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Pseudo class for apple response
+ *
  * @export
  * @interface AppleChallengeResponseRequest
  */
 export interface AppleChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AppleChallengeResponseRequest
-     */
     component?: string;
 }
 

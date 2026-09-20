@@ -24,6 +24,7 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
         if (!this.instance) {
             return Promise.reject(new Error("No user instance provided"));
         }
+
         return this.locked
             ? this.coreAPI.coreUsersUnlockPasswordCreate({ id: this.instance.pk })
             : this.coreAPI.coreUsersLockPasswordCreate({ id: this.instance.pk });
@@ -45,15 +46,18 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
         const displayName = this.instance
             ? formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag)
             : msg("Unknown user");
+
         return html`<p>
-            ${this.locked
-                ? msg(str`Allow ${displayName} to authenticate with a password again?`, {
-                      id: "user.action.password-unlock-confirm.description",
-                  })
-                : msg(
-                      str`Prevent ${displayName} from authenticating with a password? Existing sessions and other authentication methods are not affected.`,
-                      { id: "user.action.password-lock-confirm.description" },
-                  )}
+            ${
+                this.locked
+                    ? msg(str`Allow ${displayName} to authenticate with a password again?`, {
+                          id: "user.action.password-unlock-confirm.description",
+                      })
+                    : msg(
+                          str`Prevent ${displayName} from authenticating with a password? Existing sessions and other authentication methods are not affected.`,
+                          { id: "user.action.password-lock-confirm.description" },
+                      )
+            }
         </p>`;
     }
 }
@@ -74,9 +78,11 @@ export function ToggleUserPasswordLockButton(
     { className = "", hasEnterpriseLicense = false }: ToggleUserPasswordLockButtonProps = {},
 ): SlottedTemplateResult {
     const locked = !!user.passwordLocked;
+
     const serviceAccount =
         user.type === UserTypeEnum.ServiceAccount ||
         user.type === UserTypeEnum.InternalServiceAccount;
+
     // Unlocking never requires a license; locking does, and service accounts
     // have no password to lock.
     if (!locked && (!hasEnterpriseLicense || serviceAccount)) {
@@ -86,6 +92,7 @@ export function ToggleUserPasswordLockButton(
     const label = locked
         ? msg("Unlock password login", { id: "user.action.password-unlock.label" })
         : msg("Lock password login", { id: "user.action.password-lock.label" });
+
     return html`<button
         class="pf-c-button pf-m-warning ${className}"
         type="button"

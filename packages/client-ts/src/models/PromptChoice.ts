@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Serializer for a single Choice field
+ *
  * @export
  * @interface PromptChoice
  */
 export interface PromptChoice {
-    /**
-     *
-     * @type {string}
-     * @memberof PromptChoice
-     */
     value: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PromptChoice
-     */
     label: string;
 }
 

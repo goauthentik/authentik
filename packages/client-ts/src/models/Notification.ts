@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Event } from "./Event";
 import { EventFromJSON, EventToJSON } from "./Event";
 import type { SeverityEnum } from "./SeverityEnum";
@@ -19,57 +18,18 @@ import { SeverityEnumFromJSON } from "./SeverityEnum";
 
 /**
  * Notification Serializer
+ *
  * @export
  * @interface Notification
  */
 export interface Notification {
-    /**
-     *
-     * @type {string}
-     * @memberof Notification
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {SeverityEnum}
-     * @memberof Notification
-     */
     readonly severity: SeverityEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof Notification
-     */
     readonly body: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Notification
-     */
     hyperlink?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof Notification
-     */
     hyperlinkLabel?: string | null;
-    /**
-     *
-     * @type {Date}
-     * @memberof Notification
-     */
     readonly created: Date;
-    /**
-     *
-     * @type {Event}
-     * @memberof Notification
-     */
     event?: Event;
-    /**
-     *
-     * @type {boolean}
-     * @memberof Notification
-     */
     seen?: boolean;
 }
 
@@ -108,7 +68,7 @@ export function NotificationFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["hyperlink_label"] === null
                   ? null
                   : json["hyperlink_label"],
-        created: new Date(json["created"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         event: json["event"] == null ? undefined : EventFromJSON(json["event"]),
         seen: json["seen"] == null ? undefined : json["seen"],
     };

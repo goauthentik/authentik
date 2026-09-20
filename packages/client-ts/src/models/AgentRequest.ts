@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +10,32 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface AgentRequest
  */
 export interface AgentRequest {
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof AgentRequest
      */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof AgentRequest
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof AgentRequest
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof AgentRequest
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentRequest
-     */
     email?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof AgentRequest
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentRequest
-     */
     expiring?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof AgentRequest
-     */
     expires?: Date | null;
 }
 
@@ -95,7 +65,7 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
+                  : parseDateTime(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
@@ -104,7 +74,7 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
     };
 }
 
@@ -125,10 +95,10 @@ export function AgentRequestToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         email: value["email"],
         attributes: value["attributes"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

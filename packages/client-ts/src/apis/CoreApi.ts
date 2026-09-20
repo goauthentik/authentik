@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -149,20 +147,38 @@ export interface CoreApplicationEntitlementsCreateRequest {
 }
 
 export interface CoreApplicationEntitlementsDestroyRequest {
+    /**
+     * A UUID string identifying this Application Entitlement.
+     */
     pbmUuid: string;
 }
 
 export interface CoreApplicationEntitlementsListRequest {
     app?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     pbmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CoreApplicationEntitlementsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Application Entitlement.
+     */
     pbmUuid: string;
     patchedApplicationEntitlementRequest?: PatchedApplicationEntitlementRequest;
 }
@@ -170,23 +186,44 @@ export interface CoreApplicationEntitlementsPartialUpdateRequest {
 export interface CoreApplicationEntitlementsRequestableListRequest {
     app?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     pbmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CoreApplicationEntitlementsRetrieveRequest {
+    /**
+     * A UUID string identifying this Application Entitlement.
+     */
     pbmUuid: string;
 }
 
 export interface CoreApplicationEntitlementsUpdateRequest {
+    /**
+     * A UUID string identifying this Application Entitlement.
+     */
     pbmUuid: string;
     applicationEntitlementRequest: ApplicationEntitlementRequest;
 }
 
 export interface CoreApplicationEntitlementsUsedByListRequest {
+    /**
+     * A UUID string identifying this Application Entitlement.
+     */
     pbmUuid: string;
 }
 
@@ -211,9 +248,21 @@ export interface CoreApplicationsListRequest {
     metaPublisher?: string;
     name?: string;
     onlyWithLaunchUrl?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     slug?: string;
     superuserFullList?: boolean;
@@ -230,9 +279,21 @@ export interface CoreApplicationsRequestableListRequest {
     metaLaunchUrl?: string;
     metaPublisher?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     slug?: string;
 }
@@ -251,6 +312,9 @@ export interface CoreApplicationsUsedByListRequest {
 }
 
 export interface CoreAuthenticatedSessionsBulkDeleteDestroyRequest {
+    /**
+     * List of user IDs to revoke all sessions for
+     */
     userPks: Array<number>;
 }
 
@@ -259,9 +323,21 @@ export interface CoreAuthenticatedSessionsDestroyRequest {
 }
 
 export interface CoreAuthenticatedSessionsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     sessionLastIp?: string;
     sessionLastUserAgent?: string;
@@ -281,6 +357,9 @@ export interface CoreBrandsCreateRequest {
 }
 
 export interface CoreBrandsDestroyRequest {
+    /**
+     * A UUID string identifying this Brand.
+     */
     brandUuid: string;
 }
 
@@ -302,32 +381,59 @@ export interface CoreBrandsListRequest {
     flowUnenrollment?: string;
     flowUserSettings?: string;
     flowUserSwitch?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     webCertificate?: string;
 }
 
 export interface CoreBrandsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Brand.
+     */
     brandUuid: string;
     patchedBrandRequest?: PatchedBrandRequest;
 }
 
 export interface CoreBrandsRetrieveRequest {
+    /**
+     * A UUID string identifying this Brand.
+     */
     brandUuid: string;
 }
 
 export interface CoreBrandsUpdateRequest {
+    /**
+     * A UUID string identifying this Brand.
+     */
     brandUuid: string;
     brandRequest: BrandRequest;
 }
 
 export interface CoreBrandsUsedByListRequest {
+    /**
+     * A UUID string identifying this Brand.
+     */
     brandUuid: string;
 }
 
 export interface CoreGroupsAddUserCreateRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
     userAccountRequest: UserAccountRequest;
 }
@@ -337,10 +443,16 @@ export interface CoreGroupsCreateRequest {
 }
 
 export interface CoreGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
 }
 
 export interface CoreGroupsListRequest {
+    /**
+     * Attributes
+     */
     attributes?: string;
     includeChildren?: boolean;
     includeInheritedRoles?: boolean;
@@ -348,25 +460,49 @@ export interface CoreGroupsListRequest {
     includeUsers?: boolean;
     isSuperuser?: boolean;
     membersByPk?: Array<number>;
+    /**
+     * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+     */
     membersByUsername?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CoreGroupsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
     patchedGroupRequest?: PatchedGroupRequest;
 }
 
 export interface CoreGroupsRemoveUserCreateRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
     userAccountRequest: UserAccountRequest;
 }
 
 export interface CoreGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
     includeChildren?: boolean;
     includeInheritedRoles?: boolean;
@@ -375,11 +511,17 @@ export interface CoreGroupsRetrieveRequest {
 }
 
 export interface CoreGroupsUpdateRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
     groupRequest: GroupRequest;
 }
 
 export interface CoreGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Group.
+     */
     groupUuid: string;
 }
 
@@ -388,6 +530,9 @@ export interface CoreObjectAttributesCreateRequest {
 }
 
 export interface CoreObjectAttributesDestroyRequest {
+    /**
+     * A UUID string identifying this Object Attribute.
+     */
     attributeId: string;
 }
 
@@ -395,22 +540,43 @@ export interface CoreObjectAttributesListRequest {
     enabled?: boolean;
     objectTypeAppLabel?: string;
     objectTypeModel?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CoreObjectAttributesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Object Attribute.
+     */
     attributeId: string;
     patchedObjectAttributeRequest?: PatchedObjectAttributeRequest;
 }
 
 export interface CoreObjectAttributesRetrieveRequest {
+    /**
+     * A UUID string identifying this Object Attribute.
+     */
     attributeId: string;
 }
 
 export interface CoreObjectAttributesUpdateRequest {
+    /**
+     * A UUID string identifying this Object Attribute.
+     */
     attributeId: string;
     objectAttributeRequest: ObjectAttributeRequest;
 }
@@ -430,9 +596,21 @@ export interface CoreTokensListRequest {
     identifier?: string;
     intent?: IntentEnum;
     managed?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     userUsername?: string;
 }
@@ -469,23 +647,44 @@ export interface CoreTransactionalApplicationsUpdateRequest {
 }
 
 export interface CoreUserConsentDestroyRequest {
+    /**
+     * A unique integer value identifying this User Consent.
+     */
     id: number;
 }
 
 export interface CoreUserConsentListRequest {
     application?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     user?: number;
 }
 
 export interface CoreUserConsentRetrieveRequest {
+    /**
+     * A unique integer value identifying this User Consent.
+     */
     id: number;
 }
 
 export interface CoreUserConsentUsedByListRequest {
+    /**
+     * A unique integer value identifying this User Consent.
+     */
     id: number;
 }
 
@@ -498,10 +697,16 @@ export interface CoreUsersCreateRequest {
 }
 
 export interface CoreUsersDestroyRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
 }
 
 export interface CoreUsersExportCreateRequest {
+    /**
+     * Attributes
+     */
     attributes?: string;
     dateJoined?: Date;
     dateJoinedGt?: Date;
@@ -519,11 +724,17 @@ export interface CoreUsersExportCreateRequest {
     lastUpdatedGt?: Date;
     lastUpdatedLt?: Date;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
     path?: string;
     pathStartswith?: string;
     rolesByName?: Array<string>;
     rolesByPk?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
     type?: Array<UserTypeEnum>;
     username?: string;
@@ -531,11 +742,17 @@ export interface CoreUsersExportCreateRequest {
 }
 
 export interface CoreUsersImpersonateCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     impersonationRequest: ImpersonationRequest;
 }
 
 export interface CoreUsersListRequest {
+    /**
+     * Attributes
+     */
     attributes?: string;
     dateJoined?: Date;
     dateJoinedGt?: Date;
@@ -555,13 +772,25 @@ export interface CoreUsersListRequest {
     lastUpdatedGt?: Date;
     lastUpdatedLt?: Date;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     path?: string;
     pathStartswith?: string;
     rolesByName?: Array<string>;
     rolesByPk?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
     type?: Array<UserTypeEnum>;
     username?: string;
@@ -569,29 +798,47 @@ export interface CoreUsersListRequest {
 }
 
 export interface CoreUsersLockPasswordCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
 }
 
 export interface CoreUsersPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     patchedUserRequest?: PatchedUserRequest;
 }
 
 export interface CoreUsersPathsRetrieveRequest {
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CoreUsersRecoveryCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     userRecoveryLinkRequest?: UserRecoveryLinkRequest;
 }
 
 export interface CoreUsersRecoveryEmailCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     userRecoveryEmailRequest: UserRecoveryEmailRequest;
 }
 
 export interface CoreUsersRetrieveRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
 }
 
@@ -600,11 +847,17 @@ export interface CoreUsersServiceAccountCreateRequest {
 }
 
 export interface CoreUsersSetPasswordCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     userPasswordSetRequest: UserPasswordSetRequest;
 }
 
 export interface CoreUsersSetPasswordHashCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     userPasswordHashSetRequest: UserPasswordHashSetRequest;
 }
@@ -615,21 +868,27 @@ export interface CoreUsersSwitchCreateRequest {
 }
 
 export interface CoreUsersUnlockPasswordCreateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
 }
 
 export interface CoreUsersUpdateRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
     userRequest: UserRequest;
 }
 
 export interface CoreUsersUsedByListRequest {
+    /**
+     * A unique integer value identifying this User.
+     */
     id: number;
 }
 
-/**
- *
- */
 export class CoreApi extends runtime.BaseAPI {
     /**
      * Creates request options for coreApplicationEntitlementsCreate without sending the request
@@ -659,7 +918,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/`;
+        const urlPath = `/core/application_entitlements/`;
 
         return {
             path: urlPath,
@@ -813,7 +1072,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/`;
+        const urlPath = `/core/application_entitlements/`;
 
         return {
             path: urlPath,
@@ -854,7 +1113,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreApplicationEntitlementsPartialUpdate without sending the request
+     * Creates request options for coreApplicationEntitlementsPartialUpdate without sending the
+     * request
      */
     async coreApplicationEntitlementsPartialUpdateRequestOpts(
         requestParameters: CoreApplicationEntitlementsPartialUpdateRequest,
@@ -929,7 +1189,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreApplicationEntitlementsRequestableList without sending the request
+     * Creates request options for coreApplicationEntitlementsRequestableList without sending the
+     * request
      */
     async coreApplicationEntitlementsRequestableListRequestOpts(
         requestParameters: CoreApplicationEntitlementsRequestableListRequest,
@@ -975,7 +1236,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/requestable/`;
+        const urlPath = `/core/application_entitlements/requestable/`;
 
         return {
             path: urlPath,
@@ -1334,7 +1595,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/`;
+        const urlPath = `/core/applications/`;
 
         return {
             path: urlPath,
@@ -1500,7 +1761,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/`;
+        const urlPath = `/core/applications/`;
 
         return {
             path: urlPath,
@@ -1663,7 +1924,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/requestable/`;
+        const urlPath = `/core/applications/requestable/`;
 
         return {
             path: urlPath,
@@ -1897,7 +2158,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreAuthenticatedSessionsBulkDeleteDestroy without sending the request
+     * Creates request options for coreAuthenticatedSessionsBulkDeleteDestroy without sending the
+     * request
      */
     async coreAuthenticatedSessionsBulkDeleteDestroyRequestOpts(
         requestParameters: CoreAuthenticatedSessionsBulkDeleteDestroyRequest,
@@ -1926,7 +2188,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/authenticated_sessions/bulk_delete/`;
+        const urlPath = `/core/authenticated_sessions/bulk_delete/`;
 
         return {
             path: urlPath,
@@ -2074,7 +2336,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/authenticated_sessions/`;
+        const urlPath = `/core/authenticated_sessions/`;
 
         return {
             path: urlPath,
@@ -2274,7 +2536,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/`;
+        const urlPath = `/core/brands/`;
 
         return {
             path: urlPath,
@@ -2326,7 +2588,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/current/`;
+        const urlPath = `/core/brands/current/`;
 
         return {
             path: urlPath,
@@ -2531,7 +2793,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/`;
+        const urlPath = `/core/brands/`;
 
         return {
             path: urlPath,
@@ -2937,7 +3199,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/groups/`;
+        const urlPath = `/core/groups/`;
 
         return {
             path: urlPath,
@@ -3106,7 +3368,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/groups/`;
+        const urlPath = `/core/groups/`;
 
         return {
             path: urlPath,
@@ -3528,7 +3790,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/object_attributes/`;
+        const urlPath = `/core/object_attributes/`;
 
         return {
             path: urlPath,
@@ -3539,8 +3801,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesCreateRaw(
         requestParameters: CoreObjectAttributesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3553,8 +3813,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesCreate(
         requestParameters: CoreObjectAttributesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3603,8 +3861,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesDestroyRaw(
         requestParameters: CoreObjectAttributesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3615,8 +3871,6 @@ export class CoreApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async coreObjectAttributesDestroy(
         requestParameters: CoreObjectAttributesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3671,7 +3925,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/object_attributes/`;
+        const urlPath = `/core/object_attributes/`;
 
         return {
             path: urlPath,
@@ -3681,8 +3935,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesListRaw(
         requestParameters: CoreObjectAttributesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3695,8 +3947,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesList(
         requestParameters: CoreObjectAttributesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3750,8 +4000,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesPartialUpdateRaw(
         requestParameters: CoreObjectAttributesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3765,8 +4013,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesPartialUpdate(
         requestParameters: CoreObjectAttributesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3818,8 +4064,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesRetrieveRaw(
         requestParameters: CoreObjectAttributesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3833,8 +4077,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesRetrieve(
         requestParameters: CoreObjectAttributesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3896,8 +4138,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesUpdateRaw(
         requestParameters: CoreObjectAttributesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3910,8 +4150,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesUpdate(
         requestParameters: CoreObjectAttributesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3948,7 +4186,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/tokens/`;
+        const urlPath = `/core/tokens/`;
 
         return {
             path: urlPath,
@@ -4059,7 +4297,9 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["expires"] != null) {
-            queryParameters["expires"] = (requestParameters["expires"] as any).toISOString();
+            queryParameters["expires"] = runtime.serializeDateTime(
+                requestParameters["expires"] as any,
+            );
         }
 
         if (requestParameters["expiring"] != null) {
@@ -4109,7 +4349,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/tokens/`;
+        const urlPath = `/core/tokens/`;
 
         return {
             path: urlPath,
@@ -4327,7 +4567,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is required.
+     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is
+     * required.
      */
     async coreTokensSetKeyCreateRaw(
         requestParameters: CoreTokensSetKeyCreateRequest,
@@ -4340,7 +4581,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is required.
+     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is
+     * required.
      */
     async coreTokensSetKeyCreate(
         requestParameters: CoreTokensSetKeyCreateRequest,
@@ -4579,7 +4821,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/transactional/applications/`;
+        const urlPath = `/core/transactional/applications/`;
 
         return {
             path: urlPath,
@@ -4725,7 +4967,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/user_consent/`;
+        const urlPath = `/core/user_consent/`;
 
         return {
             path: urlPath,
@@ -4904,7 +5146,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/account_lockdown/`;
+        const urlPath = `/core/users/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -4971,7 +5213,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/`;
+        const urlPath = `/core/users/`;
 
         return {
             path: urlPath,
@@ -5079,19 +5321,21 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["dateJoined"] != null) {
-            queryParameters["date_joined"] = (requestParameters["dateJoined"] as any).toISOString();
+            queryParameters["date_joined"] = runtime.serializeDateTime(
+                requestParameters["dateJoined"] as any,
+            );
         }
 
         if (requestParameters["dateJoinedGt"] != null) {
-            queryParameters["date_joined__gt"] = (
-                requestParameters["dateJoinedGt"] as any
-            ).toISOString();
+            queryParameters["date_joined__gt"] = runtime.serializeDateTime(
+                requestParameters["dateJoinedGt"] as any,
+            );
         }
 
         if (requestParameters["dateJoinedLt"] != null) {
-            queryParameters["date_joined__lt"] = (
-                requestParameters["dateJoinedLt"] as any
-            ).toISOString();
+            queryParameters["date_joined__lt"] = runtime.serializeDateTime(
+                requestParameters["dateJoinedLt"] as any,
+            );
         }
 
         if (requestParameters["email"] != null) {
@@ -5115,13 +5359,15 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastLogin"] != null) {
-            queryParameters["last_login"] = (requestParameters["lastLogin"] as any).toISOString();
+            queryParameters["last_login"] = runtime.serializeDateTime(
+                requestParameters["lastLogin"] as any,
+            );
         }
 
         if (requestParameters["lastLoginGt"] != null) {
-            queryParameters["last_login__gt"] = (
-                requestParameters["lastLoginGt"] as any
-            ).toISOString();
+            queryParameters["last_login__gt"] = runtime.serializeDateTime(
+                requestParameters["lastLoginGt"] as any,
+            );
         }
 
         if (requestParameters["lastLoginIsnull"] != null) {
@@ -5129,27 +5375,27 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastLoginLt"] != null) {
-            queryParameters["last_login__lt"] = (
-                requestParameters["lastLoginLt"] as any
-            ).toISOString();
+            queryParameters["last_login__lt"] = runtime.serializeDateTime(
+                requestParameters["lastLoginLt"] as any,
+            );
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["lastUpdatedGt"] != null) {
-            queryParameters["last_updated__gt"] = (
-                requestParameters["lastUpdatedGt"] as any
-            ).toISOString();
+            queryParameters["last_updated__gt"] = runtime.serializeDateTime(
+                requestParameters["lastUpdatedGt"] as any,
+            );
         }
 
         if (requestParameters["lastUpdatedLt"] != null) {
-            queryParameters["last_updated__lt"] = (
-                requestParameters["lastUpdatedLt"] as any
-            ).toISOString();
+            queryParameters["last_updated__lt"] = runtime.serializeDateTime(
+                requestParameters["lastUpdatedLt"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -5203,7 +5449,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/export/`;
+        const urlPath = `/core/users/export/`;
 
         return {
             path: urlPath,
@@ -5214,7 +5460,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async coreUsersExportCreateRaw(
         requestParameters: CoreUsersExportCreateRequest,
@@ -5227,7 +5476,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async coreUsersExportCreate(
         requestParameters: CoreUsersExportCreateRequest = {},
@@ -5324,7 +5576,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/impersonate_end/`;
+        const urlPath = `/core/users/impersonate_end/`;
 
         return {
             path: urlPath,
@@ -5368,19 +5620,21 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["dateJoined"] != null) {
-            queryParameters["date_joined"] = (requestParameters["dateJoined"] as any).toISOString();
+            queryParameters["date_joined"] = runtime.serializeDateTime(
+                requestParameters["dateJoined"] as any,
+            );
         }
 
         if (requestParameters["dateJoinedGt"] != null) {
-            queryParameters["date_joined__gt"] = (
-                requestParameters["dateJoinedGt"] as any
-            ).toISOString();
+            queryParameters["date_joined__gt"] = runtime.serializeDateTime(
+                requestParameters["dateJoinedGt"] as any,
+            );
         }
 
         if (requestParameters["dateJoinedLt"] != null) {
-            queryParameters["date_joined__lt"] = (
-                requestParameters["dateJoinedLt"] as any
-            ).toISOString();
+            queryParameters["date_joined__lt"] = runtime.serializeDateTime(
+                requestParameters["dateJoinedLt"] as any,
+            );
         }
 
         if (requestParameters["email"] != null) {
@@ -5412,13 +5666,15 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastLogin"] != null) {
-            queryParameters["last_login"] = (requestParameters["lastLogin"] as any).toISOString();
+            queryParameters["last_login"] = runtime.serializeDateTime(
+                requestParameters["lastLogin"] as any,
+            );
         }
 
         if (requestParameters["lastLoginGt"] != null) {
-            queryParameters["last_login__gt"] = (
-                requestParameters["lastLoginGt"] as any
-            ).toISOString();
+            queryParameters["last_login__gt"] = runtime.serializeDateTime(
+                requestParameters["lastLoginGt"] as any,
+            );
         }
 
         if (requestParameters["lastLoginIsnull"] != null) {
@@ -5426,27 +5682,27 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["lastLoginLt"] != null) {
-            queryParameters["last_login__lt"] = (
-                requestParameters["lastLoginLt"] as any
-            ).toISOString();
+            queryParameters["last_login__lt"] = runtime.serializeDateTime(
+                requestParameters["lastLoginLt"] as any,
+            );
         }
 
         if (requestParameters["lastUpdated"] != null) {
-            queryParameters["last_updated"] = (
-                requestParameters["lastUpdated"] as any
-            ).toISOString();
+            queryParameters["last_updated"] = runtime.serializeDateTime(
+                requestParameters["lastUpdated"] as any,
+            );
         }
 
         if (requestParameters["lastUpdatedGt"] != null) {
-            queryParameters["last_updated__gt"] = (
-                requestParameters["lastUpdatedGt"] as any
-            ).toISOString();
+            queryParameters["last_updated__gt"] = runtime.serializeDateTime(
+                requestParameters["lastUpdatedGt"] as any,
+            );
         }
 
         if (requestParameters["lastUpdatedLt"] != null) {
-            queryParameters["last_updated__lt"] = (
-                requestParameters["lastUpdatedLt"] as any
-            ).toISOString();
+            queryParameters["last_updated__lt"] = runtime.serializeDateTime(
+                requestParameters["lastUpdatedLt"] as any,
+            );
         }
 
         if (requestParameters["name"] != null) {
@@ -5508,7 +5764,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/`;
+        const urlPath = `/core/users/`;
 
         return {
             path: urlPath,
@@ -5582,7 +5838,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Prevent a user\'s password from authenticating.
+     * Prevent a user's password from authenticating.
      */
     async coreUsersLockPasswordCreateRaw(
         requestParameters: CoreUsersLockPasswordCreateRequest,
@@ -5595,7 +5851,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Prevent a user\'s password from authenticating.
+     * Prevent a user's password from authenticating.
      */
     async coreUsersLockPasswordCreate(
         requestParameters: CoreUsersLockPasswordCreateRequest,
@@ -5621,7 +5877,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/me/`;
+        const urlPath = `/core/users/me/`;
 
         return {
             path: urlPath,
@@ -5740,7 +5996,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/paths/`;
+        const urlPath = `/core/users/paths/`;
 
         return {
             path: urlPath,
@@ -5998,7 +6254,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/service_account/`;
+        const urlPath = `/core/users/service_account/`;
 
         return {
             path: urlPath,
@@ -6157,7 +6413,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     * Set a user's password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik's local password verifier
+     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
+     * password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreateRaw(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,
@@ -6171,7 +6430,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     * Set a user's password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik's local password verifier
+     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
+     * password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreate(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,
@@ -6205,7 +6467,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/switch/`;
+        const urlPath = `/core/users/switch/`;
 
         return {
             path: urlPath,

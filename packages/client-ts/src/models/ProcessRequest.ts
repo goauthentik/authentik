@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,28 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface ProcessRequest
  */
 export interface ProcessRequest {
-    /**
-     *
-     * @type {number}
-     * @memberof ProcessRequest
-     */
     id: number;
-    /**
-     *
-     * @type {string}
-     * @memberof ProcessRequest
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ProcessRequest
-     */
     user?: string;
 }
 

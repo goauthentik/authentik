@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,40 +11,17 @@
  */
 
 /**
- *
  * @export
  * @interface AppleIndependentSecureEnclave
  */
 export interface AppleIndependentSecureEnclave {
-    /**
-     *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclave
-     */
     uuid?: string;
     /**
      * The user that this device belongs to.
-     * @type {number}
-     * @memberof AppleIndependentSecureEnclave
      */
     user: number;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclave
-     */
     appleSecureEnclaveKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclave
-     */
     appleEnclaveKeyId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleIndependentSecureEnclave
-     */
     deviceType: string;
 }
 

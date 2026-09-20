@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Provider } from "./Provider";
 import { ProviderFromJSON, ProviderToJSON } from "./Provider";
 import type { User } from "./User";
@@ -19,45 +18,19 @@ import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * Serializer for BaseGrantModel and ExpiringBaseGrant
+ *
  * @export
  * @interface ExpiringBaseGrantModel
  */
 export interface ExpiringBaseGrantModel {
-    /**
-     *
-     * @type {number}
-     * @memberof ExpiringBaseGrantModel
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {Provider}
-     * @memberof ExpiringBaseGrantModel
-     */
     provider: Provider;
-    /**
-     *
-     * @type {User}
-     * @memberof ExpiringBaseGrantModel
-     */
     user: User;
     /**
      * Check if token is expired yet.
-     * @type {boolean}
-     * @memberof ExpiringBaseGrantModel
      */
     readonly isExpired: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof ExpiringBaseGrantModel
-     */
     expires?: Date | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof ExpiringBaseGrantModel
-     */
     scope: Array<string>;
 }
 
@@ -100,7 +73,7 @@ export function ExpiringBaseGrantModelFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         scope: json["scope"],
     };
 }
@@ -120,7 +93,7 @@ export function ExpiringBaseGrantModelToJSONTyped(
     return {
         provider: ProviderToJSON(value["provider"]),
         user: UserToJSON(value["user"]),
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         scope: value["scope"],
     };
 }

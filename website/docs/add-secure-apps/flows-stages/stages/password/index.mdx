@@ -1,5 +1,6 @@
 ---
 title: Password stage
+description: Prompt users for a password and check it against configured sources.
 ---
 
 The Password stage prompts the current `pending_user` for a password and validates it against one or more configured backends.

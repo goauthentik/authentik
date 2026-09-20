@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,45 +17,22 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * UserWriteStage Serializer
+ *
  * @export
  * @interface UserWriteStageRequest
  */
 export interface UserWriteStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserWriteStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {UserCreationModeEnum}
-     * @memberof UserWriteStageRequest
-     */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
-     * @type {boolean}
-     * @memberof UserWriteStageRequest
      */
     createUsersAsInactive?: boolean;
     /**
      * Optionally add newly created users to this group.
-     * @type {string}
-     * @memberof UserWriteStageRequest
      */
     createUsersGroup?: string | null;
-    /**
-     *
-     * @type {UserTypeEnum}
-     * @memberof UserWriteStageRequest
-     */
     userType?: UserTypeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof UserWriteStageRequest
-     */
     userPathTemplate?: string;
 }
 

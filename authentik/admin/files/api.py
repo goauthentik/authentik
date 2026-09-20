@@ -68,24 +68,22 @@ class FileView(APIView):
         # Backend is source of truth - list all files from storage
         manager = get_file_manager(usage)
         files = manager.list_files(manageable_only=params.get("manageable_only", False))
-        search_query = params.get("search", "")
+        search_query = params.get("search", "").lower()
         if search_query:
             files = filter(lambda file: search_query in file.lower(), files)
         files = [
-            FileView.FileListSerializer(
-                data={
-                    "name": file,
-                    "url": manager.file_url(file, request),
-                    "mime_type": get_content_type(file),
-                    "themed_urls": manager.themed_urls(file, request),
-                }
-            )
+            {
+                "name": file,
+                "url": manager.file_url(file, request),
+                "mime_type": get_content_type(file),
+                "themed_urls": manager.themed_urls(file, request),
+            }
             for file in files
         ]
-        for file in files:
-            file.is_valid(raise_exception=True)
+        serializer = FileView.FileListSerializer(data=files, many=True)
+        serializer.is_valid(raise_exception=True)
 
-        return Response([file.data for file in files])
+        return Response(serializer.data)
 
     class FileUploadSerializer(PassiveSerializer):
         file = FileField(required=True)

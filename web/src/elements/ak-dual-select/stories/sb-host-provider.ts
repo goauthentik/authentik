@@ -6,7 +6,7 @@ import { customElement } from "lit/decorators.js";
 /**
  * @element sb-dual-select-host-provider
  *
- * A *very simple* wrapper which provides the CSS Custom Properties used by the components when
+ * A _very simple_ wrapper which provides the CSS Custom Properties used by the components when
  * being displayed in Storybook or Vite. Not needed for the parent widget since it provides these by itself.
  */
 

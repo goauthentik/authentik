@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * TOTP Challenge response, device is set by get_response_instance
+ *
  * @export
  * @interface AuthenticatorTOTPChallengeResponseRequest
  */
 export interface AuthenticatorTOTPChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallengeResponseRequest
-     */
     code: string;
 }
 

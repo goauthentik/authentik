@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { UserWriteStage } from "./UserWriteStage";
 import { UserWriteStageFromJSON, UserWriteStageToJSON } from "./UserWriteStage";
 
 /**
- *
  * @export
  * @interface PaginatedUserWriteStageList
  */
 export interface PaginatedUserWriteStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserWriteStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserWriteStage>}
-     * @memberof PaginatedUserWriteStageList
-     */
     results: Array<UserWriteStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserWriteStageList
-     */
     autocomplete: { [key: string]: any };
 }
 
