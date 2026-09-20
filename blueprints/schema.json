@@ -12410,7 +12410,7 @@
                     "minLength": 1,
                     "title": "Client ID"
                 },
-                "secret": {
+                "client_secret_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Client Secret"
@@ -13029,7 +13029,7 @@
                     "title": "Client networks",
                     "description": "List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped."
                 },
-                "secret": {
+                "shared_secret_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Shared Secret",
@@ -13492,7 +13492,7 @@
                     "type": "boolean",
                     "title": "Verify certificates"
                 },
-                "secret": {
+                "token_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Token",
@@ -14758,18 +14758,18 @@
                     "title": "Sync principal",
                     "description": "Principal to authenticate to kadmin for sync."
                 },
-                "secret": {
+                "sync_password_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync password",
                     "description": "Password to authenticate to kadmin for sync"
                 },
-                "sync_keytab_secret": {
+                "sync_keytab_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync keytab"
                 },
-                "sync_ccache_secret": {
+                "sync_ccache_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync ccache"
@@ -14779,12 +14779,12 @@
                     "title": "Spnego server name",
                     "description": "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"
                 },
-                "spnego_keytab_secret": {
+                "spnego_keytab_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Spnego keytab"
                 },
-                "spnego_ccache_secret": {
+                "spnego_ccache_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Spnego ccache"
@@ -15070,7 +15070,7 @@
                     "type": "string",
                     "title": "Bind CN"
                 },
-                "secret": {
+                "bind_password_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Bind password"
@@ -15508,7 +15508,7 @@
                     "minLength": 1,
                     "title": "Consumer key"
                 },
-                "secret": {
+                "consumer_secret_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Consumer secret"
@@ -15827,7 +15827,7 @@
                     "title": "Allow friends",
                     "description": "Allow friends to authenticate, even if you don't share a server."
                 },
-                "secret": {
+                "plex_token_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Plex token",
@@ -16578,7 +16578,7 @@
                     "title": "Bot username",
                     "description": "Telegram bot username"
                 },
-                "secret": {
+                "bot_token_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Bot token",

@@ -28,7 +28,7 @@ class TelegramSource(Source):
     _bot_token = models.TextField(db_column="bot_token", help_text=_("Telegram bot token"))
 
     bot_username = models.TextField(help_text=_("Telegram bot username"))
-    secret = models.ForeignKey(
+    bot_token_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Bot token"),
         help_text=_("Telegram bot token"),

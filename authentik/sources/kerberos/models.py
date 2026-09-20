@@ -100,7 +100,7 @@ class KerberosSource(IncomingSyncSource):
     sync_principal = models.TextField(
         help_text=_("Principal to authenticate to kadmin for sync."), blank=True
     )
-    secret = models.ForeignKey(
+    sync_password_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync password"),
         help_text=_("Password to authenticate to kadmin for sync"),
@@ -110,7 +110,7 @@ class KerberosSource(IncomingSyncSource):
         default=None,
         related_name="kerberos_sources",
     )
-    sync_keytab_secret = models.ForeignKey(
+    sync_keytab_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync keytab"),
         on_delete=models.PROTECT,
@@ -119,7 +119,7 @@ class KerberosSource(IncomingSyncSource):
         default=None,
         related_name="kerberos_sync_keytab_sources",
     )
-    sync_ccache_secret = models.ForeignKey(
+    sync_ccache_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Sync ccache"),
         on_delete=models.PROTECT,
@@ -135,7 +135,7 @@ class KerberosSource(IncomingSyncSource):
         ),
         blank=True,
     )
-    spnego_keytab_secret = models.ForeignKey(
+    spnego_keytab_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Spnego keytab"),
         on_delete=models.PROTECT,
@@ -144,7 +144,7 @@ class KerberosSource(IncomingSyncSource):
         default=None,
         related_name="kerberos_spnego_keytab_sources",
     )
-    spnego_ccache_secret = models.ForeignKey(
+    spnego_ccache_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Spnego ccache"),
         on_delete=models.PROTECT,
@@ -306,19 +306,19 @@ class KerberosSource(IncomingSyncSource):
         # as such, we don't need to create a separate ccache for each source
         if not self.sync_principal:
             return None
-        if self.secret:
+        if self.sync_password_ref:
             return KAdmin.with_password(
                 variant,
                 self.sync_principal,
-                self.secret.value,
+                self.sync_password_ref.value,
                 api_version=api_version,
             )
-        if self.sync_keytab_secret:
-            keytab = self.sync_keytab_secret.value
+        if self.sync_keytab_ref:
+            keytab = self.sync_keytab_ref.value
             if ":" not in keytab:
                 keytab_path = self.tempdir / "kadmin_keytab"
                 keytab_path.touch(mode=0o600)
-                keytab_path.write_bytes(b64decode(self.sync_keytab_secret.value))
+                keytab_path.write_bytes(b64decode(self.sync_keytab_ref.value))
                 keytab = f"FILE:{keytab_path}"
             return KAdmin.with_keytab(
                 variant,
@@ -326,9 +326,9 @@ class KerberosSource(IncomingSyncSource):
                 keytab,
                 api_version=api_version,
             )
-        if self.sync_ccache_secret:
-            ccache = self.sync_ccache_secret.value
-            if self.sync_ccache_secret.type == SecretType.FILE:
+        if self.sync_ccache_ref:
+            ccache = self.sync_ccache_ref.value
+            if self.sync_ccache_ref.type == SecretType.FILE:
                 ccache_path = self.tempdir / "kadmin_ccache"
                 ccache_path.touch(mode=0o600)
                 ccache_path.write_bytes(b64decode(ccache))
@@ -345,7 +345,7 @@ class KerberosSource(IncomingSyncSource):
         """Get kadmin connection"""
         credentials = tuple(
             (secret.pk, secret.last_updated) if secret else None
-            for secret in (self.secret, self.sync_keytab_secret, self.sync_ccache_secret)
+            for secret in (self.sync_password_ref, self.sync_keytab_ref, self.sync_ccache_ref)
         )
         config = (self.sync_principal, self.kadmin_type, self.krb5_conf, credentials)
         cached = _kadmin_connections.get(str(self.pk))
@@ -374,25 +374,25 @@ class KerberosSource(IncomingSyncSource):
 
     def get_gssapi_store(self) -> dict[str, str]:
         """Get GSSAPI credentials store for this source"""
-        ccache = self.spnego_ccache_secret.value if self.spnego_ccache_secret else ""
+        ccache = self.spnego_ccache_ref.value if self.spnego_ccache_ref else ""
         keytab = None
 
-        if not ccache or self.spnego_ccache_secret.type == SecretType.FILE:
+        if not ccache or self.spnego_ccache_ref.type == SecretType.FILE:
             ccache_path = self.tempdir / "spnego_ccache"
             ccache_path.touch(mode=0o600)
             if ccache:
                 ccache_path.write_bytes(b64decode(ccache))
             ccache = f"FILE:{ccache_path}"
 
-        if self.spnego_keytab_secret:
+        if self.spnego_keytab_ref:
             # Keytab is of the form type:residual, use as-is
-            if ":" in self.spnego_keytab_secret.value:
-                keytab = self.spnego_keytab_secret.value
+            if ":" in self.spnego_keytab_ref.value:
+                keytab = self.spnego_keytab_ref.value
             # Parse the keytab and write it in the file
             else:
                 keytab_path = self.tempdir / "spnego_keytab"
                 keytab_path.touch(mode=0o600)
-                keytab_path.write_bytes(b64decode(self.spnego_keytab_secret.value))
+                keytab_path.write_bytes(b64decode(self.spnego_keytab_ref.value))
                 keytab = f"FILE:{keytab_path}"
 
         store = {"ccache": ccache}

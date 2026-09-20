@@ -28,7 +28,7 @@ class TestSecretFields(APITestCase):
         self.source = PlexSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            secret=self.secret,
+            plex_token_ref=self.secret,
         )
 
     def test_source_detail_view(self):
@@ -71,7 +71,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["plex_token_ref"], str(self.secret.pk))
         self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_source_detail_change_object(self):
@@ -85,7 +85,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["plex_token_ref"], str(self.secret.pk))
         self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_source_detail_superuser(self):
@@ -97,7 +97,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["plex_token_ref"], str(self.secret.pk))
         self.assertNotIn("plex_token", body)
 
     def test_source_create(self):
@@ -113,11 +113,11 @@ class TestSecretFields(APITestCase):
             {
                 "name": name,
                 "slug": generate_id(),
-                "secret": str(secret.pk),
+                "plex_token_ref": str(secret.pk),
             },
         )
         self.assertEqual(res.status_code, 201)
         body = loads(res.content)
         self.assertNotIn("plex_token", body)
         source = PlexSource.objects.get(name=name)
-        self.assertEqual(source.secret, secret)
+        self.assertEqual(source.plex_token_ref, secret)

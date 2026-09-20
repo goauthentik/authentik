@@ -115,7 +115,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "peer_certificate",
             "client_certificate",
             "bind_cn",
-            "secret",
+            "bind_password_ref",
             "service_bind_method",
             "start_tls",
             "sni",
