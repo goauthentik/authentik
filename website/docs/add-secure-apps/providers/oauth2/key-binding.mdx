@@ -15,9 +15,7 @@ This implementation binds ID tokens. Access tokens have no key-binding `cnf` cla
 
 A service accepting a bound ID token must validate the ID token and require proof of possession of the key in `cnf.jwk` according to its application protocol. Reading the claim alone does not prove that the presenter holds the private key.
 
-## Availability and supported flows
-
-Key binding is available starting with [authentik 2026.8](../../../releases/2026/v2026.8.mdx#openid-key-binding).
+## Supported flows
 
 - Authorization code: Send `bound_key` and `dpop_jkt` in the authorization request, then a DPoP proof when exchanging the code. PKCE can be used alongside key binding.
 - Device code: Send `bound_key` and `dpop_jkt` in the device authorization request, then a new DPoP proof for every token polling request.
