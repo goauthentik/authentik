@@ -46689,7 +46689,7 @@ components:
         client_id:
           type: string
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -46817,7 +46817,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -52834,7 +52834,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true

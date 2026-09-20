@@ -12410,7 +12410,7 @@
                     "minLength": 1,
                     "title": "Client ID"
                 },
-                "secret": {
+                "client_secret_ref": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Client Secret"
