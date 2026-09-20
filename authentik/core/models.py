@@ -416,7 +416,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             # they have to be written together.
             with transaction.atomic():
                 super().save(*args, **kwargs)
-                self.password_device.save()
+                device = self.password_device
+                device.save(
+                    update_fields=(
+                        None
+                        if device._state.adding
+                        else ["password", "password_change_date", "failed_attempts"]
+                    )
+                )
             self._password_device_dirty = False
         else:
             super().save(*args, **kwargs)
@@ -649,7 +656,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             # Password hash upgrades shouldn't be considered password changes, so only the
             # device is written and password_change_date is left alone.
             self.password = make_password(raw_password)
-            self.password_device.save()
+            self.password_device.save(update_fields=["password", "failed_attempts"])
             self._password_device_dirty = False
 
         return check_password(raw_password, self.password, setter)
@@ -1302,11 +1309,19 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
+    def evaluate(
+        self,
+        user: User | None,
+        request: HttpRequest | None,
+        globals: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        if globals:
+            evaluator._globals.update(globals)
         try:
             return evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
@@ -1598,7 +1613,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True

@@ -2,11 +2,9 @@ import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
-import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -44,6 +42,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
         if (!this.instance) {
             return true;
         }
+
         return (
             this.instance.backends.filter((isField) => {
                 return field === isField;
@@ -65,14 +64,16 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 min=${0}
                 value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
                 ?readonly=${readOnly}
-                help=${readOnly
-                    ? msg("Password lockout requires an Enterprise license.", {
-                          id: "password-stage.lockout-threshold.enterprise",
-                      })
-                    : msg(
-                          "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to never lock.",
-                          { id: "password-stage.lockout-threshold.description" },
-                      )}
+                help=${
+                    readOnly
+                        ? msg("Password lockout requires an Enterprise license.", {
+                              id: "password-stage.lockout-threshold.enterprise",
+                          })
+                        : msg(
+                              "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to never lock.",
+                              { id: "password-stage.lockout-threshold.description" },
+                          )
+                }
             ></ak-number-input>
             <ak-text-input
                 label=${msg("Last-attempt warning message", {
@@ -170,10 +171,13 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
@@ -187,6 +191,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                             }}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
+
                                 if (
                                     !this.instance?.pk &&
                                     !this.instance?.configureFlow &&
@@ -194,6 +199,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                                 ) {
                                     selected = true;
                                 }
+
                                 return selected;
                             }}
                             blankable

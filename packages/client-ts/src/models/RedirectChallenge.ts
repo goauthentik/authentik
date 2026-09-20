@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,39 +16,15 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge type to redirect the client
+ *
  * @export
  * @interface RedirectChallenge
  */
 export interface RedirectChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof RedirectChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof RedirectChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallenge
-     */
     to: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof RedirectChallenge
-     */
     finalRedirect?: boolean;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,57 +12,22 @@
 
 /**
  * AuthenticatorDuoStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorDuoStageRequest
  */
 export interface PatchedAuthenticatorDuoStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     name?: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     clientId?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     clientSecret?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     apiHostname?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     adminIntegrationKey?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorDuoStageRequest
-     */
     adminSecretKey?: string;
 }
 

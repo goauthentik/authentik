@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,45 +10,22 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface Review
  */
 export interface Review {
-    /**
-     *
-     * @type {string}
-     * @memberof Review
-     */
     readonly id: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Review
-     */
     iteration: string;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof Review
-     */
     readonly reviewer: PartialUser;
-    /**
-     *
-     * @type {Date}
-     * @memberof Review
-     */
     readonly timestamp: Date;
-    /**
-     *
-     * @type {string}
-     * @memberof Review
-     */
     note?: string | null;
 }
 
@@ -77,7 +52,7 @@ export function ReviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         id: json["id"],
         iteration: json["iteration"],
         reviewer: PartialUserFromJSON(json["reviewer"]),
-        timestamp: new Date(json["timestamp"]),
+        timestamp: json["timestamp"] == null ? json["timestamp"] : parseDateTime(json["timestamp"]),
         note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
     };
 }

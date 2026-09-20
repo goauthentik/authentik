@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Reputation } from "./Reputation";
 import { ReputationFromJSON, ReputationToJSON } from "./Reputation";
 
 /**
- *
  * @export
  * @interface PaginatedReputationList
  */
 export interface PaginatedReputationList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedReputationList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Reputation>}
-     * @memberof PaginatedReputationList
-     */
     results: Array<Reputation>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedReputationList
-     */
     autocomplete: { [key: string]: any };
 }
 

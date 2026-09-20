@@ -32,7 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -43,9 +43,10 @@ OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
+USER_PREFIX_OUTPOSTS = "ak-outpost-"
 
 
-class ServiceConnectionInvalid(SentryIgnoredException):
+class ServiceConnectionInvalid(TracingIgnoredException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 
@@ -312,7 +313,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     @property
     def user_identifier(self):
         """Username for service user"""
-        return f"ak-outpost-{self.uuid.hex}"
+        return f"{USER_PREFIX_OUTPOSTS}{self.uuid.hex}"
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:

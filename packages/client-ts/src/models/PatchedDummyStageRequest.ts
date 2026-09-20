@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * DummyStage Serializer
+ *
  * @export
  * @interface PatchedDummyStageRequest
  */
 export interface PatchedDummyStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedDummyStageRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedDummyStageRequest
-     */
     throwError?: boolean;
 }
 

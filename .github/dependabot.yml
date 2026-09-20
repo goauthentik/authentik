@@ -8,7 +8,7 @@ updates:
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
       - /.github/actions/setup
-      - /.github/actions/comment-pr-instructions
+      - /.github/actions/comment-pr
       - /.github/actions/test-results
     schedule:
       interval: daily
@@ -26,7 +26,7 @@ updates:
           - "github/codeql-action/*"
       regclient:
         patterns:
-          - "regclient/actions//*"
+          - "regclient/actions/*"
 
   #endregion
 
@@ -122,13 +122,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -164,12 +171,15 @@ updates:
 
   - package-ecosystem: npm
     directories:
-      - "/packages/prettier-config"
-      - "/packages/tsconfig"
       - "/packages/docusaurus-config"
-      - "/packages/eslint-config"
-      - "/packages/logger-js"
       - "/packages/esbuild-plugin-live-reload"
+      - "/packages/fonts"
+      - "/packages/geo"
+      - "/packages/logger-js"
+      - "/packages/oxfmt-config"
+      - "/packages/oxlint-config"
+      - "/packages/theme"
+      - "/packages/tsconfig"
     schedule:
       interval: daily
       time: "04:00"
@@ -190,13 +200,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -259,16 +276,15 @@ updates:
           - "@rspack/binding*"
       goauthentik:
         patterns:
-          - "@goauthentik/eslint-config"
-          - "@goauthentik/prettier-config"
+          - "@goauthentik/oxlint-config"
+          - "@goauthentik/oxfmt-config"
           - "@goauthentik/tsconfig"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
 
   #endregion
 
@@ -319,6 +335,9 @@ updates:
       types:
         patterns:
           - types-*
+      opentelemetry:
+        patterns:
+          - opentelemetry-*
 
   #endregion
 
@@ -344,7 +363,9 @@ updates:
       - /packages/client-rust
       - /packages/client-ts
       - /scripts
+      - /tests
       - /tests/e2e
+      - /tests/integration
       - /tests/openid_conformance
     schedule:
       interval: daily

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,27 +15,13 @@ import { LogEventFromJSON } from "./LogEvent";
 
 /**
  * result of a policy test
+ *
  * @export
  * @interface PolicyTestResult
  */
 export interface PolicyTestResult {
-    /**
-     *
-     * @type {boolean}
-     * @memberof PolicyTestResult
-     */
     passing: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PolicyTestResult
-     */
     readonly messages: Array<string>;
-    /**
-     *
-     * @type {Array<LogEvent>}
-     * @memberof PolicyTestResult
-     */
     readonly logMessages: Array<LogEvent>;
 }
 

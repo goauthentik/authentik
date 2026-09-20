@@ -1,5 +1,6 @@
 ---
 title: Invitation stage
+description: Require an invitation before a user can continue through enrollment.
 ---
 
 The Invitation stage is used to invite users to enroll in authentik. It can optionally enroll users with preset values.

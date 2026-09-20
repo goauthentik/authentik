@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,26 +12,18 @@
 
 /**
  * CertificateKeyPair Serializer
+ *
  * @export
  * @interface CertificateKeyPairRequest
  */
 export interface CertificateKeyPairRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof CertificateKeyPairRequest
-     */
     name: string;
     /**
      * PEM-encoded Certificate data
-     * @type {string}
-     * @memberof CertificateKeyPairRequest
      */
     certificateData: string;
     /**
      * Optional Private Key. If this is set, you can use this keypair for encryption.
-     * @type {string}
-     * @memberof CertificateKeyPairRequest
      */
     keyData?: string;
 }

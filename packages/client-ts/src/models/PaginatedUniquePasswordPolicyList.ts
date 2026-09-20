@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { UniquePasswordPolicy } from "./UniquePasswordPolicy";
 import { UniquePasswordPolicyFromJSON, UniquePasswordPolicyToJSON } from "./UniquePasswordPolicy";
 
 /**
- *
  * @export
  * @interface PaginatedUniquePasswordPolicyList
  */
 export interface PaginatedUniquePasswordPolicyList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUniquePasswordPolicyList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UniquePasswordPolicy>}
-     * @memberof PaginatedUniquePasswordPolicyList
-     */
     results: Array<UniquePasswordPolicy>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUniquePasswordPolicyList
-     */
     autocomplete: { [key: string]: any };
 }
 

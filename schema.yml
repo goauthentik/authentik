@@ -5689,6 +5689,32 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /debug/log/:
+    post:
+      operationId: debug_log_create
+      description: |-
+        Debug-only endpoint to allow frontend to log messages, usable
+        when browser develooper-tools aren't available.
+
+        Never available in production.
+      tags:
+      - debug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerLogRequest'
+        required: true
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
@@ -9610,8 +9636,7 @@ paths:
   /flows/instances/{slug}/diagram/:
     get:
       operationId: flows_instances_diagram_retrieve
-      description: Return diagram for flow with slug `slug`, in the format used by
-        flowchart.js
+      description: Return the graph of flow with slug `slug`, for the client to render
       parameters:
       - in: path
         name: slug
@@ -10392,6 +10417,30 @@ paths:
       operationId: managed_blueprints_import_create
       description: Import blueprint from .yaml file and apply it once, without creating
         an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
       tags:
       - managed
       requestBody:
@@ -21072,7 +21121,7 @@ paths:
         name: saml_version
         schema:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: |+
             SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
@@ -25219,6 +25268,14 @@ paths:
         name: server_uri
         schema:
           type: string
+      - in: query
+        name: service_bind_method
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: |+
+            Authentication method used for LDAP synchronization and writeback.
+
       - in: query
         name: slug
         schema:
@@ -35098,6 +35155,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -36930,8 +37002,6 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
-          type: string
         use_tls:
           type: boolean
         use_ssl:
@@ -36989,6 +37059,7 @@ components:
           type: string
         password:
           type: string
+          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -37172,10 +37243,6 @@ components:
           type: string
         account_sid:
           type: string
-        auth:
-          type: string
-        auth_password:
-          type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37190,7 +37257,6 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
       - component
       - flow_set
       - from_number
@@ -37225,9 +37291,11 @@ components:
           minLength: 1
         auth:
           type: string
+          writeOnly: true
           minLength: 1
         auth_password:
           type: string
+          writeOnly: true
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37906,7 +37974,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
@@ -39781,6 +39853,89 @@ components:
           minLength: 1
       required:
       - id
+    DiagramEdge:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        origin:
+          type: string
+          readOnly: true
+        target:
+          type: string
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DiagramEdgeTypeEnum'
+          readOnly: true
+      required:
+      - origin
+      - target
+      - type
+    DiagramEdgeTypeEnum:
+      enum:
+      - proceed
+      - binding
+      - policy-passed
+      - policy-denied
+      - requirement-fulfilled
+      - requirement-unfulfilled
+      type: string
+    DiagramNode:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        identifier:
+          type: string
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DiagramNodeTypeEnum'
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+        component:
+          type: string
+          readOnly: true
+        binding_model:
+          type: string
+          readOnly: true
+        binding_pk:
+          type: string
+          readOnly: true
+        binding_order:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - binding_model
+      - binding_order
+      - binding_pk
+      - component
+      - identifier
+      - model
+      - name
+      - pk
+      - type
+      - verbose_name
+    DiagramNodeTypeEnum:
+      enum:
+      - flow-start
+      - pre-flow-policies
+      - authentication-requirement
+      - stage
+      - policy
+      - flow-end
+      type: string
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -40021,6 +40176,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         result:
           type: boolean
         wait_min:
@@ -40034,6 +40197,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -40486,10 +40651,16 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
       required:
       - facts
       - name
       - pbm_uuid
+      - primary_binding_obj
     EndpointDeviceDetails:
       type: object
       properties:
@@ -40522,6 +40693,11 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
         connections_obj:
           type: array
           items:
@@ -40545,6 +40721,7 @@ components:
       - name
       - pbm_uuid
       - policies
+      - primary_binding_obj
     EndpointDeviceRequest:
       type: object
       properties:
@@ -40890,6 +41067,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
@@ -40920,6 +41105,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41115,12 +41302,22 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         expression:
           type: string
       required:
       - bound_to
       - component
+      - created
       - expression
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41466,13 +41663,21 @@ components:
       type: string
     FlowDiagram:
       type: object
-      description: response of the flow's diagram action
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        diagram:
-          type: string
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagramNode'
+          readOnly: true
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagramEdge'
           readOnly: true
       required:
-      - diagram
+      - edges
+      - nodes
     FlowErrorChallenge:
       type: object
       description: |-
@@ -41856,6 +42061,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         asns:
           type: array
           items:
@@ -41908,6 +42121,8 @@ components:
       - component
       - countries
       - countries_obj
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -43647,10 +43862,6 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_ccache:
-          type: string
-          description: Credentials cache to authenticate to kadmin for sync. Must
-            be in the form TYPE:residual
         connectivity:
           type: object
           additionalProperties:
@@ -43662,9 +43873,6 @@ components:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
             in the form HTTP@hostname
-        spnego_ccache:
-          type: string
-          description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -43840,6 +44048,7 @@ components:
             or in the form TYPE:residual
         sync_ccache:
           type: string
+          writeOnly: true
           description: Credentials cache to authenticate to kadmin for sync. Must
             be in the form TYPE:residual
         spnego_server_name:
@@ -43853,6 +44062,7 @@ components:
             FILE:path
         spnego_ccache:
           type: string
+          writeOnly: true
           description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
@@ -44330,6 +44540,10 @@ components:
             Certificate.
         bind_cn:
           type: string
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44555,6 +44769,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -45229,8 +45447,6 @@ components:
           readOnly: true
         client_id:
           type: string
-        client_secret:
-          type: string
         tenant_id:
           type: string
         exclude_users_service_account:
@@ -45263,7 +45479,6 @@ components:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - client_id
-      - client_secret
       - component
       - meta_model_name
       - name
@@ -45407,6 +45622,7 @@ components:
           minLength: 1
         client_secret:
           type: string
+          writeOnly: true
           minLength: 1
         tenant_id:
           type: string
@@ -49907,6 +50123,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         days:
           type: integer
           maximum: 2147483647
@@ -49916,7 +50140,9 @@ components:
       required:
       - bound_to
       - component
+      - created
       - days
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -49977,6 +50203,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -50025,6 +50259,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -50454,6 +50690,7 @@ components:
           type: string
         password:
           type: string
+          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -50520,9 +50757,11 @@ components:
           minLength: 1
         auth:
           type: string
+          writeOnly: true
           minLength: 1
         auth_password:
           type: string
+          writeOnly: true
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -51802,6 +52041,7 @@ components:
             or in the form TYPE:residual
         sync_ccache:
           type: string
+          writeOnly: true
           description: Credentials cache to authenticate to kadmin for sync. Must
             be in the form TYPE:residual
         spnego_server_name:
@@ -51815,6 +52055,7 @@ components:
             FILE:path
         spnego_ccache:
           type: string
+          writeOnly: true
           description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
@@ -51996,6 +52237,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52159,6 +52404,7 @@ components:
           minLength: 1
         client_secret:
           type: string
+          writeOnly: true
           minLength: 1
         tenant_id:
           type: string
@@ -53624,6 +53870,7 @@ components:
           type: boolean
         token:
           type: string
+          writeOnly: true
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -53835,9 +54082,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -54361,7 +54608,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -54795,9 +55042,19 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -56538,6 +56795,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         check_ip:
           type: boolean
         check_username:
@@ -56549,6 +56814,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -57954,9 +58221,6 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
-          type: string
-          description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_oauth:
@@ -58105,6 +58369,7 @@ components:
           type: boolean
         token:
           type: string
+          writeOnly: true
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -58635,11 +58900,6 @@ components:
       - disabled
       - disabled_deleted
       type: string
-    SamlVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
     Schedule:
       type: object
       properties:
@@ -58817,6 +59077,20 @@ components:
       - name
       - pk
       - verbose_name
+    ServerLogRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+          minLength: 1
+      required:
+      - message
+    ServiceBindMethodEnum:
+      enum:
+      - simple
+      - sasl_external
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
@@ -58927,9 +59201,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -59015,9 +59289,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -60457,6 +60731,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -60469,6 +60751,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -61816,6 +62100,11 @@ components:
       - id
       - timestamp
       - version
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -61915,7 +62204,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -62039,7 +62328,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.

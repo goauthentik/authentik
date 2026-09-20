@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,9 +19,6 @@ export interface SchemaRetrieveRequest {
     lang?: LangEnum;
 }
 
-/**
- *
- */
 export class SchemaApi extends runtime.BaseAPI {
     /**
      * Creates request options for schemaRetrieve without sending the request
@@ -52,7 +47,7 @@ export class SchemaApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/schema/`;
+        const urlPath = `/schema/`;
 
         return {
             path: urlPath,
@@ -63,7 +58,8 @@ export class SchemaApi extends runtime.BaseAPI {
     }
 
     /**
-     * OpenApi3 schema for this API. Format can be selected via content negotiation.  - YAML: application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
+     * OpenApi3 schema for this API. Format can be selected via content negotiation. - YAML:
+     * application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
      */
     async schemaRetrieveRaw(
         requestParameters: SchemaRetrieveRequest,
@@ -76,7 +72,8 @@ export class SchemaApi extends runtime.BaseAPI {
     }
 
     /**
-     * OpenApi3 schema for this API. Format can be selected via content negotiation.  - YAML: application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
+     * OpenApi3 schema for this API. Format can be selected via content negotiation. - YAML:
+     * application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
      */
     async schemaRetrieve(
         requestParameters: SchemaRetrieveRequest = {},

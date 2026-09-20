@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { PromptStage } from "./PromptStage";
 import { PromptStageFromJSON, PromptStageToJSON } from "./PromptStage";
 
 /**
- *
  * @export
  * @interface PaginatedPromptStageList
  */
 export interface PaginatedPromptStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedPromptStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<PromptStage>}
-     * @memberof PaginatedPromptStageList
-     */
     results: Array<PromptStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPromptStageList
-     */
     autocomplete: { [key: string]: any };
 }
 
