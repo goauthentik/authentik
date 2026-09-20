@@ -13207,6 +13207,12 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="user-switcher.menu.label">
   <source>User navigation menu</source>
 </trans-unit>
+<trans-unit id="scc6c6c028bc1968a">
+  <source>GitLab</source>
+</trans-unit>
+<trans-unit id="sa9f8a401cf399e4b">
+  <source>Altered behavior for usage with GitLab.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

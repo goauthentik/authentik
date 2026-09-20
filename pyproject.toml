@@ -14,7 +14,7 @@ dependencies = [
   "deepmerge==3.0.1",
   "defusedxml==0.7.1",
   "django-channels-postgres",
-  "django-countries==9.0.0",
+  "django-countries==9.1.0",
   "django-dramatiq-postgres",
   "django-filter==26.1",
   "django-model-utils==5.0.0",
@@ -88,7 +88,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.268.0",
+  "aws-cdk-lib==2.269.0",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",
