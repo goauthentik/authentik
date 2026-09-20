@@ -40,7 +40,7 @@ class TestProviderRadius(E2ETestCase):
         radius: RadiusProvider = RadiusProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            secret=create_test_secret(self.shared_secret),
+            shared_secret_ref=create_test_secret(self.shared_secret),
         )
         # we need to create an application to actually access radius
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)

@@ -31,6 +31,7 @@ class SecretType(models.TextChoices):
 
 
 secret_value_changed = Signal()
+secret_value_validating = Signal()
 
 
 def generate_secret_value() -> str:
@@ -80,10 +81,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 raise ValidationError(_("Value must be base64-encoded.")) from exc
         if self._state.adding:
             return
-        if self.oauth2_providers.exists():
-            from authentik.providers.oauth2.utils import validate_client_secret
-
-            validate_client_secret(value)
+        secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

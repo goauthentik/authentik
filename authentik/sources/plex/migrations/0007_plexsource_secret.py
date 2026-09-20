@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_plex_token", "secret", None, "Plex token")]
+FIELDS = [("_plex_token", "plex_token_ref", None, "Plex token")]
 
 
 def migrate_plex_token(apps, schema_editor):
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="plexsource",
-            name="secret",
+            name="plex_token_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

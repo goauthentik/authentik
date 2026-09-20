@@ -46689,7 +46689,7 @@ components:
         client_id:
           type: string
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -46817,7 +46817,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -47100,7 +47100,7 @@ components:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
-        secret:
+        consumer_secret_ref:
           type: string
           format: uuid
           title: Consumer secret
@@ -47130,6 +47130,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - consumer_secret_ref
       - icon_themed_urls
       - icon_url
       - managed
@@ -47137,7 +47138,6 @@ components:
       - name
       - pk
       - provider_type
-      - secret
       - slug
       - type
       - verbose_name
@@ -47289,7 +47289,7 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        secret:
+        consumer_secret_ref:
           type: string
           format: uuid
           title: Consumer secret
@@ -47309,9 +47309,9 @@ components:
             token request flow
       required:
       - consumer_key
+      - consumer_secret_ref
       - name
       - provider_type
-      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -52839,7 +52839,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -53012,7 +53012,7 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        secret:
+        consumer_secret_ref:
           type: string
           format: uuid
           title: Consumer secret
@@ -53301,7 +53301,7 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        secret:
+        plex_token_ref:
           type: string
           format: uuid
           title: Plex token
@@ -53593,7 +53593,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -54066,7 +54066,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true
@@ -54484,7 +54484,7 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        secret:
+        bot_token_ref:
           type: string
           format: uuid
           title: Bot token
@@ -55050,7 +55050,7 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        secret:
+        plex_token_ref:
           type: string
           format: uuid
           title: Plex token
@@ -55063,7 +55063,7 @@ components:
       - meta_model_name
       - name
       - pk
-      - secret
+      - plex_token_ref
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55204,14 +55204,14 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        secret:
+        plex_token_ref:
           type: string
           format: uuid
           title: Plex token
           description: Plex token used to check friends
       required:
       - name
-      - secret
+      - plex_token_ref
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -56567,7 +56567,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -56702,7 +56702,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -58455,7 +58455,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true
@@ -58607,7 +58607,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true
@@ -60533,7 +60533,7 @@ components:
         bot_username:
           type: string
           description: Telegram bot username
-        secret:
+        bot_token_ref:
           type: string
           format: uuid
           title: Bot token
@@ -60546,6 +60546,7 @@ components:
           format: uuid
           description: Flow used before authentication.
       required:
+      - bot_token_ref
       - bot_username
       - component
       - icon_themed_urls
@@ -60555,7 +60556,6 @@ components:
       - name
       - pk
       - pre_authentication_flow
-      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60681,7 +60681,7 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        secret:
+        bot_token_ref:
           type: string
           format: uuid
           title: Bot token
@@ -60694,10 +60694,10 @@ components:
           format: uuid
           description: Flow used before authentication.
       required:
+      - bot_token_ref
       - bot_username
       - name
       - pre_authentication_flow
-      - secret
       - slug
     Tenant:
       type: object
