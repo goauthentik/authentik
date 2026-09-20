@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_bot_token", "secret", None, "bot token")]
+FIELDS = [("_bot_token", "bot_token_ref", None, "bot token")]
 
 
 def migrate_bot_token(apps, schema_editor):
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="telegramsource",
-            name="secret",
+            name="bot_token_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

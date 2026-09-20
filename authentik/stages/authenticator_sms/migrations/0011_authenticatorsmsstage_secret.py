@@ -9,8 +9,8 @@ from authentik.crypto.secrets.migrations._credential_values import (
 )
 
 FIELDS = [
-    ("_auth", "auth_secret", None, "SMS auth token"),
-    ("_auth_password", "auth_password_secret", None, "SMS auth password"),
+    ("_auth", "auth_ref", None, "SMS auth token"),
+    ("_auth_password", "auth_password_ref", None, "SMS auth password"),
 ]
 
 
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="authenticatorsmsstage",
-            name="auth_password_secret",
+            name="auth_password_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="authenticatorsmsstage",
-            name="auth_secret",
+            name="auth_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

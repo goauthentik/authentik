@@ -75,7 +75,7 @@ entries:
       # Required as OIDC Conformance test requires issues to be the same across multiple clients
       issuer_mode: global
       client_id: 4054d882aff59755f2f279968b97ce8806a926e1
-      secret: !KeyOf oidc-conformance-1-secret
+      client_secret_ref: !KeyOf oidc-conformance-1-secret
       redirect_uris:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback
@@ -124,7 +124,7 @@ entries:
       # Required as OIDC Conformance test requires issues to be the same across multiple clients
       issuer_mode: global
       client_id: ad64aeaf1efe388ecf4d28fcc537e8de08bcae26
-      secret: !KeyOf oidc-conformance-2-secret
+      client_secret_ref: !KeyOf oidc-conformance-2-secret
       redirect_uris:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback

@@ -27,7 +27,7 @@ class ProxyProviderTests(APITestCase):
         provider = ProxyProvider.objects.create(name=generate_id())
         outpost.providers.add(provider)
 
-        for secret in [provider.secret, provider.cookie_secret_ref]:
+        for secret in [provider.client_secret_ref, provider.cookie_secret_ref]:
             with self.subTest(secret=secret.name):
                 with patch(
                     "authentik.outposts.signals.outpost_send_update.send_with_options"

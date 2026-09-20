@@ -75,7 +75,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             name=self.application_slug,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
@@ -125,7 +125,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             name=self.application_slug,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
@@ -198,7 +198,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
@@ -289,7 +289,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             authorization_flow=authorization_flow,
             client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
-            secret=create_test_secret(self.client_secret),
+            client_secret_ref=create_test_secret(self.client_secret),
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")

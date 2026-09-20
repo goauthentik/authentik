@@ -61,7 +61,9 @@ class LDAPModelTests(TestCase):
 
     def test_simple_service_connection(self):
         """The default service connection preserves simple bind credentials."""
-        source = self.create_source(bind_cn="cn=service", secret=create_test_secret("password"))
+        source = self.create_source(
+            bind_cn="cn=service", bind_password_ref=create_test_secret("password")
+        )
         with patch.object(source, "_connect_and_bind") as connection:
             source.connection()
         connection.assert_called_once_with(
