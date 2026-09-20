@@ -70,6 +70,7 @@ test("rotation links documentation and masks the result in a styled field", asyn
     expect(document.querySelector("dialog")?.textContent).toContain(
         "If this secret is used for proxy cookies, rotating it invalidates all sessions for those proxy providers.",
     );
+
     expect(rotate).not.toHaveBeenCalled();
 
     expect(document.querySelector<HTMLAnchorElement>("dialog a")?.href).toContain(

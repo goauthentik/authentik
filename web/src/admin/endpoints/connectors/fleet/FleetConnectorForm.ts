@@ -1,10 +1,11 @@
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { EndpointsApi, FleetConnector, FleetConnectorRequest } from "@goauthentik/api";
 
@@ -61,13 +62,15 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                         input-hint="code"
                     >
                     </ak-text-input>
-                    <ak-secret-text-input
+                    <ak-secret-search-input
+                        name="tokenRef"
                         label=${msg("Fleet API Token")}
-                        placeholder=${msg("Provide your Fleet API token...")}
-                        name="token"
-                        plaintext
-                        ?revealed=${!this.instance}
-                    ></ak-secret-text-input>
+                        value=${ifPresent(this.instance?.tokenRef ?? undefined)}
+                        required
+                        help=${msg("Token used to authenticate against the Fleet server.", {
+                            id: "connector.fleet.form.secret.description",
+                        })}
+                    ></ak-secret-search-input>
                     <ak-switch-input
                         name="mapUsers"
                         label=${msg("Map users")}
