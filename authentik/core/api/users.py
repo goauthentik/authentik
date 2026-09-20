@@ -7,7 +7,7 @@ from typing import Any
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.db import models
-from django.db.models import Exists, OuterRef, Prefetch, Q
+from django.db.models import Exists, ExpressionWrapper, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -680,14 +680,23 @@ class UserViewSet(
             base_qs = base_qs.prefetch_related(
                 Prefetch("roles", queryset=Role.objects.all().only("uuid"))
             )
-        # Annotate is_superuser to avoid N+1 query per user
+        # Annotate is_superuser to avoid N+1 query per user.
+        # Use two EXISTS subqueries (direct membership, membership through a descendant group)
+        # instead of one EXISTS with an OR across both join paths. PostgreSQL can't hash a
+        # subquery whose OR mixes two correlated conditions, so that form runs once per user row,
+        # including rows skipped by OFFSET, and a poor plan for the group ancestry join is paid
+        # for every row. Each separate EXISTS can run once per query as a hashed subplan.
         base_qs = base_qs.annotate(
-            _annotated_is_superuser=Exists(
-                Group.objects.filter(
-                    is_superuser=True,
-                ).filter(
-                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
-                )
+            _annotated_is_superuser=ExpressionWrapper(
+                Q(Exists(Group.objects.filter(is_superuser=True, users=OuterRef("pk"))))
+                | Q(
+                    Exists(
+                        Group.objects.filter(
+                            is_superuser=True, descendant_nodes__descendant__users=OuterRef("pk")
+                        )
+                    )
+                ),
+                output_field=models.BooleanField(),
             )
         )
         return base_qs
