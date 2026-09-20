@@ -15,15 +15,15 @@ For FreeIPA, follow the [FreeIPA integration](../../directory-sync/freeipa/index
 
 To create or edit an LDAP source, open the authentik Admin interface and navigate to **Directory** > **Federation and Social login**. Use the following settings to create a source or update an existing one.
 
-| Setting                                     | Description                                                                                                                                                                                                                                                                                                                                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Enabled**                                 | Toggle this option on to allow authentik to use the defined LDAP source.                                                                                                                                                                                                                                                                                                                           |
-| **Update internal password on login**       | When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Disabled by default for new sources. See [Password login](#password-login) for the behavior and security considerations.                                                                                                                                                |
-| **Sync users**                              | Enable or disable user synchronization between authentik and the LDAP source.                                                                                                                                                                                                                                                                                                                      |
-| **User password writeback**                 | Enabled by default. Disable unless you want password changes made in authentik to be written back to LDAP. Only one LDAP source can have this enabled. Writeback requires appropriate directory permissions and authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP. |
-| **Sync groups**                             | Enable or disable group synchronization between authentik and the LDAP source.                                                                                                                                                                                                                                                                                                                     |
-| **Sync Group Hierarchy**:ak-version[2026.8] | Synchronizes parent and child relationships between LDAP groups by reusing the source's [membership configuration](#group-membership-and-hierarchy). This setting requires **Sync groups** to be enabled.                                                                                                                                                                                          |
-| **Delete Not Found Objects**                | Deletes previously synchronized users and groups that are no longer found by the source's LDAP searches. Review the [deletion behavior](#delete-not-found-objects) before enabling.                                                                                                                                                                                                                |
+| Setting                                      | Description                                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Enabled**                                  | Toggle this option on to allow authentik to use the defined LDAP source.                                                                                                                                                                                                                                                                                                                           |
+| **Update internal password on login**        | When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Disabled by default for new sources. See [Password login](#password-login) for the behavior and security considerations.                                                                                                                                                |
+| **Sync users**                               | Enable or disable user synchronization between authentik and the LDAP source.                                                                                                                                                                                                                                                                                                                      |
+| **User password writeback**                  | Enabled by default. Disable unless you want password changes made in authentik to be written back to LDAP. Only one LDAP source can have this enabled. Writeback requires appropriate directory permissions and authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP. |
+| **Sync groups**                              | Enable or disable group synchronization between authentik and the LDAP source.                                                                                                                                                                                                                                                                                                                     |
+| **Sync Group Hierarchy** :ak-version[2026.8] | Synchronizes parent and child relationships between LDAP groups by reusing the source's [membership configuration](#group-membership-and-hierarchy). This setting requires **Sync groups** to be enabled.                                                                                                                                                                                          |
+| **Delete Not Found Objects**                 | Deletes previously synchronized users and groups that are no longer found by the source's LDAP searches. Review the [deletion behavior](#delete-not-found-objects) before enabling.                                                                                                                                                                                                                |
 
 ### Connection settings
 
@@ -57,13 +57,9 @@ If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enab
 
 ### LDAP attribute mapping
 
-| Setting                                                    | Description                                                                                                                                                                                                                                         |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User Property Mappings** and **Group Property Mappings** | Define which LDAP properties map to which authentik properties. For a new source, the Admin interface preselects the generic LDAP and Active Directory mappings. See also our documentation on [property mappings](#ldap-source-property-mappings). |
+**User Property Mappings** and **Group Property Mappings** map LDAP attributes to authentik properties. For a new source, the Admin interface preselects the generic LDAP and Active Directory mappings. See [LDAP source property mappings](#ldap-source-property-mappings) for examples and built-in mappings.
 
-:::warning
-When **Sync users** is enabled, select at least one mapping under **User Property Mappings**. When **Sync groups** is enabled, select at least one mapping under **Group Property Mappings**. Otherwise, synchronization does not start.
-:::
+Select at least one user mapping when **Sync users** is enabled and at least one group mapping when **Sync groups** is enabled. Synchronization does not start if either required selection is empty.
 
 ### Additional settings
 
@@ -90,7 +86,7 @@ Property mappings can change the final path. For example, `authentik default LDA
 
 When enabled, authentik searches LDAP using the configured user and group search bases and object filters, then checks the returned **Object uniqueness field** values against existing source connections. It deletes local users or groups whose identifiers are no longer found. User deletion requires **Sync users** to be enabled; group deletion requires **Sync groups** to be enabled.
 
-:::warning Deletion is based on search results
+:::danger Deletion is based on search results
 An object does not need to be deleted from the directory to disappear from a search. Changing search bases, filters, read permissions, or the uniqueness field can cause previously synchronized objects to be deleted from authentik. This deletes the actual authentik user or group, not just its connection to the LDAP source.
 :::
 
@@ -101,15 +97,13 @@ LDAP synchronization handles two different relationships:
 - _Direct user membership_: LDAP relates a user directly to a group, such as `alice` to `backend`.
 - _Group hierarchy_: LDAP relates a child group to a parent group, such as `backend` to `engineering`.
 
-```text
-engineering (parent group)
-|
-+-- backend (child group)
-    |
-    +-- alice
-        Direct membership: backend
-        Inherited membership: engineering
+```mermaid
+graph TD
+    engineering[engineering group] --> backend[backend group]
+    backend --> alice[Alice]
 ```
+
+Alice is a direct member of `backend` and inherits membership in `engineering`.
 
 Members of child groups inherit membership in their ancestor groups. A user's effective memberships include both direct and inherited memberships. Inherited membership does not add the user directly to every ancestor group. For more information, see [group hierarchy](../../../groups/index.mdx#hierarchy) and the User object's [`groups` and `all_groups()` properties](../../../user/user_ref.mdx#object-properties).
 
@@ -143,33 +137,19 @@ The LDAP membership field must contain group references to synchronize a hierarc
 
 **Additional Parent Group** is separate. It adds the selected authentik group as another parent of imported groups. Hierarchy synchronization preserves this relationship when the additional parent is not connected to this LDAP source.
 
-For example, consider these LDAP objects:
-
-```text
-engineering
-  member:
-    cn=backend,...
-
-backend
-  member:
-    uid=alice,...
-```
-
-With group-based lookup, `member` as the **Group membership field**, `distinguishedName` as the **User membership attribute**, and **Sync Group Hierarchy** enabled, authentik creates the hierarchy shown above.
-
-Alice is a direct member of `backend` and an effective member of `engineering`. Because authentik calculates effective membership through the hierarchy, you do not need to import every transitive user membership.
-
 ### Choose a membership setup
 
-Attribute names depend on the LDAP schema. Configure **Sync Group Hierarchy**, **Group membership field**, **User membership attribute**, and **Lookup using user attribute** together by using one complete row from the following table. Combine values from different rows only when your LDAP schema requires a custom configuration.
+The following configurations use distinguished names (DNs) for membership matching. Set **User membership attribute** to `distinguishedName` for every row. For other schemas, use the matching attribute described under [Group-based lookup](#group-based-lookup).
 
-| If you want to...                                 | Lookup using user attribute | Group membership field               | Sync Group Hierarchy |
-| ------------------------------------------------- | --------------------------- | ------------------------------------ | -------------------- |
-| Read direct users from each group's member list   | Disabled                    | `member` or schema equivalent        | Disabled             |
-| Read memberships from attributes on users         | Enabled                     | `memberOf` or schema equivalent      | Disabled             |
-| Preserve nested groups through group member lists | Disabled                    | `member` or schema equivalent        | Enabled              |
-| Read parent links from attributes on groups       | Enabled                     | `memberOf` or schema equivalent      | Enabled              |
-| Ask AD to resolve recursive user membership       | Enabled                     | AD matching-rule-in-chain expression | Disabled             |
+| Membership behavior                               | Lookup using user attribute | Group membership field              | Sync Group Hierarchy |
+| ------------------------------------------------- | --------------------------- | ----------------------------------- | -------------------- |
+| Read direct users from each group's member list   | Disabled                    | `member`                            | Disabled             |
+| Read memberships from attributes on users         | Enabled                     | `memberOf`                          | Disabled             |
+| Preserve nested groups through group member lists | Disabled                    | `member`                            | Enabled              |
+| Read parent links from attributes on groups       | Enabled                     | `memberOf`                          | Enabled              |
+| Ask AD to resolve recursive user membership       | Enabled                     | `memberOf:1.2.840.113556.1.4.1941:` | Disabled             |
+
+Check your directory's schema before choosing a configuration. See the [Active Directory](../../directory-sync/active-directory/index.mdx#membership-configuration) and [FreeIPA](../../directory-sync/freeipa/index.mdx#membership-configuration) guides for supported examples.
 
 ## LDAP source property mappings
 
@@ -231,8 +211,6 @@ When you define an LDAP source, its property mappings determine how LDAP propert
 - `authentik default OpenLDAP Mapping: cn`
 - `authentik default OpenLDAP Mapping: uid`
 
-These mappings support common LDAP configurations.
-
 ### Expression data
 
 The following variables are available to LDAP source property mappings:
@@ -267,9 +245,9 @@ Consider the following before enabling local password updates:
 
 ## Run a synchronization
 
-Saving an LDAP source queues a synchronization in the background. To check its progress, open the source's **Overview** tab and review **Sync status**.
+Saving an enabled LDAP source queues a synchronization in the background. To check its progress, open the source's **Overview** tab and review **Sync status**.
 
-To start another synchronization manually:
+Manual synchronization applies changes to authentik, including deletions if **Delete Not Found Objects** is enabled. To start a synchronization:
 
 1. Open the source's **Overview** tab.
 2. Under **Schedules**, locate the task with the description **Sync LDAP source.**

@@ -9,7 +9,6 @@ toc_max_heading_level: 4
 The following placeholders are used in this guide:
 
 - `ad.company` is the name of the Active Directory (AD) domain.
-- `authentik.company` is the FQDN of the authentik installation.
 
 ## Active Directory configuration
 
@@ -56,15 +55,9 @@ Active Directory deployments on Windows Server 2025 require LDAP signing by defa
 
 ## authentik setup
 
-:::note Settings and defaults
-This guide identifies required and optional settings and notes when to retain default values. For settings not listed here, keep the defaults unless your deployment requires otherwise.
-
-See the [LDAP source documentation](../../protocols/ldap/index.mdx) for more information on these settings.
-:::
+Keep the defaults for settings not listed below. See the [LDAP source reference](../../protocols/ldap/index.mdx) for all configuration options.
 
 ### 1. Create the LDAP source
-
-To integrate authentik with Active Directory, create an LDAP source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**.
@@ -72,32 +65,32 @@ To integrate authentik with Active Directory, create an LDAP source in authentik
 
 ### 2. Configure general settings
 
-Configure the top-level settings in the following table. For **Sync Group Hierarchy** and the three membership fields under **Additional settings**, use one complete setup from [Membership configuration](#membership-configuration).
+Configure the following settings. Choose a [membership configuration](#membership-configuration) for **Sync Group Hierarchy** and the membership fields under **Additional settings**.
 
-| Setting                                     | Value                                                          | Notes                                                                                                                                                                                                                                                                                                                                                          |
-| ------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**                                    | A descriptive name                                             | Identifies the LDAP source.                                                                                                                                                                                                                                                                                                                                    |
-| **Slug**                                    | A descriptive slug                                             | Identifies the source in URLs and API requests.                                                                                                                                                                                                                                                                                                                |
-| **Enabled**                                 | Enabled                                                        | Allows authentik to use the source.                                                                                                                                                                                                                                                                                                                            |
-| **Update internal password on login**       | Disabled unless required                                       | Enable only if you want authentik to update a user's stored password after a successful LDAP login. See [Password login](../../protocols/ldap/index.mdx#password-login) for security considerations.                                                                                                                                                           |
-| **Sync users**                              | Enabled                                                        | Imports users from AD.                                                                                                                                                                                                                                                                                                                                         |
-| **User password writeback**                 | Disabled unless required                                       | This setting is enabled by default. Disable it unless you want password changes made in authentik to be written back to AD. Only one LDAP source can have writeback enabled. Writeback requires the delegated permissions described above and a TLS-protected connection.                                                                                      |
-| **Sync groups**                             | Enabled                                                        | Imports groups from AD.                                                                                                                                                                                                                                                                                                                                        |
-| **Sync Group Hierarchy**:ak-version[2026.8] | [Select a membership configuration](#membership-configuration) | Configure this setting together with **Group membership field**, **User membership attribute**, and **Lookup using user attribute**. This setting requires **Sync groups** to be enabled.                                                                                                                                                                      |
-| **Delete Not Found Objects**                | Disabled unless required                                       | Enable only if you want authentik to delete previously synchronized users and groups that are absent from the source's search results. User deletion requires **Sync users** to be enabled; group deletion requires **Sync groups** to be enabled. Review the [deletion behavior](../../protocols/ldap/index.mdx#delete-not-found-objects) before enabling it. |
+| Setting                                      | Value                                                          | Notes                                                                                                                                                                                                                                                                     |
+| -------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Name**                                     | A descriptive name                                             | Identifies the LDAP source.                                                                                                                                                                                                                                               |
+| **Slug**                                     | A descriptive slug                                             | Identifies the source in URLs and API requests.                                                                                                                                                                                                                           |
+| **Enabled**                                  | Enabled                                                        | Allows authentik to use the source.                                                                                                                                                                                                                                       |
+| **Update internal password on login**        | Disabled unless required                                       | Stores a local password hash after a successful LDAP login. See [Password login](../../protocols/ldap/index.mdx#password-login) before enabling.                                                                                                                          |
+| **Sync users**                               | Enabled                                                        | Imports users from AD.                                                                                                                                                                                                                                                    |
+| **User password writeback**                  | Disabled unless required                                       | This setting is enabled by default. Disable it unless you want password changes made in authentik to be written back to AD. Only one LDAP source can have writeback enabled. Writeback requires the delegated permissions described above and a TLS-protected connection. |
+| **Sync groups**                              | Enabled                                                        | Imports groups from AD.                                                                                                                                                                                                                                                   |
+| **Sync Group Hierarchy** :ak-version[2026.8] | [Select a membership configuration](#membership-configuration) | Requires **Sync groups**.                                                                                                                                                                                                                                                 |
+| **Delete Not Found Objects**                 | Disabled unless required                                       | Deletes synchronized users and groups that disappear from LDAP search results. Review the [deletion behavior](../../protocols/ldap/index.mdx#delete-not-found-objects) before enabling.                                                                                   |
 
 ### 3. Configure connection settings
 
 Under **Connection settings**, configure the following settings:
 
-| Setting                          | Value                           | Notes                                                                                                                                                                                                                                                                                                                      |
-| -------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Server URI**                   | `ldap://ad.company`             | —                                                                                                                                                                                                                                                                                                                          |
-| **Enable StartTLS**              | Enabled                         | For `ldap://`, leave enabled to upgrade the connection to TLS before binding. Disable only if you intentionally use LDAP without TLS. For `ldaps://`, disable this option because TLS is established when connecting. Both LDAPS and StartTLS can provide the TLS-protected connection required for AD password writeback. |
-| **TLS Verification Certificate** | Optional                        | Select a certificate/keypair containing the CA chain that issued the domain controller's certificate. Leaving this field empty skips certificate validation for both LDAPS and StartTLS.                                                                                                                                   |
-| **Bind CN**                      | `<service_account>@ad.company`  | Enter the service account's user principal name (UPN).                                                                                                                                                                                                                                                                     |
-| **Bind Password**                | The service account password    | —                                                                                                                                                                                                                                                                                                                          |
-| **Base DN**                      | For example, `DC=ad,DC=company` | Defines the search base.                                                                                                                                                                                                                                                                                                   |
+| Setting                          | Value                           | Notes                                                                                                                                                                                    |
+| -------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Server URI**                   | `ldap://ad.company`             | —                                                                                                                                                                                        |
+| **Enable StartTLS**              | Enabled                         | Upgrades the connection to TLS before binding. To use LDAPS instead, use `ldaps://` and disable this setting. Both options support AD password writeback.                                |
+| **TLS Verification Certificate** | Optional                        | Select a certificate/keypair containing the CA chain that issued the domain controller's certificate. Leaving this field empty skips certificate validation for both LDAPS and StartTLS. |
+| **Bind CN**                      | `<service_account>@ad.company`  | Enter the service account's user principal name (UPN).                                                                                                                                   |
+| **Bind Password**                | The service account password    | —                                                                                                                                                                                        |
+| **Base DN**                      | For example, `DC=ad,DC=company` | Defines the search base.                                                                                                                                                                 |
 
 :::tip Multiple server URIs
 You can specify multiple server URIs separated by commas. For example, specify `ldap://dc1.ad.company,ldap://dc2.ad.company`. If you use a DNS record with multiple entries, authentik picks one at random on the first connection.
@@ -111,10 +104,8 @@ For LDAPS, use `ldp.exe` to connect to the domain controller on port 636 with **
 
 Under **LDAP Attribute mapping**, configure the following settings:
 
-| Setting                     | Value                                                                                                         |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| **User Property Mappings**  | Select all mappings whose names begin with `authentik default LDAP` and `authentik default Active Directory`. |
-| **Group Property Mappings** | Select only `authentik default LDAP Mapping: Name`. Deselect any other mappings selected by default.          |
+- **User Property Mappings**: Select all mappings whose names begin with `authentik default LDAP` and `authentik default Active Directory`.
+- **Group Property Mappings**: Select only `authentik default LDAP Mapping: Name`. Deselect any other mappings selected by default.
 
 ### 5. Configure additional settings
 
@@ -127,37 +118,35 @@ Under **Additional settings**, configure the following settings:
 | **Additional Group DN**         | Optional                                                       | Prepended to the base DN to limit the scope of group synchronization.                                                                                             |
 | **User object filter**          | `(&(objectClass=user)(!(objectClass=computer)))`               | Excludes computer accounts.                                                                                                                                       |
 | **Group object filter**         | `(objectClass=group)`                                          | Searches for AD groups.                                                                                                                                           |
-| **Group membership field**      | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                 |
-| **User membership attribute**   | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                 |
-| **Lookup using user attribute** | [Select a membership configuration](#membership-configuration) | Configure this setting together with the other membership and hierarchy settings.                                                                                 |
+| **Group membership field**      | [Select a membership configuration](#membership-configuration) | Use the values from the same membership configuration.                                                                                                            |
+| **User membership attribute**   | [Select a membership configuration](#membership-configuration) | Use the values from the same membership configuration.                                                                                                            |
+| **Lookup using user attribute** | [Select a membership configuration](#membership-configuration) | Use the values from the same membership configuration.                                                                                                            |
 | **Object uniqueness field**     | `objectSid`                                                    | Identifies AD users and groups.                                                                                                                                   |
 
 ### 6. Save the source and enable LDAP password login
 
 1. Click **Create** to save the LDAP source and queue a background synchronization. Open the source's **Overview** tab and review **Sync status**.
-2. Creating the source configures synchronization but does not enable LDAP password authentication in your authentication flow. To enable authentication with LDAP credentials, navigate to **Flows and Stages** > **Stages**, then edit the password stage used by the flow. Under **Stage-specific settings** > **Backends**, select **User database + LDAP password**, then save the stage.
+2. To allow LDAP password login, navigate to **Flows and Stages** > **Stages** and edit the password stage used by your authentication flow. Under **Stage-specific settings** > **Backends**, select **User database + LDAP password** and save the stage.
 
 ## Membership configuration
 
-authentik can represent nested Active Directory groups in two ways. It can synchronize direct user and group relationships to reproduce the AD group hierarchy, or it can ask AD to resolve recursive user membership for each group. Both approaches can provide effective memberships, but they create different relationships in authentik. Hierarchy synchronization preserves the distinction between direct and inherited membership, while AD-resolved results are stored as direct memberships.
+Choose how authentik represents nested Active Directory groups:
 
-Choose the approach that matches how you want to use synchronized groups in authentik. Select one complete configuration; do not combine the two sets of settings. **Sync Group Hierarchy** is a top-level setting; the other three fields are under **Additional settings**. For details, see [Group membership and hierarchy](../../protocols/ldap/index.mdx#group-membership-and-hierarchy).
+- [Preserve the Active Directory group hierarchy](#preserve-the-active-directory-group-hierarchy) to keep direct and inherited memberships distinct.
+- [Let Active Directory resolve recursive membership](#let-active-directory-resolve-recursive-membership) to store effective memberships as direct memberships in authentik.
 
-| Configuration                                     | Use when                                                      | Result                                                                     |
-| ------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Preserve the Active Directory group hierarchy     | You need authentik to reproduce nested AD groups.             | Direct and inherited memberships remain distinct.                          |
-| Let Active Directory resolve recursive membership | You need effective membership but not the AD group structure. | Recursively discovered memberships become direct memberships in authentik. |
+Use all four settings from your chosen configuration. **Sync Group Hierarchy** is a top-level setting; the other three fields are under **Additional settings**. See [Group membership and hierarchy](../../protocols/ldap/index.mdx#group-membership-and-hierarchy) for how these settings work.
 
 ### Preserve the Active Directory group hierarchy
 
 Use this configuration to synchronize direct user and group relationships:
 
-```text
-Sync Group Hierarchy: Enabled
-Group membership field: member
-User membership attribute: distinguishedName
-Lookup using user attribute: Disabled
-```
+| Setting                         | Value               |
+| ------------------------------- | ------------------- |
+| **Sync Group Hierarchy**        | Enabled             |
+| **Group membership field**      | `member`            |
+| **User membership attribute**   | `distinguishedName` |
+| **Lookup using user attribute** | Disabled            |
 
 User DNs in `member` create direct user memberships when they match users in authentik. Matching group DNs create child-group relationships. Include the users and all groups needed for the hierarchy in the synchronization scope. authentik derives inherited membership from the synchronized hierarchy, preserving the distinction between [direct and inherited membership](../../protocols/ldap/index.mdx#group-membership-and-hierarchy).
 
@@ -165,12 +154,12 @@ User DNs in `member` create direct user memberships when they match users in aut
 
 Active Directory's matching-rule-in-chain expression uses OID `1.2.840.113556.1.4.1941` to search a linked attribute recursively. Use this setup to let AD resolve recursive user membership:
 
-```text
-Sync Group Hierarchy: Disabled
-Group membership field: memberOf:1.2.840.113556.1.4.1941:
-User membership attribute: distinguishedName
-Lookup using user attribute: Enabled
-```
+| Setting                         | Value                               |
+| ------------------------------- | ----------------------------------- |
+| **Sync Group Hierarchy**        | Disabled                            |
+| **Group membership field**      | `memberOf:1.2.840.113556.1.4.1941:` |
+| **User membership attribute**   | `distinguishedName`                 |
+| **Lookup using user attribute** | Enabled                             |
 
 This is an LDAP search-filter expression, not a plain attribute name. Support for this matching rule depends on the directory server. For FreeIPA, follow the [FreeIPA guide](../freeipa/index.mdx).
 
@@ -190,9 +179,7 @@ For multi-domain directories, membership results also depend on which domain con
 
 ## Manual synchronization
 
-Use manual synchronization to test changes to directory memberships or property mappings without waiting for the next scheduled run. Manual synchronization applies changes to authentik; it is not a dry run.
-
-See [Run a synchronization](../../protocols/ldap/index.mdx#run-a-synchronization) for instructions.
+After changing memberships or property mappings, [run a synchronization](../../protocols/ldap/index.mdx#run-a-synchronization) to apply the changes without waiting for the next scheduled run.
 
 ## Resources
 

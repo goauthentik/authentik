@@ -53,7 +53,7 @@ The example below uses the US LDAP endpoint. For other regions, use the hostname
 authentik uses one **Object uniqueness field** for both users and groups. This configuration uses `cn`, which must be unique among synchronized users and among synchronized groups. JumpCloud uses the user's full name for `cn`, so check for duplicate names before synchronizing. Changing a `cn` changes the object's identifier in authentik. Use SCIM if you cannot keep these names unique and stable.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, select **LDAP Source**, and click **Next**.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and select **LDAP Source**.
 3. Provide a name and slug. Disable **User password writeback**, because JumpCloud's LDAP service is read-only. Configure the following settings:
     - Under **Connection settings**:
         - **Server URI**: `ldaps://ldap.jumpcloud.com`
@@ -71,8 +71,8 @@ authentik uses one **Object uniqueness field** for both users and groups. This c
         - **Group object filter**: `(objectClass=groupOfNames)`
         - **Object uniqueness field**: `cn`
 
-4. Click **Finish**.
-5. Open the source, go to the **Sync** tab, and click **Run sync again**. Check that users, groups, and memberships synchronize successfully.
+4. Click **Create**.
+5. Open the source's **Overview** tab and review **Sync status**. To test later changes, [run a synchronization](../../protocols/ldap/index.mdx#run-a-synchronization).
 6. In **Flows and Stages** > **Stages**, edit the password stage used by your authentication flow. Ensure that **User database + LDAP password** is selected as a backend, then test logging in with a synchronized user's JumpCloud credentials.
 
 </TabItem>
@@ -85,8 +85,8 @@ JumpCloud must be able to reach your authentik SCIM endpoint over HTTPS.
 ### Create the SCIM source in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and select **SCIM Source**.
-3. Provide a **Name**, set the **Slug** to `jumpcloud`, and click **Finish**. The slug is used in the **SCIM Base URL** in the next step.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and select **SCIM Source**.
+3. Provide a **Name**, set the **Slug** to `jumpcloud`, and click **Create**. The slug is used in the **SCIM Base URL** in the next step.
 4. Open the newly created source. Note the **SCIM Base URL** (`https://authentik.company/source/scim/jumpcloud/v2`), then use **Click to copy token** to copy the bearer token. Both are required in the next section.
 
 ### Configure JumpCloud provisioning
