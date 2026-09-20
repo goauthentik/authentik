@@ -33,6 +33,16 @@ If you have the provider metadata, you can extract the values that you need from
 | NameID Policy              | Persistent                                                      | Depending on what the IdP sends as persistent ID, some IdPs use the username or email address while others use a random string or hashed value. If the user in authentik receives a random string as a username, try using **Email address** or **Windows**.                      |
 | Flow settings              | Default                                                         | If there are custom flows in your instance for external authentication, select them here.                                                                                                                                                                                         |
 
+## Transient users and account lifetime
+
+When the IdP sends a NameID with the `transient` format, authentik creates a temporary user account in its database and connects it to the SAML source. This behavior depends on the NameID format in the assertion, even if the source's **NameID Policy** requests a different format.
+
+authentik deletes the temporary account when the user logs out of authentik. If the user does not log out, a periodic cleanup task deletes the account after its expiration time. Cleanup does not check whether the user still has an active session, so an active temporary account can also be deleted.
+
+The source's **Delete temporary users after** setting determines the expiration time, measured from account creation. It defaults to `days=1`. Use a duration such as `hours=8` or `hours=1;minutes=30`. This setting applies to temporary users created for transient NameIDs; it does not delay deletion on logout. Expiration is a fixed account lifetime, not an inactivity timeout. Deletion happens when the cleanup task runs after expiration, rather than at the exact expiration time.
+
+Use **Persistent** NameIDs when users need to keep the same authentik account across logins, including account-specific settings and group memberships. Configure the IdP to send a stable persistent NameID and set the source's **NameID Policy** to **Persistent**. authentik uses the NameID to look up the source connection on subsequent logins. Mapping a transient user's username or email to a stable value does not make the account persistent or remove its deletion behavior.
+
 ## Add authentik as a service provider with your IdP
 
 This depends on the software that you use for your IdP. On the **Metadata** tab in the SAML federation source, you can download the metadata for the service provider. This should let you import the service provider into most IdPs. If this does not work, the important parts are:

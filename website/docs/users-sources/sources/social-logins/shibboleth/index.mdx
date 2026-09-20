@@ -32,11 +32,15 @@ To integrate Shibboleth with authentik, create a SAML source in authentik.
     - Set **Binding Type** to `Redirect`.
     - Set **Issuer override** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/` (optional; the source defaults to this value).
     - Set **NameID Policy** to `Transient`.
-      :::warning NameID Policy
-      Shibboleth supports the `Transient` NameID by default. You need to reconfigure Shibboleth to use other NameIDs.
-      :::
+      :::warning Temporary user accounts
+      Shibboleth supports the **Transient** NameID by default. With this format, authentik creates a temporary account and deletes it when the user logs out of authentik. If the user does not log out, periodic cleanup deletes the account after it expires, even if its session is still active. **Delete temporary users after** sets the lifetime from account creation and defaults to `days=1`.
+
+        For users who need to keep the same authentik account across logins, configure Shibboleth to issue persistent NameIDs and select **Persistent** instead. Changing only authentik's policy does not override the NameID format sent by Shibboleth. See [Transient users and account lifetime](../../protocols/saml/index.mdx#transient-users-and-account-lifetime) for details.
+        :::
+
     - Set **Signing keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
+
 4. Click **Finish**.
 
 :::info Display new source on login screen
