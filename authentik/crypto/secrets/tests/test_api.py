@@ -186,7 +186,7 @@ class TestSecretsAPI(APITestCase):
     def test_oauth_consumer_requires_ascii_value(self):
         self.client.force_login(self.admin)
         secret = Secret.objects.create(name="oauth", value="ascii")
-        OAuth2Provider.objects.create(name="provider", secret=secret)
+        OAuth2Provider.objects.create(name="provider", client_secret_ref=secret)
 
         response = self.client.patch(
             reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),

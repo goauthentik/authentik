@@ -25,6 +25,7 @@ class TestSecretReferenceFields(TestCase):
             for relation in model._meta.fields:
                 if relation.related_model is not Secret:
                     continue
+                self.assertTrue(relation.name.endswith("_ref"), f"{model.__name__}.{relation.name}")
                 instance = model(**{relation.name: secret})
                 serializer = instance.serializer(context={"request": request})
                 if relation.name not in serializer.fields:
@@ -60,14 +61,16 @@ class TestSecretReferenceAPI(APITestCase):
         )
         self.client.force_login(user)
         url = reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider.pk})
-        response = self.client.patch(url, {"secret": str(secret.pk)})
+        response = self.client.patch(url, {"client_secret_ref": str(secret.pk)})
         self.assertEqual(response.status_code, 403)
         provider.refresh_from_db()
-        self.assertNotEqual(provider.secret, secret)
-        response = self.client.patch(url, {"name": "renamed", "secret": str(provider.secret_id)})
+        self.assertNotEqual(provider.client_secret_ref, secret)
+        response = self.client.patch(
+            url, {"name": "renamed", "client_secret_ref": str(provider.client_secret_ref_id)}
+        )
         self.assertEqual(response.status_code, 200, response.content)
         user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret_value", secret)
-        response = self.client.patch(url, {"secret": str(secret.pk)})
+        response = self.client.patch(url, {"client_secret_ref": str(secret.pk)})
         self.assertEqual(response.status_code, 200, response.content)
         provider.refresh_from_db()
-        self.assertEqual(provider.secret, secret)
+        self.assertEqual(provider.client_secret_ref, secret)

@@ -46689,7 +46689,7 @@ components:
         client_id:
           type: string
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -46817,7 +46817,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -52834,7 +52834,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        secret:
+        client_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -53587,7 +53587,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -54060,7 +54060,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true
@@ -56558,7 +56558,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -56693,7 +56693,7 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        secret:
+        shared_secret_ref:
           type: string
           format: uuid
           nullable: true
@@ -58446,7 +58446,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true
@@ -58598,7 +58598,7 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        secret:
+        token_ref:
           type: string
           format: uuid
           nullable: true

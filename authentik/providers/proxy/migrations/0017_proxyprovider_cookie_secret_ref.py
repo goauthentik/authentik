@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_cookie_secret", "cookie_secret_ref", "text", "cookie secret")]
+FIELDS = [("cookie_secret", "cookie_secret_ref", "text", "cookie secret")]
 
 
 def migrate_cookie_secret(apps, schema_editor):
@@ -34,16 +34,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="proxyprovider",
-            name="cookie_secret",
-            field=models.TextField(default=""),
-        ),
-        migrations.RenameField(
-            model_name="proxyprovider",
-            old_name="cookie_secret",
-            new_name="_cookie_secret",
-        ),
         migrations.AddField(
             model_name="proxyprovider",
             name="cookie_secret_ref",

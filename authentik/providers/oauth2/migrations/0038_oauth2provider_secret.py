@@ -3,14 +3,12 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-import authentik.providers.oauth2.models
-
 from authentik.crypto.secrets.migrations._credential_values import (
     migrate_credentials,
     restore_credentials,
 )
 
-FIELDS = [("_client_secret", "secret", "text", "client secret")]
+FIELDS = [("client_secret", "client_secret_ref", "text", "client secret")]
 
 
 def migrate_client_secret(apps, schema_editor):
@@ -36,25 +34,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="oauth2provider",
-            name="client_secret",
-            field=models.CharField(
-                blank=True,
-                db_column="client_secret",
-                default=authentik.providers.oauth2.models.generate_client_secret,
-                max_length=255,
-                verbose_name="Client Secret",
-            ),
-        ),
-        migrations.RenameField(
-            model_name="oauth2provider",
-            old_name="client_secret",
-            new_name="_client_secret",
-        ),
         migrations.AddField(
             model_name="oauth2provider",
-            name="secret",
+            name="client_secret_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,
