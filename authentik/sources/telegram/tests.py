@@ -25,7 +25,7 @@ class MockTelegramResponseMixin:
     def _add_hash(self, response):
         to_hash = "\n".join([f"{key}={value}" for key, value in sorted(response.items())])
         response["hash"] = hmac.new(
-            hashlib.sha256(self.source.secret.value.encode("utf-8")).digest(),
+            hashlib.sha256(self.source.bot_token_ref.value.encode("utf-8")).digest(),
             to_hash.encode("utf-8"),
             "sha256",
         ).hexdigest()
@@ -58,7 +58,7 @@ class TestTelegramSource(MockTelegramResponseMixin, TestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            secret=create_test_secret("modern_token"),  # nosec
+            bot_token_ref=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -129,7 +129,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            secret=create_test_secret("modern_token"),  # nosec
+            bot_token_ref=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             enrollment_flow=create_test_flow(),
             pre_authentication_flow=self.pre_auth_flow,

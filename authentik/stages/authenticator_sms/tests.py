@@ -105,7 +105,7 @@ class AuthenticatorSMSStageTests(FlowTestCase):
     def test_stage_submit_twilio(self):
         """test stage (submit) (twilio)"""
         self.stage.account_sid = generate_id()
-        self.stage.auth_secret = create_test_secret(generate_id())
+        self.stage.auth_ref = create_test_secret(generate_id())
         self.stage.from_number = generate_id()
         self.stage.save()
         self.client.get(

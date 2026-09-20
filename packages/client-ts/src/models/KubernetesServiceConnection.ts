@@ -36,7 +36,7 @@ export interface KubernetesServiceConnection {
      * Return internal model name
      */
     readonly metaModelName: string;
-    secret?: string | null;
+    kubeconfigRef?: string | null;
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -95,12 +95,12 @@ export function KubernetesServiceConnectionFromJSONTyped(
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        secret:
-            json["secret"] === undefined
+        kubeconfigRef:
+            json["kubeconfig_ref"] === undefined
                 ? undefined
-                : json["secret"] === null
+                : json["kubeconfig_ref"] === null
                   ? null
-                  : json["secret"],
+                  : json["kubeconfig_ref"],
         verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
     };
 }
@@ -123,7 +123,7 @@ export function KubernetesServiceConnectionToJSONTyped(
     return {
         name: value["name"],
         local: value["local"],
-        secret: value["secret"],
+        kubeconfig_ref: value["kubeconfigRef"],
         verify_ssl: value["verifySsl"],
     };
 }

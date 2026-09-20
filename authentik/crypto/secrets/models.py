@@ -13,9 +13,9 @@ from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
 from authentik.events.middleware import audit_ignore
-from authentik.events.models import Event, EventAction, TransportMode
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
+from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
@@ -31,6 +31,7 @@ class SecretType(models.TextChoices):
 
 
 secret_value_changed = Signal()
+secret_value_validating = Signal()
 
 
 def generate_secret_value() -> str:
@@ -80,18 +81,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 raise ValidationError(_("Value must be base64-encoded.")) from exc
         if self._state.adding:
             return
-        if self.oauth2_providers.exists():
-            from authentik.providers.oauth2.utils import validate_client_secret
-
-            validate_client_secret(value)
-        if self.kubernetes_connections.filter(local=False).exists():
-            from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
-
-            validate_kubeconfig(Secret(type=self.type, value=value))
-        if self.notification_transports.filter(
-            mode__in=(TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK)
-        ).exists():
-            DomainlessURLValidator()(value)
+        secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

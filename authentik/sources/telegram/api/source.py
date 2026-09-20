@@ -19,12 +19,12 @@ class TelegramSourceSerializer(SourceSerializer):
         model = TelegramSource
         fields = SourceSerializer.Meta.fields + [
             "bot_username",
-            "secret",
+            "bot_token_ref",
             "request_message_access",
             "pre_authentication_flow",
         ]
         extra_kwargs = {
-            "secret": {"required": True, "allow_null": False},
+            "bot_token_ref": {"required": True, "allow_null": False},
         }
 
 
@@ -77,7 +77,7 @@ class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
     def connect_user(self, request: Request, slug: str) -> Response:
 
         source: TelegramSource = get_object_or_404(TelegramSource, slug=slug)
-        serializer = TelegramAuthSerializer(bot_token=source.secret.value, data=request.data)
+        serializer = TelegramAuthSerializer(bot_token=source.bot_token_ref.value, data=request.data)
         serializer.is_valid(raise_exception=True)
 
         connection, created = UserTelegramSourceConnection.objects.get_or_create(

@@ -154,7 +154,7 @@ class TestEventsAPI(APITestCase):
             data={
                 "name": "foo-with",
                 "mode": TransportMode.WEBHOOK,
-                "secret": secret.pk,
+                "webhook_url_ref": secret.pk,
             },
         )
         self.assertEqual(response.status_code, 201)
@@ -170,7 +170,7 @@ class TestEventsAPI(APITestCase):
         invalid_secret = Secret.objects.create(name=generate_id(), value="not a URL")
         response = self.client.patch(
             reverse("authentik_api:notificationtransport-detail", kwargs={"pk": transport.pk}),
-            data={"secret": invalid_secret.pk},
+            data={"webhook_url_ref": invalid_secret.pk},
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.patch(

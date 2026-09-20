@@ -34,7 +34,7 @@ class TestSCIMOAuthToken(APITestCase):
             slug=generate_id(),
             access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
-            secret=create_test_secret(generate_id()),
+            consumer_secret_ref=create_test_secret(generate_id()),
             provider_type="openidconnect",
         )
         self.provider = SCIMProvider.objects.create(
@@ -74,7 +74,12 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
+                b":".join(
+                    (
+                        self.source.consumer_key.encode(),
+                        self.source.consumer_secret_ref.value.encode(),
+                    )
+                )
             )
             .strip()
             .decode()
@@ -110,7 +115,12 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
+                b":".join(
+                    (
+                        self.source.consumer_key.encode(),
+                        self.source.consumer_secret_ref.value.encode(),
+                    )
+                )
             )
             .strip()
             .decode()

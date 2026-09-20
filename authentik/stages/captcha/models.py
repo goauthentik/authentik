@@ -24,7 +24,7 @@ class CaptchaStage(Stage):
     )
 
     public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
-    secret = models.ForeignKey(
+    private_key_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Private key"),
         help_text=_("Private key, acquired your captcha Provider."),

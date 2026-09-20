@@ -21,14 +21,14 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "provider",
             "from_number",
             "account_sid",
-            "auth_secret",
-            "auth_password_secret",
+            "auth_ref",
+            "auth_password_ref",
             "auth_type",
             "verify_only",
             "mapping",
         ]
         extra_kwargs = {
-            "auth_secret": {"required": True, "allow_null": False},
+            "auth_ref": {"required": True, "allow_null": False},
         }
 
 

@@ -59,7 +59,7 @@ class TestEmailManagementCommands(TestCase):
             host="stage.authentik.local",
             port=587,
             username="stage-user",
-            secret=create_test_secret("stage-password"),  # nosec
+            password_ref=create_test_secret("stage-password"),  # nosec
             use_tls=True,
         )
 

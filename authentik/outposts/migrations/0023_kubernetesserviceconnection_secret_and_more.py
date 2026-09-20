@@ -10,7 +10,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("kubeconfig", "secret", "multiline", "kubeconfig")]
+FIELDS = [("kubeconfig", "kubeconfig_ref", "multiline", "kubeconfig")]
 
 
 def forwards(apps, schema_editor):
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="kubernetesserviceconnection",
-            name="secret",
+            name="kubeconfig_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -272,7 +272,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -297,7 +297,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=configured_site_key,
-            secret=create_test_secret(generate_id()),
+            private_key_ref=create_test_secret(generate_id()),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -344,7 +344,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage
@@ -396,7 +396,7 @@ class TestIdentificationStage(FlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            secret=create_test_secret(RECAPTCHA_PRIVATE_KEY),
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage
