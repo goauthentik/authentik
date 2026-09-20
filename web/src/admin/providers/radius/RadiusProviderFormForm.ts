@@ -3,15 +3,13 @@ import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/LicenseNotice";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
-
-import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -92,20 +90,22 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-secret-text-input
-                    name="sharedSecret"
+                <ak-secret-search-input
+                    name="sharedSecretRef"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors.sharedSecret}
-                    value=${ifDefined(
+                    value=${ifPresent(provider.sharedSecretRef)}
+                    blankable
+                    help=${
                         provider.pk
-                            ? provider.sharedSecret
-                            : randomString(128, ascii_letters + digits),
-                    )}
-                    input-hint="code"
-                    plaintext
-                    ?required=${!provider.pk}
-                    ?revealed=${!provider.pk}
-                ></ak-secret-text-input>
+                            ? msg("Secret between clients and server to hash packets.", {
+                                  id: "provider.radius.form.secret.description.edit",
+                              })
+                            : msg(
+                                  "Secret between clients and server to hash packets. Leave empty to create one for this provider.",
+                                  { id: "provider.radius.form.secret.description.create" },
+                              )
+                    }
+                ></ak-secret-search-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
