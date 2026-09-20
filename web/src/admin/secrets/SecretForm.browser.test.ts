@@ -154,6 +154,7 @@ test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
 
         refreshed.querySelector("button")!.click();
         await vi.waitFor(() => expect(refreshed.querySelector("input[disabled]")).toBeNull());
+        expect(form.shadowRoot!.activeElement).toBe(refreshed.querySelector("input, textarea"));
     },
 );
 

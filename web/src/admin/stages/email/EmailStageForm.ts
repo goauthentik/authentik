@@ -1,4 +1,4 @@
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -7,6 +7,7 @@ import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -81,11 +82,15 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-secret-text-input
+                <ak-secret-search-input
+                    name="passwordRef"
                     label=${msg("SMTP Password")}
-                    name="password"
-                    ?revealed=${!this.instance}
-                ></ak-secret-text-input>
+                    value=${ifPresent(this.instance?.passwordRef ?? undefined)}
+                    blankable
+                    help=${msg("Password used to authenticate with the SMTP server.", {
+                        id: "stage.email.form.secret.description",
+                    })}
+                ></ak-secret-search-input>
                 <ak-switch-input
                     name="useTls"
                     label=${msg("Use TLS")}
