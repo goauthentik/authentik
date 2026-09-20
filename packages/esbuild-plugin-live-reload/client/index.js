@@ -1,8 +1,7 @@
 /**
- * @file Client-side observer for ESBuild events.
- *
- * @import { BaseLogger } from "@goauthentik/logger-js";
+ * @import { ConsoleLike } from "@goauthentik/esbuild-plugin-live-reload/shared";
  * @import { Message as ESBuildMessage } from "esbuild";
+ * @file Client-side observer for ESBuild events.
  */
 
 /// <reference types="./types.js" />
@@ -33,18 +32,19 @@ const disposeSymbol = Symbol.dispose || Symbol.for("dispose");
  *
  * ```ts
  * if (process.env.NODE_ENV === "development") {
- *   await import("@goauthentik/esbuild-plugin-live-reload")
- *     .catch(() => console.warn("Failed to import watcher"))
+ *     await import("@goauthentik/esbuild-plugin-live-reload").catch(() =>
+ *         console.warn("Failed to import watcher"),
+ *     );
  * }
  * ```
  *
- * @implements {Disposable}
  * @category Plugin
+ * @implements {Disposable}
  * @runtime browser
  */
 export class ESBuildObserver extends EventSource {
     /**
-     * @type {BaseLogger}
+     * @type {ConsoleLike}
      * @protected
      */
     logger;
@@ -81,6 +81,7 @@ export class ESBuildObserver extends EventSource {
 
     /**
      * The interval for the keep-alive check.
+     *
      * @type {ReturnType<typeof setInterval> | undefined}
      */
     #keepAliveInterval;
@@ -170,7 +171,8 @@ export class ESBuildObserver extends EventSource {
      * Initialize the ESBuild observer. This should only be called once.
      *
      * @param {string | URL} [url]
-     * @param {BaseLogger} [logger]
+     * @param {ConsoleLike} [logger]
+     *
      * @returns {ESBuildObserver}
      */
     static initialize = (url, logger) => {
@@ -180,9 +182,8 @@ export class ESBuildObserver extends EventSource {
     };
 
     /**
-     *
      * @param {string | URL} [url]
-     * @param {BaseLogger} [logger]
+     * @param {ConsoleLike} [logger]
      */
     constructor(url, logger = createLogger()) {
         if (!url) {

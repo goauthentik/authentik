@@ -3,18 +3,23 @@ import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
-import "#elements/router/RouterOutlet";
+import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
-
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { isAPIResultReady } from "#common/api/responses";
+import { globalAK } from "#common/global";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -30,7 +35,12 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { navigate } from "#elements/router/RouterOutlet";
+import {
+    formatInterfacePrefix,
+    toAdminInterface,
+    toUserInterface,
+} from "#elements/router/core/interfaces";
+import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -42,21 +52,15 @@ import {
 } from "#components/notifications/utils";
 
 import Styles from "#admin/ak-interface-admin.css";
-import { ROUTES } from "#admin/Routes";
+import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
-import { customElement, eventOptions, property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithLicenseSummary(
@@ -113,10 +117,12 @@ export class AdminInterface extends WithLicenseSummary(
         this.sidebarOpen = event.matches;
     };
 
-    @eventOptions({ passive: true })
-    protected routeChangeListener() {
+    // Recompute the sidebar default on every route change. The path-routing
+    // outlet drives navigation through `RouterNavigateEvent` (push/replace) and
+    // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
+    #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
-    }
+    };
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -153,7 +159,10 @@ export class AdminInterface extends WithLicenseSummary(
         const commands: PaletteCommandDefinitionInit[] = [
             {
                 label: msg("Create a new application..."),
-                action: () => navigate("/core/applications", { createWizard: true }),
+                action: () =>
+                    navigate(
+                        toAdminInterface("core/applications", { "create-wizard": "application" }),
+                    ),
                 group: msg("Applications"),
             },
             ...this.navigationEntries.flatMap(([, label, , children]) =>
@@ -171,9 +180,11 @@ export class AdminInterface extends WithLicenseSummary(
                         group: label,
                         action: () => {
                             navigate(
-                                enterpriseOnly && !this.hasEnterpriseLicense
-                                    ? "/enterprise/licenses"
-                                    : path!,
+                                toAdminInterface(
+                                    enterpriseOnly && !this.hasEnterpriseLicense
+                                        ? "/enterprise/licenses"
+                                        : path!,
+                                ),
                             );
                         },
                     };
@@ -187,7 +198,7 @@ export class AdminInterface extends WithLicenseSummary(
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async (data, event) => {
+                action: async (_data, event) => {
                     event?.stopPropagation();
 
                     const userPalette = this.ownerDocument.createElement(
@@ -214,6 +225,9 @@ export class AdminInterface extends WithLicenseSummary(
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
         });
+
+        window.addEventListener(RouterNavigateEvent.eventName, this.#routeChangeListener);
+        window.addEventListener("popstate", this.#routeChangeListener);
     }
 
     public disconnectedCallback(): void {
@@ -222,6 +236,9 @@ export class AdminInterface extends WithLicenseSummary(
         cancelAnimationFrame(this.#refreshCommandsFrameID);
 
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+
+        window.removeEventListener(RouterNavigateEvent.eventName, this.#routeChangeListener);
+        window.removeEventListener("popstate", this.#routeChangeListener);
 
         WebsocketClient.close();
     }
@@ -237,7 +254,7 @@ export class AdminInterface extends WithLicenseSummary(
 
         if (changedProperties.has("session") && isAPIResultReady(this.session)) {
             if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
-                window.location.assign("/if/user/");
+                window.location.assign(toUserInterface());
             }
         }
     }
@@ -258,6 +275,7 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
+
         const drawerClasses = {
             "pf-m-expanded": openDrawerCount !== 0,
             "pf-m-collapsed": openDrawerCount === 0,
@@ -270,9 +288,9 @@ export class AdminInterface extends WithLicenseSummary(
                         aria-controls="global-nav"
                         class="pf-c-button pf-m-plain"
                         @click=${this.toggleSidebar}
-                        aria-label=${this.sidebarOpen
-                            ? msg("Collapse navigation")
-                            : msg("Expand navigation")}
+                        aria-label=${
+                            this.sidebarOpen ? msg("Collapse navigation") : msg("Expand navigation")
+                        }
                         aria-expanded=${this.sidebarOpen ? "true" : "false"}
                     >
                         <i aria-hidden="true" class="fas fa-bars"></i>
@@ -293,16 +311,19 @@ export class AdminInterface extends WithLicenseSummary(
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <ak-router-outlet
+                                    <ak-router-view
                                         role="presentation"
                                         class="pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        default-url="/administration/overview"
                                         .routes=${ROUTES}
-                                        @ak-route-change=${this.routeChangeListener}
+                                        .prefix=${formatInterfacePrefix(
+                                            globalAK().api.relBase,
+                                            "admin",
+                                        )}
+                                        .defaultPath=${DEFAULT_PATH}
                                     >
-                                    </ak-router-outlet>
+                                    </ak-router-view>
                                 </div>
                             </div>
                             ${renderNotificationDrawerPanel(this.drawer)}

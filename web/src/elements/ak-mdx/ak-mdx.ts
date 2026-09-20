@@ -1,6 +1,9 @@
 import "#elements/Alert";
 import "#elements/Diagram/ak-diagram";
 import "#elements/ak-mdx/components/ak-md-a";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy, CompiledMarkdownSanitizePolicy, sanitizeHTML } from "#common/purify";
@@ -16,10 +19,6 @@ import OneDark from "#styles/atom/one-dark.css";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
 /**
  * The JSON envelope our build-time `mdx-plugin` emits for every imported
  * `.md` / `.mdx` file: the `content` field is **pre-rendered HTML**, not
@@ -34,7 +33,9 @@ interface MarkdownModule {
 
 async function fetchMarkdownModule(url: string | URL): Promise<MarkdownModule> {
     const response = await fetch(url);
+
     if (!response.ok) throw new Error(`Failed to fetch markdown: ${response.statusText}`);
+
     return response.json();
 }
 
@@ -49,11 +50,10 @@ export type Replacer = (input: string) => string;
  * Renders markdown into shadow DOM with no client-side JavaScript
  * evaluation. Two modes:
  *
- * - `url`: resolves to a JSON envelope produced by the build-time
- *   `mdx-plugin`. The envelope's `content` is already HTML.
- * - `content`: an admin-supplied markdown string. Compiled in-browser
- *   through a pure `unified` / remark / rehype pipeline (no `eval`,
- *   no `Function`), then sanitized via `BrandedHTMLPolicy`.
+ * - `url`: resolves to a JSON envelope produced by the build-time `mdx-plugin`. The envelope's
+ *   `content` is already HTML.
+ * - `content`: an admin-supplied markdown string. Compiled in-browser through a pure `unified` /
+ *   remark / rehype pipeline (no `eval`, no `Function`), then sanitized via `BrandedHTMLPolicy`.
  */
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
@@ -98,12 +98,14 @@ export class AKMDX extends AKElement {
      */
     async #hydrateFromURL(url: string): Promise<SlottedTemplateResult> {
         const { relBase } = globalAK().api;
+
         const pathname =
             relBase +
             StaticDirectoryName +
             "/" +
             DistDirectoryName +
             url.slice(url.indexOf("/assets"));
+
         const module = await fetchMarkdownModule(pathname);
 
         if (module.publicDirectory) {
@@ -124,6 +126,7 @@ export class AKMDX extends AKElement {
      */
     async #hydrateFromContent(source: string): Promise<SlottedTemplateResult> {
         const html = this.#applyReplacers(await compileRuntimeMarkdown(source));
+
         return sanitizeHTML(BrandedHTMLPolicy, html);
     }
 

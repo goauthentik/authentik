@@ -4,7 +4,6 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -54,6 +53,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
@@ -87,7 +87,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             item.stageObj?.verboseName,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.stageObj.component, item.stageObj.pk)}
-                ${IconEditButton(StageBindingForm, item.pk, null, undefined, undefined, "fa-link")}
+                ${IconEditButton(StageBindingForm, item.pk, null, { iconName: "fa-link" })}
                 ${IconPermissionButton(item.stageObj?.name || "", {
                     model: ModelEnum.AuthentikFlowsFlowstagebinding,
                     objectPk: item.pk,

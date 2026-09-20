@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,21 +16,13 @@ import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)
  * and, if this user is being impersonated, the original user in the `original` property.
+ *
  * @export
  * @interface SessionUser
  */
 export interface SessionUser {
-    /**
-     *
-     */
     user: UserSelf;
-    /**
-     *
-     */
     original?: UserSelf;
-    /**
-     *
-     */
     users: Array<UserSelf>;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -31,6 +29,7 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * Kerberos Source Serializer
+ *
  * @export
  * @interface PatchedKerberosSourceRequest
  */
@@ -43,12 +42,10 @@ export interface PatchedKerberosSourceRequest {
      * Internal source name, used in URLs.
      */
     slug?: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -59,29 +56,14 @@ export interface PatchedKerberosSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
@@ -116,7 +98,8 @@ export interface PatchedKerberosSourceRequest {
      */
     syncPassword?: string;
     /**
-     * Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
+     * Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form
+     * TYPE:residual
      */
     syncKeytab?: string;
     /**
@@ -136,7 +119,8 @@ export interface PatchedKerberosSourceRequest {
      */
     spnegoCcache?: string;
     /**
-     * If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
+     * If enabled, the authentik-stored password will be updated upon login with the Kerberos
+     * password backend
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**

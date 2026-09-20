@@ -1,6 +1,7 @@
 import "#elements/LoadingOverlay";
-
 import Styles from "./index.entrypoint.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { writeToClipboard } from "#common/clipboard";
 
@@ -12,9 +13,6 @@ import Guacamole from "guacamole-common-js";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 enum GuacClientState {
     IDLE = 0,
@@ -89,6 +87,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     static domSize(): { width: number; height: number } {
         const size = document.body.getBoundingClientRect();
+
         return {
             width: size.width,
             height: size.height,
@@ -99,6 +98,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         super();
         this.initKeyboard();
         this.checkClipboard();
+
         this.clipboardWatcherTimer = setInterval(
             this.checkClipboard.bind(this),
             500,
@@ -107,6 +107,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         window.addEventListener(
             "focus",
             () => {
@@ -116,6 +117,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
                 capture: false,
             },
         );
+
         window.addEventListener("resize", () => {
             this.client?.sendSize(
                 Math.floor(RacInterface.domSize().width),
@@ -133,23 +135,33 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
-        this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
+        this.tunnel.receiveTimeout = 10 * 1000;
+
+        // 10 seconds
         this.tunnel.onerror = (status) => {
             console.debug("authentik/rac: tunnel error: ", status);
+
             this.reconnect();
         };
+
         this.client = new Guacamole.Client(this.tunnel);
+
         this.client.onerror = (err) => {
             this.clientStatus = err;
+
             console.debug("authentik/rac: error: ", err);
+
             this.reconnect();
         };
+
         this.client.onstatechange = (state) => {
             this.clientState = state;
+
             if (state === GuacClientState.CONNECTED) {
                 this.onConnected();
             }
         };
+
         this.client.onclipboard = (stream, mimetype) => {
             // If the received data is text, read it as a simple string
             if (/^text\//.exec(mimetype)) {
@@ -162,14 +174,17 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
                 reader.onend = () => {
                     const trimmed = data.trim();
+
                     // Some remote sessions (notably SSH) push empty clipboard
                     // payloads that would otherwise clobber the user's local
                     // clipboard, breaking subsequent paste attempts. Ignore
                     // them so the local clipboard remains intact.
                     if (!trimmed) {
                         console.debug("authentik/rac: ignored empty remote clipboard payload");
+
                         return;
                     }
+
                     this._previousClipboardValue = trimmed;
                     writeToClipboard(trimmed);
                 };
@@ -186,8 +201,10 @@ export class RacInterface extends WithBrandConfig(Interface) {
                     writeToClipboard(item);
                 };
             }
+
             console.debug("authentik/rac: updated clipboard from remote");
         };
+
         const params = new URLSearchParams();
         params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
         params.set("screen_height", Math.floor(RacInterface.domSize().height).toString());
@@ -201,25 +218,32 @@ export class RacInterface extends WithBrandConfig(Interface) {
     reconnect(): void {
         this.clientState = undefined;
         this.connectionAttempt += 1;
+
         if (!this.hasConnected) {
             // Check connection attempts if we haven't had a successful connection
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
                 this.hasConnected = true;
+
                 this.reconnectingMessage = msg(
                     str`Connection failed after ${this.connectionAttempt} attempts.`,
                 );
+
                 return;
             }
         } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
             this.reconnectingMessage = msg(
                 str`Connection failed after ${this.connectionAttempt} attempts.`,
             );
+
             return;
         }
+
         const delay = 500 * this.connectionAttempt;
+
         this.reconnectingMessage = msg(
             str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
         );
+
         setTimeout(() => {
             this.firstUpdated();
         }, delay);
@@ -237,13 +261,16 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     onConnected(): void {
         console.debug("authentik/rac: connected");
+
         if (!this.client) {
             return;
         }
+
         this.hasConnected = true;
         this.clientStatus = undefined;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
+
         this.client?.sendSize(
             Math.floor(RacInterface.domSize().width),
             Math.floor(RacInterface.domSize().height),
@@ -252,6 +279,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initMouse(container: HTMLElement): void {
         const mouse = new Guacamole.Mouse(container);
+
         const handler = (mouseState: Guacamole.Mouse.State, scaleMouse = false) => {
             if (!this.client) return;
 
@@ -262,11 +290,13 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             this.client.sendMouseState(mouseState);
         };
+
         // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
             this.container?.focus();
             handler(ev.state);
         });
+
         // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
             handler(ev.state, true);
@@ -275,14 +305,18 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initAudioInput(): void {
         const stream = this.client?.createAudioStream(AUDIO_INPUT_MIMETYPE);
+
         if (!stream) return;
         // Guacamole.AudioPlayer
         const recorder = Guacamole.AudioRecorder.getInstance(stream, AUDIO_INPUT_MIMETYPE);
+
         // If creation of the AudioRecorder failed, simply end the stream
         if (!recorder) {
             stream.sendEnd();
+
             return;
         }
+
         // Otherwise, ensure that another audio stream is created after this
         // audio stream is closed
         recorder.onclose = this.initAudioInput.bind(this);
@@ -290,9 +324,11 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initKeyboard(): void {
         const keyboard = new Guacamole.Keyboard(document);
+
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
         };
+
         keyboard.onkeyup = (keysym) => {
             this.client?.sendKeyEvent(0, keysym);
         };
@@ -302,11 +338,15 @@ export class RacInterface extends WithBrandConfig(Interface) {
         try {
             if (!this._previousClipboardValue) {
                 this._previousClipboardValue = await navigator.clipboard.readText();
+
                 return;
             }
+
             const newValue = await navigator.clipboard.readText();
+
             if (newValue !== this._previousClipboardValue) {
                 console.debug(`authentik/rac: new clipboard value: ${newValue}`);
+
                 this._previousClipboardValue = newValue;
                 this.writeClipboard(newValue);
             }
@@ -316,6 +356,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
             if (ex instanceof DOMException) {
                 return;
             }
+
             console.warn("authentik/rac: error reading clipboard", ex);
         }
     }
@@ -324,10 +365,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (!this.client) {
             return;
         }
+
         const stream = this.client.createClipboardStream("text/plain");
         const writer = new Guacamole.StringWriter(stream);
         writer.sendText(value);
         writer.sendEnd();
+
         console.debug("authentik/rac: Sent clipboard");
     }
 
@@ -335,21 +378,27 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
+
         let message = html`${GuacStateToString(this.clientState)}`;
+
         if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
+
         if (this.hasConnected) {
             message = html`${this.reconnectingMessage}`;
         }
+
         if (this.clientStatus?.message) {
             message = html`${message}<br />${this.clientStatus.message}`;
         }
+
         const isLoading = [
             GuacClientState.CONNECTING,
             GuacClientState.DISCONNECTING,
             GuacClientState.WAITING,
         ].includes(this.clientState);
+
         return html`
             <ak-loading-overlay ?no-spinner=${!isLoading} icon="fa fa-times">
                 <span>${message}</span>
