@@ -42,7 +42,7 @@ export interface SCIMProviderRequest {
     /**
      * Authentication token
      */
-    secret?: string | null;
+    tokenRef?: string | null;
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * OAuth Source used for authentication
@@ -111,12 +111,12 @@ export function SCIMProviderRequestFromJSONTyped(
         url: json["url"],
         verifyCertificates:
             json["verify_certificates"] == null ? undefined : json["verify_certificates"],
-        secret:
-            json["secret"] === undefined
+        tokenRef:
+            json["token_ref"] === undefined
                 ? undefined
-                : json["secret"] === null
+                : json["token_ref"] === null
                   ? null
-                  : json["secret"],
+                  : json["token_ref"],
         authMode:
             json["auth_mode"] == null
                 ? undefined
@@ -166,7 +166,7 @@ export function SCIMProviderRequestToJSONTyped(
         property_mappings_group: value["propertyMappingsGroup"],
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
-        secret: value["secret"],
+        token_ref: value["tokenRef"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],

@@ -62,10 +62,10 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
                     <ak-secret-search-input
-                        name="secret"
+                        name="credentialsRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Credentials", { id: "google.credentials.label" })}
-                        value=${ifPresent(this.instance?.secret)}
+                        value=${ifPresent(this.instance?.credentialsRef)}
                         required
                         help=${msg(
                             "Select a secret containing the Google Cloud credentials JSON file.",

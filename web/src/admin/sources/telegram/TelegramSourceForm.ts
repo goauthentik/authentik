@@ -126,9 +126,9 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                 />
             </ak-form-element-horizontal>
             <ak-secret-search-input
-                name="secret"
+                name="botTokenRef"
                 label=${msg("Bot token")}
-                value=${ifPresent(this.instance?.secret)}
+                value=${ifPresent(this.instance?.botTokenRef)}
                 required
                 help=${msg("Token of the Telegram bot.", {
                     id: "source.telegram.form.secret.description",

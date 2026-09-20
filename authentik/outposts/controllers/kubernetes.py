@@ -38,7 +38,7 @@ class KubernetesClient(ApiClient, BaseClient):
                 load_incluster_config(client_configuration=config)
             else:
                 load_kube_config_from_dict(
-                    connection.secret.get_json() if connection.secret else {},
+                    connection.kubeconfig_ref.get_json() if connection.kubeconfig_ref else {},
                     client_configuration=config,
                 )
             config.verify_ssl = connection.verify_ssl

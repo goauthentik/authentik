@@ -22,7 +22,7 @@ LOGGER = get_logger()
 class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     """AuthenticatorEndpointGDTCStage Serializer"""
 
-    secret = JSONSecretReferenceField(
+    credentials_ref = JSONSecretReferenceField(
         queryset=Secret.objects.all(), required=True, allow_null=False
     )
 
@@ -31,7 +31,7 @@ class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSer
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "friendly_name",
-            "secret",
+            "credentials_ref",
         ]
 
 

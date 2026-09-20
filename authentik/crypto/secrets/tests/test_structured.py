@@ -30,13 +30,13 @@ class TestStructuredSecrets(TestCase):
                 secret = Secret(
                     type=SecretType.FILE, value=b64encode(b'{"token":"value"}').decode()
                 )
-                consumer = Model(secret=secret)
+                consumer = Model(credentials_ref=secret)
                 with patch(f"{Model.__module__}.Credentials.from_service_account_info") as factory:
                     consumer.google_credentials()
                 self.assertEqual(factory.call_args.args[0], {"token": "value"})
 
     def test_invalid_structured_value(self):
-        field = GoogleChromeConnector().serializer().fields["secret"]
+        field = GoogleChromeConnector().serializer().fields["credentials_ref"]
         for secret_type, value in [
             (SecretType.MULTILINE, "[]"),
             (SecretType.MULTILINE, "null"),
@@ -54,7 +54,7 @@ class TestStructuredSecrets(TestCase):
         secret = Secret.objects.create(
             name="credentials", type=SecretType.MULTILINE, value='{"token":"value"}'
         )
-        GoogleChromeConnector.objects.create(name="connector", secret=secret)
+        GoogleChromeConnector.objects.create(name="connector", credentials_ref=secret)
         serializer = SecretSerializer(instance=secret, data={"value": "[]"}, partial=True)
         self.assertFalse(serializer.is_valid())
         self.assertIn("value", serializer.errors)
@@ -69,7 +69,7 @@ class TestStructuredSecrets(TestCase):
                 )
                 secret = Secret.objects.create(name=secret_type, type=secret_type, value=value)
                 serializer = KubernetesServiceConnectionSerializer(
-                    data={"name": secret_type, "local": False, "secret": str(secret.pk)}
+                    data={"name": secret_type, "local": False, "kubeconfig_ref": str(secret.pk)}
                 )
                 self.assertTrue(serializer.is_valid(), serializer.errors)
                 connection = serializer.save()
@@ -90,15 +90,15 @@ class TestStructuredSecrets(TestCase):
             instance=connection, data={"local": False}, partial=True
         )
         self.assertFalse(serializer.is_valid())
-        self.assertIn("secret", serializer.errors)
+        self.assertIn("kubeconfig_ref", serializer.errors)
 
     def test_invalid_current_kubeconfig(self):
         secret = Secret.objects.create(
             name="invalid", type=SecretType.MULTILINE, value="not a kubeconfig"
         )
-        connection = KubernetesServiceConnection(name="remote", local=False, secret=secret)
+        connection = KubernetesServiceConnection(name="remote", local=False, kubeconfig_ref=secret)
         serializer = KubernetesServiceConnectionSerializer(
             instance=connection, data={"name": "renamed"}, partial=True
         )
         self.assertFalse(serializer.is_valid())
-        self.assertIn("secret", serializer.errors)
+        self.assertIn("kubeconfig_ref", serializer.errors)

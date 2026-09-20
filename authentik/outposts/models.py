@@ -242,7 +242,7 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         ),
     )
 
-    secret = models.ForeignKey(
+    kubeconfig_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Kubeconfig"),
         on_delete=models.PROTECT,

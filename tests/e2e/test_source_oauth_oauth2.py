@@ -115,7 +115,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             access_token_url=f"http://{self.host}:5556/dex/token",
             profile_url=f"http://{self.host}:5556/dex/userinfo",
             consumer_key="example-app",
-            secret=create_test_secret(self.client_secret),
+            consumer_secret_ref=create_test_secret(self.client_secret),
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])

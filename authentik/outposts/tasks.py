@@ -187,7 +187,7 @@ def outpost_connection_discovery():
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig, transaction.atomic():
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
-                    secret=Secret.objects.create(
+                    kubeconfig_ref=Secret.objects.create(
                         name=f"{kubeconfig_local_name} kubeconfig {generate_id(8)}",
                         type=SecretType.MULTILINE,
                         value=_kubeconfig.read(),

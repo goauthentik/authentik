@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_password", "secret", None, "SMTP password")]
+FIELDS = [("_password", "password_ref", None, "SMTP password")]
 
 
 def migrate_password(apps, schema_editor):
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="authenticatoremailstage",
-            name="secret",
+            name="password_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

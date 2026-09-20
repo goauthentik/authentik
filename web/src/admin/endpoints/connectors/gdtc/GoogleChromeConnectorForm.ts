@@ -57,10 +57,10 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
             <ak-form-group label=${msg("Google settings")} open>
                 <div class="pf-c-form">
                     <ak-secret-search-input
-                        name="secret"
+                        name="credentialsRef"
                         .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                         label=${msg("Credentials", { id: "google.credentials.label" })}
-                        value=${ifPresent(this.instance?.secret)}
+                        value=${ifPresent(this.instance?.credentialsRef)}
                         required
                         help=${msg(
                             "Select a secret containing the Google Cloud credentials JSON file.",

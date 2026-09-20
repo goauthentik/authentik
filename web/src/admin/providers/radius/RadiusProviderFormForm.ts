@@ -91,9 +91,9 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
                 <ak-secret-search-input
-                    name="secret"
+                    name="sharedSecretRef"
                     label=${msg("Shared secret")}
-                    value=${ifPresent(provider.secret)}
+                    value=${ifPresent(provider.sharedSecretRef)}
                     blankable
                     help=${
                         provider.pk

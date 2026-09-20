@@ -57,10 +57,10 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             >
             </ak-switch-input>
             <ak-secret-search-input
-                name="secret"
+                name="kubeconfigRef"
                 .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
                 label=${msg("Kubeconfig", { id: "outpost.kubeconfig.label" })}
-                value=${ifPresent(this.instance?.secret)}
+                value=${ifPresent(this.instance?.kubeconfigRef)}
                 blankable
                 help=${msg(
                     "Select a secret containing the kubeconfig as YAML or JSON. Leave empty for a local connection.",

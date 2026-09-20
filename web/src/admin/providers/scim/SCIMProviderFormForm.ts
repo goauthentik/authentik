@@ -40,9 +40,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderAuthToken(provider?: Partial<SCIMProvider>) {
     return html`<ak-secret-search-input
-        name="secret"
+        name="tokenRef"
         label=${msg("Token")}
-        value=${ifPresent(provider?.secret ?? undefined)}
+        value=${ifPresent(provider?.tokenRef ?? undefined)}
         blankable
         help=${msg("Token to authenticate with.", {
             id: "provider.scim.form.secret.description",

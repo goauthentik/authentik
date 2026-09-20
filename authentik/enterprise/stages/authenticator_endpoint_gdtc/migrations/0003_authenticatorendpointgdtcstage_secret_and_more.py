@@ -10,7 +10,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("credentials", "secret", "multiline", "credentials")]
+FIELDS = [("credentials", "credentials_ref", "multiline", "credentials")]
 
 
 def forwards(apps, schema_editor):
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="authenticatorendpointgdtcstage",
-            name="secret",
+            name="credentials_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -63,9 +63,9 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                     >
                     </ak-text-input>
                     <ak-secret-search-input
-                        name="secret"
+                        name="tokenRef"
                         label=${msg("Fleet API Token")}
-                        value=${ifPresent(this.instance?.secret ?? undefined)}
+                        value=${ifPresent(this.instance?.tokenRef ?? undefined)}
                         required
                         help=${msg("Token used to authenticate against the Fleet server.", {
                             id: "connector.fleet.form.secret.description",
