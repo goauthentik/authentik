@@ -141,7 +141,7 @@ export function intersectionObserver({
                 disconnectedCallback?.call(this);
 
                 if (observer) {
-                    observer.disconnect();
+                    observer.unobserve(this);
                 }
             };
 
