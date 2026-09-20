@@ -22,7 +22,23 @@ pub(super) fn build_client(insecure: bool) -> Result<UpstreamClient> {
         builder.with_native_roots()?
     }
     .https_or_http()
-    .enable_all_versions()
+    // HTTP/1.1 only. The Go outpost this replaced used a bare
+    // `http.Transport{TLSClientConfig: ..}` and never set `ForceAttemptHTTP2`,
+    // which per net/http "conservatively disables HTTP/2", so upstreams were
+    // only ever spoken to over HTTP/1.1.
+    //
+    // Negotiating h2 here breaks two things at once. The inbound `Host` this
+    // proxy forwards (see `set_host(false)` below) sits alongside the
+    // `:authority` hyper derives from the upstream URI; when they differ that
+    // is malformed (RFC 9113 8.3.1) and compliant upstreams answer 400. And
+    // `Upgrade`/`Connection` are forbidden in HTTP/2 (8.2.2), so hyper strips
+    // them and every WebSocket silently degrades into an ordinary request --
+    // HTTP/2 has no 101 either (8.6).
+    //
+    // Speaking h2 upstream *correctly* would mean decoupling `:authority` from
+    // the dial target, which `hyper_util::client::legacy` cannot do: its pool
+    // key is `(scheme, authority)` and the connector dials that same tuple.
+    .enable_http1()
     .build();
     // Forward the request's own `Host` upstream instead of deriving it from the
     // (internal) upstream URI authority. The proxy sets `Host` explicitly.
