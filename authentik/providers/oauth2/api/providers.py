@@ -60,7 +60,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             raise ValidationError("Client ID must consist of only ASCII characters.")
         return secret
 
-    def validate_secret(self, secret: Secret | None) -> Secret | None:
+    def validate_client_secret_ref(self, secret: Secret | None) -> Secret | None:
         if secret:
             validate_client_secret(secret.value)
         return secret
@@ -84,7 +84,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_type",
             "grant_types",
             "client_id",
-            "secret",
+            "client_secret_ref",
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",

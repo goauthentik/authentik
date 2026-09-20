@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_sync_password", "secret", None, "sync password")]
+FIELDS = [("_sync_password", "sync_password_ref", None, "sync password")]
 
 
 def migrate_sync_password(apps, schema_editor):
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="kerberossource",
-            name="secret",
+            name="sync_password_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -87,7 +87,7 @@ export interface TelegramSource {
     /**
      * Telegram bot token
      */
-    secret: string;
+    botTokenRef: string;
     /**
      * Request access to send messages from your bot.
      */
@@ -149,7 +149,13 @@ export function instanceOfTelegramSource(value: object): value is TelegramSource
             (value as Record<string, any>)["bot_username"] === undefined)
     )
         return false;
-    if (!("secret" in value) || value["secret"] === undefined) return false;
+    if (
+        (!("botTokenRef" in (value as Record<string, any>)) &&
+            !("bot_token_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["botTokenRef"] === undefined &&
+            (value as Record<string, any>)["bot_token_ref"] === undefined)
+    )
+        return false;
     if (
         (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
             !("pre_authentication_flow" in (value as Record<string, any>))) ||
@@ -212,7 +218,7 @@ export function TelegramSourceFromJSONTyped(
         iconUrl: json["icon_url"],
         iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
         botUsername: json["bot_username"],
-        secret: json["secret"],
+        botTokenRef: json["bot_token_ref"],
         requestMessageAccess:
             json["request_message_access"] == null ? undefined : json["request_message_access"],
         preAuthenticationFlow: json["pre_authentication_flow"],
@@ -255,7 +261,7 @@ export function TelegramSourceToJSONTyped(
         user_path_template: value["userPathTemplate"],
         icon: value["icon"],
         bot_username: value["botUsername"],
-        secret: value["secret"],
+        bot_token_ref: value["botTokenRef"],
         request_message_access: value["requestMessageAccess"],
         pre_authentication_flow: value["preAuthenticationFlow"],
     };

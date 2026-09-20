@@ -26,8 +26,8 @@ class TestProviderSecret(APITestCase):
         provider = RadiusProvider.objects.create(
             name=generate_id(), authorization_flow=create_test_flow()
         )
-        self.assertIsNotNone(provider.secret)
-        self.assertNotEqual(provider.secret.value, "")
+        self.assertIsNotNone(provider.shared_secret_ref)
+        self.assertNotEqual(provider.shared_secret_ref.value, "")
 
     def test_rotation_triggers_outpost_update(self):
         """Rotating a secret pushes new config to outposts whose providers use it"""
@@ -36,16 +36,20 @@ class TestProviderSecret(APITestCase):
         )
         outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.RADIUS)
         outpost.providers.add(provider)
-        other_provider = RadiusProvider.objects.create(name=generate_id(), secret=provider.secret)
+        other_provider = RadiusProvider.objects.create(
+            name=generate_id(), shared_secret_ref=provider.shared_secret_ref
+        )
         outpost.providers.add(other_provider)
         proxy_provider = ProxyProvider.objects.create(
-            name=generate_id(), secret=provider.secret, external_host="https://app.example.com"
+            name=generate_id(),
+            client_secret_ref=provider.shared_secret_ref,
+            external_host="https://app.example.com",
         )
         proxy_outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
         proxy_outpost.providers.add(proxy_provider)
         with patch("authentik.outposts.signals.outpost_send_update.send_with_options") as sender:
             with self.captureOnCommitCallbacks(execute=True):
-                provider.secret.rotate()
+                provider.shared_secret_ref.rotate()
                 sender.assert_not_called()
         self.assertCountEqual(
             [call.kwargs["args"] for call in sender.call_args_list],
@@ -61,13 +65,13 @@ class TestProviderSecret(APITestCase):
                 "name": generate_id(),
                 "authorization_flow": create_test_flow().pk,
                 "invalidation_flow": create_test_flow().pk,
-                "secret": secret.pk,
+                "shared_secret_ref": secret.pk,
             },
         )
         self.assertEqual(response.status_code, 201, response.content)
         provider = RadiusProvider.objects.get(pk=response.json()["pk"])
-        self.assertEqual(provider.secret, secret)
-        self.assertEqual(provider.secret.value, secret.value)
+        self.assertEqual(provider.shared_secret_ref, secret)
+        self.assertEqual(provider.shared_secret_ref.value, secret.value)
 
     def test_outpost_config_shared_secret(self):
         """The outpost config endpoint returns the value for the outpost to use"""
@@ -82,4 +86,4 @@ class TestProviderSecret(APITestCase):
         self.assertEqual(response.status_code, 200)
         results = response.json()["results"]
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["shared_secret"], provider.secret.value)
+        self.assertEqual(results[0]["shared_secret"], provider.shared_secret_ref.value)

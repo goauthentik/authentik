@@ -110,7 +110,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         choices=SCIMAuthenticationMode.choices, default=SCIMAuthenticationMode.TOKEN
     )
 
-    secret = models.ForeignKey(
+    token_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Token"),
         help_text=_("Authentication token"),

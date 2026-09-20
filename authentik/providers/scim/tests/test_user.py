@@ -34,7 +34,7 @@ class SCIMUserTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            secret=create_test_secret(generate_id()),
+            token_ref=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         self.app: Application = Application.objects.create(
@@ -207,7 +207,7 @@ class SCIMUserTests(TestCase):
         provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            secret=create_test_secret(generate_id()),
+            token_ref=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         app: Application = Application.objects.create(

@@ -29,7 +29,7 @@ class SCIMGroupTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            secret=create_test_secret(generate_id()),
+            token_ref=create_test_secret(generate_id()),
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),

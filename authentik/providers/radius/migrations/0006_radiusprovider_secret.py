@@ -4,13 +4,12 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 import authentik.lib.generators
-
 from authentik.crypto.secrets.migrations._credential_values import (
     migrate_credentials,
     restore_credentials,
 )
 
-FIELDS = [("_shared_secret", "secret", "text", "shared secret")]
+FIELDS = [("_shared_secret", "shared_secret_ref", "text", "shared secret")]
 
 
 def migrate_shared_secret(apps, schema_editor):
@@ -52,7 +51,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="radiusprovider",
-            name="secret",
+            name="shared_secret_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

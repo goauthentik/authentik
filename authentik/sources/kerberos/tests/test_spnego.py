@@ -21,7 +21,7 @@ class TestSPNEGOSource(KerberosTestCase):
         self.source = KerberosSource.objects.create(
             name="test",
             slug="test",
-            spnego_keytab_secret=create_test_secret(
+            spnego_keytab_ref=create_test_secret(
                 b64encode(Path(self.realm.http_keytab).read_bytes()).decode()
             ),
         )

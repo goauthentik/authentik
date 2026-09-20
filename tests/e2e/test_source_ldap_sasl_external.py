@@ -206,7 +206,7 @@ class TestSourceLDAPSASLExternal(E2ETestCase):
             peer_certificate=self.ca_keypair,
             client_certificate=self.client_keypair,
             bind_cn="ignored",
-            secret=create_test_secret("ignored"),
+            bind_password_ref=create_test_secret("ignored"),
             service_bind_method=LDAPSourceBindMethod.SASL_EXTERNAL,
             start_tls=True,
             sni=True,

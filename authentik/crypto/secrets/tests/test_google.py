@@ -22,7 +22,7 @@ class TestGoogleSecretReplacement(APITestCase):
             with self.subTest(type=secret_type):
                 value = "e30=" if secret_type == SecretType.FILE else "{}"
                 secret = create_test_secret(value, secret_type)
-                GoogleWorkspaceProvider.objects.create(name=secret.name, secret=secret)
+                GoogleWorkspaceProvider.objects.create(name=secret.name, credentials_ref=secret)
                 for replacement in ("[]", "invalid: [", '{"token":"updated"}'):
                     encoded = (
                         b64encode(replacement.encode()).decode()
@@ -46,7 +46,7 @@ class TestGoogleSecretReplacement(APITestCase):
 
     def test_legacy_text_credential_cannot_be_rotated(self):
         secret = Secret.objects.create(name="legacy", value="{}")
-        GoogleWorkspaceProvider.objects.create(name="legacy", secret=secret)
+        GoogleWorkspaceProvider.objects.create(name="legacy", credentials_ref=secret)
         response = self.client.post(
             reverse("authentik_api:secret-rotate", kwargs={"pk": secret.pk})
         )

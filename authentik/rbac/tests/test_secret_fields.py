@@ -35,7 +35,7 @@ class TestSecretFields(APITestCase):
         }
         self.secret = create_test_secret(dumps(self.kubeconfig), SecretType.MULTILINE)
         self.connection = KubernetesServiceConnection.objects.create(
-            name=generate_id(), secret=self.secret
+            name=generate_id(), kubeconfig_ref=self.secret
         )
 
     def test_connection_detail_view(self):
@@ -84,7 +84,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
         self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_connection_detail_change_object(self):
@@ -105,7 +105,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
         self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_connection_detail_superuser(self):
@@ -120,7 +120,7 @@ class TestSecretFields(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
-        self.assertEqual(body["secret"], str(self.secret.pk))
+        self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
         self.assertNotIn(self.secret.value, res.content.decode())
 
     def test_connection_create(self):
@@ -135,7 +135,7 @@ class TestSecretFields(APITestCase):
             reverse("authentik_api:kubernetesserviceconnection-list"),
             {
                 "name": name,
-                "secret": str(secret.pk),
+                "kubeconfig_ref": str(secret.pk),
                 "local": False,
             },
             format="json",
@@ -144,4 +144,4 @@ class TestSecretFields(APITestCase):
         body = loads(res.content)
         self.assertNotIn("kubeconfig", body)
         connection = KubernetesServiceConnection.objects.get(name=name)
-        self.assertEqual(connection.secret, secret)
+        self.assertEqual(connection.kubeconfig_ref, secret)
