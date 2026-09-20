@@ -13,7 +13,7 @@ def secret_type(source):
     return "multiline" if source.provider_type == "apple" else "text"
 
 
-FIELDS = [("_consumer_secret", "secret", secret_type, "consumer secret")]
+FIELDS = [("_consumer_secret", "consumer_secret_ref", secret_type, "consumer secret")]
 
 
 def migrate_consumer_secret(apps, schema_editor):
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="oauthsource",
-            name="secret",
+            name="consumer_secret_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

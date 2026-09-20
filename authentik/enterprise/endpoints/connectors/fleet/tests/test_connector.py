@@ -24,7 +24,7 @@ class TestFleetConnector(APITestCase):
         self.connector = FleetConnector.objects.create(
             name=generate_id(),
             url="http://localhost",
-            secret=create_test_secret(generate_id()),
+            token_ref=create_test_secret(generate_id()),
             map_teams_access_group=True,
         )
 

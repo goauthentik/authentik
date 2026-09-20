@@ -8,7 +8,7 @@ from authentik.crypto.secrets.migrations._credential_values import (
     restore_credentials,
 )
 
-FIELDS = [("_private_key", "secret", None, "captcha private key")]
+FIELDS = [("_private_key", "private_key_ref", None, "captcha private key")]
 
 
 def migrate_private_key(apps, schema_editor):
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="captchastage",
-            name="secret",
+            name="private_key_ref",
             field=models.ForeignKey(
                 blank=True,
                 default=None,

@@ -32,8 +32,8 @@ export interface PatchedAuthenticatorSMSStageRequest {
     provider?: ProviderEnum;
     fromNumber?: string;
     accountSid?: string;
-    authSecret?: string;
-    authPasswordSecret?: string | null;
+    authRef?: string;
+    authPasswordRef?: string | null;
     authType?: AuthTypeEnum;
     /**
      * When enabled, the Phone number is only used during enrollment to verify the users
@@ -81,13 +81,13 @@ export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
         provider: json["provider"] == null ? undefined : ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"] == null ? undefined : json["from_number"],
         accountSid: json["account_sid"] == null ? undefined : json["account_sid"],
-        authSecret: json["auth_secret"] == null ? undefined : json["auth_secret"],
-        authPasswordSecret:
-            json["auth_password_secret"] === undefined
+        authRef: json["auth_ref"] == null ? undefined : json["auth_ref"],
+        authPasswordRef:
+            json["auth_password_ref"] === undefined
                 ? undefined
-                : json["auth_password_secret"] === null
+                : json["auth_password_ref"] === null
                   ? null
-                  : json["auth_password_secret"],
+                  : json["auth_password_ref"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
         mapping:
@@ -120,8 +120,8 @@ export function PatchedAuthenticatorSMSStageRequestToJSONTyped(
         provider: ProviderEnumToJSON(value["provider"]),
         from_number: value["fromNumber"],
         account_sid: value["accountSid"],
-        auth_secret: value["authSecret"],
-        auth_password_secret: value["authPasswordSecret"],
+        auth_ref: value["authRef"],
+        auth_password_ref: value["authPasswordRef"],
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],

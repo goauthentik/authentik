@@ -26,7 +26,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     api_hostname = models.TextField()
 
     client_id = models.TextField()
-    secret = models.ForeignKey(
+    client_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Client secret"),
         on_delete=models.PROTECT,
@@ -37,7 +37,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     )
 
     admin_integration_key = models.TextField(blank=True, default="")
-    admin_secret = models.ForeignKey(
+    admin_secret_key_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Admin secret key"),
         on_delete=models.PROTECT,
@@ -63,18 +63,18 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get an API Client to talk to duo"""
         return Auth(
             self.client_id,
-            self.secret.value,
+            self.client_secret_ref.value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )
 
     def admin_client(self) -> Admin:
         """Get an API Client to talk to duo"""
-        if self.admin_integration_key == "" or not self.admin_secret:
+        if self.admin_integration_key == "" or not self.admin_secret_key_ref:
             raise ValueError("Admin credentials not configured")
         client = Admin(
             self.admin_integration_key,
-            self.admin_secret.value,
+            self.admin_secret_key_ref.value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )

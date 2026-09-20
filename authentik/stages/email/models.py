@@ -82,7 +82,7 @@ class EmailStage(Stage):
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)
     username = models.TextField(default="", blank=True)
-    secret = models.ForeignKey(
+    password_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("SMTP password"),
         on_delete=models.PROTECT,
@@ -158,7 +158,7 @@ class EmailStage(Stage):
             host=self.host,
             port=self.port,
             username=self.username,
-            password=self.secret.value if self.secret else "",
+            password=self.password_ref.value if self.password_ref else "",
             use_tls=self.use_tls,
             use_ssl=self.use_ssl,
             timeout=self.timeout,

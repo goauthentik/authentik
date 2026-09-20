@@ -30,7 +30,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "verbose_name_plural",
             "meta_model_name",
             "client_id",
-            "secret",
+            "client_secret_ref",
             "tenant_id",
             "exclude_users_service_account",
             "filter_group",
@@ -42,7 +42,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "dry_run",
         ]
         extra_kwargs = {
-            "secret": {"required": True, "allow_null": False},
+            "client_secret_ref": {"required": True, "allow_null": False},
         }
 
 

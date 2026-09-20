@@ -12,7 +12,8 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
-from authentik.events.models import Event, EventAction
+from authentik.crypto.secrets.models import Secret, secret_value_validating
+from authentik.events.models import Event, EventAction, TransportMode
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,
@@ -22,6 +23,7 @@ from authentik.flows.planner import (
     FlowPlan,
 )
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.models import DomainlessURLValidator
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -145,3 +147,12 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
 
     if get_current_tenant().gdpr_compliance:
         gdpr_cleanup.send(instance.pk)
+
+
+@receiver(secret_value_validating, sender=Secret)
+def validate_notification_secret(sender, secret: Secret, value: str, **_):
+    """Keep webhook credentials valid URLs."""
+    if secret.notification_transports.filter(
+        mode__in=(TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK)
+    ).exists():
+        DomainlessURLValidator()(value)

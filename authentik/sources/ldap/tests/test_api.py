@@ -185,7 +185,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                secret=create_test_secret(generate_id()).pk,
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users_password=True,
             )
         )
@@ -197,14 +197,14 @@ class LDAPAPITests(APITestCase):
         LDAPSource.objects.create(
             **self.source_data(
                 bind_cn="",
-                secret=create_test_secret(generate_id()),
+                bind_password_ref=create_test_secret(generate_id()),
                 sync_users_password=True,
             )
         )
         serializer = LDAPSourceSerializer(
             data=self.source_data(
                 bind_cn="",
-                secret=create_test_secret(generate_id()).pk,
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users_password=True,
             )
         )
@@ -227,7 +227,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                secret=create_test_secret(generate_id()).pk,
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users=True,
                 user_property_mappings=[],
             )
@@ -240,7 +240,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                secret=create_test_secret(generate_id()).pk,
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_groups=True,
                 group_property_mappings=[],
             )
