@@ -4,14 +4,13 @@ import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/devices/DeviceUserBindingForm";
-
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { BoundPoliciesList } from "#admin/policies/BoundPoliciesList";
+import { BoundPoliciesList, getPolicyUserGroupRow } from "#admin/policies/BoundPoliciesList";
 
 import { DeviceUserBinding, EndpointsApi } from "@goauthentik/api";
 
@@ -45,7 +44,7 @@ export class BoundDeviceUsersList extends BoundPoliciesList<DeviceUserBinding> {
 
     row(item: DeviceUserBinding): SlottedTemplateResult[] {
         return [
-            html`${this.getPolicyUserGroupRow(item)}`,
+            html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label ?good=${item.isPrimary}></ak-status-label>`,
         ];
     }

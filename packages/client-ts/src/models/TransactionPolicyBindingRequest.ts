@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,19 @@
 
 /**
  * PolicyBindingSerializer which does not require target as target is set implicitly
+ *
  * @export
  * @interface TransactionPolicyBindingRequest
  */
 export interface TransactionPolicyBindingRequest {
-    /**
-     *
-     */
     policy?: string | null;
-    /**
-     *
-     */
     group?: string | null;
-    /**
-     *
-     */
     user?: number | null;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
      */
     negate?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.

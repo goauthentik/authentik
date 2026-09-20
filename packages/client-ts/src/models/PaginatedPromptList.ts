@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Prompt } from "./Prompt";
 import { PromptFromJSON, PromptToJSON } from "./Prompt";
 
 /**
- *
  * @export
  * @interface PaginatedPromptList
  */
 export interface PaginatedPromptList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Prompt>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

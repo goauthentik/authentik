@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,17 +20,12 @@ import {
 
 /**
  * SourceStage Serializer
+ *
  * @export
  * @interface SourceStage
  */
 export interface SourceStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -50,16 +43,11 @@ export interface SourceStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     source: string;
     /**
-     * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
+     * Amount of time a user can take to return from the source to continue the flow (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     resumeTimeout?: string;
     /**
