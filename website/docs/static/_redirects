@@ -78,7 +78,6 @@
 /install-config/geoip                                       /sys-mgmt/ops/geoip 301!
 /install-config/storage-s3                                  /sys-mgmt/ops/storage-s3/ 301!
 /events/*                                                   /sys-mgmt/events/:splat 301!
-/sys-mgmt/tenancy                                           /install-config/upgrade/ 301!
 #endregion
 
 #region Flows and Stages
