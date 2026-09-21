@@ -1,6 +1,7 @@
 """Test blueprints v1 tasks"""
 
 from hashlib import sha512
+from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
 
 from django.test import TransactionTestCase
@@ -156,3 +157,106 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 instance.status,
                 BlueprintInstanceStatus.UNKNOWN,
             )
+
+    def write_blueprint(self, file, value: str):
+        """Write a blueprint referencing `value` and return its hash as found on disk"""
+        file.seek(0)
+        file.truncate()
+        file.write(f"version: 1\nentries: []\ncontext:\n  secret: {value}\n")
+        file.flush()
+        blueprint = next(found for found in blueprints_find() if found.path == Path(file.name).name)
+        return blueprint.hash
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_content_changed(self):
+        """Test hash changes when the contents of a referenced `!File` change"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                before = self.write_blueprint(file, f"!File {secret.name}")
+                secret.seek(0)
+                secret.truncate()
+                secret.write("rotated")
+                secret.flush()
+                after = self.write_blueprint(file, f"!File {secret.name}")
+                self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_content_changed_nested(self):
+        """Test hash changes when a `!File` used as an argument of another tag changes"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                nested = f'!Format ["client-%s", !File {secret.name}]'
+                before = self.write_blueprint(file, nested)
+                secret.seek(0)
+                secret.truncate()
+                secret.write("rotated")
+                secret.flush()
+                after = self.write_blueprint(file, nested)
+                self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_created(self):
+        """Test hash changes when a referenced `!File` that was missing appears"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            secret_path = Path(TMP) / generate_id()
+            reference = f"!File {secret_path}"
+            before = self.write_blueprint(file, reference)
+            secret_path.write_text("created")
+            try:
+                after = self.write_blueprint(file, reference)
+            finally:
+                secret_path.unlink()
+            self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_content_unchanged(self):
+        """Test hash is stable when a referenced `!File` does not change (control)"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                reference = f"!File {secret.name}"
+                self.assertEqual(
+                    self.write_blueprint(file, reference),
+                    self.write_blueprint(file, reference),
+                )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_missing(self):
+        """Test hash is stable when a referenced `!File` does not exist (control)"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = f"!File {Path(TMP) / generate_id()}"
+            self.assertEqual(
+                self.write_blueprint(file, reference),
+                self.write_blueprint(file, reference),
+            )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_applied_on_change(self):
+        """Test blueprint is re-applied when the contents of a referenced `!File` change"""
+        blueprint_id = generate_id()
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                file.write(
+                    f"version: 1\nentries: []\n"
+                    f"metadata:\n  name: {blueprint_id}\n"
+                    f"context:\n  secret: !File {secret.name}\n"
+                )
+                file.flush()
+                blueprints_discovery.send()
+                instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
+                before = instance.last_applied_hash
+                self.assertEqual(instance.status, BlueprintInstanceStatus.SUCCESSFUL)
+                secret.seek(0)
+                secret.truncate()
+                secret.write("rotated")
+                secret.flush()
+                blueprints_discovery.send()
+                instance.refresh_from_db()
+                self.assertNotEqual(instance.last_applied_hash, before)
