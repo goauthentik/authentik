@@ -3,6 +3,7 @@
  */
 
 import { FormFixture } from "#e2e/fixtures/FormFixture";
+import { LicenseFixture } from "#e2e/fixtures/LicenseFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { PasskeyFixture } from "#e2e/fixtures/PasskeyFixture";
 import { PointerFixture } from "#e2e/fixtures/PointerFixture";
@@ -16,6 +17,7 @@ export { expect } from "@playwright/test";
 /* eslint-disable react-hooks/rules-of-hooks */
 
 interface E2EFixturesTestScope {
+    license: LicenseFixture;
     navigator: NavigatorFixture;
     session: SessionFixture;
     pointer: PointerFixture;
@@ -29,6 +31,10 @@ interface E2EWorkerScope {
 }
 
 export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
+    license: async ({ page }, use, { title: testName }) => {
+        await use(new LicenseFixture({ page, testName }));
+    },
+
     navigator: async ({ page }, use, { title }) => {
         await use(new NavigatorFixture(page, title));
     },

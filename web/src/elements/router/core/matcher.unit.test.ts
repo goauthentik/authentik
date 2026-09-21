@@ -79,6 +79,7 @@ describe("sameRouteMatch", () => {
                 matchRoute("/users/22/credentials", [subtree]),
             ),
         ).toBe(true);
+
         expect(
             sameRouteMatch(
                 matchRoute("/users/22/credentials", [subtree]),

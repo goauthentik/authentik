@@ -1,9 +1,8 @@
 /**
  * @file Whether the initialized Sentry client is reporting.
- *
- * Deliberately a leaf module: it imports the Sentry SDK and nothing else, so
- * router outlets can read the reporting decision without pulling in the app
- * context (`globalAK`, the API client) that Sentry initialization needs.
+ *   Deliberately a leaf module: it imports the Sentry SDK and nothing else, so
+ *   router outlets can read the reporting decision without pulling in the app
+ *   context (`globalAK`, the API client) that Sentry initialization needs.
  */
 
 import { getClient } from "@sentry/browser";

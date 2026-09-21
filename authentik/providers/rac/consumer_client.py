@@ -11,6 +11,10 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.outposts.consumer import build_outpost_group_instance
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
+from authentik.providers.rac.guacamole import (
+    GuacamoleInstructionParser,
+    GuacamoleProtocolError,
+)
 from authentik.providers.rac.models import ConnectionToken, RACProvider
 
 
@@ -58,9 +62,11 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     provider: RACProvider
     token: ConnectionToken
     logger: BoundLogger
+    guacamole_parser: GuacamoleInstructionParser
 
     async def connect(self):
         self.logger = get_logger()
+        self.guacamole_parser = GuacamoleInstructionParser()
         await self.accept("guacamole")
         await self.channel_layer.group_add(build_rac_client_group(), self.channel_name)
         await self.channel_layer.group_add(
@@ -134,20 +140,32 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             self.token.delete()
 
     async def receive(self, text_data=None, bytes_data=None):
-        """Mirror data received from client to the dest_channel_id
-        which is the channel talking to guacd"""
-        if self.dest_channel_id == "":
-            return
+        """Filter tunnel instructions and mirror protocol data to guacd."""
         if self.token.is_expired:
             await self.event_disconnect({"reason": "token_expiry"})
+            return
+        # The Guacamole protocol is text-only, binary frames are not part of it.
+        if text_data is None:
+            return
+        try:
+            responses, forwarded = self.guacamole_parser.split_internal(
+                self.guacamole_parser.feed(text_data)
+            )
+        except GuacamoleProtocolError as exc:
+            self.logger.debug("Ignoring malformed Guacamole protocol data", error=str(exc))
+            return
+
+        for response in responses:
+            await self.send(text_data=response)
+
+        if not forwarded or self.dest_channel_id == "":
             return
         try:
             await self.channel_layer.send(
                 self.dest_channel_id,
                 {
                     "type": "event.send",
-                    "text_data": text_data,
-                    "bytes_data": bytes_data,
+                    "text_data": forwarded,
                 },
             )
         except ChannelFull:

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./UserPlexSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserPlexSourceConnectionList
  */
 export interface PaginatedUserPlexSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserPlexSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { ScopeMapping } from "./ScopeMapping";
 import { ScopeMappingFromJSON, ScopeMappingToJSON } from "./ScopeMapping";
 
 /**
- *
  * @export
  * @interface PaginatedScopeMappingList
  */
 export interface PaginatedScopeMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<ScopeMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

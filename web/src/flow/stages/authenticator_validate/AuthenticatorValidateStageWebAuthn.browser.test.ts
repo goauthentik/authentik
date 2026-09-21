@@ -1,5 +1,4 @@
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-
 import { StageHost } from "#flow/types";
 
 import {

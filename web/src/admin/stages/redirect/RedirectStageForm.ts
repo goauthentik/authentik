@@ -2,7 +2,6 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -33,6 +32,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
             })
             .then((stage) => {
                 this.mode = stage.mode ?? RedirectStageModeEnum.Static;
+
                 return stage;
             });
     }
@@ -44,6 +44,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                 redirectStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesRedirectCreate({
             redirectStageRequest: data,
         });
@@ -119,10 +120,13 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}

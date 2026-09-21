@@ -2,60 +2,120 @@
 title: Translations
 ---
 
-Translations in authentik are handled in two places. Most of the text is defined in the frontend in `web/`, and a subset of messages is defined in the backend.
+authentik uses [@lit/localize](https://lit.dev/docs/localization/overview/) for frontend translations and [Django's translation tools](https://docs.djangoproject.com/en/5.2/topics/i18n/translation/) for backend messages. English is the source language for both.
 
-The frontend uses [@lit/localize](https://lit.dev/docs/localization/overview/), and the backend uses the built-in Django translation tools.
+- [Translation contributors](#translation-contributors) translate existing messages through Transifex.
+- [Code contributors](#code-contributors) mark messages for translation in the source code. Bots extract and compile the translation catalogs in follow-up PRs.
 
-:::info
-Please review the [Writing documentation](./docs/writing-documentation.mdx) guidelines as they apply to documentation too.
-:::
+## For translation contributors {#translation-contributors}
 
-## Online translation
+Submit translations through the [authentik project on Transifex](https://explore.transifex.com/authentik/authentik/). You do not need to clone the repository, install development tools, or open a PR.
 
-To simplify translation you can use [Transifex](https://explore.transifex.com/authentik/authentik/), which has no local requirements.
+1. Sign in to Transifex and join the project for your language.
+2. Choose the frontend or backend resource and translate its messages.
+3. Save your translations. The Transifex integration brings them into the repository automatically, and bots compile them in follow-up PRs.
 
-## Local translation
+Preserve placeholders, markup, and plural forms when translating. These represent values or formatting that authentik supplies at runtime.
 
-### Prerequisites
+Use Transifex for corrections to existing translations too. Local catalog edits are useful for [previewing a translation](#local-previews), but submit the final translation through Transifex.
 
-- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
-- [pnpm](https://pnpm.io/installation) (12.4 or later), installed by following the [pnpm installation guide](https://pnpm.io/installation)
-- Make (again, any recent version should work)
-- Docker
+## For code contributors {#code-contributors}
 
-### Frontend
+In normal code PRs, add or change the marked strings in the source code. Do not extract or compile translations for your PR. Bots handle extraction and compilation in follow-up PRs.
 
-Run `pnpm install` in the `/web` folder to install all dependencies.
+Do not run `make i18n-extract`, `make web-i18n-extract`, or `make core-i18n-extract` as a PR preparation step. Leave generated catalog and compiled translation changes out of your PR, including any generated during a local build or preview.
 
-Ensure the language code is in the `lit-localize.json` file in `web/`:
+### Mark frontend strings
 
-```json
-    // [...]
-    "targetLocales": [
-        "en",
-        "pseudo-LOCALE",
-        "a-new-locale"
-        // [...]
-    ],
-    // [...]
+Wrap user-visible strings with `msg` from `@lit/localize`:
+
+```typescript
+import { msg } from "@lit/localize";
+
+msg("New text to be translated.");
 ```
 
-Afterwards, run `make web-i18n-extract` to generate a base .xlf file.
+For messages containing expressions or HTML, follow the [Lit localization guide](https://lit.dev/docs/localization/overview/).
 
-The .xlf files can be edited by any text editor, or using a tool such as [POEdit](https://poedit.net/).
+### Mark backend strings
 
-To see the change, run `make web-watch` in the root directory of the repository.
-
-### Backend
-
-Backend translations are handled by `core-i18n-extract`.
-
-Use Django's translation utility to declare the string, e.g.:
+Use Django's translation functions. For strings declared at module level, such as model field labels, use `gettext_lazy` so that Django translates them when they are used:
 
 ```python
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 _("New text to be translated.")
 ```
 
-Afterwards, run `make core-i18n-extract` to generate the updated translation files.
+Use `gettext` for immediate translation while handling a request. In Django templates, use `{% trans %}` or `{% blocktrans %}` after loading `i18n`. See the [Django translation guide](https://docs.djangoproject.com/en/5.2/topics/i18n/translation/) for placeholders, pluralization, and template examples.
+
+### Register a frontend language
+
+Adding support for a new frontend language requires source configuration as well as translations:
+
+1. Add the language tag to `targetLocales` in `web/lit-localize.json`, keeping the existing entries.
+2. Add a matching entry to `LocaleLoaderRecord` in `web/src/common/ui/locale/definitions.ts`. For example, a new `sv-SE` locale needs:
+
+    ```typescript
+    "sv-SE": () => import("#locales/sv-SE"),
+    ```
+
+The locale's catalog uses the same tag, for example `web/xliff/sv-SE.xlf`. The frontend build requires that catalog to exist. For a local preview, generate it with `make web-i18n-extract`, then follow the [frontend preview steps](#frontend-preview). Submit translations through Transifex and leave generated files out of the code PR.
+
+`en` is the source locale. `en-XA` is a generated pseudo-locale for testing the UI and does not need translation.
+
+## Optional local previews {#local-previews}
+
+Use these steps to check how a translation appears in authentik. They are not required for a normal PR. Run commands from the repository root and keep generated translation changes out of your PR.
+
+### Frontend {#frontend-preview}
+
+Set up the [frontend development environment](./setup/frontend-dev-environment.mdx), including the backend that serves your local frontend build.
+
+1. Edit `web/xliff/<locale>.xlf`, such as `web/xliff/de-DE.xlf`, with a text editor or an editor that supports XLIFF. Translate the `<target>` content while preserving the `<source>`, message IDs, and placeholders such as `<x .../>`.
+2. Start the frontend watcher. It compiles the catalogs at startup:
+
+    ```shell
+    make web-watch
+    ```
+
+3. Open your local instance with a `locale` query parameter, for example http://localhost:9000/if/user/?locale=de-DE.
+
+After further `.xlf` edits, rebuild the locale modules in another terminal, then reload the page:
+
+```shell
+pnpm --dir web run build-locales
+```
+
+The build generates `web/src/locales/` and `web/src/locale-codes.ts`. Edit the XLIFF catalogs rather than these generated files.
+
+### Backend {#backend-preview}
+
+Set up the [full development environment](./setup/full-dev-environment.mdx) and install GNU gettext, which provides `xgettext`, `msgmerge`, and `msgfmt`.
+
+1. Edit `locale/<locale>/LC_MESSAGES/django.po` with a text editor or a PO editor such as [Poedit](https://poedit.net/). Translate `msgstr` entries while preserving `msgid` values, placeholders, and plural forms. Backend directory names can differ from frontend language tags; for example, German uses `de_DE` in the backend and `de-DE` in the frontend.
+2. Compile the catalog, using German as an example:
+
+    ```shell
+    uv run ak compilemessages -l de_DE
+    ```
+
+3. Restart the local backend and select the language in authentik to check the translated messages. Django loads the generated `django.mo` file at runtime.
+
+### Extract new strings for a preview
+
+If a string you added is missing from the local catalogs, extract it before translating it locally:
+
+- `make web-i18n-extract` updates the frontend XLIFF catalogs in `web/xliff/`.
+- `make core-i18n-extract` updates only the English backend source catalog, `locale/en/LC_MESSAGES/django.po`.
+- `make i18n-extract` runs both extraction targets.
+
+To create or refresh a backend catalog for another language locally, specify its locale with Django's extraction command:
+
+```shell
+uv run ak makemessages --add-location file --no-obsolete \
+    --ignore web --ignore internal --ignore packages/client-ts --ignore website \
+    -l de_DE
+```
+
+After extraction, follow the frontend or backend preview steps above. Bots perform this work for submitted source changes; these local commands are only for previewing them.

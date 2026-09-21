@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-list-select.js";
-
 import { ListSelect } from "../ak-list-select.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
@@ -53,11 +52,14 @@ const sendMessage = (message: string) =>
 const container = (testItem: TemplateResult) => {
     window.setTimeout(() => {
         const menu = document.getElementById("ak-list-select");
+
         if (!menu) {
             throw new Error("Test was not initialized correctly.");
         }
+
         menu.addEventListener("focusin", () => sendMessage("Element received focus"));
         menu.addEventListener("blur", () => sendMessage("Element lost focus"));
+
         menu.addEventListener("change", (event: Event) =>
             sendMessage(`Value changed to: ${(event.target as HTMLInputElement)?.value}`),
         );

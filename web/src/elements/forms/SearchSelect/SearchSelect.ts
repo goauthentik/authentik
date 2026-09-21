@@ -1,6 +1,5 @@
 import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
-
 import { SearchSelectView } from "./ak-search-select-view.js";
 
 import { EVENT_REFRESH } from "#common/constants";
@@ -91,7 +90,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the dropdown component can be left blank
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -99,7 +99,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Whether or not the component allows creating custom values not in the list
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean })
@@ -107,7 +108,8 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Prevent user interaction while still rendering the current value.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: Boolean, attribute: "readonly" })
@@ -116,6 +118,7 @@ export abstract class SearchSelectBase<T>
     /**
      * An initial string to filter the search contents,
      * and the value of the input which further serves to restrict the search.
+     *
      * @property
      */
     @property({ type: String })
@@ -127,6 +130,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * The currently selected object.
+     *
      * @property
      */
     @property({ attribute: false })
@@ -134,6 +138,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the name of the object
+     *
      * @property
      */
     @property({ type: String })
@@ -141,6 +146,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -148,6 +154,7 @@ export abstract class SearchSelectBase<T>
 
     /**
      * Used to inform the form of the input label.
+     *
      * @property
      */
     @property()
@@ -157,7 +164,8 @@ export abstract class SearchSelectBase<T>
      * The textual placeholder for the search's <input> object, if currently empty.
      *
      * Used as the native <input> object's `placeholder` field.
-     * @property
+     *
+     * @property *
      * @attr
      */
     @property({ type: String })
@@ -177,7 +185,7 @@ export abstract class SearchSelectBase<T>
      * "Create new...". Activating it fires an `ak-search-select-action` event
      * instead of changing the selection.
      *
-     * @property
+     * @property *
      * @attr
      */
     @property({ type: String, attribute: "action-label" })
@@ -303,6 +311,7 @@ export abstract class SearchSelectBase<T>
             this.query = undefined;
             this.dispatchChangeEvent(null);
             await this.updateData();
+
             return;
         }
 
@@ -317,12 +326,14 @@ export abstract class SearchSelectBase<T>
         // If creatable, check if selectedObject's value matches the typed value exactly
         if (this.creatable) {
             const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
             if (selectedValue !== value) {
                 // No exact match so create a synthetic object with the raw value
                 // "synthetic" isn't an official term or anything, it's just called like that here
                 this.selectedObject = { name: value } as T;
             }
         }
+
         this.dispatchChangeEvent(this.selectedObject);
     };
 
@@ -337,6 +348,7 @@ export abstract class SearchSelectBase<T>
 
             return;
         }
+
         const selected =
             this.objects?.find((obj) => {
                 // TODO: Despite the return of `value()` being a string,
@@ -356,8 +368,10 @@ export abstract class SearchSelectBase<T>
                 // Create a synthetic object with the user's custom value
                 this.selectedObject = { name: value } as T;
                 this.dispatchChangeEvent(this.selectedObject);
+
                 return;
             }
+
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
 
@@ -365,8 +379,28 @@ export abstract class SearchSelectBase<T>
         this.dispatchChangeEvent(this.selectedObject);
     }
 
+    /**
+     * The fetched objects, plus the current selection when the fetch did not include it.
+     *
+     * `fetchObjects` returns a single page, so an object selected out of band -- one just
+     * created through the dropdown's own action, say -- is often absent from it. The view
+     * resolves a value's label from the options alone and prints the raw value when it
+     * finds none, so without this the control shows a bare primary key.
+     */
+    private withSelectedObject(objects: T[]): T[] {
+        const { selectedObject } = this;
+
+        if (!selectedObject) return objects;
+
+        const selectedValue = `${this.value(selectedObject)}`;
+
+        const alreadyListed = objects.some((object) => `${this.value(object)}` === selectedValue);
+
+        return alreadyListed ? objects : [selectedObject, ...objects];
+    }
+
     private getGroupedItems(): GroupedOptions {
-        const groupedItems = this.groupBy(this.objects || []);
+        const groupedItems = this.groupBy(this.withSelectedObject(this.objects || []));
 
         const makeSearchTuples = (items: T[]): SelectOption[] =>
             items.map((item) => [
@@ -427,6 +461,7 @@ export abstract class SearchSelectBase<T>
         const options = this.getGroupedItems();
         const value = this.selectedObject ? `${this.value(this.selectedObject) ?? ""}` : undefined;
         const optionDisabled = this.optionDisabled;
+
         const disabledOptions = optionDisabled
             ? this.objects
                   .filter((item) => optionDisabled(item))
@@ -455,6 +490,7 @@ export abstract class SearchSelectBase<T>
         if (!this.#loading && changed.has("objects")) {
             this.dispatchEvent(new Event("ready"));
         }
+
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
         if (!this.#loading) {

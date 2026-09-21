@@ -3,6 +3,9 @@ import "#admin/users/UserInfoCard";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
 import "#admin/events/ObjectChangelog";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -11,10 +14,6 @@ import { ModelEnum, User } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-user-overview-tab")
 export class UserOverviewTab extends AKElement {

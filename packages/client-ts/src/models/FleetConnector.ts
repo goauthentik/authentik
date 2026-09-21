@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * FleetConnector Serializer
+ *
  * @export
  * @interface FleetConnector
  */
 export interface FleetConnector {
-    /**
-     *
-     */
     connectorUuid?: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
@@ -46,21 +36,13 @@ export interface FleetConnector {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     url: string;
     /**
-     * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+     * Configure additional headers to be sent. Mapping should return a dictionary of key-value
+     * pairs
      */
     headersMapping?: string | null;
-    /**
-     *
-     */
     mapUsers?: boolean;
-    /**
-     *
-     */
     mapTeamsAccessGroup?: boolean;
 }
 
