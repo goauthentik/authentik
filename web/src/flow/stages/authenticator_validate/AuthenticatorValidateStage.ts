@@ -14,7 +14,7 @@ import { aki } from "#common/api/client";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
+import { findMatchingChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 import type { StageHost, SubmitOptions } from "#flow/types";
@@ -182,12 +182,24 @@ export class AuthenticatorValidateStage
     protected override willUpdate(changed: PropertyValues<this>) {
         // When moving between multiple authenticator-validate stages in one flow, the element
         // instance is reused. Reset selection if it is no longer valid in the new challenge.
-        if (changed.has("challenge")) {
+        if (changed.has("challenge") && this.selectedDeviceChallenge) {
             const allowedChallenges = this.challenge?.deviceChallenges ?? [];
 
-            if (shouldResetSelectedChallenge(this.selectedDeviceChallenge, allowedChallenges)) {
+            const matchingChallenge = findMatchingChallenge(
+                this.selectedDeviceChallenge,
+                allowedChallenges,
+            );
+
+            if (!matchingChallenge) {
                 this.selectedDeviceChallenge = null;
                 this.initialized = false;
+            } else if (matchingChallenge !== this.selectedDeviceChallenge) {
+                // The backend sent new challenge data for the selected device, e.g. after an
+                // invalid response. Swap in the new challenge without notifying the backend
+                // again, otherwise the device stage keeps answering challenge data the backend
+                // no longer accepts.
+                matchingChallenge.lastUsed ??= this.selectedDeviceChallenge.lastUsed;
+                this.#selectedDeviceChallenge = matchingChallenge;
             }
         }
 
