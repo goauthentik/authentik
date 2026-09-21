@@ -5,8 +5,8 @@ export const styles = css`
         display: block;
         padding-inline-start: var(--ak-c-pagination--PaddingLeft);
         padding-inline-end: var(--ak-c-pagination--PaddingRight);
-        --ak-c-paginnation__total-items--Display: none;
-        --ak-c-paginnation__total-items--Visibility: hidden;
+        --ak-c-pagination__total-items--Display: none;
+        --ak-c-pagination__total-items--Visibility: hidden;
     }
 
     :host([compact]) {
@@ -70,8 +70,8 @@ export const styles = css`
     }
 
     [part="total-count"] {
-        display: var(--ak-c-paginnation__total-items--Display);
-        visibility: var(--ak-c-paginnation__total-items--Visibility);
+        display: var(--ak-c-pagination__total-items--Display);
+        visibility: var(--ak-c-pagination__total-items--Visibility);
         color: var(--ak-c-pagination--total-count--Color);
     }
 
@@ -83,7 +83,7 @@ export const styles = css`
         width: calc(var(--ak-c-pagination__page-select--form-control--width) + 2em);
     }
 
-    :host([disabled]) .ak-c-paginnation {
+    :host([disabled]) {
         opacity: 0.5;
     }
 
@@ -94,8 +94,8 @@ export const styles = css`
     /* Yes, EM. It's about the size-as-displayed */
     @media (min-width: 40em) {
         [part="total-count"] {
-            --ak-c-paginnation__total-items--Display: inline-block;
-            --ak-c-paginnation__total-items--Visibility: visible;
+            --ak-c-pagination__total-items--Display: inline-block;
+            --ak-c-pagination__total-items--Visibility: visible;
         }
         [part="pagination"] {
             --ak-c-pagination--MinWidth: var(--ak-c-pagination--full--MinWidth);
