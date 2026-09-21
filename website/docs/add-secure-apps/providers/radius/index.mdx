@@ -1,39 +1,38 @@
 ---
 title: RADIUS Provider
+sidebar_position: 9
 sidebar_label: "RADIUS Provider"
 ---
 
 import { HashSupport } from "./HashSupport";
 
-The RADIUS provider allows applications and network devices to authenticate users through authentik using RADIUS. It supports password-based authentication with PAP and certificate-based authentication with EAP-TLS in authentik Enterprise. It does not support accounting requests.
+You can configure a RADIUS provider for applications that require RADIUS, such as VPN gateways and network access devices. Follow the [configuration walkthrough](./configure.mdx) to create an application and provider, deploy an outpost, and test authentication.
 
-Refer to [Create a RADIUS provider](./create-radius-provider.mdx) for instructions on creating, deploying, and testing the provider.
+:::info
+This provider requires the deployment of a [RADIUS outpost](../../outposts/index.mdx).
+:::
+
+Only authentication requests are supported. RADIUS accounting is not supported.
 
 ## Authentication flow
 
-The RADIUS server processes authentication requests by running a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
+Authentication requests against the RADIUS outpost use a flow in the background. You can reuse flows, stages, and policies from web-based logins when their stages are supported by the outpost.
 
 The following stages are supported:
 
-- [Identification stage](../../flows-stages/stages/identification/index.mdx)
-- [Password stage](../../flows-stages/stages/password/index.mdx)
-- [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx)
-- [User logout stage](../../flows-stages/stages/user_logout/index.mdx)
-- [User login stage](../../flows-stages/stages/user_login/index.mdx)
-- [Deny stage](../../flows-stages/stages/deny/index.mdx)
-- [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx) (authentik Enterprise, for EAP-TLS)
+- [Identification](../../flows-stages/stages/identification/index.mdx)
+- [Password](../../flows-stages/stages/password/index.mdx)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
+- [User Logout](../../flows-stages/stages/user_logout/index.mdx)
+- [User Login](../../flows-stages/stages/user_login/index.mdx)
+- [Deny](../../flows-stages/stages/deny/index.mdx)
+- [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx)
 
-Include a user login stage to complete authentication. After authentication, authentik checks whether the user can access the associated application. Application [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access) can restrict which users are allowed access.
+Authenticator validation supports Duo, TOTP, and static authenticators. SMS, email, and WebAuthn authenticators are not supported by the RADIUS outpost. Users must enroll their authenticators before using RADIUS.
 
 ### Code-based MFA support
 
-For PAP authentication, the provider supports appending a TOTP or static code to the password when **Code-based MFA Support** is enabled and the authentication flow includes an authenticator validation stage.
-
-Separate the password and code with a semicolon. For example, if the password is `example-password` and the MFA code is `123456`, enter `example-password;123456`.
-
-:::warning Passwords containing semicolons
-When **Code-based MFA Support** is enabled, the outpost splits the password at the last semicolon if it is followed by a value. This can cause a password containing a semicolon to be rejected when the user does not append an MFA code. Disable this setting if you do not use the appended-code format.
-:::
+For password and code-based MFA, enable **Code-based MFA Support** and submit the password followed by a semicolon and the code, such as `example-password;123456`. The setting controls how the outpost splits the password; the authentication flow determines whether MFA is required. See [MFA and semicolons](./configure.mdx#mfa-and-semicolons) for parsing rules and configuration details.
 
 :::info Authenticator support
 The authenticator validation stage supports Duo, TOTP, and static authenticators in RADIUS flows. WebAuthn and SMS-based authenticators are not supported by the RADIUS outpost's flow executor.
