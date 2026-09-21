@@ -27,8 +27,6 @@ export function pageBounds(
     const startIndex = totalPages === 0 ? 0 : (page - 1) * fixedItemsPerPage + 1;
     const endIndex = totalPages === 0 ? 0 : Math.min(page * fixedItemsPerPage, fixedTotalItems);
 
-    console.log("P5:", startIndex, endIndex);
-
     return {
         page,
         totalPages,
