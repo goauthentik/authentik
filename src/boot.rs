@@ -46,9 +46,7 @@ fn venv_python() -> PathBuf {
 /// The binary to exec for the commands this binary implements itself.
 ///
 /// In the container this is the same file as `AUTHENTIK_BIN`, reached through the `/lifecycle/ak`
-/// symlink. In a development checkout it is the `cargo` build under `target/`, which the container
-/// path would miss. The fallback covers a running binary that cannot be resolved: no `/proc`, or a
-/// path that `readlink` marks as deleted because the file was replaced.
+/// symlink. In a development checkout it is the `cargo` build under `target/`.
 fn authentik_bin() -> PathBuf {
     std::env::current_exe()
         .ok()
