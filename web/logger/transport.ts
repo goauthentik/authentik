@@ -3,12 +3,9 @@
  * @file Pretty transport for Pino
  */
 
-import PinoPretty from "pino-pretty";
+import PinoPretty, { type PrettyOptions } from "pino-pretty";
 
-/**
- * @param {PrettyOptions} options
- */
-function prettyTransporter(options) {
+function prettyTransporter(options: PrettyOptions) {
     const pretty = PinoPretty({
         ...options,
         ignore: "pid,hostname",

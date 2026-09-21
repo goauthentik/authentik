@@ -14,13 +14,10 @@ import {
  * Creates a mapping of environment variables to their respective runtime constants.
  */
 export function createBundleDefinitions() {
-    const SerializedNodeEnvironment = /** @type {`"development"` | `"production"`} */ (
-        JSON.stringify(NodeEnvironment)
-    );
+    const SerializedNodeEnvironment = JSON.stringify(NodeEnvironment) as
+        | `"development"`
+        | `"production"`;
 
-    /**
-     * @satisfies {Record<ESBuildImportEnvKey, string>}
-     */
     const envRecord = {
         AK_VERSION: AuthentikVersion,
         AK_DOCS_URL: CurrentReleaseDocsURL.href,
@@ -28,7 +25,7 @@ export function createBundleDefinitions() {
         AK_DOCS_PRE_RELEASE_URL: PreReleaseDocsURL.href,
         AK_API_BASE_PATH: process.env.AK_API_BASE_PATH ?? "",
         AK_BUNDLER: JSON.stringify(process.env.AK_BUNDLER ?? "authentik"),
-    };
+    } satisfies Record<ESBuildImportEnvKey, string>;
 
     return {
         ...serializeEnvironmentVars(envRecord),

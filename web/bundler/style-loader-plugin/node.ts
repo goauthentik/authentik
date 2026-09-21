@@ -17,29 +17,30 @@ import { ConsoleLogger } from "#logger/node";
 
 import { resolvePackage } from "@goauthentik/core/paths/node";
 
-const CSSNamespace = /** @type {const} */ ({
+import type { BuildContext, BuildOptions, Plugin, PluginBuild } from "esbuild";
+import type { BaseLogger } from "pino";
+
+const CSSNamespace = {
     Global: "css-global",
     Process: "css-process",
     Bundled: "css-bundled",
-});
+} as const;
 
-/**
- * @typedef StyleLoaderPluginOptions
- * @property {boolean} [watch] Whether to watch for file changes.
- * @property {BaseLogger} [logger]
- */
+export interface StyleLoaderPluginOptions {
+    /**
+     * Whether to watch for file changes.
+     */
+    watch?: boolean;
+    logger?: BaseLogger;
+}
 
 /**
  * Selectively apply the ESBuild `css` loader.
- *
- * @param {StyleLoaderPluginOptions} [options]
- *
- * @returns {Plugin}
  */
 export function styleLoaderPlugin({
     watch = false,
     logger = ConsoleLogger.child({ name: "style-loader-plugin" }),
-} = {}) {
+}: StyleLoaderPluginOptions = {}): Plugin {
     const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
     const require = createRequire(import.meta.url);
 
@@ -48,10 +49,8 @@ export function styleLoaderPlugin({
      *
      * This is necessary because Patternfly's CSS references fonts via relative paths
      * that ESBuild cannot resolve automatically.
-     *
-     * @type {Parameters<PluginBuild["onResolve"]>}
      */
-    const fontResolverArgs = [
+    const fontResolverArgs: Parameters<PluginBuild["onResolve"]> = [
         { filter: /\.woff2?$/ },
         async (args) => {
             if (!args.resolveDir.startsWith(patternflyPath)) {
@@ -69,10 +68,7 @@ export function styleLoaderPlugin({
         setup(build) {
             const { absWorkingDir = process.cwd() } = build.initialOptions;
 
-            /**
-             * @type {Map<string, BuildContext>}
-             */
-            const disposables = new Map();
+            const disposables = new Map<string, BuildContext>();
 
             build.onDispose(async () => {
                 for (const [filePath, ctx] of disposables) {
@@ -103,6 +99,8 @@ export function styleLoaderPlugin({
                         namespace: CSSNamespace.Bundled,
                     };
                 }
+
+                return undefined;
             });
 
             /**
@@ -113,7 +111,7 @@ export function styleLoaderPlugin({
             build.onLoad({ filter: /.*/, namespace: CSSNamespace.Process }, async (args) => {
                 return {
                     contents: await readFile(args.path, "utf8"),
-                    loader: "css",
+                    loader: "css" as const,
                     resolveDir: dirname(args.path),
                 };
             });
@@ -152,10 +150,7 @@ export function styleLoaderPlugin({
                 const cssContent = await readFile(args.path, "utf8");
                 let context = disposables.get(args.path);
 
-                /**
-                 * @type {BuildOptions}
-                 */
-                const buildOptions = {
+                const buildOptions: BuildOptions = {
                     stdin: {
                         contents: cssContent,
                         resolveDir: dirname(args.path),
@@ -198,7 +193,7 @@ export function styleLoaderPlugin({
 
                     return {
                         contents: bundledCSS,
-                        loader: "text",
+                        loader: "text" as const,
                     };
                 }
 
@@ -222,7 +217,7 @@ export function styleLoaderPlugin({
 
                 return {
                     contents: bundledCSS,
-                    loader: "text",
+                    loader: "text" as const,
                     watchFiles,
                 };
             });
