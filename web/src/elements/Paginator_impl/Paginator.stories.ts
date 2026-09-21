@@ -54,7 +54,7 @@ function record(event: PageChangeEvent) {
 export const Default: Story = {
     args: {},
     parameters: describe("Basic paginator"),
-    render: (args) =>
+    render: (_args) =>
         container(
             html`<ak-paginator
                 item-count="712"
@@ -68,7 +68,7 @@ export const Default: Story = {
 export const Compact: Story = {
     args: {},
     parameters: describe("Compact paginator"),
-    render: (args) =>
+    render: (_args) =>
         container(
             html`<ak-paginator
                 compact

@@ -15,12 +15,6 @@ import { property, query, state } from "lit/decorators.js";
 
 type NavAction = "first" | "prev" | "next" | "last";
 
-type MsgType = ReturnType<typeof msg>;
-
-type NavControl = Record<NavAction, { modifier: NavAction; icon: string }>;
-
-type NavLabel = Record<NavAction, MsgType>;
-
 // prettier-ignore
 const NAV_CONTROLS = {
     first: { modifier: "first", icon: "fa-angle-double-left" },
