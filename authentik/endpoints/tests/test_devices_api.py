@@ -48,18 +48,3 @@ class TestDevicesAPI(APITestCase):
         self.assertJSONEqual(
             res.content, {"outdated_agent_count": 0, "total_count": 5, "unreachable_count": 3}
         )
-
-    def test_create(self):
-        """Devices can be created manually, for machines that are not enrolled
-        through a connector"""
-        user = create_test_admin_user()
-        self.client.force_login(user)
-        name = generate_id()
-        res = self.client.post(
-            reverse("authentik_api:endpoint_device-list"),
-            data={"name": name},
-        )
-        self.assertEqual(res.status_code, 201)
-        device = Device.objects.get(name=name)
-        self.assertTrue(device.identifier.startswith("manual://"))
-        self.assertFalse(device.expiring)

@@ -12,7 +12,7 @@
 
 import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
 import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
 import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 import type { DeviceUserBinding } from "./DeviceUserBinding";
@@ -27,7 +27,7 @@ export interface EndpointDevice {
     readonly pbmUuid: string;
     name: string;
     accessGroup?: string | null;
-    readonly accessGroupObj: DeviceAccessGroup;
+    accessGroupObj?: DeviceAccessGroup;
     expiring?: boolean;
     expires?: Date | null;
     readonly facts: DeviceFactSnapshot | null;
@@ -47,13 +47,6 @@ export function instanceOfEndpointDevice(value: object): value is EndpointDevice
     )
         return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("accessGroupObj" in (value as Record<string, any>)) &&
-            !("access_group_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["accessGroupObj"] === undefined &&
-            (value as Record<string, any>)["access_group_obj"] === undefined)
-    )
-        return false;
     if (!("facts" in value) || value["facts"] === undefined) return false;
     if (
         (!("primaryBindingObj" in (value as Record<string, any>)) &&
@@ -86,7 +79,10 @@ export function EndpointDeviceFromJSONTyped(
                 : json["access_group"] === null
                   ? null
                   : json["access_group"],
-        accessGroupObj: DeviceAccessGroupFromJSON(json["access_group_obj"]),
+        accessGroupObj:
+            json["access_group_obj"] == null
+                ? undefined
+                : DeviceAccessGroupFromJSON(json["access_group_obj"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:
             json["expires"] === undefined
@@ -105,10 +101,7 @@ export function EndpointDeviceToJSON(json: any): EndpointDevice {
 }
 
 export function EndpointDeviceToJSONTyped(
-    value?: Omit<
-        EndpointDevice,
-        "pbmUuid" | "accessGroupObj" | "facts" | "primaryBindingObj"
-    > | null,
+    value?: Omit<EndpointDevice, "pbmUuid" | "facts" | "primaryBindingObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -119,6 +112,7 @@ export function EndpointDeviceToJSONTyped(
         device_uuid: value["deviceUuid"],
         name: value["name"],
         access_group: value["accessGroup"],
+        access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],

@@ -22,7 +22,7 @@ import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 export interface RACConnectionOverrideRequest {
     device?: string;
     /**
-     * Name of the device to create this override for. Only used when no device is set.
+     * Name of the device to create. Only used when no device is set.
      */
     deviceName?: string;
     /**

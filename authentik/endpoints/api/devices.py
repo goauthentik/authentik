@@ -1,5 +1,4 @@
 from datetime import timedelta
-from uuid import uuid4
 
 from django.db.models import OuterRef, Prefetch, Subquery
 from django.utils.timezone import now
@@ -22,7 +21,7 @@ from authentik.endpoints.models import Device, DeviceFactSnapshot, DeviceUserBin
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    access_group_obj = DeviceAccessGroupSerializer(source="access_group", read_only=True)
+    access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
     facts = SerializerMethodField(allow_null=True)
 
@@ -35,13 +34,6 @@ class EndpointDeviceSerializer(ModelSerializer):
             return DeviceFactSnapshotSerializer(instance.cached_facts).data
         except KeyError, AttributeError:
             return None
-
-    def create(self, validated_data: dict) -> Device:
-        """Devices created through the API are not enrolled by a connector, so they get
-        a generated identifier and don't expire."""
-        validated_data.setdefault("identifier", f"manual://{uuid4()}")
-        validated_data.setdefault("expiring", False)
-        return super().create(validated_data)
 
     class Meta:
         model = Device
@@ -57,9 +49,6 @@ class EndpointDeviceSerializer(ModelSerializer):
             "attributes",
             "primary_binding_obj",
         ]
-        extra_kwargs = {
-            "pbm_uuid": {"read_only": True},
-        }
 
 
 class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
@@ -82,7 +71,6 @@ class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
 
 class DeviceViewSet(
     UsedByMixin,
-    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,

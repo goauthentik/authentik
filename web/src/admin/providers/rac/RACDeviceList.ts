@@ -2,9 +2,6 @@ import "#admin/providers/rac/RACDeviceForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -16,13 +13,11 @@ import { RACDeviceForm } from "#admin/providers/rac/RACDeviceForm";
 import { EndpointsApi, RACDevice, RACProvider, RacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-rac-device-list")
 export class RACDeviceListPage extends Table<RACDevice> {
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
     protected override searchEnabled = true;
     protected override emptyStateMessage = msg("Add a device to get started.");
 
