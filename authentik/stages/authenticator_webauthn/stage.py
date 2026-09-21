@@ -11,6 +11,7 @@ from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
+from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import WebAuthnException
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
@@ -20,6 +21,7 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
+    PublicKeyCredentialDescriptor,
     PublicKeyCredentialHint,
     ResidentKeyRequirement,
     UserVerificationRequirement,
@@ -176,10 +178,12 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         # user. Only confirmed devices count; an unconfirmed one is not usable and must not block
         # re-enrolling the same authenticator.
         exclude_credentials = [
-            device.descriptor
-            for device in WebAuthnDevice.objects.filter(
+            PublicKeyCredentialDescriptor(id=base64url_to_bytes(credential_id))
+            for credential_id in WebAuthnDevice.objects.filter(
                 user=user, rp_id=rp_id, confirmed=True
-            ).order_by("pk")
+            )
+            .order_by("pk")
+            .values_list("credential_id", flat=True)
         ]
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
