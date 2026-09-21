@@ -41,9 +41,10 @@ from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
-LOGGER = get_logger()
 if TYPE_CHECKING:
     from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
+
+LOGGER = get_logger()
 
 
 class DeviceChallenge(PassiveSerializer):
@@ -67,18 +68,6 @@ def get_challenge_for_device(
     return {}
 
 
-def get_pending_webauthn_challenge(stage_view: AuthenticatorValidateStageView) -> bytes | None:
-    """Get the WebAuthn challenge issued by a previous render of this stage, if it hasn't been
-    answered yet.
-
-    The stage is rendered again whenever the flow executor is requested while the plan is at this
-    stage, e.g. from another tab, by refreshing the page, or after a concurrent request overwrote
-    the flow progress stored in the session. Issuing a new challenge on every render would reject
-    responses to the challenge a client is currently answering. The challenge is removed from
-    the plan once the stage is completed, so it can't be answered again."""
-    return stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-
-
 def get_webauthn_challenge_without_user(
     stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage
 ) -> dict:
@@ -86,7 +75,7 @@ def get_webauthn_challenge_without_user(
     who the device belongs to."""
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(stage_view.request),
-        challenge=get_pending_webauthn_challenge(stage_view),
+        challenge=stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE),
         allow_credentials=[],
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
@@ -116,7 +105,7 @@ def get_webauthn_challenge(
 
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(stage_view.request),
-        challenge=get_pending_webauthn_challenge(stage_view),
+        challenge=stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE),
         allow_credentials=allowed_credentials,
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
