@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/rac/ConnectionTokenList";
-import "#admin/providers/rac/EndpointForm";
-import "#admin/providers/rac/EndpointList";
+import "#admin/providers/rac/RACDeviceForm";
+import "#admin/providers/rac/RACDeviceList";
 import "#admin/providers/rac/RACProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
@@ -196,8 +196,8 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Endpoints")}</div>
-                    <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
+                    <div class="pf-c-card__title">${msg("Devices")}</div>
+                    <ak-rac-device-list .provider=${this.provider}> </ak-rac-device-list>
                 </div>
             </div>`;
     }

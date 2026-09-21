@@ -7079,6 +7079,31 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_devices_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
@@ -21388,7 +21413,7 @@ paths:
       description: ConnectionToken Viewset
       parameters:
       - in: query
-        name: endpoint
+        name: device
         schema:
           type: string
           format: uuid
@@ -21560,10 +21585,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/:
+  /rac/devices/:
     get:
-      operationId: rac_endpoints_list
-      description: List accessible endpoints
+      operationId: rac_devices_list
+      description: List devices accessible through a RAC provider
       parameters:
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -21573,6 +21598,7 @@ paths:
         name: provider
         schema:
           type: integer
+        required: true
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: superuser_full_list
@@ -21587,175 +21613,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedEndpointList'
+                $ref: '#/components/schemas/PaginatedRACDeviceList'
           description: ''
         '400':
           description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: rac_endpoints_create
-      description: Endpoint Viewset
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/{pbm_uuid}/:
-    get:
-      operationId: rac_endpoints_retrieve
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: rac_endpoints_update
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: rac_endpoints_partial_update
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEndpointRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: rac_endpoints_destroy
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/{pbm_uuid}/used_by/:
-    get:
-      operationId: rac_endpoints_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /rbac/initial_permissions/:
@@ -38625,20 +38486,19 @@ components:
           allOf:
           - $ref: '#/components/schemas/RACProvider'
           readOnly: true
-        endpoint:
+        device:
           type: string
           format: uuid
-        endpoint_obj:
-          allOf:
-          - $ref: '#/components/schemas/Endpoint'
+        device_name:
+          type: string
           readOnly: true
         user:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
-      - endpoint
-      - endpoint_obj
+      - device
+      - device_name
       - provider
       - provider_obj
       - user
@@ -38652,11 +38512,11 @@ components:
           title: Connection token uuid
         provider:
           type: integer
-        endpoint:
+        device:
           type: string
           format: uuid
       required:
-      - endpoint
+      - device
       - provider
     Connector:
       type: object
@@ -40479,57 +40339,6 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
-    Endpoint:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/RACProvider'
-          readOnly: true
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        launch_url:
-          type: string
-          nullable: true
-          description: |-
-            Build actual launch URL (the provider itself does not have one, just
-            individual endpoints)
-          readOnly: true
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - auth_mode
-      - host
-      - launch_url
-      - name
-      - pk
-      - protocol
-      - provider
-      - provider_obj
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -40564,11 +40373,6 @@ components:
           type: string
           nullable: true
           minLength: 1
-    EndpointAuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
     EndpointDevice:
       type: object
       properties:
@@ -40586,7 +40390,9 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroup'
+          allOf:
+          - $ref: '#/components/schemas/DeviceAccessGroup'
+          readOnly: true
         expiring:
           type: boolean
         expires:
@@ -40607,6 +40413,7 @@ components:
           readOnly: true
           nullable: true
       required:
+      - access_group_obj
       - facts
       - name
       - pbm_uuid
@@ -40628,7 +40435,9 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroup'
+          allOf:
+          - $ref: '#/components/schemas/DeviceAccessGroup'
+          readOnly: true
         expiring:
           type: boolean
         expires:
@@ -40665,6 +40474,7 @@ components:
             format: uuid
           readOnly: true
       required:
+      - access_group_obj
       - connections
       - connections_obj
       - facts
@@ -40685,8 +40495,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -40698,40 +40506,6 @@ components:
           additionalProperties: {}
       required:
       - name
-    EndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        provider:
-          type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - auth_mode
-      - host
-      - name
-      - protocol
-      - provider
     EndpointStage:
       type: object
       description: EndpointStage Serializer
@@ -45693,7 +45467,6 @@ components:
       - authentik_providers_oauth2.oauth2dynamicclientregistration
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_rac.racprovider
-      - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
       - authentik_providers_radius.radiusprovider
       - authentik_providers_radius.radiusproviderpropertymapping
@@ -47939,21 +47712,6 @@ components:
       - autocomplete
       - pagination
       - results
-    PaginatedEndpointList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Endpoint'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PaginatedEndpointStageList:
       type: object
       properties:
@@ -48983,6 +48741,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRACDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACDevice'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50992,7 +50765,7 @@ components:
           title: Connection token uuid
         provider:
           type: integer
-        endpoint:
+        device:
           type: string
           format: uuid
     PatchedConsentStageRequest:
@@ -51226,8 +50999,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -51237,34 +51008,6 @@ components:
         attributes:
           type: object
           additionalProperties: {}
-    PatchedEndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        provider:
-          type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
     PatchedEndpointStageRequest:
       type: object
       description: EndpointStage Serializer
@@ -53244,6 +52987,26 @@ components:
         settings:
           type: object
           additionalProperties: {}
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/ProtocolEnum'
+          description: Protocol used to connect to devices. When left empty, the protocol
+            is based on the device's operating system.
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           minLength: 1
@@ -55946,6 +55709,38 @@ components:
       - external_host
       - invalidation_flow
       - name
+    RACDevice:
+      type: object
+      description: |-
+        Device as it can be launched through a RAC provider. Deliberately does not
+        include any connection settings, as this is also used by end-users launching a
+        connection.
+      properties:
+        device_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        protocol:
+          type: string
+          description: Protocol this device is connected to with
+          readOnly: true
+        launch_url:
+          type: string
+          nullable: true
+          description: |-
+            Build actual launch URL (the provider itself does not have one, just
+            individual devices)
+          readOnly: true
+        is_primary:
+          type: boolean
+          description: Whether this is the requesting user's primary device
+          readOnly: true
+      required:
+      - is_primary
+      - launch_url
+      - name
+      - protocol
     RACPropertyMapping:
       type: object
       description: RACPropertyMapping Serializer
@@ -56087,6 +55882,26 @@ components:
           items:
             type: string
           readOnly: true
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/ProtocolEnum'
+          description: Protocol used to connect to devices. When left empty, the protocol
+            is based on the device's operating system.
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
@@ -56107,6 +55922,11 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    RACProviderAuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
     RACProviderRequest:
       type: object
       description: RACProvider Serializer
@@ -56132,6 +55952,26 @@ components:
         settings:
           type: object
           additionalProperties: {}
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/ProtocolEnum'
+          description: Protocol used to connect to devices. When left empty, the protocol
+            is based on the device's operating system.
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           minLength: 1

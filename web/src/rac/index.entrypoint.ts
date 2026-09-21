@@ -72,8 +72,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
     @property()
     token?: string;
 
-    @property()
-    endpointName?: string;
+    @property({attribute: "device-name"})
+    deviceName?: string;
 
     @state()
     clipboardWatcherTimer = 0;
@@ -252,8 +252,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
     updateTitle(): void {
         let title = this.brandingTitle;
 
-        if (this.endpointName) {
-            title = `${this.endpointName} - ${title}`;
+        if (this.deviceName) {
+            title = `${this.deviceName} - ${title}`;
         }
 
         document.title = `${title}`;

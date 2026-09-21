@@ -22,7 +22,7 @@ Follow this workflow to create and configure an RAC provider:
 
 1. Create a RAC provider and application pair.
 2. Create RAC property mappings (that define the access credentials to each remote machine).
-3. Create endpoints for each remote machine you want to connect to.
+3. Add the devices you want to connect to, either by enrolling them or by adding them manually.
 4. Create an RAC outpost to service the provider.
 
 Depending on whether you are connecting using RDP, SSH, or VNC, the exact configuration choices will differ, but the overall workflow applies to all RAC connections.
@@ -38,6 +38,9 @@ To create a provider along with the corresponding application that uses it for a
 5. On the **Configure Remote Access Provider** page, provide the configuration settings:
     - **Connection expiry**: set how long a connection authorization remains valid. The default is `hours=8`. Reconnecting does not reset this limit, and the connection also ends if the user's authentik session expires or the user logs out.
     - **Delete authorization on disconnect**: leave disabled, the default, to allow the browser to reuse a valid authorization when reconnecting after a disconnect. Enable it to require a new authorization after every disconnect, including temporary network failures. authentik deletes the stored authorization during connection setup, so it is already unavailable for reconnecting when the connection ends. This setting does not control the remote operating system's login session. See [Connection management](./index.mdx#connection-management) for details about authorization reuse and expiry.
+    - **Device access group _(optional)_**: limit this provider to the devices in a single [device access group](../../../endpoint-devices/manage-devices.mdx). When left empty, every device that a user has access to can be reached through this provider.
+    - **Protocol**: select **Automatic** to connect with RDP to devices running Windows and with SSH to every other device, or pick a single protocol for all devices of this provider.
+    - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
 
 6. Click **Submit** to create both the application and the provider.
 
@@ -60,22 +63,26 @@ Refer to the [RAC Credentials Prompt](./rac_credentials_prompt.mdx) and [RAC SSH
 
 5. Click **Finish**.
 
-### Create endpoints for the provider
+### Add the devices to connect to
 
-Then, you need to create an endpoint corresponding to each remote machine you want to connect to. Endpoints define the IP address, port, protocol, and other settings used for connecting to a remote machine.
+RAC connects to the [devices](../../../endpoint-devices/index.mdx) in your authentik instance. A device that is already enrolled through a connector, such as the authentik agent, can be used as-is: authentik takes its address and operating system from the facts the device reports.
+
+For a remote machine that is not enrolled, such as a server, add it manually:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
-3. Click the **Edit** button on the RAC provider that you previously created.
-4. On the Provider page, under **Endpoints**, click **New RAC Endpoint**, and provide the following settings:
-    - **Provider Name** (endpoint name): define a name for the endpoint
-    - **Protocol**: select the appropriate protocol
-    - **Host**: enter the host name or IP address of the remote machine. Optionally include the port.
-    - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation
-    - **Property mappings**: select either the property mapping that you previously created, or use one of the default RAC property mappings
-    - **Advanced settings _(optional)_**: define other connection settings to be used. For more information, refer to the [Connection settings](./index.mdx#connection-settings) documentation
+3. Click the name of the RAC provider that you previously created.
+4. On the Provider page, under **Devices**, click **New Device**, and provide the following settings:
+    - **Device Name**: define a name for the device.
+    - **Host**: enter the host name or IP address of the remote machine, optionally including the port. Leave empty to use the address the device reports.
+    - **Protocol**: leave as **Automatic** to use the provider's protocol, or select the protocol for this device.
+    - **Advanced settings _(optional)_**: set a device-specific connection limit and other connection settings. For more information, refer to the [Connection settings](./index.mdx#connection-settings) documentation.
 
 5. Click **Create**.
+
+:::info
+Anyone who can view a device can see its attributes, so do not store credentials in a device's connection settings. Use a [RAC property mapping](#create-rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx) instead.
+:::
 
 ### Create an RAC outpost
 
@@ -96,4 +103,4 @@ The RAC provider requires the deployment of an [RAC Outpost](../../outposts/inde
 
 To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **Application Dashboard** page, click the **Remote Access** application to start a secure session on the remote machine in your web browser.
 
-If you defined multiple endpoints, click the endpoint for the remote machine that you want to access.
+If multiple devices are available, click the device that you want to access.
