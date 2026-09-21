@@ -271,14 +271,14 @@ importers:
         version: 6.0.3
     optionalDependencies:
       '@rspack/binding-darwin-arm64':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@rspack/binding-linux-arm64-gnu':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@rspack/binding-linux-x64-gnu':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@swc/core-darwin-arm64':
         specifier: 1.16.2
         version: 1.16.2
@@ -389,14 +389,14 @@ importers:
         version: 6.0.3
     optionalDependencies:
       '@rspack/binding-darwin-arm64':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@rspack/binding-linux-arm64-gnu':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@rspack/binding-linux-x64-gnu':
-        specifier: 2.2.4
-        version: 2.2.4
+        specifier: 2.2.6
+        version: 2.2.6
       '@swc/core-darwin-arm64':
         specifier: 1.16.2
         version: 1.16.2
@@ -2495,8 +2495,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@rspack/binding-darwin-arm64@2.2.4':
-    resolution: {integrity: sha512-PmwL+7nlD58tvGi2tUct2D6HzPsCeICvNpfgznzFjvrGlmPOm7pn5ahaevEf0C5QRHldf97qShekits4bzArsQ==}
+  '@rspack/binding-darwin-arm64@2.2.6':
+    resolution: {integrity: sha512-y8I8MAeKAOYuLqEKYQSmNFcW4dI1u5O+xYQcjT1L3Gby02KEt0YxlmSPvzElSQJUjsJ8PkKqU3U1suDjA6xvkg==}
     cpu: [arm64]
     os: [darwin]
 
@@ -2511,8 +2511,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rspack/binding-linux-arm64-gnu@2.2.4':
-    resolution: {integrity: sha512-/gyHP8DVezbTzey3wCknCRSKHzxZmfOAVtoNhNfQ2+9+wNaZUKjjaGuLc/IOc1CVeZ9cE30bNzJdun+/F9KNrg==}
+  '@rspack/binding-linux-arm64-gnu@2.2.6':
+    resolution: {integrity: sha512-7GI9xlkzVMAp9dbNvynvAreMjQQNw01b+khYYfmoQOgWXTUwrtzR7/JhJ3tijVQTXkyiYAKJ0RPvz57yD+p1vQ==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
@@ -2529,8 +2529,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rspack/binding-linux-x64-gnu@2.2.4':
-    resolution: {integrity: sha512-wzVC7AkyGD0rAdV41pKxwokvdAEY47HazjdUd3Pq2MT/rHNkhgsbCOVbrl4Ts2vQqiLrFfnnNZs383492oIrQw==}
+  '@rspack/binding-linux-x64-gnu@2.2.6':
+    resolution: {integrity: sha512-M0Efi9ny2cJ6VdhHxsZbcwdRCQ0HqBAsnPxPB8Ulknj+VtRlWnTlX/DlqMaHFuCb0MOWS6DXGGEAZ8veEil0BA==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
@@ -10843,7 +10843,7 @@ snapshots:
   '@rspack/binding-darwin-arm64@1.7.12':
     optional: true
 
-  '@rspack/binding-darwin-arm64@2.2.4':
+  '@rspack/binding-darwin-arm64@2.2.6':
     optional: true
 
   '@rspack/binding-darwin-x64@1.7.12':
@@ -10852,7 +10852,7 @@ snapshots:
   '@rspack/binding-linux-arm64-gnu@1.7.12':
     optional: true
 
-  '@rspack/binding-linux-arm64-gnu@2.2.4':
+  '@rspack/binding-linux-arm64-gnu@2.2.6':
     optional: true
 
   '@rspack/binding-linux-arm64-musl@1.7.12':
@@ -10861,7 +10861,7 @@ snapshots:
   '@rspack/binding-linux-x64-gnu@1.7.12':
     optional: true
 
-  '@rspack/binding-linux-x64-gnu@2.2.4':
+  '@rspack/binding-linux-x64-gnu@2.2.6':
     optional: true
 
   '@rspack/binding-linux-x64-musl@1.7.12':
