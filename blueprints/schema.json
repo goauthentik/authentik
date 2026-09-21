@@ -12685,11 +12685,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Device name",
-                    "description": "Name of the device to create this override for. Only used when no device is set."
+                    "description": "Name of the device to create. Only used when no device is set."
                 },
                 "access_group": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Access group",
                     "description": "Access group of the device to create. Only used when no device is set."
                 },

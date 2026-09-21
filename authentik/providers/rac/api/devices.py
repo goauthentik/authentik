@@ -1,7 +1,7 @@
 """RAC Device API Views"""
 
 from django.core.cache import cache
-from django.db.models import Prefetch, QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
@@ -15,7 +15,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Provider
-from authentik.endpoints.models import Device, DeviceUserBinding
+from authentik.endpoints.models import Device
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.rac.models import RACProvider, available_protocols, connection_override
 from authentik.rbac.filters import ObjectFilter
@@ -41,7 +41,6 @@ class RACDeviceSerializer(ModelSerializer):
     connection."""
 
     protocols = SerializerMethodField()
-    is_primary = SerializerMethodField()
     override_pk = SerializerMethodField()
 
     def get_override_pk(self, device: Device) -> int | None:
@@ -52,10 +51,6 @@ class RACDeviceSerializer(ModelSerializer):
     @property
     def provider(self) -> RACProvider:
         return self.context["rac_provider"]
-
-    def get_is_primary(self, device: Device) -> bool:
-        """Whether this is the requesting user's primary device"""
-        return getattr(device, "is_primary", False)
 
     def get_protocols(self, device: Device) -> RACDeviceProtocolSerializer(many=True):
         """Protocols this device can be connected to with, and how to launch each"""
@@ -85,7 +80,6 @@ class RACDeviceSerializer(ModelSerializer):
             "device_uuid",
             "name",
             "protocols",
-            "is_primary",
             "override_pk",
         ]
 
@@ -97,7 +91,6 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = RACDeviceSerializer
     search_fields = ["name"]
     ordering = ["name"]
-    filterset_fields = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
@@ -140,10 +133,6 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
             engine.build()
             if not engine.passing:
                 continue
-            device.is_primary = any(
-                binding.is_primary and binding.user_id == self.request.user.pk
-                for binding in device.user_bindings
-            )
             devices.append(device)
         return devices
 
@@ -176,15 +165,7 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
             return Response({"provider": "Valid provider required"}, status=400)
         self.rac_provider = provider
 
-        queryset = self._filter_queryset_for_list(
-            provider.devices()
-            .select_related("rac_override")
-            .prefetch_related(
-                Prefetch(
-                    "bindings", queryset=DeviceUserBinding.objects.all(), to_attr="user_bindings"
-                )
-            )
-        )
+        queryset = self._filter_queryset_for_list(provider.devices().select_related("rac_override"))
         self.paginate_queryset(queryset)
 
         superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"

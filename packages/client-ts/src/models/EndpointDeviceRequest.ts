@@ -11,6 +11,12 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
+import {
+    DeviceAccessGroupRequestFromJSON,
+    DeviceAccessGroupRequestToJSON,
+} from "./DeviceAccessGroupRequest";
+
 /**
  * @export
  * @interface EndpointDeviceRequest
@@ -19,6 +25,7 @@ export interface EndpointDeviceRequest {
     deviceUuid?: string;
     name: string;
     accessGroup?: string | null;
+    accessGroupObj?: DeviceAccessGroupRequest;
     expiring?: boolean;
     expires?: Date | null;
     attributes?: { [key: string]: any };
@@ -52,6 +59,10 @@ export function EndpointDeviceRequestFromJSONTyped(
                 : json["access_group"] === null
                   ? null
                   : json["access_group"],
+        accessGroupObj:
+            json["access_group_obj"] == null
+                ? undefined
+                : DeviceAccessGroupRequestFromJSON(json["access_group_obj"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:
             json["expires"] === undefined
@@ -79,6 +90,7 @@ export function EndpointDeviceRequestToJSONTyped(
         device_uuid: value["deviceUuid"],
         name: value["name"],
         access_group: value["accessGroup"],
+        access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],

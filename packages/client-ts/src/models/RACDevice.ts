@@ -26,10 +26,6 @@ export interface RACDevice {
     name: string;
     readonly protocols: Array<RACDeviceProtocol>;
     /**
-     * Whether this is the requesting user's primary device
-     */
-    readonly isPrimary: boolean;
-    /**
      * Primary key of this device's connection override, if it has one
      */
     readonly overridePk: number | null;
@@ -41,13 +37,6 @@ export interface RACDevice {
 export function instanceOfRACDevice(value: object): value is RACDevice {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("protocols" in value) || value["protocols"] === undefined) return false;
-    if (
-        (!("isPrimary" in (value as Record<string, any>)) &&
-            !("is_primary" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["isPrimary"] === undefined &&
-            (value as Record<string, any>)["is_primary"] === undefined)
-    )
-        return false;
     if (
         (!("overridePk" in (value as Record<string, any>)) &&
             !("override_pk" in (value as Record<string, any>))) ||
@@ -70,7 +59,6 @@ export function RACDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
         name: json["name"],
         protocols: (json["protocols"] as Array<any>).map(RACDeviceProtocolFromJSON),
-        isPrimary: json["is_primary"],
         overridePk: json["override_pk"],
     };
 }
@@ -80,7 +68,7 @@ export function RACDeviceToJSON(json: any): RACDevice {
 }
 
 export function RACDeviceToJSONTyped(
-    value?: Omit<RACDevice, "protocols" | "isPrimary" | "overridePk"> | null,
+    value?: Omit<RACDevice, "protocols" | "overridePk"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

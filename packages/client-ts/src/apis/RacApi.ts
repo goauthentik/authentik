@@ -170,7 +170,6 @@ export interface RacConnectionTokensUsedByListRequest {
 
 export interface RacDevicesListRequest {
     provider: number;
-    name?: string;
     /**
      * Which field to use when ordering the results.
      */
@@ -1133,10 +1132,6 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
-
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
-        }
 
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];

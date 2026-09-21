@@ -3,12 +3,13 @@
 from uuid import uuid4
 
 from rest_framework.fields import CharField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.endpoints.models import Device
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.providers.rac.models import RACConnectionOverride
 
 
@@ -19,11 +20,10 @@ class RACConnectionOverrideSerializer(ModelSerializer):
     device_name = CharField(
         write_only=True,
         required=False,
-        help_text=(
-            "Name of the device to create this override for. " "Only used when no device is set."
-        ),
+        help_text="Name of the device to create. Only used when no device is set.",
     )
-    access_group = CharField(
+    access_group = PrimaryKeyRelatedField(
+        queryset=DeviceAccessGroup.objects.all(),
         write_only=True,
         required=False,
         help_text="Access group of the device to create. Only used when no device is set.",
@@ -45,7 +45,7 @@ class RACConnectionOverrideSerializer(ModelSerializer):
                 name=device_name,
                 identifier=f"rac://{uuid4()}",
                 expiring=False,
-                access_group_id=access_group,
+                access_group=access_group,
             )
         return super().create(validated_data)
 

@@ -9,9 +9,8 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 def migrate_endpoints_to_devices(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     """Convert every RAC endpoint into a device.
 
-    The device re-uses the endpoint's primary key as its `device_uuid`, so existing
-    launch URLs (`/application/rac/<app>/<uuid>/`) keep working. The endpoint's host
-    host and protocol become a connection override for the device."""
+    The device re-uses the endpoint's primary key as its `device_uuid`, and the
+    endpoint's host and protocol become a connection override for the device."""
     db_alias = schema_editor.connection.alias
     Endpoint = apps.get_model("authentik_providers_rac", "Endpoint")
     ConnectionToken = apps.get_model("authentik_providers_rac", "ConnectionToken")

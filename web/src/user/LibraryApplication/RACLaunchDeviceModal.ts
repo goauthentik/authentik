@@ -71,11 +71,7 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
 
     protected override row(item: RACDevice): SlottedTemplateResult[] {
         return [
-            html`${item.name}${
-                item.isPrimary
-                    ? html` <span class="pf-c-badge pf-m-read">${msg("Your device")}</span>`
-                    : html``
-            }`,
+            html`${item.name}`,
             html`${item.protocols.map(
                 (entry) =>
                     html`<button

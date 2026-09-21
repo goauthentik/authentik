@@ -51,7 +51,7 @@ Connection credentials belong in a [RAC property mapping](#rac-property-mappings
 
 ### Restricting access with device compliance
 
-Devices that are enrolled through a connector report facts about themselves, such as their operating system version or whether their disks are encrypted. Binding an [expression policy](../../../customize/policies/expression.mdx) to a device, or to a device access group, lets you require those facts before a connection is authorized:
+Devices that are enrolled through a connector report facts about themselves, such as their operating system version or whether their disks are encrypted. Binding an [expression policy](../../../customize/policies/types/expression/index.mdx) to a device, or to a device access group, lets you require those facts before a connection is authorized:
 
 ```python
 facts = request.obj.cached_facts.data

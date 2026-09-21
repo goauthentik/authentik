@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
-from authentik.endpoints.models import DeviceAccessGroup, DeviceUserBinding
+from authentik.endpoints.models import DeviceAccessGroup
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -57,7 +57,6 @@ class TestRACDevicesAPI(APITestCase):
                             ),
                         }
                     ],
-                    "is_primary": False,
                     "override_pk": self.allowed.rac_override.pk,
                 }
             ],
@@ -122,16 +121,6 @@ class TestRACDevicesAPI(APITestCase):
             [entry["protocol"] for entry in listed[str(unknown.pk)]["protocols"]],
             [Protocols.RDP, Protocols.SSH],
         )
-
-    def test_list_primary_device(self):
-        """A user's primary device is marked as such"""
-        user = create_test_user()
-        device = create_test_device(name=f"c-{generate_id()}", host=generate_id())
-        DeviceUserBinding.objects.create(target=device, user=user, is_primary=True, order=0)
-        self.client.force_login(user)
-        listed = {d["device_uuid"]: d for d in self.list_devices()}
-        self.assertTrue(listed[str(device.pk)]["is_primary"])
-        self.assertFalse(listed[str(self.allowed.pk)]["is_primary"])
 
     def test_list_regular_user_denied_application(self):
         """A user who is denied the application receives no devices, even though the

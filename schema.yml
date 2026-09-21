@@ -7079,31 +7079,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: endpoints_devices_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
@@ -21783,7 +21758,6 @@ paths:
       operationId: rac_devices_list
       description: List devices accessible through a RAC provider
       parameters:
-      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -40583,9 +40557,7 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          allOf:
-          - $ref: '#/components/schemas/DeviceAccessGroup'
-          readOnly: true
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -40606,7 +40578,6 @@ components:
           readOnly: true
           nullable: true
       required:
-      - access_group_obj
       - facts
       - name
       - pbm_uuid
@@ -40628,9 +40599,7 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          allOf:
-          - $ref: '#/components/schemas/DeviceAccessGroup'
-          readOnly: true
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -40667,7 +40636,6 @@ components:
             format: uuid
           readOnly: true
       required:
-      - access_group_obj
       - connections
       - connections_obj
       - facts
@@ -40688,6 +40656,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -51208,6 +51178,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -53161,12 +53133,11 @@ components:
           type: string
           writeOnly: true
           minLength: 1
-          description: Name of the device to create this override for. Only used when
-            no device is set.
+          description: Name of the device to create. Only used when no device is set.
         access_group:
           type: string
+          format: uuid
           writeOnly: true
-          minLength: 1
           description: Access group of the device to create. Only used when no device
             is set.
         host:
@@ -55973,12 +55944,11 @@ components:
           type: string
           writeOnly: true
           minLength: 1
-          description: Name of the device to create this override for. Only used when
-            no device is set.
+          description: Name of the device to create. Only used when no device is set.
         access_group:
           type: string
+          format: uuid
           writeOnly: true
-          minLength: 1
           description: Access group of the device to create. Only used when no device
             is set.
         host:
@@ -56007,10 +55977,6 @@ components:
           items:
             $ref: '#/components/schemas/RACDeviceProtocol'
           readOnly: true
-        is_primary:
-          type: boolean
-          description: Whether this is the requesting user's primary device
-          readOnly: true
         override_pk:
           type: integer
           nullable: true
@@ -56018,7 +55984,6 @@ components:
             one
           readOnly: true
       required:
-      - is_primary
       - name
       - override_pk
       - protocols

@@ -46,14 +46,6 @@ def connection_override(device: Device) -> RACConnectionOverride | None:
     return getattr(device, "rac_override", None)
 
 
-def resolve_address(device: Device) -> str | None:
-    """Address to connect to a device on. Set explicitly for devices which are not
-    enrolled, otherwise taken from the facts the device reported."""
-    if override := connection_override(device):
-        return override.host
-    return device.address
-
-
 def available_protocols(device: Device) -> list[str]:
     """Protocols a device can be connected to with. Set explicitly by a connection
     override, otherwise based on what the device reports. Devices which report neither
@@ -71,8 +63,10 @@ def available_protocols(device: Device) -> list[str]:
 
 
 def address_settings(device: Device) -> dict[str, str]:
-    """Hostname and port to connect to a device on"""
-    address = resolve_address(device)
+    """Hostname and port to connect to a device on. Set explicitly for devices which
+    are not enrolled, otherwise taken from the facts the device reported."""
+    override = connection_override(device)
+    address = override.host if override else device.address
     if not address:
         return {}
     # An IPv6 address with a port is bracketed: [2001:db8::1]:3389
