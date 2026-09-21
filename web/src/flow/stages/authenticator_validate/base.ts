@@ -1,11 +1,3 @@
-import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "#flow/stages/base";
-
-import { DeviceChallenge } from "@goauthentik/api";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -13,10 +5,16 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-export class BaseDeviceStage<
-    Tin extends FlowInfoChallenge & PendingUserChallenge,
-    Tout,
-> extends BaseStage<Tin, Tout> {
+import { BaseStage } from "#flow/stages/base";
+import { StageChallengeLike } from "#flow/types";
+
+import { DeviceChallenge } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { property } from "lit/decorators.js";
+
+export class BaseDeviceStage<Tin extends StageChallengeLike, Tout> extends BaseStage<Tin, Tout> {
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
@@ -33,7 +31,7 @@ export class BaseDeviceStage<
         this.host?.reset?.();
     };
 
-    renderReturnToDevicePicker() {
+    protected renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }

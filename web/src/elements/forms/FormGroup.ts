@@ -1,14 +1,15 @@
-import { AKElement } from "#elements/Base";
-import Styles from "#elements/forms/FormGroup.css";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
+import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/FormGroup.css";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 /**
  * Form Group
@@ -16,7 +17,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
  * @todo Listen for custom events from its children about 'invalidation' events, and
- * trigger the `expanded` property as needed.
+ *   trigger the `expanded` property as needed.
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
@@ -28,10 +29,10 @@ export class AKFormGroup extends AKElement {
     public open = false;
 
     @property({ type: String, reflect: true })
-    public label = msg("Details");
+    public label = "";
 
     @property({ type: String, reflect: true })
-    public description?: string;
+    public description: string | null = null;
 
     //#endregion
 
@@ -60,6 +61,20 @@ export class AKFormGroup extends AKElement {
             }
         }
     };
+
+    protected defaultSlot: HTMLSlotElement;
+    protected headerSlot: HTMLSlotElement;
+    protected descriptionSlot: HTMLSlotElement;
+
+    constructor() {
+        super();
+
+        this.defaultSlot = this.ownerDocument.createElement("slot");
+        this.headerSlot = this.ownerDocument.createElement("slot");
+        this.headerSlot.name = "header";
+        this.descriptionSlot = this.ownerDocument.createElement("slot");
+        this.descriptionSlot.name = "description";
+    }
 
     public connectedCallback(): void {
         super.connectedCallback();
@@ -115,45 +130,60 @@ export class AKFormGroup extends AKElement {
 
     //#region Render
 
-    public render(): TemplateResult {
-        return html`
-            <details
-                ${ref(this.#detailsRef)}
-                ?open=${this.open}
-                aria-expanded=${this.open ? "true" : "false"}
-                role="group"
-                aria-labelledby="form-group-header-title"
-                aria-describedby="form-group-expandable-content-description"
-            >
-                <summary @click=${this.toggle}>
-                    <div class="pf-c-form__field-group-header-main">
-                        <header class="pf-c-form__field-group-header-title">
-                            <div
-                                class="pf-c-form__field-group-header-title-text"
-                                id="form-group-header-title"
-                                role="heading"
-                                aria-level="3"
-                            >
-                                ${this.label}
-                                <slot name="header"></slot>
-                            </div>
-                        </header>
+    protected render(): SlottedTemplateResult {
+        const headerSlotted = !!this.findSlotted("header");
+        const descriptionSlotted = !!this.findSlotted("description");
 
+        return html`<details
+            ${ref(this.#detailsRef)}
+            ?open=${this.open}
+            aria-expanded=${this.open ? "true" : "false"}
+            role="group"
+            aria-labelledby="form-group-header-title"
+            aria-describedby="form-group-expandable-content-description"
+        >
+            <summary @click=${this.toggle}>
+                <div class="pf-c-form__field-group-header-main" part="group-header">
+                    <header class="pf-c-form__field-group-header-title" part="group-header-title">
                         <div
-                            class="pf-c-form__field-group-header-description"
-                            data-test-id="form-group-header-description"
-                            id="form-group-expandable-content-description"
+                            class="pf-c-form__field-group-header-title-text"
+                            part="form-group-header-title"
+                            id="form-group-header-title"
+                            role="heading"
+                            aria-level="3"
                         >
-                            ${this.description}
-                            <slot name="description"></slot>
+                            ${
+                                this.label || !headerSlotted
+                                    ? html`<div part="label">
+                                          ${
+                                              this.label ||
+                                              (!headerSlotted
+                                                  ? msg("Details", {
+                                                        id: "form-group.default-label",
+                                                    })
+                                                  : null)
+                                          }
+                                      </div>`
+                                    : null
+                            }
+                            ${headerSlotted ? this.headerSlot : null}
                         </div>
-                    </div>
-                </summary>
-                <div id="form-group-expandable-content">
-                    <slot></slot>
+                    </header>
+                    ${
+                        this.description || descriptionSlotted
+                            ? html`<div
+                                  class="pf-c-form__field-group-header-description"
+                                  data-test-id="form-group-header-description"
+                                  id="form-group-expandable-content-description"
+                              >
+                                  ${this.description} ${this.descriptionSlot}
+                              </div>`
+                            : null
+                    }
                 </div>
-            </details>
-        `;
+            </summary>
+            ${this.defaultSlot}
+        </details> `;
     }
 
     //#endregion
@@ -166,6 +196,7 @@ export class AKFormGroup extends AKElement {
  * to reveal invalid inputs.
  *
  * @param form The form element to check.
+ *
  * @returns Whether the form is valid.
  */
 export function reportValidityDeep(

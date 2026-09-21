@@ -1,28 +1,31 @@
 import "#flow/components/ak-flow-card";
-
-import { SlottedTemplateResult } from "#elements/types";
-
-import { BaseStage } from "#flow/stages/base";
-
-import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+import { SlottedTemplateResult } from "#elements/types";
+
+import { BaseStage } from "#flow/stages/base";
+import {
+    multiTabOrchestrateLeave,
+    multiTabOrchestrateResume,
+    suppressNextExitForSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
+
+import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
+
+    #keydownController: AbortController | null = null;
 
     static styles: CSSResult[] = [
         PFLogin,
@@ -38,38 +41,86 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge?.to || "", document.baseURI).toString();
+        return new URL(this.challenge?.to || "", this.ownerDocument.baseURI).toString();
     }
 
-    updated(changed: PropertyValues<this>): void {
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
+    public get promptUser(): boolean {
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
+    }
+
+    protected keydownListener = (event: KeyboardEvent): void => {
+        if (event.key === "Enter") {
+            this.redirect();
+        }
+    };
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.#keydownController?.abort();
+        this.#keydownController = null;
+    }
+
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (!changed.has("challenge")) {
             return;
         }
+
         if (this.promptUser) {
-            document.addEventListener("keydown", (ev) => {
-                if (ev.key === "Enter") {
-                    this.redirect();
-                }
-            });
+            // Register the listener once for the element's lifetime; `updated` runs on every
+            // challenge change, and the AbortController tears it down on disconnect.
+            if (!this.#keydownController) {
+                this.#keydownController = new AbortController();
+
+                this.ownerDocument.addEventListener("keydown", this.keydownListener, {
+                    signal: this.#keydownController.signal,
+                });
+            }
+
             return;
         }
+
         this.redirect();
     }
 
-    redirect() {
+    async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge?.to,
         );
 
-        window.location.assign(this.challenge?.to || "");
+        // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
+        // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
+        // SAML resume re-entry) skip orchestration entirely.
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+
+        if (finalRedirect) {
+            await multiTabOrchestrateResume();
+        }
+
+        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+        const url = new URL(this.challenge!.to, window.location.origin);
+
+        if (finalRedirect && url.origin !== window.location.origin) {
+            multiTabOrchestrateLeave();
+        } else {
+            suppressNextExitForSameOriginNavigation();
+        }
+
+        window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
 
     renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
+
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
@@ -81,6 +132,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 </ak-empty-state>
             </ak-flow-card>`;
         }
+
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
@@ -97,17 +149,18 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${() => {
-                            this.startedRedirect = true;
+                        @click=${(ev: Event) => {
+                            ev.preventDefault();
+                            this.redirect();
                         }}
                     >
                         ${msg("Follow redirect")}
@@ -117,6 +170,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         </ak-flow-card>`;
     }
 }
+
+export default RedirectStage;
 
 declare global {
     interface HTMLElementTagNameMap {

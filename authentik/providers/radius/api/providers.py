@@ -18,12 +18,14 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.outposts.permissions import IsOutpostDelegatedRequest, IsOutpostServiceAccount
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -51,7 +53,11 @@ class RadiusProviderSerializer(
             "mfa_support",
             "certificate",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        secret_fields = ["shared_secret"]
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class RadiusProviderViewSet(UsedByMixin, ModelViewSet):
@@ -94,6 +100,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     queryset = RadiusProvider.objects.filter(application__isnull=False)
     serializer_class = RadiusOutpostConfigSerializer
+    permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
@@ -103,11 +110,6 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         access = PolicyTestResultSerializer()
 
     def get_attributes(self, provider: RadiusProvider):
-        mapper = PropertyMappingManager(
-            provider.property_mappings.all().order_by("name").select_subclasses(),
-            RadiusProviderPropertyMapping,
-            ["packet"],
-        )
         dict = Dictionary(
             str(
                 settings.BASE_DIR
@@ -139,20 +141,32 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
                 dict.attributes[full_attribute_name] = Attribute(
                     attribute_name, attribute_code, attribute_type, vendor=vendor_name
                 )
+            return full_attribute_name
 
-        mapper.globals["define_attribute"] = define_attribute
+        _globals = {
+            "define_attribute": define_attribute,
+            "vendor_attribute": define_attribute,
+        }
 
-        try:
-            for _ in mapper.iter_eval(self.request.user, self.request, packet=packet):
-                pass
-        except (PropertyMappingExpressionException, ControlFlowException) as exc:
-            # Value error can be raised when assigning invalid data to an attribute
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message="Failed to evaluate property-mapping",
-                mapping=exc.mapping,
-            ).with_exception(exc).save()
-            return None
+        for mapping in provider.property_mappings.all().order_by("name").select_subclasses():
+            mapping: RadiusProviderPropertyMapping
+            try:
+                res = mapping.evaluate(
+                    self.request.user, self.request, globals=_globals, packet=packet
+                )
+                # Normally we warn if a mapping returns None, however this was intended for this
+                # before 2026.11. We explicitly allow this here as a result, and only update
+                # the packet if we have data.
+                if res is not None:
+                    packet.update(res)
+            except (PropertyMappingExpressionException, ControlFlowException) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Failed to evaluate property-mapping",
+                    mapping=exc.mapping,
+                ).with_exception(exc).save()
+                continue
         return b64encode(packet.RequestPacket()).decode()
 
     @extend_schema(
@@ -163,12 +177,15 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         },
         operation_id="outposts_radius_access_check",
     )
-    @action(detail=True)
+    # Access checks are run by the outpost on behalf of the user that is authenticating,
+    # using that user's session, and are authenticated by the outpost's own token
+    @action(detail=True, permission_classes=[IsOutpostDelegatedRequest])
     def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
         provider = get_object_or_404(RadiusProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         engine.build()
         result = engine.result

@@ -33,6 +33,34 @@ export const HTTPStatusCodeTransformer: Record<number, HTTPErrorJSONTransformer>
 //#region Type Predicates
 
 /**
+ * A function that determines the specific type of error.
+ */
+export type ErrorPredicate<T> = (error: unknown) => error is T;
+
+/**
+ * Recursively checks if an error or any of its causes satisfies a given predicate.
+ *
+ * This is useful for unwrapping errors that may be wrapped in multiple layers of `Error` objects
+ * with causes.
+ *
+ * @param error The error to check.
+ * @param predicate The type predicate to apply to the error and its causes.
+ *
+ * @returns The first error in the chain that satisfies the predicate, or `null` if none do.
+ */
+export function findCause<T>(error: unknown, predicate: ErrorPredicate<T>): T | null {
+    if (predicate(error)) {
+        return error;
+    }
+
+    if (error instanceof Error && error.cause) {
+        return findCause(error.cause, predicate);
+    }
+
+    return null;
+}
+
+/**
  * Type predicate to check if a response contains a JSON body.
  *
  * This is useful to guard against parsing errors when attempting to read the response body.
@@ -87,7 +115,8 @@ interface ResponseErrorDescriptor {
 }
 
 /**
- * Fallback error messages for HTTP status codes used when a more specific error message is not available in the response.
+ * Fallback error messages for HTTP status codes used when a more specific error message is not
+ * available in the response.
  */
 export const ResponseErrorMessages: Record<number, ResponseErrorDescriptor> = {
     [HTTPStatusCode.BadRequest]: {
@@ -140,7 +169,8 @@ export function isResponseErrorLike(errorLike: unknown): errorLike is APIErrorWi
 /**
  * Composes a human readable error message from a {@linkcode ResponseErrorDescriptor}.
  *
- * Note that this is kept separate from localization to lower the complexity of the error handling code.
+ * Note that this is kept separate from localization to lower the complexity of the error handling
+ * code.
  */
 export function composeResponseErrorDescriptor(descriptor: ResponseErrorDescriptor): string {
     return `${descriptor.headline}: ${descriptor.reason}`;
@@ -172,9 +202,9 @@ export function pluckErrorDetail(error: Error, fallback?: string): string;
  * Attempts to pluck a human readable error message from an error-like object.
  *
  * Prioritizes the `detail` key, then the `message` key.
- *
  */
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string;
+
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string {
     if (typeof errorLike === "string" && errorLike) {
         return errorLike;
@@ -205,15 +235,26 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
  * Given API error, parses the response body and transforms it into a {@linkcode APIError}.
  */
 export async function parseAPIResponseError<T extends APIError = APIError>(
-    error: unknown,
+    source: unknown,
 ): Promise<T> {
-    if (!isResponseErrorLike(error)) {
-        const message = error instanceof Error ? error.message : String(error);
+    const apiError = findCause(source, isResponseErrorLike);
+
+    if (!apiError) {
+        const message = source instanceof Error ? source.message : String(apiError);
 
         return createSyntheticGenericError(message) as T;
     }
 
-    const { response, message } = error;
+    const { response } = apiError;
+    let message: string | undefined;
+
+    if (apiError && apiError !== source) {
+        // The API error is wrapped in another error.
+        const wrapperMessage = pluckErrorDetail(source);
+        message = wrapperMessage ? `${wrapperMessage}: ${message}` : message;
+    } else {
+        message = apiError.message;
+    }
 
     if (!isJSONResponse(response)) {
         return createSyntheticGenericError(message || response.statusText) as T;
@@ -247,13 +288,19 @@ export async function parseAPIResponseError<T extends APIError = APIError>(
  * We can still show the error message, to at least give the user some feedback.
  */
 export function pluckFallbackFieldErrors(parsedError: APIError): string[] {
+    let fallback: string[] = [];
+
     for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
         if (Array.isArray(fieldErrors)) {
             return [`${sentenceCase(fieldName)}: ${fieldErrors.join(", ")}`];
         }
+
+        if (typeof fieldErrors === "string") {
+            fallback = [`${sentenceCase(fieldName)}: ${fieldErrors}`];
+        }
     }
 
-    return [];
+    return fallback;
 }
 
 //#endregion

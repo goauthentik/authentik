@@ -9,9 +9,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
 
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/rac/connection"
-	"goauthentik.io/internal/outpost/rac/metrics"
 )
 
 type RACServer struct {
@@ -77,14 +77,14 @@ func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
 	cc.OnError = func(err error) {
 		rs.connm.Lock()
 		delete(rs.conns, wsm.ConnID)
-		_ = rs.ac.SendEventHello(map[string]interface{}{
+		_ = rs.ac.SendEventHello(map[string]any{
 			"active_connections": len(rs.conns),
 		})
 		rs.connm.Unlock()
 	}
 	rs.connm.Lock()
 	rs.conns[wsm.ConnID] = *cc
-	_ = rs.ac.SendEventHello(map[string]interface{}{
+	_ = rs.ac.SendEventHello(map[string]any{
 		"active_connections": len(rs.conns),
 	})
 	rs.connm.Unlock()
@@ -92,12 +92,10 @@ func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
 }
 
 func (rs *RACServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	wg.Add(1 + 1 + len(listenMetrics))
 	go func() {
 		defer wg.Done()
 		err := rs.startGuac()
@@ -105,6 +103,16 @@ func (rs *RACServer) Start() error {
 			panic(err)
 		}
 	}()
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
 	wg.Wait()
 	return nil
 }

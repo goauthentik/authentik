@@ -5,13 +5,11 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 
 from authentik.core.models import User
-from authentik.lib.generators import generate_key
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
-LDAP_PASSWORD = generate_key()
-LDAP_CONNECTION_PATCH = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+LDAP_CONNECTION_PATCH = MagicMock(return_value=mock_ad_connection())
 
 
 class LDAPPasswordTests(TestCase):
@@ -21,9 +19,9 @@ class LDAPPasswordTests(TestCase):
         self.source = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
-            base_dn="dc=goauthentik,dc=io",
-            additional_user_dn="ou=users",
-            additional_group_dn="ou=groups",
+            base_dn="dc=t,dc=goauthentik,dc=io",
+            additional_user_dn="",
+            additional_group_dn="",
         )
         self.source.user_property_mappings.set(LDAPSourcePropertyMapping.objects.all())
         self.source.save()
@@ -42,7 +40,9 @@ class LDAPPasswordTests(TestCase):
         pwc = LDAPPasswordChanger(self.source)
         user = User.objects.create(
             username="test",
-            attributes={"distinguishedName": "cn=user,ou=users,dc=goauthentik,dc=io"},
+            attributes={
+                "distinguishedName": "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+            },
         )
         self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category
         self.assertFalse(pwc.ad_password_complexity("test1", user))  # 2 categories

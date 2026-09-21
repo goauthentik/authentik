@@ -25,3 +25,23 @@
         color: var(--pf-global--danger-color--100);
     }
 }
+
+.ak-c-vector-icon {
+    display: block;
+    height: var(--ak-c-vector-icon--FontSize, var(--pf-global--icon--FontSize--lg));
+    fill: var(--ak-c-vector-icon--Fill, currentColor);
+    stroke: var(--ak-c-vector-icon--Stroke, currentColor);
+}
+
+.pf-c-button.pf-m-plain:has(.ak-c-vector-icon) {
+    --ak-c-vector-icon--Fill: var(--ak-c-vector-icon--Fill);
+    --ak-c-vector-icon--Stroke: var(--ak-c-vector-icon--Stroke, var(--pf-c-button--m-plain--Color));
+}
+
+pf-tooltip:has(.ak-c-vector-icon) {
+    display: flex;
+}
+
+pf-tooltip:not(:hover) [slot="content"] {
+    display: none;
+}

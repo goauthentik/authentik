@@ -1,6 +1,7 @@
 """Test file service layer"""
 
 from unittest import skipUnless
+from unittest.mock import Mock
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
@@ -52,6 +53,19 @@ class TestResolveFileUrlBasic(TestCase):
         manager = FileManager(FileUsage.MEDIA)
         result = manager.file_url("/static/authentik/sources/icon.svg")
         self.assertEqual(result, "/static/authentik/sources/icon.svg")
+
+    def test_file_url_forwards_use_cache(self):
+        """Test file_url forwards use_cache to backend."""
+        manager = FileManager(FileUsage.MEDIA)
+        backend = Mock()
+        backend.supports_file.return_value = True
+        backend.file_url.return_value = "/files/media/public/test.png?token=fresh"
+        manager.backends = [backend]
+
+        result = manager.file_url("test.png", use_cache=False)
+
+        self.assertEqual(result, "/files/media/public/test.png?token=fresh")
+        backend.file_url.assert_called_once_with("test.png", None, use_cache=False)
 
 
 class TestResolveFileUrlFileBackend(FileTestFileBackendMixin, TestCase):

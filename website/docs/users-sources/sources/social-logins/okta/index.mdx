@@ -1,0 +1,141 @@
+---
+title: Log in with Okta
+sidebar_label: Okta
+description: "Integrate Okta as a source in authentik with OAuth 2.0 or SAML"
+tags: [source, okta, oidc, saml]
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This source lets users authenticate with their Okta credentials by configuring Okta as a federated identity provider with OAuth 2.0 or SAML.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `company.okta.com` is the FQDN of your Okta tenant.
+
+You can integrate Okta with authentik using either OAuth 2.0 or SAML. Choose a protocol and follow its tab throughout the guide.
+
+<Tabs
+  defaultValue="oauth"
+  values={[
+    { label: "OAuth 2.0", value: "oauth" },
+    { label: "SAML", value: "saml" },
+  ]}>
+<TabItem value="oauth">
+
+## Okta configuration
+
+To integrate Okta with authentik, create an app integration in the Okta Admin Console.
+
+1. Log in to the Okta Admin Console as an administrator.
+2. Navigate to **Applications** > **Applications** and click **Create App Integration**.
+3. Select **OIDC - OpenID Connect**, set **Application Type** to **Web Application**, and then click **Next**.
+4. Configure the following required settings:
+    - **App Integration Name**: `authentik`
+    - **Sign-in redirect URIs**: `https://authentik.company/source/oauth/callback/<okta-slug>/`
+    - Under **Assignments**, select how you'd like to control access to authentik. **Allow everyone in your organization to access** or select a group to limit access.
+5. Click **Save**.
+6. Under **Client Credentials**, take note of the **Client ID**. This value will be required in the next section.
+7. Under **CLIENT SECRETS**, click the **Copy to clipboard** next to the secret and take note of the value; it will also be required in the next section.
+
+## authentik configuration
+
+To support the integration of Okta with authentik, you need to create an Okta OAuth source in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+    - **Select type**: select **Okta OAuth Source** as the source type.
+    - **Create Okta OAuth Source**: provide a name, a slug that must match the slug used in the Okta Sign-in redirect URI field (e.g. `okta`), and the following required settings:
+        - Under **Protocol settings**:
+            - **Consumer key**: paste the **Client ID** from Okta
+            - **Consumer secret**: paste the **Secret** from Okta
+        - Under **URL settings**:
+            - **Authorization URL**: `https://company.okta.com/oauth2/v1/authorize`
+            - **Access token URL**: `https://company.okta.com/oauth2/v1/token`
+            - **Profile URL**: `https://company.okta.com/oauth2/v1/userinfo`
+            - **OIDC Well-known URL**: `https://company.okta.com/.well-known/openid-configuration`
+            - **OIDC JWKS URL**: `https://company.okta.com/oauth2/v1/keys`
+
+3. Click **Finish** to save your settings.
+
+</TabItem>
+<TabItem value="saml">
+
+## Export the authentik signing certificate
+
+Okta needs the public certificate of an authentik keypair to encrypt assertions and to verify signed requests from authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates**.
+3. Expand the certificate that you plan to use for signing and encryption (for example, the default `authentik Self-signed Certificate`).
+4. Click **Download Certificate**.
+
+## Okta configuration {#okta-configuration-saml}
+
+To integrate Okta with authentik, create a SAML app integration in the Okta Admin Console.
+
+1. Log in to the Okta Admin Console as an administrator.
+2. Navigate to **Applications** > **Applications** and click **Create App Integration**.
+3. Select **SAML 2.0** and click **Next**.
+4. Set **App name** to `authentik` and click **Next**.
+5. Configure the following settings:
+    - **Single sign-on URL**: `https://authentik.company/source/saml/<okta-slug>/acs/`
+    - **Audience URI (SP Entity ID)**: `https://authentik.company/source/saml/<okta-slug>/metadata/`
+    - **Name ID format**: `Persistent`
+6. Click **Show Advanced Settings** and configure the following settings:
+    - **Single Logout URL**: `https://authentik.company/source/saml/<okta-slug>/slo/`
+    - **Assertion Encryption**: `Encrypted`
+    - **Encryption Certificate**: upload the authentik certificate that you exported earlier.
+    - Enable **Signed Requests**.
+    - **Signature Certificate**: upload the authentik certificate that you exported earlier. Okta uses it to verify signed requests from authentik.
+7. Under **Attribute Statements**, add a statement with **Name** set to `email` and **Value** set to `user.profile.email`.
+8. Click **Next**, and then click **Finish**.
+9. On the **Assignments** tab, assign the application to the users or groups that should be able to log in to authentik (for example, the **Everyone** group).
+10. On the **Sign On** tab, under **SAML 2.0**, click **More details**. Take note of the **Sign on URL** and **Sign out URL**, and click **Download** next to **Signing Certificate**. These values are required in the next section.
+
+## authentik configuration {#authentik-configuration-saml}
+
+To support the integration of Okta with authentik, import the Okta signing certificate into authentik and create a SAML source.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and click **Import Existing Certificate-Key Pair**.
+3. Set **Certificate Name** to `Okta Signing Certificate`.
+4. Paste the contents of the Okta signing certificate that you downloaded earlier into the **Certificate** field.
+5. Leave the **Private Key** field empty.
+6. Click **Import Certificate-Key Pair**.
+7. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+8. Select **SAML Source** and configure the following settings:
+    - Set **Source Name** to `Okta`.
+    - Set **Slug** to `<okta-slug>`. The slug must match the one used in the Okta **Single sign-on URL** and **Audience URI** fields.
+    - Set **SSO URL** to the **Sign on URL** from Okta.
+    - Set **SLO URL** to the **Sign out URL** from Okta.
+    - Set **Binding Type** to **Post-auto binding**.
+    - Set **Signing keypair** to the authentik certificate that you exported earlier.
+    - Set **Verification Certificate** to the Okta certificate that you uploaded earlier.
+    - Enable **Verify Assertion Signature**.
+    - Under **Advanced protocol settings**, set **Encryption Certificate** to the authentik certificate that you exported earlier. authentik uses its private key to decrypt the assertions encrypted by Okta.
+9. Click **Finish**.
+
+</TabItem>
+</Tabs>
+
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
+:::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
+:::
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.mdx) for more information.
+
+## Resources
+
+- [Okta Developer Documentation - Create an app integration](https://developer.okta.com/docs/guides/create-an-app-integration/openidconnect/main/)
+- [Okta Help Center - Create SAML app integrations](https://help.okta.com/en-us/content/topics/apps/apps_app_integration_wizard_saml.htm)

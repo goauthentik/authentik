@@ -5,12 +5,13 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
-import { globalAK } from "#common/global";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -37,19 +38,9 @@ export class MFADevicesPage extends Table<Device> {
     protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
-        return {
-            pagination: {
-                current: 0,
-                count: devices.length,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: devices.length,
-                next: 0,
-                previous: 0,
-            },
-            results: devices,
-        };
+        const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+
+        return createPaginatedResponse(devices);
     }
 
     protected columns: TableColumn[] = [
@@ -94,9 +85,7 @@ export class MFADevicesPage extends Table<Device> {
                             <a
                                 role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
-                                    })}`,
+                                    toUserInterface("settings/credentials"),
                                 )}"
                                 class="pf-c-dropdown__menu-item"
                             >
@@ -114,8 +103,9 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const api = aki(AuthenticatorsApi);
         const id = { id: parseInt(device.pk, 10) };
+
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
@@ -138,6 +128,7 @@ export class MFADevicesPage extends Table<Device> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
@@ -155,18 +146,20 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
-                ${item.extraDescription
-                    ? html`
-                          <pf-tooltip position="top" content=${item.externalId || ""}>
-                              <small>${item.extraDescription}</small>
-                          </pf-tooltip>
-                      `
-                    : nothing} `,
+                ${
+                    item.extraDescription
+                        ? html`
+                              <pf-tooltip position="top" content=${item.externalId || ""}>
+                                  <small>${item.extraDescription}</small>
+                              </pf-tooltip>
+                          `
+                        : nothing
+                } `,
             Timestamp(item.created),
             Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>

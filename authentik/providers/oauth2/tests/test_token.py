@@ -1,11 +1,15 @@
 """Test token view"""
 
 from base64 import b64encode
+from datetime import timedelta
 from json import dumps
+from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import now
+from freezegun import freeze_time
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -16,11 +20,12 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -28,7 +33,8 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-from authentik.providers.oauth2.views.token import TokenParams
+from authentik.providers.oauth2.token.router import parse_token_request
+from authentik.providers.oauth2.utils import extract_client_auth
 
 
 class TestToken(OAuthTestCase):
@@ -39,11 +45,12 @@ class TestToken(OAuthTestCase):
         self.factory = RequestFactory()
         self.app = Application.objects.create(name=generate_id(), slug="test")
 
-    def test_request_auth_code(self):
+    def test_invalid_grant_type(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://TestServer")],
             signing_key=self.keypair,
         )
@@ -61,16 +68,44 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.cause, "grant_type_not_configured")
+
+    def test_request_auth_code(self):
+        """test request param"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://TestServer")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://TestServer",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
-            TokenParams.parse(request, provider, provider.client_id, generate_key())
+            parse_token_request(request, provider, provider.client_id, generate_id())
 
     def test_request_auth_code_invalid(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
@@ -85,19 +120,130 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError):
-            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+
+    def test_redirect_uri_regex(self):
+        """test valid redirect URI (regex)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, ".+")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://foo.bar.baz",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(params.provider, provider)
+
+    def test_invalid_redirect_uri_regex(self):
+        """test invalid redirect URI (regex not matching)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "http://local.invalid?")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://localhost",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        events = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
+        self.assertTrue(events.exists())
+        self.assertEqual(events.first().context["message"], "Invalid redirect URI used by provider")
+
+    def test_redirect_uri_invalid_regex(self):
+        """test invalid redirect URI (invalid regex)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            # Invalid patterns are rejected by the API serializer, so they can only be
+            # configured through the ORM or a blueprint
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "+")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://localhost",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        # The unparsable pattern is reported on its own, and the request then falls through
+        # to the regular no-match handling, so both events are emitted
+        messages = [
+            event.context["message"]
+            for event in Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
+        ]
+        self.assertIn("Invalid redirect_uri configured", messages)
+        self.assertIn("Invalid redirect URI used by provider", messages)
+
+    def test_client_secret_non_ascii(self):
+        """test non-ascii client_secret"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            signing_key=self.keypair,
+            client_secret="à",
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://testserver",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        self.assertEqual(cm.exception.cause, "invalid_secret")
 
     def test_request_refresh_token(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=provider,
             user=user,
             token=generate_id(),
@@ -112,14 +258,29 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
+
+    def test_extract_client_auth_basic_auth_percent_decodes(self):
+        """test percent-decoding of client credentials in Basic auth"""
+        header = b64encode(
+            f"{quote('client/id', safe='')}:{quote('secret+/==', safe='')}".encode()
+        ).decode()
+        request = self.factory.post("/", HTTP_AUTHORIZATION=f"Basic {header}")
+        self.assertEqual(extract_client_auth(request), ("client/id", "secret+/=="))
+
+    def test_extract_client_auth_basic_auth_preserves_raw_plus(self):
+        """test compatibility with clients that still send raw plus characters"""
+        header = b64encode(b"client:secret+plus").decode()
+        request = self.factory.post("/", HTTP_AUTHORIZATION=f"Basic {header}")
+        self.assertEqual(extract_client_auth(request), ("client", "secret+plus"))
 
     def test_auth_code_view(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
@@ -140,7 +301,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -160,6 +321,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
             encryption_key=self.keypair,
@@ -182,7 +344,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         self.assertEqual(response.status_code, 200)
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
         self.validate_jwe(access, provider)
 
     @apply_blueprint("system/providers-oauth2.yaml")
@@ -191,6 +353,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
@@ -209,7 +372,7 @@ class TestToken(OAuthTestCase):
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=provider,
             user=user,
             token=generate_id(),
@@ -229,10 +392,8 @@ class TestToken(OAuthTestCase):
         )
         self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
-        refresh: RefreshToken = RefreshToken.objects.filter(
-            user=user, provider=provider, revoked=False
-        ).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
+        refresh = RefreshToken.objects.filter(user=user, provider=provider, revoked=False).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -254,6 +415,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
@@ -269,7 +431,7 @@ class TestToken(OAuthTestCase):
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=provider,
             user=user,
             token=generate_id(),
@@ -287,10 +449,8 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
             HTTP_ORIGIN="http://another.invalid",
         )
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
-        refresh: RefreshToken = RefreshToken.objects.filter(
-            user=user, provider=provider, revoked=False
-        ).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
+        refresh = RefreshToken.objects.filter(user=user, provider=provider, revoked=False).first()
         self.assertNotIn("Access-Control-Allow-Credentials", response)
         self.assertNotIn("Access-Control-Allow-Origin", response)
         self.assertJSONEqual(
@@ -313,6 +473,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
@@ -331,7 +492,7 @@ class TestToken(OAuthTestCase):
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=provider,
             user=user,
             token=generate_id(),
@@ -349,9 +510,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        new_token: RefreshToken = (
-            RefreshToken.objects.filter(user=user).exclude(pk=token.pk).first()
-        )
+        new_token = RefreshToken.objects.filter(user=user).exclude(pk=token.pk).first()
         # Post again with initial token -> get new refresh token
         # and revoke old one
         response = self.client.post(
@@ -379,10 +538,15 @@ class TestToken(OAuthTestCase):
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_threshold(self):
-        """test request param"""
+        """refresh token threshold
+
+        threshold set to 1 hour, refresh token expires in 2 hours.
+        First request should not return a new refresh token, second request
+        has a fake time 1 hours in the future which should return a new access token"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
             refresh_token_threshold="hours=1",  # nosec
@@ -402,13 +566,14 @@ class TestToken(OAuthTestCase):
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=provider,
             user=user,
             token=generate_id(),
             _id_token=dumps({}),
             auth_time=timezone.now(),
             _scope="offline_access",
+            expires=now() + timedelta(hours=2),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -420,9 +585,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
             HTTP_ORIGIN="http://local.invalid",
         )
-        self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
-        self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -436,6 +599,34 @@ class TestToken(OAuthTestCase):
             },
         )
         self.validate_jwt(access, provider)
+
+        with freeze_time(now() + timedelta(hours=1, minutes=10)):
+            response = self.client.post(
+                reverse("authentik_providers_oauth2:token"),
+                data={
+                    "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+                    "refresh_token": token.token,
+                    "redirect_uri": "http://local.invalid",
+                },
+                HTTP_AUTHORIZATION=f"Basic {header}",
+                HTTP_ORIGIN="http://local.invalid",
+            )
+            access = AccessToken.objects.filter(user=user, provider=provider).first()
+            refresh = RefreshToken.objects.filter(user=user, provider=provider).last()
+            self.assertJSONEqual(
+                response.content.decode(),
+                {
+                    "access_token": access.token,
+                    "token_type": TOKEN_TYPE,
+                    "expires_in": 3600,
+                    "id_token": provider.encode(
+                        access.id_token.to_dict(),
+                    ),
+                    "scope": "offline_access",
+                    "refresh_token": refresh.token,
+                },
+            )
+            self.validate_jwt(access, provider)
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_scope_claim_override_via_property_mapping(self):
@@ -453,6 +644,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
             include_claims_in_id_token=True,
@@ -484,7 +676,7 @@ class TestToken(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
         jwt_data = self.validate_jwt(access, provider)
 
         # The scope should be the custom value from the property mapping,

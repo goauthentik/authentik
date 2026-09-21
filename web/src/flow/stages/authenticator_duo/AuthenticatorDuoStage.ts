@@ -1,7 +1,12 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -19,12 +24,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-authenticator-duo")
 export class AuthenticatorDuoStage extends BaseStage<
@@ -48,14 +47,14 @@ export class AuthenticatorDuoStage extends BaseStage<
     }
 
     #checkEnrollStatus = async (): Promise<boolean> => {
-        const status = await new StagesApi(
-            DEFAULT_CONFIG,
-        ).stagesAuthenticatorDuoEnrollmentStatusCreate({
+        const status = await aki(StagesApi).stagesAuthenticatorDuoEnrollmentStatusCreate({
             stageUuid: this.challenge?.stageUuid || "",
         });
+
         console.debug(
             `authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`,
         );
+
         switch (status.duoResponse) {
             case DuoResponseEnum.Success:
                 this.host?.submit({});
@@ -63,6 +62,7 @@ export class AuthenticatorDuoStage extends BaseStage<
             case DuoResponseEnum.Waiting:
                 break;
         }
+
         return false;
     };
 
@@ -87,7 +87,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                     </p>
                     <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
-                    <fieldset class="pf-c-form__group pf-m-action">
+                    <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                         <legend class="sr-only">${msg("Form actions")}</legend>
                         <button
                             type="button"
@@ -102,6 +102,8 @@ export class AuthenticatorDuoStage extends BaseStage<
         });
     }
 }
+
+export default AuthenticatorDuoStage;
 
 declare global {
     interface HTMLElementTagNameMap {

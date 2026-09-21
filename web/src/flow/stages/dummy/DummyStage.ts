@@ -1,5 +1,10 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -9,12 +14,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 @customElement("ak-stage-dummy")
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
@@ -23,7 +22,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <p>${msg(str`Stage name: ${this.challenge?.name}`)}</p>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -37,6 +36,8 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
         </ak-flow-card>`;
     }
 }
+
+export default DummyStage;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -47,9 +47,23 @@ class ConfigurationView(SSFView):
                     },
                 )
             ),
-            "delivery_methods_supported": [
-                DeliveryMethods.RISC_PUSH,
-            ],
+            "verification_endpoint": self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ssf:stream-verify",
+                    kwargs={
+                        "application_slug": application.slug,
+                    },
+                )
+            ),
+            "status_endpoint": self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ssf:stream-status",
+                    kwargs={
+                        "application_slug": application.slug,
+                    },
+                )
+            ),
+            "delivery_methods_supported": [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH],
             "authorization_schemes": [{"spec_urn": "urn:ietf:rfc:6749"}],
         }
         return JsonResponse(data)

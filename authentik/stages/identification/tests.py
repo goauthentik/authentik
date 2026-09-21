@@ -13,6 +13,10 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.models import CaptchaStage
+from authentik.stages.captcha.stage import (
+    PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    PLAN_CONTEXT_CAPTCHA_SITE_KEY,
+)
 from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -205,6 +209,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -241,6 +246,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -275,6 +281,53 @@ class TestIdentificationStage(FlowTestCase):
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    @Mocker()
+    def test_valid_with_captcha_override(self, mock: Mocker):
+        """Test embedded captcha with overridden site and private keys"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 0.5,
+            },
+        )
+        configured_site_key = generate_id()
+        captcha_stage = CaptchaStage.objects.create(
+            name="captcha",
+            public_key=configured_site_key,
+            private_key=generate_id(),
+        )
+        self.stage.captcha_stage = captcha_stage
+        self.stage.save()
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+        response = self.client.get(url)
+        challenge = self.assertStageResponse(response, self.flow)
+        self.assertEqual(challenge["captcha_stage"]["site_key"], configured_site_key)
+
+        site_key = generate_id()
+        private_key = generate_id()
+        plan = self.get_flow_plan()
+        plan.context.update(
+            {
+                PLAN_CONTEXT_CAPTCHA_SITE_KEY: site_key,
+                PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY: private_key,
+            }
+        )
+        self.set_flow_plan(plan)
+
+        response = self.client.get(url)
+        challenge = self.assertStageResponse(response, self.flow)
+        self.assertEqual(challenge["captcha_stage"]["site_key"], site_key)
+
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "captcha_token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertIn(private_key, mock.request_history[0].text)
 
     @Mocker()
     def test_invalid_with_captcha(self, mock: Mocker):
@@ -316,6 +369,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -372,6 +426,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -435,6 +490,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -486,6 +542,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "promoted": False,
                 }
@@ -522,6 +579,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,
@@ -550,6 +608,7 @@ class TestIdentificationStage(FlowTestCase):
                     "challenge": {
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
+                        "final_redirect": False,
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": self.source.name,

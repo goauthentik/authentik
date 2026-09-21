@@ -1,71 +1,70 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
-import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    FlowDesignationEnum,
-    Invitation,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { InvitationForm } from "#admin/stages/invitation/InvitationForm";
+
+import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, HTMLTemplateResult, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
-    expandable = true;
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Invitations");
-    public pageDescription = msg(
+
+    public override pageTitle = msg("Invitations");
+    public override pageDescription = msg(
         "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
     );
-    public pageIcon = "pf-icon pf-icon-migration";
+    public override pageIcon = "pf-icon pf-icon-migration";
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
+    public override searchPlaceholder = msg("Search for an invitation by name...");
 
-    checkbox = true;
-    clearOnRefresh = true;
-
-    @property()
-    order = "expires";
-
-    @state()
-    invitationStageExists = false;
+    public override order = "expires";
 
     @state()
-    multipleEnrollmentFlows = false;
+    protected invitationStageExists = false;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
+    @state()
+    protected multipleEnrollmentFlows = false;
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
-            const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+            const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
+
             this.invitationStageExists = stages.pagination.count > 0;
             this.expandable = this.invitationStageExists;
+
             stages.results.forEach((stage) => {
                 const enrollmentFlows = (stage.flowSet || []).filter(
                     (flow) => flow.designation === FlowDesignationEnum.Enrollment,
                 );
+
                 if (enrollmentFlows.length > 1) {
                     this.multipleEnrollmentFlows = true;
                 }
@@ -73,30 +72,32 @@ export class InvitationListPage extends TablePage<Invitation> {
         } catch {
             // assuming we can't fetch stages, ignore the error
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
+
+        return aki(StagesApi).stagesInvitationInvitationsList({
             ...(await this.defaultEndpointConfig()),
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Created by"), "created_by"],
         [msg("Expiry")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
+                return aki(StagesApi).stagesInvitationInvitationsUsedByList({
                     inviteUuid: item.pk,
                 });
             }}
             .delete=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
+                return aki(StagesApi).stagesInvitationInvitationsDestroy({
                     inviteUuid: item.pk,
                 });
             }}
@@ -107,75 +108,73 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): SlottedTemplateResult[] {
+    protected override row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${!item.flowObj && this.multipleEnrollmentFlows
-                    ? html`
-                          <ak-label color=${PFColor.Orange}>
-                              ${msg(
-                                  "Invitation not limited to any flow, and can be used with any enrollment flow.",
-                              )}
-                          </ak-label>
-                      `
-                    : nothing}`,
+                ${
+                    !item.flowObj && this.multipleEnrollmentFlows
+                        ? html`
+                              <ak-label color=${PFColor.Orange}>
+                                  ${msg(
+                                      "Invitation not limited to any flow, and can be used with any enrollment flow.",
+                                  )}
+                              </ak-label>
+                          `
+                        : null
+                }`,
             html`<div>
-                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                    <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}
+                        >${item.createdBy.username}</a
+                    >
                 </div>
                 <small>${item.createdBy.name}</small>`,
-            html`${item.expires?.toLocaleString() || msg("-")}`,
-            html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Invitation")}</span>
-                    <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.expires?.toLocaleString() || msg("-"),
+            html`${IconEditButton(InvitationForm, item.pk)}
+
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${ModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
         ];
     }
 
-    renderExpanded(item: Invitation): TemplateResult {
+    protected override renderExpanded(item: Invitation): SlottedTemplateResult {
         return html`<ak-stage-invitation-list-link
             .invitation=${item}
         ></ak-stage-invitation-list-link>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Invitation")}</span>
-                <ak-invitation-form slot="form"> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`<button
+            class="pf-c-button pf-m-primary"
+            type="button"
+            ${InvitationForm.asModalInvoker()}
+        >
+            ${msg("New Invitation")}
+        </button>`;
     }
 
-    render(): HTMLTemplateResult {
-        return html`${this.invitationStageExists
-                ? nothing
-                : html`
-                      <div class="pf-c-banner pf-m-warning">
-                          ${msg(
-                              "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
-                          )}
-                      </div>
-                  `}
+    protected override render(): SlottedTemplateResult {
+        return html`${
+                this.invitationStageExists
+                    ? null
+                    : html`
+                          <div class="pf-c-banner pf-m-warning">
+                              ${msg(
+                                  "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
+                              )}
+                          </div>
+                      `
+            }
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;
     }
 
-    updated(changed: PropertyValues<this>) {
+    public override updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,

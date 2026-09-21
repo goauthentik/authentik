@@ -1,71 +1,53 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:45babd1b4ce0349fb12c4e24bf017b90b96d52806db32e001e3013f341bef0fe AS node-builder
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
+
+# Stage: Build webui
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:d82e1d091233ff0f771fc6c22837fa64c1019806ae2ac76cf5345cbc1e01668a AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 ENV NODE_ENV=production
 
+WORKDIR /work
+
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
+
+RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
+    node ./scripts/node/lint-runtime.ts ./web
+
 WORKDIR /work/web
 
-RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+# These files need to be copied and cannot be mounted as `pnpm install` will build the client's typescript
+COPY ./packages /work/packages
+COPY ./web/packages /work/web/packages
+
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/web/pnpm-workspace.yaml,src=./web/pnpm-workspace.yaml \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
-    --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    npm ci
+    --mount=type=cache,id=pnpm-ak,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY ./package.json /work
 COPY ./web /work/web/
 # TODO: Update this after moving website to docs
 COPY ./website /work/website/
-COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
-RUN npm run build && \
-    npm run build:sfe
+RUN pnpm run build && \
+    pnpm run build:sfe
 
-# Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.5-trixie@sha256:8e8f9c84609b6005af0a4a8227cee53d6226aab1c6dcb22daf5aeeb8b05480e1 AS go-builder
-
-ARG TARGETOS
-ARG TARGETARCH
-ARG TARGETVARIANT
-
-ARG GOOS=$TARGETOS
-ARG GOARCH=$TARGETARCH
-
-WORKDIR /go/src/goauthentik.io
-
-RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
-    dpkg --add-architecture arm64 && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
-
-RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
-    --mount=type=cache,target=/go/pkg/mod \
-    go mod download
-
-COPY ./cmd /go/src/goauthentik.io/cmd
-COPY ./authentik/lib /go/src/goauthentik.io/authentik/lib
-COPY ./web/static.go /go/src/goauthentik.io/web/static.go
-COPY --from=node-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
-COPY --from=node-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
-COPY ./internal /go/src/goauthentik.io/internal
-COPY ./go.mod /go/src/goauthentik.io/go.mod
-COPY ./go.sum /go/src/goauthentik.io/go.sum
-
-RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
-    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
-    go build -o /go/authentik ./cmd/server
-
-# Stage 3: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2 AS geoip
+# Stage: MaxMind GeoIP
+FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v8.0.0@sha256:51e70dd6f16cd3e4d845ac02d09940b10772a75b9d741427d235a78570923c1d AS geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
 ENV GEOIPUPDATE_VERBOSE="1"
@@ -77,10 +59,30 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.9.18@sha256:5713fa8217f92b80223bc83aac7db36ec80a84437dbc0d04bbc659cae030d8c9 AS uv
-# Stage 5: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.2-slim-trixie-fips@sha256:46c0658052e43ad303da39e461ad106c499a03fabd3512d05ff586e506507242 AS python-base
+# Stage: download Rust toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:ed780d7d3d789d7056855e8c7e3c37d21368ea42f39305fe431c19ae2e08d6a3 AS rust-toolchain
+
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ENV PATH="/root/.cargo/bin:$PATH"
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    apt-get update && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
+    rustup install && \
+    rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
+    rustc --version && \
+    cargo --version
+
+# Stage: Download uv
+FROM ghcr.io/astral-sh/uv:0.12.17@sha256:10787c682e4184e4f290de1171fd4703dc63de99221f10fe1c99002ce7fa9acc AS uv
+# Stage: Base python image
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:05c6c365be961dd9ef89a91a7fdb7037dc2ee093e2699a93330ddee40a26e625 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -93,17 +95,62 @@ WORKDIR /ak-root/
 
 COPY --from=uv /uv /uvx /bin/
 
-# Stage 6: Python dependencies
+# Stage: build rust binary
+FROM python-base AS rust-builder
+
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+WORKDIR /build
+
+ENV PATH="/root/.cargo/bin:$PATH"
+COPY --from=rust-toolchain /root/.rustup /root/.rustup
+COPY --from=rust-toolchain /root/.cargo /root/.cargo
+
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    # common dependencies
+    build-essential \
+    # aws-lc deps
+    cmake clang golang
+# See https://github.com/aws/aws-lc-rs/issues/569
+ENV AWS_LC_FIPS_SYS_CC=clang
+
+COPY --from=node-builder /work/web/robots.txt /build/web/robots.txt
+COPY --from=node-builder /work/web/security.txt /build/web/security.txt
+COPY --from=node-builder /work/web/dist/standalone/loading/startup.html /build/web/dist/standalone/loading/startup.html
+
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    --mount=type=bind,target=Cargo.toml,src=Cargo.toml \
+    --mount=type=bind,target=Cargo.lock,src=Cargo.lock \
+    --mount=type=bind,target=.cargo/,src=.cargo/ \
+    --mount=type=bind,target=build.rs,src=build.rs \
+    --mount=type=bind,target=src/,src=src/ \
+    --mount=type=bind,target=packages/ak-axum,src=packages/ak-axum \
+    --mount=type=bind,target=packages/ak-common,src=packages/ak-common \
+    --mount=type=bind,target=packages/client-rust,src=packages/client-rust \
+    --mount=type=bind,target=authentik/lib/default.yml,src=authentik/lib/default.yml \
+    # Required otherwise workspace discovery fails
+    --mount=type=bind,target=website/scripts/docsmg/,src=website/scripts/docsmg/ \
+    --mount=type=cache,id=cargo-git-db-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/git/db/ \
+    --mount=type=cache,id=cargo-registry-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/registry/ \
+    --mount=type=cache,id=rust-target-$TARGETARCH$TARGETVARIANT,target=/build/target/ \
+    cargo build --package authentik --no-default-features --features core --locked --release && \
+    cp ./target/release/authentik /bin/authentik
+
+
+# Stage: Python dependencies
 FROM python-base AS python-deps
 
 ARG TARGETARCH
 ARG TARGETVARIANT
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-
-ENV PATH="/root/.cargo/bin:$PATH"
-
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     apt-get update && \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
@@ -118,22 +165,24 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # python-kadmin-rs
     krb5-multidev libkrb5-dev heimdal-multidev libclang-dev \
     # xmlsec
-    libltdl-dev && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    libltdl-dev
 
-ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
-    # https://github.com/rust-lang/rustup/issues/2949
-    # Fixes issues where the rust version in the build cache is older than latest
-    # and rustup tries to update it, which fails
-    RUSTUP_PERMIT_COPY_RENAME="true"
+ENV PATH="/root/.cargo/bin:$PATH"
+COPY --from=rust-toolchain /root/.rustup /root/.rustup
+COPY --from=rust-toolchain /root/.cargo /root/.cargo
 
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
-    --mount=type=bind,target=packages,src=packages \
-    --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev
+    --mount=type=bind,target=packages/ak-guardian,src=packages/ak-guardian \
+    --mount=type=bind,target=packages/django-channels-postgres,src=packages/django-channels-postgres \
+    --mount=type=bind,target=packages/django-dramatiq-postgres,src=packages/django-dramatiq-postgres \
+    --mount=type=bind,target=packages/django-postgres-cache,src=packages/django-postgres-cache \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-dev
 
-# Stage 7: Run
+# Stage: Run
 FROM python-base AS final-image
 
 ARG VERSION
@@ -146,7 +195,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
     org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.title="authentik server image" \
     org.opencontainers.image.url="https://goauthentik.io" \
     org.opencontainers.image.vendor="Authentik Security Inc." \
@@ -160,11 +208,9 @@ RUN apt-get update && \
     # Required for runtime
     apt-get install -y --no-install-recommends \
     libpq5 libmaxminddb0 ca-certificates \
-    krb5-multidev libkrb5-3 libkdb5-10 libkadm5clnt-mit12 \
-    heimdal-multidev libkadm5clnt7t64-heimdal \
+    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
     libltdl7 libxslt1.1 && \
-    # Required for bootstrap & healtcheck
-    apt-get install -y --no-install-recommends runit && \
+    apt-get purge -y curl libcurl4t64 && \
     pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
@@ -185,7 +231,7 @@ COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
-COPY --from=go-builder /go/authentik /bin/authentik
+COPY --from=rust-builder /bin/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
 RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
@@ -198,8 +244,9 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    GOFIPS=1
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
 ENTRYPOINT [ "dumb-init", "--", "ak" ]

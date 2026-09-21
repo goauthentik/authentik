@@ -1,11 +1,11 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 /**
  * @event clickNew
@@ -17,7 +17,7 @@ export class ApplicationWizardBindingsToolbar extends AKElement {
     static styles = [PFButton, PFToolbar];
 
     @property({ type: Boolean, attribute: "can-delete", reflect: true })
-    canDelete = false;
+    public canDelete = false;
 
     notify(eventName: string) {
         this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }));

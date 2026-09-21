@@ -63,6 +63,7 @@ class SyncTasks:
         provider_pk: int,
         sync_objects: Actor[[str, int, int, bool], None],
     ):
+        """Run full provider sync"""
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -83,6 +84,8 @@ class SyncTasks:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
+                self._discover(provider, User)
+                self._discover(provider, Group)
                 users_tasks = group(
                     self.sync_paginator(
                         current_task=task,
@@ -103,6 +106,7 @@ class SyncTasks:
                 )
                 users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
+                self._sync_cleanup(provider, task)
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 task.warning("Sync encountered a transient exception. Retrying", exc=exc)
@@ -110,6 +114,48 @@ class SyncTasks:
             except StopSync as exc:
                 task.error(exc)
                 return
+
+    def _discover(self, provider: OutgoingSyncProvider, object_type: type[User | Group]):
+        if not provider.discovery_enabled:
+            self.logger.info("Discover disbled for provider, skipping")
+            return
+        client = provider.client_for_model(object_type)
+        if not client.can_discover:
+            return
+        self.logger.debug("starting discover", object_type=object_type._meta.model_name)
+        client.discover()
+
+    def _sync_cleanup(self, provider: OutgoingSyncProvider, task: Task):
+        """Delete remote objects that are no longer in scope"""
+        for object_type in (User, Group):
+            try:
+                client = provider.client_for_model(object_type)
+            except TransientSyncException:
+                continue
+            # Pass the in-scope queryset as a subquery rather than materializing every
+            # PK into a Python set, which scales better and produces a single SQL
+            # statement rather than a NOT IN (...) clause with thousands of params.
+            in_scope_qs = provider.get_object_qs(object_type).values("pk")
+            stale = client.connection_type.objects.filter(provider=provider).exclude(
+                **{f"{client.connection_type_query}__pk__in": in_scope_qs}
+            )
+            for connection in stale:
+                try:
+                    client.delete(connection.scim_id)
+                    task.info(
+                        f"Deleted out-of-scope {object_type._meta.verbose_name}",
+                        scim_id=connection.scim_id,
+                    )
+                except NotFoundSyncException:
+                    pass
+                except TransientSyncException as exc:
+                    self.logger.warning("transient error during cleanup", exc=exc)
+                    self.logger.warning(
+                        "Cleanup encountered a transient exception. Retrying", exc=exc
+                    )
+                    raise Retry() from exc
+                except DryRunRejected as exc:
+                    self.logger.info("Rejected dry-run cleanup event", exc=exc)
 
     def sync_objects(
         self,
@@ -119,6 +165,7 @@ class SyncTasks:
         override_dry_run=False,
         **filter,
     ):
+        """Sync a single page of a given object type"""
         task = CurrentTask.get_task()
         _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
@@ -145,9 +192,6 @@ class SyncTasks:
             provider.get_object_qs(_object_type, **filter),
             provider.sync_page_size,
         )
-        if client.can_discover:
-            self.logger.debug("starting discover")
-            client.discover()
         self.logger.debug("starting sync for page", page=page)
         task.info(f"Syncing page {page} or {_object_type._meta.verbose_name_plural}")
         for obj in paginator.page(page).object_list:
@@ -226,11 +270,13 @@ class SyncTasks:
             task.warning("No provider found. Is it assigned to an application?")
             return
         client = provider.client_for_model(instance.__class__)
-        # Check if the object is allowed within the provider's restrictions
-        queryset = provider.get_object_qs(instance.__class__, pk=instance.pk)
+        # Check if the object is allowed within the provider's restrictions.
         # The queryset we get from the provider must include the instance we've got given
-        # otherwise ignore this provider
-        if not queryset or not queryset.exists():
+        # otherwise ignore this provider. We use .exists() rather than `not queryset`
+        # because `bool(queryset)` materializes the entire queryset (calls _fetch_all),
+        # which is wasteful when we only need to know whether any row matches.
+        queryset = provider.get_object_qs(instance.__class__, pk=instance.pk)
+        if not queryset.exists():
             return
 
         try:
@@ -347,11 +393,13 @@ class SyncTasks:
             task.warning("No provider found. Is it assigned to an application?")
             return
 
-        # Check if the object is allowed within the provider's restrictions
-        queryset: QuerySet = provider.get_object_qs(Group, pk=group_pk)
+        # Check if the object is allowed within the provider's restrictions.
         # The queryset we get from the provider must include the instance we've got given
-        # otherwise ignore this provider
-        if not queryset or not queryset.filter().exists():
+        # otherwise ignore this provider. We use .exists() rather than `not queryset`
+        # because `bool(queryset)` materializes the entire queryset (calls _fetch_all),
+        # which is wasteful when we only need to know whether any row matches.
+        queryset: QuerySet = provider.get_object_qs(Group, pk=group_pk)
+        if not queryset.exists():
             return
 
         client = provider.client_for_model(Group)

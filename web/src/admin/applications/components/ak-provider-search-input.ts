@@ -1,10 +1,10 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -12,6 +12,7 @@ import { IDGenerator } from "#packages/core/id";
 
 import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize/init/install";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -58,6 +59,7 @@ export class AkProviderInput extends AKElement {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -73,10 +75,13 @@ export class AkProviderInput extends AKElement {
         const args: ProvidersAllListRequest = {
             ordering: "name",
         };
-        const api = new ProvidersApi(DEFAULT_CONFIG);
+
+        const api = aki(ProvidersApi);
+
         if (query !== undefined) {
             args.search = query;
         }
+
         const items = await api.providersAllList(args);
         const results = items.results;
 
@@ -84,14 +89,16 @@ export class AkProviderInput extends AKElement {
         if (!(this.value && !results.find((r) => r.pk === this.value))) {
             return results;
         }
+
         const single = await api.providersAllRetrieve({ id: this.value });
+
         return [single, ...results];
     };
 
     render() {
         const readOnlyValue = this.readOnly && typeof this.value === "number";
 
-        return html` <ak-form-element-horizontal name=${this.name}>
+        return html`<ak-form-element-horizontal name=${this.name}>
             ${AKLabel(
                 {
                     slot: "label",
@@ -101,10 +108,13 @@ export class AkProviderInput extends AKElement {
                 },
                 this.label,
             )}
-            ${readOnlyValue
-                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
-                : nothing}
+            ${
+                readOnlyValue
+                    ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                    : nothing
+            }
             <ak-search-select
+                label=${ifPresent(this.label)}
                 .fieldID=${this.fieldID}
                 .selected=${this.#selected}
                 .fetchObjects=${this.#fetch}
@@ -114,6 +124,7 @@ export class AkProviderInput extends AKElement {
                 ?blankable=${readOnlyValue ? false : !!this.blankable}
                 ?readonly=${this.readOnly}
                 name=${ifDefined(readOnlyValue ? undefined : this.name)}
+                placeholder=${msg("Search for a provider...")}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

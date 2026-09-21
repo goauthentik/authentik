@@ -20,6 +20,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 from yaml import load
+from yaml.error import YAMLError
 
 from authentik.blueprints.v1.common import (
     Blueprint,
@@ -45,14 +46,14 @@ from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.rbac.models import Role
 
 # Context set when the serializer is created in a blueprint context
-# Update website/docs/customize/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.mdx when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -96,7 +97,7 @@ def is_model_allowed(model: type[Model]) -> bool:
     )
 
 
-class DoRollback(SentryIgnoredException):
+class DoRollback(TracingIgnoredException):
     """Exception to trigger a rollback"""
 
 
@@ -146,9 +147,7 @@ class Importer:
         try:
             from authentik.enterprise.license import LicenseKey
 
-            context["goauthentik.io/enterprise/licensed"] = (
-                LicenseKey.get_total().status().is_valid,
-            )
+            context["goauthentik.io/enterprise/licensed"] = LicenseKey.get_total().status().is_valid
         except ModuleNotFoundError:
             pass
         return context
@@ -156,13 +155,16 @@ class Importer:
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
-        import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            import_dict = load(yaml_input, BlueprintLoader)
+        except YAMLError as exc:
+            raise EntryInvalidError(exc) from exc
         try:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
             )
         except DaciteError as exc:
-            raise EntryInvalidError from exc
+            raise EntryInvalidError(exc) from exc
         return Importer(_import, context)
 
     @property
@@ -272,7 +274,7 @@ class Importer:
             and entry.state != BlueprintEntryDesiredState.MUST_CREATED
         ):
             self.logger.debug(
-                "Initialise serializer with instance",
+                "Initialize serializer with instance",
                 model=model,
                 instance=model_instance,
                 pk=model_instance.pk,
@@ -290,7 +292,7 @@ class Importer:
             )
         else:
             self.logger.debug(
-                "Initialised new serializer instance",
+                "Initialized new serializer instance",
                 model=model,
                 **cleanse_dict(updated_identifiers),
             )
@@ -321,9 +323,45 @@ class Importer:
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
             if "pk" in updated_identifiers:
-                model_instance.pk = updated_identifiers["pk"]
+                model_instance.pk = model._meta.pk.to_python(updated_identifiers["pk"])
             serializer.instance = model_instance
         return serializer
+
+    def _save_with_retry(
+        self, serializer: BaseSerializer, entry: BlueprintEntry, raise_errors: bool
+    ) -> Model | None:
+        """Save a serializer, retrying once on IntegrityError by re-fetching the existing instance.
+
+        Returns the saved instance, or None when recovery failed and raise_errors is False.
+        Raises EntryInvalidError / IntegrityError when raise_errors is True and recovery
+        is not possible.
+        """
+        try:
+            with atomic():
+                return serializer.save()
+        except IntegrityError:
+            self.logger.debug(
+                "Integrity error during save, retrying after re-fetching instance",
+                entry=entry,
+            )
+            # Race condition: another process committed the same object between our
+            # SELECT and INSERT. Re-validate so we pick up the now-existing instance.
+            try:
+                retry_serializer = self._validate_single(entry)
+            except EntryInvalidError as exc:
+                self.logger.warning(f"Entry invalid on retry: {exc}", entry=entry, error=exc)
+                if raise_errors:
+                    raise exc
+                return None
+            if not retry_serializer:
+                return None
+            try:
+                return retry_serializer.save()
+            except IntegrityError:
+                self.logger.warning("Integrity error persists on retry", entry=entry)
+                if raise_errors:
+                    raise
+                return None
 
     def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
         """Apply object-level permissions for an entry"""
@@ -395,7 +433,9 @@ class Importer:
                         pk=instance.pk,
                     )
                 else:
-                    instance = serializer.save()
+                    instance = self._save_with_retry(serializer, entry, raise_errors)
+                    if instance is None:
+                        return False
                     self.logger.debug("Updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk

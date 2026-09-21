@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load humanize %}
+
+{% blocktrans %}You're Invited!{% endblocktrans %}
+
+{% blocktrans %}You have been invited to join {{ host }}. Use the link below to get started.{% endblocktrans %}
+
+{% trans 'Accept Invitation' %}: {{ url }}
+
+{% if expires %}
+{% blocktrans with expires=expires|naturaltime %}This invitation expires {{ expires }}.{% endblocktrans %}
+{% endif %}
+
+{% blocktrans %}If you cannot click the link above, please copy and paste the following URL into your browser:{% endblocktrans %}
+
+{{ url }}

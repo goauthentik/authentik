@@ -1,9 +1,11 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
@@ -12,7 +14,10 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
+GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
+
+@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
 class TestViews(TestCase):
     """Test SAML Views"""
 
@@ -21,11 +26,12 @@ class TestViews(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer="authentik",
+            issuer_override="authentik",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_enroll(self):
         """Enroll"""
         flow = create_test_flow()
@@ -52,6 +58,7 @@ class TestViews(TestCase):
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
         """Enroll when attempting to access a provider"""
         initial_redirect = f"http://{generate_id()}"

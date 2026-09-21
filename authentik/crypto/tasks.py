@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509.base import load_pem_x509_certificate
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.models import TaskState
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -23,6 +24,7 @@ from watchdog.observers import Observer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
 
@@ -85,15 +87,24 @@ class CertificateEventHandler(FileSystemEventHandler):
             return None
         return super().dispatch(event)
 
+    def run_tasks(self):
+        for tenant in Tenant.objects.filter(ready=True):
+            with tenant:
+                if Task.objects.filter(
+                    tenant=tenant,
+                    actor_name=certificate_discovery.actor_name,
+                    state=TaskState.QUEUED,
+                ).exists():
+                    continue
+                Schedule.dispatch_by_actor(certificate_discovery)
+
     def on_created(self, event: FileSystemEvent):
         """Process certificate file creation"""
         LOGGER.debug(
             "Certificate file created, triggering discovery",
             file=event.src_path,
         )
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                Schedule.dispatch_by_actor(certificate_discovery)
+        self.run_tasks()
 
     def on_modified(self, event: FileSystemEvent):
         """Process certificate file modification"""
@@ -101,9 +112,7 @@ class CertificateEventHandler(FileSystemEventHandler):
             "Certificate file modified, triggering discovery",
             file=event.src_path,
         )
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                Schedule.dispatch_by_actor(certificate_discovery)
+        self.run_tasks()
 
 
 @actor(description=_("Discover, import and update certificates from the filesystem."))
@@ -114,15 +123,16 @@ def certificate_discovery():
     discovered = 0
     for file in glob(CONFIG.get("cert_discovery_dir") + "/**", recursive=True):
         path = Path(file)
-        if not path.exists():
-            continue
-        if path.is_dir():
+        if not path.exists() or path.is_dir():
             continue
         # For certbot setups, we want to ignore archive.
         if "archive" in file:
             continue
-        # Support certbot's directory structure
-        if path.name in ["fullchain.pem", "privkey.pem"]:
+        # Handle additionalOutputFormats from cert-manager gracefully
+        if path.name in ["ca.crt", "tls-combined.pem", "key.der"]:
+            continue
+        # Support certbot & kubernetes.io/tls directory structure
+        if path.name in ["fullchain.pem", "privkey.pem", "tls.crt", "tls.key"]:
             cert_name = path.parent.name
         else:
             cert_name = path.name.replace(path.suffix, "")

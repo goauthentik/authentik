@@ -7,10 +7,8 @@ updates:
       - /
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
-      - /.github/actions/cherry-pick
       - /.github/actions/setup
-      - /.github/actions/docker-push-variables
-      - /.github/actions/comment-pr-instructions
+      - /.github/actions/comment-pr
       - /.github/actions/test-results
     schedule:
       interval: daily
@@ -20,6 +18,15 @@ updates:
       prefix: "ci:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action/*"
+      regclient:
+        patterns:
+          - "regclient/actions/*"
 
   #endregion
 
@@ -35,6 +42,56 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
+      exclude:
+        - "golang.org/x/crypto"
+        - "golang.org/x/net"
+        - "github.com/golang-jwt/jwt/*"
+        - "github.com/coreos/go-oidc/*"
+        - "github.com/go-ldap/ldap/*"
+
+  #endregion
+
+  #region Rust
+
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
+      exclude:
+        - aws-lc-fips-sys
+        - aws-lc-rs
+        - aws-lc-sys
+        - rustls
+        - rustls-pki-types
+        - rustls-platform-verifier
+        - rustls-webpki
+
+  - package-ecosystem: rust-toolchain
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+    cooldown:
+      default-days: 3
 
   #endregion
 
@@ -53,6 +110,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       sentry:
         patterns:
@@ -61,13 +122,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -103,11 +171,15 @@ updates:
 
   - package-ecosystem: npm
     directories:
-      - "/packages/esbuild-plugin-live-reload"
-      - "/packages/prettier-config"
-      - "/packages/tsconfig"
       - "/packages/docusaurus-config"
-      - "/packages/eslint-config"
+      - "/packages/esbuild-plugin-live-reload"
+      - "/packages/fonts"
+      - "/packages/geo"
+      - "/packages/logger-js"
+      - "/packages/oxfmt-config"
+      - "/packages/oxlint-config"
+      - "/packages/theme"
+      - "/packages/tsconfig"
     schedule:
       interval: daily
       time: "04:00"
@@ -116,6 +188,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "core, web:"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       sentry:
         patterns:
@@ -124,13 +200,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -174,11 +257,17 @@ updates:
       prefix: "website:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       docusaurus:
         patterns:
           - "@docusaurus/*"
           - "@goauthentik/docusaurus-config"
+          - "docusaurus-plugin-openapi-docs"
+          - "docusaurus-theme-openapi-docs"
       build:
         patterns:
           - "@swc/*"
@@ -187,16 +276,15 @@ updates:
           - "@rspack/binding*"
       goauthentik:
         patterns:
-          - "@goauthentik/eslint-config"
-          - "@goauthentik/prettier-config"
+          - "@goauthentik/oxlint-config"
+          - "@goauthentik/oxfmt-config"
           - "@goauthentik/tsconfig"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
 
   #endregion
 
@@ -212,6 +300,10 @@ updates:
       prefix: "lifecycle/aws:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
 
   #endregion
 
@@ -227,6 +319,25 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
+      exclude:
+        - "django"
+        - "cryptography"
+        - "pyjwt"
+        - "xmlsec"
+        - "lxml"
+        - "psycopg"
+        - "pyopenssl"
+    groups:
+      types:
+        patterns:
+          - types-*
+      opentelemetry:
+        patterns:
+          - opentelemetry-*
 
   #endregion
 
@@ -234,7 +345,7 @@ updates:
 
   - package-ecosystem: docker
     directories:
-      - /
+      - /lifecycle/container
       - /website
     schedule:
       interval: daily
@@ -244,11 +355,18 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
   - package-ecosystem: docker-compose
     directories:
-      # - /scripts # Maybe
-      - /scripts/api
+      - /packages/client-go
+      - /packages/client-rust
+      - /packages/client-ts
+      - /scripts
+      - /tests
       - /tests/e2e
+      - /tests/integration
+      - /tests/openid_conformance
     schedule:
       interval: daily
       time: "04:00"
@@ -257,5 +375,11 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
-
+    cooldown:
+      default-days: 3
+    groups:
+      openid-conformance:
+        patterns:
+          - registry.gitlab.com/openid/conformance-suite
+          - registry.gitlab.com/openid/conformance-suite/nginx
   #endregion

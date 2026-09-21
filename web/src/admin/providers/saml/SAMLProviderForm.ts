@@ -1,6 +1,6 @@
 import { renderForm } from "./SAMLProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
@@ -42,13 +42,15 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<SAMLProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
+        const provider = await aki(ProvidersApi).providersSamlRetrieve({
             id: pk,
         });
+
         this.hasSigningKp = !!provider.signingKp;
         this.hasSlsUrl = !!provider.slsUrl;
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod = provider.logoutMethod ?? SAMLLogoutMethods.FrontchannelIframe;
+
         return provider;
     }
 
@@ -62,12 +64,13 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         }
 
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
+            return aki(ProvidersApi).providersSamlUpdate({
                 id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
+
+        return aki(ProvidersApi).providersSamlCreate({
             sAMLProviderRequest: data,
         });
     }
@@ -75,6 +78,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
+
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
@@ -82,6 +86,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
         const setHasSlsUrl = (ev: Event) => {
             const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+
             if (!akTextInput) return;
 
             const value = akTextInput.value || "";

@@ -1,3 +1,7 @@
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
@@ -7,10 +11,6 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 const LevelIconMap = {
     [MessageLevel.error]: "fas fa-exclamation-circle",
@@ -48,7 +48,7 @@ export class Message extends AKElement {
     public live?: boolean;
 
     @property({ type: Number })
-    public lifetime?: number = 8_000;
+    public lifetime?: number = 8000;
 
     //#endregion
 
@@ -110,11 +110,13 @@ export class Message extends AKElement {
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>
                 </p>
-                ${description
-                    ? html`<div class="pf-c-alert__description" id="message-description">
-                          <p>${description}</p>
-                      </div>`
-                    : nothing}
+                ${
+                    description
+                        ? html`<div class="pf-c-alert__description" id="message-description">
+                              <p>${description}</p>
+                          </div>`
+                        : nothing
+                }
                 <div class="pf-c-alert__action">
                     <button
                         aria-label=${msg("Dismiss")}

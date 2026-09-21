@@ -1,0 +1,41 @@
+:host,
+ak-form-static.style-scope {
+    margin-block-start: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-flow: wrap;
+    gap: var(--pf-global--spacer--sm);
+}
+
+.pf-c-avatar {
+    flex: 0 0 auto;
+}
+
+.primary-content {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    gap: var(--pf-global--spacer--md);
+}
+
+.username {
+    flex: 1 1 auto;
+    text-align: left;
+    max-width: 20rem;
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+
+    display: box;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    box-orient: vertical;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.links {
+    flex: 0 0 auto;
+    text-align: right;
+}

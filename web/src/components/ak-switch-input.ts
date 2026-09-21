@@ -1,5 +1,4 @@
 import "#elements/forms/HorizontalFormElement";
-
 import { AKElement } from "#elements/Base";
 
 import { IDGenerator } from "@goauthentik/core/id";
@@ -33,7 +32,7 @@ export class AkSwitchInput extends AKElement {
     required = false;
 
     @property({ type: String })
-    help = "";
+    help: string | TemplateResult = "";
 
     /**
      * For more complex help instructions, provide a template result.
@@ -47,29 +46,27 @@ export class AkSwitchInput extends AKElement {
     #fieldID: string = IDGenerator.randomID();
 
     protected renderHelp() {
-        const helpText = this.help.trim();
+        const helpContent = typeof this.help === "string" ? this.help.trim() : this.help;
 
         return [
-            helpText
-                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">${helpText}</p>`
+            helpContent
+                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">
+                      ${helpContent}
+                  </p>`
                 : nothing,
             this.bighelp ? this.bighelp : nothing,
         ];
     }
 
     render() {
-        const doCheck = this.checked ? this.checked : undefined;
-
-        return html` <ak-form-element-horizontal name=${this.name} ?required=${this.required}>
-            <div slot="label" class="pf-c-form__group-label"></div>
-
+        return html`<ak-form-element-horizontal name=${this.name} ?required=${this.required}>
             <label class="pf-c-switch" for="${this.#fieldID}">
                 <input
                     id="${this.#fieldID}"
                     aria-describedby="${this.#fieldID}-help"
                     class="pf-c-switch__input"
                     type="checkbox"
-                    ?checked=${doCheck}
+                    ?checked=${this.checked}
                 />
                 <span class="pf-c-switch__toggle">
                     <span class="pf-c-switch__toggle-icon">

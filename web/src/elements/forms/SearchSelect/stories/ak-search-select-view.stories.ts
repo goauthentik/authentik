@@ -1,5 +1,4 @@
 import "#elements/forms/SearchSelect/ak-search-select-view";
-
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
 import { SearchSelectView } from "#elements/forms/SearchSelect/ak-search-select-view";
@@ -47,11 +46,8 @@ const longGoodForYouPairs: SelectOptions<string> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
-    document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
-        ev.value,
-        null,
-        2,
-    )}`;
+    document.getElementById("message-pad")!.innerText =
+        `Value selected: ${JSON.stringify(ev.value, null, 2)}`;
 };
 
 export const Default = () => {

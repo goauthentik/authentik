@@ -2,19 +2,18 @@ import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-file-search-input";
 import "#components/ak-switch-input";
-import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -23,14 +22,14 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     GroupMatchingModeEnum,
     KadminTypeEnum,
     KerberosSource,
     KerberosSourceRequest,
     SourcesApi,
     SyncOutgoingTriggerModeEnum,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -66,34 +65,27 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
-    async loadInstance(pk: string): Promise<KerberosSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: KerberosSource): Promise<KerberosSource> {
-        if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
-                slug: this.instance.slug,
-                patchedKerberosSourceRequest: data,
-            });
-        }
-
-        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
-            kerberosSourceRequest: data as unknown as KerberosSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesKerberosRetrieve({ slug }),
+        create: (kerberosSource: KerberosSource) =>
+            aki(SourcesApi).sourcesKerberosCreate({
+                kerberosSourceRequest: kerberosSource as unknown as KerberosSourceRequest,
+            }),
+        update: (slug: string, patchedKerberosSourceRequest: KerberosSource) =>
+            aki(SourcesApi).sourcesKerberosPartialUpdate({ slug, patchedKerberosSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-text-input
-                name="name"
-                label=${msg("Name")}
-                value=${ifDefined(this.instance?.name)}
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
                 required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-kerberos-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -158,36 +150,46 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${UserMatchingModeEnum.Identifier}
-                                ?selected=${this.instance?.userMatchingMode ===
-                                UserMatchingModeEnum.Identifier}
+                                ?selected=${
+                                    this.instance?.userMatchingMode ===
+                                    UserMatchingModeEnum.Identifier
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                             </option>
                             <option
                                 value=${UserMatchingModeEnum.EmailLink}
-                                ?selected=${this.instance?.userMatchingMode ===
-                                UserMatchingModeEnum.EmailLink}
+                                ?selected=${
+                                    this.instance?.userMatchingMode ===
+                                    UserMatchingModeEnum.EmailLink
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                             </option>
                             <option
                                 value=${UserMatchingModeEnum.EmailDeny}
-                                ?selected=${this.instance?.userMatchingMode ===
-                                UserMatchingModeEnum.EmailDeny}
+                                ?selected=${
+                                    this.instance?.userMatchingMode ===
+                                    UserMatchingModeEnum.EmailDeny
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                             </option>
                             <option
                                 value=${UserMatchingModeEnum.UsernameLink}
-                                ?selected=${this.instance?.userMatchingMode ===
-                                UserMatchingModeEnum.UsernameLink}
+                                ?selected=${
+                                    this.instance?.userMatchingMode ===
+                                    UserMatchingModeEnum.UsernameLink
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                             </option>
                             <option
                                 value=${UserMatchingModeEnum.UsernameDeny}
-                                ?selected=${this.instance?.userMatchingMode ===
-                                UserMatchingModeEnum.UsernameDeny}
+                                ?selected=${
+                                    this.instance?.userMatchingMode ===
+                                    UserMatchingModeEnum.UsernameDeny
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                             </option>
@@ -201,22 +203,28 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${GroupMatchingModeEnum.Identifier}
-                                ?selected=${this.instance?.groupMatchingMode ===
-                                GroupMatchingModeEnum.Identifier}
+                                ?selected=${
+                                    this.instance?.groupMatchingMode ===
+                                    GroupMatchingModeEnum.Identifier
+                                }
                             >
                                 ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                             </option>
                             <option
                                 value=${GroupMatchingModeEnum.NameLink}
-                                ?selected=${this.instance?.groupMatchingMode ===
-                                GroupMatchingModeEnum.NameLink}
+                                ?selected=${
+                                    this.instance?.groupMatchingMode ===
+                                    GroupMatchingModeEnum.NameLink
+                                }
                             >
                                 ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                             </option>
                             <option
                                 value=${GroupMatchingModeEnum.NameDeny}
-                                ?selected=${this.instance?.groupMatchingMode ===
-                                GroupMatchingModeEnum.NameDeny}
+                                ?selected=${
+                                    this.instance?.groupMatchingMode ===
+                                    GroupMatchingModeEnum.NameDeny
+                                }
                             >
                                 ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                             </option>
@@ -271,14 +279,14 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
                     ></ak-secret-textarea-input>
-                    <ak-text-input
+                    <ak-secret-text-input
                         name="syncCcache"
                         label=${msg("Sync credentials cache")}
-                        value=${ifDefined(this.instance?.syncCcache)}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.",
                         )}
-                    ></ak-text-input>
+                    ></ak-secret-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("SPNEGO settings")}">
@@ -299,14 +307,14 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
                     ></ak-secret-textarea-input>
-                    <ak-text-input
+                    <ak-secret-text-input
                         name="spnegoCcache"
                         label=${msg("SPNEGO credentials cache")}
-                        value=${ifDefined(this.instance?.spnegoCcache)}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.",
                         )}
-                    ></ak-text-input>
+                    ></ak-secret-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Kerberos Attribute mapping")}">
@@ -350,11 +358,11 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -368,7 +376,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"
@@ -384,8 +392,9 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     <ak-text-input
                         name="userPathTemplate"
                         label=${msg("User path")}
-                        value=${this.instance?.userPathTemplate ??
-                        "goauthentik.io/sources/%(slug)s"}
+                        value=${
+                            this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                        }
                         help=${placeholderHelperText}
                     ></ak-text-input>
                 </div>
@@ -401,7 +410,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     name="icon"
                     label=${msg("Icon")}
                     .value=${this.instance?.icon}
-                    .usage=${AdminFileListUsageEnum.Media}
+                    .usage=${UsageEnum.Media}
                     blankable
                     help=${iconHelperText}
                 ></ak-file-search-input>

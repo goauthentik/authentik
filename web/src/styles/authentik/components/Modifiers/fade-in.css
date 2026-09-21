@@ -1,0 +1,35 @@
+@keyframes ak-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.ak-fade-in {
+    --ak-fade-in--Delay: 500ms;
+
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-name: ak-fade-in;
+    animation-duration: 150ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-delay: var(--ak-fade-in--Delay);
+
+    &.ak-m-delayed {
+        overflow: hidden;
+        interpolate-size: allow-keywords;
+        transition:
+            height 0.5s,
+            display 0.5s allow-discrete;
+
+        transition-delay: var(--ak-fade-in--Delay);
+        height: auto;
+
+        @starting-style {
+            height: 0px;
+        }
+    }
+}

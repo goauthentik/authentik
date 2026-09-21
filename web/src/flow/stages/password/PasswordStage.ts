@@ -1,6 +1,12 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { ErrorProp } from "#components/ak-field-errors";
 
@@ -13,13 +19,6 @@ import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthenti
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
@@ -46,14 +45,14 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 />
                 <ak-flow-input-password
                     label=${msg("Password")}
-                    required
                     grab-focus
                     class="pf-c-form__group"
                     .errors=${this.#errors("password")}
                     ?allow-show-password=${!!this.challenge?.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
+                    required
                 ></ak-flow-input-password>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -64,23 +63,26 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </button>
                 </fieldset>
             </form>
-            ${this.challenge?.recoveryUrl
-                ? html`<fieldset
-                      slot="footer-band"
-                      part="additional-actions"
-                      class="pf-c-login__main-footer-band"
-                  >
-                      <legend class="sr-only">${msg("Additional actions")}</legend>
-                      <div class="pf-c-login__main-footer-band-item">
-                          <a name="forgot-password" href="${this.challenge.recoveryUrl}"
-                              >${msg("Forgot password?")}</a
-                          >
-                      </div>
-                  </fieldset>`
-                : null}
+            ${
+                this.challenge?.recoveryUrl
+                    ? html`<fieldset
+                          slot="footer-band"
+                          part="additional-actions"
+                          name="additional-actions"
+                          class="ak-c-fieldset pf-c-login__main-footer-band"
+                      >
+                          <legend class="sr-only">${msg("Additional actions")}</legend>
+                          <div class="pf-c-login__main-footer-band-item">
+                              <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
+                          </div>
+                      </fieldset>`
+                    : null
+            }
         </ak-flow-card>`;
     }
 }
+
+export default PasswordStage;
 
 declare global {
     interface HTMLElementTagNameMap {

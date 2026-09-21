@@ -1,0 +1,119 @@
+import { ID_PATTERN, SLUG_PATTERN, UUID_PATTERN } from "#elements/router/core/constants";
+import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import { LitPropertyRecord } from "#elements/types";
+
+import { spread } from "@open-wc/lit-helpers";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { repeat } from "lit/directives/repeat.js";
+
+// The second attribute type is of string[] to help with the 'activeWhen' control, which was
+// commonplace and singular enough to merit its own handler.
+export type SidebarEntry = [
+    path: string | null,
+    label: string,
+    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
+    children?: SidebarEntry[],
+];
+
+/**
+ * Recursively renders a collection of sidebar entries.
+ */
+export function renderSidebarItems(entries: readonly SidebarEntry[]) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
+}
+
+/**
+ * Recursively renders a sidebar entry.
+ */
+export function renderSidebarItem([
+    path,
+    label,
+    attributes,
+    children,
+]: SidebarEntry): TemplateResult {
+    const properties = Array.isArray(attributes)
+        ? { ".activeWhen": attributes }
+        : (attributes ?? {});
+
+    if (path) {
+        properties.path = path;
+    }
+
+    return html`<ak-sidebar-item
+        exportparts="list-item, link"
+        label=${ifDefined(label)}
+        ${spread(properties)}
+    >
+        ${children ? renderSidebarItems(children) : nothing}
+    </ak-sidebar-item>`;
+}
+
+// prettier-ignore
+export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
+    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
+        ["/administration/overview", msg("Overview")],
+        ["/administration/dashboard/users", msg("User Statistics")],
+        ["/administration/system-tasks", msg("System Tasks")]]
+    ],
+    [null, msg("Applications"), { key: "applications" }, [
+        ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_PATTERN})$`]],
+        ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_PATTERN})$`]],
+        ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_PATTERN})$`]],
+        ["/requests/rules", msg("Request Rules"), {enterprise:true}],
+        ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
+    ],
+    [null, msg("Endpoint Devices"), { key: "endpoint-devices" }, [
+        ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_PATTERN})$`]],
+        ["/endpoints/groups", msg("Device access groups")],
+        ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_PATTERN})$`]],
+    ]],
+    [null, msg("Events"), { key: "events" }, [
+        ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_PATTERN})$`]],
+        ["/events/rules", msg("Notification Rules")],
+        ["/events/transports", msg("Notification Transports")],
+        ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
+        ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
+        ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
+        ["/events/exports", msg("Data Exports"), {enterprise:true}]]
+    ],
+    [null, msg("Customization"), { key: "customization" }, [
+        ["/policy/policies", msg("Policies")],
+        ["/core/property-mappings", msg("Property Mappings")],
+        ["/blueprints/instances", msg("Blueprints")],
+        ["/files", msg("Files")],
+        ["/policy/reputation", msg("Reputation scores")]],
+    ],
+    [null, msg("Flows and Stages"), { key: "flows-stages" }, [
+        ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_PATTERN})$`]],
+        ["/flow/stages", msg("Stages")],
+        ["/flow/stages/prompts", msg("Prompts")]]
+    ],
+    [null, msg("Directory"), { key: "directory" }, [
+        ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_PATTERN})$`]],
+        ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_PATTERN})$`]],
+        ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_PATTERN})$`]],
+        ["/identity/agents", msg("Agents"), {enterprise:true}],
+        ["/identity/object-attributes", msg("Object attributes")],
+        ["/identity/initial-permissions", msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_PATTERN})$`]],
+        ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_PATTERN})$`]],
+        ["/core/tokens", msg("Tokens and App passwords")],
+        ["/flow/stages/invitations", msg("Invitations")]]
+    ],
+    [null, msg("System"), { key: "system" }, [
+        ["/core/brands", msg("Brands")],
+        ["/crypto/certificates", msg("Certificates")],
+        ["/outpost/integrations", msg("Outpost Integrations")],
+        ["/admin/settings", msg("Settings")]]
+    ],
+];
+
+// prettier-ignore
+export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
+    [null, msg("Enterprise"), { key: "enterprise" }, [
+        ["/enterprise/licenses", msg("Licenses"), null]
+    ],
+]];

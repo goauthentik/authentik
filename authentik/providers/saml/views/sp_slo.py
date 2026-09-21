@@ -15,10 +15,22 @@ from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
+from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider, SAMLSession
+from authentik.providers.saml.models import (
+    SAMLBindings,
+    SAMLLogoutMethods,
+    SAMLProvider,
+    SAMLSession,
+)
+from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
+from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.tasks import send_saml_logout_response
+from authentik.providers.saml.utils.encoding import nice64
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
+    PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS,
     PLAN_CONTEXT_SAML_LOGOUT_REQUEST,
     PLAN_CONTEXT_SAML_RELAY_STATE,
     REQUEST_KEY_RELAY_STATE,
@@ -27,6 +39,24 @@ from authentik.providers.saml.views.flows import (
 )
 
 LOGGER = get_logger()
+
+
+def _get_redirect_url(request: HttpRequest, relay_state: str = "") -> str:
+    """Get the safe redirect URL from the plan context, logging a warning if the
+    incoming relay_state doesn't match the stored value."""
+    stored_relay_state = ""
+    if SESSION_KEY_PLAN in request.session:
+        plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        stored_relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE, "")
+
+    if relay_state and relay_state != stored_relay_state:
+        LOGGER.warning(
+            "SAML logout relay_state mismatch, possible open redirect attempt",
+            received_relay_state=relay_state,
+            stored_relay_state=stored_relay_state,
+        )
+
+    return stored_relay_state
 
 
 class SPInitiatedSLOView(PolicyAccessView):
@@ -68,7 +98,117 @@ class SPInitiatedSLOView(PolicyAccessView):
                 **self.plan_context,
             },
         )
-        plan.append_stage(in_memory_stage(SessionEndStage))
+
+        if self.provider.sls_url:
+            # Get logout request and extract relay state
+            logout_request = self.plan_context.get(PLAN_CONTEXT_SAML_LOGOUT_REQUEST)
+            relay_state = logout_request.relay_state if logout_request else None
+
+            # Store relay state for the logout response
+            plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+
+            # Look up the session issuer to use in the logout response
+            auth_session = AuthenticatedSession.from_request(request, request.user)
+            session_issuer = None
+            if auth_session:
+                saml_session = SAMLSession.objects.filter(
+                    session=auth_session,
+                    user=request.user,
+                    provider=self.provider,
+                ).first()
+                if saml_session:
+                    session_issuer = saml_session.issuer
+
+            if self.provider.logout_method == SAMLLogoutMethods.FRONTCHANNEL_NATIVE:
+                # Native mode - user will be redirected/posted away from authentik
+                processor = LogoutResponseProcessor(
+                    self.provider,
+                    logout_request,
+                    destination=self.provider.sls_url,
+                    issuer=session_issuer,
+                )
+
+                if self.provider.sls_binding == SAMLBindings.POST:
+                    logout_response = processor.encode_post()
+                    logout_data = {
+                        "post_url": self.provider.sls_url,
+                        "saml_response": logout_response,
+                        "saml_relay_state": relay_state,
+                        "provider_name": self.provider.name,
+                        "saml_binding": SAMLBindings.POST,
+                    }
+                else:
+                    logout_url = processor.get_redirect_url()
+                    logout_data = {
+                        "redirect_url": logout_url,
+                        "provider_name": self.provider.name,
+                        "saml_binding": SAMLBindings.REDIRECT,
+                    }
+
+                plan.context[PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS] = [logout_data]
+                plan.append_stage(in_memory_stage(NativeLogoutStageView))
+            elif self.provider.logout_method == SAMLLogoutMethods.BACKCHANNEL:
+                # Backchannel mode - server sends logout response directly to SP in background
+                # No user interaction needed
+                if self.provider.sls_binding != SAMLBindings.POST:
+                    LOGGER.warning(
+                        "Backchannel logout requires POST binding, but provider is configured "
+                        "with %s binding",
+                        self.provider.sls_binding,
+                        provider=self.provider,
+                    )
+
+                # Queue the logout response to be sent in the background
+                # This doesn't block the user's logout from completing
+                send_saml_logout_response.send(
+                    provider_pk=self.provider.pk,
+                    sls_url=self.provider.sls_url,
+                    logout_request_id=logout_request.id if logout_request else None,
+                    relay_state=relay_state,
+                    issuer=session_issuer,
+                )
+
+                LOGGER.debug(
+                    "Queued backchannel logout response",
+                    provider=self.provider,
+                    sls_url=self.provider.sls_url,
+                )
+
+                # Just end the session - no user interaction needed
+                plan.append_stage(in_memory_stage(SessionEndStage))
+            else:
+                # Iframe mode (default for FRONTCHANNEL_IFRAME) - user stays on authentik
+                processor = LogoutResponseProcessor(
+                    self.provider,
+                    logout_request,
+                    destination=self.provider.sls_url,
+                    issuer=session_issuer,
+                )
+
+                logout_response = processor.build_response()
+
+                if self.provider.sls_binding == SAMLBindings.POST:
+                    logout_data = {
+                        "url": self.provider.sls_url,
+                        "saml_response": nice64(logout_response),
+                        "saml_relay_state": relay_state,
+                        "provider_name": self.provider.name,
+                        "binding": SAMLBindings.POST,
+                    }
+                else:
+                    logout_url = processor.get_redirect_url()
+                    logout_data = {
+                        "url": logout_url,
+                        "provider_name": self.provider.name,
+                        "binding": SAMLBindings.REDIRECT,
+                    }
+
+                plan.context[PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS] = [logout_data]
+                plan.append_stage(in_memory_stage(IframeLogoutStageView))
+                plan.append_stage(in_memory_stage(SessionEndStage))
+        else:
+            # No SLS URL configured, just end session
+            plan.append_stage(in_memory_stage(SessionEndStage))
 
         # Remove samlsession from database
         auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
@@ -96,17 +236,9 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.GET:
             relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
-                return redirect(relay_state)
-
-            # No RelayState provided, try to get return URL from plan context
-            if SESSION_KEY_PLAN in request.session:
-                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-                relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
-                if relay_state:
-                    return redirect(relay_state)
-
-            # No relay state and no plan context - redirect to root
+            redirect_url = _get_redirect_url(request, relay_state)
+            if redirect_url:
+                return redirect(redirect_url)
             return redirect("authentik_core:root-redirect")
 
         # For SAML logout requests, use the parent dispatch with auth checks
@@ -147,17 +279,9 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.POST:
             relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
-                return redirect(relay_state)
-
-            # No RelayState provided, try to get return URL from plan context
-            if SESSION_KEY_PLAN in request.session:
-                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-                relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
-                if relay_state:
-                    return redirect(relay_state)
-
-            # No relay state and no plan context - redirect to root
+            redirect_url = _get_redirect_url(request, relay_state)
+            if redirect_url:
+                return redirect(redirect_url)
             return redirect("authentik_core:root-redirect")
 
         # For SAML logout requests, use the parent dispatch with auth checks

@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages import get_messages
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
@@ -12,15 +13,16 @@ from django.urls import reverse
 from django.views.generic.base import View
 from prometheus_client import Histogram
 from rest_framework.request import Request
-from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Application, User
+from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+from authentik.core.models import Application, User, UserTypes
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
     ChallengeResponse,
     ContextualFlowInfo,
+    FlowMessageSerializer,
     HttpChallengeResponse,
     RedirectChallenge,
     SessionEndChallenge,
@@ -30,6 +32,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
@@ -131,7 +134,7 @@ class ChallengeStageView(StageView):
                 )
                 return self.executor.restart_flow(keep_context)
             with (
-                start_span(
+                active_tracer().start_span(
                     op="authentik.flow.stage.challenge_invalid",
                     name=self.__class__.__name__,
                 ),
@@ -141,7 +144,7 @@ class ChallengeStageView(StageView):
             ):
                 return self.challenge_invalid(challenge)
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.stage.challenge_valid",
                 name=self.__class__.__name__,
             ),
@@ -177,7 +180,7 @@ class ChallengeStageView(StageView):
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.stage.get_challenge",
                 name=self.__class__.__name__,
             ),
@@ -186,23 +189,29 @@ class ChallengeStageView(StageView):
             ).time(),
         ):
             challenge = self.get_challenge(*args, **kwargs)
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.flow.stage._get_challenge",
             name=self.__class__.__name__,
         ):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
             if "flow_info" not in challenge.initial_data:
+                messages = []
+                if self.request is not None and not isinstance(challenge, RedirectChallenge):
+                    messages = get_messages(self.request)
+                # Flow payloads can outlive the previous signed media JWT, so
+                # refreshes must mint fresh URLs instead of reusing cached ones.
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url(self.request),
+                        "background": self.executor.flow.background_url(use_cache=False),
                         "background_themed_urls": self.executor.flow.background_themed_urls(
-                            self.request
+                            use_cache=False,
                         ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
-                    }
+                        "messages": FlowMessageSerializer(messages, many=True).data,
+                    },
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
@@ -300,7 +309,24 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        # Check for OIDC post_logout_redirect_uri in context
+        post_logout_redirect_uri = self.executor.plan.context.get(
+            PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+        )
+
+        if post_logout_redirect_uri:
+            self.logger.debug(
+                "SessionEndStage redirecting to post_logout_redirect_uri",
+                redirect_url=post_logout_redirect_uri,
+            )
+            return RedirectChallenge(
+                data={
+                    "to": post_logout_redirect_uri,
+                },
+            )
+
         if not self.request.user.is_authenticated:
+            # User is logged out with no redirect URI - go to default
             return RedirectChallenge(
                 data={
                     "to": reverse("authentik_core:root-redirect"),
@@ -311,6 +337,10 @@ class SessionEndStage(ChallengeStageView):
             "component": "ak-stage-session-end",
             "brand_name": self.request.brand.branding_title,
         }
+        if self.get_pending_user().type == UserTypes.INTERNAL:
+            data["overview_url"] = self.request.build_absolute_uri(
+                reverse("authentik_core:root-redirect")
+            )
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())

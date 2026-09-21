@@ -28,6 +28,20 @@ export abstract class CaptchaController implements ReactiveController {
         return (this.constructor as typeof CaptchaController).globalName;
     }
 
+    public static readonly scriptType: "classic" | "module" = "classic";
+
+    public get scriptType(): "classic" | "module" {
+        return (this.constructor as typeof CaptchaController).scriptType;
+    }
+
+    public static isAvailable(): boolean {
+        return Object.hasOwn(window, this.globalName);
+    }
+
+    public static matchesURL(_url: URL): boolean {
+        return false;
+    }
+
     /**
      * A prefix for log messages from this controller.
      */
@@ -42,7 +56,7 @@ export abstract class CaptchaController implements ReactiveController {
     ): Array<CaptchaControllerConstructor | undefined> {
         return Array.from(controllerConstructors).filter((Controller) => {
             // Can we find the global for this captcha provider?
-            return Object.hasOwn(window, Controller.globalName);
+            return Controller.isAvailable();
         });
     }
 
@@ -98,6 +112,9 @@ export abstract class CaptchaController implements ReactiveController {
 
 export type CaptchaControllerConstructor = {
     globalName: string;
+    scriptType: "classic" | "module";
+    isAvailable: () => boolean;
+    matchesURL: (url: URL) => boolean;
 } & (new (host: CaptchaHandlerHost) => CaptchaController);
 
 export interface CaptchaHandlerHost extends ReactiveControllerHost {

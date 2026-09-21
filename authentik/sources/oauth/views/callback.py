@@ -15,6 +15,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.events.models import Event, EventAction
+from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.models import (
     GroupOAuthSourceConnection,
     OAuthSource,
@@ -29,7 +30,7 @@ class OAuthCallback(OAuthClientMixin, View):
     "Base OAuth callback view."
 
     source: OAuthSource
-    token: dict | None = None
+    token: dict[str, Any] | None = None
 
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
         """View Get handler"""
@@ -50,19 +51,30 @@ class OAuthCallback(OAuthClientMixin, View):
             return self.handle_login_failure(self.token["error"])
         # Fetch profile info
         try:
+            res = self.redirect_flow_manager(client)
+        except ValueError as exc:
+            # if we're authenticated and not in a source stage and this new flag is enabled,
+            # just continue
+            if self.request.user.is_authenticated:
+                pass
+            return self.handle_login_failure(exc.args[0])
+        return res
+
+    def redirect_flow_manager(self, client: BaseOAuthClient) -> HttpResponse:
+        try:
             raw_info = client.get_profile_info(self.token)
             if raw_info is None:
-                return self.handle_login_failure("Could not retrieve profile.")
+                raise ValueError("Could not retrieve profile.")
         except JSONDecodeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message="Failed to JSON-decode profile.",
                 raw_profile=exc.doc,
             ).from_http(self.request)
-            return self.handle_login_failure("Could not retrieve profile.")
+            raise ValueError("Could not retrieve profile.") from None
         identifier = self.get_user_id(info=raw_info)
         if identifier is None:
-            return self.handle_login_failure("Could not determine id.")
+            raise ValueError("Could not determine id.")
         sfm = OAuthSourceFlowManager(
             source=self.source,
             request=self.request,
@@ -94,7 +106,7 @@ class OAuthCallback(OAuthClientMixin, View):
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from the profile info."""
         if "id" in info:
-            return info["id"]
+            return str(info["id"])
         return None
 
     def handle_login_failure(self, reason: str) -> HttpResponse:

@@ -15,9 +15,6 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { guard } from "lit/directives/guard.js";
 
-// Fixes horizontal rule <hr> warning in select dropdowns.
-/* eslint-disable lit/no-invalid-html */
-
 export interface LocalePromptProps {
     activeLanguageTag: TargetLanguageTag;
     prompt: StagePrompt;
@@ -51,7 +48,7 @@ export const LocalePrompt: LitFC<LocalePromptProps> = ({
                 : null;
 
             /**
-             *  This is a bit subtle.
+             * This is a bit subtle.
              *
              * -
              */

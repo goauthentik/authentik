@@ -24,12 +24,16 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
-from authentik.common.saml.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
+from authentik.common.saml.constants import (
+    DEFAULT_ISSUER,
+    SAML_BINDING_REDIRECT,
+    SAML_BINDINGS_SUPPORTED,
+)
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.crypto.models import KeyType
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -55,7 +59,13 @@ class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
 
     url_download_metadata = SerializerMethodField()
+    url_issuer = SerializerMethodField()
 
+    # Unified SAML endpoint (primary)
+    url_unified = SerializerMethodField()
+    url_unified_init = SerializerMethodField()
+
+    # Legacy endpoints (for backward compatibility)
     url_sso_post = SerializerMethodField()
     url_sso_redirect = SerializerMethodField()
     url_sso_init = SerializerMethodField()
@@ -84,6 +94,53 @@ class SAMLProviderSerializer(ProviderSerializer):
                 )
                 + "?download"
             )
+
+    def get_url_issuer(self, instance: SAMLProvider) -> str:
+        """Get Issuer/EntityID URL"""
+        if instance.issuer_override:
+            return instance.issuer_override
+        if "request" not in self._context:
+            return DEFAULT_ISSUER
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return DEFAULT_ISSUER
+
+    def get_url_unified(self, instance: SAMLProvider) -> str:
+        """Get unified SAML endpoint URL (handles SSO and SLO)"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:base",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
+
+    def get_url_unified_init(self, instance: SAMLProvider) -> str:
+        """Get IdP-initiated SAML URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:init",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
@@ -171,17 +228,6 @@ class SAMLProviderSerializer(ProviderSerializer):
                     )
                 )
 
-            key_type = signing_kp.key_type
-
-            if key_type and key_type not in [KeyType.RSA, KeyType.EC, KeyType.DSA]:
-                raise ValidationError(
-                    {
-                        "signing_kp": _(
-                            "Only RSA, EC, and DSA key types are supported for SAML signing."
-                        )
-                    }
-                )
-
         # Validate logout_method - backchannel is only available with POST SLS binding
         if (
             attrs.get("logout_method") == SAMLLogoutMethods.BACKCHANNEL
@@ -198,7 +244,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "acs_url",
             "sls_url",
             "audience",
-            "issuer",
+            "issuer_override",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
@@ -213,26 +259,33 @@ class SAMLProviderSerializer(ProviderSerializer):
             "sign_assertion",
             "sign_response",
             "sign_logout_request",
+            "sign_logout_response",
             "sp_binding",
             "sls_binding",
             "logout_method",
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
+            "url_issuer",
+            "url_unified",
+            "url_unified_init",
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",
             "url_slo_post",
             "url_slo_redirect",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
-    metadata = CharField(read_only=True)
-    download_url = CharField(read_only=True, required=False)
+    metadata = CharField()
+    download_url = CharField(required=False, allow_null=True)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):
@@ -274,10 +327,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 name="force_binding",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
-                enum=[
-                    SAML_BINDING_REDIRECT,
-                    SAML_BINDING_POST,
-                ],
+                enum=SAML_BINDINGS_SUPPORTED,
                 description="Optionally force the metadata to only include one binding.",
             ),
             # Explicitly excluded, because otherwise spectacular automatically
@@ -314,7 +364,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 return response
             return Response({"metadata": metadata}, content_type="application/json")
         except Provider.application.RelatedObjectDoesNotExist:
-            return Response({"metadata": ""}, content_type="application/json")
+            raise Http404 from None
 
     @permission_required(
         None,

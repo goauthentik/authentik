@@ -3,8 +3,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -14,8 +13,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowStageBinding,
     InvalidResponseActionEnum,
     Stage,
@@ -24,7 +23,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
@@ -52,14 +51,18 @@ function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
+    public static override verboseName = msg("Stage Binding");
+    public static override verboseNamePlural = msg("Stage Bindings");
+
     async load() {
         this.defaultOrder = await this.getOrder();
     }
 
     async loadInstance(pk: string): Promise<FlowStageBinding> {
-        const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
+        const binding = await aki(FlowsApi).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
+
         return binding;
     }
 
@@ -79,20 +82,23 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
     send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsPartialUpdate({
+            return aki(FlowsApi).flowsBindingsPartialUpdate({
                 fsbUuid: this.instance.pk,
                 patchedFlowStageBindingRequest: data,
             });
         }
+
         if (this.targetPk) {
             data.target = this.targetPk;
         }
-        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
+
+        return aki(FlowsApi).flowsBindingsCreate({
             flowStageBindingRequest: data,
         });
     }
@@ -101,13 +107,17 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
-        const bindings = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
+
+        const bindings = await aki(FlowsApi).flowsBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -115,27 +125,40 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
                 required
             ></ak-flow-search>
         </ak-form-element-horizontal>`;
     }
 
-    protected override renderForm(): TemplateResult {
-        return html` ${this.renderTarget()}
+    protected override renderForm(): SlottedTemplateResult {
+        return html`${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
+                    placeholder=${msg("Select a stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList(args);
+
+                        const stages = await aki(StagesApi).stagesAllList(args);
+                        const selectedStage = this.instance?.stageObj;
+
+                        if (
+                            selectedStage &&
+                            !stages.results.some((stage) => stage.pk === selectedStage.pk)
+                        ) {
+                            return [selectedStage, ...stages.results];
+                        }
+
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

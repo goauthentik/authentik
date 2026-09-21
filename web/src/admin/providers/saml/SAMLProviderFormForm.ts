@@ -9,26 +9,27 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    logoutMethodOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
+
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     KeyTypeEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
-    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -72,6 +73,13 @@ function renderHasSigningKp(provider: Partial<SAMLProvider>) {
             ?checked=${provider?.signLogoutRequest ?? false}
             help=${msg("When enabled, SAML logout requests will be signed.")}
         >
+        </ak-switch-input>
+        <ak-switch-input
+            name="signLogoutResponse"
+            label=${msg("Sign logout response")}
+            ?checked=${provider?.signLogoutResponse ?? false}
+            help=${msg("When enabled, SAML logout responses will be signed.")}
+        >
         </ak-switch-input>`;
 }
 
@@ -82,23 +90,6 @@ function renderHasSlsUrl(
     logoutMethod: string,
     setLogoutMethod?: (ev: Event) => void,
 ) {
-    const logoutMethodOptions: RadioOption<string>[] = [
-        {
-            label: msg("Front-channel (Iframe)"),
-            value: SAMLLogoutMethods.FrontchannelIframe,
-            default: true,
-        },
-        {
-            label: msg("Front-channel (Native)"),
-            value: SAMLLogoutMethods.FrontchannelNative,
-        },
-        {
-            label: msg("Back-channel (POST)"),
-            value: SAMLLogoutMethods.Backchannel,
-            disabled: !hasPostBinding,
-        },
-    ];
-
     return html`<ak-radio-input
             label=${msg("SLS Binding")}
             name="slsBinding"
@@ -113,16 +104,17 @@ function renderHasSlsUrl(
         <ak-radio-input
             label=${msg("Logout Method")}
             name="logoutMethod"
-            .options=${logoutMethodOptions}
+            .options=${logoutMethodOptions(hasPostBinding)}
             .value=${logoutMethod}
             help=${msg("Method to use for logout when SLS URL is configured.")}
             @change=${setLogoutMethod}
         >
         </ak-radio-input>`;
 }
+
 export interface SAMLProviderFormProps {
-    provider?: Partial<SAMLProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SAMLProvider> | null;
+    errors?: ValidationError | null;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
@@ -135,8 +127,8 @@ export interface SAMLProviderFormProps {
 }
 
 export function renderForm({
-    provider = {},
-    errors = {},
+    provider,
+    errors,
     setHasSigningKp,
     hasSigningKp,
     signingKeyType,
@@ -147,6 +139,9 @@ export function renderForm({
     logoutMethod,
     setLogoutMethod,
 }: SAMLProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     // Get available hash algorithms for the selected key type
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
 
@@ -159,11 +154,11 @@ export function renderForm({
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
                 required
@@ -184,15 +179,6 @@ export function renderForm({
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    input-hint="code"
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as Entity ID.")}
                 ></ak-text-input>
                 <ak-text-input
                     name="audience"
@@ -216,26 +202,28 @@ export function renderForm({
                     )}
                     @input=${setHasSlsUrl}
                 ></ak-text-input>
-                ${hasSlsUrl
-                    ? renderHasSlsUrl(
-                          provider,
-                          hasPostBinding,
-                          setSlsBinding,
-                          logoutMethod,
-                          setLogoutMethod,
-                      )
-                    : nothing}
+                ${
+                    hasSlsUrl
+                        ? renderHasSlsUrl(
+                              provider,
+                              hasPostBinding,
+                              setSlsBinding,
+                              logoutMethod,
+                              setLogoutMethod,
+                          )
+                        : nothing
+                }
             </div>
         </ak-form-group>
 
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -245,12 +233,12 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required
@@ -269,7 +257,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -286,7 +274,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.verificationKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -301,7 +289,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -327,12 +315,16 @@ export function renderForm({
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
+
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -362,12 +354,16 @@ export function renderForm({
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
+
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -425,6 +421,15 @@ export function renderForm({
                         "When using IDP-initiated logins, the relay state will be set to this value.",
                     )}
                 ></ak-text-input>
+                <ak-text-input
+                    label=${msg("EntityID/Issuer override")}
+                    name="issuerOverride"
+                    value="${ifDefined(provider.issuerOverride ?? undefined)}"
+                    .errorMessages=${errors.issuerOverride}
+                    help=${msg(
+                        "Sets a custom EntityID/Issuer to override the authentik generated default.",
+                    )}
+                ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Service Provider Binding")}
                     name="spBinding"
@@ -442,36 +447,46 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent
+                            }
                         >
                             ${msg("Persistent")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress
+                            }
                         >
                             ${msg("Email address")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName
+                            }
                         >
                             ${msg("Windows")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName
+                            }
                         >
                             ${msg("X509 Subject")}
                         </option>
                         <option
                             value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient
+                            }
                         >
                             ${msg("Transient")}
                         </option>
@@ -493,8 +508,10 @@ export function renderForm({
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.digestAlgorithm === opt.value ||
-                                    (!provider?.digestAlgorithm && opt.default)}
+                                    ?selected=${
+                                        provider?.digestAlgorithm === opt.value ||
+                                        (!provider?.digestAlgorithm && opt.default)
+                                    }
                                 >
                                     ${opt.label}
                                 </option>
@@ -511,6 +528,7 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         ${availableHashes.map((hash) => {
                             const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+
                             if (!algorithmValue) return nothing;
 
                             // Default to sha256 or selected sha algorithm if valid
@@ -524,8 +542,11 @@ export function renderForm({
                             return html`
                                 <option
                                     value=${algorithmValue}
-                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                    ?selected=${
+                                        provider?.signatureAlgorithm === algorithmValue ||
+                                        (!isCurrentAlgorithmAvailable &&
+                                            hash === DEFAULT_HASH_ALGORITHM)
+                                    }
                                 >
                                     ${hash}
                                 </option>

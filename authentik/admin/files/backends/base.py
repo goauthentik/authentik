@@ -94,7 +94,7 @@ class Backend:
 
         Args:
             file_path: Relative file path
-            request: Optional Django HttpRequest for fully qualifed URL building
+            request: Optional Django HttpRequest for fully qualified URL building
             use_cache: whether to retrieve the URL from cache
 
         Returns:
@@ -106,6 +106,7 @@ class Backend:
         self,
         name: str,
         request: HttpRequest | None = None,
+        use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
         Get URLs for each theme variant when filename contains %(theme)s.
@@ -121,7 +122,7 @@ class Backend:
             return None
 
         return {
-            theme: self.file_url(substitute_theme(name, theme), request, use_cache=True)
+            theme: self.file_url(substitute_theme(name, theme), request, use_cache=use_cache)
             for theme in get_valid_themes()
         }
 

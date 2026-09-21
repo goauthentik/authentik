@@ -9,7 +9,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
@@ -19,6 +18,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search"
 	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
 	memorysearch "goauthentik.io/internal/outpost/ldap/search/memory"
+	api "goauthentik.io/packages/client-go"
 )
 
 func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {

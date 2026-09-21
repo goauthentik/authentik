@@ -1,6 +1,5 @@
 import "#elements/forms/ConfirmationForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
@@ -34,14 +33,16 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
     }
 
     async apiRequest(): Promise<SummarizedSyncStatus[]> {
-        const api = new OutpostsApi(DEFAULT_CONFIG);
+        const api = aki(OutpostsApi);
         const outposts = await api.outpostsInstancesList({});
         const outpostStats: SummarizedSyncStatus[] = [];
+
         await Promise.all(
             outposts.results.map(async (element) => {
                 const health = await api.outpostsInstancesHealthList({
                     uuid: element.pk || "",
                 });
+
                 const singleStats: SummarizedSyncStatus = {
                     unsynced: 0,
                     healthy: 0,
@@ -49,9 +50,11 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
                     total: health.length,
                     label: element.name,
                 };
+
                 if (health.length === 0) {
                     singleStats.unsynced += 1;
                 }
+
                 health.forEach((h) => {
                     if (h.versionOutdated) {
                         singleStats.failed += 1;
@@ -59,11 +62,14 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
                         singleStats.healthy += 1;
                     }
                 });
+
                 outpostStats.push(singleStats);
             }),
         );
+
         this.centerText = outposts.pagination.count.toString();
         outpostStats.sort((a, b) => a.label.localeCompare(b.label));
+
         return outpostStats;
     }
 
