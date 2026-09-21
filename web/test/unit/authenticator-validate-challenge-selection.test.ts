@@ -1,5 +1,6 @@
 import {
     findMatchingChallenge,
+    requiresSelectionNotification,
     shouldResetSelectedChallenge,
 } from "#flow/stages/authenticator_validate/challenge-selection";
 
@@ -74,5 +75,27 @@ describe("findMatchingChallenge", () => {
         const allowed = [makeDeviceChallenge(DeviceClassesEnum.Webauthn, "webauthn-1")];
 
         expect(findMatchingChallenge(null, allowed)).toBeNull();
+    });
+});
+
+describe("requiresSelectionNotification", () => {
+    it.each([DeviceClassesEnum.Sms, DeviceClassesEnum.Email])(
+        "returns true when selecting a %s challenge sends a code",
+        (deviceClass) => {
+            expect(requiresSelectionNotification(makeDeviceChallenge(deviceClass, "1"))).toBe(true);
+        },
+    );
+
+    it.each([
+        DeviceClassesEnum.Webauthn,
+        DeviceClassesEnum.Totp,
+        DeviceClassesEnum.Static,
+        DeviceClassesEnum.Duo,
+    ])("returns false when selecting a %s challenge has no backend effect", (deviceClass) => {
+        expect(requiresSelectionNotification(makeDeviceChallenge(deviceClass, "1"))).toBe(false);
+    });
+
+    it("returns false when there was no selected challenge", () => {
+        expect(requiresSelectionNotification(null)).toBe(false);
     });
 });

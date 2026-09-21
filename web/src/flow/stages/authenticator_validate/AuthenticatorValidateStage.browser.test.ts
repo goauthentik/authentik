@@ -21,6 +21,15 @@ function webauthnChallengeOf(nonce: string): DeviceChallenge {
     };
 }
 
+function emailChallengeOf(): DeviceChallenge {
+    return {
+        deviceClass: DeviceClassesEnum.Email,
+        deviceUid: "2",
+        challenge: { email: "a***@goauthentik.io" },
+        lastUsed: new Date(),
+    };
+}
+
 function challengeOf(
     deviceChallenges: DeviceChallenge[],
     overrides: Partial<AuthenticatorValidationChallenge> = {},
@@ -64,15 +73,24 @@ const mounted: HTMLElement[] = [];
 
 let submit: ReturnType<typeof vi.fn>;
 let credentialsGet: ReturnType<typeof vi.fn>;
+let fetchMock: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
     submit = vi.fn().mockResolvedValue(true);
     credentialsGet = vi.fn().mockResolvedValue(assertionOf());
 
+    fetchMock = vi
+        .fn()
+        .mockResolvedValue(
+            new Response(JSON.stringify({}), { headers: { "Content-Type": "application/json" } }),
+        );
+
     vi.stubGlobal("navigator", {
         ...navigator,
         credentials: { get: credentialsGet },
     });
+
+    vi.stubGlobal("fetch", fetchMock);
 });
 
 afterEach(() => {
@@ -126,4 +144,42 @@ describe("AuthenticatorValidateStage", () => {
         expect(requestedChallenge(1)).toEqual([4, 5, 6]);
     });
 
+    it("does not notify the backend when a WebAuthn challenge is selected", async () => {
+        const stage = createStage();
+
+        stage.challenge = challengeOf([webauthnChallengeOf("AQID")]);
+
+        await vi.waitFor(() => expect(submit).toHaveBeenCalledOnce());
+
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("waits for the selection notification before submitting a response", async () => {
+        let resolveNotification!: (response: Response) => void;
+
+        fetchMock.mockReturnValue(
+            new Promise<Response>((resolve) => {
+                resolveNotification = resolve;
+            }),
+        );
+
+        const stage = createStage();
+
+        stage.challenge = challengeOf([emailChallengeOf()]);
+
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledOnce());
+
+        const submitted = stage.submit({ component: "ak-stage-authenticator-validate", code: "1" });
+        await stage.updateComplete;
+
+        expect(submit).not.toHaveBeenCalled();
+
+        resolveNotification(
+            new Response(JSON.stringify({}), { headers: { "Content-Type": "application/json" } }),
+        );
+
+        await submitted;
+
+        expect(submit).toHaveBeenCalledOnce();
+    });
 });
