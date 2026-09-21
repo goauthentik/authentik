@@ -316,3 +316,57 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 self.write_blueprint(file, reference),
                 self.write_blueprint(file, reference),
             )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_cycle_content_changed(self):
+        """Test hash changes when a `!File` reached through a cyclic anchor changes"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                cycle = f"&anchor [*anchor, !File {secret.name}]"
+                before = self.write_blueprint(file, cycle)
+                secret.seek(0)
+                secret.truncate()
+                secret.write("rotated")
+                secret.flush()
+                after = self.write_blueprint(file, cycle)
+                self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_alias_content_changed(self):
+        """Test hash changes when a `!File` reachable only through an alias changes"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                alias = f"&anchor [!File {secret.name}]\n  other: *anchor"
+                before = self.write_blueprint(file, alias)
+                secret.seek(0)
+                secret.truncate()
+                secret.write("rotated")
+                secret.flush()
+                after = self.write_blueprint(file, alias)
+                self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_cycle_sequence(self):
+        """Test a blueprint whose anchor makes a sequence contain itself is hashed
+        rather than raising, so discovery of other blueprints continues"""
+        self.assert_discovery_survives("&anchor [*anchor]")
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_cycle_mapping(self):
+        """Test a blueprint whose anchor makes a mapping contain itself is hashed
+        rather than raising, so discovery of other blueprints continues"""
+        self.assert_discovery_survives("&anchor {key: *anchor}")
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_deeply_nested(self):
+        """Test a deeply nested blueprint with no cycle is hashed (control)"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = "[" * 50 + f'!File "{TMP}/fallback"' + "]" * 50
+            self.assertEqual(
+                self.write_blueprint(file, reference),
+                self.write_blueprint(file, reference),
+            )

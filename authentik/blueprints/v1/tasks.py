@@ -64,9 +64,15 @@ class BlueprintFile:
     meta: BlueprintMetadata | None = field(default=None)
 
 
-def iter_file_tags(value: Any) -> Generator[File]:
+def iter_file_tags(value: Any, ancestors: frozenset[int] = frozenset()) -> Generator[File]:
     """Find all `!File` tags in a loaded blueprint, including tags used as arguments
-    of other tags"""
+    of other tags. Anchors and aliases let a node contain itself, so a node already on
+    the path from the root is not descended into again; a node shared by two disjoint
+    routes is not its own ancestor and is still walked from each of them, as it is
+    without this check."""
+    if id(value) in ancestors:
+        return
+    ancestors = ancestors | {id(value)}
     if isinstance(value, File):
         yield value
     if isinstance(value, dict):
@@ -78,7 +84,7 @@ def iter_file_tags(value: Any) -> Generator[File]:
     else:
         return
     for child in children:
-        yield from iter_file_tags(child)
+        yield from iter_file_tags(child, ancestors)
 
 
 def blueprint_hash(content: str) -> str:
@@ -103,7 +109,7 @@ def blueprint_hash(content: str) -> str:
             continue
         try:
             referenced = Path(path).read_bytes()
-        except (OSError, ValueError):
+        except OSError, ValueError:
             # The file can't be read - `ValueError` for a path no syscall can take, such
             # as one containing a null byte - so the tag resolves to its default value,
             # which is part of the content hashed above
