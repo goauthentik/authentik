@@ -5,20 +5,17 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-# Keep in sync with authentik.providers.rac.models.RAC_ATTRIBUTES
-RAC_ATTRIBUTES = "goauthentik.io/rac"
-
 
 def migrate_endpoints_to_devices(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     """Convert every RAC endpoint into a device.
 
     The device re-uses the endpoint's primary key as its `device_uuid`, so existing
-    launch URLs (`/application/rac/<app>/<uuid>/`) keep working. Everything that used
-    to be configured on the endpoint is stored as a RAC override on the device."""
+    launch URLs (`/application/rac/<app>/<uuid>/`) keep working. The endpoint's host
+    host and protocol become a connection override for the device."""
     db_alias = schema_editor.connection.alias
     Endpoint = apps.get_model("authentik_providers_rac", "Endpoint")
-    EndpointPropertyMapping = apps.get_model("authentik_providers_rac", "EndpointPropertyMapping")
     ConnectionToken = apps.get_model("authentik_providers_rac", "ConnectionToken")
+    RACConnectionOverride = apps.get_model("authentik_providers_rac", "RACConnectionOverride")
     Device = apps.get_model("authentik_endpoints", "Device")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
 
@@ -42,28 +39,17 @@ def migrate_endpoints_to_devices(apps: Apps, schema_editor: BaseDatabaseSchemaEd
         return name
 
     for endpoint in Endpoint.objects.using(db_alias).select_related("provider").iterator():
-        overrides = {
-            "host": endpoint.host,
-            "protocol": endpoint.protocol,
-            "maximum_connections": endpoint.maximum_connections,
-        }
-        if endpoint.settings:
-            overrides["settings"] = endpoint.settings
-        property_mappings = [
-            str(pk)
-            for pk in EndpointPropertyMapping.objects.using(db_alias)
-            .filter(endpoint=endpoint)
-            .values_list("property_mapping_id", flat=True)
-        ]
-        if property_mappings:
-            overrides["property_mappings"] = property_mappings
         device = Device.objects.using(db_alias).create(
             device_uuid=endpoint.pk,
             name=unique_name(endpoint),
             identifier=f"rac://{endpoint.pk}",
             expiring=False,
-            attributes={RAC_ATTRIBUTES: overrides},
             policy_engine_mode=endpoint.policy_engine_mode,
+        )
+        RACConnectionOverride.objects.using(db_alias).create(
+            device=device,
+            host=endpoint.host,
+            protocol=endpoint.protocol,
         )
         # Policies bound to the endpoint now apply to the device
         PolicyBinding.objects.using(db_alias).filter(target_id=endpoint.pk).update(
@@ -96,19 +82,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="racprovider",
-            name="protocol",
-            field=models.TextField(
-                blank=True,
-                choices=[("rdp", "Rdp"), ("vnc", "Vnc"), ("ssh", "Ssh")],
-                default="",
-                help_text=(
-                    "Protocol used to connect to devices. When left empty, the protocol is "
-                    "based on the device's operating system."
-                ),
-            ),
-        ),
-        migrations.AddField(
-            model_name="racprovider",
             name="maximum_connections",
             field=models.IntegerField(
                 default=1,
@@ -133,6 +106,39 @@ class Migration(migrations.Migration):
                 to="authentik_endpoints.deviceaccessgroup",
             ),
         ),
+        migrations.CreateModel(
+            name="RACConnectionOverride",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "host",
+                    models.TextField(
+                        help_text="Hostname/IP to connect to. Optionally specify the port."
+                    ),
+                ),
+                (
+                    "protocol",
+                    models.TextField(choices=[("rdp", "Rdp"), ("vnc", "Vnc"), ("ssh", "Ssh")]),
+                ),
+                (
+                    "device",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rac_override",
+                        to="authentik_endpoints.device",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "RAC Connection override",
+                "verbose_name_plural": "RAC Connection overrides",
+            },
+        ),
         migrations.RunPython(migrate_endpoints_to_devices, migrations.RunPython.noop),
         migrations.RemoveField(
             model_name="connectiontoken",
@@ -140,9 +146,14 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="connectiontoken",
-            name="device",
+            name="protocol",
             # All connection tokens are deleted above, so the column can be added as
             # non-nullable without a default
+            field=models.TextField(choices=[("rdp", "Rdp"), ("vnc", "Vnc"), ("ssh", "Ssh")]),
+        ),
+        migrations.AddField(
+            model_name="connectiontoken",
+            name="device",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to="authentik_endpoints.device",
@@ -163,10 +174,6 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name="endpoint",
             name="provider",
-        ),
-        migrations.RemoveField(
-            model_name="endpoint",
-            name="policybindingmodel_ptr",
         ),
         migrations.DeleteModel(
             name="EndpointPropertyMapping",

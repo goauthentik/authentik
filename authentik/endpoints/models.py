@@ -84,7 +84,7 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
         return DeviceFactSnapshot(data=data, created=last_updated)
 
     @property
-    def _facts_data(self) -> dict[str, Any]:
+    def facts_data(self) -> dict[str, Any]:
         """Facts of this device, or an empty dict when there are none (yet)"""
         try:
             return self.cached_facts.data or {}
@@ -92,15 +92,10 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             return {}
 
     @property
-    def os_family(self) -> str | None:
-        """Operating system family of this device, from its most recent facts"""
-        return (self._facts_data.get("os") or {}).get("family")
-
-    @property
     def address(self) -> str | None:
         """Best-effort address to reach this device on, from its most recent facts.
         The reported hostname is preferred over an interface address."""
-        network = self._facts_data.get("network") or {}
+        network = self.facts_data.get("network") or {}
         if hostname := network.get("hostname"):
             return hostname
         for interface in network.get("interfaces") or []:

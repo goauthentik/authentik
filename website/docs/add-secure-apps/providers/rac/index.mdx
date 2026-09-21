@@ -37,16 +37,16 @@ After connecting to the remote machine, the outpost sends a message back to the 
 
 Unlike other providers, where an application-provider pair is created for each resource you wish to access, RAC works differently. RAC uses a single application connected to one RAC provider, and that provider connects to the [devices](../../../endpoint-devices/index.mdx) in your authentik instance.
 
-A device is the same object that connectors such as the authentik agent enroll and report facts for, so a machine only has to exist in authentik once. RAC takes the connection details from, in order:
+A device is the same object that connectors such as the authentik agent enroll and report facts for, so a machine only has to exist in authentik once.
 
-1. The RAC settings in the device's attributes, set when adding a device manually or to override what the device reports.
-2. The facts the device reported: its hostname, or the first non-local interface address, and its operating system.
-3. The provider, which sets the protocol (when not set to **Automatic**) and the concurrent connection limit.
+A device that is enrolled through a connector is reached on the address it reports: its hostname, or its first non-local interface address. Which protocols it accepts is taken from its facts too: the authentik agent reports the RDP certificate fingerprint and the SSH host keys of its device, and a device is offered for the protocols it has those for. A device that reports neither is offered for both RDP and SSH, and the user picks when launching it.
+
+A device that is not enrolled, such as a server, has no facts to take any of this from, so it is added with a **connection override** instead. The override sets the host and the single protocol for that one device, and takes precedence over what a device reports. The provider's connection limit applies either way.
 
 To connect to a device, users must have access to the application that the RAC provider is using, and pass the policies bound to the device. Because policies are bound to the device itself, a device's reported facts can gate remote access; see [Restricting access with device compliance](#restricting-access-with-device-compliance). A provider can additionally be limited to a single device access group.
 
 :::info
-A device's attributes are readable by anyone who can view the device, so do not store credentials in its connection settings. Use a [RAC property mapping](#rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx) instead.
+Connection credentials belong in a [RAC property mapping](#rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx), not in a connection override.
 :::
 
 ### Restricting access with device compliance
@@ -108,10 +108,10 @@ RAC connection settings can be set via several methods and are all merged togeth
 1. Default settings
 2. RAC Provider settings
 3. The device's address and port
-4. The device's RAC connection settings
-5. RAC Provider property mapping settings
-6. RAC property mapping settings referenced by the device
-7. The `connection_settings` object in the flow plan
+4. RAC Provider property mapping settings, which receive the device they are evaluated for
+5. The `connection_settings` object in the flow plan
+
+The protocol is not part of this merge: it is fixed when the connection is authorized, either by the device's connection override or by the protocol the user launched.
 
 For examples of how to configure connection settings, see the [RAC SSH public key authentication](./rac-public-key.mdx) and [RAC Credentials Prompt](./rac_credentials_prompt.mdx) documentation.
 

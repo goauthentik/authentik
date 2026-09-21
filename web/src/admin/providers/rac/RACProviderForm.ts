@@ -4,7 +4,6 @@ import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-number-input";
-import "#components/ak-radio-input";
 import "#admin/endpoints/ak-endpoints-device-group-search";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -21,7 +20,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AKLabel } from "#components/ak-label";
 
-import { FlowDesignationEnum, ProtocolEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -124,33 +123,6 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-radio-input
-                        label=${msg("Protocol")}
-                        name="protocol"
-                        .options=${[
-                            {
-                                label: msg("Automatic"),
-                                value: "",
-                                description: html`${msg(
-                                    "Pick a protocol based on the device's operating system.",
-                                )}`,
-                            },
-                            {
-                                label: msg("RDP"),
-                                value: ProtocolEnum.Rdp,
-                            },
-                            {
-                                label: msg("SSH"),
-                                value: ProtocolEnum.Ssh,
-                            },
-                            {
-                                label: msg("VNC"),
-                                value: ProtocolEnum.Vnc,
-                            },
-                        ]}
-                        .value=${this.instance?.protocol ?? ""}
-                    >
-                    </ak-radio-input>
                     <ak-number-input
                         label=${msg("Maximum concurrent connections")}
                         name="maximumConnections"

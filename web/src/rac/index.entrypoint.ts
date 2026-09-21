@@ -72,7 +72,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     @property()
     token?: string;
 
-    @property({attribute: "device-name"})
+    @property({ attribute: "device-name" })
     deviceName?: string;
 
     @state()

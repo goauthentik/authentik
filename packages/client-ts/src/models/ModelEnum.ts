@@ -60,6 +60,7 @@ export const ModelEnum = {
     AuthentikProvidersProxyProxyprovider: "authentik_providers_proxy.proxyprovider",
     AuthentikProvidersRacRacprovider: "authentik_providers_rac.racprovider",
     AuthentikProvidersRacRacpropertymapping: "authentik_providers_rac.racpropertymapping",
+    AuthentikProvidersRacRacconnectionoverride: "authentik_providers_rac.racconnectionoverride",
     AuthentikProvidersRadiusRadiusprovider: "authentik_providers_radius.radiusprovider",
     AuthentikProvidersRadiusRadiusproviderpropertymapping:
         "authentik_providers_radius.radiusproviderpropertymapping",

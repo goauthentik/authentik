@@ -12,16 +12,19 @@ draft: true
 
 The RAC provider connects to the [devices](../../endpoint-devices/index.mdx) in your authentik instance instead of keeping its own list of endpoints. A machine that is enrolled through a connector, such as the authentik agent, can be connected to directly: authentik takes its address and operating system from the facts it reports, and the policies bound to the device — including policies over those facts — decide who may connect.
 
+A device that is enrolled through a connector is connected to on the address it reports, with the protocols its facts say it accepts — the authentik agent reports the RDP certificate fingerprint and SSH host keys of its device. A device that is not enrolled, such as a server, is added with a **connection override**, which sets the host and protocol for that one device.
+
 On upgrade, every RAC endpoint is converted into a device:
 
-- The endpoint's host, protocol, connection limit, settings, and property mappings are stored as RAC settings in the device's attributes, and its policy bindings are moved to the device.
+- The endpoint's host and protocol become the device's connection override, and its policy bindings are moved to the device.
 - Launch URLs keep working, as each device re-uses the identifier of the endpoint it was created from.
 - Device names are unique across the whole instance; endpoints whose names collide are suffixed with the name of their provider.
+- Per-endpoint connection settings and property mappings are not converted. Move them to a property mapping on the provider, which now receives the `device` it is evaluated for, or to the [credentials prompt](../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
+- The per-endpoint connection limit is replaced by one limit per provider.
+- Launch URLs carry the protocol (`/application/rac/<app>/<device>/<protocol>/`), as a device can be reachable with more than one.
 - Existing connection authorizations are dropped, so users connected at the time of the upgrade have to launch the application again.
 
-Because devices are shared between providers, a device's attributes are readable by everyone who can view the device. Move any credentials in a converted endpoint's settings to a RAC property mapping or the [credentials prompt](../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
-
-The `/rac/endpoints/` API endpoints and the `authentik_providers_rac.endpoint` model are removed; devices are managed through `/endpoints/devices/` and listed per provider through `/rac/devices/`. Blueprints and API clients that create RAC endpoints need to be updated, and permissions that were granted on endpoints have to be granted on devices again.
+The `/rac/endpoints/` API endpoints and the `authentik_providers_rac.endpoint` model are removed. Devices are listed per provider through `/rac/devices/`, their connection overrides are managed through `/rac/connection_overrides/`, and the devices themselves through `/endpoints/devices/`. Blueprints and API clients that create RAC endpoints need to be updated, and permissions that were granted on endpoints have to be granted on devices again.
 
 ## New features and improvements
 

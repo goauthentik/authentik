@@ -66,15 +66,12 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             delete_token_on_disconnect=True,
-        )
-        device = create_test_device(
-            protocol=Protocols.SSH,
-            host=f"{self.host}:2222",
             settings={
                 "username": "authentik",
                 "password": self.password,
             },
         )
+        device = create_test_device(host=f"{self.host}:2222", protocol=Protocols.SSH)
         app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=rac)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
@@ -85,7 +82,14 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
 
         self.start_rac(outpost)
 
-        self.driver.get(self.url("authentik_providers_rac:start", app=app.slug, device=device.pk))
+        self.driver.get(
+            self.url(
+                "authentik_providers_rac:start",
+                app=app.slug,
+                device=device.pk,
+                protocol=Protocols.SSH,
+            )
+        )
         self.login()
         sleep(1)
 

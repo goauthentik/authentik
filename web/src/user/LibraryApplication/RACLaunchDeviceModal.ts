@@ -4,7 +4,7 @@ import { AKModal } from "#elements/dialogs/ak-modal";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Application, RACDevice, RacApi } from "@goauthentik/api";
+import { Application, RACDevice, RACDeviceProtocol, RacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit-html";
@@ -29,13 +29,21 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
     }
 
     protected override rowClickListener(item: RACDevice, event?: InputEvent | PointerEvent) {
-        if (!item.launchUrl) {
+        // Devices which can be reached with more than one protocol are launched from
+        // the protocol buttons instead
+        if (item.protocols.length !== 1) {
             return super.rowClickListener(item, event);
         }
 
+        this.launch(item, item.protocols[0]);
+    }
+
+    protected launch(item: RACDevice, entry: RACDeviceProtocol) {
+        if (!entry.launchUrl) return;
+
         const target = this.app?.openInNewTab ? `ak-rac-device-${item.name}` : "_self";
 
-        window.open(item.launchUrl, target);
+        window.open(entry.launchUrl, target);
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<RACDevice>> {
@@ -44,7 +52,7 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
             provider: this.app?.provider || 0,
         });
 
-        if (devices.pagination.count === 1) {
+        if (devices.pagination.count === 1 && devices.results[0].protocols.length === 1) {
             this.rowClickListener(devices.results[0]);
 
             if (this.parentElement instanceof AKModal) {
@@ -58,7 +66,7 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],
-        [msg("Protocol")],
+        [msg("Connect with")],
     ];
 
     protected override row(item: RACDevice): SlottedTemplateResult[] {
@@ -68,7 +76,18 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
                     ? html` <span class="pf-c-badge pf-m-read">${msg("Your device")}</span>`
                     : html``
             }`,
-            html`${item.protocol.toUpperCase()}`,
+            html`${item.protocols.map(
+                (entry) =>
+                    html`<button
+                        class="pf-c-button pf-m-link"
+                        @click=${(event: PointerEvent) => {
+                            event.stopPropagation();
+                            this.launch(item, entry);
+                        }}
+                    >
+                        ${entry.protocol.toUpperCase()}
+                    </button>`,
+            )}`,
         ];
     }
 }

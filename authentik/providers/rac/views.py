@@ -20,11 +20,7 @@ from authentik.flows.stage import RedirectStage
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.views import PolicyAccessView
-from authentik.providers.rac.models import (
-    ConnectionToken,
-    RACProvider,
-    resolve_maximum_connections,
-)
+from authentik.providers.rac.models import ConnectionToken, RACProvider, available_protocols
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONNECTION_SETTINGS = "connection_settings"
@@ -37,6 +33,7 @@ class RACStartView(PolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
     device: Device
+    protocol: str
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
@@ -44,6 +41,10 @@ class RACStartView(PolicyAccessView):
         # The device must be accessible through this application's provider; the
         # policies bound to the device itself are validated in the RACFinalStage below
         self.device = get_object_or_404(self.provider.devices(), pk=self.kwargs["device"])
+        # ...and it must be reachable with the requested protocol
+        self.protocol = self.kwargs["protocol"]
+        if self.protocol not in available_protocols(self.device):
+            raise Http404
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start flow planner for RAC provider"""
@@ -66,6 +67,7 @@ class RACStartView(PolicyAccessView):
                 RACFinalStage,
                 application=self.application,
                 device=self.device,
+                protocol=self.protocol,
                 provider=self.provider,
             )
         )
@@ -98,11 +100,13 @@ class RACFinalStage(RedirectStage):
     """RAC Connection final stage, set the connection token in the stage"""
 
     device: Device
+    protocol: str
     provider: RACProvider
     application: Application
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         self.device = self.executor.current_stage.device
+        self.protocol = self.executor.current_stage.protocol
         self.provider = self.executor.current_stage.provider
         self.application = self.executor.current_stage.application
         # Check policies bound to the device directly, which includes both device
@@ -118,9 +122,8 @@ class RACFinalStage(RedirectStage):
             device=self.device,
             provider=self.provider,
         )
-        maximum_connections = resolve_maximum_connections(self.provider, self.device)
-        if maximum_connections > -1:
-            if all_tokens.count() >= maximum_connections:
+        if self.provider.maximum_connections > -1:
+            if all_tokens.count() >= self.provider.maximum_connections:
                 msg = [_("Maximum connection limit reached.")]
                 # Check if any other tokens exist for the current user, and inform them
                 # they are already connected
@@ -138,6 +141,7 @@ class RACFinalStage(RedirectStage):
         token = ConnectionToken.objects.create(
             provider=self.provider,
             device=self.device,
+            protocol=self.protocol,
             settings=settings or {},
             session=self.request.session["authenticatedsession"],
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
@@ -148,6 +152,7 @@ class RACFinalStage(RedirectStage):
             authorized_application=self.application,
             flow=self.executor.plan.flow_pk,
             device=self.device.name,
+            protocol=self.protocol,
         ).from_http(self.request)
         self.executor.current_stage.destination = self.request.build_absolute_uri(
             reverse("authentik_providers_rac:if-rac", kwargs={"token": str(token.token)})
