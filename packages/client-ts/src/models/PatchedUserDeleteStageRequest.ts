@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * UserDeleteStage Serializer
+ *
  * @export
  * @interface PatchedUserDeleteStageRequest
  */
 export interface PatchedUserDeleteStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserDeleteStageRequest
-     */
     name?: string;
 }
 

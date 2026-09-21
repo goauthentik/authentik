@@ -21,16 +21,16 @@ from authentik.core.api.transactional_applications import TransactionalApplicati
 from authentik.core.api.users import UserViewSet
 from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
-from authentik.core.views.debug import AccessDeniedView
+from authentik.core.views.debug import AccessDeniedView, ServerLogAPI
 from authentik.core.views.interface import (
     BrandDefaultRedirectView,
     InterfaceView,
     RootRedirectView,
 )
+from authentik.events.consumer import ClientConsumer
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
-from authentik.root.ws.consumer import MessageConsumer
 from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
@@ -116,7 +116,7 @@ websocket_urlpatterns = [
     path(
         "ws/client/",
         ChannelsLoggingMiddleware(
-            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
+            TenantsAwareMiddleware(AuthMiddlewareStack(ClientConsumer.as_asgi()))
         ),
     ),
 ]
@@ -124,4 +124,7 @@ websocket_urlpatterns = [
 if settings.DEBUG:
     urlpatterns += [
         path("debug/policy/deny/", AccessDeniedView.as_view(), name="debug-policy-deny"),
+    ]
+    api_urlpatterns += [
+        path("debug/log/", ServerLogAPI.as_view(), name="debug-log"),
     ]

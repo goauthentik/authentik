@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
@@ -23,6 +22,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,
@@ -56,10 +56,7 @@ class TokenView(View):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
-        if self.provider:
-            allowed_origins = [x.url for x in self.provider.redirect_uris]
-        cors_allow(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
@@ -68,7 +65,7 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
@@ -79,7 +76,7 @@ class TokenView(View):
                 self.params = parse_token_request(request, self.provider, client_id, client_secret)
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:

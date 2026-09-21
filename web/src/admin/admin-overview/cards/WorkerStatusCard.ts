@@ -29,6 +29,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
                 message: html`${msg("Worker with incorrect version connected.")}`,
             });
         }
+
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
         });

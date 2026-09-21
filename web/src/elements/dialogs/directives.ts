@@ -2,12 +2,11 @@ import { checkObjectShallowEquality } from "#common/collections";
 
 import { AKElement } from "#elements/Base";
 import { asInvoker, type ModalTemplate } from "#elements/dialogs/invokers";
-import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
 import { ElementConstructorBoundary } from "#elements/errors/boundaries";
 import type { LitPropertyRecord } from "#elements/types";
 import { isAKElementConstructor, StrictUnsafe } from "#elements/utils/unsafe";
 
-import { ElementPart, noChange } from "lit";
 import {
     directive,
     Directive,
@@ -15,6 +14,8 @@ import {
     PartInfo,
     PartType,
 } from "lit-html/async-directive.js";
+
+import { ElementPart, noChange } from "lit";
 
 //#region Directives
 
@@ -25,7 +26,8 @@ type ModalDirectiveParameters = [
 ];
 
 /**
- * A directive that manages the event listener for an invoker function created by {@linkcode asInvoker}.
+ * A directive that manages the event listener for an invoker function created by
+ * {@linkcode asInvoker}.
  *
  * Supports memoization via an optional `deps` array in the options object. When `deps` is provided,
  * the directive will skip rebinding the event listener if all dep values are shallowly equal to the
@@ -77,6 +79,7 @@ export class ModalInvokerDirective extends Directive {
             },
             { ...options, invokerElement: part.element },
         );
+
         part.element.addEventListener("click", listener);
 
         const cleanup = () => {
@@ -101,13 +104,13 @@ export class ModalInvokerDirective extends Directive {
 
 export type ModalInvokerDirectiveResult = DirectiveResult<typeof ModalInvokerDirective>;
 
-export type ModalInvoker = <T extends ModalTemplate | TransclusionElementConstructor>(
+export type ModalInvoker = <T extends ModalTemplate | NamedEntityElementConstructor>(
     factory: T,
     /**
      * Optional props to pass to the custom element constructor when the factory is a constructor.
      * Ignored if the factory is a ModalTemplate function.
      */
-    props?: T extends TransclusionElementConstructor
+    props?: T extends NamedEntityElementConstructor
         ? LitPropertyRecord<InstanceType<T>> | null
         : null,
     options?: DialogInit,
@@ -117,10 +120,11 @@ export type ModalInvoker = <T extends ModalTemplate | TransclusionElementConstru
  * A Lit HTML directive that can be used to attach a modal invoker to an element.
  *
  * ```ts
- * html`<button ${modalInvoker(SomeModalConstructor)}>Open</button>`
+ * html`<button ${modalInvoker(SomeModalConstructor)}>Open</button>`;
  * ```
  */
 export const modalInvoker = directive(ModalInvokerDirective) as ModalInvoker;
+
 //#region Model Forms
 
 export interface ModelFormLike {
@@ -135,8 +139,8 @@ export interface ModelFormLikeConstructor extends CustomElementConstructor {
  * A helper function to create a modal invoker for editing an instance of a form-like element.
  *
  * @remarks
- * This is defined externally from the form itself to allow existing forms to
- * easily add edit invokers without needing to extend a specific base class.
+ *   This is defined externally from the form itself to allow existing forms to
+ *   easily add edit invokers without needing to extend a specific base class.
  */
 export function asInstanceInvoker<T extends ModelFormLikeConstructor>(
     this: T,
@@ -152,9 +156,10 @@ export function asInstanceInvoker<T extends ModelFormLikeConstructor>(
 /**
  * Given a tag name, looks up the corresponding custom element constructor and returns it.
  *
- * @throws {TypeError} If no custom element is defined for the given tag name.
  * @param tagName The tag name of the custom element to look up.
+ *
  * @returns The custom element constructor associated with the given tag name.
+ * @throws {TypeError} If no custom element is defined for the given tag name.
  */
 export function lookupElementConstructor<T extends CustomElementConstructor>(
     tagName: string,

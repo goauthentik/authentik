@@ -13,7 +13,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import {
     bindModeOptions,
     cryptoCertificateHelp,
@@ -25,6 +24,8 @@ import {
 } from "./LDAPOptionsAndHelp.js";
 
 import { ifPresent } from "#elements/utils/attributes";
+
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
@@ -145,6 +146,7 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
                         label=${msg("Certificate")}
                         placeholder=${msg("Select a certificate...")}
                         certificate=${ifPresent(provider.certificate)}
+                        .allowedKeyTypes=${TLSKeyTypes}
                         name="certificate"
                     >
                     </ak-crypto-certificate-search>

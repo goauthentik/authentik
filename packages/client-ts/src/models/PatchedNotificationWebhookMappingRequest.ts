@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * NotificationWebhookMapping Serializer
+ *
  * @export
  * @interface PatchedNotificationWebhookMappingRequest
  */
 export interface PatchedNotificationWebhookMappingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationWebhookMappingRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationWebhookMappingRequest
-     */
     expression?: string;
 }
 

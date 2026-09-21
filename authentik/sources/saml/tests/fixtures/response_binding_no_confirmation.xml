@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    The same as response_binding.xml, with a Subject that carries no confirmation of the
+    subject at all.
+-->
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="_response_without_confirmation" InResponseTo="%(response_in_response_to)s" Destination="%(destination)s" IssueInstant="2022-10-14T14:11:49Z" Version="2.0">
+    <saml:Issuer>https://another-idp.example/saml</saml:Issuer>
+    <samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"></samlp:StatusCode>
+    </samlp:Status>
+    <saml:Assertion ID="_assertion_without_confirmation" IssueInstant="2022-10-14T14:11:49Z" Version="2.0">
+        <saml:Issuer>https://another-idp.example/saml</saml:Issuer>
+        <saml:Subject>
+            <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">jens@goauthentik.io</saml:NameID>
+        </saml:Subject>
+        <saml:Conditions NotBefore="2022-10-14T14:06:49Z" NotOnOrAfter="2022-10-14T14:16:49Z">
+            <saml:AudienceRestriction>
+                <saml:Audience>https://authentik.company/source/saml/another-idp/metadata/</saml:Audience>
+            </saml:AudienceRestriction>
+        </saml:Conditions>
+        <saml:AttributeStatement>
+            <saml:Attribute Name="email">
+                <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:anyType">jens@goauthentik.io</saml:AttributeValue>
+            </saml:Attribute>
+        </saml:AttributeStatement>
+        <saml:AuthnStatement AuthnInstant="2022-10-14T14:11:49Z" SessionIndex="_assertion_without_confirmation">
+            <saml:AuthnContext>
+                <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml:AuthnContextClassRef>
+            </saml:AuthnContext>
+        </saml:AuthnStatement>
+    </saml:Assertion>
+</samlp:Response>

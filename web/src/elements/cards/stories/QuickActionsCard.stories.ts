@@ -1,5 +1,4 @@
 import "../QuickActionsCard.js";
-
 import { QuickAction, QuickActionsCard } from "../QuickActionsCard.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

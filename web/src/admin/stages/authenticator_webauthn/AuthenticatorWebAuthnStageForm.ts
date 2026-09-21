@@ -1,9 +1,9 @@
 import "#components/ak-number-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -40,12 +40,14 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         if (data.authenticatorAttachment?.toString() === "") {
             data.authenticatorAttachment = null;
         }
+
         if (this.instance) {
             return aki(StagesApi).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorWebauthnCreate({
             authenticatorWebAuthnStageRequest: data,
         });
@@ -57,22 +59,28 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);
+
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -222,8 +230,8 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
                                 return aki(StagesApi)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
+                                        page,
+                                        search,
                                     })
                                     .then((results) => {
                                         return {
@@ -254,10 +262,13 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

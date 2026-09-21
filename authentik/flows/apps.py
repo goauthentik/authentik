@@ -11,6 +11,7 @@ GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
     ["tenant"],
+    multiprocess_mode="livemostrecent",
 )
 HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(
     "authentik_flows_execution_stage_time",
@@ -22,14 +23,6 @@ HIST_FLOWS_PLAN_TIME = Histogram(
     "Duration to build a plan for a flow",
     ["flow_slug"],
 )
-
-
-class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others"):
-
-    default = False
-    visibility = "public"
-    description = _("Refresh other tabs after successful authentication.")
-    deprecated = True
 
 
 class ContinuousLogin(Flag[bool], key="flows_continuous_login"):

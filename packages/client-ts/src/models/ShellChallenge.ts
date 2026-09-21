@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,14 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * challenge type to render HTML as-is
+ *
  * @export
  * @interface ShellChallenge
  */
 export interface ShellChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof ShellChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof ShellChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof ShellChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof ShellChallenge
-     */
     body: string;
 }
 

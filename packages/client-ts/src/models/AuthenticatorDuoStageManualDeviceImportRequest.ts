@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface AuthenticatorDuoStageManualDeviceImportRequest
  */
 export interface AuthenticatorDuoStageManualDeviceImportRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageManualDeviceImportRequest
-     */
     duoUserId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageManualDeviceImportRequest
-     */
     username: string;
 }
 
