@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * Tenant Serializer
+ *
  * @export
  * @interface PatchedTenantRequest
  */
 export interface PatchedTenantRequest {
-    /**
-     *
-     */
     schemaName?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     ready?: boolean;
 }
 

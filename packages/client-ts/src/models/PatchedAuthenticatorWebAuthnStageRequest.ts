@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,45 +22,23 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 
 /**
  * AuthenticatorWebAuthnStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorWebAuthnStageRequest
  */
 export interface PatchedAuthenticatorWebAuthnStageRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     userVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
-    /**
-     *
-     */
     residentKeyRequirement?: UserVerificationEnum;
-    /**
-     *
-     */
     hints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     deviceTypeRestrictions?: Array<string>;
-    /**
-     *
-     */
     maxAttempts?: number;
 }
 

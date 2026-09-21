@@ -274,6 +274,7 @@ class MetricsMiddleware(Middleware):
             f"{self.prefix}_tasks_delayed_in_progress",
             "The number of delayed tasks in memory.",
             self.labels,
+            multiprocess_mode="livesum",
         )
         self.messages_durations = Histogram(
             f"{self.prefix}_tasks_duration_milliseconds",

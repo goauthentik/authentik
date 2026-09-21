@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,16 @@
 
 /**
  * authentik settings for Platform SSO tokens
+ *
  * @export
  * @interface AgentPSSODeviceRegistrationResponse
  */
 export interface AgentPSSODeviceRegistrationResponse {
-    /**
-     *
-     */
     clientId: string;
-    /**
-     *
-     */
     issuer: string;
-    /**
-     *
-     */
     tokenEndpoint: string;
-    /**
-     *
-     */
     jwksEndpoint: string;
-    /**
-     *
-     */
     audience: string;
-    /**
-     *
-     */
     nonceEndpoint: string;
 }
 

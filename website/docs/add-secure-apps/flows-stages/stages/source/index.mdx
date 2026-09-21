@@ -1,5 +1,6 @@
 ---
 title: Source stage
+description: Include authentication from an external login source within a flow.
 authentik_enterprise: true
 ---
 

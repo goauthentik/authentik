@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,24 +11,15 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Invitation Serializer
+ *
  * @export
  * @interface PatchedInvitationRequest
  */
 export interface PatchedInvitationRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     fixedData?: { [key: string]: any };
     /**
      * When enabled, the invitation will be deleted after usage.

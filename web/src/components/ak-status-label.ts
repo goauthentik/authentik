@@ -1,3 +1,5 @@
+import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -11,8 +13,6 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 
 const statusToDetails = new Map<P4Disposition, [string, string]>([
     [P4Disposition.Error, ["pf-m-red", "fa-times"]],
@@ -32,10 +32,10 @@ const statusToDetails = new Map<P4Disposition, [string, string]>([
  * alternative symbol. Which color and symbol depends on the `type` of the negative status we want
  * to show:
  *
- * - type="error" (default): A Red ✖
- * - type="warning" An orange ⚠
- * - type="info" A gray ⓘ
- * - type="neutral" A gray ✖
+ * - Type="error" (default): A Red ✖
+ * - Type="warning" An orange ⚠
+ * - Type="info" A gray ⓘ
+ * - Type="neutral" A gray ✖
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -31,9 +29,6 @@ import { type Worker, WorkerFromJSON } from "../models/Worker";
 import * as runtime from "../runtime";
 
 export interface TasksSchedulesListRequest {
-    /**
-     *
-     */
     actorName?: string;
     /**
      * Which field to use when ordering the results.
@@ -47,25 +42,10 @@ export interface TasksSchedulesListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     paused?: boolean;
-    /**
-     *
-     */
     relObjContentTypeAppLabel?: string;
-    /**
-     *
-     */
     relObjContentTypeModel?: string;
-    /**
-     *
-     */
     relObjId?: string;
-    /**
-     *
-     */
     relObjIdIsnull?: boolean;
     /**
      * A search term.
@@ -78,9 +58,6 @@ export interface TasksSchedulesPartialUpdateRequest {
      * A UUID string identifying this Schedule.
      */
     id: string;
-    /**
-     *
-     */
     patchedScheduleRequest?: PatchedScheduleRequest;
 }
 
@@ -103,21 +80,17 @@ export interface TasksSchedulesUpdateRequest {
      * A UUID string identifying this Schedule.
      */
     id: string;
-    /**
-     *
-     */
     scheduleRequest: ScheduleRequest;
 }
 
 export interface TasksTasksListRequest {
-    /**
-     *
-     */
     actorName?: string;
-    /**
-     *
-     */
     aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
+    messageId?: string;
+    /**
+     * Multiple values may be separated by commas.
+     */
+    messageIdIn?: Array<string>;
     /**
      * Which field to use when ordering the results.
      */
@@ -130,33 +103,15 @@ export interface TasksTasksListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     queueName?: string;
-    /**
-     *
-     */
     relObjContentTypeAppLabel?: string;
-    /**
-     *
-     */
     relObjContentTypeModel?: string;
-    /**
-     *
-     */
     relObjId?: string;
-    /**
-     *
-     */
     relObjIdIsnull?: boolean;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     state?: TaskStatusEnum;
 }
 
@@ -174,9 +129,6 @@ export interface TasksTasksRetryCreateRequest {
     messageId: string;
 }
 
-/**
- *
- */
 export class TasksApi extends runtime.BaseAPI {
     /**
      * Creates request options for tasksSchedulesList without sending the request
@@ -239,7 +191,7 @@ export class TasksApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/tasks/schedules/`;
+        const urlPath = `/tasks/schedules/`;
 
         return {
             path: urlPath,
@@ -249,8 +201,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksSchedulesListRaw(
         requestParameters: TasksSchedulesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -263,8 +213,6 @@ export class TasksApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async tasksSchedulesList(
         requestParameters: TasksSchedulesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -313,8 +261,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksSchedulesPartialUpdateRaw(
         requestParameters: TasksSchedulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -325,8 +271,6 @@ export class TasksApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => ScheduleFromJSON(jsonValue));
     }
 
-    /**
-     */
     async tasksSchedulesPartialUpdate(
         requestParameters: TasksSchedulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -375,8 +319,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksSchedulesRetrieveRaw(
         requestParameters: TasksSchedulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -387,8 +329,6 @@ export class TasksApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => ScheduleFromJSON(jsonValue));
     }
 
-    /**
-     */
     async tasksSchedulesRetrieve(
         requestParameters: TasksSchedulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -504,8 +444,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksSchedulesUpdateRaw(
         requestParameters: TasksSchedulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -516,8 +454,6 @@ export class TasksApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => ScheduleFromJSON(jsonValue));
     }
 
-    /**
-     */
     async tasksSchedulesUpdate(
         requestParameters: TasksSchedulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -540,6 +476,16 @@ export class TasksApi extends runtime.BaseAPI {
 
         if (requestParameters["aggregatedStatus"] != null) {
             queryParameters["aggregated_status"] = requestParameters["aggregatedStatus"];
+        }
+
+        if (requestParameters["messageId"] != null) {
+            queryParameters["message_id"] = requestParameters["messageId"];
+        }
+
+        if (requestParameters["messageIdIn"] != null) {
+            queryParameters["message_id__in"] = requestParameters["messageIdIn"]!.join(
+                runtime.COLLECTION_FORMATS["csv"],
+            );
         }
 
         if (requestParameters["ordering"] != null) {
@@ -595,7 +541,7 @@ export class TasksApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/tasks/tasks/`;
+        const urlPath = `/tasks/tasks/`;
 
         return {
             path: urlPath,
@@ -605,8 +551,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksTasksListRaw(
         requestParameters: TasksTasksListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -619,8 +563,6 @@ export class TasksApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async tasksTasksList(
         requestParameters: TasksTasksListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -669,8 +611,6 @@ export class TasksApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async tasksTasksRetrieveRaw(
         requestParameters: TasksTasksRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -681,8 +621,6 @@ export class TasksApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
     }
 
-    /**
-     */
     async tasksTasksRetrieve(
         requestParameters: TasksTasksRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -771,7 +709,7 @@ export class TasksApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/tasks/tasks/status/`;
+        const urlPath = `/tasks/tasks/status/`;
 
         return {
             path: urlPath,
@@ -822,7 +760,7 @@ export class TasksApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/tasks/workers/`;
+        const urlPath = `/tasks/workers/`;
 
         return {
             path: urlPath,
