@@ -8,7 +8,7 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
-from authentik.flows.models import FlowStageBinding, NotConfiguredAction
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
@@ -649,3 +649,120 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 stage_view,
                 self.user,
             )
+
+    def _plan_at_webauthn_stage(self, pending_user: bool = True) -> Flow:
+        """Create a flow with its plan stored in the session, currently at a WebAuthn
+        validation stage"""
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=(
+                "pQECAyYgASFYIGsBLkklToCQkT7qJT_bJYN1sEc1oJdbnmoOc43i0J"
+                "H6IlggLTXytuhzFVYYAK4PQNj8_coGrbbzSfUxdiPAcZTQCyU"
+            ),
+            credential_id="QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+            sign_count=4,
+            rp_id=generate_id(),
+        )
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.DENY,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
+        if pending_user:
+            plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        return flow
+
+    def _render_stage(self, flow: Flow) -> dict:
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertStageResponse(response, flow, component="ak-stage-authenticator-validate")
+        return self.client.session[SESSION_KEY_PLAN].context
+
+    def test_render_reuses_webauthn_challenge(self):
+        """Test that rendering the stage again doesn't replace the pending challenge"""
+        flow = self._plan_at_webauthn_stage()
+
+        first = self._render_stage(flow)
+        second = self._render_stage(flow)
+
+        self.assertIsNotNone(first[PLAN_CONTEXT_WEBAUTHN_CHALLENGE])
+        self.assertEqual(
+            first[PLAN_CONTEXT_WEBAUTHN_CHALLENGE], second[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        )
+        self.assertEqual(
+            first[PLAN_CONTEXT_DEVICE_CHALLENGES], second[PLAN_CONTEXT_DEVICE_CHALLENGES]
+        )
+
+    def test_render_reuses_webauthn_challenge_userless(self):
+        """Test that rendering the stage again doesn't replace the pending challenge
+        (user-less)"""
+        flow = self._plan_at_webauthn_stage(pending_user=False)
+
+        first = self._render_stage(flow)
+        second = self._render_stage(flow)
+
+        self.assertIsNotNone(first[PLAN_CONTEXT_WEBAUTHN_CHALLENGE])
+        self.assertEqual(
+            first[PLAN_CONTEXT_WEBAUTHN_CHALLENGE], second[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        )
+
+    def test_validate_challenge_after_render(self):
+        """Test that a response to a challenge is still accepted after the stage was
+        rendered again (e.g. by another tab), and that the challenge can't be answered
+        again afterwards"""
+        flow = self._plan_at_webauthn_stage()
+        session = self.client.session
+        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        # The challenge the assertion below was signed for
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
+            "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
+        )
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        # Render the stage twice, e.g. the original tab and another tab
+        self._render_stage(flow)
+        self._render_stage(flow)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "webauthn": {
+                    "id": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "rawId": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "type": "public-key",
+                    "assertionClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": (
+                            "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiZzk4STUxbVF2Wlhv"
+                            "NWx4TGZockQyemZvbGhaYkxSeUNncWtrWWFwMWp3U2FKMTNCZ3VvSldDRjlfTGcz"
+                            "QWdPNFdoLUJxYTU1NkpFMjBvS3NZYmw2UkEiLCJvcmlnaW4iOiJodHRwOi8vbG9j"
+                            "YWxob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmFsc2UsIm90aGVyX2tleXNfY2Fu"
+                            "X2JlX2FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBh"
+                            "Z2FpbnN0IGEgdGVtcGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgifQ=="
+                        ),
+                        "signature": (
+                            "MEQCIFNlrHf9ablJAalXLWkrqvHB8oIu8kwvRpH3X3rbJVpI"
+                            "AiAqtOK6mIZPk62kZN0OzFsHfuvu_RlOl7zlqSNzDdz_Ag=="
+                        ),
+                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ==",
+                        "userHandle": None,
+                    },
+                },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 302)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertNotIn(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, plan.context)

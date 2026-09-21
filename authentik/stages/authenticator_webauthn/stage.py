@@ -237,4 +237,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             attestation_certificate_pem=webauthn_credential.attest_cert,
             attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
         )
+        # The registration challenge has been answered. Remove it, as the authenticator validation
+        # stage uses the same key and keeps a pending challenge until it's answered
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         return self.executor.stage_ok()
