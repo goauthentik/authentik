@@ -2,7 +2,6 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
-# `test-all` needs the dev dependency group, which only the debug image ships
 AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE:-authentik.invalid/goauthentik/server-debug}"
 AUTHENTIK_TAG="${AUTHENTIK_TAG:-$(echo "$hash" | cut -c1-15)}"
 

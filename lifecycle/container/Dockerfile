@@ -241,11 +241,6 @@ LABEL org.opencontainers.image.title="authentik server image (debug)" \
     org.opencontainers.image.version=${VERSION}
 
 COPY ./tests /tests
-# runtime-assemble already copied pyproject.toml and uv.lock to /, so uv syncs
-# from there. Dropping --no-dev is what adds the dev dependency group that
-# `ak test-all` needs. UV_NO_BINARY_PACKAGE matches the python-deps stage so
-# that anything uv does rebuild is still built from source against the FIPS
-# OpenSSL, rather than replaced with a prebuilt wheel.
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
