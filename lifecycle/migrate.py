@@ -136,10 +136,10 @@ def ensure_no_extra_tenants(curr):
         )
         return
     message = (
-        "Multi-tenancy has been removed, but this install still has additional tenant "
-        f"schemas: {', '.join(schemas)}. Their data will not be migrated and will no longer "
-        "be reachable. See https://docs.goauthentik.io/releases/2026.8/#breaking-changes. "
-        "Set AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true to continue anyway."
+        "Multi-tenancy has been removed, but this install still has additional tenant schemas: "
+        f"{', '.join(schemas)}. Their data will not be migrated and will no longer be reachable. "
+        "Set AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true to continue anyway. "
+        "See https://docs.goauthentik.io/releases/2026.11/#multi-tenancy-has-been-removed"
     )
     LOGGER.error(message, schemas=schemas)
     raise RuntimeError(message)
