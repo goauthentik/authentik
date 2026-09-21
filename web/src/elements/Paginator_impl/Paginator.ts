@@ -243,7 +243,7 @@ export class Paginator extends AKElement {
 
         this.paginator?.style.setProperty(
             "--ak-c-pagination__page-select--form-control--width",
-            `${numChars}ch`
+            `${numChars}ch`,
         );
     }
 }

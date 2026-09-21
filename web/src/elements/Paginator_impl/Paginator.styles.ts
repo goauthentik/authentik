@@ -34,6 +34,7 @@ export const styles = css`
     [part~="paginator-button"] {
         border: none;
         color: var(--ak-c-pagination--indicator--Color);
+        background-color: inherit;
         padding-inline-start: 0;
         padding-inline-end: 0;
     }
@@ -72,6 +73,10 @@ export const styles = css`
         display: var(--pf-c-pagination__total-items--Display);
         visibility: var(--pf-c-pagination__total-items--Visibility);
         color: var(--ak-c-pagination--total-count--Color);
+    }
+
+    [part="total-count"] b {
+        font-weight: 500;
     }
 
     [part="page-select-control"] {

@@ -218,7 +218,7 @@ describe("ak-pagination: accessibility", () => {
         const element = await mount();
 
         expect(element.renderRoot.querySelector("nav")!.getAttribute("aria-label")).toBe(
-            "Pagination"
+            "Pagination",
         );
     });
 
@@ -226,7 +226,7 @@ describe("ak-pagination: accessibility", () => {
         const element = await mount({ label: "Users" });
 
         expect(element.renderRoot.querySelector("nav")!.getAttribute("aria-label")).toBe(
-            "Users pagination"
+            "Users pagination",
         );
     });
 
@@ -252,7 +252,7 @@ async function keyAndCommit(element: Paginator, value: string): Promise<void> {
     await element.updateComplete;
 
     input.dispatchEvent(
-        new KeyboardEvent("keydown", { key: "Enter", bubbles: true, composed: true })
+        new KeyboardEvent("keydown", { key: "Enter", bubbles: true, composed: true }),
     );
 
     await element.updateComplete;

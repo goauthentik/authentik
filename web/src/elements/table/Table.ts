@@ -3,7 +3,7 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
-import "#elements/table/TablePagination";
+import "#elements/Paginator";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
 import { BaseTableListRequest, TableLike } from "./shared.js";
@@ -31,6 +31,7 @@ import {
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
+import { PageChangeEvent, toPaginator } from "#elements/Paginator";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
@@ -80,6 +81,10 @@ export type RowType =
 
 export interface ColumnOptions {
     style?: string;
+}
+
+export interface PaginatorOptions {
+    compact?: boolean;
 }
 
 /**
@@ -1024,7 +1029,7 @@ export abstract class Table<T extends object, D = T>
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
-                ${this.renderTablePagination()}
+                ${this.renderTablePagination({ compact: true })}
             </div>
         </header>`;
     }
@@ -1149,26 +1154,35 @@ export abstract class Table<T extends object, D = T>
         </ak-chip-group>`;
     }
 
+    onPageChange({ page }: PageChangeEvent) {
+        this.page = page;
+        this.fetch();
+    }
+
     /**
      * A simple pagination display, shown at both the top and bottom of the page.
      */
-    protected renderTablePagination(): SlottedTemplateResult {
+    protected renderTablePagination(
+        options: PaginatorOptions = { compact: false },
+    ): SlottedTemplateResult {
         if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
             return nothing;
         }
 
-        const handler = (page: number) => {
-            this.page = page;
-            this.fetch();
-        };
+        const { compact } = options;
+        const { itemCount, itemsPerPage, page } = toPaginator(this.data?.pagination);
 
-        return html`<ak-table-pagination
-            ?loading=${this.loading}
+        console.log("R1:", this.data?.pagination);
+
+        return html`<ak-paginator
+            ?compact=${Boolean(compact)}
+            ?disabled=${this.loading}
             label=${ifPresent(this.label)}
-            class="pf-c-toolbar__item pf-m-pagination"
-            .pages=${this.data?.pagination}
-            .onPageChange=${handler}
-        ></ak-table-pagination>`;
+            item-count=${itemCount}
+            items-per-page=${itemsPerPage}
+            page=${page}
+            @ak-page-changed=${this.onPageChange}
+        ></ak-paginator>`;
     }
 
     protected renderLoadingBar(): SlottedTemplateResult {

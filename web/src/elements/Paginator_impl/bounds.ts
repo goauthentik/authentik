@@ -27,6 +27,8 @@ export function pageBounds(
     const startIndex = totalPages === 0 ? 0 : (page - 1) * fixedItemsPerPage + 1;
     const endIndex = totalPages === 0 ? 0 : Math.min(page * fixedItemsPerPage, fixedTotalItems);
 
+    console.log("P5:", startIndex, endIndex);
+
     return {
         page,
         totalPages,
@@ -35,13 +37,22 @@ export function pageBounds(
     };
 }
 
-// This is kinda gross. Django doesn't send us the itemsPerPage that we sent in the request, so we
-// have no idea from the response what it'll be. That means the last page gets only the
-// "itemsPerPage" as an exact count of the leftovers. It seems to not be broken. (If it starts to
-// break, we'll have to have the caller pass in the items-per-page as a parameter.)
+const defaultPagination = { count: 0, current: 1, totalPages: 1, startIndex: 0, endIndex: 0 };
 
-export function paginationCalc(pagination: Pagination): PaginatorState {
-    const { count: itemCount, current, totalPages, startIndex, endIndex } = pagination;
+// This is kinda gross. Django doesn't send us the itemsPerPage that we sent in the request, so we
+// can't automatically know from the response what was requested. start_index is always `(page - 1)
+// * per_page + 1`, so we recover `per-page` from that. We can't use the client-side perPage feature
+// without it being exposed, and lots of current client-side implementations don't expose it, they
+// hide it in closures.
+
+export function toPaginator(pagination?: Pagination): PaginatorState {
+    const {
+        count: itemCount,
+        current,
+        totalPages,
+        startIndex,
+        endIndex,
+    } = pagination ?? defaultPagination;
 
     if (totalPages < 1 || itemCount < 1) {
         return {
@@ -52,15 +63,15 @@ export function paginationCalc(pagination: Pagination): PaginatorState {
     }
 
     const itemsPerPage =
-        current < totalPages
-            ? Math.max(1, endIndex - startIndex + 1)
-            : Math.max(1, Math.ceil(itemCount / totalPages));
+        current > 1
+            ? Math.max(1, Math.round((startIndex - 1) / (current - 1)))
+            : Math.max(1, endIndex - startIndex + 1);
 
     return { itemCount, itemsPerPage, page: Math.max(1, current) };
 }
 
 export function paginatedBounds(pagination: Pagination): PaginatorPageBounds {
-    const { itemCount, itemsPerPage, page } = paginationCalc(pagination);
+    const { itemCount, itemsPerPage, page } = toPaginator(pagination);
 
     return pageBounds(itemCount, itemsPerPage, page);
 }

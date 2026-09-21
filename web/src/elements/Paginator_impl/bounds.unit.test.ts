@@ -103,7 +103,7 @@ describe("paginationCalc", () => {
                 fakeDjangoPagination({
                     count: 471,
                     current: 3,
-                    totalPages: 27,
+                    totalPages: 24,
                     startIndex: 41,
                     endIndex: 60,
                 }),
@@ -116,25 +116,3 @@ describe("paginationCalc", () => {
         });
     });
 });
-
-//describe("paginationBounds", () => {
-//    it("turns Django pagination into pageBounds", () => {
-//        expect(
-//            paginationBounds(
-//                makePagination({
-//                    count: 471,
-//                    current: 3,
-//                    totalPages: 27,
-//                    startIndex: 41,
-//                    endIndex: 60,
-//                })
-//            )
-//        ).toStrictEqual({
-//            page: 3,
-//            totalPages: 24,
-//            startIndex: 41,
-//            endIndex: 60,
-//        });
-//    });
-//});
-//
