@@ -26,6 +26,7 @@ export interface EndpointAgentChallenge {
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     challenge: string;
     challengeIdleTimeout: number;
+    frameUrl: string;
 }
 
 /**
@@ -38,6 +39,13 @@ export function instanceOfEndpointAgentChallenge(value: object): value is Endpoi
             !("challenge_idle_timeout" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["challengeIdleTimeout"] === undefined &&
             (value as Record<string, any>)["challenge_idle_timeout"] === undefined)
+    )
+        return false;
+    if (
+        (!("frameUrl" in (value as Record<string, any>)) &&
+            !("frame_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["frameUrl"] === undefined &&
+            (value as Record<string, any>)["frame_url"] === undefined)
     )
         return false;
     return true;
@@ -61,6 +69,7 @@ export function EndpointAgentChallengeFromJSONTyped(
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         challenge: json["challenge"],
         challengeIdleTimeout: json["challenge_idle_timeout"],
+        frameUrl: json["frame_url"],
     };
 }
 
@@ -82,5 +91,6 @@ export function EndpointAgentChallengeToJSONTyped(
         response_errors: value["responseErrors"],
         challenge: value["challenge"],
         challenge_idle_timeout: value["challengeIdleTimeout"],
+        frame_url: value["frameUrl"],
     };
 }

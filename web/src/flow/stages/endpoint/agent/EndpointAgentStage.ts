@@ -10,9 +10,13 @@ import { BaseStage } from "#flow/stages/base";
 
 import { EndpointAgentChallenge, EndpointAgentChallengeResponseRequest } from "@goauthentik/api";
 
+import { createRef, ref, Ref } from "lit-html/directives/ref.js";
+
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const FrameSuccessKey = "xak-agent-response";
 
 interface BrowserExtensionData {
     _ak_ext: string;
@@ -27,6 +31,8 @@ export class EndpointAgentStage extends BaseStage<
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     #timeout: ReturnType<typeof setTimeout> | null = null;
+
+    frameRef: Ref<HTMLIFrameElement> = createRef();
 
     #messageHandler = (ev: MessageEvent<BrowserExtensionData>) => {
         if (ev.data._ak_ext !== "authentik-platform-sso") {
@@ -93,6 +99,37 @@ export class EndpointAgentStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${
+                this.challenge
+                    ? html`<iframe
+                          style="width:0;height:0;position:absolute;"
+                          src=${this.challenge?.frameUrl}
+                          ${ref(this.frameRef)}
+                          @load=${(ev: Event) => {
+                              const frameLocation = this.frameRef.value?.contentWindow?.location;
+
+                              if (!frameLocation) return;
+                              const qs = new URLSearchParams(frameLocation.search);
+                              const response = qs.get(FrameSuccessKey);
+
+                              if (response) {
+                                  if (this.#timeout) {
+                                      clearTimeout(this.#timeout);
+                                  }
+
+                                  this.host.submit(
+                                      {
+                                          response,
+                                      } as EndpointAgentChallengeResponseRequest,
+                                      {
+                                          invisible: true,
+                                      },
+                                  );
+                              }
+                          }}
+                      ></iframe>`
+                    : nothing
+            }
+            ${
                 this.challenge?.responseErrors
                     ? html`
                           <ak-empty-state icon="fa-times"
@@ -104,7 +141,7 @@ export class EndpointAgentStage extends BaseStage<
                               </div>
                           </ak-empty-state>
                       `
-                    : html` <ak-empty-state loading
+                    : html`<ak-empty-state loading
                           ><span>${msg("Verifying your device...")}</span>
                       </ak-empty-state>`
             }

@@ -23,17 +23,24 @@ pub struct EndpointAgentChallenge {
     pub challenge: String,
     #[serde(rename = "challenge_idle_timeout")]
     pub challenge_idle_timeout: i32,
+    #[serde(rename = "frame_url")]
+    pub frame_url: String,
 }
 
 impl EndpointAgentChallenge {
     /// Signed challenge for authentik agent to respond to
-    pub fn new(challenge: String, challenge_idle_timeout: i32) -> EndpointAgentChallenge {
+    pub fn new(
+        challenge: String,
+        challenge_idle_timeout: i32,
+        frame_url: String,
+    ) -> EndpointAgentChallenge {
         EndpointAgentChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
             challenge,
             challenge_idle_timeout,
+            frame_url,
         }
     }
 }
