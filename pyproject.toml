@@ -96,7 +96,7 @@ dev = [
   "constructs==10.8.1",
   "coverage[toml]==7.16.1",
   "daphne==4.2.3",
-  "debugpy==1.8.21",
+  "debugpy==1.8.22",
   "django-stubs[compatible-mypy]==6.0.7",
   "djangorestframework-stubs[compatible-mypy]==3.17.1",
   "drf-jsonschema-serializer==3.0.0",
