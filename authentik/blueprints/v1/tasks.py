@@ -92,9 +92,14 @@ def blueprint_hash(content: str) -> str:
     except YAMLError:
         return hasher.hexdigest()
     for tag in iter_file_tags(raw_blueprint):
+        if not isinstance(tag.path, str):
+            # The path is itself a tag, which can only be resolved with an entry and a
+            # blueprint. Hashing must never fail on a blueprint that can be loaded, so
+            # skip it; the tag's own content is part of the content hashed above.
+            continue
         # Digest both the path and the referenced file's contents, so that neither a
         # changed path nor changed contents can be cancelled out by the other
-        hasher.update(sha512(str(tag.path).encode()).digest())
+        hasher.update(sha512(tag.path.encode()).digest())
         try:
             referenced = Path(tag.path).read_bytes()
         except OSError:

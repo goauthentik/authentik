@@ -236,6 +236,16 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             )
 
     @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_path_from_tag(self):
+        """Test a `!File` whose path is itself a tag is still discovered (control)"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = f'!File [!Env [{generate_id()}, "{TMP}/fallback"], "default"]'
+            self.assertEqual(
+                self.write_blueprint(file, reference),
+                self.write_blueprint(file, reference),
+            )
+
+    @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_applied_on_change(self):
         """Test blueprint is re-applied when the contents of a referenced `!File` change"""
         blueprint_id = generate_id()
