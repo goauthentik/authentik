@@ -370,3 +370,18 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 self.write_blueprint(file, reference),
                 self.write_blueprint(file, reference),
             )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_alias_hashed_per_route(self):
+        """Test a `!File` reachable by two routes through one anchor is folded into the
+        hash once per route, as it is when the tag is simply written out twice"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                alias = f"&anchor [!File {secret.name}]\n  other: *anchor"
+                content = f"version: 1\nentries: []\ncontext:\n  secret: {alias}\n"
+                expected = sha512(content.encode())
+                for _ in range(2):
+                    expected.update(sha512(b"initial").digest())
+                self.assertEqual(self.write_blueprint(file, alias), expected.hexdigest())
