@@ -10,6 +10,12 @@ draft: true
 
 ## New features and improvements
 
+### New `server-debug` image
+
+There is a new container image, `ghcr.io/goauthentik/server-debug`. It is the same build as the server image, plus the development dependency group, the Kerberos server tools, and a few interactive tools. Use it for `ak test-all`, for `AUTHENTIK_DEBUGGER`, and for an interactive shell in a container.
+
+The server image no longer installs those dependencies at startup. Before this release, a container started as `root` with `AUTHENTIK_DEBUGGER` set to `true` ran `apt-get install` and `uv sync` on every boot. Use the `-debug` image instead. Refer to [Debugging authentik](../../developer-docs/setup/debugging.mdx) for a Docker Compose override.
+
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
