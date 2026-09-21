@@ -4,7 +4,7 @@ title: RAC SSH Public Key Authentication
 
 ## About RAC SSH public key authentication
 
-The RAC provider supports SSH public key authentication. This allows for secure connections to SSH endpoints without the use of passwords.
+The RAC provider supports SSH public key authentication. This allows for secure connections to SSH devices without the use of passwords.
 
 SSH private keys can be configured via several methods:
 
@@ -13,7 +13,7 @@ SSH private keys can be configured via several methods:
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the **Edit** icon on the RAC provider that requires public key authentication.
-4. In the **Settings** codebox enter the private key of the endpoint, for example:
+4. In the **Settings** codebox enter the private key of the device, for example:
     ```yaml
     private-key: |
         -----BEGIN SSH PRIVATE KEY-----
@@ -32,13 +32,13 @@ SSH private keys can be configured via several methods:
 The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
 :::
 
-## Apply a private key to an RAC endpoint
+## Apply a private key to a single device
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
-3. Click the name of the RAC provider that the endpoint belongs to.
-4. Under **Endpoints**, click on the **Edit** icon next to the endpoint that requires public key authentication.
-5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the endpoint:
+3. Click the name of the RAC provider that the device is reachable through.
+4. Under **Devices**, click on the **Edit** icon next to the device that requires public key authentication.
+5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the device:
     ```yaml
     private-key: |
         -----BEGIN SSH PRIVATE KEY-----

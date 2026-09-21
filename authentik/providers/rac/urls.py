@@ -4,7 +4,7 @@ from django.urls import path
 
 from authentik.outposts.channels import TokenOutpostMiddleware
 from authentik.providers.rac.api.connection_tokens import ConnectionTokenViewSet
-from authentik.providers.rac.api.endpoints import EndpointViewSet
+from authentik.providers.rac.api.devices import RACDeviceViewSet
 from authentik.providers.rac.api.property_mappings import RACPropertyMappingViewSet
 from authentik.providers.rac.api.providers import RACProviderViewSet
 from authentik.providers.rac.consumer_client import RACClientConsumer
@@ -16,7 +16,7 @@ from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
     path(
-        "application/rac/<slug:app>/<uuid:endpoint>/",
+        "application/rac/<slug:app>/<uuid:device>/",
         RACStartView.as_view(),
         name="start",
     ),
@@ -45,6 +45,6 @@ websocket_urlpatterns = [
 api_urlpatterns = [
     ("providers/rac", RACProviderViewSet),
     ("propertymappings/provider/rac", RACPropertyMappingViewSet),
-    ("rac/endpoints", EndpointViewSet),
+    ("rac/devices", RACDeviceViewSet, "rac_device"),
     ("rac/connection_tokens", ConnectionTokenViewSet),
 ]
