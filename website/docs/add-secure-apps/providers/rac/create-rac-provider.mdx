@@ -35,7 +35,11 @@ To create a provider along with the corresponding application that uses it for a
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select the **RAC** provider type, and then click **Next**.
-5. On the **Configure Remote Access Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
+5. On the **Configure Remote Access Provider** page, provide the configuration settings:
+    - **Connection expiry**: set how long a connection authorization remains valid. The default is `hours=8`. Reconnecting does not reset this limit, and the connection also ends if the user's authentik session expires or the user logs out.
+    - **Delete authorization on disconnect**: leave disabled, the default, to allow the browser to reuse a valid authorization when reconnecting after a disconnect. Enable it to require a new authorization after every disconnect, including temporary network failures. authentik deletes the stored authorization during connection setup, so it is already unavailable for reconnecting when the connection ends. This setting does not control the remote operating system's login session. See [Connection management](./index.mdx#connection-management) for details about authorization reuse and expiry.
+
+6. Click **Submit** to create both the application and the provider.
 
 ### Create RAC property mappings
 
