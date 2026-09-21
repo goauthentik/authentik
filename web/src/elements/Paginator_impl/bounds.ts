@@ -18,7 +18,7 @@ export const clamp = (min: number, num: number, max: number) => Math.min(Math.ma
 export function pageBounds(
     totalItems: number,
     itemsPerPage: number,
-    currentPage: number
+    currentPage: number,
 ): PaginatorPageBounds {
     const fixedItemsPerPage = Math.max(1, Math.floor(itemsPerPage || 0));
     const fixedTotalItems = Math.max(0, Math.floor(totalItems || 0));
@@ -61,5 +61,6 @@ export function paginationCalc(pagination: Pagination): PaginatorState {
 
 export function paginatedBounds(pagination: Pagination): PaginatorPageBounds {
     const { itemCount, itemsPerPage, page } = paginationCalc(pagination);
+
     return pageBounds(itemCount, itemsPerPage, page);
 }

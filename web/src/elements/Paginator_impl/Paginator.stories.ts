@@ -7,8 +7,7 @@ import { Paginator, PageChangeEvent } from "../Paginator";
 
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { html, TemplateResult } from "lit";
 
 interface PaginatorProps {
     totalItems?: number;
@@ -44,10 +43,11 @@ const container = (testItem: TemplateResult) =>
 
 function record(event: PageChangeEvent) {
     console.log(event);
+
     const item = document.createElement("li");
-    item.textContent = `${PageChangedEvent.eventName}: ${event.page}`;
+    item.textContent = `${PageChangeEvent.eventName}: ${event.page}`;
     document.getElementById("events")?.appendChild(item);
-    (event.target as Pagination).page = event.page;
+    (event.target as Paginator).page = event.page;
 }
 
 // Base Paginator: Simple horizontal paginator (equivalent to <hr>)
@@ -61,6 +61,21 @@ export const Default: Story = {
                 items-per-page="20"
                 page="5"
                 @ak-page-changed=${record}
-            ></ak-paginator>`
+            ></ak-paginator>`,
+        ),
+};
+
+export const Compact: Story = {
+    args: {},
+    parameters: describe("Compact paginator"),
+    render: (args) =>
+        container(
+            html`<ak-paginator
+                compact
+                item-count="712"
+                items-per-page="20"
+                page="5"
+                @ak-page-changed=${record}
+            ></ak-paginator>`,
         ),
 };

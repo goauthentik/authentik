@@ -106,8 +106,8 @@ describe("paginationCalc", () => {
                     totalPages: 27,
                     startIndex: 41,
                     endIndex: 60,
-                })
-            )
+                }),
+            ),
         ).toStrictEqual({
             page: 3,
             totalPages: 24,
