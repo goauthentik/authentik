@@ -270,3 +270,49 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 blueprints_discovery.send()
                 instance.refresh_from_db()
                 self.assertNotEqual(instance.last_applied_hash, before)
+
+    def assert_discovery_survives(self, reference: str):
+        """Assert a blueprint referencing `reference` neither breaks its own hashing nor
+        stops a healthy blueprint alongside it from being discovered"""
+        healthy_id = generate_id()
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as broken:
+            broken.write(f"version: 1\nentries: []\ncontext:\n  secret: {reference}\n")
+            broken.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as healthy:
+                healthy.write(f"version: 1\nentries: []\nmetadata:\n  name: {healthy_id}\n")
+                healthy.flush()
+                found = [blueprint.path for blueprint in blueprints_find()]
+        self.assertIn(Path(healthy.name).name, found)
+        self.assertIn(Path(broken.name).name, found)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_path_from_mapping(self):
+        """Test a `!File` built from a mapping node is skipped rather than raising, so
+        discovery of other blueprints continues (control)"""
+        self.assert_discovery_survives(f'!File {{path: "{TMP}/fallback"}}')
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_path_unopenable(self):
+        """Test a `!File` whose path cannot be opened by any syscall is skipped rather
+        than raising, so discovery of other blueprints continues (control)"""
+        self.assert_discovery_survives('!File "\\0"')
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_path_from_mapping_stable(self):
+        """Test the hash of a `!File` built from a mapping node is stable (control)"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = f'!File {{path: "{TMP}/fallback"}}'
+            self.assertEqual(
+                self.write_blueprint(file, reference),
+                self.write_blueprint(file, reference),
+            )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_path_unopenable_stable(self):
+        """Test the hash of a `!File` with an unopenable path is stable (control)"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = '!File "\\0"'
+            self.assertEqual(
+                self.write_blueprint(file, reference),
+                self.write_blueprint(file, reference),
+            )
