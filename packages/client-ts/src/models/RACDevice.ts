@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { RACDeviceProtocol } from "./RACDeviceProtocol";
+import { RACDeviceProtocolFromJSON } from "./RACDeviceProtocol";
+
 /**
  * Device as it can be launched through a RAC provider. Deliberately does not
  * include any connection settings, as this is also used by end-users launching a
@@ -21,19 +24,15 @@
 export interface RACDevice {
     deviceUuid?: string;
     name: string;
-    /**
-     * Protocol this device is connected to with
-     */
-    readonly protocol: string;
-    /**
-     * Build actual launch URL (the provider itself does not have one, just
-     * individual devices)
-     */
-    readonly launchUrl: string | null;
+    readonly protocols: Array<RACDeviceProtocol>;
     /**
      * Whether this is the requesting user's primary device
      */
     readonly isPrimary: boolean;
+    /**
+     * Primary key of this device's connection override, if it has one
+     */
+    readonly overridePk: number | null;
 }
 
 /**
@@ -41,19 +40,19 @@ export interface RACDevice {
  */
 export function instanceOfRACDevice(value: object): value is RACDevice {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("protocol" in value) || value["protocol"] === undefined) return false;
-    if (
-        (!("launchUrl" in (value as Record<string, any>)) &&
-            !("launch_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["launchUrl"] === undefined &&
-            (value as Record<string, any>)["launch_url"] === undefined)
-    )
-        return false;
+    if (!("protocols" in value) || value["protocols"] === undefined) return false;
     if (
         (!("isPrimary" in (value as Record<string, any>)) &&
             !("is_primary" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["isPrimary"] === undefined &&
             (value as Record<string, any>)["is_primary"] === undefined)
+    )
+        return false;
+    if (
+        (!("overridePk" in (value as Record<string, any>)) &&
+            !("override_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["overridePk"] === undefined &&
+            (value as Record<string, any>)["override_pk"] === undefined)
     )
         return false;
     return true;
@@ -70,9 +69,9 @@ export function RACDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
         name: json["name"],
-        protocol: json["protocol"],
-        launchUrl: json["launch_url"],
+        protocols: (json["protocols"] as Array<any>).map(RACDeviceProtocolFromJSON),
         isPrimary: json["is_primary"],
+        overridePk: json["override_pk"],
     };
 }
 
@@ -81,7 +80,7 @@ export function RACDeviceToJSON(json: any): RACDevice {
 }
 
 export function RACDeviceToJSONTyped(
-    value?: Omit<RACDevice, "protocol" | "launchUrl" | "isPrimary"> | null,
+    value?: Omit<RACDevice, "protocols" | "isPrimary" | "overridePk"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

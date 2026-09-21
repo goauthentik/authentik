@@ -28,15 +28,16 @@ class TestRACViews(APITestCase):
             slug=generate_id(),
             provider=self.provider,
         )
-        self.device = create_test_device(
-            host=f"{generate_id()}:1324",
-            protocol=Protocols.RDP,
-        )
+        self.device = create_test_device(host=f"{generate_id()}:1324")
 
-    def start_url(self, device=None) -> str:
+    def start_url(self, device=None, protocol=Protocols.RDP) -> str:
         return reverse(
             "authentik_providers_rac:start",
-            kwargs={"app": self.app.slug, "device": str((device or self.device).pk)},
+            kwargs={
+                "app": self.app.slug,
+                "device": str((device or self.device).pk),
+                "protocol": protocol,
+            },
         )
 
     def test_no_policy(self):
@@ -92,6 +93,11 @@ class TestRACViews(APITestCase):
         self.client.logout()
         final_response = self.client.get(next_url)
         self.assertEqual(final_response.url, reverse("authentik_core:if-user"))
+
+    def test_protocol_not_available(self):
+        """A device can only be connected to with a protocol it accepts"""
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get(self.start_url(protocol=Protocols.SSH)).status_code, 404)
 
     def test_device_outside_access_group(self):
         """A provider limited to an access group must not reach devices outside it"""

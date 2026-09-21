@@ -10,7 +10,7 @@ from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.rac.models import Protocols, RACProvider
-from authentik.providers.rac.tests import create_test_device, set_device_facts
+from authentik.providers.rac.tests import create_test_device
 
 
 class TestRACDevicesAPI(APITestCase):
@@ -49,9 +49,16 @@ class TestRACDevicesAPI(APITestCase):
                 {
                     "device_uuid": str(self.allowed.pk),
                     "name": self.allowed.name,
-                    "protocol": Protocols.SSH,
-                    "launch_url": f"/application/rac/{self.app.slug}/{str(self.allowed.pk)}/",
+                    "protocols": [
+                        {
+                            "protocol": Protocols.RDP,
+                            "launch_url": (
+                                f"/application/rac/{self.app.slug}/{self.allowed.pk}/rdp/"
+                            ),
+                        }
+                    ],
                     "is_primary": False,
+                    "override_pk": self.allowed.rac_override.pk,
                 }
             ],
         )
@@ -93,13 +100,28 @@ class TestRACDevicesAPI(APITestCase):
         pks = [device["device_uuid"] for device in self.list_devices()]
         self.assertEqual(pks, [str(self.allowed.pk)])
 
-    def test_list_protocol_from_facts(self):
-        """The listed protocol is the one the connection will use"""
-        device = create_test_device(name=f"c-{generate_id()}")
-        set_device_facts(device, {"os": {"family": "windows"}, "network": {"hostname": "win"}})
+    def test_list_protocols(self):
+        """Each protocol a device can be reached with has its own launch URL"""
+        override = create_test_device(
+            name=f"c-{generate_id()}", host=generate_id(), protocol=Protocols.SSH
+        )
+        # A device which says nothing about itself can be reached with either protocol
+        unknown = create_test_device(name=f"d-{generate_id()}")
         self.client.force_login(self.user)
-        listed = next(d for d in self.list_devices() if d["device_uuid"] == str(device.pk))
-        self.assertEqual(listed["protocol"], Protocols.RDP)
+        listed = {d["device_uuid"]: d for d in self.list_devices()}
+        self.assertEqual(
+            listed[str(override.pk)]["protocols"],
+            [
+                {
+                    "protocol": Protocols.SSH,
+                    "launch_url": f"/application/rac/{self.app.slug}/{override.pk}/ssh/",
+                }
+            ],
+        )
+        self.assertEqual(
+            [entry["protocol"] for entry in listed[str(unknown.pk)]["protocols"]],
+            [Protocols.RDP, Protocols.SSH],
+        )
 
     def test_list_primary_device(self):
         """A user's primary device is marked as such"""
@@ -135,14 +157,13 @@ class TestRACDevicesAPI(APITestCase):
         pks = [device["device_uuid"] for device in self.list_devices()]
         self.assertEqual(pks, [str(self.allowed.pk)])
 
-    def test_list_no_settings_exposed(self):
-        """Devices can hold connection credentials in their attributes, which must not
-        be exposed through the launch picker"""
+    def test_list_no_attributes_exposed(self):
+        """A device's attributes are not exposed through the launch picker"""
         secret = generate_id()
         create_test_device(
             name=f"c-{generate_id()}",
             host=generate_id(),
-            settings={"username": "user", "password": secret},
+            attributes={"internal": secret},
         )
         user = create_test_user()
         self.client.force_login(user)

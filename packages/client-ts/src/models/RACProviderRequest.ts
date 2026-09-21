@@ -10,8 +10,6 @@
  * Do not edit the class manually.
  */
 
-import type { ProtocolEnum } from "./ProtocolEnum";
-import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 import type { RACProviderAuthModeEnum } from "./RACProviderAuthModeEnum";
 import {
     RACProviderAuthModeEnumFromJSON,
@@ -37,11 +35,6 @@ export interface RACProviderRequest {
     authorizationFlow: string;
     propertyMappings?: Array<string>;
     settings?: { [key: string]: any };
-    /**
-     * Protocol used to connect to devices. When left empty, the protocol is based on the device's
-     * operating system.
-     */
-    protocol?: ProtocolEnum;
     /**
      * Only devices in this access group can be accessed through this provider. When left empty,
      * every device the user has access to can be accessed.
@@ -100,7 +93,6 @@ export function RACProviderRequestFromJSONTyped(
         authorizationFlow: json["authorization_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         settings: json["settings"] == null ? undefined : json["settings"],
-        protocol: json["protocol"] == null ? undefined : ProtocolEnumFromJSON(json["protocol"]),
         accessGroup:
             json["access_group"] === undefined
                 ? undefined
@@ -139,7 +131,6 @@ export function RACProviderRequestToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         property_mappings: value["propertyMappings"],
         settings: value["settings"],
-        protocol: ProtocolEnumToJSON(value["protocol"]),
         access_group: value["accessGroup"],
         maximum_connections: value["maximumConnections"],
         auth_mode: RACProviderAuthModeEnumToJSON(value["authMode"]),

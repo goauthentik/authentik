@@ -39,7 +39,6 @@ To create a provider along with the corresponding application that uses it for a
     - **Connection expiry**: set how long a connection authorization remains valid. The default is `hours=8`. Reconnecting does not reset this limit, and the connection also ends if the user's authentik session expires or the user logs out.
     - **Delete authorization on disconnect**: leave disabled, the default, to allow the browser to reuse a valid authorization when reconnecting after a disconnect. Enable it to require a new authorization after every disconnect, including temporary network failures. authentik deletes the stored authorization during connection setup, so it is already unavailable for reconnecting when the connection ends. This setting does not control the remote operating system's login session. See [Connection management](./index.mdx#connection-management) for details about authorization reuse and expiry.
     - **Device access group _(optional)_**: limit this provider to the devices in a single [device access group](../../../endpoint-devices/manage-devices.mdx). When left empty, every device that a user has access to can be reached through this provider.
-    - **Protocol**: select **Automatic** to connect with RDP to devices running Windows and with SSH to every other device, or pick a single protocol for all devices of this provider.
     - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
 
 6. Click **Submit** to create both the application and the provider.
@@ -65,23 +64,26 @@ Refer to the [RAC Credentials Prompt](./rac_credentials_prompt.mdx) and [RAC SSH
 
 ### Add the devices to connect to
 
-RAC connects to the [devices](../../../endpoint-devices/index.mdx) in your authentik instance. A device that is already enrolled through a connector, such as the authentik agent, can be used as-is: authentik takes its address and operating system from the facts the device reports.
+RAC connects to the [devices](../../../endpoint-devices/index.mdx) in your authentik instance. A device that is already enrolled through a connector, such as the authentik agent, can be used as-is: authentik connects to it on the address it reports.
 
-For a remote machine that is not enrolled, such as a server, add it manually:
+For a remote machine that is not enrolled, such as a server, add it with a connection override:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the name of the RAC provider that you previously created.
 4. On the Provider page, under **Devices**, click **New Device**, and provide the following settings:
     - **Device Name**: define a name for the device.
-    - **Host**: enter the host name or IP address of the remote machine, optionally including the port. Leave empty to use the address the device reports.
-    - **Protocol**: leave as **Automatic** to use the provider's protocol, or select the protocol for this device.
-    - **Advanced settings _(optional)_**: set a device-specific connection limit and other connection settings. For more information, refer to the [Connection settings](./index.mdx#connection-settings) documentation.
+    - **Host**: enter the host name or IP address of the remote machine, optionally including the port.
+    - **Protocol**: select the protocol to connect to this device with.
+
+    Devices that are enrolled through the authentik agent need no override: the protocols they accept are taken from the facts they report.
 
 5. Click **Create**.
 
+The same form is used to give a device that _is_ enrolled a connection override, for example when it must be reached on a jump host address rather than the one it reports.
+
 :::info
-Anyone who can view a device can see its attributes, so do not store credentials in a device's connection settings. Use a [RAC property mapping](#create-rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx) instead.
+Connection credentials belong in a [RAC property mapping](#create-rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx), not in a connection override.
 :::
 
 ### Create an RAC outpost

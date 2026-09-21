@@ -10,8 +10,6 @@
  * Do not edit the class manually.
  */
 
-import type { ProtocolEnum } from "./ProtocolEnum";
-import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 import type { RACProviderAuthModeEnum } from "./RACProviderAuthModeEnum";
 import {
     RACProviderAuthModeEnumFromJSON,
@@ -71,11 +69,6 @@ export interface RACProvider {
     readonly metaModelName: string;
     settings?: { [key: string]: any };
     readonly outpostSet: Array<string>;
-    /**
-     * Protocol used to connect to devices. When left empty, the protocol is based on the device's
-     * operating system.
-     */
-    protocol?: ProtocolEnum;
     /**
      * Only devices in this access group can be accessed through this provider. When left empty,
      * every device the user has access to can be accessed.
@@ -199,7 +192,6 @@ export function RACProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
         metaModelName: json["meta_model_name"],
         settings: json["settings"] == null ? undefined : json["settings"],
         outpostSet: json["outpost_set"],
-        protocol: json["protocol"] == null ? undefined : ProtocolEnumFromJSON(json["protocol"]),
         accessGroup:
             json["access_group"] === undefined
                 ? undefined
@@ -250,7 +242,6 @@ export function RACProviderToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         property_mappings: value["propertyMappings"],
         settings: value["settings"],
-        protocol: ProtocolEnumToJSON(value["protocol"]),
         access_group: value["accessGroup"],
         maximum_connections: value["maximumConnections"],
         auth_mode: RACProviderAuthModeEnumToJSON(value["authMode"]),

@@ -6,18 +6,18 @@ from django.urls import reverse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import mixins
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Provider
 from authentik.endpoints.models import Device, DeviceUserBinding
 from authentik.policies.engine import PolicyEngine
-from authentik.providers.rac.models import RACProvider, resolve_protocol
+from authentik.providers.rac.models import RACProvider, available_protocols, connection_override
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
@@ -28,14 +28,26 @@ def user_device_cache_key(user_pk: str, provider_pk: str) -> str:
     return f"goauthentik.io/providers/rac/device_access/{user_pk}/{provider_pk}"
 
 
+class RACDeviceProtocolSerializer(PassiveSerializer):
+    """A protocol a device can be connected to with"""
+
+    protocol = CharField()
+    launch_url = CharField(allow_null=True)
+
+
 class RACDeviceSerializer(ModelSerializer):
     """Device as it can be launched through a RAC provider. Deliberately does not
     include any connection settings, as this is also used by end-users launching a
     connection."""
 
-    protocol = SerializerMethodField()
-    launch_url = SerializerMethodField()
+    protocols = SerializerMethodField()
     is_primary = SerializerMethodField()
+    override_pk = SerializerMethodField()
+
+    def get_override_pk(self, device: Device) -> int | None:
+        """Primary key of this device's connection override, if it has one"""
+        override = connection_override(device)
+        return override.pk if override else None
 
     @property
     def provider(self) -> RACProvider:
@@ -45,11 +57,14 @@ class RACDeviceSerializer(ModelSerializer):
         """Whether this is the requesting user's primary device"""
         return getattr(device, "is_primary", False)
 
-    def get_protocol(self, device: Device) -> str:
-        """Protocol this device is connected to with"""
-        return resolve_protocol(self.provider, device)
+    def get_protocols(self, device: Device) -> RACDeviceProtocolSerializer(many=True):
+        """Protocols this device can be connected to with, and how to launch each"""
+        return [
+            {"protocol": protocol, "launch_url": self.launch_url(device, protocol)}
+            for protocol in available_protocols(device)
+        ]
 
-    def get_launch_url(self, device: Device) -> str | None:
+    def launch_url(self, device: Device, protocol: str) -> str | None:
         """Build actual launch URL (the provider itself does not have one, just
         individual devices)"""
         try:
@@ -58,6 +73,7 @@ class RACDeviceSerializer(ModelSerializer):
                 kwargs={
                     "app": self.provider.application.slug,
                     "device": device.pk,
+                    "protocol": protocol,
                 },
             )
         except Provider.application.RelatedObjectDoesNotExist:
@@ -68,9 +84,9 @@ class RACDeviceSerializer(ModelSerializer):
         fields = [
             "device_uuid",
             "name",
-            "protocol",
-            "launch_url",
+            "protocols",
             "is_primary",
+            "override_pk",
         ]
 
 
@@ -161,7 +177,9 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
         self.rac_provider = provider
 
         queryset = self._filter_queryset_for_list(
-            provider.devices().prefetch_related(
+            provider.devices()
+            .select_related("rac_override")
+            .prefetch_related(
                 Prefetch(
                     "bindings", queryset=DeviceUserBinding.objects.all(), to_attr="user_bindings"
                 )

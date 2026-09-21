@@ -78,10 +78,15 @@ export class RACDeviceListPage extends Table<RACDevice> {
     protected override row(item: RACDevice): SlottedTemplateResult[] {
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">${item.name}</a>`,
-            html`${item.protocol.toUpperCase()}`,
+            html`${item.protocols.map((entry) => entry.protocol.toUpperCase()).join(", ")}`,
             html`<div class="ak-c-table__actions">
-                ${IconEditButton(RACDeviceForm, item.deviceUuid!, item.name, {
-                    modalProps: { provider: this.provider },
+                ${IconEditButton(RACDeviceForm, item.overridePk ?? null, item.name, {
+                    modalProps: {
+                        provider: this.provider,
+                        // Devices which are enrolled through a connector have no
+                        // override until one is created for them
+                        device: item.overridePk ? null : item.deviceUuid,
+                    },
                 })}
             </div>`,
         ];

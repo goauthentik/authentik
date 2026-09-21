@@ -34,11 +34,19 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 
 ## Apply a private key to a single device
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
-3. Click the name of the RAC provider that the device is reachable through.
-4. Under **Devices**, click on the **Edit** icon next to the device that requires public key authentication.
-5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the device:
+Connection settings for a single device are set with a [RAC property mapping](./index.mdx#rac-property-mappings), which receives the device it is evaluated for:
+
+```python
+if device.name == "my-server":
+    return {
+        "private-key": """-----BEGIN SSH PRIVATE KEY-----
+...
+-----END SSH PRIVATE KEY-----""",
+    }
+return {}
+```
+
+The equivalent of the provider-wide key above, for one device:
     ```yaml
     private-key: |
         -----BEGIN SSH PRIVATE KEY-----

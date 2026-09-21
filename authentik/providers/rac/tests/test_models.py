@@ -4,31 +4,27 @@ from django.test import TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.endpoints.facts import OSFamily
 from authentik.lib.generators import generate_id
 from authentik.providers.rac.models import (
+    PLATFORM_VENDOR,
     ConnectionToken,
     Protocols,
     RACPropertyMapping,
     RACProvider,
-    resolve_address,
-    resolve_maximum_connections,
-    resolve_protocol,
+    address_settings,
+    available_protocols,
 )
 from authentik.providers.rac.tests import create_test_device, set_device_facts
 
 
-class TestResolution(TransactionTestCase):
-    """Test how a device's address and protocol are resolved"""
-
-    def setUp(self):
-        self.provider = RACProvider.objects.create(name=generate_id())
+class TestConnectionResolution(TransactionTestCase):
+    """Test how the address and protocol of a device are resolved"""
 
     def test_address_from_facts_hostname(self):
-        """The hostname a device reports is used when it has no override"""
+        """The hostname an enrolled device reports is used"""
         device = create_test_device()
         set_device_facts(device, {"network": {"hostname": "host.example.com", "interfaces": []}})
-        self.assertEqual(resolve_address(device), "host.example.com")
+        self.assertEqual(address_settings(device), {"hostname": "host.example.com"})
 
     def test_address_from_facts_interface(self):
         """Without a hostname, the first non-local interface address is used"""
@@ -52,53 +48,77 @@ class TestResolution(TransactionTestCase):
                 }
             },
         )
-        self.assertEqual(resolve_address(device), "10.0.0.5")
+        self.assertEqual(address_settings(device), {"hostname": "10.0.0.5"})
 
-    def test_address_override(self):
-        """An explicit host overrides the reported facts"""
-        device = create_test_device(host="jump.example.com:3390")
+    def test_address_from_override(self):
+        """A connection override takes precedence over reported facts"""
+        device = create_test_device(host="jump.example.com")
         set_device_facts(device, {"network": {"hostname": "host.example.com"}})
-        self.assertEqual(resolve_address(device), "jump.example.com:3390")
+        self.assertEqual(address_settings(device), {"hostname": "jump.example.com"})
+
+    def test_address_with_port(self):
+        """A port in the address is passed on separately"""
+        self.assertEqual(
+            address_settings(create_test_device(host="host.example.com:3390")),
+            {"hostname": "host.example.com", "port": "3390"},
+        )
+
+    def test_address_ipv6(self):
+        """The colons of an IPv6 address are not a port"""
+        self.assertEqual(
+            address_settings(create_test_device(host="2001:db8::1")),
+            {"hostname": "2001:db8::1"},
+        )
 
     def test_address_missing(self):
         """A device without facts and without an override has no address"""
-        self.assertIsNone(resolve_address(create_test_device()))
+        self.assertEqual(address_settings(create_test_device()), {})
 
-    def test_protocol_from_os(self):
-        """Without any configuration the protocol follows the device's OS"""
-        windows = create_test_device()
-        set_device_facts(windows, {"os": {"family": OSFamily.windows}})
-        self.assertEqual(resolve_protocol(self.provider, windows), Protocols.RDP)
+    def test_protocols_from_override(self):
+        """A connection override sets the protocol of its device"""
+        device = create_test_device(host=generate_id(), protocol=Protocols.SSH)
+        self.assertEqual(available_protocols(device), [Protocols.SSH])
 
-        linux = create_test_device()
-        set_device_facts(linux, {"os": {"family": OSFamily.linux}})
-        self.assertEqual(resolve_protocol(self.provider, linux), Protocols.SSH)
-
-        self.assertEqual(resolve_protocol(self.provider, create_test_device()), Protocols.SSH)
-
-    def test_protocol_from_provider(self):
-        """The provider's protocol takes precedence over the device's OS"""
-        self.provider.protocol = Protocols.VNC
-        device = create_test_device()
-        set_device_facts(device, {"os": {"family": OSFamily.windows}})
-        self.assertEqual(resolve_protocol(self.provider, device), Protocols.VNC)
-
-    def test_protocol_override(self):
-        """The device's override takes precedence over everything"""
-        self.provider.protocol = Protocols.VNC
-        device = create_test_device(protocol=Protocols.SSH)
-        self.assertEqual(resolve_protocol(self.provider, device), Protocols.SSH)
-
-    def test_maximum_connections(self):
-        """The device's override takes precedence over the provider's limit"""
-        self.provider.maximum_connections = 3
-        self.assertEqual(resolve_maximum_connections(self.provider, create_test_device()), 3)
-        self.assertEqual(
-            resolve_maximum_connections(
-                self.provider, create_test_device(overrides={"maximum_connections": -1})
-            ),
-            -1,
+    def test_protocols_from_agent_facts(self):
+        """The agent reports what the device accepts connections on"""
+        rdp = create_test_device()
+        set_device_facts(
+            rdp,
+            {"vendor": {PLATFORM_VENDOR: {"rdp_cert_fingerprint": "aa:bb", "ssh_host_keys": []}}},
         )
+        self.assertEqual(available_protocols(rdp), [Protocols.RDP])
+
+        ssh = create_test_device()
+        set_device_facts(
+            ssh,
+            {
+                "vendor": {
+                    PLATFORM_VENDOR: {
+                        "rdp_cert_fingerprint": "",
+                        "ssh_host_keys": ["localhost ssh-ed25519 AAAA"],
+                    }
+                }
+            },
+        )
+        self.assertEqual(available_protocols(ssh), [Protocols.SSH])
+
+        both = create_test_device()
+        set_device_facts(
+            both,
+            {
+                "vendor": {
+                    PLATFORM_VENDOR: {
+                        "rdp_cert_fingerprint": "aa:bb",
+                        "ssh_host_keys": ["localhost ssh-ed25519 AAAA"],
+                    }
+                }
+            },
+        )
+        self.assertEqual(available_protocols(both), [Protocols.RDP, Protocols.SSH])
+
+    def test_protocols_unknown(self):
+        """A device that says nothing about itself can be connected to with either"""
+        self.assertEqual(available_protocols(create_test_device()), [Protocols.RDP, Protocols.SSH])
 
 
 class TestConnectionSettings(TransactionTestCase):
@@ -112,7 +132,8 @@ class TestConnectionSettings(TransactionTestCase):
             slug=generate_id(),
             provider=self.provider,
         )
-        self.device = create_test_device(host=f"{generate_id()}:1324", protocol=Protocols.RDP)
+        self.host = generate_id()
+        self.device = create_test_device(host=f"{self.host}:1324", protocol=Protocols.RDP)
         session = Session.objects.create(
             session_key=generate_id(),
             last_ip="255.255.255.255",
@@ -121,13 +142,13 @@ class TestConnectionSettings(TransactionTestCase):
         self.token = ConnectionToken.objects.create(
             provider=self.provider,
             device=self.device,
+            protocol=Protocols.RDP,
             session=auth_session,
         )
-        self.host = self.device.attributes["goauthentik.io/rac"]["host"]
 
     def base_settings(self, **kwargs) -> dict:
         settings = {
-            "hostname": self.host.split(":")[0],
+            "hostname": self.host,
             "port": "1324",
             "client-name": f"authentik - {self.user}",
             "drive-path": f"/tmp/connection/{self.token.token}",  # nosec
@@ -146,63 +167,46 @@ class TestConnectionSettings(TransactionTestCase):
         self.provider.save()
         self.assertEqual(self.token.get_settings(), self.base_settings(level="provider"))
 
-        # Set settings on the device
-        self.device.attributes["goauthentik.io/rac"]["settings"] = {"level": "device"}
-        self.device.save()
-        self.assertEqual(self.token.get_settings(), self.base_settings(level="device"))
-
-        # Set settings in property mapping (provider)
+        # Set settings in a property mapping
         mapping = RACPropertyMapping.objects.create(
             name=generate_id(),
             expression="""return {
-                "level": "property_mapping_provider"
+                "level": "property_mapping"
             }""",
         )
         self.provider.property_mappings.add(mapping)
-        self.assertEqual(
-            self.token.get_settings(), self.base_settings(level="property_mapping_provider")
-        )
+        self.assertEqual(self.token.get_settings(), self.base_settings(level="property_mapping"))
 
-        # Set settings in property mapping (device)
-        mapping = RACPropertyMapping.objects.create(
-            name=generate_id(),
-            static_settings={
-                "level": "property_mapping_device",
-                "foo": True,
-                "bar": 6,
-            },
-        )
-        self.device.attributes["goauthentik.io/rac"]["property_mappings"] = [str(mapping.pk)]
-        self.device.save()
+        # Property mappings receive the device, so they can be device-specific
+        mapping.expression = """return {
+            "level": "property_mapping",
+            "device-name": device.name,
+            "foo": True,
+            "bar": 6,
+        }"""
+        mapping.save()
         self.assertEqual(
             self.token.get_settings(),
-            self.base_settings(level="property_mapping_device", foo="true", bar="6"),
+            self.base_settings(
+                level="property_mapping",
+                **{"device-name": self.device.name, "foo": "true", "bar": "6"},
+            ),
         )
 
         # Set settings in token
         self.token.settings = {"level": "token"}
         self.token.save()
-        self.assertEqual(
-            self.token.get_settings(),
-            self.base_settings(level="token", foo="true", bar="6"),
-        )
-
-    def test_settings_address_from_facts(self):
-        """A device without an override is connected to on its reported address"""
-        device = create_test_device(protocol=Protocols.SSH)
-        set_device_facts(device, {"network": {"hostname": "host.example.com"}})
-        self.token.device = device
-        self.token.save()
         settings = self.token.get_settings()
-        self.assertEqual(settings["hostname"], "host.example.com")
-        self.assertNotIn("port", settings)
-        self.assertNotIn("resize-method", settings)
+        self.assertEqual(settings["level"], "token")
+        self.assertEqual(settings["device-name"], self.device.name)
 
-    def test_settings_port_override(self):
-        """The port can be overridden separately from the host"""
-        device = create_test_device(overrides={"host": "host.example.com", "port": 2222})
-        self.token.device = device
+    def test_settings_protocol_specific(self):
+        """The RDP-only settings are not set for other protocols"""
+        self.token.protocol = Protocols.SSH
+        self.assertNotIn("resize-method", self.token.get_settings())
+
+    def test_settings_without_address(self):
+        """A device without an address has no hostname to connect to"""
+        self.token.device = create_test_device()
         self.token.save()
-        settings = self.token.get_settings()
-        self.assertEqual(settings["hostname"], "host.example.com")
-        self.assertEqual(settings["port"], "2222")
+        self.assertNotIn("hostname", self.token.get_settings())

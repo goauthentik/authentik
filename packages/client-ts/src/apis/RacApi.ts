@@ -20,6 +20,10 @@ import {
     PaginatedConnectionTokenListFromJSON,
 } from "../models/PaginatedConnectionTokenList";
 import {
+    type PaginatedRACConnectionOverrideList,
+    PaginatedRACConnectionOverrideListFromJSON,
+} from "../models/PaginatedRACConnectionOverrideList";
+import {
     type PaginatedRACDeviceList,
     PaginatedRACDeviceListFromJSON,
 } from "../models/PaginatedRACDeviceList";
@@ -27,8 +31,83 @@ import {
     type PatchedConnectionTokenRequest,
     PatchedConnectionTokenRequestToJSON,
 } from "../models/PatchedConnectionTokenRequest";
+import {
+    type PatchedRACConnectionOverrideRequest,
+    PatchedRACConnectionOverrideRequestToJSON,
+} from "../models/PatchedRACConnectionOverrideRequest";
+import { type ProtocolEnum } from "../models/ProtocolEnum";
+import {
+    type RACConnectionOverride,
+    RACConnectionOverrideFromJSON,
+} from "../models/RACConnectionOverride";
+import {
+    type RACConnectionOverrideRequest,
+    RACConnectionOverrideRequestToJSON,
+} from "../models/RACConnectionOverrideRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
+
+export interface RacConnectionOverridesCreateRequest {
+    rACConnectionOverrideRequest: RACConnectionOverrideRequest;
+}
+
+export interface RacConnectionOverridesDestroyRequest {
+    /**
+     * A unique integer value identifying this RAC Connection override.
+     */
+    id: number;
+}
+
+export interface RacConnectionOverridesListRequest {
+    device?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    protocol?: ProtocolEnum;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface RacConnectionOverridesPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Connection override.
+     */
+    id: number;
+    patchedRACConnectionOverrideRequest?: PatchedRACConnectionOverrideRequest;
+}
+
+export interface RacConnectionOverridesRetrieveRequest {
+    /**
+     * A unique integer value identifying this RAC Connection override.
+     */
+    id: number;
+}
+
+export interface RacConnectionOverridesUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Connection override.
+     */
+    id: number;
+    rACConnectionOverrideRequest: RACConnectionOverrideRequest;
+}
+
+export interface RacConnectionOverridesUsedByListRequest {
+    /**
+     * A unique integer value identifying this RAC Connection override.
+     */
+    id: number;
+}
 
 export interface RacConnectionTokensDestroyRequest {
     /**
@@ -112,6 +191,500 @@ export interface RacDevicesListRequest {
 }
 
 export class RacApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for racConnectionOverridesCreate without sending the request
+     */
+    async racConnectionOverridesCreateRequestOpts(
+        requestParameters: RacConnectionOverridesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rACConnectionOverrideRequest"] == null) {
+            throw new runtime.RequiredError(
+                "rACConnectionOverrideRequest",
+                'Required parameter "rACConnectionOverrideRequest" was null or undefined when calling racConnectionOverridesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rac/connection_overrides/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: RACConnectionOverrideRequestToJSON(
+                requestParameters["rACConnectionOverrideRequest"],
+            ),
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesCreateRaw(
+        requestParameters: RacConnectionOverridesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACConnectionOverride>> {
+        const requestOptions =
+            await this.racConnectionOverridesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RACConnectionOverrideFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesCreate(
+        requestParameters: RacConnectionOverridesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACConnectionOverride> {
+        const response = await this.racConnectionOverridesCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesDestroy without sending the request
+     */
+    async racConnectionOverridesDestroyRequestOpts(
+        requestParameters: RacConnectionOverridesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racConnectionOverridesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/connection_overrides/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesDestroyRaw(
+        requestParameters: RacConnectionOverridesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.racConnectionOverridesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesDestroy(
+        requestParameters: RacConnectionOverridesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.racConnectionOverridesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesList without sending the request
+     */
+    async racConnectionOverridesListRequestOpts(
+        requestParameters: RacConnectionOverridesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["device"] != null) {
+            queryParameters["device"] = requestParameters["device"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["protocol"] != null) {
+            queryParameters["protocol"] = requestParameters["protocol"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rac/connection_overrides/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesListRaw(
+        requestParameters: RacConnectionOverridesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRACConnectionOverrideList>> {
+        const requestOptions = await this.racConnectionOverridesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRACConnectionOverrideListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesList(
+        requestParameters: RacConnectionOverridesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRACConnectionOverrideList> {
+        const response = await this.racConnectionOverridesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesPartialUpdate without sending the request
+     */
+    async racConnectionOverridesPartialUpdateRequestOpts(
+        requestParameters: RacConnectionOverridesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racConnectionOverridesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/connection_overrides/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedRACConnectionOverrideRequestToJSON(
+                requestParameters["patchedRACConnectionOverrideRequest"],
+            ),
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesPartialUpdateRaw(
+        requestParameters: RacConnectionOverridesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACConnectionOverride>> {
+        const requestOptions =
+            await this.racConnectionOverridesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RACConnectionOverrideFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesPartialUpdate(
+        requestParameters: RacConnectionOverridesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACConnectionOverride> {
+        const response = await this.racConnectionOverridesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesRetrieve without sending the request
+     */
+    async racConnectionOverridesRetrieveRequestOpts(
+        requestParameters: RacConnectionOverridesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racConnectionOverridesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/connection_overrides/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesRetrieveRaw(
+        requestParameters: RacConnectionOverridesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACConnectionOverride>> {
+        const requestOptions =
+            await this.racConnectionOverridesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RACConnectionOverrideFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesRetrieve(
+        requestParameters: RacConnectionOverridesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACConnectionOverride> {
+        const response = await this.racConnectionOverridesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesUpdate without sending the request
+     */
+    async racConnectionOverridesUpdateRequestOpts(
+        requestParameters: RacConnectionOverridesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racConnectionOverridesUpdate().',
+            );
+        }
+
+        if (requestParameters["rACConnectionOverrideRequest"] == null) {
+            throw new runtime.RequiredError(
+                "rACConnectionOverrideRequest",
+                'Required parameter "rACConnectionOverrideRequest" was null or undefined when calling racConnectionOverridesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/connection_overrides/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: RACConnectionOverrideRequestToJSON(
+                requestParameters["rACConnectionOverrideRequest"],
+            ),
+        };
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesUpdateRaw(
+        requestParameters: RacConnectionOverridesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACConnectionOverride>> {
+        const requestOptions =
+            await this.racConnectionOverridesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RACConnectionOverrideFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * RACConnectionOverride Viewset
+     */
+    async racConnectionOverridesUpdate(
+        requestParameters: RacConnectionOverridesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACConnectionOverride> {
+        const response = await this.racConnectionOverridesUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racConnectionOverridesUsedByList without sending the request
+     */
+    async racConnectionOverridesUsedByListRequestOpts(
+        requestParameters: RacConnectionOverridesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racConnectionOverridesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/connection_overrides/{id}/used_by/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async racConnectionOverridesUsedByListRaw(
+        requestParameters: RacConnectionOverridesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.racConnectionOverridesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async racConnectionOverridesUsedByList(
+        requestParameters: RacConnectionOverridesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.racConnectionOverridesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
     /**
      * Creates request options for racConnectionTokensDestroy without sending the request
      */

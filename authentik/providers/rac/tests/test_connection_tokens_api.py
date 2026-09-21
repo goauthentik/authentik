@@ -16,7 +16,6 @@ class TestConnectionTokensAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = create_test_user()
-        self.device_secret = generate_id()
         self.provider_secret = generate_id()
         self.provider = RACProvider.objects.create(
             name=generate_id(),
@@ -27,16 +26,13 @@ class TestConnectionTokensAPI(APITestCase):
             slug=generate_id(),
             provider=self.provider,
         )
-        self.device = create_test_device(
-            host=f"{generate_id()}:3389",
-            protocol=Protocols.RDP,
-            settings={"username": "user", "password": self.device_secret},
-        )
+        self.device = create_test_device(host=f"{generate_id()}:3389")
         session = Session.objects.create(session_key=generate_id(), last_ip="255.255.255.255")
         auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
         self.token = ConnectionToken.objects.create(
             provider=self.provider,
             device=self.device,
+            protocol=Protocols.RDP,
             session=auth_session,
         )
 
@@ -52,7 +48,6 @@ class TestConnectionTokensAPI(APITestCase):
         result = next(r for r in response.json()["results"] if r["pk"] == str(self.token.pk))
         self.assertEqual(result["device_name"], self.device.name)
         self.assertEqual(result["provider_obj"]["settings"], {})
-        self.assertNotIn(self.device_secret, response.content.decode())
         self.assertNotIn(self.provider_secret, response.content.decode())
 
         response = self.client.get(
@@ -60,7 +55,6 @@ class TestConnectionTokensAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["provider_obj"]["settings"], {})
-        self.assertNotIn(self.device_secret, response.content.decode())
         self.assertNotIn(self.provider_secret, response.content.decode())
 
     def test_manager_sees_provider_settings(self):
