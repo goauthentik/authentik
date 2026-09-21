@@ -1,0 +1,129 @@
+---
+title: Configure a RADIUS provider
+description: Configure RADIUS authentication, client networks, MFA, and an outpost, then verify access from your RADIUS clients.
+sidebar_position: 10
+---
+
+This walkthrough configures password-based RADIUS authentication using PAP. A RADIUS client, such as a VPN gateway or network access server, sends authentication requests to an authentik RADIUS outpost. The outpost runs the provider's authentication flow and checks the user's access to the associated application.
+
+For certificate-based authentication, see [EAP-TLS](./index.mdx#eap-tls). CHAP, MS-CHAP, and MS-CHAPv2 password authentication are not supported. Only authentication requests are supported; do not configure accounting against this outpost.
+
+## Prerequisites
+
+- An authentik administrator account and a test user with a known password.
+- A RADIUS client that supports PAP and can reach the outpost on UDP port `1812`.
+- The source IP addresses that the outpost will see for your RADIUS clients, including any address translation.
+- A host for the RADIUS outpost with access to the authentik API. The embedded outpost does not serve RADIUS.
+- For MFA, an already enrolled TOTP, static, or Duo authenticator for the test user.
+
+## Create an authentication flow
+
+1. In the Admin interface, go to **Flows and Stages > Flows** and [create a flow](../../flows-stages/flow/index.mdx#create-a-flow) with a name such as `radius-authentication` and **Designation** set to **Authentication**.
+2. Open the flow's **Stage Bindings** tab and [create or bind stages](../../flows-stages/stages/index.mdx#bind-a-stage-to-a-flow) in this order:
+    - Order `10`: an [identification stage](../../flows-stages/stages/identification/index.mdx) that accepts usernames.
+    - Order `20`: a [password stage](../../flows-stages/stages/password/index.mdx) with a backend that can validate your users' passwords.
+    - Order `30`, if requiring MFA: an [authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx) with supported device classes. To require MFA for every user, set **Not configured action** to **Deny the user access**. Users must enroll through a browser flow first.
+    - Order `40`: a [user login stage](../../flows-stages/stages/user_login/index.mdx) to attach the authenticated user to the session used for the application access check.
+
+You can select an existing flow if it uses [supported stages](./index.mdx#authentication-flow). Browser-only interactions and authenticator enrollment cannot be completed through a RADIUS password prompt.
+
+## Create the application and provider
+
+1. Go to **Applications > Applications** and click **New Application** to open the application wizard.
+2. Enter an application name, such as `Office RADIUS`, and a slug, such as `office-radius`. Continue to the provider selection and select the RADIUS provider type.
+3. Configure the provider:
+    - **Provider Name**: enter `Office RADIUS provider`.
+    - **Authentication Flow**: select the flow that you prepared above.
+    - **Code-based MFA Support**: enable this for password-plus-code authentication. Disable it for a password-only flow. Review [MFA and semicolons](#mfa-and-semicolons) before choosing.
+4. Under **Protocol settings**, configure:
+    - **Shared secret**: keep the generated value or enter a strong secret supported by your client. Store it securely and enter the identical value on every client using this provider. Use a distinct secret for each provider on the same outpost.
+    - **Client Networks**: replace the unrestricted default with the comma-separated CIDRs that contain your RADIUS clients' source addresses. For example, enter `192.0.2.0/24`. See [Client networks and provider selection](#client-networks-and-provider-selection).
+    - **Certificate**: leave this unset for PAP. It is used for EAP-TLS.
+    - **Property mappings**: select any [RADIUS attribute mappings](./index.mdx#radius-attributes) that your client requires, or leave this empty for a basic authentication test.
+5. Under **Advanced flow settings**, keep the default **Invalidation Flow** unless your deployment requires a different logout flow.
+6. Continue to the bindings step and configure the application's [policy, user, or group bindings](../../../customize/policies/bindings.mdx) for the intended users. Ensure that your test user is allowed. Successful password authentication alone does not bypass the application access check.
+7. Review the settings and click **Create Application**.
+
+If you create the provider separately under **Applications > Providers**, also create an application and select that provider. An unassigned provider is not available to the RADIUS outpost.
+
+### MFA and semicolons
+
+**Code-based MFA Support** is enabled by default. It controls how the outpost interprets the submitted PAP password; it does not add an MFA stage or require users to have an authenticator. Use an authenticator validation stage in the selected flow to enforce MFA.
+
+When the setting is enabled:
+
+- Submit `<password>;<code>` for TOTP or a static recovery code. For example, `example-password;123456` supplies `example-password` to the password stage and `123456` to the authenticator validation stage.
+- The outpost splits at the **last** semicolon, keeping earlier semicolons in the password. For example, `example;password;123456` supplies `example;password` as the password.
+- A value with no semicolon, or one that ends in a semicolon, is passed unchanged as the password and supplies no separate code. A trailing semicolon is not stripped.
+- Splitting does not depend on whether the user has an enrolled device, and the suffix is not checked for numeric content before splitting. A password such as `example;password` is therefore split even for a user without MFA and can fail password validation.
+
+When the setting is disabled, the entire value, including semicolons, is passed unchanged to the password stage. The same value is also available to the authenticator validation stage, which allows a deliberately configured code-only flow. Disabling this setting does not skip an authenticator validation stage.
+
+Duo uses a push challenge rather than an appended code. For password-and-Duo flows, you can disable code-based support to preserve literal semicolons in passwords. Allow enough time in the RADIUS client's timeout for the user to approve the push.
+
+### Client networks and provider selection
+
+**Client Networks** accepts comma-separated IPv4 or IPv6 CIDRs, such as `192.0.2.0/24, 2001:db8:1234::/64`. Use `/32` for one IPv4 address and `/128` for one IPv6 address. The default, `0.0.0.0/0, ::/0`, allows clients from every IPv4 and IPv6 network to reach authentication; it does not grant application access.
+
+The outpost matches the source IP of the incoming UDP packet. This is normally the VPN gateway, access point, or other RADIUS client, not the end user's workstation. The `NAS-IP-Address` and `Calling-Station-Id` attributes do not select the provider. If a NAT gateway, RADIUS proxy, container network, or Kubernetes service rewrites the source address, configure the address that the outpost actually sees. Clients sharing a translated source address cannot be distinguished by this setting.
+
+The Admin interface describes longest-prefix selection across the providers assigned to the outpost: a more specific network, such as `192.0.2.128/25`, should take precedence over `192.0.2.0/24`. The selected network supplies the shared secret used to process the packet, and the outpost then locates the provider by that secret. This is why providers on the same outpost need distinct secrets.
+
+:::warning Overlapping networks
+The current outpost implementation does not reliably apply the advertised longest-prefix rule. It compares address widths instead of prefix lengths, so overlapping networks of the same address family can select either provider. Use non-overlapping client networks and distinct shared secrets. Do not depend on provider order, identical CIDRs, or a catch-all provider as a fallback for a more specific provider.
+:::
+
+When no configured network matches, the outpost logs `No matching prefixes found` and drops the packet without a RADIUS response. The client normally reports a timeout, not `Access-Reject`. Check every provider on the outpost for a remaining catch-all network when testing this behavior.
+
+### Example with two networks
+
+Suppose one outpost serves office VPN gateways and lab network devices. Configure two application/provider pairs:
+
+- `Office RADIUS`, with provider `Office RADIUS provider`, **Client Networks** set to `192.0.2.0/24`, and a dedicated office shared secret.
+- `Lab RADIUS`, with provider `Lab RADIUS provider`, **Client Networks** set to `198.51.100.0/24`, and a different lab shared secret.
+
+Assign both applications to the same RADIUS outpost. They can use the same authentication flow or separate flows and application access policies.
+
+A request arriving from `192.0.2.10` uses the office provider and secret. A request from `198.51.100.20` uses the lab provider and secret. A request from `203.0.113.10` is dropped if no other provider on the outpost allows it. These are the client addresses as seen by the outpost, not the address of the outpost itself. Replace the example networks with your actual client networks.
+
+## Deploy the RADIUS outpost
+
+1. Follow [Create and configure an outpost](../../outposts/index.mdx#create-and-configure-an-outpost). Select **Radius** as the **Type** and include the application that you created. For the two-network example, include both applications.
+2. Deploy it using the existing instructions for your platform:
+    - A managed [Docker integration](../../outposts/integrations/docker.mdx) or [Kubernetes integration](../../outposts/integrations/kubernetes.mdx).
+    - A [manual Docker Compose RADIUS outpost](../../outposts/manual-deploy-docker-compose.mdx#radius-outpost).
+3. Ensure that the clients can reach the outpost on UDP port `1812`, and that the outpost can reach authentik. For Kubernetes, expose the UDP service to the client networks and account for any source address translation.
+4. Check the outpost's health in **Applications > Outposts** and inspect its logs for startup or configuration errors before testing authentication.
+
+The outpost's `AUTHENTIK_TOKEN` authenticates the outpost to the authentik API. It is separate from the provider's **Shared secret**, which authenticates RADIUS traffic between clients and the outpost.
+
+## Configure the RADIUS client
+
+Use your device's RADIUS authentication settings to enter these values:
+
+| Setting                           | Value                                                                   |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| RADIUS server                     | The reachable IP address or hostname of the RADIUS outpost              |
+| Authentication port and transport | `1812`, UDP                                                             |
+| Shared secret                     | The exact secret from the provider that matches this client's source IP |
+| Authentication method             | PAP for this walkthrough                                                |
+| Username                          | The authentik username accepted by the identification stage             |
+| Password                          | The user's password, with `;<code>` appended when using code-based MFA  |
+
+If the device lets you select its source interface or address for RADIUS traffic, ensure that the resulting source IP is in **Client Networks**. Do not use authentik's web URL as the RADIUS endpoint unless that host also exposes the RADIUS outpost's UDP port.
+
+## Verify authentication and network selection
+
+1. Test from the actual RADIUS device first, using its built-in authentication test if available. For a command-line test, install the FreeRADIUS `radtest` utility on a host whose source IP is in the intended client network and run:
+
+    ```shell
+    radtest -t pap '<username>' '<password>' '<outpost_address>:1812' 0 '<shared_secret>'
+    ```
+
+    With code-based MFA enabled and required by the flow, replace `<password>` with `<password>;<current_code>`. The quotes keep the shell from interpreting the semicolon. Use a test account and a private shell because command arguments and shell history can expose these values. A test from your laptop verifies the laptop's source network, not the VPN gateway's.
+
+2. Expect `Access-Accept` for valid credentials and allowed application access. Repeat with an incorrect password and expect `Access-Reject`. For a flow requiring code-based MFA, also test a missing or incorrect code and expect `Access-Reject`. For password-only use, test a password containing a semicolon with **Code-based MFA Support** disabled.
+3. For the two-network example, repeat from each network with that provider's distinct secret and an allowed test user. Check the outpost logs alongside each test. Temporarily set the outpost's [log level](../../outposts/index.mdx#configuration) to `debug` to see `Matched CIDR` with the source `ip`, selected `cidr`, and application slug in `instance`. Restore your usual log level afterwards.
+4. Send a request from a reachable host outside all configured networks. Expect no response and a timeout, with `No matching prefixes found` in the outpost logs. Confirm that no provider retains `0.0.0.0/0` or `::/0`. Changing a RADIUS attribute such as `NAS-IP-Address` does not simulate a different packet source.
+
+If a request times out without a matching outpost log, check routing, firewall rules, and the UDP port exposure. For `No matching prefixes found`, compare the logged source IP with **Client Networks**, including any NAT. For `Invalid message authenticator`, verify that the client uses the selected provider's secret. For `Access-Reject`, check the username, password parsing, flow stages, enrolled MFA device, and application bindings.

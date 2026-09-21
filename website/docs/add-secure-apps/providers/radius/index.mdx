@@ -6,14 +6,24 @@ sidebar_label: "RADIUS Provider"
 
 import { HashSupport } from "./HashSupport";
 
+<<<<<<< HEAD
 You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
+=======
+You can configure a RADIUS provider for applications that require RADIUS, such as VPN gateways and network access devices. Follow the [configuration walkthrough](./configure.mdx) to create an application and provider, deploy an outpost, and test authentication.
+>>>>>>> 398dbb7da (website/docs: radius: add configuration walkthrough (#26286))
 
 :::info
 This provider requires the deployment of a [RADIUS outpost](../../outposts/index.mdx).
 :::
+<<<<<<< HEAD
+=======
+
+Only authentication requests are supported. RADIUS accounting is not supported.
+>>>>>>> 398dbb7da (website/docs: radius: add configuration walkthrough (#26286))
 
 Currently, only authentication requests are supported.
 
+<<<<<<< HEAD
 ### Authentication flow
 
 Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
@@ -27,9 +37,25 @@ The following stages are supported:
     :::info
     Authenticator validation currently only supports DUO, TOTP, and static authenticator.
     :::
+=======
+Authentication requests against the RADIUS outpost use a flow in the background. You can reuse flows, stages, and policies from web-based logins when their stages are supported by the outpost.
+
+The following stages are supported:
+
+- [Identification](../../flows-stages/stages/identification/index.mdx)
+- [Password](../../flows-stages/stages/password/index.mdx)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
+- [User Logout](../../flows-stages/stages/user_logout/index.mdx)
+- [User Login](../../flows-stages/stages/user_login/index.mdx)
+- [Deny](../../flows-stages/stages/deny/index.mdx)
+- [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx)
+
+Authenticator validation supports Duo, TOTP, and static authenticators. SMS, email, and WebAuthn authenticators are not supported by the RADIUS outpost. Users must enroll their authenticators before using RADIUS.
+>>>>>>> 398dbb7da (website/docs: radius: add configuration walkthrough (#26286))
 
     For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the MFA token `123456`, the input must be `example-password;123456`.
 
+<<<<<<< HEAD
     SMS-based authenticators are not supported because they require a code to be sent from authentik, which is not possible during the bind.
 
 - [User Logout](../../flows-stages/stages/user_logout/index.mdx)
@@ -38,6 +64,9 @@ The following stages are supported:
 - [Mutual TLS stage](../../flows-stages/stages/mtls/index.mdx)
 
 ### Protocol support
+=======
+For password and code-based MFA, enable **Code-based MFA Support** and submit the password followed by a semicolon and the code, such as `example-password;123456`. The setting controls how the outpost splits the password; the authentication flow determines whether MFA is required. See [MFA and semicolons](./configure.mdx#mfa-and-semicolons) for parsing rules and configuration details.
+>>>>>>> 398dbb7da (website/docs: radius: add configuration walkthrough (#26286))
 
 The RADIUS provider supports EAP-TLS and [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol. For password-based authentication, only PAP protocol is supported due to other password hashing methods requiring reversible password hashes, which we don’t support for security reasons.
 
