@@ -44,7 +44,7 @@ To support the integration of TikTok with authentik, you need to create a TikTok
 3. Click **Finish**.
 
 :::info Display new source on login screen
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
 :::
 
 :::info Embed new source in flow :ak-enterprise
@@ -53,7 +53,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ## Source property mappings
 
-Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.mdx) for more information.
 
 The following data is retrieved from TikTok and mapped to the user's attributes in authentik:
 
@@ -73,7 +73,7 @@ TikTok users are identified by their `union_id` (if available) or `open_id`.
 - **Open ID**: Unique to the specific app. Used as a fallback if `union_id` is not returned.
 
 :::info No email address
-TikTok does not expose an email address for the authenticated user. As a result, the source cannot populate the user's email during enrollment. If your enrollment flow requires an email, add a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md) to collect one, or map it with a [source property mapping](../../property-mappings/index.md).
+TikTok does not expose an email address for the authenticated user. As a result, the source cannot populate the user's email during enrollment. If your enrollment flow requires an email, add a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.mdx) to collect one, or map it with a [source property mapping](../../property-mappings/index.mdx).
 :::
 
 ## Resources
