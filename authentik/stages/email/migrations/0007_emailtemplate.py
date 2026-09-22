@@ -5,6 +5,9 @@ from django.db import migrations, models
 from pathlib import Path
 from django.apps.registry import Apps, apps as global_apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+import django.db.models.deletion
+
+from authentik.lib.config import CONFIG
 
 # regression: these display names are no longer translated since they come from DB
 BUILTIN_TEMPLATES = [
@@ -37,6 +40,8 @@ BUILTIN_TEMPLATES = [
     ("goauthentik.io/email/setup", "Test Email", "authentik_stages_email", "setup.html"),
 ]
 
+BUILTIN_PATHS = {f"email/{filename}": managed for managed, _, _, filename in BUILTIN_TEMPLATES}
+
 
 def seed_builtin_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EmailTemplate = apps.get_model("authentik_stages_email", "EmailTemplate")
@@ -58,6 +63,51 @@ def remove_builtin_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
     EmailTemplate.objects.using(db_alias).filter(
         managed__in=[m for m, *_ in BUILTIN_TEMPLATES]
     ).delete()
+
+
+def backfill_emailstage_template(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    """
+    Backfills EmailTemplate with filesystem-based tempaltes, and
+    updates EmailStages.template to reference the EmailTemplate.
+    """
+    EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
+    EmailTemplate = apps.get_model("authentik_stages_email", "EmailTemplate")
+    db_alias = schema_editor.connection.alias
+    template_dir = Path(CONFIG.get("email.template_dir"))
+    for stage in EmailStage.objects.using(db_alias).all():
+        value = stage.template_legacy
+        if not value:
+            continue
+        managed_id = BUILTIN_PATHS.get(value)
+        if managed_id:
+            stage.template = EmailTemplate.objects.using(db_alias).get(managed=managed_id)
+            stage.save(using=db_alias, update_fields=["template"])
+            continue
+
+        try:
+            body = (template_dir / value).read_text(encoding="utf-8")
+        except OSError:
+            continue
+        template, _ = EmailTemplate.objects.using(db_alias).get_or_create(
+            name=value,
+            defaults={"body": body},
+        )
+        stage.template = template
+        stage.save(using=db_alias, update_fields=["template"])
+
+
+def backfill_emailstage_template_reverse(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
+    db_alias = schema_editor.connection.alias
+    managed_to_path = {v: k for k, v in BUILTIN_PATHS.items()}
+    for stage in EmailStage.objects.using(db_alias).select_related("template").all():
+        if not stage.template_id:
+            stage.template_legacy = ""
+        elif managed_id := stage.template.managed:
+            stage.template_legacy = managed_to_path.get(managed_id, "")
+        else:
+            stage.template_legacy = stage.template.name
+        stage.save(using=db_alias, update_fields=["template_legacy"])
 
 
 class Migration(migrations.Migration):
@@ -97,4 +147,27 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(seed_builtin_templates, remove_builtin_templates),
+        # migrate existing templates
+        migrations.RenameField(
+            model_name="emailstage",
+            old_name="template",
+            new_name="template_legacy",
+        ),
+        migrations.AddField(
+            model_name="emailstage",
+            name="template",
+            field=models.ForeignKey(
+                to="authentik_stages_email.emailtemplate",
+                blank=True,
+                null=True,
+                default=None,
+                help_text="Email template to use",
+                on_delete=django.db.models.deletion.PROTECT,
+            ),
+        ),
+        migrations.RunPython(backfill_emailstage_template, backfill_emailstage_template_reverse),
+        migrations.RemoveField(
+            model_name="emailstage",
+            name="template_legacy",
+        ),
     ]
