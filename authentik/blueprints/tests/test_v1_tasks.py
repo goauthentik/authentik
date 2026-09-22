@@ -159,44 +159,36 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             )
 
     def write_blueprint(self, file, value: str):
-        """Write a blueprint referencing `value` and return its hash as found on disk"""
         file.seek(0)
         file.truncate()
         file.write(f"version: 1\nentries: []\ncontext:\n  secret: {value}\n")
         file.flush()
-        blueprint = next(found for found in blueprints_find() if found.path == Path(file.name).name)
-        return blueprint.hash
+        return next(found for found in blueprints_find() if found.path == Path(file.name).name).hash
+
+    def write_secret(self, file, value: str):
+        file.seek(0)
+        file.truncate()
+        file.write(value)
+        file.flush()
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_content_changed(self):
         """Test hash changes when the contents of a referenced `!File` change"""
         with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                before = self.write_blueprint(file, f"!File {secret.name}")
-                secret.seek(0)
-                secret.truncate()
-                secret.write("rotated")
-                secret.flush()
-                after = self.write_blueprint(file, f"!File {secret.name}")
-                self.assertNotEqual(before, after)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_content_changed_nested(self):
-        """Test hash changes when a `!File` used as an argument of another tag changes"""
-        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                nested = f'!Format ["client-%s", !File {secret.name}]'
-                before = self.write_blueprint(file, nested)
-                secret.seek(0)
-                secret.truncate()
-                secret.write("rotated")
-                secret.flush()
-                after = self.write_blueprint(file, nested)
-                self.assertNotEqual(before, after)
+            for label, reference in (
+                ("direct", f"!File {secret.name}"),
+                ("argument of another tag", f'!Format ["client-%s", !File {secret.name}]'),
+                ("reached through a cycle", f"&anchor [*anchor, !File {secret.name}]"),
+                ("reached through an alias", f"&anchor [!File {secret.name}]\n  other: *anchor"),
+            ):
+                with (
+                    self.subTest(label),
+                    NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file,
+                ):
+                    self.write_secret(secret, "initial")
+                    before = self.write_blueprint(file, reference)
+                    self.write_secret(secret, "rotated")
+                    self.assertNotEqual(before, self.write_blueprint(file, reference))
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_created(self):
@@ -213,11 +205,58 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             self.assertNotEqual(before, after)
 
     @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_removed(self):
+        """Test hash changes when a referenced `!File` that existed disappears"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            secret_path = Path(TMP) / generate_id()
+            secret_path.write_text("present")
+            reference = f"!File {secret_path}"
+            try:
+                before = self.write_blueprint(file, reference)
+            finally:
+                secret_path.unlink()
+            self.assertNotEqual(before, self.write_blueprint(file, reference))
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_contents_swapped(self):
+        """Test hash changes when two referenced `!File`s exchange their contents"""
+        with (
+            NamedTemporaryFile(mode="w+", dir=TMP) as first,
+            NamedTemporaryFile(mode="w+", dir=TMP) as second,
+        ):
+            self.write_secret(first, "alpha")
+            self.write_secret(second, "beta")
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                reference = f"[!File {first.name}, !File {second.name}]"
+                before = self.write_blueprint(file, reference)
+                self.write_secret(first, "beta")
+                self.write_secret(second, "alpha")
+                self.assertNotEqual(before, self.write_blueprint(file, reference))
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_hashed_once_per_route(self):
+        """Test a referenced `!File` is folded into the hash once for each route to it"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            self.write_secret(secret, "initial")
+            for label, reference, routes in (
+                ("cycle", f"&anchor [*anchor, !File {secret.name}]", 1),
+                ("alias", f"&anchor [!File {secret.name}]\n  other: *anchor", 2),
+            ):
+                with (
+                    self.subTest(label),
+                    NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file,
+                ):
+                    content = f"version: 1\nentries: []\ncontext:\n  secret: {reference}\n"
+                    expected = sha512(content.encode())
+                    for _ in range(routes):
+                        expected.update(sha512(b"initial").digest())
+                    self.assertEqual(self.write_blueprint(file, reference), expected.hexdigest())
+
+    @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_content_unchanged(self):
         """Test hash is stable when a referenced `!File` does not change"""
         with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
+            self.write_secret(secret, "initial")
             with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
                 reference = f"!File {secret.name}"
                 self.assertEqual(
@@ -226,32 +265,52 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
 
     @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_missing(self):
-        """Test hash is stable when a referenced `!File` does not exist"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            reference = f"!File {Path(TMP) / generate_id()}"
-            self.assertEqual(
-                self.write_blueprint(file, reference),
-                self.write_blueprint(file, reference),
-            )
+    def test_file_tag_unreadable_hash_stable(self):
+        """Test hash is stable when a referenced `!File` cannot be read"""
+        for label, reference in (
+            ("missing file", f"!File {Path(TMP) / generate_id()}"),
+            ("path from a tag", f'!File [!Env [{generate_id()}, "{TMP}/fallback"], "default"]'),
+            ("path from a mapping", f'!File {{path: "{TMP}/fallback"}}'),
+            ("path no syscall can take", '!File "\\0"'),
+            ("deeply nested", "[" * 50 + f'!File "{TMP}/fallback"' + "]" * 50),
+        ):
+            with (
+                self.subTest(label),
+                NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file,
+            ):
+                self.assertEqual(
+                    self.write_blueprint(file, reference),
+                    self.write_blueprint(file, reference),
+                )
 
     @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_path_from_tag(self):
-        """Test a `!File` whose path is itself a tag is still discovered"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            reference = f'!File [!Env [{generate_id()}, "{TMP}/fallback"], "default"]'
-            self.assertEqual(
-                self.write_blueprint(file, reference),
-                self.write_blueprint(file, reference),
-            )
+    def test_file_tag_unreadable_discovery_continues(self):
+        """Test a blueprint that cannot be hashed does not stop others being discovered"""
+        for label, reference in (
+            ("path from a mapping", f'!File {{path: "{TMP}/fallback"}}'),
+            ("path no syscall can take", '!File "\\0"'),
+            ("sequence containing itself", "&anchor [*anchor]"),
+            ("mapping containing itself", "&anchor {key: *anchor}"),
+        ):
+            with (
+                self.subTest(label),
+                NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as broken,
+                NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as healthy,
+            ):
+                broken.write(f"version: 1\nentries: []\ncontext:\n  secret: {reference}\n")
+                broken.flush()
+                healthy.write(f"version: 1\nentries: []\nmetadata:\n  name: {generate_id()}\n")
+                healthy.flush()
+                found = [blueprint.path for blueprint in blueprints_find()]
+                self.assertIn(Path(healthy.name).name, found)
+                self.assertIn(Path(broken.name).name, found)
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_applied_on_change(self):
         """Test blueprint is re-applied when the contents of a referenced `!File` change"""
         blueprint_id = generate_id()
         with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
+            self.write_secret(secret, "initial")
             with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
                 file.write(
                     f"version: 1\nentries: []\n"
@@ -263,175 +322,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
                 before = instance.last_applied_hash
                 self.assertEqual(instance.status, BlueprintInstanceStatus.SUCCESSFUL)
-                secret.seek(0)
-                secret.truncate()
-                secret.write("rotated")
-                secret.flush()
+                self.write_secret(secret, "rotated")
                 blueprints_discovery.send()
                 instance.refresh_from_db()
                 self.assertNotEqual(instance.last_applied_hash, before)
-
-    def assert_discovery_survives(self, reference: str):
-        """Assert a blueprint referencing `reference` neither breaks its own hashing nor
-        stops a healthy blueprint alongside it from being discovered"""
-        healthy_id = generate_id()
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as broken:
-            broken.write(f"version: 1\nentries: []\ncontext:\n  secret: {reference}\n")
-            broken.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as healthy:
-                healthy.write(f"version: 1\nentries: []\nmetadata:\n  name: {healthy_id}\n")
-                healthy.flush()
-                found = [blueprint.path for blueprint in blueprints_find()]
-        self.assertIn(Path(healthy.name).name, found)
-        self.assertIn(Path(broken.name).name, found)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_path_from_mapping(self):
-        """Test a `!File` built from a mapping node is skipped rather than raising, so
-        discovery of other blueprints continues"""
-        self.assert_discovery_survives(f'!File {{path: "{TMP}/fallback"}}')
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_path_unopenable(self):
-        """Test a `!File` whose path cannot be opened by any syscall is skipped rather
-        than raising, so discovery of other blueprints continues"""
-        self.assert_discovery_survives('!File "\\0"')
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_path_from_mapping_stable(self):
-        """Test the hash of a `!File` built from a mapping node is stable"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            reference = f'!File {{path: "{TMP}/fallback"}}'
-            self.assertEqual(
-                self.write_blueprint(file, reference),
-                self.write_blueprint(file, reference),
-            )
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_path_unopenable_stable(self):
-        """Test the hash of a `!File` with an unopenable path is stable"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            reference = '!File "\\0"'
-            self.assertEqual(
-                self.write_blueprint(file, reference),
-                self.write_blueprint(file, reference),
-            )
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_cycle_content_changed(self):
-        """Test hash changes when a `!File` reached through a cyclic anchor changes"""
-        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                cycle = f"&anchor [*anchor, !File {secret.name}]"
-                before = self.write_blueprint(file, cycle)
-                secret.seek(0)
-                secret.truncate()
-                secret.write("rotated")
-                secret.flush()
-                after = self.write_blueprint(file, cycle)
-                self.assertNotEqual(before, after)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_alias_content_changed(self):
-        """Test hash changes when a `!File` reachable only through an alias changes"""
-        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                alias = f"&anchor [!File {secret.name}]\n  other: *anchor"
-                before = self.write_blueprint(file, alias)
-                secret.seek(0)
-                secret.truncate()
-                secret.write("rotated")
-                secret.flush()
-                after = self.write_blueprint(file, alias)
-                self.assertNotEqual(before, after)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_cycle_sequence(self):
-        """Test a blueprint whose anchor makes a sequence contain itself is hashed
-        rather than raising, so discovery of other blueprints continues"""
-        self.assert_discovery_survives("&anchor [*anchor]")
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_cycle_mapping(self):
-        """Test a blueprint whose anchor makes a mapping contain itself is hashed
-        rather than raising, so discovery of other blueprints continues"""
-        self.assert_discovery_survives("&anchor {key: *anchor}")
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_deeply_nested(self):
-        """Test a deeply nested blueprint with no cycle is hashed"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            reference = "[" * 50 + f'!File "{TMP}/fallback"' + "]" * 50
-            self.assertEqual(
-                self.write_blueprint(file, reference),
-                self.write_blueprint(file, reference),
-            )
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_alias_hashed_per_route(self):
-        """Test a `!File` reachable by two routes through one anchor is folded into the
-        hash once per route, as it is when the tag is simply written out twice"""
-        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                alias = f"&anchor [!File {secret.name}]\n  other: *anchor"
-                content = f"version: 1\nentries: []\ncontext:\n  secret: {alias}\n"
-                expected = sha512(content.encode())
-                for _ in range(2):
-                    expected.update(sha512(b"initial").digest())
-                self.assertEqual(self.write_blueprint(file, alias), expected.hexdigest())
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_removed(self):
-        """Test hash changes when a referenced `!File` that existed disappears"""
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            secret_path = Path(TMP) / generate_id()
-            secret_path.write_text("present")
-            reference = f"!File {secret_path}"
-            try:
-                before = self.write_blueprint(file, reference)
-            finally:
-                secret_path.unlink()
-            after = self.write_blueprint(file, reference)
-            self.assertNotEqual(before, after)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_contents_swapped(self):
-        """Test hash changes when two referenced `!File`s exchange their contents"""
-        with (
-            NamedTemporaryFile(mode="w+", dir=TMP) as first,
-            NamedTemporaryFile(mode="w+", dir=TMP) as second,
-        ):
-            first.write("alpha")
-            first.flush()
-            second.write("beta")
-            second.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                reference = f"[!File {first.name}, !File {second.name}]"
-                before = self.write_blueprint(file, reference)
-                for secret, value in ((first, "beta"), (second, "alpha")):
-                    secret.seek(0)
-                    secret.truncate()
-                    secret.write(value)
-                    secret.flush()
-                after = self.write_blueprint(file, reference)
-                self.assertNotEqual(before, after)
-
-    @CONFIG.patch("blueprints_dir", TMP)
-    def test_file_tag_cycle_hashed_once(self):
-        """Test a `!File` beside a node that contains itself is folded into the hash
-        exactly once, however many times the cycle could be followed"""
-        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
-            secret.write("initial")
-            secret.flush()
-            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-                cycle = f"&anchor [*anchor, !File {secret.name}]"
-                content = f"version: 1\nentries: []\ncontext:\n  secret: {cycle}\n"
-                expected = sha512(content.encode())
-                expected.update(sha512(b"initial").digest())
-                self.assertEqual(self.write_blueprint(file, cycle), expected.hexdigest())
