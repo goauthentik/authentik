@@ -159,9 +159,8 @@ jobs:
             -c 'cd / && python -m lifecycle.migrate'
   notify-migration-divergence:
     name: Notify migration divergence
-    # Only the nightly run posts to Slack, and only when something failed. A
-    # manual run and the pull request that edits this file show their result in
-    # the Actions tab instead.
+    # Only the nightly run posts to Slack when something failed.
+    # A manual run/PR show up in the Actions tab.
     if: >-
       ${{ always() && github.event_name == 'schedule'
       && (needs.discover-release-branches.result != 'success'
