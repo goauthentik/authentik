@@ -69,7 +69,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@4076c08d76dba979c11a7285295b0716c1d67908 # v2
+      uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
