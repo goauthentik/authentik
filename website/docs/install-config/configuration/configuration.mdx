@@ -389,6 +389,8 @@ List of comma-separated `address:port` values for HTTP.
 
 Applies to the Server, the Worker, and Proxy outposts.
 
+Set to an empty value to disable the HTTP listener.
+
 Defaults to `[::]:9000`.
 
 ##### `AUTHENTIK_LISTEN__HTTPS`
@@ -396,6 +398,8 @@ Defaults to `[::]:9000`.
 List of comma-separated `address:port` values for HTTPS.
 
 Applies to the Server and Proxy outposts.
+
+Set to an empty value to disable the HTTPS listener.
 
 Defaults to `[::]:9443`.
 
@@ -428,6 +432,8 @@ Defaults to `[::]:1812`.
 List of comma-separated `address:port` values for Prometheus metrics.
 
 Applies to all.
+
+Set to an empty value to disable the metrics listener.
 
 Defaults to `[::]:9300`.
 
