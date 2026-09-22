@@ -23,6 +23,11 @@ from authentik.outposts.models import OutpostModel
 
 LOGGER = get_logger()
 
+# Settings the outpost turns into an SSH certificate, instead of passing them on to
+# guacd. Keep in sync with `internal/outpost/rac/ssh.go`.
+SSH_TOKEN_SETTING = "goauthentik.io/rac/ssh-token"  # nosec
+SSH_HOST_KEY_SETTING = "goauthentik.io/rac/ssh-host-key"
+
 
 class Protocols(models.TextChoices):
     """Supported protocols"""
@@ -60,6 +65,18 @@ def available_protocols(device: Device) -> list[str]:
     if vendor.get("ssh_host_keys"):
         protocols.append(Protocols.SSH)
     return protocols or [Protocols.RDP, Protocols.SSH]
+
+
+def agent_ssh_host_key(device: Device) -> str | None:
+    """A host key the authentik agent reported for a device, which is what the device
+    identifies itself with when it validates a certificate"""
+    vendor = (device.facts_data.get("vendor") or {}).get(
+        AgentConnectorController.vendor_identifier()
+    ) or {}
+    for host_key in vendor.get("ssh_host_keys") or []:
+        # The agent reports keys the way `ssh-keyscan` does, prefixed with the host
+        return host_key.removeprefix("localhost ").strip()
+    return None
 
 
 def address_settings(device: Device) -> dict[str, str]:
@@ -222,6 +239,7 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
         settings["client-name"] = f"authentik - {self.session.user}"
         always_merger.merge(settings, self.provider.settings)
         always_merger.merge(settings, address_settings(self.device))
+        always_merger.merge(settings, self.agent_ssh_settings())
 
         def mapping_evaluator(mappings: QuerySet):
             for mapping in mappings:
@@ -257,6 +275,31 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
                 continue
             settings[key] = str(value)
         return settings
+
+    def agent_ssh_settings(self) -> dict[str, str]:
+        """Log into a device managed by the authentik agent as the user this connection
+        was authorized for. The outpost turns the token into an SSH certificate, which
+        the agent on the device validates with authentik before accepting the login."""
+        from authentik.endpoints.connectors.agent.auth import agent_auth_issue_token
+        from authentik.endpoints.connectors.agent.models import AgentConnector
+
+        if self.protocol != Protocols.SSH:
+            return {}
+        host_key = agent_ssh_host_key(self.device)
+        if not host_key:
+            return {}
+        connector = AgentConnector.objects.filter(device__in=[self.device]).first()
+        if not connector:
+            return {}
+        token, _ = agent_auth_issue_token(self.device, connector, self.session.user)
+        if not token:
+            LOGGER.warning("Failed to issue agent token for device", device=self.device)
+            return {}
+        return {
+            "username": self.session.user.username,
+            SSH_TOKEN_SETTING: token,
+            SSH_HOST_KEY_SETTING: host_key,
+        }
 
     def __str__(self):
         return f"RAC Connection token {self.session_id} to {self.provider_id}/{self.device_id}"
