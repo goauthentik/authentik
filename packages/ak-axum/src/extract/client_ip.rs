@@ -45,7 +45,7 @@ fn extract_from_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
                 return Some(ip);
             } else if let Ok(socket_addr) = part.parse::<SocketAddr>() {
                 return Some(socket_addr.ip());
-            };
+            }
         }
     }
 
