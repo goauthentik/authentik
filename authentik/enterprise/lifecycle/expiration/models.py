@@ -18,7 +18,13 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingStatus,
     UserOffboarding,
 )
-from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
+from authentik.events.models import (
+    Event,
+    EventAction,
+    Notification,
+    NotificationSeverity,
+    NotificationTransport,
+)
 from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -166,8 +172,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return timezone.now() - self.inactivity_timedelta + self.warn_timedelta
 
     def qualifies(self, user: User) -> bool:
-        """Whether this rule should expire `user` right now: enabled, in scope, past the
-        threshold and passing policies. `candidates()` is this predicate as a queryset,
+        """Whether this rule should schedule `user`, including the warning window:
+        enabled, in scope and passing policies. `candidates()` is this predicate as a queryset,
         minus users who already have a pending or newer terminal offboarding."""
         if not self.enabled:
             return False
@@ -219,28 +225,71 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         )
         event.set_user(user)
         event.save()
-        for transport in self.notification_transports.all():
+        transports = list(self.notification_transports.all())
+        if not transports:
+            # Use local delivery even when no persistent transport is configured.
+            NotificationTransport().send_local(
+                Notification(
+                    severity=NotificationSeverity.NOTICE,
+                    body=event.summary,
+                    event=event,
+                    user=user,
+                    hyperlink=event.hyperlink,
+                    hyperlink_label=event.hyperlink_label,
+                )
+            )
+        for transport in transports:
             send_notification.send_with_options(
                 args=(transport.pk, event.pk, user.pk, NotificationSeverity.NOTICE),
                 rel_obj=transport,
             )
 
+    def reconcile_offboarding(self, row: UserOffboarding) -> bool:
+        """Refresh a locked pending row owned by this rule; return whether it is kept.
+
+        Both the sweep and execution use this, so execution need not wait for a sweep
+        to pick up changed settings. Moving a deadline later is silent; moving it
+        earlier or changing the action warns the user again.
+        """
+        if (
+            not self.enabled
+            or not self._in_scope(row.user)
+            or (row.user.last_login is not None and row.user.last_login >= row.created_at)
+        ):
+            row.delete()
+            return False
+        due_at = self.due_at(row.user)
+        rewarn = due_at < row.scheduled_at or row.action != self.action
+        values = {
+            "scheduled_at": due_at,
+            "action": self.action,
+            "revoke_sessions": self.revoke_sessions,
+            "revoke_tokens": self.revoke_tokens,
+        }
+        changed = [field for field, value in values.items() if getattr(row, field) != value]
+        if changed:
+            for field in changed:
+                setattr(row, field, values[field])
+            row.save(update_fields=changed)
+        if rewarn:
+            self._warn(row.user, row)
+        return True
+
     def _revisit_owned_rows(self):
-        """Loosening pass: push out or delete pending rows this rule owns whose user no
-        longer qualifies, or whose due date moved later. Silent, since "later than
-        promised" breaks no promise."""
+        """Reconcile only rows this rule still owns after acquiring the row lock."""
         rows = UserOffboarding.objects.filter(
             rule=self, status=OffboardingStatus.PENDING
-        ).select_related("user")
-        for row in rows:
-            if not self._in_scope(row.user):
-                row.delete()
-                continue
-            due_at = self.due_at(row.user)
-            if due_at > row.scheduled_at:
-                UserOffboarding.objects.filter(pk=row.pk, status=OffboardingStatus.PENDING).update(
-                    scheduled_at=due_at
+        ).values_list("pk", flat=True)
+        for row_pk in rows.iterator(chunk_size=CANDIDATE_CHUNK_SIZE):
+            with transaction.atomic():
+                row = (
+                    UserOffboarding.objects.select_for_update()
+                    .filter(pk=row_pk, rule=self, status=OffboardingStatus.PENDING)
+                    .select_related("user")
+                    .first()
                 )
+                if row is not None:
+                    self.reconcile_offboarding(row)
 
     def _tighten_foreign_rows(self, threshold: datetime):
         """Tightening pass: take over pending rows of other rules when this rule would
