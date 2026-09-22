@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -47,9 +45,6 @@ import { type TenantRequest, TenantRequestToJSON } from "../models/TenantRequest
 import * as runtime from "../runtime";
 
 export interface TenantsDomainsCreateRequest {
-    /**
-     *
-     */
     domainRequest: DomainRequest;
 }
 
@@ -84,9 +79,6 @@ export interface TenantsDomainsPartialUpdateRequest {
      * A unique integer value identifying this Domain.
      */
     id: number;
-    /**
-     *
-     */
     patchedDomainRequest?: PatchedDomainRequest;
 }
 
@@ -102,16 +94,10 @@ export interface TenantsDomainsUpdateRequest {
      * A unique integer value identifying this Domain.
      */
     id: number;
-    /**
-     *
-     */
     domainRequest: DomainRequest;
 }
 
 export interface TenantsTenantsCreateRequest {
-    /**
-     *
-     */
     tenantRequest: TenantRequest;
 }
 
@@ -120,9 +106,6 @@ export interface TenantsTenantsCreateAdminGroupCreateRequest {
      * A UUID string identifying this Tenant.
      */
     tenantUuid: string;
-    /**
-     *
-     */
     tenantAdminGroupRequestRequest: TenantAdminGroupRequestRequest;
 }
 
@@ -131,9 +114,6 @@ export interface TenantsTenantsCreateRecoveryKeyCreateRequest {
      * A UUID string identifying this Tenant.
      */
     tenantUuid: string;
-    /**
-     *
-     */
     tenantRecoveryKeyRequestRequest: TenantRecoveryKeyRequestRequest;
 }
 
@@ -168,9 +148,6 @@ export interface TenantsTenantsPartialUpdateRequest {
      * A UUID string identifying this Tenant.
      */
     tenantUuid: string;
-    /**
-     *
-     */
     patchedTenantRequest?: PatchedTenantRequest;
 }
 
@@ -186,15 +163,9 @@ export interface TenantsTenantsUpdateRequest {
      * A UUID string identifying this Tenant.
      */
     tenantUuid: string;
-    /**
-     *
-     */
     tenantRequest: TenantRequest;
 }
 
-/**
- *
- */
 export class TenantsApi extends runtime.BaseAPI {
     /**
      * Creates request options for tenantsDomainsCreate without sending the request
@@ -215,7 +186,7 @@ export class TenantsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
-        let urlPath = `/tenants/domains/`;
+        const urlPath = `/tenants/domains/`;
 
         return {
             path: urlPath,
@@ -327,7 +298,7 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let urlPath = `/tenants/domains/`;
+        const urlPath = `/tenants/domains/`;
 
         return {
             path: urlPath,
@@ -554,7 +525,7 @@ export class TenantsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
-        let urlPath = `/tenants/tenants/`;
+        const urlPath = `/tenants/tenants/`;
 
         return {
             path: urlPath,
@@ -809,7 +780,7 @@ export class TenantsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let urlPath = `/tenants/tenants/`;
+        const urlPath = `/tenants/tenants/`;
 
         return {
             path: urlPath,

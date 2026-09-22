@@ -84,6 +84,8 @@ jobs:
             deps: node
           - job: catalogs
             deps: node
+          - job: oxlint-fixtures
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff
@@ -546,6 +548,39 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Comment on PR
-        uses: ./.github/actions/comment-pr-instructions
+        uses: ./.github/actions/comment-pr
         with:
-          tag: "${{ needs.build-compute-tags.outputs.tag-full }}"
+          section: install
+          body: |
+            ## Installation instructions
+
+            <details>
+              <summary>Instructions for docker-compose</summary>
+
+              Add the following block to your `.env` file:
+
+              ```shell
+              AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
+              AUTHENTIK_TAG=${{ needs.build-compute-tags.outputs.tag-full }}
+              AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+              ```
+
+              Afterwards, run the upgrade commands from the latest release notes.
+            </details>
+            <details>
+              <summary>Instructions for Kubernetes</summary>
+
+              Add the following block to your `values.yml` file:
+
+              ```yaml
+              authentik:
+                  outposts:
+                      container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+              global:
+                  image:
+                      repository: ghcr.io/goauthentik/dev-server
+                      tag: ${{ needs.build-compute-tags.outputs.tag-full }}
+              ```
+
+              Afterwards, run the upgrade commands from the latest release notes.
+            </details>

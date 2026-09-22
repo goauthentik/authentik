@@ -1,5 +1,4 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
@@ -46,6 +45,7 @@ export class UserDeviceTable extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = aki(AuthenticatorsApi);
+
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
@@ -68,6 +68,7 @@ export class UserDeviceTable extends Table<Device> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}

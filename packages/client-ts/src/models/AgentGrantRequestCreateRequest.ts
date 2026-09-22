@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -16,13 +14,11 @@
  * Body for an agent requesting access for itself. Deliberately narrower than
  * `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
  * derived from the granting rules and capped by the agent's own lifetime.
+ *
  * @export
  * @interface AgentGrantRequestCreateRequest
  */
 export interface AgentGrantRequestCreateRequest {
-    /**
-     *
-     */
     pbms: Array<string>;
 }
 

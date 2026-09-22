@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RequestableTarget } from "./RequestableTarget";
 import { RequestableTargetFromJSON, RequestableTargetToJSON } from "./RequestableTarget";
 
 /**
- *
  * @export
  * @interface PaginatedRequestableTargetList
  */
 export interface PaginatedRequestableTargetList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RequestableTarget>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,4 +1,6 @@
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 import { AKElement } from "#elements/Base";
 import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
@@ -10,9 +12,6 @@ import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 export interface IListSelect {
     options: SelectOptions;
@@ -96,7 +95,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -114,7 +113,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * focusable — they are marked `aria-disabled` rather than `disabled` — so that the reason
      * they are unavailable, carried in their description, remains reachable by keyboard.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set disabledOptions(values: string[]) {
@@ -131,7 +130,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * The current value of the menu.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string | null = null;
@@ -140,7 +139,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * The string representation that means an empty option. If not present, no empty option is
      * possible.
      *
-     * @prop
+     * @property
      */
     @property()
     public emptyOption?: string;
@@ -150,7 +149,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * "Create new...". Activating it fires an `ak-select-action` event instead of
      * changing the selection. If not present, no action item is rendered.
      *
-     * @prop
+     * @property
      */
     @property()
     public actionLabel?: string;
@@ -207,6 +206,7 @@ export class ListSelect extends AKElement implements IListSelect {
 
     public get currentElement(): HTMLElement | undefined {
         const curIndex = this.indexOfFocusedItem;
+
         return curIndex < 0 || curIndex > this.displayedElements.length - 1
             ? undefined
             : this.displayedElements[curIndex];
@@ -216,34 +216,40 @@ export class ListSelect extends AKElement implements IListSelect {
         const index = this.displayedElements.findIndex((element) => {
             return element.getAttribute("value") === this.value;
         });
+
         const elementCount = this.displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
+
         return elementCount === 0 ? -1 : checkIndex();
     }
 
     /**
      * Highlight the currently focused item.
      *
-     * @todo
-     * This doesn't quite work as intended, but this component will likely
-     * be refined after the PatternFly upgrade.
+     * @todo This doesn't quite work as intended, but this component will likely
+     *   be refined after the PatternFly upgrade.
      */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
         });
+
         const currentElement = this.currentElement;
+
         if (!currentElement) {
             return;
         }
+
         currentElement.classList.add("ak-highlight-item");
+
         // A disabled row can be focused so its description is reachable, but it cannot be
         // chosen, so it must not be announced as selected.
         if (currentElement.getAttribute("aria-disabled") === "true") {
             return;
         }
+
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
@@ -313,6 +319,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 this.displayedElements.filter((element) =>
                     isVisibleInScrollRegion(element, this.ul),
                 ).length - 1;
+
             return visibleElementCount * direction + current;
         };
 
@@ -370,6 +377,7 @@ export class ListSelect extends AKElement implements IListSelect {
             // suffices. Whitespace is stripped because `aria-describedby` is a space-separated
             // list of IDs.
             const descId = desc ? `desc-${value.replace(/\s+/g, "_")}` : undefined;
+
             // `aria-disabled` goes on both the `<li>`, which the keyboard handler inspects, and
             // the `<button>`, which is what actually takes focus and so is what assistive
             // technology announces.
@@ -401,15 +409,17 @@ export class ListSelect extends AKElement implements IListSelect {
                             ${label}
                         </div>
                     </button>
-                    ${desc
-                        ? html`<div
-                              id=${ifDefined(descId)}
-                              class="pf-c-dropdown__menu-item-description"
-                              part="ak-list-select-desc"
-                          >
-                              ${desc}
-                          </div>`
-                        : nothing}
+                    ${
+                        desc
+                            ? html`<div
+                                  id=${ifDefined(descId)}
+                                  class="pf-c-dropdown__menu-item-description"
+                                  part="ak-list-select-desc"
+                              >
+                                  ${desc}
+                              </div>`
+                            : nothing
+                    }
                 </li>
             `;
         });
@@ -443,9 +453,11 @@ export class ListSelect extends AKElement implements IListSelect {
                 part="ak-list-select"
             >
                 ${this.emptyOption ? this.renderEmptyMenuItem() : nothing}
-                ${this.#options.grouped
-                    ? this.renderMenuGroups(this.#options.options)
-                    : this.renderMenuItems(this.#options.options)}
+                ${
+                    this.#options.grouped
+                        ? this.renderMenuGroups(this.#options.options)
+                        : this.renderMenuItems(this.#options.options)
+                }
                 ${this.actionLabel ? this.renderActionMenuItem() : nothing}
             </menu>
         </div> `;

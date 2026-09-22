@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RACProvider } from "./RACProvider";
 import { RACProviderFromJSON, RACProviderToJSON } from "./RACProvider";
 
 /**
- *
  * @export
  * @interface PaginatedRACProviderList
  */
 export interface PaginatedRACProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RACProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

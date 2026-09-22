@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,6 +15,7 @@ import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for sms authenticator devices
+ *
  * @export
  * @interface SMSDevice
  */
@@ -25,17 +24,8 @@ export interface SMSDevice {
      * The human-readable name of this device.
      */
     name: string;
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly phoneNumber: string;
-    /**
-     *
-     */
     readonly user: PartialUser;
 }
 

@@ -3,7 +3,6 @@ import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -55,6 +54,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
+
         this.modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
@@ -103,10 +103,13 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                             const args: RbacRolesListRequest = {
                                 ordering: "name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
+
                             const roles = await aki(RbacApi).rbacRolesList(args);
+
                             return roles.results;
                         }}
                         .renderElement=${(role: Role): string => {
@@ -121,6 +124,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 ${this.modelPermissions?.results
                     .filter((perm) => {
                         const [_app, model] = this.model?.split(".") || "";
+
                         return perm.codename !== `add_${model}`;
                     })
                     .map((perm) => {
