@@ -156,7 +156,7 @@ class TestResponseProcessor(TestCase):
 
     @freeze_time("2022-10-14T14:15:00")
     def test_audience_multiple_in_one_restriction(self):
-        """Test that Audience elements within one AudienceRestriction are OR'd"""
+        """Test that we are accepted when an AudienceRestriction lists us and another audience"""
         request = self._audience_request(
             "<saml2:AudienceRestriction>"
             "<saml2:Audience>https://other.example.com</saml2:Audience>"
@@ -169,8 +169,8 @@ class TestResponseProcessor(TestCase):
             parser.parse()
 
     @freeze_time("2022-10-14T14:15:00")
-    def test_audience_multiple_restrictions(self):
-        """Test that multiple AudienceRestriction elements are AND'd"""
+    def test_audience_missing_from_one_restriction(self):
+        """Test that we are rejected when one of several AudienceRestrictions does not list us"""
         request = self._audience_request(
             "<saml2:AudienceRestriction>"
             f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
@@ -182,6 +182,23 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         with self.assertRaises(MismatchedAudience):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_in_every_restriction(self):
+        """Test that we are accepted when every AudienceRestriction lists us"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
             parser.parse()
 
     @freeze_time("2022-10-14T14:16:40Z")
