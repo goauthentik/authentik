@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError, transaction
 from django.http import HttpRequest
 from django.test.testcases import TestCase
 
@@ -12,6 +13,7 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed, password_hash_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestUsers(TestCase):
@@ -80,6 +82,45 @@ class TestUsers(TestCase):
         """Test an empty string is returned when there is no request and no saved locale"""
         user = User.objects.create(username=generate_id())
         self.assertEqual(user.locale(), "")
+
+    def test_password_change_updates_device(self):
+        """Test changing a password updates the user's single password device"""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        user.set_password("changed")
+        user.save()
+        self.assertEqual(PasswordDevice.objects.filter(user=user).count(), 1)
+        user = User.objects.get(pk=user.pk)
+        self.assertTrue(user.check_password("changed"))
+        self.assertFalse(user.check_password("initial"))
+
+    def test_second_password_device_rejected(self):
+        """Test the database only allows one password device per user"""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            PasswordDevice.objects.create(user=user, name="Password", password="second")
+
+    def test_password_staged_until_save(self):
+        """Test a password is only written to the device once the user is saved"""
+        user = User.objects.create(username=generate_id())
+        user.set_password("staged")
+        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
+        user.save()
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("staged"))
+
+    def test_password_unusable_without_device(self):
+        """Test a user without a password device cannot authenticate with a password"""
+        user = User.objects.create(username=generate_id())
+        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
+        self.assertFalse(user.has_usable_password())
+        self.assertFalse(user.check_password("anything"))
+
+    def test_session_auth_hash_follows_password(self):
+        """Test changing a password invalidates existing sessions"""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        previous_hash = user.get_session_auth_hash()
+        user.set_password("changed")
+        user.save()
+        self.assertNotEqual(previous_hash, user.get_session_auth_hash())
 
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""

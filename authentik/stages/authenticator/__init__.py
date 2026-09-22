@@ -124,13 +124,14 @@ def user_has_device(user, confirmed=True):
 
 def device_classes():
     """
-    Returns an iterable of all loaded device models.
+    Returns an iterable of all loaded device models usable as a second factor.
     """
     from django.apps import apps
 
     from authentik.stages.authenticator.models import Device
+    from authentik.stages.password.models import PasswordDevice
 
     for config in apps.get_app_configs():
         for model in config.get_models():
-            if issubclass(model, Device):
+            if issubclass(model, Device) and not issubclass(model, PasswordDevice):
                 yield model
