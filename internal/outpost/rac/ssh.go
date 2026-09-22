@@ -57,8 +57,8 @@ func sshCertificate(params map[string]string) error {
 		Permissions: ssh.Permissions{
 			Extensions: map[string]string{
 				"permit-pty":  "",
-				extSSHToken:   sshExtensionValue(token),
-				extSSHHostKey: sshExtensionValue(hostKey),
+				extSSHToken:   token,
+				extSSHHostKey: hostKey,
 			},
 		},
 	}
@@ -72,10 +72,4 @@ func sshCertificate(params map[string]string) error {
 	params["private-key"] = string(pem.EncodeToMemory(block))
 	params["public-key"] = string(ssh.MarshalAuthorizedKey(cert))
 	return nil
-}
-
-// sshExtensionValue wraps a certificate extension value in an SSH string, which
-// OpenSSH does for any extension that carries one but Go does not.
-func sshExtensionValue(value string) string {
-	return string(ssh.Marshal(struct{ Value string }{value}))
 }

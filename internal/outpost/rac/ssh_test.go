@@ -33,8 +33,8 @@ func TestSSHCertificate(t *testing.T) {
 	assert.Equal(t, ssh.UserCert, int(cert.CertType))
 	assert.Equal(t, []string{"foo"}, cert.ValidPrincipals)
 	assert.Contains(t, cert.Extensions, "permit-pty")
-	assert.Equal(t, "a-token", unwrapExtension(t, cert.Extensions[extSSHToken]))
-	assert.Equal(t, hostKey, unwrapExtension(t, cert.Extensions[extSSHHostKey]))
+	assert.Equal(t, "a-token", cert.Extensions[extSSHToken])
+	assert.Equal(t, hostKey, cert.Extensions[extSSHHostKey])
 
 	// The certificate is signed by the key guacd authenticates with
 	signer, err := ssh.ParsePrivateKey([]byte(params["private-key"]))
@@ -45,11 +45,4 @@ func TestSSHCertificate(t *testing.T) {
 			return string(auth.Marshal()) == string(cert.SignatureKey.Marshal())
 		},
 	}).CheckCert("foo", cert))
-}
-
-// unwrapExtension reads the SSH string OpenSSH wraps extension values in
-func unwrapExtension(t *testing.T, value string) string {
-	var unwrapped struct{ Value string }
-	assert.NoError(t, ssh.Unmarshal([]byte(value), &unwrapped))
-	return unwrapped.Value
 }
