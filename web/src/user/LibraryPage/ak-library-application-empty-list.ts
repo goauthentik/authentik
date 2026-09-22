@@ -1,16 +1,16 @@
-import { docLink, globalAK } from "#common/global";
-
-import { AKElement } from "#elements/Base";
-import { paramURL } from "#elements/router/RouterOutlet";
-
-import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
+import { docLink } from "#common/global";
+
+import { AKElement } from "#elements/Base";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+
+import { msg } from "@lit/localize";
+import { css, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 export interface ILibraryPageApplicationEmptyList {
     admin: boolean;
@@ -45,15 +45,11 @@ export class LibraryPageApplicationEmptyList
     public admin = false;
 
     #renderNewAppButton() {
-        const href = paramURL("/core/applications", {
-            createWizard: true,
-        });
+        const href = toAdminInterface("core/applications", { "create-wizard": "application" });
+
         return html`
             <div class="pf-u-pt-lg">
-                <a
-                    aria-disabled="false"
-                    class="cta pf-c-button pf-m-secondary"
-                    href="${globalAK().api.base}if/admin/${href}"
+                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>

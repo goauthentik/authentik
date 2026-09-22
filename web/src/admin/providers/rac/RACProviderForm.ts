@@ -10,7 +10,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -42,6 +41,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
+
         return msg("Successfully created provider.");
     }
 

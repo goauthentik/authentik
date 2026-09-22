@@ -2,6 +2,7 @@ import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -12,8 +13,6 @@ import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
