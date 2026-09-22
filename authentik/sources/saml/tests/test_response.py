@@ -115,6 +115,56 @@ class TestResponseProcessor(TestCase):
         with self.assertRaises(MismatchedAudience):
             parser.parse()
 
+    def _audience_request(self, restrictions: str):
+        """Build a request from the success fixture with its AudienceRestriction replaced"""
+        fixture = load_fixture("fixtures/response_success.xml")
+        start = fixture.index("<saml2:AudienceRestriction>")
+        end = fixture.index("</saml2:AudienceRestriction>") + len("</saml2:AudienceRestriction>")
+        fixture = fixture[:start] + restrictions + fixture[end:]
+        return self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(fixture.encode()).decode()},
+        )
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_no_restriction(self):
+        """Test that an assertion without any AudienceRestriction is accepted"""
+        request = self._audience_request("")
+
+        parser = ResponseProcessor(self.source, request)
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_multiple_in_one_restriction(self):
+        """Test that Audience elements within one AudienceRestriction are OR'd"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_multiple_restrictions(self):
+        """Test that multiple AudienceRestriction elements are AND'd"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+            "<saml2:AudienceRestriction>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(MismatchedAudience):
+            parser.parse()
+
     @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
         """Test success with StatusMessage and StatusDetail present (should not raise error)"""
