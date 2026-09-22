@@ -26,6 +26,7 @@ const (
 	EVENTACTIONS_LOGOUT                     EventActions = "logout"
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
 	EVENTACTIONS_USER_OFFBOARDED            EventActions = "user_offboarded"
+	EVENTACTIONS_USER_EXPIRATION_WARNING    EventActions = "user_expiration_warning"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
@@ -68,6 +69,7 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"logout",
 	"user_write",
 	"user_offboarded",
+	"user_expiration_warning",
 	"suspicious_request",
 	"password_set",
 	"secret_view",
