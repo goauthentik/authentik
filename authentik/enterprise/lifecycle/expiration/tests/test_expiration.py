@@ -2,11 +2,11 @@ from datetime import timedelta
 from threading import Barrier, Thread
 from unittest.mock import patch
 
-from django.apps import apps
 from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
+from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User, UserTypes
@@ -56,11 +56,10 @@ def _pending(user: User) -> UserOffboarding | None:
 
 
 class ExpirationTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        config = apps.get_app_config("authentik_tasks_schedules")
-        config._on_startup_callback(None)
-
+    # No schedule reconciliation here: it would run every startup task synchronously
+    # through the test broker (blueprint discovery included) inside the test
+    # transaction. Saving a rule tolerates a missing schedule row, and the dispatch
+    # itself is patched below.
     def setUp(self):
         # Rule saves dispatch an apply task; keep sweeps explicit in tests.
         patcher = patch(APPLY_RULE)
@@ -174,20 +173,32 @@ class TestSelection(ExpirationTestCase):
         self.assertEqual(_pending(user), manual)
 
     def test_cancel_exempts_until_next_login(self):
-        rule = self._rule()
-        user = _dormant_user()
-        rule.apply()
-        self.assertTrue(_pending(user).cancel())
-        self.assertEqual(rule.apply(), 0)
-        # Canceled-then-dormant stays exempt forever.
-        self.assertEqual(rule.apply(), 0)
-        # A newer login moves last_activity past the canceled row; the clock restarts.
-        User.objects.filter(pk=user.pk).update(last_login=now())
-        self.assertEqual(rule.apply(), 0)
-        User.objects.filter(pk=user.pk).update(last_login=now() + timedelta(seconds=1))
-        _backdate(user, last_login=timedelta(days=100), date_joined=timedelta(days=200))
-        # Still older than the canceled row: exempt.
-        self.assertEqual(rule.apply(), 0)
+        with freeze_time() as clock:
+            group = Group.objects.create(name=generate_id())
+            rule = self._rule(group=group)
+            user = _dormant_user()
+            user.groups.add(group)
+            rule.apply()
+            canceled = _pending(user)
+            self.assertTrue(canceled.cancel())
+            self.assertEqual(rule.apply(), 0)
+            # Another inactivity period alone does not lift the exemption.
+            clock.tick(timedelta(days=100))
+            self.assertEqual(rule.apply(), 0)
+            # A newer login lifts the exemption and restarts the inactivity clock.
+            last_login = now()
+            User.objects.filter(pk=user.pk).update(last_login=last_login)
+            self.assertEqual(rule.apply(), 0)
+            clock.tick(timedelta(days=89))
+            self.assertEqual(rule.apply(), 0)
+            clock.tick(timedelta(days=1))
+            self.assertEqual(rule.apply(), 1)
+            pending = _pending(user)
+            self.assertIsNotNone(pending)
+            self.assertNotEqual(pending.pk, canceled.pk)
+            self.assertEqual(pending.scheduled_at, last_login + timedelta(days=90))
+            canceled.refresh_from_db()
+            self.assertEqual(canceled.status, OffboardingStatus.CANCELED)
 
     def test_reactivated_user_not_re_expired(self):
         rule = self._rule()
@@ -324,6 +335,9 @@ class TestConcurrency(TransactionTestCase):
 
         def sweep(rule: UserExpirationRule):
             try:
+                # Bound database waits so cleanup can join workers after a timeout.
+                with connection.cursor() as cursor:
+                    cursor.execute("SET statement_timeout = '10s'")
                 barrier.wait()
                 rule.apply()
             except Exception as exc:  # noqa: BLE001
@@ -337,10 +351,22 @@ class TestConcurrency(TransactionTestCase):
             UserExpirationRule, "candidates", lambda self: User.objects.filter(pk=user.pk)
         ):
             threads = [Thread(target=sweep, args=(rule,)) for rule in (loose, tight)]
-            for thread in threads:
-                thread.start()
-            for thread in threads:
-                thread.join(timeout=15)
+            started_threads = []
+            try:
+                for thread in threads:
+                    thread.start()
+                    started_threads.append(thread)
+                for thread in started_threads:
+                    thread.join(timeout=15)
+                self.assertFalse(
+                    any(thread.is_alive() for thread in started_threads),
+                    "Expiration sweep workers did not finish before the timeout",
+                )
+            finally:
+                barrier.abort()
+                # Keep the patch and database intact until every worker has exited.
+                for thread in started_threads:
+                    thread.join()
 
         self.assertEqual(errors, [])
         self.assertEqual(UserOffboarding.objects.filter(user=user).count(), 1)
