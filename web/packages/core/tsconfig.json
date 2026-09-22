@@ -3,8 +3,20 @@
     "compilerOptions": {
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "resolveJsonModule": true,
-        "checkJs": true,
-        "allowJs": true,
-        "emitDeclarationOnly": true
-    }
+        // Consumers import these modules as TypeScript sources — Node strips the
+        // types at runtime, and every bundler in the monorepo reads `.ts`
+        // directly. Nothing reads a declaration file, so there is nothing to emit.
+        "noEmit": true,
+        "emitDeclarationOnly": false,
+        "declaration": false,
+        "declarationMap": false,
+        "composite": false,
+        "incremental": false,
+        "allowImportingTsExtensions": true,
+        // Node's type stripping cannot evaluate non-erasable syntax such as
+        // enums or constructor parameter properties.
+        "erasableSyntaxOnly": true
+    },
+    "include": ["./**/*.ts"],
+    "exclude": ["./out/**", "./node_modules/**"]
 }
