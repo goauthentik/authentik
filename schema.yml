@@ -10012,6 +10012,247 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/:
+    get:
+      operationId: lifecycle_user_expiration_rules_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: action
+        schema:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserExpirationRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_expiration_rules_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/:
+    get:
+      operationId: lifecycle_user_expiration_rules_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: lifecycle_user_expiration_rules_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: lifecycle_user_expiration_rules_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserExpirationRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_user_expiration_rules_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/preview/:
+    get:
+      operationId: lifecycle_user_expiration_rules_preview_retrieve
+      description: Users the next sweep of this rule would schedule an offboarding
+        for.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRulePreview'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/used_by/:
+    get:
+      operationId: lifecycle_user_expiration_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/user_offboarding/:
     get:
       operationId: lifecycle_user_offboarding_list
@@ -10023,6 +10264,15 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: rule
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: rule__isnull
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: status
@@ -40946,6 +41196,7 @@ components:
       - logout
       - user_write
       - user_offboarded
+      - user_expiration_warning
       - suspicious_request
       - password_set
       - secret_view
@@ -45768,6 +46019,7 @@ components:
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
       - authentik_lifecycle.useroffboarding
+      - authentik_lifecycle.userexpirationrule
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -49679,6 +49931,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedUserExpirationRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserExpirationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserKerberosSourceConnectionList:
       type: object
       properties:
@@ -49996,6 +50263,20 @@ components:
       - pk
       - uid
       - username
+    PartialUserExpirationRule:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
     PasswordChallenge:
       type: object
       description: Password challenge UI fields
@@ -54268,6 +54549,62 @@ components:
         name:
           type: string
           minLength: 1
+    PatchedUserExpirationRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts authenticate
+            with tokens, which does not count as activity, so they are excluded by
+            default.
+        inactivity_duration:
+          type: string
+          minLength: 1
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
       description: User source connection
@@ -60942,6 +61279,145 @@ components:
           minLength: 1
       required:
       - name
+    UserExpirationRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts authenticate
+            with tokens, which does not count as activity, so they are excluded by
+            default.
+        inactivity_duration:
+          type: string
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - group_obj
+      - name
+      - pbm_uuid
+    UserExpirationRulePreview:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - count
+      - users
+    UserExpirationRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts authenticate
+            with tokens, which does not count as activity, so they are excluded by
+            default.
+        inactivity_duration:
+          type: string
+          minLength: 1
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - name
     UserFieldsEnum:
       enum:
       - email
@@ -61350,11 +61826,22 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        rule:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        rule_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUserExpirationRule'
+          readOnly: true
       required:
       - created_at
       - created_by_obj
       - executed_at
       - id
+      - rule
+      - rule_obj
       - scheduled_at
       - status
       - user
