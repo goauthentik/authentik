@@ -1,5 +1,4 @@
 import "./ak-visibility-toggle.js";
-
 import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
 import {
     HorizontalLightComponent,
@@ -27,16 +26,14 @@ export type InputLike = HTMLTextAreaElement | HTMLInputElement;
 export type InputListener = (ev: InputEvent) => void;
 
 /**
+ * @class AkHiddenTextInput A text-input field with a visibility control, so you can show/hide
+ *   sensitive fields.
+ *
+ *   ## CSS Parts
  * @element ak-hidden-text-input
- * @class AkHiddenTextInput
- *
- * A text-input field with a visibility control, so you can show/hide sensitive fields.
- *
- * ## CSS Parts
  * @csspart container - The main container div
  * @csspart input - The input element
  * @csspart toggle - The visibility toggle button
- *
  */
 @customElement("ak-hidden-text-input")
 export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
@@ -52,21 +49,21 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     ];
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String, reflect: true })
     public value = "";
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
     public revealed = false;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
@@ -75,7 +72,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     /**
      * Text for when the input has no set value
      *
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String })
@@ -84,7 +81,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     /**
      * Specify kind of help the browser should try to provide
      *
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String })
@@ -94,14 +91,14 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     public readOnly: boolean = false;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
     public showMessage = msg("Show field content");
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })
@@ -145,6 +142,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
 
     protected override renderControl() {
         const code = this.inputHint === "code";
+
         const setValue: InputListener = (ev) => {
             this.value = (ev.target as T).value;
         };

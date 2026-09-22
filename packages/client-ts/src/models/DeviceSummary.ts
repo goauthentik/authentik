@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * Summary of registered devices
+ *
  * @export
  * @interface DeviceSummary
  */
 export interface DeviceSummary {
-    /**
-     *
-     */
     totalCount: number;
-    /**
-     *
-     */
     unreachableCount: number;
-    /**
-     *
-     */
     outdatedAgentCount: number;
 }
 

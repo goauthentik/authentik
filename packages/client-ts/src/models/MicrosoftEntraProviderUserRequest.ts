@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * MicrosoftEntraProviderUser Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderUserRequest
  */
 export interface MicrosoftEntraProviderUserRequest {
-    /**
-     *
-     */
     microsoftId: string;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     provider: number;
 }
 

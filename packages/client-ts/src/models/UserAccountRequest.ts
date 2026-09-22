@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Account adding/removing operations
+ *
  * @export
  * @interface UserAccountRequest
  */
 export interface UserAccountRequest {
-    /**
-     *
-     */
     pk: number;
 }
 

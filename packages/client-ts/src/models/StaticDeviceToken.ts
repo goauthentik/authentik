@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Serializer for static device's tokens
+ *
  * @export
  * @interface StaticDeviceToken
  */
 export interface StaticDeviceToken {
-    /**
-     *
-     */
     token: string;
 }
 

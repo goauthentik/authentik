@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,32 +11,15 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
- *
  * @export
  * @interface EnrollmentTokenRequest
  */
 export interface EnrollmentTokenRequest {
-    /**
-     *
-     */
     deviceGroup?: string | null;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
 }
 
