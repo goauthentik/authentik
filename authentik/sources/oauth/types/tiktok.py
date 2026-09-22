@@ -131,7 +131,7 @@ class TikTokType(SourceType):
     # via HTTP Basic auth; TikTokOAuth2Client then renames client_id to client_key.
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
-    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+    def get_base_user_properties(self, info: dict[str, Any], *args, **kwargs) -> dict[str, Any]:
         """Map TikTok userinfo to authentik user properties."""
         # TikTok does not expose an email address through any scope, so email is
         # left unset and must be collected during enrollment if it is required.
