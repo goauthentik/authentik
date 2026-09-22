@@ -269,8 +269,8 @@ export class UserInfoCard extends AKElement {
                         ruleName
                             ? html`<p>
                                   ${msg(
-                                      "The rule reschedules this expiration on its next run unless the user signs in, or unless you change the rule so it no longer covers them.",
-                                      { id: "user-expiration.cancel.reschedule-warning" },
+                                      "Canceling exempts this user from automatic expiration until they sign in again. They can expire again after another period of inactivity. If they never sign in again, they remain exempt.",
+                                      { id: "user-expiration.cancel.exemption.description" },
                                   )}
                               </p>`
                             : nothing
