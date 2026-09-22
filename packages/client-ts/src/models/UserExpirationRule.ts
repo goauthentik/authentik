@@ -15,6 +15,8 @@ import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
 } from "./OffboardingActionEnum";
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 import type { UserTypeEnum } from "./UserTypeEnum";
@@ -29,6 +31,7 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
  */
 export interface UserExpirationRule {
     pk?: string;
+    readonly pbmUuid: string;
     name: string;
     enabled?: boolean;
     /**
@@ -36,6 +39,7 @@ export interface UserExpirationRule {
      * every user.
      */
     group?: string | null;
+    readonly groupObj: PartialGroup;
     /**
      * Only expire users of these types. Service accounts authenticate with tokens, which does not
      * count as activity, so they are excluded by default.
@@ -69,7 +73,21 @@ export interface UserExpirationRule {
  * Check if a given object implements the UserExpirationRule interface.
  */
 export function instanceOfUserExpirationRule(value: object): value is UserExpirationRule {
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -86,10 +104,12 @@ export function UserExpirationRuleFromJSONTyped(
     }
     return {
         pk: json["pk"] == null ? undefined : json["pk"],
+        pbmUuid: json["pbm_uuid"],
         name: json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         group:
             json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
         userTypes:
             json["user_types"] == null
                 ? undefined
@@ -121,7 +141,7 @@ export function UserExpirationRuleToJSON(json: any): UserExpirationRule {
 }
 
 export function UserExpirationRuleToJSONTyped(
-    value?: UserExpirationRule | null,
+    value?: Omit<UserExpirationRule, "pbmUuid" | "groupObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
