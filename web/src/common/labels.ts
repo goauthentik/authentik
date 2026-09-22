@@ -39,6 +39,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.UserOffboarded]: () => msg("User was offboarded"),
+    [EventActions.UserExpirationWarning]: () =>
+        msg("User will be offboarded due to inactivity", {
+            id: "user-expiration.event.warning",
+        }),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
     [EventActions.SecretView]: () => msg("Secret was viewed"),
