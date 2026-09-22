@@ -20,7 +20,7 @@ class BrandMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         locale_to_set = None
         if not hasattr(request, "brand"):
-            brand = get_brand_for_request(request)
+            brand = get_brand_for_request(request, select_related=False)
             request.brand = brand
             locale = brand.default_locale
             if locale != "":

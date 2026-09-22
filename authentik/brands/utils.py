@@ -26,12 +26,14 @@ def session_safe_mode(request: HttpRequest) -> bool:
     return bool(session.get(SESSION_KEY_BRAND_SAFE_MODE))
 
 
-def get_brand_for_request(request: HttpRequest) -> Brand:
+def get_brand_for_request(request: HttpRequest, select_related: bool = True) -> Brand:
     """Get brand object for current request"""
+    qs = Brand.objects
+    if select_related:
+        qs = qs.select_related(*_BRAND_RELATED_FK_FIELDS)
 
     brand = (
-        Brand.objects.select_related(*_BRAND_RELATED_FK_FIELDS)
-        .annotate(
+        qs.annotate(
             host_domain=Value(request.get_host()),
             domain_length=Length("domain"),
             match_priority=Case(
