@@ -183,28 +183,33 @@ jobs:
           set -euo pipefail
 
           if [ "${DISCOVERY_RESULT}" = "success" ]; then
-            headline="Cross-branch migration check failed"
-            detail="$(printf '%s' "${PAIRS:-}" \
-              | jq -r '[.include[] | "`\(.old)` -> `\(.new)`"] | join(" · ")' \
-              2>/dev/null || true)"
-            [ -n "${detail}" ] || detail="pairs unknown"
+            headline="Nightly cross-branch migration check failed"
+            intro="An upgrade between two release branches is broken. Django rejects the migration history, so the server crash-loops on start instead of upgrading."
+            pairs_list="$(printf '%s' "${PAIRS:-}" \
+              | jq -r '.include[] | "• `\(.old)` -> `\(.new)`"' 2>/dev/null || true)"
+            [ -n "${pairs_list}" ] || pairs_list="• the checked pairs are unknown"
+            body="$(printf '%s\n\n%s' "${intro}" "${pairs_list}")"
+            link_text="Open the failing run to see which pair failed"
           else
-            headline="Cross-branch migration check could not run"
-            detail="branch discovery finished with \`${DISCOVERY_RESULT}\`"
+            headline="Nightly cross-branch migration check could not run"
+            body="Branch discovery finished with \`${DISCOVERY_RESULT}\`, so no upgrade path was checked."
+            link_text="Open the failing run"
           fi
 
           jq -n \
             --arg headline "${headline}" \
-            --arg detail "${detail}" \
+            --arg body "${body}" \
+            --arg link_text "${link_text}" \
             --arg repo "${REPO}" \
             --arg run_url "${RUN_URL}" \
             '{
               text: $headline,
               blocks: [
                 {type: "section", text: {type: "mrkdwn",
-                  text: ("*" + $headline + "*\n<" + $run_url + "|Open the failing run>")}},
+                  text: ("*" + $headline + "*\n" + $body)}},
                 {type: "context", elements: [
-                  {type: "mrkdwn", text: ("`" + $repo + "` · " + $detail)}
+                  {type: "mrkdwn",
+                   text: ("`" + $repo + "` · <" + $run_url + "|" + $link_text + ">")}
                 ]}
               ]
             }' > "${RUNNER_TEMP}/slack-payload.json"
