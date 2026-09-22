@@ -4,13 +4,12 @@ from uuid import uuid4
 from django.db.models import OuterRef, Prefetch, Subquery
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema
-from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -25,7 +24,7 @@ from authentik.providers.rac.models import RACConnectionOverride
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    access_group_obj = DeviceAccessGroupSerializer(source="access_group", read_only=True)
+    access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
     facts = SerializerMethodField(allow_null=True)
 
@@ -81,9 +80,6 @@ class EndpointDeviceSerializer(ModelSerializer):
             "primary_binding_obj",
             "rac",
         ]
-        extra_kwargs = {
-            "pbm_uuid": {"read_only": True},
-        }
 
 
 class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
@@ -104,15 +100,7 @@ class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
         ]
 
 
-class DeviceViewSet(
-    UsedByMixin,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class DeviceViewSet(UsedByMixin, ModelViewSet):
 
     queryset = (
         Device.objects.all()
