@@ -8,11 +8,12 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.endpoints.models import DeviceAccessGroup
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.rac.models import Protocols, RACProvider
+from authentik.providers.rac.models import ConnectionToken, Protocols, RACProvider
 from authentik.providers.rac.tests import create_test_device
 
 
@@ -52,6 +53,27 @@ class TestRACViews(APITestCase):
         next_url = body["to"]
         final_response = self.client.get(next_url)
         self.assertEqual(final_response.status_code, 200)
+
+    def test_authorized_once(self):
+        """A launch authorizes a single connection, and requesting the challenge again
+        does not add another one to the audit log"""
+        self.client.force_login(self.user)
+        Event.objects.all().delete()
+        self.assertEqual(self.client.get(self.start_url()).status_code, 302)
+        executor = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+        self.assertIn("to", loads(self.client.get(executor).content))
+        self.client.get(executor)
+
+        self.assertEqual(ConnectionToken.objects.filter(device=self.device).count(), 1)
+        self.assertEqual(
+            list(
+                Event.objects.filter(
+                    action__in=[EventAction.LOGIN, EventAction.AUTHORIZE_APPLICATION]
+                ).values_list("action", flat=True)
+            ),
+            [EventAction.AUTHORIZE_APPLICATION],
+        )
 
     def test_app_deny(self):
         """Test request (deny on app level)"""

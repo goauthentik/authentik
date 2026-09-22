@@ -7,6 +7,7 @@ from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_user
 from authentik.endpoints.connectors.agent.models import AgentConnector, AgentDeviceConnection
+from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 from authentik.providers.rac.models import (
     SSH_HOST_KEY_SETTING,
@@ -67,6 +68,17 @@ class TestAgentSSH(TransactionTestCase):
         )
         self.assertEqual(token["preferred_username"], self.user.username)
         self.assertEqual(token["iss"], "goauthentik.io/platform")
+
+    @reconcile_app("authentik_crypto")
+    def test_settings_no_event(self):
+        """Logging into the device is authorized by the connection itself, so the token
+        it is logged in with does not add to the audit log"""
+        self.enroll()
+        Event.objects.all().delete()
+        # The client re-connects on its own, so this happens more than once per launch
+        self.token.get_settings()
+        self.token.get_settings()
+        self.assertEqual(list(Event.objects.values_list("action", flat=True)), [])
 
     @reconcile_app("authentik_crypto")
     def test_settings_not_enrolled(self):
