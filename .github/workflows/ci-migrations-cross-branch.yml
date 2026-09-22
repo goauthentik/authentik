@@ -183,7 +183,7 @@ jobs:
 
           if [ "${DISCOVERY_RESULT}" = "success" ]; then
             headline="Nightly cross-branch migration check failed"
-            intro="An upgrade between two release branches is broken. Django rejects the migration history, so the server crash-loops on start instead of upgrading."
+            intro="An upgrade between two release branches is broken. Django rejects the migration history, so the server crash-loops on start."
             pairs_list="$(printf '%s' "${PAIRS:-}" \
               | jq -r '.include[] | "• `\(.old)` -> `\(.new)`"' 2>/dev/null || true)"
             [ -n "${pairs_list}" ] || pairs_list="• the checked pairs are unknown"
