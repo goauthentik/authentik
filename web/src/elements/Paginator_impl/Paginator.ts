@@ -1,9 +1,6 @@
 import { pageBounds, PaginatorPageBounds } from "./bounds";
 import { PageChangeEvent } from "./events";
 import Styles from "./Paginator.styles";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -44,7 +41,7 @@ const VALID_KEYS = new Set([
 ]);
 
 export class Paginator extends AKElement {
-    static readonly styles = [PFButton, PFFormControl, PFPagination, Styles];
+    static readonly styles = [Styles];
 
     @property({ type: Number, attribute: "item-count" })
     itemCount = 0;
@@ -81,10 +78,10 @@ export class Paginator extends AKElement {
 
     // Target for controlling the size of the input field. It's done with a property, and we want it
     // to be at the top of the component's shadow DOM, because we don't want to change it for other
-    // input fields on the page.
+    // input fields on the page. dom.generated.d.ts sez: `"nav": HTMLElement;`
     //
     @query('[part="pagination"]')
-    paginator!: HTMLInputElement;
+    paginator!: HTMLElement;
 
     protected get bounds(): PaginatorPageBounds {
         return pageBounds(this.itemCount, this.itemsPerPage, this.page);
@@ -136,7 +133,12 @@ export class Paginator extends AKElement {
     };
 
     onKeyDown = (event: KeyboardEvent) => {
-        const { key } = event;
+        const { key, ctrlKey, metaKey } = event;
+
+        // Don't muck with cut-and-paste
+        if (ctrlKey || metaKey) {
+            return;
+        }
 
         if (key === "Enter") {
             const pendingInput = Number.parseInt(this.pendingInput, 10);
@@ -165,14 +167,14 @@ export class Paginator extends AKElement {
                 max=${Math.max(totalPages, 1)}
                 .value=${this.pendingInput}
                 ?disabled=${this.disabled || totalPages <= 1}
-                aria-label=${msg("Current page", { id: "pagination.current-page.aria-label" })}
+                aria-label=${msg(str`Current page ${this.pendingInput}`, {
+                    id: "pagination.current-page.aria-label",
+                })}
                 @input=${this.onInput}
                 @keydown=${this.onKeyDown}
                 @blur=${this.onBlur}
             />
-            <span aria-hidden="true">
-                ${msg(str`of ${totalPages}`, { id: "pagination.page-select-of-pages" })}
-            </span>
+            <span> ${msg(str`of ${totalPages}`, { id: "pagination.page-select-of-pages" })} </span>
         </div>`;
     }
 
@@ -193,19 +195,12 @@ export class Paginator extends AKElement {
     }
 
     public willUpdate(changed: PropertyValues<this>) {
-        const { page } = this.bounds;
-
         // Client requests override internal tracking. Reset to track future events.
         if (changed.has("page")) {
             this.lastPage = null;
         }
 
-        // Tell the client we're changing pages.  This shouldn't result in a loop
-        // since we ignore pointless "change to the same page" events.
-        if (page !== this.page && page !== this.lastPage) {
-            this.lastPage = page;
-            this.dispatchEvent(new PageChangeEvent(page));
-        }
+        const { page } = this.bounds;
 
         // Update what's shown in the input box.
         if (page !== this.renderedPage) {
@@ -232,8 +227,18 @@ export class Paginator extends AKElement {
     }
 
     protected updated() {
-        const { totalPages } = this.bounds;
+        const { totalPages, page } = this.bounds;
         const numChars = Math.max(`${Math.max(totalPages, 1)}`.length, 2);
+
+        // Tell the client we're changing pages. This shouldn't result in a loop since we ignore
+        // pointless "change to the same page" events. Don't send if disabled (duh).
+        if (!this.disabled && page !== this.page && page !== this.lastPage) {
+            this.lastPage = page;
+
+            if (!this.disabled) {
+                this.dispatchEvent(new PageChangeEvent(page));
+            }
+        }
 
         this.paginator?.style.setProperty(
             "--ak-c-pagination__page-select--form-control--width",

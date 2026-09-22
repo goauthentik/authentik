@@ -121,7 +121,7 @@ describe("ak-pagination: navigation", () => {
     });
 });
 
-describe("ak-pagination: disabled states", () => {
+describe("ak-paginator: disabled states", () => {
     it("backward navigation disabled on the first page", async () => {
         const element = await mount({ page: 1 });
 
@@ -165,7 +165,7 @@ describe("ak-pagination: disabled states", () => {
     });
 });
 
-describe("ak-pagination: sizes", () => {
+describe("ak-paginator: sizes", () => {
     it("renders all controls in the default size", async () => {
         const element = await mount();
 
@@ -187,7 +187,7 @@ describe("ak-pagination: sizes", () => {
     });
 });
 
-describe("ak-pagination: edge ranges", () => {
+describe("ak-paginator: edge ranges", () => {
     it("behaves correctly when there are zero items", async () => {
         const element = await mount({ itemCount: 0 });
         const seen = trackAndEcho(element);
@@ -213,7 +213,7 @@ describe("ak-pagination: edge ranges", () => {
     });
 });
 
-describe("ak-pagination: accessibility", () => {
+describe("ak-paginator: accessibility", () => {
     it("uses the generic aria label when none specified", async () => {
         const element = await mount();
 
@@ -258,7 +258,7 @@ async function keyAndCommit(element: Paginator, value: string): Promise<void> {
     await element.updateComplete;
 }
 
-describe("ak-pagination: page select", () => {
+describe("ak-paginator: page select", () => {
     it("goes to a page via the input control", async () => {
         const element = await mount({ page: 1 });
         const seen = trackAndEcho(element);
@@ -364,7 +364,7 @@ describe("ak-pagination: page select", () => {
     });
 });
 
-describe("ak-pagination: changing ranges", () => {
+describe("ak-paginator: changing ranges", () => {
     it("does not leave the page if the range contains it after setting", async () => {
         const element = await mount({ itemCount: 427, page: 3 });
         const seen = trackAndEcho(element);

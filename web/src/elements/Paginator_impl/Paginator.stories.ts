@@ -10,7 +10,7 @@ import { Meta, StoryObj } from "@storybook/web-components";
 import { html, TemplateResult } from "lit";
 
 interface PaginatorProps {
-    totalItems?: number;
+    itemCount?: number;
     itemsPerPage?: number;
     page?: number;
     label?: string;
@@ -50,7 +50,6 @@ function record(event: PageChangeEvent) {
     (event.target as Paginator).page = event.page;
 }
 
-// Base Paginator: Simple horizontal paginator (equivalent to <hr>)
 export const Default: Story = {
     args: {},
     parameters: describe("Basic paginator"),

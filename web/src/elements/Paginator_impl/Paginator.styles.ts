@@ -2,7 +2,7 @@ import { css } from "lit";
 
 export const styles = css`
     :host {
-        display: block;
+        display: inline-block;
         padding-inline-start: var(--ak-c-pagination--PaddingLeft);
         padding-inline-end: var(--ak-c-pagination--PaddingRight);
         --ak-c-pagination__total-items--Display: none;
@@ -37,11 +37,6 @@ export const styles = css`
         background-color: inherit;
         padding-inline-start: 0;
         padding-inline-end: 0;
-    }
-
-    [part~="paginator-button"] {
-        border: none;
-        color: var(--ak-c-pagination--indicator--Color);
     }
 
     [part~="paginator-button"]:hover {
@@ -85,10 +80,6 @@ export const styles = css`
 
     :host([disabled]) {
         opacity: 0.5;
-    }
-
-    :host {
-        display: inline-block;
     }
 
     /* Yes, EM. It's about the size-as-displayed */

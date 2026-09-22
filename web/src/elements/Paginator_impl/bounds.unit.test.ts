@@ -1,4 +1,5 @@
-import { pageBounds, paginatedBounds } from "#elements/Paginator_impl/bounds";
+import { pageBounds, paginatedBounds } from "./bounds";
+import { Pagination } from "./Paginator";
 
 import { describe, expect, it } from "vitest";
 

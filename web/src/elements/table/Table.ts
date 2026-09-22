@@ -1172,9 +1172,8 @@ export abstract class Table<T extends object, D = T>
         const { compact } = options;
         const { itemCount, itemsPerPage, page } = toPaginator(this.data?.pagination);
 
-        console.log("R1:", this.data?.pagination);
-
         return html`<ak-paginator
+            class="pf-c-toolbar__item pf-m-pagination"
             ?compact=${Boolean(compact)}
             ?disabled=${this.loading}
             label=${ifPresent(this.label)}

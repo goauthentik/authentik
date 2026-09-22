@@ -1,7 +1,7 @@
 :root {
     --ak-c-pagination--JustifyContent: flex-end;
     --ak-c-pagination--JustifyContent--spaced: space-between;
-    --ak-c-pagination--Inset: 0;
+    --ak-c-pagination--inset: 0;
     --ak-c-pagination--MinWidth: 3em;
     --ak-c-pagination--full--MinWidth: 8em;
 
